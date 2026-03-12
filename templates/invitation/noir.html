@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}{{ invitation.couple_name_short }}{% endblock %}
+
+{% block body_class %}invitation-body{% endblock %}
+{% block container_class %}invitation-container{% endblock %}
+
+{% block head %}
+<style>
+    /* noir theme: dark, gold accents, dramatic */
+    body {
+        background-color: #1a1a1a;
+        color: #d4af37; /* Gold */
+    }
+
+    .hero {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #000;
+        border: 20px solid #1a1a1a;
+    }
+
+    .couple-names {
+        font-family: var(--font-serif);
+        font-size: 4rem;
+        color: #d4af37;
+        text-transform: uppercase;
+        letter-spacing: 5px;
+        border-bottom: 1px solid #d4af37;
+        padding-bottom: 1rem;
+    }
+
+    .btn-gold {
+        background: transparent;
+        border: 1px solid #d4af37;
+        color: #d4af37;
+        padding: 1rem 3rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .btn-gold:hover {
+        background: #d4af37;
+        color: #000;
+    }
+
+    .venue-card {
+        background: #222;
+        border: 1px solid #333;
+        padding: 3rem;
+        border-radius: 0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="cover" class="hero">
+    <div class="text-center">
+        <h1 class="couple-names animate__animated animate__fadeInDown">{{ invitation.couple_name_short }}</h1>
+        <p style="margin: 2rem 0; letter-spacing: 3px;">OCTOBER 18, 2025</p>
+        <button id="btn-open" class="btn-gold">Enter the Night</button>
+    </div>
+</div>
+
+<div id="invitation-main" style="display: none; padding: 100px 0;">
+    <div class="container" style="max-width: 800px; text-align: center;">
+        <h2 class="serif" style="font-size: 3rem;">The Celebration</h2>
+        
+        <div class="venue-card" style="margin-top: 4rem;">
+            <p>CEREMONY & RECEPTION</p>
+            <h3 class="serif" style="font-size: 2rem;">{{ invitation.ceremony.venue }}</h3>
+            <p>{{ invitation.ceremony.address }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('btn-open').addEventListener('click', () => {
+        document.getElementById('cover').style.display = 'none';
+        document.getElementById('invitation-main').style.display = 'block';
+        document.getElementById('bg-music').play();
+    });
+</script>
+{% endblock %}

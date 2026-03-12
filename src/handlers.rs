@@ -17,20 +17,16 @@ use std::collections::HashMap;
 
 #[derive(Template)]
 #[template(path = "invitation/create.html")]
-pub struct CreateInvitationTemplate {
-    pub title: String,
-}
+pub struct CreateInvitationTemplate {}
 
 pub async fn create_invitation_page(
-    jar: PrivateCookieJar,
+    _jar: PrivateCookieJar,
 ) -> impl IntoResponse {
     // Basic Auth Check
-    if jar.get("user_id").is_none() {
+    if _jar.get("user_id").is_none() {
         return Redirect::to("/auth/google").into_response();
     }
-    HtmlTemplate(CreateInvitationTemplate { 
-        title: "Buat Undangan - Castellant".to_string() 
-    }).into_response()
+    HtmlTemplate(CreateInvitationTemplate {}).into_response()
 }
 
 pub async fn create_invitation(
@@ -223,6 +219,18 @@ pub struct VintageTemplate {
     pub invitation: Invitation,
 }
 
+#[derive(Template)]
+#[template(path = "invitation/minimalist.html")]
+pub struct MinimalistTemplate {
+    pub invitation: Invitation,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/noir.html")]
+pub struct NoirTemplate {
+    pub invitation: Invitation,
+}
+
 pub async fn home(State(_state): State<AppState>) -> impl IntoResponse {
     HtmlTemplate(HomeTemplate {}).into_response()
 }
@@ -291,13 +299,19 @@ pub async fn invitation_detail(
             HtmlTemplate(VintageTemplate { invitation }).into_response()
         },
         _ => {
-            // Fallback for sample if slug is "sample" and no DB entry
-            if slug == "sample" {
+            // Fallback for samples
+            if slug.ends_with("-sample") || slug == "sample" {
+                let (couple_name, template_name) = match slug.as_str() {
+                    "minimalist-sample" => ("Julia & Romeo", "minimalist"),
+                    "noir-sample" => ("Sara & Benjamin", "noir"),
+                    _ => ("Romeo & Julia", "vintage"),
+                };
+
                 let invitation = Invitation {
-                    slug: "sample".to_string(),
-                    couple_name_short: "Romeo & Julia".to_string(),
+                    slug: slug.clone(),
+                    couple_name_short: couple_name.to_string(),
                     bride: Person {
-                        name: "Julia".to_string(),
+                        name: if template_name == "minimalist" { "Julia".to_string() } else { "Julia".to_string() },
                         full_name: "Julia Capulet".to_string(),
                         father_name: "Mr. Capulet".to_string(),
                         mother_name: "Mrs. Capulet".to_string(),
@@ -343,7 +357,12 @@ pub async fn invitation_detail(
                     ],
                     song_url,
                 };
-                HtmlTemplate(VintageTemplate { invitation }).into_response()
+                
+                match template_name {
+                    "minimalist" => HtmlTemplate(MinimalistTemplate { invitation }).into_response(),
+                    "noir" => HtmlTemplate(NoirTemplate { invitation }).into_response(),
+                    _ => HtmlTemplate(VintageTemplate { invitation }).into_response(),
+                }
             } else {
                 (StatusCode::NOT_FOUND, "Invitation not found").into_response()
             }

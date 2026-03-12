@@ -2,185 +2,277 @@
 
 {% block title %}{{ invitation.couple_name_short }}{% endblock %}
 
+{% block body_class %}invitation-body{% endblock %}
+{% block container_class %}invitation-container{% endblock %}
+
 {% block head %}
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Great+Vibes&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
 <style>
-    /* Specific styles for Vintage theme */
-    .hero {
-        height: 100vh;
+    :root {
+        --color-wekita-burgundy: #6b1424;
+        --color-wekita-rose: #d4a3a3;
+        --color-wekita-gold: #c5a059;
+        --color-wekita-cream: #f5f0e1; /* Sweet Beige */
+        --font-serif: 'Cormorant Garamond', serif;
+        --font-script: 'Great Vibes', cursive;
+        --font-sans: 'Montserrat', sans-serif;
+    }
+
+    body.invitation-body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background: #1a1a1a; /* Dark base for mural contrast */
+        overflow-x: hidden;
+    }
+
+    body.invitation-body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('/static/img/vintage_preview.png');
+        background-size: cover;
+        background-position: center;
+        filter: blur(10px) brightness(0.6);
+        z-index: -1;
+    }
+
+    /* Fixed Mobile Container */
+    .invitation-container {
+        width: 100%;
+        max-width: 450px;
+        background: var(--color-wekita-cream);
+        min-height: 100vh;
+        position: relative;
+        box-shadow: 0 0 100px rgba(0,0,0,0.5);
+        background-image: url('/static/img/paper_texture.png');
+        background-size: cover;
+        margin: 0 auto;
+        overflow: hidden; /* Clips any protruding ornament margins */
+    }
+
+    /* Wekita Style Frame */
+    .content-frame {
+        margin: 15px;
+        border: 0.5px solid var(--color-wekita-gold);
+        min-height: calc(100vh - 30px);
+        position: relative;
+        padding: 40px 10px;
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: center;
-        background: linear-gradient(rgba(253, 250, 245, 0.4), rgba(253, 250, 245, 0.4)), 
-                    url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-        background-size: cover;
-        background-position: center;
-        text-align: center;
-        position: relative;
-    }
-
-    .hero-content {
-        z-index: 10;
-        padding: var(--spacing-md);
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(5px);
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-    }
-
-    .couple-names {
-        font-family: var(--font-script);
-        font-size: 5.5rem;
-        color: var(--color-accent-red);
-        margin: var(--spacing-sm) 0;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
-    }
-
-    .date-display {
-        font-family: var(--font-serif);
-        letter-spacing: 0.4rem;
-        text-transform: uppercase;
-        border-top: 2px solid var(--color-accent-rose);
-        border-bottom: 2px solid var(--color-accent-rose);
-        padding: 0.75rem 0;
-        margin: var(--spacing-sm) 0;
-        font-weight: 700;
-    }
-
-    .section-title {
-        font-size: 3.5rem;
-        color: var(--color-accent-red);
-        margin-bottom: var(--spacing-md);
     }
 
     .ornament-corner {
         position: absolute;
+        width: 140px;
+        height: 140px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        z-index: 5;
+        pointer-events: none;
+        mix-blend-mode: multiply; /* Fixes white background */
+    }
+
+    .rose-decor {
+        position: absolute;
         width: 180px;
         height: 180px;
-        background: var(--img-corner) no-repeat;
+        background-image: url('/static/img/floral_watercolor_corner.png');
         background-size: contain;
-        opacity: 0.8;
+        background-repeat: no-repeat;
+        z-index: 6;
         pointer-events: none;
-        z-index: 1;
-        mix-blend-mode: multiply;
+        mix-blend-mode: multiply; /* Removes white background */
     }
 
-    .top-left { top: -30px; left: -30px; }
-    .top-right { top: -30px; right: -30px; transform: rotate(90deg); }
-    .bottom-left { bottom: -30px; left: -30px; transform: rotate(-90deg); }
-    .bottom-right { bottom: -30px; right: -30px; transform: rotate(180deg); }
+    .top-rose { top: 0; left: 0; }
+    .bottom-rose { bottom: 0; right: 0; transform: rotate(180deg); }
 
-    .paper-bg {
-        background-image: var(--bg-paper);
-        background-size: cover;
-        position: relative;
-        box-shadow: inset 0 0 100px rgba(0,0,0,0.05);
-        overflow: hidden;
+    .top-left { top: -10px; left: -10px; background-image: url('/static/img/floral_watercolor_corner.png'); }
+    .top-right { top: -10px; right: -10px; background-image: url('/static/img/floral_watercolor_corner.png'); transform: scaleX(-1); }
+    .bottom-left { bottom: -10px; left: -10px; background-image: url('/static/img/floral_watercolor_corner.png'); transform: scaleY(-1); }
+    .bottom-right { bottom: -10px; right: -10px; background-image: url('/static/img/floral_watercolor_corner.png'); transform: scale(-1); }
+
+    /* Typography */
+    .serif-text { font-family: var(--font-serif); }
+    .script-text { font-family: var(--font-script); }
+    .sans-text { font-family: var(--font-sans); }
+
+    .wedding-of {
+        font-size: 0.8rem;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--color-wekita-gold);
+        margin-bottom: 1rem;
     }
 
-    .divider-img {
-        width: 100%;
-        max-width: 350px;
-        height: 100px;
-        background: var(--img-divider) no-repeat center;
-        background-size: contain;
-        margin: var(--spacing-sm) auto;
-        mix-blend-mode: multiply;
+    .couple-names {
+        font-size: 4rem;
+        color: var(--color-wekita-burgundy);
+        margin: 1rem 0;
+        line-height: 1;
     }
 
-    .person-card {
-        margin-bottom: var(--spacing-lg);
-        position: relative;
+    .date-pill {
+        border-top: 1px solid var(--color-wekita-gold);
+        border-bottom: 1px solid var(--color-wekita-gold);
+        padding: 8px 30px;
+        font-size: 1rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin: 2rem 0;
     }
 
-    .person-img {
+    /* Arch Frame Photo */
+    .arch-photo {
         width: 280px;
-        height: 400px;
-        margin: 0 auto var(--spacing-md);
-        border: 10px solid white;
-        box-shadow: var(--shadow-medium);
+        height: 420px;
+        border-radius: 140px 140px 0 0;
+        overflow: hidden;
+        border: 2px solid var(--color-wekita-gold);
+        margin: 2rem 0;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
 
-    .grid-gallery {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 15px;
-        padding: 10px;
-    }
-
-    .grid-gallery img {
+    .arch-photo img {
         width: 100%;
-        height: 250px;
+        height: 100%;
         object-fit: cover;
-        border-radius: 15px;
-        border: 5px solid white;
-        box-shadow: var(--shadow-soft);
-        transition: transform 0.3s ease;
     }
 
-    .grid-gallery img:hover {
-        transform: scale(1.03);
+    /* Buttons */
+    .wekita-btn {
+        background: var(--color-wekita-burgundy);
+        color: white;
+        border-radius: 100px;
+        padding: 12px 40px;
+        font-family: var(--font-sans);
+        font-size: 0.75rem;
+        letter-spacing: 2px;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        box-shadow: 0 4px 15px rgba(107, 20, 36, 0.3);
     }
 
-    #invitation-main {
-        display: none;
+    .wekita-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(107, 20, 36, 0.4);
     }
 
-    /* Music toggle */
-    .music-control {
-        position: fixed;
-        bottom: 30px;
-        right: 30px;
-        z-index: 1000;
-        background: white;
+    /* Dividers */
+    .divider-gold {
+        width: 180px;
+        height: 60px;
+        background: url('/static/img/floral_watercolor_divider.png') no-repeat center;
+        background-size: contain;
+        margin: 20px auto;
+        mix-blend-mode: multiply; /* Fixes white background */
+    }
+
+    /* Overlay for Cover */
+    #cover {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 100;
+        background: var(--color-wekita-cream);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 60px;
+        background-image: url('/static/img/paper_texture.png');
+        background-size: cover;
+        overflow: hidden; /* Crucial: clips white PNG margins protruding outside */
+    }
+
+    .leaf-float {
+        position: absolute;
         width: 60px;
         height: 60px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: var(--shadow-medium);
-        cursor: pointer;
-        border: 2px solid var(--color-accent-rose);
-    }
-
-    .music-playing svg {
-        animation: rotate 4s linear infinite;
-    }
-
-    @keyframes rotate {
-        from { transform: rotate(0deg); }
-        to { transform: rotate(360deg); }
-    }
-
-    .venue-card {
-        background: rgba(255, 255, 255, 0.7);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.5);
-        border-radius: 40px;
-        padding: var(--spacing-md);
-        box-shadow: var(--shadow-soft);
-        margin-bottom: var(--spacing-md);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .leaf-decorator {
-        position: absolute;
-        width: 100px;
-        height: 100px;
         background: url('/static/img/leaf.png') no-repeat;
         background-size: contain;
-        opacity: 0.6;
-        z-index: 1;
+        opacity: 0.7;
+        z-index: 10;
         pointer-events: none;
-        animation: float 6s ease-in-out infinite;
-        mix-blend-mode: multiply;
+        mix-blend-mode: multiply; /* Ensures transparency for non-PNG assets */
+        animation: float 10s infinite ease-in-out;
     }
 
     @keyframes float {
         0%, 100% { transform: translateY(0) rotate(0deg); }
-        50% { transform: translateY(-20px) rotate(10deg); }
+        50% { transform: translateY(-30px) rotate(20deg); }
+    }
+
+    #invitation-main {
+        padding-bottom: 100px;
+    }
+
+    .section {
+        padding: 60px 20px;
+        text-align: center;
+        width: 100%;
+    }
+
+    .quote-text {
+        font-size: 1.25rem;
+        line-height: 1.8;
+        font-style: italic;
+        color: var(--color-wekita-burgundy);
+    }
+
+    /* Music Control */
+    .music-widget {
+        position: fixed;
+        bottom: 20px;
+        right: calc(50% - 210px);
+        z-index: 200;
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        border: 1px solid rgba(197, 160, 89, 0.3); /* Subtle gold border */
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .music-widget:hover {
+        background: rgba(255, 255, 255, 0.9);
+        transform: scale(1.1);
+    }
+
+    @media (max-width: 450px) {
+        .music-widget {
+            right: 20px;
+        }
+    }
+
+    .rotating {
+        animation: spin 4s linear infinite;
+    }
+
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .bride-groom-title {
+        font-size: 3rem;
+        margin: 2rem 0;
+        color: var(--color-wekita-burgundy);
     }
 </style>
 {% endblock %}
@@ -191,208 +283,140 @@
 
 {% block content %}
 <!-- COVER SECTION -->
-<div id="cover" class="hero">
-    <div class="hero-content animate__animated animate__zoomIn">
-        <p class="serif" style="letter-spacing: 0.2rem;">THE WEDDING OF</p>
-        <h1 class="couple-names">{{ invitation.couple_name_short }}</h1>
-        <div class="date-display">{{ invitation.event_date }}</div>
-        
-        <div style="margin: var(--spacing-md) 0;">
-            <p style="color: var(--color-text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Kepada Bapak/Ibu/Saudara/i:</p>
-            <div style="background: rgba(255,255,255,0.5); padding: 0.5rem 1.5rem; border-radius: 10px; margin: 0.5rem 0; display: inline-block;">
-                <h3 class="serif" style="margin: 0; color: var(--color-text-primary);">Tamu Undangan</h3>
+<div id="cover">
+    <div class="rose-decor top-rose"></div>
+    <div class="rose-decor bottom-rose"></div>
+    
+    <div class="leaf-float" style="top: 10%; left: 5%;"></div>
+    <div class="leaf-float" style="top: 30%; right: 10%; animation-delay: -2s;"></div>
+
+    <p class="wedding-of sans-text animate__animated animate__fadeInDown">The Wedding of</p>
+    
+    <div class="arch-photo animate__animated animate__zoomIn">
+        <img src="/static/img/vintage_preview.png" alt="Couple">
+    </div>
+
+    <h1 class="couple-names script-text animate__animated animate__fadeInUp">{{ invitation.couple_name_short }}</h1>
+    
+    <div class="date-pill serif-text animate__animated animate__fadeInUp">
+        {{ invitation.event_date }}
+    </div>
+
+    <div style="margin-top: 1rem; text-align: center;" class="animate__animated animate__fadeInUp">
+        <p class="sans-text" style="font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase;">Kepada Bapak/Ibu/Saudara/i:</p>
+        <h3 class="serif-text" style="margin: 10px 0; color: var(--color-wekita-burgundy);">Tamu Undangan</h3>
+    </div>
+
+    <button id="btn-open" class="wekita-btn animate__animated animate__bounceIn" style="margin-top: 30px; margin-bottom: 60px;">
+        Buka Undangan
+    </button>
+
+    <div style="height: 40px;"></div> <!-- Additional space at bottom -->
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="invitation-main" style="display: none;">
+    <div class="content-frame">
+        <div class="ornament-corner top-left"></div>
+        <div class="ornament-corner top-right"></div>
+        <div class="ornament-corner bottom-left"></div>
+        <div class="ornament-corner bottom-right"></div>
+
+        <!-- Section 1: Quote -->
+        <section class="section">
+            <div class="divider-gold"></div>
+            <p class="quote-text serif-text">
+                "{{ invitation.quote.text }}"
+            </p>
+            <p class="serif-text" style="margin-top: 15px; font-weight: 600; color: var(--color-wekita-gold);">
+                {{ invitation.quote.source }}
+            </p>
+            <div class="divider-gold"></div>
+        </section>
+
+        <!-- Section 2: Mempelai -->
+        <section class="section">
+            <h2 class="bride-groom-title script-text">Mempelai</h2>
+            
+            <div class="person" style="margin-bottom: 60px;">
+                <div class="arch-photo" style="margin: 0 auto 20px; width: 220px; height: 330px;">
+                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400" alt="Bride">
+                </div>
+                <h3 class="script-text" style="font-size: 3rem; color: var(--color-wekita-burgundy);">{{ invitation.bride.full_name }}</h3>
+                <p class="serif-text">Putri tercinta dari</p>
+                <p class="serif-text" style="font-weight: 600;">Bapak {{ invitation.bride.father_name }} <br>& Ibu {{ invitation.bride.mother_name }}</p>
             </div>
-        </div>
-        
-        <button id="btn-open" class="btn animate__animated animate__pulse animate__infinite" style="box-shadow: 0 0 20px rgba(139, 42, 42, 0.3);">
-            Buka Undangan
-        </button>
+
+            <p class="script-text" style="font-size: 4rem; color: var(--color-wekita-gold);">&</p>
+
+            <div class="person" style="margin-top: 40px;">
+                <div class="arch-photo" style="margin: 0 auto 20px; width: 220px; height: 330px;">
+                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400" alt="Groom">
+                </div>
+                <h3 class="script-text" style="font-size: 3rem; color: var(--color-wekita-burgundy);">{{ invitation.groom.full_name }}</h3>
+                <p class="serif-text">Putra tercinta dari</p>
+                <p class="serif-text" style="font-weight: 600;">Bapak {{ invitation.groom.father_name }} <br>& Ibu {{ invitation.groom.mother_name }}</p>
+            </div>
+        </section>
+
+        <!-- Section 3: Event -->
+        <section class="section">
+            <h2 class="bride-groom-title script-text">Acara</h2>
+            
+            <div style="border: 1px solid var(--color-wekita-gold); padding: 30px 15px; margin-bottom: 20px;">
+                <h4 class="sans-text" style="letter-spacing: 3px; font-size: 0.7rem; color: var(--color-wekita-gold);">AKAD NIKAH</h4>
+                <p class="serif-text" style="font-size: 1.2rem; margin: 15px 0;">{{ invitation.ceremony.date }}</p>
+                <p class="sans-text" style="font-size: 0.8rem;">Pukul {{ invitation.ceremony.time }}</p>
+                <div class="divider-gold" style="width: 80px; margin: 15px auto;"></div>
+                <p class="serif-text" style="font-weight: 600;">{{ invitation.ceremony.venue }}</p>
+                <p class="serif-text" style="font-size: 0.9rem;">{{ invitation.ceremony.address }}</p>
+                <a href="{{ invitation.ceremony.maps_url }}" target="_blank" class="wekita-btn" style="margin-top: 20px; display: inline-block; text-decoration: none;">Cek Lokasi</a>
+            </div>
+
+            <div style="border: 1px solid var(--color-wekita-gold); padding: 30px 15px;">
+                <h4 class="sans-text" style="letter-spacing: 3px; font-size: 0.7rem; color: var(--color-wekita-gold);">RESEPSI</h4>
+                <p class="serif-text" style="font-size: 1.2rem; margin: 15px 0;">{{ invitation.reception.date }}</p>
+                <p class="sans-text" style="font-size: 0.8rem;">Pukul {{ invitation.reception.time }}</p>
+                <div class="divider-gold" style="width: 80px; margin: 15px auto;"></div>
+                <p class="serif-text" style="font-weight: 600;">{{ invitation.reception.venue }}</p>
+                <p class="serif-text" style="font-size: 0.9rem;">{{ invitation.reception.address }}</p>
+                <a href="{{ invitation.reception.maps_url }}" target="_blank" class="wekita-btn" style="margin-top: 20px; display: inline-block; text-decoration: none;">Cek Lokasi</a>
+            </div>
+        </section>
+
+        <!-- Gallery simplified as per Wekita style (grid) -->
+        <section class="section">
+            <h2 class="bride-groom-title script-text">Gallery</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <div style="height: 200px; overflow: hidden;"><img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=400" style="width: 100%; height: 100%; object-fit: cover;"></div>
+                <div style="height: 200px; overflow: hidden;"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=400" style="width: 100%; height: 100%; object-fit: cover;"></div>
+                <div style="height: 200px; overflow: hidden;"><img src="https://images.unsplash.com/photo-1465495910483-0d674b07c8a6?auto=format&fit=crop&w=400" style="width: 100%; height: 100%; object-fit: cover;"></div>
+                <div style="height: 200px; overflow: hidden;"><img src="https://images.unsplash.com/photo-1522673607200-164883eecd0c?auto=format&fit=crop&w=400" style="width: 100%; height: 100%; object-fit: cover;"></div>
+            </div>
+        </section>
+
+        <!-- Kado Digital -->
+        <section class="section">
+            <h2 class="bride-groom-title script-text">Kado Digital</h2>
+            {% for account in invitation.gift_accounts %}
+            <div style="background: rgba(107, 20, 36, 0.03); padding: 30px; border: 1px dashed var(--color-wekita-gold); margin-bottom: 15px;">
+                <p class="sans-text" style="font-size: 0.7rem; letter-spacing: 2px;">{{ account.bank_name }}</p>
+                <p class="serif-text" style="font-size: 1.5rem; margin: 10px 0;">{{ account.account_number }}</p>
+                <p class="serif-text">a.n {{ account.account_holder }}</p>
+                <button class="wekita-btn" style="padding: 8px 20px; font-size: 0.6rem; margin-top: 10px;" onclick="copyToClipboard('{{ account.account_number }}')">Copy Number</button>
+            </div>
+            {% endfor %}
+        </section>
+
+        <footer style="margin-top: 100px; margin-bottom: 40px; text-align: center;">
+            <p class="script-text" style="font-size: 2rem; color: var(--color-wekita-burgundy);">{{ invitation.couple_name_short }}</p>
+            <p class="sans-text" style="font-size: 0.5rem; opacity: 0.5; letter-spacing: 2px; margin-top: 10px;">Created by Castellant</p>
+        </footer>
     </div>
 </div>
 
-<!-- MAIN CONTENT (Initially Hidden) -->
-<div id="invitation-main" class="paper-bg">
-    <!-- Ornamentation at corners of the main container -->
-    <div class="ornament-corner top-left"></div>
-    <div class="ornament-corner top-right"></div>
-
-    <!-- Intro / Quote -->
-    <section class="section" style="padding-top: var(--spacing-xl);">
-        <div class="container" style="max-width: 500px; position: relative; z-index: 2;">
-            <div class="divider-img" style="transform: rotate(180deg);"></div>
-            <p class="serif italic" style="font-size: 1.2rem; color: var(--color-text-primary); line-height: 1.8;">
-                "{{ invitation.quote.text }}"
-            </p>
-            <p class="serif bold" style="margin-top: var(--spacing-sm); color: var(--color-accent-red);">
-                — {{ invitation.quote.source }}
-            </p>
-            <div class="divider-img"></div>
-        </div>
-    </section>
-
-    <!-- Couple Details -->
-    <section class="section">
-        <div class="container">
-            <h2 class="section-title script">Mempelai</h2>
-            
-            <div class="person-card animate__animated" id="bride-card">
-                <div class="arch-frame person-img" style="border-color: var(--color-accent-rose);">
-                    <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400" alt="{{ invitation.bride.name }}">
-                </div>
-                <h3 class="serif" style="font-size: 2.2rem; color: var(--color-accent-red);">{{ invitation.bride.full_name }}</h3>
-                <p style="font-size: 1.1rem;">Putri tercinta dari</p>
-                <p class="serif bold" style="font-size: 1.2rem;">Bapak {{ invitation.bride.father_name }} & Ibu {{ invitation.bride.mother_name }}</p>
-            </div>
-
-            <div class="script" style="font-size: 4rem; margin: var(--spacing-md) 0; color: var(--color-accent-rose); opacity: 0.6;">&</div>
-
-            <div class="person-card animate__animated" id="groom-card">
-                <div class="arch-frame person-img" style="border-color: var(--color-accent-rose);">
-                    <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400" alt="{{ invitation.groom.name }}">
-                </div>
-                <h3 class="serif" style="font-size: 2.2rem; color: var(--color-accent-red);">{{ invitation.groom.full_name }}</h3>
-                <p style="font-size: 1.1rem;">Putra tercinta dari</p>
-                <p class="serif bold" style="font-size: 1.2rem;">Bapak {{ invitation.groom.father_name }} & Ibu {{ invitation.groom.mother_name }}</p>
-            </div>
-            
-            <div class="divider-img"></div>
-        </div>
-    </section>
-
-    <!-- Event Info -->
-    <section class="section">
-        <div class="container">
-            <h2 class="section-title script">Acara</h2>
-            
-            <div class="venue-card">
-                <div class="ornament-corner top-right" style="width: 80px; height: 80px; opacity: 0.2;"></div>
-                <h3 class="serif" style="color: var(--color-accent-red); font-size: 1.8rem; margin-bottom: 1rem;">Akad Nikah / Pemberkatan</h3>
-                <p style="font-weight: 700; font-size: 1.1rem;">{{ invitation.ceremony.date }}</p>
-                <p>{{ invitation.ceremony.time }}</p>
-                <hr style="margin: 1.5rem auto; width: 60%; border: 0; border-top: 1px solid var(--color-accent-rose); opacity: 0.3;">
-                <p class="serif" style="font-size: 1.3rem; margin-bottom: 0.5rem;"><strong>{{ invitation.ceremony.venue }}</strong></p>
-                <p style="color: var(--color-text-muted);">{{ invitation.ceremony.address }}</p>
-                <a href="{{ invitation.ceremony.maps_url }}" target="_blank" class="btn" style="padding: 0.6rem 2rem; font-size: 0.9rem; margin-top: 1.5rem; background: var(--color-accent-sage);">
-                    <span style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                        Lihat Lokasi
-                    </span>
-                </a>
-            </div>
-
-            <div class="venue-card">
-                <div class="ornament-corner top-right" style="width: 80px; height: 80px; opacity: 0.2;"></div>
-                <h3 class="serif" style="color: var(--color-accent-red); font-size: 1.8rem; margin-bottom: 1rem;">Resepsi</h3>
-                <p style="font-weight: 700; font-size: 1.1rem;">{{ invitation.reception.date }}</p>
-                <p>{{ invitation.reception.time }}</p>
-                <hr style="margin: 1.5rem auto; width: 60%; border: 0; border-top: 1px solid var(--color-accent-rose); opacity: 0.3;">
-                <p class="serif" style="font-size: 1.3rem; margin-bottom: 0.5rem;"><strong>{{ invitation.reception.venue }}</strong></p>
-                <p style="color: var(--color-text-muted);">{{ invitation.reception.address }}</p>
-                <a href="{{ invitation.reception.maps_url }}" target="_blank" class="btn" style="padding: 0.6rem 2rem; font-size: 0.9rem; margin-top: 1.5rem; background: var(--color-accent-sage);">
-                    <span style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-                        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-                        Lihat Lokasi
-                    </span>
-                </a>
-            </div>
-            
-            <div class="divider-img"></div>
-        </div>
-    </section>
-
-    <!-- Gallery -->
-    <section class="section" style="background: rgba(163, 177, 138, 0.1);">
-        <div class="container">
-            <h2 class="section-title script">Galeri Story</h2>
-            <div class="grid-gallery">
-                <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=600" class="animate__animated">
-                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600" class="animate__animated">
-                <img src="https://images.unsplash.com/photo-1465495910483-0d674b07c8a6?auto=format&fit=crop&w=600" class="animate__animated">
-                <img src="https://images.unsplash.com/photo-1522673607200-164883eecd0c?auto=format&fit=crop&w=600" class="animate__animated">
-            </div>
-        </div>
-    </section>
-
-    <!-- RSVP -->
-    <section class="section">
-        <div class="container" style="max-width: 500px;">
-            <h2 class="section-title script">Konfirmasi Kehadiran</h2>
-            <div style="background: white; padding: 2.5rem var(--spacing-md); border-radius: 30px; text-align: left; box-shadow: var(--shadow-medium); position: relative; border: 1px solid var(--color-accent-rose);">
-                <div class="ornament-corner top-left" style="width: 60px; height: 60px; opacity: 0.2;"></div>
-                <form id="rsvp-form" hx-post="/api/rsvp" hx-target="#rsvp-response" hx-swap="outerHTML">
-                    <div style="margin-bottom: 1.25rem;">
-                        <label class="serif" style="display: block; margin-bottom: 0.5rem; font-weight: 700;">Nama Lengkap</label>
-                        <input type="text" name="name" placeholder="Masukkan nama lengkap Anda" required style="width: 100%; padding: 0.85rem; border-radius: 12px; border: 1.5px solid #eee; background: #fafafa; outline: none; transition: border-color 0.3s;">
-                    </div>
-                    <div style="margin-bottom: 1.25rem;">
-                        <label class="serif" style="display: block; margin-bottom: 0.5rem; font-weight: 700;">Kehadiran</label>
-                        <select name="attendance" style="width: 100%; padding: 0.85rem; border-radius: 12px; border: 1.5px solid #eee; background: #fafafa; outline: none;">
-                            <option value="Hadir">Saya akan Hadir</option>
-                            <option value="Tidak Hadir">Mohon Maaf, Tidak Bisa Hadir</option>
-                        </select>
-                    </div>
-                    <div style="margin-bottom: 1.25rem;">
-                        <label class="serif" style="display: block; margin-bottom: 0.5rem; font-weight: 700;">Jumlah Tamu</label>
-                        <input type="number" name="guests" value="1" min="1" max="5" style="width: 100%; padding: 0.85rem; border-radius: 12px; border: 1.5px solid #eee; background: #fafafa; outline: none;">
-                    </div>
-                    <div style="margin-bottom: 1.5rem;">
-                        <label class="serif" style="display: block; margin-bottom: 0.5rem; font-weight: 700;">Pesan / Doa Suci</label>
-                        <textarea name="message" placeholder="Tuliskan pesan atau doa untuk mempelai..." style="width: 100%; padding: 0.85rem; border-radius: 12px; border: 1.5px solid #eee; background: #fafafa; outline: none; height: 120px;"></textarea>
-                    </div>
-                    <button type="submit" class="btn" style="width: 100%; padding: 1rem; font-size: 1.1rem; letter-spacing: 1px;">Kirim Konfirmasi</button>
-                    <div id="rsvp-response" style="margin-top: 1.5rem;"></div>
-                </form>
-            </div>
-            
-            <div class="divider-img" style="margin-top: var(--spacing-lg);"></div>
-        </div>
-    </section>
-
-    <!-- Digital Gift -->
-    <section class="section">
-        <div class="container">
-            <h2 class="section-title script">Kado Digital</h2>
-            <p style="margin-bottom: var(--spacing-md); color: var(--color-text-muted); padding: 0 var(--spacing-md);">Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Namun jika Anda ingin memberikan hadiah, silakan melalui:</p>
-            
-            {% for account in invitation.gift_accounts %}
-            <div style="background: white; padding: 2rem; border-radius: 25px; margin-bottom: 1.5rem; box-shadow: var(--shadow-soft); border: 1px dashed var(--color-accent-rose); position: relative;">
-                <p style="text-transform: uppercase; letter-spacing: 2px; color: var(--color-text-muted); font-size: 0.8rem;">Transfer {{ account.bank_name }}</p>
-                <h3 class="serif" style="margin: 0.75rem 0; font-size: 1.8rem; letter-spacing: 1px; color: var(--color-accent-red);">{{ account.account_number }}</h3>
-                <p class="serif" style="font-size: 1.1rem;">a.n <span class="bold">{{ account.account_holder }}</span></p>
-                <button class="btn" onclick="copyToClipboard('{{ account.account_number }}')" style="padding: 0.5rem 1.5rem; font-size: 0.85rem; margin-top: 1rem; background: var(--color-accent-sage);">
-                    Salin Nomor Rekening
-                </button>
-            </div>
-            {% endfor %}
-            
-            <div class="divider-img"></div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="section" style="padding-bottom: var(--spacing-xl);">
-        <div class="container">
-            <p class="script" style="font-size: 2.5rem; color: var(--color-accent-red);">{{ invitation.couple_name_short }}</p>
-            <p class="serif" style="margin-top: 1rem; color: var(--color-text-muted);">Terima Kasih</p>
-            <div class="divider-img" style="opacity: 0.5; width: 100px;"></div>
-            <p style="font-size: 0.8rem; letter-spacing: 1px;">PLATFORM BY <strong style="color: var(--color-accent-red);">CASTELLANT</strong></p>
-        </div>
-    </footer>
-    
-    <!-- Ornamentation at corners of the main container -->
-    <div class="ornament-corner bottom-left"></div>
-    <div class="ornament-corner bottom-right"></div>
-
-    <!-- Floating Leaves -->
-    <div class="leaf-decorator" style="top: 15%; left: 5%; animation-delay: 0s;"></div>
-    <div class="leaf-decorator" style="top: 35%; right: 5%; animation-delay: 1s; transform: rotate(180deg);"></div>
-    <div class="leaf-decorator" style="top: 65%; left: 2%; animation-delay: 2s; transform: rotate(45deg);"></div>
-    <div class="leaf-decorator" style="top: 85%; right: 3%; animation-delay: 3s; transform: rotate(-90deg);"></div>
-</div>
-
-<!-- Music Toggle Button -->
-<div id="music-btn" class="music-control">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+<div id="music-widget" class="music-widget">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--color-wekita-gold);"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
 </div>
 {% endblock %}
 
@@ -401,64 +425,37 @@
     const btnOpen = document.getElementById('btn-open');
     const cover = document.getElementById('cover');
     const mainContent = document.getElementById('invitation-main');
-    const musicBtn = document.getElementById('music-btn');
+    const musicWidget = document.getElementById('music-widget');
     const bgMusic = document.getElementById('bg-music');
 
     btnOpen.addEventListener('click', () => {
-        // Hide cover with animation
-        cover.classList.add('animate__animated', 'animate__fadeOutUp');
+        cover.style.transition = 'all 1.5s cubic-bezier(0.19, 1, 0.22, 1)';
+        cover.style.transform = 'translateY(-100%)';
+        cover.style.opacity = '0';
+        
+        mainContent.style.display = 'block';
+        
+        bgMusic.play();
+        musicWidget.classList.add('rotating');
+
         setTimeout(() => {
             cover.style.display = 'none';
-            mainContent.style.display = 'block';
-            mainContent.classList.add('animate__animated', 'animate__fadeIn');
-            
-            // Start music
-            bgMusic.play().catch(e => console.log("Music play blocked", e));
-            musicBtn.classList.add('music-playing');
-            
-            // Initialize animations
-            initScrollAnimations();
-        }, 1000);
+        }, 1500);
     });
 
-    musicBtn.addEventListener('click', () => {
+    musicWidget.addEventListener('click', () => {
         if (bgMusic.paused) {
             bgMusic.play();
-            musicBtn.classList.add('music-playing');
+            musicWidget.classList.add('rotating');
         } else {
             bgMusic.pause();
-            musicBtn.classList.remove('music-playing');
+            musicWidget.classList.remove('rotating');
         }
     });
 
-    function initScrollAnimations() {
-        const observerOptions = {
-            threshold: 0.1
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    if (entry.target.classList.contains('person-card')) {
-                        entry.target.classList.add('animate__fadeInUp');
-                    } else if (entry.target.tagName === 'IMG') {
-                        entry.target.classList.add('animate__zoomIn');
-                    } else if (entry.target.classList.contains('venue-card')) {
-                        entry.target.classList.add('animate__fadeInLeft');
-                    }
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.person-card, .grid-gallery img, .venue-card').forEach(el => {
-            observer.observe(el);
-        });
-    }
-
     function copyToClipboard(text) {
         navigator.clipboard.writeText(text).then(() => {
-            alert('Nomor rekening disalin ke clipboard!');
+            alert('Copied to clipboard!');
         });
     }
 </script>

@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}{{ invitation.couple_name_short }}{% endblock %}
+
+{% block body_class %}invitation-body{% endblock %}
+{% block container_class %}invitation-container{% endblock %}
+
+{% block head %}
+<style>
+    /* Minimalist theme: high contrast, lots of whitespace, sans-serif focus */
+    body {
+        background-color: #ffffff;
+        --color-accent-red: #1a1a1a;
+        --color-accent-rose: #d4d4d4;
+    }
+
+    .hero {
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #fff;
+    }
+
+    .couple-names {
+        font-family: var(--font-sans);
+        font-weight: 300;
+        font-size: 5rem;
+        text-transform: uppercase;
+        letter-spacing: 12px;
+        margin: 2rem 0;
+    }
+
+    .date-display {
+        font-family: var(--font-sans);
+        letter-spacing: 0.5rem;
+        border-top: 1px solid #000;
+        border-bottom: 1px solid #000;
+        padding: 1rem 0;
+    }
+
+    .person-img {
+        border-radius: 0;
+        filter: grayscale(1);
+        border: 1px solid #eee;
+    }
+
+    .venue-card {
+        border-radius: 0;
+        border: 1px solid #eee;
+        background: #fff;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="cover" class="hero">
+    <div class="text-center animate__animated animate__fadeIn">
+        <p style="letter-spacing: 0.5rem; font-size: 0.8rem;">THE WEDDING OF</p>
+        <h1 class="couple-names">{{ invitation.couple_name_short }}</h1>
+        <div class="date-display">{{ invitation.event_date }}</div>
+        <button id="btn-open" class="btn-outline" style="margin-top: 4rem; padding: 1rem 3rem;">Open Invitation</button>
+    </div>
+</div>
+
+<div id="invitation-main" style="display: none; padding: 100px 0;">
+    <div class="container" style="max-width: 800px; text-align: center;">
+        <h2 class="hero-title">The Union</h2>
+        <p>{{ invitation.quote.text }}</p>
+        
+        <div style="margin: 80px 0;">
+            <div class="person-img" style="width: 300px; height: 450px; margin: 0 auto; background: #eee;">
+                <img src="/static/img/bride.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <h3 class="serif">{{ invitation.bride.full_name }}</h3>
+        </div>
+
+        <div style="margin: 80px 0;">
+            <div class="person-img" style="width: 300px; height: 450px; margin: 0 auto; background: #eee;">
+                <img src="/static/img/groom.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+            </div>
+            <h3 class="serif">{{ invitation.groom.full_name }}</h3>
+        </div>
+        
+        <!-- Add more simplified minimalist sections here -->
+        <div class="venue-card" style="padding: 4rem; margin: 4rem 0;">
+             <h3 class="serif">Ceremony</h3>
+             <p>{{ invitation.ceremony.venue }}</p>
+             <p>{{ invitation.ceremony.date }} | {{ invitation.ceremony.time }}</p>
+        </div>
+    </div>
+</div>
+
+<div id="music-btn" class="music-control">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('btn-open').addEventListener('click', () => {
+        document.getElementById('cover').style.display = 'none';
+        document.getElementById('invitation-main').style.display = 'block';
+        document.getElementById('bg-music').play();
+    });
+</script>
+{% endblock %}
