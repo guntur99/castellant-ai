@@ -148,9 +148,10 @@ struct GoogleUser {
 }
 
 #[derive(Debug, Deserialize)]
+#[allow(dead_code)]
 pub struct AuthRequest {
     code: String,
-    _state: String,
+    state: String,
 }
 
 pub async fn google_login(State(state): State<AppState>) -> impl IntoResponse {
@@ -241,6 +242,7 @@ where
 #[template(path = "home.html")]
 pub struct HomeTemplate {
     pub user: Option<User>,
+    pub invitations: Vec<InvitationRow>,
 }
 
 #[derive(Template)]
@@ -265,22 +267,30 @@ pub async fn home(
     State(state): State<AppState>,
     jar: PrivateCookieJar,
 ) -> impl IntoResponse {
-    let user = if let Some(cookie) = jar.get("user_id") {
-        let user_id = Uuid::parse_str(cookie.value()).ok();
-        if let Some(uid) = user_id {
-            sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
+    let mut user = None;
+    let mut invitations = Vec::new();
+
+    if let Some(cookie) = jar.get("user_id") {
+        if let Ok(uid) = Uuid::parse_str(cookie.value()) {
+            user = sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
                 .bind(uid)
                 .fetch_optional(&state.db)
                 .await
-                .unwrap_or(None)
-        } else {
-            None
-        }
-    } else {
-        None
-    };
+                .unwrap_or(None);
 
-    HtmlTemplate(HomeTemplate { user }).into_response()
+            if user.is_some() {
+                invitations = sqlx::query_as::<_, InvitationRow>(
+                    "SELECT * FROM invitations WHERE user_id = $1 ORDER BY created_at DESC"
+                )
+                .bind(uid)
+                .fetch_all(&state.db)
+                .await
+                .unwrap_or_default();
+            }
+        }
+    }
+
+    HtmlTemplate(HomeTemplate { user, invitations }).into_response()
 }
 
 pub async fn invitation_detail(
