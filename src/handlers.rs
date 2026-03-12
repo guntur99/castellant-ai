@@ -17,16 +17,36 @@ use std::collections::HashMap;
 
 #[derive(Template)]
 #[template(path = "invitation/create.html")]
-pub struct CreateInvitationTemplate {}
+pub struct CreateInvitationTemplate {
+    pub user: Option<User>,
+}
 
 pub async fn create_invitation_page(
-    _jar: PrivateCookieJar,
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
 ) -> impl IntoResponse {
     // Basic Auth Check
-    if _jar.get("user_id").is_none() {
+    let user = match jar.get("user_id") {
+        Some(cookie) => {
+            let uid = Uuid::parse_str(cookie.value()).ok();
+            if let Some(id) = uid {
+                sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
+                    .bind(id)
+                    .fetch_optional(&state.db)
+                    .await
+                    .unwrap_or(None)
+            } else {
+                None
+            }
+        }
+        None => return Redirect::to("/auth/google").into_response(),
+    };
+
+    if user.is_none() {
         return Redirect::to("/auth/google").into_response();
     }
-    HtmlTemplate(CreateInvitationTemplate {}).into_response()
+
+    HtmlTemplate(CreateInvitationTemplate { user }).into_response()
 }
 
 pub async fn create_invitation(
@@ -185,9 +205,17 @@ pub async fn google_callback(
     .await
     .unwrap();
 
-    // Store user_id in cookie
-    let jar = jar.add(Cookie::new("user_id", user.id.to_string()));
+    // Store user_id in cookie (set to / to be available site-wide)
+    let jar = jar.add(Cookie::build(("user_id", user.id.to_string()))
+        .path("/")
+        .http_only(true)
+        .permanent());
 
+    (jar, Redirect::to("/")).into_response()
+}
+
+pub async fn logout(jar: PrivateCookieJar) -> impl IntoResponse {
+    let jar = jar.remove(Cookie::from("user_id"));
     (jar, Redirect::to("/")).into_response()
 }
 
@@ -211,7 +239,9 @@ where
 
 #[derive(Template)]
 #[template(path = "home.html")]
-pub struct HomeTemplate {}
+pub struct HomeTemplate {
+    pub user: Option<User>,
+}
 
 #[derive(Template)]
 #[template(path = "invitation/vintage.html")]
@@ -231,8 +261,26 @@ pub struct NoirTemplate {
     pub invitation: Invitation,
 }
 
-pub async fn home(State(_state): State<AppState>) -> impl IntoResponse {
-    HtmlTemplate(HomeTemplate {}).into_response()
+pub async fn home(
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user = if let Some(cookie) = jar.get("user_id") {
+        let user_id = Uuid::parse_str(cookie.value()).ok();
+        if let Some(uid) = user_id {
+            sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
+                .bind(uid)
+                .fetch_optional(&state.db)
+                .await
+                .unwrap_or(None)
+        } else {
+            None
+        }
+    } else {
+        None
+    };
+
+    HtmlTemplate(HomeTemplate { user }).into_response()
 }
 
 pub async fn invitation_detail(

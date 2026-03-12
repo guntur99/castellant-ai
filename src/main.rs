@@ -84,6 +84,7 @@ async fn main() {
         .route("/api/rsvp", post(handlers::rsvp))
         .route("/auth/google", get(handlers::google_login))
         .route("/auth/google/callback", get(handlers::google_callback))
+        .route("/auth/logout", get(handlers::logout))
         .route("/create", get(handlers::create_invitation_page))
         .route("/api/invitation", post(handlers::create_invitation))
         .route("/sitemap.xml", get(handlers::sitemap))

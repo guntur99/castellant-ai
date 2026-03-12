@@ -19,10 +19,20 @@
         <a href="#">Journal</a>
         <a href="#">Contact</a>
     </div>
+    {% if let Some(u) = user %}
+    <div style="display: flex; align-items: center; gap: 15px;">
+        <div style="text-align: right;">
+            <p style="font-size: 0.7rem; margin: 0; font-weight: 600;">{{ u.name.as_deref().unwrap_or("User") }}</p>
+            <a href="/auth/logout" style="font-size: 0.6rem; color: var(--color-accent-red); text-decoration: none;">Logout</a>
+        </div>
+        <img src="{{ u.avatar_url.as_deref().unwrap_or("") }}" width="32" height="32" style="border-radius: 50%; border: 1px solid #ddd;">
+    </div>
+    {% else %}
     <a href="/auth/google" class="btn-google-simple">
         <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" width="14" alt="G">
         Sign In
     </a>
+    {% endif %}
 </nav>
 
 {% block site_content %}{% endblock %}
