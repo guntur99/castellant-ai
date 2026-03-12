@@ -215,9 +215,7 @@ where
 
 #[derive(Template)]
 #[template(path = "home.html")]
-pub struct HomeTemplate {
-    pub title: String,
-}
+pub struct HomeTemplate {}
 
 #[derive(Template)]
 #[template(path = "invitation/vintage.html")]
@@ -226,9 +224,7 @@ pub struct VintageTemplate {
 }
 
 pub async fn home(State(_state): State<AppState>) -> impl IntoResponse {
-    HtmlTemplate(HomeTemplate {
-        title: "Castellant - Digital Invitation".to_string(),
-    })
+    HtmlTemplate(HomeTemplate {}).into_response()
 }
 
 pub async fn invitation_detail(
