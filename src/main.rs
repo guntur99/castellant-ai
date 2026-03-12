@@ -91,8 +91,12 @@ async fn main() {
         .layer(TraceLayer::new_for_http());
 
     // run our app with hyper
-    // `axum::Server` has been replaced by `axum::serve` in newer versions
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    let port = env::var("PORT")
+        .unwrap_or_else(|_| "3000".to_string())
+        .parse::<u16>()
+        .expect("PORT must be a number");
+    
+    let addr = SocketAddr::from(([0, 0, 0, 0], port));
     tracing::info!("listening on {}", addr);
     
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
