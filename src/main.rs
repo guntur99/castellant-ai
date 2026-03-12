@@ -4,17 +4,29 @@ mod models;
 use axum::{
     routing::{get, post},
     Router,
+    extract::FromRef,
 };
 use std::net::SocketAddr;
 use tower_http::{services::ServeDir, trace::TraceLayer};
 use sqlx::postgres::PgPoolOptions;
 use dotenvy::dotenv;
 use std::env;
+use oauth2::{basic::BasicClient, EndpointSet, EndpointNotSet};
+use axum_extra::extract::cookie::Key;
 
 #[derive(Clone)]
 pub struct AppState {
     pub db: sqlx::PgPool,
     pub redis: deadpool_redis::Pool,
+    pub oauth: BasicClient<EndpointSet, EndpointNotSet, EndpointNotSet, EndpointNotSet, EndpointSet>,
+    pub cookie_key: Key,
+    pub http_client: reqwest::Client,
+}
+
+impl FromRef<AppState> for Key {
+    fn from_ref(state: &AppState) -> Self {
+        state.cookie_key.clone()
+    }
 }
 
 #[tokio::main]
@@ -33,24 +45,49 @@ async fn main() {
         .await
         .expect("Failed to connect to Postgres");
 
+    // Run migrations
+    sqlx::migrate!("./migrations")
+        .run(&db_pool)
+        .await
+        .expect("Failed to run database migrations");
+
     // Redis Pool
     let cfg = deadpool_redis::Config::from_url(redis_url);
     let redis_pool = cfg.create_pool(Some(deadpool_redis::Runtime::Tokio1))
         .expect("Failed to create Redis pool");
 
+    // OAuth2 Client
+    let client_id = env::var("GOOGLE_CLIENT_ID").expect("GOOGLE_CLIENT_ID must be set");
+    let client_secret = env::var("GOOGLE_CLIENT_SECRET").expect("GOOGLE_CLIENT_SECRET must be set");
+    let redirect_url = env::var("GOOGLE_REDIRECT_URL").expect("GOOGLE_REDIRECT_URL must be set");
+    let auth_url = "https://accounts.google.com/o/oauth2/v2/auth".to_string();
+    let token_url = "https://www.googleapis.com/oauth2/v4/token".to_string();
+
+    let oauth_client = BasicClient::new(oauth2::ClientId::new(client_id))
+        .set_client_secret(oauth2::ClientSecret::new(client_secret))
+        .set_auth_uri(oauth2::AuthUrl::new(auth_url).unwrap())
+        .set_token_uri(oauth2::TokenUrl::new(token_url).unwrap())
+        .set_redirect_uri(oauth2::RedirectUrl::new(redirect_url).unwrap());
+
     let state = AppState {
         db: db_pool,
         redis: redis_pool,
+        oauth: oauth_client,
+        cookie_key: Key::generate(),
+        http_client: reqwest::Client::new(),
     };
 
     // build our application with a route
     let app = Router::new()
         .route("/", get(handlers::home))
-        .route("/invitation/sample", get(handlers::invitation_detail))
+        .route("/invitation/{slug}", get(handlers::invitation_detail))
         .route("/api/rsvp", post(handlers::rsvp))
+        .route("/auth/google", get(handlers::google_login))
+        .route("/auth/google/callback", get(handlers::google_callback))
+        .route("/create", get(handlers::create_invitation_page))
+        .route("/api/invitation", post(handlers::create_invitation))
         .with_state(state)
-        // Serve static files from the "static" directory
-        .fallback_service(ServeDir::new("static"))
+        .nest_service("/static", ServeDir::new("static"))
         .layer(TraceLayer::new_for_http());
 
     // run our app with hyper

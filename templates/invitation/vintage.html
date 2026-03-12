@@ -11,7 +11,8 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(rgba(253, 250, 245, 0.8), rgba(253, 250, 245, 0.8)), url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+        background: linear-gradient(rgba(253, 250, 245, 0.4), rgba(253, 250, 245, 0.4)), 
+                    url('https://images.unsplash.com/photo-1519225421980-715cb0215aed?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
         background-size: cover;
         background-position: center;
         text-align: center;
@@ -21,138 +22,240 @@
     .hero-content {
         z-index: 10;
         padding: var(--spacing-md);
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(5px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
     .couple-names {
         font-family: var(--font-script);
-        font-size: 5rem;
+        font-size: 5.5rem;
         color: var(--color-accent-red);
         margin: var(--spacing-sm) 0;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
     }
 
     .date-display {
         font-family: var(--font-serif);
-        letter-spacing: 0.3rem;
+        letter-spacing: 0.4rem;
         text-transform: uppercase;
-        border-top: 1px solid var(--color-accent-rose);
-        border-bottom: 1px solid var(--color-accent-rose);
-        padding: 0.5rem 0;
+        border-top: 2px solid var(--color-accent-rose);
+        border-bottom: 2px solid var(--color-accent-rose);
+        padding: 0.75rem 0;
         margin: var(--spacing-sm) 0;
+        font-weight: 700;
     }
 
     .section-title {
-        font-size: 3rem;
+        font-size: 3.5rem;
         color: var(--color-accent-red);
         margin-bottom: var(--spacing-md);
     }
 
+    .ornament-corner {
+        position: absolute;
+        width: 180px;
+        height: 180px;
+        background: var(--img-corner) no-repeat;
+        background-size: contain;
+        opacity: 0.8;
+        pointer-events: none;
+        z-index: 1;
+        mix-blend-mode: multiply;
+    }
+
+    .top-left { top: -30px; left: -30px; }
+    .top-right { top: -30px; right: -30px; transform: rotate(90deg); }
+    .bottom-left { bottom: -30px; left: -30px; transform: rotate(-90deg); }
+    .bottom-right { bottom: -30px; right: -30px; transform: rotate(180deg); }
+
+    .paper-bg {
+        background-image: var(--bg-paper);
+        background-size: cover;
+        position: relative;
+        box-shadow: inset 0 0 100px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+
+    .divider-img {
+        width: 100%;
+        max-width: 350px;
+        height: 100px;
+        background: var(--img-divider) no-repeat center;
+        background-size: contain;
+        margin: var(--spacing-sm) auto;
+        mix-blend-mode: multiply;
+    }
+
     .person-card {
         margin-bottom: var(--spacing-lg);
+        position: relative;
     }
 
     .person-img {
-        width: 250px;
-        height: 350px;
+        width: 280px;
+        height: 400px;
         margin: 0 auto var(--spacing-md);
+        border: 10px solid white;
+        box-shadow: var(--shadow-medium);
     }
 
     .grid-gallery {
         display: grid;
         grid-template-columns: repeat(2, 1fr);
-        gap: 10px;
+        gap: 15px;
+        padding: 10px;
     }
 
     .grid-gallery img {
         width: 100%;
-        height: 200px;
+        height: 250px;
         object-fit: cover;
-        border-radius: 10px;
+        border-radius: 15px;
+        border: 5px solid white;
+        box-shadow: var(--shadow-soft);
+        transition: transform 0.3s ease;
+    }
+
+    .grid-gallery img:hover {
+        transform: scale(1.03);
     }
 
     #invitation-main {
-        display: none; /* Initially hidden until "Open" is clicked */
+        display: none;
     }
 
     /* Music toggle */
     .music-control {
         position: fixed;
-        bottom: 20px;
-        right: 20px;
+        bottom: 30px;
+        right: 30px;
         z-index: 1000;
         background: white;
-        width: 50px;
-        height: 50px;
+        width: 60px;
+        height: 60px;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
         box-shadow: var(--shadow-medium);
         cursor: pointer;
+        border: 2px solid var(--color-accent-rose);
     }
 
-    .music-playing {
-        animation: rotate 3s linear infinite;
+    .music-playing svg {
+        animation: rotate 4s linear infinite;
     }
 
     @keyframes rotate {
         from { transform: rotate(0deg); }
         to { transform: rotate(360deg); }
     }
+
+    .venue-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 40px;
+        padding: var(--spacing-md);
+        box-shadow: var(--shadow-soft);
+        margin-bottom: var(--spacing-md);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .leaf-decorator {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        background: url('/static/img/leaf.png') no-repeat;
+        background-size: contain;
+        opacity: 0.6;
+        z-index: 1;
+        pointer-events: none;
+        animation: float 6s ease-in-out infinite;
+        mix-blend-mode: multiply;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(10deg); }
+    }
 </style>
+{% endblock %}
+
+{% block audio_source %}
+<source src="{{ invitation.song_url }}" type="audio/mpeg">
 {% endblock %}
 
 {% block content %}
 <!-- COVER SECTION -->
 <div id="cover" class="hero">
-    <div class="hero-content animate__animated animate__fadeIn">
-        <p class="serif">THE WEDDING OF</p>
+    <div class="hero-content animate__animated animate__zoomIn">
+        <p class="serif" style="letter-spacing: 0.2rem;">THE WEDDING OF</p>
         <h1 class="couple-names">{{ invitation.couple_name_short }}</h1>
         <div class="date-display">{{ invitation.event_date }}</div>
-        <p style="margin-top: var(--spacing-md);">Kepada Bapak/Ibu/Saudara/i:</p>
-        <h3 class="serif" style="margin-bottom: var(--spacing-md);">Tamu Undangan</h3>
         
-        <button id="btn-open" class="btn animate__animated animate__pulse animate__infinite">
+        <div style="margin: var(--spacing-md) 0;">
+            <p style="color: var(--color-text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px;">Kepada Bapak/Ibu/Saudara/i:</p>
+            <div style="background: rgba(255,255,255,0.5); padding: 0.5rem 1.5rem; border-radius: 10px; margin: 0.5rem 0; display: inline-block;">
+                <h3 class="serif" style="margin: 0; color: var(--color-text-primary);">Tamu Undangan</h3>
+            </div>
+        </div>
+        
+        <button id="btn-open" class="btn animate__animated animate__pulse animate__infinite" style="box-shadow: 0 0 20px rgba(139, 42, 42, 0.3);">
             Buka Undangan
         </button>
     </div>
 </div>
 
 <!-- MAIN CONTENT (Initially Hidden) -->
-<div id="invitation-main">
+<div id="invitation-main" class="paper-bg">
+    <!-- Ornamentation at corners of the main container -->
+    <div class="ornament-corner top-left"></div>
+    <div class="ornament-corner top-right"></div>
+
     <!-- Intro / Quote -->
-    <section class="section">
-        <div class="container" style="max-width: 500px;">
-            <p class="serif italic" style="font-size: 1.1rem; color: var(--color-text-muted);">
+    <section class="section" style="padding-top: var(--spacing-xl);">
+        <div class="container" style="max-width: 500px; position: relative; z-index: 2;">
+            <div class="divider-img" style="transform: rotate(180deg);"></div>
+            <p class="serif italic" style="font-size: 1.2rem; color: var(--color-text-primary); line-height: 1.8;">
                 "{{ invitation.quote.text }}"
             </p>
-            <p class="serif bold" style="margin-top: var(--spacing-sm);">
+            <p class="serif bold" style="margin-top: var(--spacing-sm); color: var(--color-accent-red);">
                 — {{ invitation.quote.source }}
             </p>
+            <div class="divider-img"></div>
         </div>
     </section>
 
     <!-- Couple Details -->
-    <section class="section" style="background: var(--color-bg-secondary);">
+    <section class="section">
         <div class="container">
             <h2 class="section-title script">Mempelai</h2>
             
-            <div class="person-card">
-                <div class="arch-frame person-img">
+            <div class="person-card animate__animated" id="bride-card">
+                <div class="arch-frame person-img" style="border-color: var(--color-accent-rose);">
                     <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400" alt="{{ invitation.bride.name }}">
                 </div>
-                <h3 class="serif">{{ invitation.bride.full_name }}</h3>
-                <p>Putri tercinta dari Bapak {{ invitation.bride.father_name }} & Ibu {{ invitation.bride.mother_name }}</p>
+                <h3 class="serif" style="font-size: 2.2rem; color: var(--color-accent-red);">{{ invitation.bride.full_name }}</h3>
+                <p style="font-size: 1.1rem;">Putri tercinta dari</p>
+                <p class="serif bold" style="font-size: 1.2rem;">Bapak {{ invitation.bride.father_name }} & Ibu {{ invitation.bride.mother_name }}</p>
             </div>
 
-            <div class="script" style="font-size: 3rem; margin: var(--spacing-md) 0;">&</div>
+            <div class="script" style="font-size: 4rem; margin: var(--spacing-md) 0; color: var(--color-accent-rose); opacity: 0.6;">&</div>
 
-            <div class="person-card">
-                <div class="arch-frame person-img">
+            <div class="person-card animate__animated" id="groom-card">
+                <div class="arch-frame person-img" style="border-color: var(--color-accent-rose);">
                     <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400" alt="{{ invitation.groom.name }}">
                 </div>
-                <h3 class="serif">{{ invitation.groom.full_name }}</h3>
-                <p>Putra tercinta dari Bapak {{ invitation.groom.father_name }} & Ibu {{ invitation.groom.mother_name }}</p>
+                <h3 class="serif" style="font-size: 2.2rem; color: var(--color-accent-red);">{{ invitation.groom.full_name }}</h3>
+                <p style="font-size: 1.1rem;">Putra tercinta dari</p>
+                <p class="serif bold" style="font-size: 1.2rem;">Bapak {{ invitation.groom.father_name }} & Ibu {{ invitation.groom.mother_name }}</p>
             </div>
+            
+            <div class="divider-img"></div>
         </div>
     </section>
 
@@ -161,102 +264,130 @@
         <div class="container">
             <h2 class="section-title script">Acara</h2>
             
-            <div style="background: white; border-radius: 30px; padding: var(--spacing-md); box-shadow: var(--shadow-soft); margin-bottom: var(--spacing-md);">
-                <h3 class="serif" style="color: var(--color-accent-red);">Akad Nikah / Pemberkatan</h3>
-                <p>{{ invitation.ceremony.date }}</p>
+            <div class="venue-card">
+                <div class="ornament-corner top-right" style="width: 80px; height: 80px; opacity: 0.2;"></div>
+                <h3 class="serif" style="color: var(--color-accent-red); font-size: 1.8rem; margin-bottom: 1rem;">Akad Nikah / Pemberkatan</h3>
+                <p style="font-weight: 700; font-size: 1.1rem;">{{ invitation.ceremony.date }}</p>
                 <p>{{ invitation.ceremony.time }}</p>
-                <hr style="margin: 1rem auto; width: 50%; opacity: 0.2;">
-                <p><strong>{{ invitation.ceremony.venue }}</strong></p>
-                <p>{{ invitation.ceremony.address }}</p>
-                <a href="{{ invitation.ceremony.maps_url }}" target="_blank" class="btn" style="padding: 0.5rem 1.5rem; font-size: 0.9rem; margin-top: 1rem;">
-                    Google Maps
+                <hr style="margin: 1.5rem auto; width: 60%; border: 0; border-top: 1px solid var(--color-accent-rose); opacity: 0.3;">
+                <p class="serif" style="font-size: 1.3rem; margin-bottom: 0.5rem;"><strong>{{ invitation.ceremony.venue }}</strong></p>
+                <p style="color: var(--color-text-muted);">{{ invitation.ceremony.address }}</p>
+                <a href="{{ invitation.ceremony.maps_url }}" target="_blank" class="btn" style="padding: 0.6rem 2rem; font-size: 0.9rem; margin-top: 1.5rem; background: var(--color-accent-sage);">
+                    <span style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        Lihat Lokasi
+                    </span>
                 </a>
             </div>
 
-            <div style="background: white; border-radius: 30px; padding: var(--spacing-md); box-shadow: var(--shadow-soft);">
-                <h3 class="serif" style="color: var(--color-accent-red);">Resepsi</h3>
-                <p>{{ invitation.reception.date }}</p>
+            <div class="venue-card">
+                <div class="ornament-corner top-right" style="width: 80px; height: 80px; opacity: 0.2;"></div>
+                <h3 class="serif" style="color: var(--color-accent-red); font-size: 1.8rem; margin-bottom: 1rem;">Resepsi</h3>
+                <p style="font-weight: 700; font-size: 1.1rem;">{{ invitation.reception.date }}</p>
                 <p>{{ invitation.reception.time }}</p>
-                <hr style="margin: 1rem auto; width: 50%; opacity: 0.2;">
-                <p><strong>{{ invitation.reception.venue }}</strong></p>
-                <p>{{ invitation.reception.address }}</p>
-                <a href="{{ invitation.reception.maps_url }}" target="_blank" class="btn" style="padding: 0.5rem 1.5rem; font-size: 0.9rem; margin-top: 1rem;">
-                    Google Maps
+                <hr style="margin: 1.5rem auto; width: 60%; border: 0; border-top: 1px solid var(--color-accent-rose); opacity: 0.3;">
+                <p class="serif" style="font-size: 1.3rem; margin-bottom: 0.5rem;"><strong>{{ invitation.reception.venue }}</strong></p>
+                <p style="color: var(--color-text-muted);">{{ invitation.reception.address }}</p>
+                <a href="{{ invitation.reception.maps_url }}" target="_blank" class="btn" style="padding: 0.6rem 2rem; font-size: 0.9rem; margin-top: 1.5rem; background: var(--color-accent-sage);">
+                    <span style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                        Lihat Lokasi
+                    </span>
                 </a>
             </div>
+            
+            <div class="divider-img"></div>
         </div>
     </section>
 
     <!-- Gallery -->
-    <section class="section" style="background: var(--color-bg-secondary);">
+    <section class="section" style="background: rgba(163, 177, 138, 0.1);">
         <div class="container">
             <h2 class="section-title script">Galeri Story</h2>
             <div class="grid-gallery">
-                <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=400">
-                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=400">
-                <img src="https://images.unsplash.com/photo-1465495910483-0d674b07c8a6?auto=format&fit=crop&w=400">
-                <img src="https://images.unsplash.com/photo-1522673607200-164883eecd0c?auto=format&fit=crop&w=400">
+                <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=600" class="animate__animated">
+                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600" class="animate__animated">
+                <img src="https://images.unsplash.com/photo-1465495910483-0d674b07c8a6?auto=format&fit=crop&w=600" class="animate__animated">
+                <img src="https://images.unsplash.com/photo-1522673607200-164883eecd0c?auto=format&fit=crop&w=600" class="animate__animated">
             </div>
         </div>
     </section>
 
     <!-- RSVP -->
     <section class="section">
-        <div class="container">
+        <div class="container" style="max-width: 500px;">
             <h2 class="section-title script">Konfirmasi Kehadiran</h2>
-            <div style="background: white; padding: var(--spacing-md); border-radius: 20px; text-align: left; box-shadow: var(--shadow-soft);">
+            <div style="background: white; padding: 2.5rem var(--spacing-md); border-radius: 30px; text-align: left; box-shadow: var(--shadow-medium); position: relative; border: 1px solid var(--color-accent-rose);">
+                <div class="ornament-corner top-left" style="width: 60px; height: 60px; opacity: 0.2;"></div>
                 <form id="rsvp-form" hx-post="/api/rsvp" hx-target="#rsvp-response" hx-swap="outerHTML">
-                    <div style="margin-bottom: 1rem;">
-                        <label class="serif">Nama Lengkap</label>
-                        <input type="text" name="name" required style="width: 100%; padding: 0.75rem; border-radius: 10px; border: 1px solid #ddd;">
+                    <div style="margin-bottom: 1.25rem;">
+                        <label class="serif" style="display: block; margin-bottom: 0.5rem; font-weight: 700;">Nama Lengkap</label>
+                        <input type="text" name="name" placeholder="Masukkan nama lengkap Anda" required style="width: 100%; padding: 0.85rem; border-radius: 12px; border: 1.5px solid #eee; background: #fafafa; outline: none; transition: border-color 0.3s;">
                     </div>
-                    <div style="margin-bottom: 1rem;">
-                        <label class="serif">Kehadiran</label>
-                        <select name="attendance" style="width: 100%; padding: 0.75rem; border-radius: 10px; border: 1px solid #ddd;">
-                            <option value="Hadir">Hadir</option>
-                            <option value="Tidak Hadir">Tidak Hadir</option>
+                    <div style="margin-bottom: 1.25rem;">
+                        <label class="serif" style="display: block; margin-bottom: 0.5rem; font-weight: 700;">Kehadiran</label>
+                        <select name="attendance" style="width: 100%; padding: 0.85rem; border-radius: 12px; border: 1.5px solid #eee; background: #fafafa; outline: none;">
+                            <option value="Hadir">Saya akan Hadir</option>
+                            <option value="Tidak Hadir">Mohon Maaf, Tidak Bisa Hadir</option>
                         </select>
                     </div>
-                    <div style="margin-bottom: 1rem;">
-                        <label class="serif">Jumlah Tamu</label>
-                        <input type="number" name="guests" value="1" min="1" max="5" style="width: 100%; padding: 0.75rem; border-radius: 10px; border: 1px solid #ddd;">
+                    <div style="margin-bottom: 1.25rem;">
+                        <label class="serif" style="display: block; margin-bottom: 0.5rem; font-weight: 700;">Jumlah Tamu</label>
+                        <input type="number" name="guests" value="1" min="1" max="5" style="width: 100%; padding: 0.85rem; border-radius: 12px; border: 1.5px solid #eee; background: #fafafa; outline: none;">
                     </div>
-                    <div style="margin-bottom: 1rem;">
-                        <label class="serif">Pesan / Doa</label>
-                        <textarea name="message" style="width: 100%; padding: 0.75rem; border-radius: 10px; border: 1px solid #ddd; height: 100px;"></textarea>
+                    <div style="margin-bottom: 1.5rem;">
+                        <label class="serif" style="display: block; margin-bottom: 0.5rem; font-weight: 700;">Pesan / Doa Suci</label>
+                        <textarea name="message" placeholder="Tuliskan pesan atau doa untuk mempelai..." style="width: 100%; padding: 0.85rem; border-radius: 12px; border: 1.5px solid #eee; background: #fafafa; outline: none; height: 120px;"></textarea>
                     </div>
-                    <button type="submit" class="btn" style="width: 100%;">Kirim Konfirmasi</button>
-                    <div id="rsvp-response" style="margin-top: 1rem;"></div>
+                    <button type="submit" class="btn" style="width: 100%; padding: 1rem; font-size: 1.1rem; letter-spacing: 1px;">Kirim Konfirmasi</button>
+                    <div id="rsvp-response" style="margin-top: 1.5rem;"></div>
                 </form>
             </div>
+            
+            <div class="divider-img" style="margin-top: var(--spacing-lg);"></div>
         </div>
     </section>
 
     <!-- Digital Gift -->
-    <section class="section" style="background: var(--color-bg-secondary);">
+    <section class="section">
         <div class="container">
             <h2 class="section-title script">Kado Digital</h2>
-            <p style="margin-bottom: var(--spacing-md);">Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Namun jika Anda ingin memberikan hadiah, silakan melalui:</p>
+            <p style="margin-bottom: var(--spacing-md); color: var(--color-text-muted); padding: 0 var(--spacing-md);">Doa restu Anda merupakan karunia yang sangat berarti bagi kami. Namun jika Anda ingin memberikan hadiah, silakan melalui:</p>
             
             {% for account in invitation.gift_accounts %}
-            <div style="background: white; padding: var(--spacing-md); border-radius: 20px; margin-bottom: 1rem; box-shadow: var(--shadow-soft);">
-                <p><strong>{{ account.bank_name }}</strong></p>
-                <h3 class="serif" style="margin: 0.5rem 0;">{{ account.account_number }}</h3>
-                <p>a.n {{ account.account_holder }}</p>
-                <button class="btn" onclick="copyToClipboard('{{ account.account_number }}')" style="padding: 0.5rem 1rem; font-size: 0.8rem; margin-top: 0.5rem; background: var(--color-accent-sage);">
-                    Salin Rekening
+            <div style="background: white; padding: 2rem; border-radius: 25px; margin-bottom: 1.5rem; box-shadow: var(--shadow-soft); border: 1px dashed var(--color-accent-rose); position: relative;">
+                <p style="text-transform: uppercase; letter-spacing: 2px; color: var(--color-text-muted); font-size: 0.8rem;">Transfer {{ account.bank_name }}</p>
+                <h3 class="serif" style="margin: 0.75rem 0; font-size: 1.8rem; letter-spacing: 1px; color: var(--color-accent-red);">{{ account.account_number }}</h3>
+                <p class="serif" style="font-size: 1.1rem;">a.n <span class="bold">{{ account.account_holder }}</span></p>
+                <button class="btn" onclick="copyToClipboard('{{ account.account_number }}')" style="padding: 0.5rem 1.5rem; font-size: 0.85rem; margin-top: 1rem; background: var(--color-accent-sage);">
+                    Salin Nomor Rekening
                 </button>
             </div>
             {% endfor %}
+            
+            <div class="divider-img"></div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="section">
+    <footer class="section" style="padding-bottom: var(--spacing-xl);">
         <div class="container">
-            <p class="serif">Made with ♥ by Castellant</p>
+            <p class="script" style="font-size: 2.5rem; color: var(--color-accent-red);">{{ invitation.couple_name_short }}</p>
+            <p class="serif" style="margin-top: 1rem; color: var(--color-text-muted);">Terima Kasih</p>
+            <div class="divider-img" style="opacity: 0.5; width: 100px;"></div>
+            <p style="font-size: 0.8rem; letter-spacing: 1px;">PLATFORM BY <strong style="color: var(--color-accent-red);">CASTELLANT</strong></p>
         </div>
     </footer>
+    
+    <!-- Ornamentation at corners of the main container -->
+    <div class="ornament-corner bottom-left"></div>
+    <div class="ornament-corner bottom-right"></div>
+
+    <!-- Floating Leaves -->
+    <div class="leaf-decorator" style="top: 15%; left: 5%; animation-delay: 0s;"></div>
+    <div class="leaf-decorator" style="top: 35%; right: 5%; animation-delay: 1s; transform: rotate(180deg);"></div>
+    <div class="leaf-decorator" style="top: 65%; left: 2%; animation-delay: 2s; transform: rotate(45deg);"></div>
+    <div class="leaf-decorator" style="top: 85%; right: 3%; animation-delay: 3s; transform: rotate(-90deg);"></div>
 </div>
 
 <!-- Music Toggle Button -->
@@ -284,6 +415,9 @@
             // Start music
             bgMusic.play().catch(e => console.log("Music play blocked", e));
             musicBtn.classList.add('music-playing');
+            
+            // Initialize animations
+            initScrollAnimations();
         }, 1000);
     });
 
@@ -296,6 +430,31 @@
             musicBtn.classList.remove('music-playing');
         }
     });
+
+    function initScrollAnimations() {
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (entry.target.classList.contains('person-card')) {
+                        entry.target.classList.add('animate__fadeInUp');
+                    } else if (entry.target.tagName === 'IMG') {
+                        entry.target.classList.add('animate__zoomIn');
+                    } else if (entry.target.classList.contains('venue-card')) {
+                        entry.target.classList.add('animate__fadeInLeft');
+                    }
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.person-card, .grid-gallery img, .venue-card').forEach(el => {
+            observer.observe(el);
+        });
+    }
 
     function copyToClipboard(text) {
         navigator.clipboard.writeText(text).then(() => {
