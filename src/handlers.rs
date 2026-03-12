@@ -413,3 +413,35 @@ pub async fn rsvp(
         }
     ))
 }
+pub async fn sitemap(State(state): State<AppState>) -> impl IntoResponse {
+    let mut xml = String::from(r#"<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://castellant.id/</loc>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>"#);
+
+    // Dynamic: fetch slugs from DB for the sitemap
+    let slugs = sqlx::query("SELECT slug FROM invitations LIMIT 100")
+        .fetch_all(&state.db)
+        .await
+        .unwrap_or_default();
+
+    for row in slugs {
+        let slug: String = row.get("slug");
+        xml.push_str(&format!(r#"
+    <url>
+        <loc>https://castellant.id/invitation/{}</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>"#, slug));
+    }
+
+    xml.push_str("\n</urlset>");
+
+    Response::builder()
+        .header("Content-Type", "application/xml")
+        .body(xml)
+        .unwrap()
+}

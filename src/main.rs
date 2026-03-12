@@ -86,6 +86,10 @@ async fn main() {
         .route("/auth/google/callback", get(handlers::google_callback))
         .route("/create", get(handlers::create_invitation_page))
         .route("/api/invitation", post(handlers::create_invitation))
+        .route("/sitemap.xml", get(handlers::sitemap))
+        .route("/robots.txt", get(|| async { 
+            tokio::fs::read_to_string("static/robots.txt").await.unwrap_or_else(|_| "".to_string()) 
+        }))
         .with_state(state)
         .nest_service("/static", ServeDir::new("static"))
         .layer(TraceLayer::new_for_http());
