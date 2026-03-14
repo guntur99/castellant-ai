@@ -1,107 +1,238 @@
 {% extends "base.html" %}
 
-{% block title %}{{ invitation.couple_name_short }}{% endblock %}
-
-{% block body_class %}invitation-body{% endblock %}
-{% block container_class %}invitation-container{% endblock %}
+{% block title %}Undangan Pernikahan {{ invitation.couple_name_short }} | Castellant{% endblock %}
 
 {% block head %}
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Great+Vibes&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/css/minimalist.css">
 <style>
-    /* Minimalist theme: high contrast, lots of whitespace, sans-serif focus */
-    body {
-        background-color: #ffffff;
-        --color-accent-red: #1a1a1a;
-        --color-accent-rose: #d4d4d4;
-    }
-
-    .hero {
-        height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #fff;
-    }
-
-    .couple-names {
-        font-family: var(--font-sans);
-        font-weight: 300;
-        font-size: 5rem;
-        text-transform: uppercase;
-        letter-spacing: 12px;
-        margin: 2rem 0;
-    }
-
-    .date-display {
-        font-family: var(--font-sans);
-        letter-spacing: 0.5rem;
-        border-top: 1px solid #000;
-        border-bottom: 1px solid #000;
-        padding: 1rem 0;
-    }
-
-    .person-img {
-        border-radius: 0;
-        filter: grayscale(1);
-        border: 1px solid #eee;
-    }
-
-    .venue-card {
-        border-radius: 0;
-        border: 1px solid #eee;
-        background: #fff;
-    }
+    /* Prevent scrolling until opened */
+    body.invitation-body { overflow: hidden; height: 100vh; }
 </style>
 {% endblock %}
 
+{% block body_class %}invitation-body{% endblock %}
+
 {% block content %}
-<div id="cover" class="hero">
-    <div class="text-center animate__animated animate__fadeIn">
-        <p style="letter-spacing: 0.5rem; font-size: 0.8rem;">THE WEDDING OF</p>
-        <h1 class="couple-names">{{ invitation.couple_name_short }}</h1>
-        <div class="date-display">{{ invitation.event_date }}</div>
-        <button id="btn-open" class="btn-outline" style="margin-top: 4rem; padding: 1rem 3rem;">Open Invitation</button>
+<!-- Opening Screen -->
+<div id="opening-screen">
+    <div class="opening-content">
+        <img src="/static/img/min_paper_quilling.png" class="opening-ornament">
+        <p style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 5px; margin-bottom: 2rem;">The Wedding of</p>
+        <h1 class="opening-names">{{ invitation.couple_name_short }}</h1>
+        <p style="font-size: 0.85rem; margin-bottom: 3rem; color: #8a7b6a; letter-spacing: 2px;">{{ invitation.event_date }}</p>
+        <button class="btn-open" onclick="openInvitation()">Buka Undangan</button>
     </div>
 </div>
 
-<div id="invitation-main" style="display: none; padding: 100px 0;">
-    <div class="container" style="max-width: 800px; text-align: center;">
-        <h2 class="hero-title">The Union</h2>
-        <p>{{ invitation.quote.text }}</p>
+<div class="invitation-container">
+
+    <!-- Cover Section -->
+    <section class="section cover-section">
+        <div class="corner-ornament top-left reveal stagger-1"></div>
+        <div class="corner-ornament bottom-right reveal stagger-1"></div>
         
-        <div style="margin: 80px 0;">
-            <div class="person-img" style="width: 300px; height: 450px; margin: 0 auto; background: #eee;">
-                <img src="/static/img/bride.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+        <p class="reveal stagger-1" style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 6px; color: var(--minimalist-accent);">The Marriage of</p>
+        <div class="decorative-line reveal stagger-2"></div>
+        <h1 class="serif name-large reveal stagger-2">{{ invitation.bride.name }}<br>&<br>{{ invitation.groom.name }}</h1>
+        <div class="decorative-line reveal stagger-2"></div>
+        <p class="serif reveal stagger-3" style="letter-spacing: 4px; font-size: 1.2rem; opacity: 0.8;">{{ invitation.event_date }}</p>
+    </section>
+
+    <!-- Couple Detail -->
+    <section class="section">
+        <div class="profile-card reveal stagger-1">
+            <div class="img-frame">
+                <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride.name }}">
             </div>
-            <h3 class="serif">{{ invitation.bride.full_name }}</h3>
+            <h2 class="serif name-large">{{ invitation.bride.full_name }}</h2>
+            <p style="font-size: 0.9rem; line-height: 2; color: var(--minimalist-accent);">Putri terkasih dari<br><span style="font-weight: 600;">Bapak {{ invitation.bride.father_name }} & Ibu {{ invitation.bride.mother_name }}</span></p>
         </div>
 
-        <div style="margin: 80px 0;">
-            <div class="person-img" style="width: 300px; height: 450px; margin: 0 auto; background: #eee;">
-                <img src="/static/img/groom.jpg" style="width: 100%; height: 100%; object-fit: cover;">
+        <div class="serif reveal stagger-2" style="font-size: 4rem; margin: var(--space-md) 0; opacity: 0.2; color: var(--minimalist-gold);">&</div>
+
+        <div class="profile-card reveal stagger-1">
+            <div class="img-frame">
+                <img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom.name }}">
             </div>
-            <h3 class="serif">{{ invitation.groom.full_name }}</h3>
+            <h2 class="serif name-large">{{ invitation.groom.full_name }}</h2>
+            <p style="font-size: 0.9rem; line-height: 2; color: var(--minimalist-accent);">Putra terkasih dari<br><span style="font-weight: 600;">Bapak {{ invitation.groom.father_name }} & Ibu {{ invitation.groom.mother_name }}</span></p>
         </div>
+    </section>
+
+    <!-- Event Info -->
+    <section class="section" style="background: rgba(255,255,255,0.4); backdrop-filter: blur(5px);">
+        <h2 class="serif reveal stagger-1" style="font-size: 2.5rem; margin-bottom: var(--space-lg);">Special Day</h2>
         
-        <!-- Add more simplified minimalist sections here -->
-        <div class="venue-card" style="padding: 4rem; margin: 4rem 0;">
-             <h3 class="serif">Ceremony</h3>
-             <p>{{ invitation.ceremony.venue }}</p>
-             <p>{{ invitation.ceremony.date }} | {{ invitation.ceremony.time }}</p>
+        <div class="event-card reveal">
+            <span class="event-label">Holy Matrimony</span>
+            <p class="serif" style="font-size: 1.4rem; margin-bottom: 10px;">{{ invitation.ceremony.venue }}</p>
+            <p style="font-size: 0.8rem; color: #888; margin-bottom: 20px;">{{ invitation.ceremony.address }}</p>
+            <div style="border-top: 1px solid #ddd; padding-top: 20px; display: flex; justify-content: space-around;">
+                <div>
+                    <span style="font-size: 0.6rem; text-transform: uppercase;">Jam</span>
+                    <p class="serif">{{ invitation.ceremony.time }}</p>
+                </div>
+            </div>
+            <a href="{{ invitation.ceremony.maps_url }}" target="_blank" class="btn-open" style="display: block; margin-top: 30px; text-decoration: none;">View Location</a>
         </div>
+
+        <div class="event-card reveal">
+            <span class="event-label">Wedding Reception</span>
+            <p class="serif" style="font-size: 1.4rem; margin-bottom: 10px;">{{ invitation.reception.venue }}</p>
+            <p style="font-size: 0.8rem; color: #888; margin-bottom: 20px;">{{ invitation.reception.address }}</p>
+            <div style="border-top: 1px solid #ddd; padding-top: 20px; display: flex; justify-content: space-around;">
+                <div>
+                    <span style="font-size: 0.6rem; text-transform: uppercase;">Jam</span>
+                    <p class="serif">{{ invitation.reception.time }}</p>
+                </div>
+            </div>
+            <a href="{{ invitation.reception.maps_url }}" target="_blank" class="btn-open" style="display: block; margin-top: 30px; text-decoration: none;">View Location</a>
+        </div>
+    </section>
+
+    <!-- Gallery -->
+    {% if !invitation.gallery_images.is_empty() %}
+    <section class="section">
+        <h2 class="serif reveal" style="font-size: 1.8rem; margin-bottom: 30px;">Love in Frame</h2>
+        <div class="gallery-scroll reveal">
+            {% for img in invitation.gallery_images %}
+            <div class="gallery-item">
+                <img src="{{ img }}" alt="Gallery Image">
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- RSVP Section -->
+    <section class="section">
+        <div id="rsvp-container" class="reveal" style="max-width: 400px; margin: 0 auto; padding: var(--space-lg) var(--space-md); border: 1px solid rgba(0,0,0,0.05); background: white; border-radius: 8px; box-shadow: 0 30px 60px rgba(0,0,0,0.03);">
+            <h2 class="serif" style="font-size: 2.5rem; margin-bottom: 10px;">RSVP</h2>
+            <p style="font-size: 0.7rem; letter-spacing: 4px; text-transform: uppercase; color: var(--minimalist-gold); font-weight: 600; margin-bottom: 40px;">Konfirmasi Kehadiran</p>
+            
+            <form hx-post="/api/rsvp" hx-target="#rsvp-container" hx-swap="outerHTML">
+                <input type="text" name="name" placeholder="Nama Anda" required style="width: 100%; padding: 15px; border: 1px solid #f0f0f0; margin-bottom: 20px; font-family: var(--font-sans); font-size: 0.9rem; border-radius: 4px; background: #fafafa;">
+                
+                <select name="attendance" required style="width: 100%; padding: 15px; border: 1px solid #f0f0f0; margin-bottom: 20px; font-family: var(--font-sans); font-size: 0.9rem; background: #fafafa; border-radius: 4px;">
+                    <option value="Hadir">Saya akan Hadir</option>
+                    <option value="Tidak Hadir">Mohon Maaf, Saya Tidak Bisa Hadir</option>
+                </select>
+
+                <input type="number" name="guests" placeholder="Jumlah Tamu" min="1" max="5" required style="width: 100%; padding: 15px; border: 1px solid #f0f0f0; margin-bottom: 20px; font-family: var(--font-sans); font-size: 0.9rem; border-radius: 4px; background: #fafafa;">
+                
+                <textarea name="message" placeholder="Ucapan & Doa" style="width: 100%; padding: 15px; border: 1px solid #f0f0f0; margin-bottom: 30px; font-family: var(--font-sans); font-size: 0.9rem; height: 120px; border-radius: 4px; background: #fafafa;"></textarea>
+
+                <button type="submit" class="btn-open" style="width: 100%;">Kirim Konfirmasi</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Quote -->
+    <section class="section" style="padding: 100px 40px;">
+        <img src="/static/img/min_ornament_1.png" style="width: 80px; opacity: 0.15; margin-bottom: 30px;">
+        <p class="serif reveal" style="font-size: 1.2rem; line-height: 2; color: #555; font-style: italic;">"{{ invitation.quote.text }}"</p>
+        <p class="reveal" style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px; margin-top: 30px;">— {{ invitation.quote.source }}</p>
+    </section>
+
+    <!-- Gift -->
+    <section class="section" style="background: #2C3639; color: white;">
+        <div class="corner-ornament top-left" style="filter: invert(1); opacity: 0.05;"></div>
+        <h2 class="serif reveal" style="font-size: 2.5rem; margin-bottom: 40px;">Digital Gift</h2>
+        <p class="reveal" style="font-size: 0.9rem; opacity: 0.7; margin-bottom: 50px; line-height: 1.8;">Doa restu Anda merupakan hadiah terindah,<br>namun jika ingin memberikan tanda kasih, silakan melalui:</p>
+        
+        {% for account in invitation.gift_accounts %}
+        <div class="reveal" style="border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 40px 30px; margin-bottom: 25px; text-align: left; background: rgba(255,255,255,0.01);">
+            <p style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 3px; opacity: 0.5; margin-bottom: 12px;">{{ account.bank_name }}</p>
+            <p class="serif" style="font-size: 1.8rem; margin: 10px 0; letter-spacing: 1px;">{{ account.account_number }}</p>
+            <p style="font-size: 1rem; opacity: 0.8;">a.n {{ account.account_holder }}</p>
+            <button onclick="copyToClipboard('{{ account.account_number }}')" style="margin-top: 25px; background: none; border: 1px solid rgba(255,255,255,0.15); color: white; padding: 10px 20px; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; border-radius: 6px; transition: all 0.3s ease;">Salin Nomor Rekening</button>
+        </div>
+        {% endfor %}
+    </section>
+
+    <!-- Footer -->
+    <footer class="section" style="padding: 120px 30px; border-top: 1px solid rgba(0,0,0,0.03);">
+        <img src="/static/img/min_paper_quilling.png" style="width: 180px; margin-bottom: 40px; opacity: 0.4;">
+        <h2 class="serif footer-names" style="font-size: 2.8rem; letter-spacing: -1.5px;">{{ invitation.couple_name_short }}</h2>
+        <p style="font-size: 0.6rem; text-transform: uppercase; letter-spacing: 5px; color: var(--minimalist-accent); margin-top: 20px;">Digital Stationery by Castellant</p>
+    </footer>
+
+    <!-- Music Widget -->
+    <div id="music-widget" class="music-widget" onclick="toggleMusic()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: var(--minimalist-gold);"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
+        <audio id="bg-music" loop>
+            <source src="{{ invitation.song_url }}" type="audio/mpeg">
+        </audio>
     </div>
 </div>
 
-<div id="music-btn" class="music-control">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>
-</div>
-{% endblock %}
-
-{% block scripts %}
 <script>
-    document.getElementById('btn-open').addEventListener('click', () => {
-        document.getElementById('cover').style.display = 'none';
-        document.getElementById('invitation-main').style.display = 'block';
-        document.getElementById('bg-music').play();
-    });
+    function openInvitation() {
+        const screen = document.getElementById('opening-screen');
+        const music = document.getElementById('bg-music');
+        const widget = document.getElementById('music-widget');
+        
+        screen.classList.add('hidden');
+        
+        // Play music
+        music.play().catch(e => console.log("Audio play blocked by browser"));
+        widget.classList.add('rotating');
+        
+        // Allow scrolling on body
+        document.body.style.overflow = 'auto';
+        document.body.style.height = 'auto';
+        
+        // Immediate check for elements in view
+        setTimeout(() => {
+            initScrollReveal();
+            window.scrollTo(0, 0); 
+        }, 800);
+    }
+    
+    function toggleMusic() {
+        const music = document.getElementById('bg-music');
+        const widget = document.getElementById('music-widget');
+        if (music.paused) {
+            music.play();
+            widget.classList.add('rotating');
+        } else {
+            music.pause();
+            widget.classList.remove('rotating');
+        }
+    }
+
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert('Nomor rekening berhasil disalin!');
+        });
+    }
+    
+    function initScrollReveal() {
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { 
+            threshold: 0.05, // Lower threshold for mobile
+            rootMargin: '0px 0px -20px 0px'
+        });
+
+        revealElements.forEach(el => observer.observe(el));
+        
+        // Backup: Reveal first elements immediately if they are already in view
+        revealElements.forEach(el => {
+            const rect = el.getBoundingClientRect();
+            if (rect.top < window.innerHeight) {
+                el.classList.add('visible');
+            }
+        });
+    }
+
+    // Initialize only after opening
 </script>
 {% endblock %}

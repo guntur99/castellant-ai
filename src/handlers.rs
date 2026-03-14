@@ -119,14 +119,17 @@ pub async fn create_invitation(
         "source": "Ali Imran: 190"
     });
 
+    let template_name = fields.get("template_name").cloned().unwrap_or_else(|| "vintage".to_string());
+
     sqlx::query(
-        "INSERT INTO invitations (user_id, slug, couple_name_short, event_date, bride_data, groom_data, ceremony_data, reception_data, quote_data) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)"
+        "INSERT INTO invitations (user_id, slug, couple_name_short, event_date, template_name, bride_data, groom_data, ceremony_data, reception_data, quote_data) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)"
     )
     .bind(user_id)
     .bind(&slug)
     .bind(fields.get("couple_name_short").unwrap())
     .bind(fields.get("event_date").unwrap())
+    .bind(template_name)
     .bind(bride_data)
     .bind(groom_data)
     .bind(ceremony_data)
@@ -354,7 +357,11 @@ pub async fn invitation_detail(
                 song_url,
             };
 
-            HtmlTemplate(VintageTemplate { invitation }).into_response()
+            match row.template_name.as_str() {
+                "minimalist" => HtmlTemplate(MinimalistTemplate { invitation }).into_response(),
+                "noir" => HtmlTemplate(NoirTemplate { invitation }).into_response(),
+                _ => HtmlTemplate(VintageTemplate { invitation }).into_response(),
+            }
         },
         _ => {
             // Fallback for samples
