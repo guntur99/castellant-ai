@@ -3,7 +3,341 @@
 {% block head %}
 <style>
     /* Site-specific adjustments if needed */
+    .global-controls {
+        display: flex;
+        gap: 10px;
+        margin: 0 15px;
+    }
+    .btn-global {
+        background: rgba(255,255,255,0.4);
+        border: 1px solid rgba(0,0,0,0.05);
+        padding: 5px 12px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.3s ease;
+    }
+    .btn-global:hover {
+        background: white;
+        box-shadow: var(--shadow-soft);
+    }
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: white;
+        min-width: 180px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border-radius: 18px;
+        padding: 8px;
+        z-index: 1001;
+        border: 1px solid rgba(0,0,0,0.05);
+        margin-top: 10px;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        pointer-events: none;
+    }
+    .dropdown-content.show {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+        pointer-events: auto;
+    }
+    .dropdown-content a {
+        color: var(--color-text-primary);
+        padding: 10px 14px;
+        text-decoration: none;
+        display: block;
+        font-size: 0.8rem;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+    }
+    .dropdown-content a:hover {
+        background-color: #f5f5f5;
+        color: var(--color-accent-rose);
+        padding-left: 18px;
+    }
+    /* Removed .dropdown:hover .dropdown-content */
 </style>
+<script>
+    const translations = {
+        id: {
+            "nav.collections": "Koleksi",
+            "nav.pricing": "Harga",
+            "nav.contact": "Kontak",
+            "nav.signin": "Masuk",
+            "nav.logout": "Keluar",
+            "hero.subtitle": "Era Baru Kehadiran",
+            "hero.title": "Seni <em>undangan yang sempurna</em>",
+            "hero.desc": "Tingkatkan acara Anda dengan stasioner digital yang canggih. Dibuat mulus untuk pernikahan, gala, dan momen paling berharga.",
+            "hero.create": "Buat Sekarang",
+            "hero.explore": "Jelajahi Galeri",
+            "collections.title": "Koleksi Pilihan",
+            "collections.desc": "Temukan gaya yang menjembatani kesenjangan antara seni klasik dan kenyamanan digital modern.",
+            "pricing.title": "Harga Transparan",
+            "pricing.subtitle": "Investasi",
+            "pricing.desc": "Pilih tingkat kemewahan yang sesuai dengan perayaan Anda.",
+            "contact.title": "Mari buat sesuatu yang <em>abadi</em>",
+            "contact.subtitle": "Hubungi Kami",
+            "contact.desc": "Punya pertanyaan tentang koleksi kami atau butuh undangan khusus? Tim concierge kami siap membantu Anda.",
+            "footer.tagline": "Registri Elegan Digital",
+            "footer.copy": "© 2024 Castellant Invitations. Dibuat untuk keabadian.",
+            "footer.guild": "Anggota dari Fine Digital Stationery Guild"
+        },
+        en: {
+            "nav.collections": "Collections",
+            "nav.pricing": "Pricing",
+            "nav.contact": "Contact",
+            "nav.signin": "Sign In",
+            "nav.logout": "Logout",
+            "hero.subtitle": "A New Era of Presence",
+            "hero.title": "The art of the <em>perfect invitation</em>",
+            "hero.desc": "Elevate your events with sophisticated digital stationery. Seamlessly crafted for weddings, galas, and the moments that matter most.",
+            "hero.create": "Create Now",
+            "hero.explore": "Explore Gallery",
+            "collections.title": "Curated Collections",
+            "collections.desc": "Discover styles that bridge the gap between classical artistry and modern digital convenience.",
+            "pricing.title": "Transparent Pricing",
+            "pricing.subtitle": "Investment",
+            "pricing.desc": "Choose the level of elegance that suits your celebration.",
+            "contact.title": "Let's create something <em>eternal</em>",
+            "contact.subtitle": "Get in Touch",
+            "contact.desc": "Have questions about our collections or need a bespoke invitation? Our concierge team is here to assist you.",
+            "footer.tagline": "The Registry of Digital Elegance",
+            "footer.copy": "© 2024 Castellant Invitations. Crafted for eternity.",
+            "footer.guild": "Member of the Fine Digital Stationery Guild"
+        },
+        ja: {
+            "nav.collections": "コレクション",
+            "nav.pricing": "料金",
+            "nav.contact": "お問い合わせ",
+            "nav.signin": "ログイン",
+            "nav.logout": "ログアウト",
+            "hero.subtitle": "存在の新時代",
+            "hero.title": "究極の<em>招待状の芸術</em>",
+            "hero.desc": "洗練されたデジタルステーショナリーでイベントを格上げ。大切な瞬間のために完璧にデザインされています。",
+            "hero.create": "今すぐ作成",
+            "hero.explore": "ギャラリーを見る",
+            "collections.title": "厳選されたコレクション",
+            "collections.desc": "古典的な芸術性と現代のデジタルの利便性を融合させたスタイルをご覧ください。",
+            "pricing.title": "透明性のある価格",
+            "pricing.subtitle": "投資",
+            "pricing.desc": "お祝いにふさわしいエレガンスのレベルをお選びください。",
+            "contact.title": "<em>永遠</em>のものを作りましょう",
+            "contact.subtitle": "お問い合わせ",
+            "contact.desc": "コレクションについてのご質問や特注のご依頼は、当社のコンシェルジュチームまでお気軽にお問い合わせください。",
+            "footer.tagline": "デジタル・エレガンスの登録",
+            "footer.copy": "© 2024 Castellant Invitations. 永遠に捧げる。",
+            "footer.guild": "Fine Digital Stationery Guild 会員"
+        },
+        my: {
+            "nav.collections": "Koleksi", "nav.pricing": "Harga", "nav.contact": "Hubungi", "nav.signin": "Log Masuk", "nav.logout": "Log Keluar",
+            "hero.subtitle": "Era Baharu Kehadiran", "hero.title": "Seni <em>kad jemputan sempurna</em>", "hero.desc": "Tingkatkan acara anda dengan alat tulis digital yang canggih.",
+            "hero.create": "Cipta Sekarang", "hero.explore": "Terokai Galeri", "collections.title": "Koleksi Pilihan", "collections.desc": "Temui gaya yang merapatkan jurang antara kesenian klasik dan keselesaan digital moden.",
+            "pricing.title": "Harga Telus", "pricing.subtitle": "Pelaburan", "pricing.desc": "Pilih tahap keanggunan yang sesuai dengan perayaan anda.",
+            "contact.title": "Mari ciptakan sesuatu yang <em>abadi</em>", "contact.subtitle": "Hubungi Kami", "contact.desc": "Ada soalan? Pasukan concierge kami sedia membantu anda.",
+            "footer.tagline": "Pendaftaran Keanggunan Digital", "footer.copy": "© 2024 Castellant. Kraftangan untuk keabadian.", "footer.guild": "Ahli Persatuan Fine Digital Stationery Guild"
+        },
+        vi: {
+            "nav.collections": "Bộ Sưu Tập", "nav.pricing": "Bảng Giá", "nav.contact": "Liên Hệ", "nav.signin": "Đăng Nhập", "nav.logout": "Đăng Xuất",
+            "hero.subtitle": "Kỷ Nguyên Mới", "hero.title": "Nghệ thuật của <em>lời mời hoàn hảo</em>", "hero.desc": "Nâng tầm sự kiện của bạn với văn phòng phẩm kỹ thuật số tinh tế.",
+            "hero.create": "Tạo Ngay", "hero.explore": "Khám Phá", "collections.title": "Bộ Sưu Tập Tuyển Chọn", "collections.desc": "Khám phá phong cách kết hợp giữa nghệ thuật cổ điển và hiện đại.",
+            "pricing.title": "Giá Cả Minh Bạch", "pricing.subtitle": "Đầu Tư", "pricing.desc": "Chọn mức độ sang trọng phù hợp với lễ kỷ niệm của bạn.",
+            "contact.title": "Hãy tạo ra điều gì đó <em>vĩnh cửu</em>", "contact.subtitle": "Liên Hệ", "contact.desc": "Bạn có thắc mắc? Đội ngũ của chúng tôi luôn sẵn sàng.",
+            "footer.tagline": "Sổ Đăng Ký Sang Trọng Kỹ Thuật Số", "footer.copy": "© 2024 Castellant. Được chế tác cho sự vĩnh cửu.", "footer.guild": "Thành viên của Fine Digital Stationery Guild"
+        },
+        th: {
+            "nav.collections": "คอลเลกชัน", "nav.pricing": "ราคา", "nav.contact": "ติดต่อ", "nav.signin": "เข้าสู่ระบบ", "nav.logout": "ออกจากระบบ",
+            "hero.subtitle": "ยุคใหม่ของการปรากฏตัว", "hero.title": "ศิลปะแห่ง<em>คำเชิญที่สมบูรณ์แบบ</em>", "hero.desc": "ยกระดับงานของคุณด้วยเครื่องเขียนดิจิทัลที่ซับซ้อน",
+            "hero.create": "สร้างตอนนี้", "hero.explore": "สำรวจแกลเลอรี", "collections.title": "คอลเลกชันที่คัดสรร", "collections.desc": "ค้นพบสไตล์ที่เชื่อมโยงระหว่างศิลปะคลาสสิกและดิจิทัล",
+            "pricing.title": "ราคาที่โปร่งใส", "pricing.subtitle": "การลงทุน", "pricing.desc": "เลือกระดับความสง่างามที่เหมาะสมกับการเฉลิมฉลองของคุณ",
+            "contact.title": "มาสร้างสิ่งที่<em>เป็นนิรันดร์</em>กันเถอะ", "contact.subtitle": "ติดต่อเรา", "contact.desc": "มีคำถาม? ทีมดูแลลูกค้าของเราพร้อมช่วยเหลือคุณ",
+            "footer.tagline": "ทะเบียนแห่งความสง่างามดิจิทัล", "footer.copy": "© 2024 Castellant. สร้างสรรค์เพื่อนิรันดร์", "footer.guild": "สมาชิกของ Fine Digital Stationery Guild"
+        },
+        zh: {
+            "nav.collections": "精选系列", "nav.pricing": "价格", "nav.contact": "联系我们", "nav.signin": "登录", "nav.logout": "登出",
+            "hero.subtitle": "新时代的呈现", "hero.title": "<em>完美邀请函</em>的艺术", "hero.desc": "用精致的数字文具提升您的活动品质。",
+            "hero.create": "立即创建", "hero.explore": "探索画廊", "collections.title": "精选系列", "collections.desc": "发现融合古典艺术与现代数字便利的风格。",
+            "pricing.title": "透明价格", "pricing.subtitle": "投资", "pricing.desc": "选择适合您庆典的典雅程度。",
+            "contact.title": "让我们创造<em>永恒</em>", "contact.subtitle": "保持联系", "contact.desc": "有问题吗？我们的礼宾团队随时为您提供帮助。",
+            "footer.tagline": "数字优雅登记处", "footer.copy": "© 2024 Castellant. 为永恒而作。", "footer.guild": "精细数字文具协会成员"
+        },
+        ko: {
+            "nav.collections": "컬렉션", "nav.pricing": "가격", "nav.contact": "문의", "nav.signin": "로그인", "nav.logout": "로그아웃",
+            "hero.subtitle": "새로운 시대", "hero.title": "<em>완벽한 초대</em>의 예술", "hero.desc": "세련된 디지털 문구로 이벤트의 품격을 높이세요.",
+            "hero.create": "지금 만들기", "hero.explore": "갤러리 탐색", "collections.title": "엄선된 컬렉션", "collections.desc": "고전적 예술성과 현대적 디지털 편의성을 잇는 스타일.",
+            "pricing.title": "투명한 가격", "pricing.subtitle": "투자", "pricing.desc": "당신의 축제에 어울리는 우아함의 단계를 선택하세요.",
+            "contact.title": "<em>영원한</em> 것을 만들어보세요", "contact.subtitle": "문의하기", "contact.desc": "궁금한 점이 있으신가요? 컨시어지 팀이 도와드리겠습니다.",
+            "footer.tagline": "디지털 엘레강스 레지스트리", "footer.copy": "© 2024 Castellant. 영원을 위해 제작되었습니다.", "footer.guild": "Fine Digital Stationery Guild 회원"
+        },
+        nl: {
+            "nav.collections": "Collecties", "nav.pricing": "Prijzen", "nav.contact": "Contact", "nav.signin": "Inloggen", "nav.logout": "Uitloggen",
+            "hero.subtitle": "Een Nieuwe Era", "hero.title": "De kunst van de <em>perfecte uitnodiging</em>", "hero.desc": "Verhoog uw evenementen met geavanceerd digitaal briefpapier.",
+            "hero.create": "Nu Creëren", "hero.explore": "Verkennen", "collections.title": "Geselecteerde Collecties", "collections.desc": "Ontdek stijlen die de brug slaan tussen klassieke kunst en modern digitaal gemak.",
+            "pricing.title": "Transparante Prijzen", "pricing.subtitle": "Investering", "pricing.desc": "Kies het niveau van elegantie dat bij uw viering past.",
+            "contact.title": "Laten we iets <em>eeuwigs</em> creëren", "contact.subtitle": "Neem Contact Op", "contact.desc": "Vragen? Ons concierge-team staat voor u klaar.",
+            "footer.tagline": "Het Register van Digitale Elegantie", "footer.copy": "© 2024 Castellant. Gemaakt voor de eeuwigheid.", "footer.guild": "Lid van de Fine Digital Stationery Guild"
+        },
+        de: {
+            "nav.collections": "Kollektionen", "nav.pricing": "Preise", "nav.contact": "Kontakt", "nav.signin": "Anmelden", "nav.logout": "Abmelden",
+            "hero.subtitle": "Eine neue Ära", "hero.title": "Die Kunst der <em>perfekten Einladung</em>", "hero.desc": "Veredeln Sie Ihre Veranstaltungen mit anspruchsvoller digitaler Papeterie.",
+            "hero.create": "Jetzt Erstellen", "hero.explore": "Galerie", "collections.title": "Kuratierte Kollektionen", "collections.desc": "Entdecken Sie Stile, die klassische Kunstfertigkeit mit modernem digitalem Komfort verbinden.",
+            "pricing.title": "Transparente Preise", "pricing.subtitle": "Investition", "pricing.desc": "Wählen Sie das Niveau an Eleganz, das zu Ihrer Feier passt.",
+            "contact.title": "Lassen Sie uns etwas <em>Ewiges</em> erschaffen", "contact.subtitle": "Kontakt", "contact.desc": "Haben Sie Fragen? Unser Concierge-Team ist für Sie da.",
+            "footer.tagline": "Das Register für digitale Eleganz", "footer.copy": "© 2024 Castellant. Für die Ewigkeit geschaffen.", "footer.guild": "Mitglied der Fine Digital Stationery Guild"
+        },
+        fr: {
+            "nav.collections": "Collections", "nav.pricing": "Tarifs", "nav.contact": "Contact", "nav.signin": "Connexion", "nav.logout": "Déconnexion",
+            "hero.subtitle": "Une Nouvelle Ère", "hero.title": "L'art de l'<em>invitation parfaite</em>", "hero.desc": "Sublimez vos événements avec une papeterie numérique sophistiquée.",
+            "hero.create": "Créer", "hero.explore": "Explorer", "collections.title": "Collections Commissariées", "collections.desc": "Découvrez des styles qui allient l'art classique au confort numérique moderne.",
+            "pricing.title": "Tarifs Transparents", "pricing.subtitle": "Investissement", "pricing.desc": "Choisissez le niveau d'élégance qui convient à votre célébration.",
+            "contact.title": "Créons quelque chose d'<em>éternel</em>", "contact.subtitle": "Contact", "contact.desc": "Des questions ? Notre équipe de conciergerie est à votre disposition.",
+            "footer.tagline": "Le Registre de l'Élégance Numérique", "footer.copy": "© 2024 Castellant. Conçu pour l'éternité.", "footer.guild": "Membre de la Fine Digital Stationery Guild"
+        },
+        es: {
+            "nav.collections": "Colecciones", "nav.pricing": "Precios", "nav.contact": "Contacto", "nav.signin": "Acceder", "nav.logout": "Salir",
+            "hero.subtitle": "Una Nueva Era", "hero.title": "El arte de la <em>invitación perfecta</em>", "hero.desc": "Eleve sus eventos con papelería digital sofisticada.",
+            "hero.create": "Crear Ahora", "hero.explore": "Galería", "collections.title": "Colecciones Curadas", "collections.desc": "Descubra estilos que unen la sofisticación clásica con la comodidad digital moderna.",
+            "pricing.title": "Precios Transparentes", "pricing.subtitle": "Inversión", "pricing.desc": "Elija el nivel de elegancia que se adapte a su celebración.",
+            "contact.title": "Creemos algo <em>eterno</em>", "contact.subtitle": "Contacto", "contact.desc": "¿Preguntas? Nuestro equipo de conserjería está para ayudarle.",
+            "footer.tagline": "El Registro de la Elegancia Digital", "footer.copy": "© 2024 Castellant. Creado para la eternidad.", "footer.guild": "Miembro de la Fine Digital Stationery Guild"
+        },
+        ar: {
+            "nav.collections": "المجموعات", "nav.pricing": "الأسعار", "nav.contact": "اتصل بنا", "nav.signin": "تسجيل الدخول", "nav.logout": "تسجيل الخروج",
+            "hero.subtitle": "حقبة جديدة", "hero.title": "فن <em>الدعوة المثالية</em>", "hero.desc": "ارتقِ بفعالياتك مع القرطاسية الرقمية المتطورة.",
+            "hero.create": "أنشئ الآن", "hero.explore": "المعرض", "collections.title": "مجموعات مختارة", "collections.desc": "اكتشف الأنماط التي تجمع بين الفن الكลาสيكي والراحة الرقمية الحديثة.",
+            "pricing.title": "أسعار شفافة", "pricing.subtitle": "الاستثمار", "pricing.desc": "اختر مستوى الأناقة الذي يناسب احتفالك.",
+            "contact.title": "لنخلق شيئًا <em>خالدًا</em>", "contact.subtitle": "تواصل معنا", "contact.desc": "لديك أسئلة؟ فريقنا هنا لمساعدتك.",
+            "footer.tagline": "سجل الأناقة الرقمية", "footer.copy": "© 2024 كاستيلانت. صُنع للأبد.", "footer.guild": "عضو في جمعية القرطاسية الرقمية الفาخرة"
+        },
+        "hi": {
+            "nav.collections": "संग्रह",
+            "nav.pricing": "मूल्य निर्धारण",
+            "nav.contact": "संपर्क",
+            "nav.signin": "साइन इन करें",
+            "nav.logout": "लॉग आउट",
+            "hero.subtitle": "उपस्थिति का एक नया युग",
+            "hero.title": "<em>एकदम सही निमंत्रण</em> की कला",
+            "hero.desc": "परिष्कृत डिजिटल स्टेशनरी के साथ अपने कार्यक्रमों की शोभा बढ़ाएं। शादियों, गाला और सबसे महत्वपूर्ण क्षणों के लिए सहजता से तैयार किया गया।",
+            "hero.create": "अभी बनाएं",
+            "hero.explore": "गैलरी देखें",
+            "collections.title": "क्यूरेटेड संग्रह",
+            "collections.desc": "शास्त्रीय कलात्मकता और आधुनिक डिजिटल सुविधा के बीच की खाई को पाटने वाली शैलियों की खोज करें।",
+            "pricing.title": "पारदर्शी मूल्य निर्धारण",
+            "pricing.subtitle": "निवेश",
+            "pricing.desc": "आपके उत्सव के लिए उपयुक्त लालित्य का स्तर चुनें।",
+            "contact.title": "आइए कुछ <em>शाश्वत</em> बनाएं",
+            "contact.subtitle": "संपर्क करें",
+            "contact.desc": "हमारे संग्रह के बारे में कोई प्रश्न हैं या बेस्पोक निमंत्रण की आवश्यकता है? हमारी दरबान टीम आपकी सहायता के लिए यहाँ है।",
+            "footer.tagline": "डिजिटल लालित्य की रजिस्ट्री",
+            "footer.copy": "© 2024 कैस्टेलेंट आमंत्रण। अनंत काल के लिए तैयार किया गया।",
+            "footer.guild": "फाइन डिजिटल स्टेशनरी गिल्ड के सदस्य"
+        },
+        "ru": {
+            "nav.collections": "Коллекции",
+            "nav.pricing": "Цены",
+            "nav.contact": "Контакт",
+            "nav.signin": "Войти",
+            "nav.logout": "Выйти",
+            "hero.subtitle": "Новая Эра Присутствия",
+            "hero.title": "Искусство <em>идеального приглашения</em>",
+            "hero.desc": "Украсьте свои мероприятия изысканной цифровой канцелярией. Идеально подходит для свадеб и торжественных мероприятий.",
+            "hero.create": "Создать Сейчас",
+            "hero.explore": "Просмотреть Галерею",
+            "collections.title": "Кураторские Коллекции",
+            "collections.desc": "Откройте для себя стили, сочетающие классическое искусство и современное цифровое удобство.",
+            "pricing.title": "Прозрачные Цены",
+            "pricing.subtitle": "Инвестиции",
+            "pricing.desc": "Выберите уровень элегантности, подходящий для вашего торжества.",
+            "contact.title": "Давайте создадим что-то <em>вечное</em>",
+            "contact.subtitle": "Связаться с Нами",
+            "contact.desc": "У вас есть вопросы о наших коллекциях? Наша консьерж-команда готова помочь вам.",
+            "footer.tagline": "Реестр Цифровой Элегантности",
+            "footer.copy": "© 2024 Castellant Invitations. Создано для вечности.",
+            "footer.guild": "Член Гильдии Изящной Цифровой Канцелярии"
+        }
+    };
+
+    function toggleDropdown(id) {
+        // Close all other dropdowns first
+        document.querySelectorAll('.dropdown-content').forEach(d => {
+            if (d.id !== id) d.classList.remove('show');
+        });
+        document.getElementById(id).classList.toggle('show');
+    }
+
+    function closeAllDropdowns() {
+        document.querySelectorAll('.dropdown-content').forEach(d => {
+            d.classList.remove('show');
+        });
+    }
+
+    // Close when clicking outside
+    window.onclick = function(event) {
+        if (!event.target.closest('.dropdown')) {
+            closeAllDropdowns();
+        }
+    }
+
+    function setLanguage(lang, flag) {
+        document.getElementById('current-lang-flag').innerText = flag;
+        document.getElementById('current-lang-code').innerText = lang.toUpperCase();
+        
+        // Update elements with data-i18n
+        const elements = document.querySelectorAll('[data-i18n]');
+        elements.forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[lang] && translations[lang][key]) {
+                el.innerHTML = translations[lang][key];
+            }
+        });
+        localStorage.setItem('preferred-lang', lang);
+        closeAllDropdowns();
+    }
+
+    function setCurrency(code, symbol, rate) {
+        document.getElementById('current-currency-symbol').innerText = symbol;
+        document.getElementById('current-currency-code').innerText = code;
+        
+        const elements = document.querySelectorAll('[data-base-price]');
+        elements.forEach(el => {
+            const basePrice = parseFloat(el.getAttribute('data-base-price'));
+            let converted = basePrice * rate;
+            
+            // Nice rounding for different currencies
+            if (code === 'IDR') converted = Math.round(converted / 1000) + 'k';
+            else if (code === 'JPY' || code === 'KRW' || code === 'VND') converted = Math.round(converted).toLocaleString();
+            else converted = converted.toFixed(2);
+            
+            el.innerText = symbol + ' ' + converted;
+        });
+        localStorage.setItem('preferred-currency', code);
+        closeAllDropdowns();
+    }
+
+    // Initialize from localStorage
+    window.onload = function() {
+        const savedLang = localStorage.getItem('preferred-lang') || 'id';
+        const flags = {id:'🇮🇩', en:'🇺🇸', my:'🇲🇾', vi:'🇻🇳', th:'🇹🇭', ja:'🇯🇵', zh:'🇨🇳', ko:'🇰🇷', nl:'🇳🇱', de:'🇩🇪', hi:'🇮🇳', ru:'🇷🇺', fr:'🇫🇷', es:'🇪🇸', ar:'🇸🇦'};
+        if (savedLang !== 'id') setLanguage(savedLang, flags[savedLang] || '🇮🇩');
+        
+        const savedCurrency = localStorage.getItem('preferred-currency') || 'IDR';
+        if (savedCurrency !== 'IDR') {
+            const currencyLink = Array.from(document.querySelectorAll('#currency-dropdown a'))
+                .find(a => a.textContent.includes(savedCurrency));
+            if (currencyLink) currencyLink.click();
+        }
+    }
+</script>
 {% endblock %}
 
 {% block content %}
@@ -14,23 +348,69 @@
         </div>
     </div>
     <div class="nav-links">
-        <a href="/#collections">Collections</a>
-        <a href="#">Pricing</a>
-        <a href="#">Journal</a>
-        <a href="#">Contact</a>
+        <a href="/#collections" data-i18n="nav.collections">Collections</a>
+        <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
+        <a href="/#contact" data-i18n="nav.contact">Contact</a>
+    </div>
+
+    <div class="global-controls">
+        <div class="dropdown">
+            <button class="btn-global" id="lang-selector-btn" onclick="toggleDropdown('lang-dropdown')">
+                <span id="current-lang-flag">🇮🇩</span>
+                <span id="current-lang-code">ID</span>
+            </button>
+            <div class="dropdown-content" id="lang-dropdown">
+                <a href="#" onclick="setLanguage('id', '🇮🇩')">🇮🇩 Bahasa Indonesia</a>
+                <a href="#" onclick="setLanguage('en', '🇺🇸')">🇺🇸 English</a>
+                <a href="#" onclick="setLanguage('my', '🇲🇾')">🇲🇾 Bahasa Melayu</a>
+                <a href="#" onclick="setLanguage('vi', '🇻🇳')">🇻🇳 Tiếng Việt</a>
+                <a href="#" onclick="setLanguage('th', '🇹🇭')">🇹🇭 ไทย</a>
+                <a href="#" onclick="setLanguage('ja', '🇯🇵')">🇯🇵 日本語</a>
+                <a href="#" onclick="setLanguage('zh', '🇨🇳')">🇨🇳 简体中文</a>
+                <a href="#" onclick="setLanguage('ko', '🇰🇷')">🇰🇷 한국어</a>
+                <a href="#" onclick="setLanguage('nl', '🇳🇱')">🇳🇱 Nederlands</a>
+                <a href="#" onclick="setLanguage('de', '🇩🇪')">🇩🇪 Deutsch</a>
+                <a href="#" onclick="setLanguage('hi', '🇮🇳')">🇮🇳 हिन्दी</a>
+                <a href="#" onclick="setLanguage('ru', '🇷🇺')">🇷🇺 Русский</a>
+                <a href="#" onclick="setLanguage('es', '🇪🇸')">🇪🇸 Español</a>
+                <a href="#" onclick="setLanguage('ar', '🇸🇦')">🇸🇦 العربية</a>
+            </div>
+        </div>
+        <div class="dropdown">
+            <button class="btn-global" id="currency-selector-btn" onclick="toggleDropdown('currency-dropdown')">
+                <span id="current-currency-symbol">Rp</span>
+                <span id="current-currency-code">IDR</span>
+            </button>
+            <div class="dropdown-content" id="currency-dropdown">
+                <a href="#" onclick="setCurrency('IDR', 'Rp', 1)">IDR - Rp</a>
+                <a href="#" onclick="setCurrency('INR', '₹', 0.0053)">INR - ₹</a>
+                <a href="#" onclick="setCurrency('RUB', '₽', 0.0058)">RUB - ₽</a>
+                <a href="#" onclick="setCurrency('MYR', 'RM', 0.00028)">MYR - RM</a>
+                <a href="#" onclick="setCurrency('VND', '₫', 1.57)">VND - ₫</a>
+                <a href="#" onclick="setCurrency('THB', '฿', 0.0023)">THB - ฿</a>
+                <a href="#" onclick="setCurrency('USD', '$', 0.000062)">USD - $</a>
+                <a href="#" onclick="setCurrency('EUR', '€', 0.000058)">EUR - €</a>
+                <a href="#" onclick="setCurrency('GBP', '£', 0.000050)">GBP - £</a>
+                <a href="#" onclick="setCurrency('JPY', '¥', 0.0095)">JPY - ¥</a>
+                <a href="#" onclick="setCurrency('SGD', 'S$', 0.000084)">SGD - S$</a>
+                <a href="#" onclick="setCurrency('AUD', 'A$', 0.000096)">AUD - A$</a>
+                <a href="#" onclick="setCurrency('CNY', '¥', 0.00045)">CNY - ¥</a>
+                <a href="#" onclick="setCurrency('KRW', '₩', 0.086)">KRW - ₩</a>
+            </div>
+        </div>
     </div>
     {% if let Some(u) = user %}
     <div class="user-profile">
         <div class="user-info">
             <span class="user-name">{{ u.name.as_deref().unwrap_or("User") }}</span>
-            <a href="/auth/logout" class="user-logout">Logout</a>
+            <a href="/auth/logout" class="user-logout" data-i18n="nav.logout">Logout</a>
         </div>
         <img src="{{ u.avatar_url.as_deref().unwrap_or("") }}" alt="Avatar" class="user-avatar">
     </div>
     {% else %}
     <a href="/auth/google" class="btn-google-simple">
         <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" width="14" alt="G">
-        Sign In
+        <span data-i18n="nav.signin">Sign In</span>
     </a>
     {% endif %}
 </nav>
@@ -43,16 +423,14 @@
             <div class="footer-logo" style="display: flex; align-items: center; gap: 15px;">
                 <div style="text-align: left;">
                     <h2 class="nav-logo" style="color: var(--color-text-primary); margin-bottom: 0;">Castellant</h2>
-                    <p
-                        style="font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: var(--color-accent-rose); margin-top: 0;">
+                    <p style="font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; color: var(--color-accent-rose); margin-top: 0;" data-i18n="footer.tagline">
                         The Registry of Digital Elegance</p>
                 </div>
             </div>
             <div class="footer-links">
-                <a href="/#collections">Collections</a>
-                <a href="#">Pricing</a>
-                <a href="#">Journal</a>
-                <a href="#">Contact</a>
+                <a href="/#collections" data-i18n="nav.collections">Collections</a>
+                <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
+                <a href="/#contact" data-i18n="nav.contact">Contact</a>
                 <a href="#">Privacy</a>
             </div>
             <div class="footer-social">
@@ -63,8 +441,8 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <span>© 2024 Castellant Invitations. Crafted for eternity.</span>
-            <span>Member of the Fine Digital Stationery Guild</span>
+            <span data-i18n="footer.copy">© 2024 Castellant Invitations. Crafted for eternity.</span>
+            <span data-i18n="footer.guild">Member of the Fine Digital Stationery Guild</span>
         </div>
     </div>
 </footer>

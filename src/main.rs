@@ -102,6 +102,7 @@ async fn main() {
         .expect("PORT must be a number");
     
     let addr = SocketAddr::from(([0, 0, 0, 0], port));
+    println!("\n🚀 Server is running on http://localhost:{}", port);
     tracing::info!("listening on {}", addr);
     
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
