@@ -72,6 +72,24 @@
         padding-left: 18px;
     }
     /* Removed .dropdown:hover .dropdown-content */
+    /* Price Badges */
+    .price-badge-lg {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        color: white;
+        padding: 0.6rem 1.4rem;
+        border-radius: 50px;
+        font-size: 1rem;
+        font-weight: 800;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        letter-spacing: 0.5px;
+        z-index: 5;
+        border: 1px solid rgba(255,255,255,0.2);
+    }
+    .badge-essential { background: linear-gradient(135deg, #8E6E53, #4A3728); }
+    .badge-signature { background: linear-gradient(135deg, #D4A373, #A68A64); }
+    .badge-archival { background: #1D3557; }
 </style>
 <script>
     const translations = {
@@ -96,7 +114,13 @@
             "contact.desc": "Punya pertanyaan tentang koleksi kami atau butuh undangan khusus? Tim concierge kami siap membantu Anda.",
             "footer.tagline": "Registri Elegan Digital",
             "footer.copy": "© 2024 Castellant Invitations. Dibuat untuk keabadian.",
-            "footer.guild": "Anggota dari Fine Digital Stationery Guild"
+            "footer.guild": "Anggota dari Fine Digital Stationery Guild",
+            "create.title": "Ciptakan Warisan Digital Anda",
+            "create.basic": "Info Dasar",
+            "create.couple": "Mempelai",
+            "create.details": "Detail Acara",
+            "create.preview": "Pratinjau Draft",
+            "create.payment": "Investasi"
         },
         en: {
             "nav.collections": "Collections",
@@ -119,7 +143,13 @@
             "contact.desc": "Have questions about our collections or need a bespoke invitation? Our concierge team is here to assist you.",
             "footer.tagline": "The Registry of Digital Elegance",
             "footer.copy": "© 2024 Castellant Invitations. Crafted for eternity.",
-            "footer.guild": "Member of the Fine Digital Stationery Guild"
+            "footer.guild": "Member of the Fine Digital Stationery Guild",
+            "create.title": "Create Your Digital Legacy",
+            "create.basic": "Basic Info",
+            "create.couple": "The Couple",
+            "create.details": "Event Details",
+            "create.preview": "Summary Preview",
+            "create.payment": "Investment"
         },
         ja: {
             "nav.collections": "コレクション",
@@ -245,7 +275,13 @@
             "contact.desc": "हमारे संग्रह के बारे में कोई प्रश्न हैं या बेस्पोक निमंत्रण की आवश्यकता है? हमारी दरबान टीम आपकी सहायता के लिए यहाँ है।",
             "footer.tagline": "डिजिटल लालित्य की रजिस्ट्री",
             "footer.copy": "© 2024 कैस्टेलेंट आमंत्रण। अनंत काल के लिए तैयार किया गया।",
-            "footer.guild": "फाइन डिजिटल स्टेशनरी गिल्ड के सदस्य"
+            "footer.guild": "फाइन डिजिटल स्टेशनरी गिल्ड के सदस्य",
+            "create.title": "अपना डिजिटल विरासत बनाएं",
+            "create.basic": "मूल जानकारी",
+            "create.couple": "जोड़ा",
+            "create.details": "घटना",
+            "create.preview": "पूर्वावलोकन",
+            "create.payment": "भुगतान"
         },
         "ru": {
             "nav.collections": "Коллекции",
@@ -268,7 +304,13 @@
             "contact.desc": "У вас есть вопросы о наших коллекциях? Наша консьерж-команда готова помочь вам.",
             "footer.tagline": "Реестр Цифровой Элегантности",
             "footer.copy": "© 2024 Castellant Invitations. Создано для вечности.",
-            "footer.guild": "Член Гильдии Изящной Цифровой Канцелярии"
+            "footer.guild": "Член Гильдии Изящной Цифровой Канцелярии",
+            "create.title": "Создайте свое цифровое наследие",
+            "create.basic": "Базовая инфо",
+            "create.couple": "Пара",
+            "create.details": "Событие",
+            "create.preview": "Предпросмотр",
+            "create.payment": "Оплата"
         }
     };
 
@@ -424,10 +466,17 @@
                 <img src="{{ u.avatar_url.as_deref().unwrap_or("") }}" alt="Avatar" class="user-avatar">
             </div>
             {% else %}
-            <a href="/auth/google" class="btn-google-simple">
-                <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" width="14" alt="G">
-                <span data-i18n="nav.signin" class="desktop-only">Sign In</span>
-            </a>
+            {% if is_dev %}
+                <a href="/auth/mock" class="btn-google-simple" title="Developer Login">
+                    <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" width="14" alt="G">
+                    <span data-i18n="nav.signin" class="desktop-only" style="margin-left: 8px;">Dev Sign In</span>
+                </a>
+            {% else %}
+                <a href="/auth/google" class="btn-google-simple">
+                    <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" width="14" alt="G">
+                    <span data-i18n="nav.signin" class="desktop-only">Sign In</span>
+                </a>
+            {% endif %}
             {% endif %}
         </div>
 

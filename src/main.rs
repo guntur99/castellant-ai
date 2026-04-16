@@ -21,6 +21,9 @@ pub struct AppState {
     pub oauth: BasicClient<EndpointSet, EndpointNotSet, EndpointNotSet, EndpointNotSet, EndpointSet>,
     pub cookie_key: Key,
     pub http_client: reqwest::Client,
+    pub is_dev: bool,
+    pub mayar_api_key: String,
+    pub mayar_base_url: String,
 }
 
 impl FromRef<AppState> for Key {
@@ -69,12 +72,20 @@ async fn main() {
         .set_token_uri(oauth2::TokenUrl::new(token_url).unwrap())
         .set_redirect_uri(oauth2::RedirectUrl::new(redirect_url).unwrap());
 
+    let mode = env::var("MODE").unwrap_or_else(|_| "PROD".to_string());
+    let is_dev = mode == "DEV";
+    let mayar_api_key = env::var("MAYAR_API_KEY").unwrap_or_default();
+    let mayar_base_url = env::var("MAYAR_BASE_URL").unwrap_or_else(|_| "https://api.mayar.club/hl/v1/invoice/create".to_string());
+
     let state = AppState {
         db: db_pool,
         redis: redis_pool,
         oauth: oauth_client,
         cookie_key: Key::generate(),
         http_client: reqwest::Client::new(),
+        is_dev,
+        mayar_api_key,
+        mayar_base_url,
     };
 
     // build our application with a route
@@ -84,6 +95,7 @@ async fn main() {
         .route("/api/rsvp", post(handlers::rsvp))
         .route("/auth/google", get(handlers::google_login))
         .route("/auth/google/callback", get(handlers::google_callback))
+        .route("/auth/mock", get(handlers::mock_login))
         .route("/auth/logout", get(handlers::logout))
         .route("/create", get(handlers::create_invitation_page))
         .route("/api/invitation", post(handlers::create_invitation))

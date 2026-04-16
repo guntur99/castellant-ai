@@ -11,14 +11,39 @@ use serde_json::{from_value, json};
 use sqlx::Row;
 use oauth2::{AuthorizationCode, TokenResponse, CsrfToken, Scope};
 use axum_extra::extract::cookie::{Cookie, PrivateCookieJar};
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 use std::collections::HashMap;
+
+#[derive(Serialize)]
+struct MayarInvoiceRequest {
+    name: String,
+    email: String,
+    amount: i32,
+    description: String,
+    mobile: String,
+    redirect_url: String,
+}
+
+#[derive(Deserialize)]
+struct MayarInvoiceResponse {
+    #[allow(dead_code)]
+    status: bool,
+    data: Option<MayarData>,
+}
+
+#[derive(Deserialize)]
+struct MayarData {
+    link: String,
+    id: String,
+}
 
 #[derive(Template)]
 #[template(path = "invitation/create.html")]
 pub struct CreateInvitationTemplate {
     pub user: Option<User>,
+    #[allow(dead_code)]
+    pub is_dev: bool,
 }
 
 pub async fn create_invitation_page(
@@ -39,14 +64,24 @@ pub async fn create_invitation_page(
                 None
             }
         }
-        None => return Redirect::to("/auth/google").into_response(),
+        None => {
+            if state.is_dev {
+                return Redirect::to("/auth/mock").into_response();
+            } else {
+                return Redirect::to("/auth/google").into_response();
+            }
+        }
     };
 
     if user.is_none() {
-        return Redirect::to("/auth/google").into_response();
+        if state.is_dev {
+            return Redirect::to("/auth/mock").into_response();
+        } else {
+            return Redirect::to("/auth/google").into_response();
+        }
     }
 
-    HtmlTemplate(CreateInvitationTemplate { user }).into_response()
+    HtmlTemplate(CreateInvitationTemplate { user, is_dev: state.is_dev }).into_response()
 }
 
 pub async fn create_invitation(
@@ -56,23 +91,49 @@ pub async fn create_invitation(
 ) -> impl IntoResponse {
     let user_id_str = match jar.get("user_id") {
         Some(c) => c.value().to_owned(),
-        None => return Redirect::to("/auth/google").into_response(),
+        None => {
+            if state.is_dev {
+                return Redirect::to("/auth/mock").into_response();
+            } else {
+                return Redirect::to("/auth/google").into_response();
+            }
+        }
     };
     let user_id = Uuid::parse_str(&user_id_str).unwrap();
 
     let mut fields = HashMap::new();
     let mut photo_paths = HashMap::new();
+    let mut gallery_paths = Vec::new();
 
     while let Some(field) = multipart.next_field().await.unwrap() {
         let name = field.name().unwrap().to_string();
         
-        if name.ends_with("_photo") {
+        if name == "gallery[]" || name == "gallery_photo" {
             let filename = Uuid::new_v4().to_string() + ".jpg";
             let path = format!("static/uploads/{}", filename);
             let data = field.bytes().await.unwrap();
             if !data.is_empty() {
+                std::fs::create_dir_all("static/uploads").unwrap();
+                std::fs::write(&path, data).unwrap();
+                gallery_paths.push(format!("/{}", path));
+            }
+        } else if name.ends_with("_photo") {
+            let filename = Uuid::new_v4().to_string() + ".jpg";
+            let path = format!("static/uploads/{}", filename);
+            let data = field.bytes().await.unwrap();
+            if !data.is_empty() {
+                std::fs::create_dir_all("static/uploads").unwrap();
                 std::fs::write(&path, data).unwrap();
                 photo_paths.insert(name, format!("/{}", path));
+            }
+        } else if name == "payment_proof" {
+            let filename = Uuid::new_v4().to_string() + "_payment.jpg";
+            let path = format!("static/uploads/{}", filename);
+            let data = field.bytes().await.unwrap();
+            if !data.is_empty() {
+                std::fs::create_dir_all("static/uploads").unwrap();
+                std::fs::write(&path, data).unwrap();
+                fields.insert("payment_proof".to_string(), format!("/{}", path));
             }
         } else {
             let value = field.text().await.unwrap();
@@ -82,6 +143,7 @@ pub async fn create_invitation(
 
     // Insert into DB
     let slug = fields.get("slug").unwrap().to_string();
+    
     let bride_data = json!(Person {
         name: fields.get("bride_name").cloned().unwrap_or_default(),
         full_name: fields.get("bride_full_name").cloned().unwrap_or_default(),
@@ -100,7 +162,7 @@ pub async fn create_invitation(
 
     let ceremony_data = json!(EventDetails {
         date: fields.get("event_date").cloned().unwrap_or_default(),
-        time: "09:00 - selesai".to_string(), // Simplified
+        time: "09:00 - selesai".to_string(),
         venue: fields.get("ceremony_venue").cloned().unwrap_or_default(),
         address: fields.get("ceremony_address").cloned().unwrap_or_default(),
         maps_url: "".to_string(),
@@ -115,15 +177,51 @@ pub async fn create_invitation(
     });
 
     let quote_data = json!({
-        "text": "Sesungguhnya dalam penciptaan langit dan bumi, dan silih bergantinya malam dan siang terdapat tanda-tanda bagi orang-orang yang berakal.",
-        "source": "Ali Imran: 190"
+        "text": fields.get("quote_text").cloned().unwrap_or_else(|| "Sesungguhnya dalam penciptaan langit dan bumi...".to_string()),
+        "source": fields.get("quote_source").cloned().unwrap_or_else(|| "Ali Imran: 190".to_string())
     });
+
+    let plan_name = "essential".to_string(); // Force essential for now
+    let amount = 50000;
+
+    let user_row = sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
+        .bind(user_id)
+        .fetch_one(&state.db)
+        .await
+        .unwrap();
+
+    // Call Mayar API
+    let mayar_req = MayarInvoiceRequest {
+        name: user_row.name.clone().unwrap_or_else(|| "Customer".to_string()),
+        email: user_row.email.clone(),
+        amount,
+        description: format!("Digital Invitation - {} Plan ({})", plan_name.to_uppercase(), fields.get("couple_name_short").unwrap()),
+        mobile: "08123456789".to_string(), // Fallback mobile
+        redirect_url: format!("{}/invitation/{}", std::env::var("APP_BASE_URL").unwrap_or_else(|_| "http://localhost:3000".to_string()), slug),
+    };
+
+    let mayar_res = state.http_client
+        .post(&state.mayar_base_url)
+        .header("Authorization", format!("Bearer {}", state.mayar_api_key))
+        .json(&mayar_req)
+        .send()
+        .await
+        .unwrap()
+        .json::<MayarInvoiceResponse>()
+        .await
+        .unwrap();
+
+    let (payment_link, invoice_id) = if let Some(data) = mayar_res.data {
+        (Some(data.link), Some(data.id))
+    } else {
+        (None, None)
+    };
 
     let template_name = fields.get("template_name").cloned().unwrap_or_else(|| "vintage".to_string());
 
-    sqlx::query(
-        "INSERT INTO invitations (user_id, slug, couple_name_short, event_date, template_name, bride_data, groom_data, ceremony_data, reception_data, quote_data) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)"
+    let invitation_id = sqlx::query_scalar::<_, Uuid>(
+        "INSERT INTO invitations (user_id, slug, couple_name_short, event_date, template_name, bride_data, groom_data, ceremony_data, reception_data, quote_data, plan_name, payment_link, payment_invoice_id) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id"
     )
     .bind(user_id)
     .bind(&slug)
@@ -135,11 +233,32 @@ pub async fn create_invitation(
     .bind(ceremony_data)
     .bind(reception_data)
     .bind(quote_data)
-    .execute(&state.db)
+    .bind(plan_name)
+    .bind(&payment_link)
+    .bind(invoice_id)
+    .fetch_one(&state.db)
     .await
     .unwrap();
 
-    Redirect::to(&format!("/invitation/{}", slug)).into_response()
+    // Insert Gallery Photos
+    for (i, path) in gallery_paths.into_iter().enumerate() {
+        sqlx::query(
+            "INSERT INTO invitation_photos (invitation_id, url, photo_type, \"order\") VALUES ($1, $2, $3, $4)"
+        )
+        .bind(invitation_id)
+        .bind(path)
+        .bind("gallery")
+        .bind(i as i32)
+        .execute(&state.db)
+        .await
+        .unwrap();
+    }
+
+    if let Some(link) = payment_link {
+        Redirect::to(&link).into_response()
+    } else {
+        Redirect::to(&format!("/invitation/{}", slug)).into_response()
+    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -218,6 +337,33 @@ pub async fn google_callback(
     (jar, Redirect::to("/")).into_response()
 }
 
+pub async fn mock_login(
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    // Create/Update a mock developer user
+    let user = sqlx::query_as::<_, User>(
+        "INSERT INTO users (google_id, email, name, avatar_url)
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (google_id) DO UPDATE SET name = $3, avatar_url = $4
+         RETURNING *"
+    )
+    .bind("mock_id_123")
+    .bind("dev@castellant.id")
+    .bind("Architect")
+    .bind("https://cdn-icons-png.flaticon.com/512/3135/3135715.png")
+    .fetch_one(&state.db)
+    .await
+    .unwrap();
+
+    let jar = jar.add(Cookie::build(("user_id", user.id.to_string()))
+        .path("/")
+        .http_only(true)
+        .permanent());
+
+    (jar, Redirect::to("/")).into_response()
+}
+
 pub async fn logout(jar: PrivateCookieJar) -> impl IntoResponse {
     let jar = jar.remove(Cookie::from("user_id"));
     (jar, Redirect::to("/")).into_response()
@@ -246,24 +392,32 @@ where
 pub struct HomeTemplate {
     pub user: Option<User>,
     pub invitations: Vec<InvitationRow>,
+    #[allow(dead_code)]
+    pub is_dev: bool,
 }
 
 #[derive(Template)]
 #[template(path = "invitation/vintage.html")]
 pub struct VintageTemplate {
     pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
 }
 
 #[derive(Template)]
 #[template(path = "invitation/minimalist.html")]
 pub struct MinimalistTemplate {
     pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
 }
 
 #[derive(Template)]
 #[template(path = "invitation/noir.html")]
 pub struct NoirTemplate {
     pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
 }
 
 pub async fn home(
@@ -293,7 +447,7 @@ pub async fn home(
         }
     }
 
-    HtmlTemplate(HomeTemplate { user, invitations }).into_response()
+    HtmlTemplate(HomeTemplate { user, invitations, is_dev: state.is_dev }).into_response()
 }
 
 pub async fn invitation_detail(
@@ -358,9 +512,9 @@ pub async fn invitation_detail(
             };
 
             match row.template_name.as_str() {
-                "minimalist" => HtmlTemplate(MinimalistTemplate { invitation }).into_response(),
-                "noir" => HtmlTemplate(NoirTemplate { invitation }).into_response(),
-                _ => HtmlTemplate(VintageTemplate { invitation }).into_response(),
+                "minimalist" => HtmlTemplate(MinimalistTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "noir" => HtmlTemplate(NoirTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                _ => HtmlTemplate(VintageTemplate { invitation, is_dev: state.is_dev }).into_response(),
             }
         },
         _ => {
@@ -424,9 +578,9 @@ pub async fn invitation_detail(
                 };
                 
                 match template_name {
-                    "minimalist" => HtmlTemplate(MinimalistTemplate { invitation }).into_response(),
-                    "noir" => HtmlTemplate(NoirTemplate { invitation }).into_response(),
-                    _ => HtmlTemplate(VintageTemplate { invitation }).into_response(),
+                    "minimalist" => HtmlTemplate(MinimalistTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "noir" => HtmlTemplate(NoirTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    _ => HtmlTemplate(VintageTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 }
             } else {
                 (StatusCode::NOT_FOUND, "Invitation not found").into_response()
