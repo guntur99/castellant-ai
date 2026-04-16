@@ -115,20 +115,20 @@
                         <div class="couple-grid">
                             <!-- Bride -->
                             <div>
-                                <h3 class="serif accent-title">Mempelai Wanita</h3>
+                                <h3 class="serif accent-title" data-i18n="create.field.bride">Mempelai Wanita</h3>
                                 <div class="input-group" style="margin-top: 1.5rem;">
-                                    <label>Nama Panggilan</label>
+                                    <label data-i18n="create.field.nickname">Nama Panggilan</label>
                                     <input type="text" name="bride_name" id="in-bride-name" placeholder="Julia" required>
                                 </div>
                                 <div class="input-group" style="margin-top: 1rem;">
-                                    <label>Nama Lengkap</label>
+                                    <label data-i18n="create.field.fullname">Nama Lengkap</label>
                                     <input type="text" name="bride_full_name" placeholder="Juliet Capulet" required>
                                 </div>
                                 <div class="input-group" style="margin-top: 1rem;">
-                                    <label>Foto Profile</label>
+                                    <label data-i18n="create.field.photo">Foto Profile</label>
                                     <div class="upload-zone">
                                         <i class="upload-icon">📸</i>
-                                        <span class="upload-text">Klik atau seret foto mempelai wanita di sini</span>
+                                        <span class="upload-text" data-i18n="create.field.upload_text">Klik atau seret foto di sini</span>
                                         <span class="file-name-display"></span>
                                         <input type="file" name="bride_photo" accept="image/*" onchange="handleFileSelect(this)">
                                     </div>
@@ -137,13 +137,13 @@
 
                             <!-- Groom -->
                             <div>
-                                <h3 class="serif accent-title">Mempelai Pria</h3>
+                                <h3 class="serif accent-title" data-i18n="create.field.groom">Mempelai Pria</h3>
                                 <div class="input-group" style="margin-top: 1.5rem;">
-                                    <label>Nama Panggilan</label>
+                                    <label data-i18n="create.field.nickname">Nama Panggilan</label>
                                     <input type="text" name="groom_name" id="in-groom-name" placeholder="Romeo" required>
                                 </div>
                                 <div class="input-group" style="margin-top: 1rem;">
-                                    <label>Nama Lengkap</label>
+                                    <label data-i18n="create.field.fullname">Nama Lengkap</label>
                                     <input type="text" name="groom_full_name" placeholder="Romeo Montague" required>
                                 </div>
                                 <div class="input-group" style="margin-top: 1rem;">
@@ -671,10 +671,22 @@
         }
     }
 
-    // Initialize state
-    window.addEventListener('DOMContentLoaded', () => {
+    // Initialize from URL params or state
+    window.onload = function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // Auto-select template
+        const tpl = urlParams.get('template');
+        if (tpl) {
+            const radio = document.querySelector(`input[name="template_name"][value="${tpl}"]`);
+            if (radio) radio.checked = true;
+        }
+
+        // Auto-select plan if needed (though plan is usually fixed by link)
+        // ... any other init ...
+
         updatePreview();
         toggleReception();
-    });
+    }
 </script>
 {% endblock %}

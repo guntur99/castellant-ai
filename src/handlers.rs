@@ -46,6 +46,44 @@ pub struct CreateInvitationTemplate {
     pub is_dev: bool,
 }
 
+#[derive(Template)]
+#[template(path = "invitation/templates_list.html")]
+pub struct TemplatesListTemplate {
+    pub user: Option<User>,
+    pub active_category: String,
+    pub is_dev: bool,
+}
+
+pub async fn templates_list(
+    State(state): State<AppState>,
+    Query(params): Query<HashMap<String, String>>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user = match jar.get("user_id") {
+        Some(cookie) => {
+            let uid = Uuid::parse_str(cookie.value()).ok();
+            if let Some(id) = uid {
+                sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
+                    .bind(id)
+                    .fetch_optional(&state.db)
+                    .await
+                    .unwrap_or(None)
+            } else {
+                None
+            }
+        }
+        None => None,
+    };
+
+    let category = params.get("category").cloned().unwrap_or_else(|| "all".to_string());
+    
+    HtmlTemplate(TemplatesListTemplate { 
+        user, 
+        active_category: category,
+        is_dev: state.is_dev
+    }).into_response()
+}
+
 pub async fn create_invitation_page(
     State(state): State<AppState>,
     jar: PrivateCookieJar,

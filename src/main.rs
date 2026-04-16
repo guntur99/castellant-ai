@@ -98,6 +98,7 @@ async fn main() {
         .route("/auth/mock", get(handlers::mock_login))
         .route("/auth/logout", get(handlers::logout))
         .route("/create", get(handlers::create_invitation_page))
+        .route("/templates", get(handlers::templates_list))
         .route("/api/invitation", post(handlers::create_invitation))
         .route("/sitemap.xml", get(handlers::sitemap))
         .route("/robots.txt", get(|| async { 
