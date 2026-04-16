@@ -458,6 +458,54 @@ pub struct NoirTemplate {
     pub is_dev: bool,
 }
 
+#[derive(Template)]
+#[template(path = "invitation/pearl_verdure.html")]
+pub struct PearlVerdureTemplate {
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/ivory_halo.html")]
+pub struct IvoryHaloTemplate {
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/blush_petal.html")]
+pub struct BlushPetalTemplate {
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/emerald_filigree.html")]
+pub struct EmeraldFiligreeTemplate {
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/crimson_grace.html")]
+pub struct CrimsonGraceTemplate {
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/golden_quill.html")]
+pub struct GoldenQuillTemplate {
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
 pub async fn home(
     State(state): State<AppState>,
     jar: PrivateCookieJar,
@@ -552,6 +600,12 @@ pub async fn invitation_detail(
             match row.template_name.as_str() {
                 "minimalist" => HtmlTemplate(MinimalistTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "noir" => HtmlTemplate(NoirTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "pearl_verdure" => HtmlTemplate(PearlVerdureTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "ivory_halo" => HtmlTemplate(IvoryHaloTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "blush_petal" => HtmlTemplate(BlushPetalTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "emerald_filigree" => HtmlTemplate(EmeraldFiligreeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "crimson_grace" => HtmlTemplate(CrimsonGraceTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "golden_quill" => HtmlTemplate(GoldenQuillTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 _ => HtmlTemplate(VintageTemplate { invitation, is_dev: state.is_dev }).into_response(),
             }
         },
@@ -561,6 +615,12 @@ pub async fn invitation_detail(
                 let (couple_name, template_name) = match slug.as_str() {
                     "minimalist-sample" => ("Julia & Romeo", "minimalist"),
                     "noir-sample" => ("Sara & Benjamin", "noir"),
+                    "pearl-verdure-sample" => ("Amara & Rayan", "pearl_verdure"),
+                    "ivory-halo-sample" => ("Zahra & Ibrahim", "ivory_halo"),
+                    "blush-petal-sample" => ("Alya & Daffa", "blush_petal"),
+                    "emerald-filigree-sample" => ("Nayla & Farhan", "emerald_filigree"),
+                    "crimson-grace-sample" => ("Siti & Arman", "crimson_grace"),
+                    "golden-quill-sample" => ("Dewi & Reza", "golden_quill"),
                     _ => ("Romeo & Julia", "vintage"),
                 };
 
@@ -618,6 +678,12 @@ pub async fn invitation_detail(
                 match template_name {
                     "minimalist" => HtmlTemplate(MinimalistTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     "noir" => HtmlTemplate(NoirTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "pearl_verdure" => HtmlTemplate(PearlVerdureTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "ivory_halo" => HtmlTemplate(IvoryHaloTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "blush_petal" => HtmlTemplate(BlushPetalTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "emerald_filigree" => HtmlTemplate(EmeraldFiligreeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "crimson_grace" => HtmlTemplate(CrimsonGraceTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "golden_quill" => HtmlTemplate(GoldenQuillTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     _ => HtmlTemplate(VintageTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 }
             } else {

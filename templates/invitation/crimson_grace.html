@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %}Undangan Pernikahan {{ invitation.couple_name_short }} | Castellant{% endblock %}
+{% block meta_description %}Undangan pernikahan {{ invitation.couple_name_short }} pada {{ invitation.event_date }}.{% endblock %}
+{% block canonical %}https://castellant.id/invitation/{{ invitation.slug }}{% endblock %}
+{% block og_title %}Undangan Pernikahan {{ invitation.couple_name_short }}{% endblock %}
+{% block og_description %}Kami mengundang Anda hadir di pernikahan {{ invitation.couple_name_short }} pada {{ invitation.event_date }}.{% endblock %}
+{% block og_image %}https://castellant.id/static/img/crimson_grace_bg.png{% endblock %}
+{% block body_class %}invitation-body{% endblock %}
+{% block container_class %}invitation-container{% endblock %}
+{% block head %}
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Great+Vibes&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --cg-red: #8B2B1C; --cg-red-dark: #6B1E12; --cg-cream: #F5EEE4; --cg-ivory: #FAF6F0;
+        --cg-gold: #C5A255; --cg-gold-light: #E8D098; --cg-text: #3B1A10; --cg-text-mid: #7A3A28;
+        --font-script: 'Great Vibes', cursive; --font-serif: 'Cormorant Garamond', serif; --font-sans: 'Jost', sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body.invitation-body { margin: 0; padding: 0; min-height: 100vh; background: var(--cg-red-dark); overflow-x: hidden; }
+    .invitation-container { width: 100%; max-width: 460px; min-height: 100vh; margin: 0 auto; position: relative; background: var(--cg-ivory); overflow: hidden; }
+    #cover { position: absolute; inset: 0; z-index: 100; overflow: hidden; }
+    .cover-full-bg { position: absolute; inset: 0; background: url('/static/img/crimson_grace_bg.png') center center / cover no-repeat; }
+    .cover-content { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 80px 50px 150px; text-align: center; }
+    .cg-label { font-family: var(--font-sans); font-size: 0.58rem; letter-spacing: 5px; text-transform: uppercase; color: var(--cg-gold); margin-bottom: 0.7rem; }
+    .cg-couple { font-family: var(--font-script); font-size: 3.6rem; color: var(--cg-text); line-height: 1.05; margin: 0.3rem 0 1rem; }
+    .cg-date-band { border-top: 1px solid var(--cg-gold); border-bottom: 1px solid var(--cg-gold); padding: 6px 26px; font-family: var(--font-serif); font-size: 0.78rem; letter-spacing: 3px; text-transform: uppercase; color: var(--cg-text-mid); margin: 0.8rem 0 1.5rem; }
+    .cg-btn { background: var(--cg-red); color: var(--cg-gold-light); border: 1px solid var(--cg-gold); border-radius: 100px; padding: 13px 44px; font-family: var(--font-sans); font-size: 0.68rem; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: all 0.4s; box-shadow: 0 8px 25px rgba(139,43,28,0.5); }
+    .cg-btn:hover { background: var(--cg-gold); color: var(--cg-text); transform: translateY(-3px); }
+    #invitation-main { display: none; background: var(--cg-ivory); }
+    .cg-section { padding: 50px 25px; text-align: center; }
+    .cg-section-label { font-family: var(--font-sans); font-size: 0.55rem; letter-spacing: 5px; text-transform: uppercase; color: var(--cg-red); margin-bottom: 0.6rem; }
+    .cg-section-title { font-family: var(--font-script); font-size: 2.8rem; color: var(--cg-text); margin: 0 0 1.5rem; }
+    .cg-opening { position: relative; min-height: 310px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .cg-opening-bg { position: absolute; inset: 0; background: url('/static/img/crimson_grace_bg.png') center center / cover no-repeat; }
+    .cg-opening-overlay { position: absolute; inset: 0; background: rgba(59,26,16,0.5); }
+    .cg-opening-content { position: relative; z-index: 2; text-align: center; padding: 50px 30px; }
+    .cg-names-lg { font-family: var(--font-script); font-size: 3.6rem; color: var(--cg-cream); line-height: 1; }
+    .cg-amp { font-family: var(--font-script); font-size: 4rem; color: var(--cg-gold); display: block; margin: 0.2rem 0; }
+    .cg-divider { display: flex; align-items: center; gap: 8px; padding: 14px 0; }
+    .cg-divider hr { flex: 1; border: none; height: 1px; background: linear-gradient(to right, transparent, var(--cg-gold), transparent); }
+    .cg-diamond { width: 7px; height: 7px; background: var(--cg-red); transform: rotate(45deg); }
+    .cg-diamond.lg { width: 10px; height: 10px; background: var(--cg-gold); }
+    .cg-person-card { margin: 14px 20px; background: #fff; border: 1px solid rgba(197,162,85,0.25); border-radius: 20px; padding: 28px 20px; text-align: center; border-top: 3px solid var(--cg-red); }
+    .cg-arch-photo { width: 168px; height: 224px; border-radius: 84px 84px 0 0; overflow: hidden; border: 2px solid var(--cg-gold); margin: 0 auto 15px; }
+    .cg-arch-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .cg-person-name { font-family: var(--font-script); font-size: 2.6rem; color: var(--cg-red); margin-bottom: 4px; }
+    .cg-person-full { font-family: var(--font-serif); font-size: 0.95rem; font-weight: 600; color: var(--cg-text); margin-bottom: 10px; }
+    .cg-parents { font-family: var(--font-serif); font-size: 0.85rem; color: var(--cg-text-mid); line-height: 1.8; }
+    .cg-parents .plabel { font-family: var(--font-sans); font-size: 0.55rem; letter-spacing: 2px; text-transform: uppercase; color: var(--cg-red); display: block; margin-bottom: 3px; }
+    .cg-quote { background: var(--cg-red); padding: 40px 28px; text-align: center; }
+    .cg-quote blockquote { font-family: var(--font-serif); font-style: italic; font-size: 1.05rem; color: var(--cg-cream); line-height: 1.8; margin: 0 0 0.8rem; }
+    .cg-quote cite { font-family: var(--font-sans); font-size: 0.58rem; letter-spacing: 3px; text-transform: uppercase; color: var(--cg-gold-light); }
+    .cg-event-card { margin: 12px 20px; border-radius: 18px; overflow: hidden; border: 1px solid rgba(197,162,85,0.3); }
+    .cg-event-head { background: var(--cg-red); padding: 10px 16px; font-family: var(--font-sans); font-size: 0.55rem; letter-spacing: 4px; text-transform: uppercase; color: var(--cg-gold-light); text-align: center; }
+    .cg-event-body { padding: 22px 20px; background: #fff; text-align: center; }
+    .cg-event-date { font-family: var(--font-serif); font-size: 1.1rem; color: var(--cg-text); font-weight: 600; margin-bottom: 5px; }
+    .cg-event-time { font-family: var(--font-sans); font-size: 0.73rem; color: var(--cg-red); letter-spacing: 2px; margin-bottom: 14px; }
+    .cg-event-venue { font-family: var(--font-serif); font-size: 1rem; font-weight: 600; color: var(--cg-red-dark); margin-bottom: 4px; }
+    .cg-event-addr { font-family: var(--font-sans); font-size: 0.76rem; color: var(--cg-text-mid); line-height: 1.6; margin-bottom: 18px; }
+    .cg-map-btn { display: inline-block; border: 1px solid var(--cg-red); color: var(--cg-red); border-radius: 100px; padding: 9px 24px; font-family: var(--font-sans); font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; transition: all 0.3s; }
+    .cg-map-btn:hover { background: var(--cg-red); color: var(--cg-gold-light); }
+    .cg-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+    .cg-gallery div { height: 175px; overflow: hidden; }
+    .cg-gallery div:first-child { grid-column: 1/-1; height: 240px; }
+    .cg-gallery div img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+    .cg-gallery div:hover img { transform: scale(1.06); }
+    .cg-gift { margin: 10px 20px; background: #fff; border: 1px dashed var(--cg-gold); border-radius: 16px; padding: 22px 18px; text-align: center; }
+    .cg-gift .bank { font-family: var(--font-sans); font-size: 0.55rem; letter-spacing: 3px; text-transform: uppercase; color: var(--cg-red); margin-bottom: 6px; }
+    .cg-gift .num { font-family: var(--font-serif); font-size: 1.5rem; color: var(--cg-text); margin-bottom: 4px; }
+    .cg-gift .holder { font-family: var(--font-serif); font-size: 0.9rem; color: var(--cg-text-mid); margin-bottom: 14px; }
+    .cg-copy { background: var(--cg-red); color: var(--cg-cream); border: none; border-radius: 100px; padding: 8px 20px; font-family: var(--font-sans); font-size: 0.58rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+    .cg-copy:hover { background: var(--cg-gold); color: var(--cg-text); }
+    .cg-rsvp-form { padding: 0 20px 40px; }
+    .cg-input-group { margin-bottom: 14px; text-align: left; }
+    .cg-input-group label { display: block; font-family: var(--font-sans); font-size: 0.58rem; letter-spacing: 2px; text-transform: uppercase; color: var(--cg-red); margin-bottom: 5px; }
+    .cg-input-group input, .cg-input-group select, .cg-input-group textarea { width: 100%; padding: 11px 14px; border: 1px solid rgba(197,162,85,0.3); border-radius: 12px; background: #fff; font-family: var(--font-serif); font-size: 0.95rem; color: var(--cg-text); outline: none; transition: border-color 0.3s; }
+    .cg-input-group input:focus, .cg-input-group select:focus, .cg-input-group textarea:focus { border-color: var(--cg-red); }
+    .cg-submit { width: 100%; background: var(--cg-red); color: var(--cg-gold-light); border: none; border-radius: 100px; padding: 13px; font-family: var(--font-sans); font-size: 0.68rem; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: all 0.4s; margin-top: 8px; box-shadow: 0 8px 25px rgba(139,43,28,0.35); }
+    .cg-submit:hover { background: var(--cg-gold); color: var(--cg-text); transform: translateY(-2px); }
+    .cg-footer { position: relative; overflow: hidden; background: var(--cg-red); padding: 60px 20px 50px; text-align: center; }
+    .cg-footer::before { content: ''; position: absolute; inset: 0; background: url('/static/img/crimson_grace_bg.png') center bottom / cover no-repeat; opacity: 0.25; }
+    .cg-footer-content { position: relative; z-index: 2; }
+    .cg-footer-name { font-family: var(--font-script); font-size: 3rem; color: var(--cg-gold-light); margin-bottom: 0.5rem; }
+    .cg-footer-date { font-family: var(--font-sans); font-size: 0.62rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(232,208,152,0.7); }
+    .cg-footer-credit { font-family: var(--font-sans); font-size: 0.42rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(232,208,152,0.35); margin-top: 1.2rem; }
+    .cg-music { position: fixed; bottom: 22px; right: calc(50% - 215px); z-index: 200; width: 48px; height: 48px; background: var(--cg-red); border: 1px solid var(--cg-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
+    .cg-music:hover { background: var(--cg-gold); }
+    .cg-music:hover svg { color: var(--cg-text); }
+    .cg-music svg { color: var(--cg-gold-light); }
+    .rotating { animation: spin 4s linear infinite; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @media (max-width: 460px) { .cg-music { right: 14px; } }
+</style>
+{% endblock %}
+{% block audio_source %}<source src="{{ invitation.song_url }}" type="audio/mpeg">{% endblock %}
+{% block content %}
+<div id="cover">
+    <div class="cover-full-bg"></div>
+    <div class="cover-content">
+        <p class="cg-label">The Wedding of</p>
+        <h1 class="cg-couple">{{ invitation.couple_name_short }}</h1>
+        <div class="cg-date-band">{{ invitation.event_date }}</div>
+        <div class="cg-divider" style="width:180px;margin:0 auto 1.2rem;"><hr><span class="cg-diamond lg"></span><span class="cg-diamond"></span><span class="cg-diamond lg"></span><hr></div>
+        <p class="cg-label" style="margin-bottom:0.3rem;">Kepada Yth.</p>
+        <h3 style="font-family:var(--font-serif);font-size:1.2rem;color:var(--cg-text);margin:0 0 1.5rem;">Tamu Undangan</h3>
+        <button id="btn-open" class="cg-btn">Buka Undangan</button>
+    </div>
+</div>
+<div id="invitation-main">
+    <div class="cg-opening"><div class="cg-opening-bg"></div><div class="cg-opening-overlay"></div>
+        <div class="cg-opening-content">
+            <p style="font-family:var(--font-serif);font-size:1.8rem;color:var(--cg-gold-light);margin-bottom:0.8rem;">﷽</p>
+            <div class="cg-divider" style="width:170px;margin:0 auto 1rem;"><hr><span class="cg-diamond lg"></span><hr></div>
+            <div class="cg-names-lg">{{ invitation.bride.name }}<span class="cg-amp">&</span>{{ invitation.groom.name }}</div>
+        </div>
+    </div>
+    <div class="cg-quote"><blockquote>"{{ invitation.quote.text }}"</blockquote><cite>{{ invitation.quote.source }}</cite></div>
+    <div class="cg-section" style="padding-bottom:0;"><p class="cg-section-label">The Couple</p><h2 class="cg-section-title">Mempelai</h2></div>
+    <div class="cg-person-card"><div class="cg-arch-photo"><img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride.name }}"></div><p class="cg-person-name">{{ invitation.bride.name }}</p><p class="cg-person-full">{{ invitation.bride.full_name }}</p><div class="cg-divider" style="width:100px;margin:10px auto;"><hr><span class="cg-diamond lg"></span><hr></div><div class="cg-parents"><span class="plabel">Putri dari</span>Bapak {{ invitation.bride.father_name }}<br>& Ibu {{ invitation.bride.mother_name }}</div></div>
+    <div style="text-align:center;font-family:var(--font-script);font-size:3rem;color:var(--cg-gold);padding:5px 0;">&</div>
+    <div class="cg-person-card"><div class="cg-arch-photo"><img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom.name }}"></div><p class="cg-person-name">{{ invitation.groom.name }}</p><p class="cg-person-full">{{ invitation.groom.full_name }}</p><div class="cg-divider" style="width:100px;margin:10px auto;"><hr><span class="cg-diamond lg"></span><hr></div><div class="cg-parents"><span class="plabel">Putra dari</span>Bapak {{ invitation.groom.father_name }}<br>& Ibu {{ invitation.groom.mother_name }}</div></div>
+    <div class="cg-section" style="padding-bottom:0;"><p class="cg-section-label">Save the Date</p><h2 class="cg-section-title">Acara</h2></div>
+    <div class="cg-event-card"><div class="cg-event-head">Akad Nikah</div><div class="cg-event-body"><p class="cg-event-date">{{ invitation.ceremony.date }}</p><p class="cg-event-time">{{ invitation.ceremony.time }}</p><div class="cg-divider" style="margin:10px 0;"><hr><span class="cg-diamond lg"></span><hr></div><p class="cg-event-venue">{{ invitation.ceremony.venue }}</p><p class="cg-event-addr">{{ invitation.ceremony.address }}</p><a href="{{ invitation.ceremony.maps_url }}" target="_blank" class="cg-map-btn">Lihat Lokasi</a></div></div>
+    <div class="cg-event-card" style="margin-bottom:20px;"><div class="cg-event-head">Resepsi</div><div class="cg-event-body"><p class="cg-event-date">{{ invitation.reception.date }}</p><p class="cg-event-time">{{ invitation.reception.time }}</p><div class="cg-divider" style="margin:10px 0;"><hr><span class="cg-diamond lg"></span><hr></div><p class="cg-event-venue">{{ invitation.reception.venue }}</p><p class="cg-event-addr">{{ invitation.reception.address }}</p><a href="{{ invitation.reception.maps_url }}" target="_blank" class="cg-map-btn">Lihat Lokasi</a></div></div>
+    {% if !invitation.gallery_images.is_empty() %}<div class="cg-section" style="padding-bottom:0;"><p class="cg-section-label">Our Story</p><h2 class="cg-section-title">Gallery</h2></div><div class="cg-gallery">{% for img in invitation.gallery_images %}<div><img src="{{ img }}" alt="Gallery" loading="lazy"></div>{% endfor %}</div>{% endif %}
+    {% if !invitation.gift_accounts.is_empty() %}<div class="cg-section" style="padding-bottom:0;"><p class="cg-section-label">Love Gift</p><h2 class="cg-section-title">Kado Digital</h2></div>{% for account in invitation.gift_accounts %}<div class="cg-gift"><p class="bank">{{ account.bank_name }}</p><p class="num">{{ account.account_number }}</p><p class="holder">a.n {{ account.account_holder }}</p><button class="cg-copy" onclick="copyText('{{ account.account_number }}', this)">Salin Nomor</button></div>{% endfor %}{% endif %}
+    <div class="cg-section"><p class="cg-section-label">Konfirmasi Kehadiran</p><h2 class="cg-section-title">RSVP</h2></div>
+    <form class="cg-rsvp-form" hx-post="/rsvp" hx-target="#rsvp-resp" hx-swap="outerHTML" action="/rsvp" method="POST">
+        <input type="hidden" name="invitation_id" value="{{ invitation.slug }}">
+        <div class="cg-input-group"><label>Nama</label><input type="text" name="name" placeholder="Nama Lengkap" required></div>
+        <div class="cg-input-group"><label>Kehadiran</label><select name="attendance"><option value="Hadir">Insya Allah Hadir</option><option value="Tidak Hadir">Mohon Maaf, Tidak Hadir</option></select></div>
+        <div class="cg-input-group"><label>Jumlah Tamu</label><input type="number" name="guests" value="1" min="1" max="10"></div>
+        <div class="cg-input-group"><label>Ucapan & Doa</label><textarea name="message" rows="3" placeholder="Sampaikan doa terbaik Anda..."></textarea></div>
+        <div id="rsvp-resp"></div><button type="submit" class="cg-submit">Kirim Konfirmasi</button>
+    </form>
+    <div class="cg-footer"><div class="cg-footer-content"><div class="cg-divider" style="margin-bottom:18px;"><hr><span class="cg-diamond lg"></span><span class="cg-diamond"></span><span class="cg-diamond lg"></span><hr></div><p class="cg-footer-name">{{ invitation.couple_name_short }}</p><p class="cg-footer-date">{{ invitation.event_date }}</p><p class="cg-footer-credit">Crimson Grace Collection — Castellant Invitations</p></div></div>
+</div>
+<div id="cg-music" class="cg-music"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></div>
+{% endblock %}
+{% block scripts %}
+<script>
+    const bgMusic = document.getElementById('bg-music'), musicBtn = document.getElementById('cg-music');
+    document.getElementById('btn-open').addEventListener('click', () => {
+        const c = document.getElementById('cover'); c.style.transition = 'all 1.4s cubic-bezier(0.19,1,0.22,1)'; c.style.transform = 'translateY(-100%)'; c.style.opacity = '0';
+        document.getElementById('invitation-main').style.display = 'block'; bgMusic.play().catch(()=>{}); musicBtn.querySelector('svg').classList.add('rotating'); setTimeout(() => { c.style.display = 'none'; }, 1500);
+    });
+    musicBtn.addEventListener('click', () => { if (bgMusic.paused) { bgMusic.play(); musicBtn.querySelector('svg').classList.add('rotating'); } else { bgMusic.pause(); musicBtn.querySelector('svg').classList.remove('rotating'); } });
+    function copyText(text, btn) { navigator.clipboard.writeText(text).then(() => { const o = btn.textContent; btn.textContent = '✓ Tersalin!'; btn.style.background = 'var(--cg-gold)'; btn.style.color = 'var(--cg-text)'; setTimeout(() => { btn.textContent = o; btn.style.background = ''; btn.style.color = ''; }, 2000); }); }
+</script>
+{% endblock %}

@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block title %}Undangan Pernikahan {{ invitation.couple_name_short }} | Castellant{% endblock %}
+{% block meta_description %}Undangan pernikahan {{ invitation.couple_name_short }} pada {{ invitation.event_date }}.{% endblock %}
+{% block canonical %}https://castellant.id/invitation/{{ invitation.slug }}{% endblock %}
+{% block og_title %}Undangan Pernikahan {{ invitation.couple_name_short }}{% endblock %}
+{% block og_description %}Kami mengundang Anda hadir di pernikahan {{ invitation.couple_name_short }} pada {{ invitation.event_date }}.{% endblock %}
+{% block og_image %}https://castellant.id/static/img/golden_quill_bg.png{% endblock %}
+{% block body_class %}invitation-body{% endblock %}
+{% block container_class %}invitation-container{% endblock %}
+{% block head %}
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Great+Vibes&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --gq-green: #1C3D2E; --gq-green-dark: #122A1F; --gq-gold: #C9A035; --gq-gold-mid: #D4B55A;
+        --gq-gold-light: #EDD898; --gq-ivory: #F8F4E8; --gq-cream: #FBF8EF;
+        --gq-text: #1A2D20; --gq-text-mid: #3A5040;
+        --font-script: 'Great Vibes', cursive; --font-serif: 'Cormorant Garamond', serif; --font-sans: 'Jost', sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body.invitation-body { margin: 0; padding: 0; min-height: 100vh; background: var(--gq-green-dark); overflow-x: hidden; }
+    .invitation-container { width: 100%; max-width: 460px; min-height: 100vh; margin: 0 auto; position: relative; background: var(--gq-cream); overflow: hidden; }
+    #cover { position: absolute; inset: 0; z-index: 100; overflow: hidden; }
+    .cover-full-bg { position: absolute; inset: 0; background: url('/static/img/golden_quill_bg.png') center center / cover no-repeat; }
+    .cover-content { position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 100px 70px 160px; text-align: center; }
+    .gq-label { font-family: var(--font-sans); font-size: 0.58rem; letter-spacing: 5px; text-transform: uppercase; color: var(--gq-gold-mid); margin-bottom: 0.7rem; }
+    .gq-couple { font-family: var(--font-script); font-size: 3.4rem; color: var(--gq-text); line-height: 1.05; margin: 0.3rem 0 1rem; }
+    .gq-date-band { border-top: 1px solid var(--gq-gold); border-bottom: 1px solid var(--gq-gold); padding: 6px 26px; font-family: var(--font-serif); font-size: 0.78rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gq-text-mid); margin: 0.8rem 0 1.5rem; }
+    .gq-btn { background: var(--gq-green); color: var(--gq-gold-light); border: 1px solid var(--gq-gold); border-radius: 100px; padding: 13px 44px; font-family: var(--font-sans); font-size: 0.68rem; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: all 0.4s; box-shadow: 0 8px 25px rgba(28,61,46,0.7); }
+    .gq-btn:hover { background: var(--gq-gold); color: var(--gq-text); transform: translateY(-3px); box-shadow: 0 12px 35px rgba(201,160,53,0.5); }
+    #invitation-main { display: none; background: var(--gq-cream); }
+    .gq-section { padding: 50px 25px; text-align: center; }
+    .gq-section-label { font-family: var(--font-sans); font-size: 0.55rem; letter-spacing: 5px; text-transform: uppercase; color: var(--gq-gold); margin-bottom: 0.6rem; }
+    .gq-section-title { font-family: var(--font-script); font-size: 2.8rem; color: var(--gq-text); margin: 0 0 1.5rem; }
+    .gq-opening { position: relative; min-height: 320px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .gq-opening-bg { position: absolute; inset: 0; background: url('/static/img/golden_quill_bg.png') center center / cover no-repeat; }
+    .gq-opening-overlay { position: absolute; inset: 0; background: rgba(18,42,31,0.7); }
+    .gq-opening-content { position: relative; z-index: 2; text-align: center; padding: 50px 40px; }
+    .gq-names-lg { font-family: var(--font-script); font-size: 3.5rem; color: var(--gq-gold-light); line-height: 1; }
+    .gq-amp { font-family: var(--font-script); font-size: 4rem; color: var(--gq-gold-mid); display: block; margin: 0.2rem 0; }
+    .gq-divider { display: flex; align-items: center; gap: 8px; padding: 14px 0; }
+    .gq-divider hr { flex: 1; border: none; height: 1px; background: linear-gradient(to right, transparent, var(--gq-gold), transparent); }
+    .gq-star { color: var(--gq-gold); font-size: 0.7rem; line-height: 1; }
+    .gq-star.lg { font-size: 1rem; }
+    .gq-person-card { margin: 14px 20px; background: #fff; border: 1px solid rgba(201,160,53,0.2); border-radius: 20px; padding: 28px 20px; text-align: center; box-shadow: 0 4px 20px rgba(28,61,46,0.08); }
+    .gq-arch-photo { width: 168px; height: 224px; border-radius: 84px 84px 0 0; overflow: hidden; border: 2px solid var(--gq-gold); margin: 0 auto 15px; }
+    .gq-arch-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .gq-person-name { font-family: var(--font-script); font-size: 2.6rem; color: var(--gq-green); margin-bottom: 4px; }
+    .gq-person-full { font-family: var(--font-serif); font-size: 0.95rem; font-weight: 600; color: var(--gq-text); margin-bottom: 10px; }
+    .gq-parents { font-family: var(--font-serif); font-size: 0.85rem; color: var(--gq-text-mid); line-height: 1.8; }
+    .gq-parents .plabel { font-family: var(--font-sans); font-size: 0.55rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gq-gold); display: block; margin-bottom: 3px; }
+    .gq-quote { background: var(--gq-green); padding: 40px 28px; text-align: center; }
+    .gq-quote blockquote { font-family: var(--font-serif); font-style: italic; font-size: 1.05rem; color: var(--gq-ivory); line-height: 1.8; margin: 0 0 0.8rem; }
+    .gq-quote cite { font-family: var(--font-sans); font-size: 0.58rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gq-gold-mid); }
+    .gq-event-card { margin: 12px 20px; border-radius: 18px; overflow: hidden; border: 1px solid rgba(201,160,53,0.25); }
+    .gq-event-head { background: linear-gradient(135deg, var(--gq-green) 0%, var(--gq-green-dark) 100%); padding: 10px 16px; font-family: var(--font-sans); font-size: 0.55rem; letter-spacing: 4px; text-transform: uppercase; color: var(--gq-gold-light); text-align: center; }
+    .gq-event-body { padding: 22px 20px; background: #fff; text-align: center; }
+    .gq-event-date { font-family: var(--font-serif); font-size: 1.1rem; color: var(--gq-text); font-weight: 600; margin-bottom: 5px; }
+    .gq-event-time { font-family: var(--font-sans); font-size: 0.73rem; color: var(--gq-gold); letter-spacing: 2px; margin-bottom: 14px; }
+    .gq-event-venue { font-family: var(--font-serif); font-size: 1rem; font-weight: 600; color: var(--gq-green); margin-bottom: 4px; }
+    .gq-event-addr { font-family: var(--font-sans); font-size: 0.76rem; color: var(--gq-text-mid); line-height: 1.6; margin-bottom: 18px; }
+    .gq-map-btn { display: inline-block; border: 1px solid var(--gq-green); color: var(--gq-green); border-radius: 100px; padding: 9px 24px; font-family: var(--font-sans); font-size: 0.6rem; letter-spacing: 2px; text-transform: uppercase; text-decoration: none; transition: all 0.3s; }
+    .gq-map-btn:hover { background: var(--gq-green); color: var(--gq-gold-light); }
+    .gq-gallery { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+    .gq-gallery div { height: 175px; overflow: hidden; }
+    .gq-gallery div:first-child { grid-column: 1/-1; height: 240px; }
+    .gq-gallery div img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+    .gq-gallery div:hover img { transform: scale(1.06); }
+    .gq-gift { margin: 10px 20px; background: #fff; border: 1px dashed var(--gq-gold); border-radius: 16px; padding: 22px 18px; text-align: center; }
+    .gq-gift .bank { font-family: var(--font-sans); font-size: 0.55rem; letter-spacing: 3px; text-transform: uppercase; color: var(--gq-gold); margin-bottom: 6px; }
+    .gq-gift .num { font-family: var(--font-serif); font-size: 1.5rem; color: var(--gq-text); margin-bottom: 4px; }
+    .gq-gift .holder { font-family: var(--font-serif); font-size: 0.9rem; color: var(--gq-text-mid); margin-bottom: 14px; }
+    .gq-copy { background: var(--gq-green); color: var(--gq-gold-light); border: none; border-radius: 100px; padding: 8px 20px; font-family: var(--font-sans); font-size: 0.58rem; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+    .gq-copy:hover { background: var(--gq-gold); color: var(--gq-text); }
+    .gq-rsvp-form { padding: 0 20px 40px; }
+    .gq-input-group { margin-bottom: 14px; text-align: left; }
+    .gq-input-group label { display: block; font-family: var(--font-sans); font-size: 0.58rem; letter-spacing: 2px; text-transform: uppercase; color: var(--gq-gold); margin-bottom: 5px; }
+    .gq-input-group input, .gq-input-group select, .gq-input-group textarea { width: 100%; padding: 11px 14px; border: 1px solid rgba(201,160,53,0.25); border-radius: 12px; background: #fff; font-family: var(--font-serif); font-size: 0.95rem; color: var(--gq-text); outline: none; transition: border-color 0.3s; }
+    .gq-input-group input:focus, .gq-input-group select:focus, .gq-input-group textarea:focus { border-color: var(--gq-green); }
+    .gq-submit { width: 100%; background: var(--gq-green); color: var(--gq-gold-light); border: none; border-radius: 100px; padding: 13px; font-family: var(--font-sans); font-size: 0.68rem; letter-spacing: 3px; text-transform: uppercase; cursor: pointer; transition: all 0.4s; margin-top: 8px; box-shadow: 0 8px 25px rgba(28,61,46,0.4); }
+    .gq-submit:hover { background: var(--gq-gold); color: var(--gq-text); transform: translateY(-2px); }
+    .gq-footer { position: relative; overflow: hidden; background: var(--gq-green); padding: 60px 20px 50px; text-align: center; }
+    .gq-footer::before { content: ''; position: absolute; inset: 0; background: url('/static/img/golden_quill_bg.png') center bottom / cover no-repeat; opacity: 0.35; }
+    .gq-footer-content { position: relative; z-index: 2; }
+    .gq-footer-name { font-family: var(--font-script); font-size: 3rem; color: var(--gq-gold-light); margin-bottom: 0.5rem; }
+    .gq-footer-date { font-family: var(--font-sans); font-size: 0.62rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(237,216,152,0.7); }
+    .gq-footer-credit { font-family: var(--font-sans); font-size: 0.42rem; letter-spacing: 2px; text-transform: uppercase; color: rgba(237,216,152,0.35); margin-top: 1.2rem; }
+    .gq-music { position: fixed; bottom: 22px; right: calc(50% - 215px); z-index: 200; width: 48px; height: 48px; background: var(--gq-green); border: 1px solid var(--gq-gold); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s; }
+    .gq-music:hover { background: var(--gq-gold); }
+    .gq-music:hover svg { color: var(--gq-text); }
+    .gq-music svg { color: var(--gq-gold-light); }
+    .rotating { animation: spin 4s linear infinite; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @media (max-width: 460px) { .gq-music { right: 14px; } }
+</style>
+{% endblock %}
+{% block audio_source %}<source src="{{ invitation.song_url }}" type="audio/mpeg">{% endblock %}
+{% block content %}
+<div id="cover">
+    <div class="cover-full-bg"></div>
+    <div class="cover-content">
+        <p class="gq-label">The Wedding of</p>
+        <h1 class="gq-couple">{{ invitation.couple_name_short }}</h1>
+        <div class="gq-date-band">{{ invitation.event_date }}</div>
+        <div class="gq-divider" style="width:180px;margin:0 auto 1.2rem;"><hr><span class="gq-star lg">✦</span><span class="gq-star">✦</span><span class="gq-star lg">✦</span><hr></div>
+        <p class="gq-label" style="margin-bottom:0.3rem;">Kepada Yth.</p>
+        <h3 style="font-family:var(--font-serif);font-size:1.2rem;color:var(--gq-text);margin:0 0 1.5rem;">Tamu Undangan</h3>
+        <button id="btn-open" class="gq-btn">Buka Undangan</button>
+    </div>
+</div>
+<div id="invitation-main">
+    <div class="gq-opening"><div class="gq-opening-bg"></div><div class="gq-opening-overlay"></div>
+        <div class="gq-opening-content">
+            <p style="font-family:var(--font-serif);font-size:1.8rem;color:var(--gq-gold-light);margin-bottom:0.8rem;">﷽</p>
+            <div class="gq-divider" style="width:170px;margin:0 auto 1rem;"><hr><span class="gq-star lg">✦</span><hr></div>
+            <div class="gq-names-lg">{{ invitation.bride.name }}<span class="gq-amp">&</span>{{ invitation.groom.name }}</div>
+        </div>
+    </div>
+    <div class="gq-quote"><blockquote>"{{ invitation.quote.text }}"</blockquote><cite>{{ invitation.quote.source }}</cite></div>
+    <div class="gq-section" style="padding-bottom:0;"><p class="gq-section-label">The Couple</p><h2 class="gq-section-title">Mempelai</h2></div>
+    <div class="gq-person-card"><div class="gq-arch-photo"><img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride.name }}"></div><p class="gq-person-name">{{ invitation.bride.name }}</p><p class="gq-person-full">{{ invitation.bride.full_name }}</p><div class="gq-divider" style="width:100px;margin:10px auto;"><hr><span class="gq-star">✦</span><hr></div><div class="gq-parents"><span class="plabel">Putri dari</span>Bapak {{ invitation.bride.father_name }}<br>& Ibu {{ invitation.bride.mother_name }}</div></div>
+    <div style="text-align:center;font-family:var(--font-script);font-size:3rem;color:var(--gq-gold);padding:5px 0;">&</div>
+    <div class="gq-person-card"><div class="gq-arch-photo"><img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom.name }}"></div><p class="gq-person-name">{{ invitation.groom.name }}</p><p class="gq-person-full">{{ invitation.groom.full_name }}</p><div class="gq-divider" style="width:100px;margin:10px auto;"><hr><span class="gq-star">✦</span><hr></div><div class="gq-parents"><span class="plabel">Putra dari</span>Bapak {{ invitation.groom.father_name }}<br>& Ibu {{ invitation.groom.mother_name }}</div></div>
+    <div class="gq-section" style="padding-bottom:0;"><p class="gq-section-label">Save the Date</p><h2 class="gq-section-title">Acara</h2></div>
+    <div class="gq-event-card"><div class="gq-event-head">Akad Nikah</div><div class="gq-event-body"><p class="gq-event-date">{{ invitation.ceremony.date }}</p><p class="gq-event-time">{{ invitation.ceremony.time }}</p><div class="gq-divider" style="margin:10px 0;"><hr><span class="gq-star">✦</span><hr></div><p class="gq-event-venue">{{ invitation.ceremony.venue }}</p><p class="gq-event-addr">{{ invitation.ceremony.address }}</p><a href="{{ invitation.ceremony.maps_url }}" target="_blank" class="gq-map-btn">Lihat Lokasi</a></div></div>
+    <div class="gq-event-card" style="margin-bottom:20px;"><div class="gq-event-head">Resepsi</div><div class="gq-event-body"><p class="gq-event-date">{{ invitation.reception.date }}</p><p class="gq-event-time">{{ invitation.reception.time }}</p><div class="gq-divider" style="margin:10px 0;"><hr><span class="gq-star">✦</span><hr></div><p class="gq-event-venue">{{ invitation.reception.venue }}</p><p class="gq-event-addr">{{ invitation.reception.address }}</p><a href="{{ invitation.reception.maps_url }}" target="_blank" class="gq-map-btn">Lihat Lokasi</a></div></div>
+    {% if !invitation.gallery_images.is_empty() %}<div class="gq-section" style="padding-bottom:0;"><p class="gq-section-label">Our Story</p><h2 class="gq-section-title">Gallery</h2></div><div class="gq-gallery">{% for img in invitation.gallery_images %}<div><img src="{{ img }}" alt="Gallery" loading="lazy"></div>{% endfor %}</div>{% endif %}
+    {% if !invitation.gift_accounts.is_empty() %}<div class="gq-section" style="padding-bottom:0;"><p class="gq-section-label">Love Gift</p><h2 class="gq-section-title">Kado Digital</h2></div>{% for account in invitation.gift_accounts %}<div class="gq-gift"><p class="bank">{{ account.bank_name }}</p><p class="num">{{ account.account_number }}</p><p class="holder">a.n {{ account.account_holder }}</p><button class="gq-copy" onclick="copyText('{{ account.account_number }}', this)">Salin Nomor</button></div>{% endfor %}{% endif %}
+    <div class="gq-section"><p class="gq-section-label">Konfirmasi Kehadiran</p><h2 class="gq-section-title">RSVP</h2></div>
+    <form class="gq-rsvp-form" hx-post="/rsvp" hx-target="#rsvp-resp" hx-swap="outerHTML" action="/rsvp" method="POST">
+        <input type="hidden" name="invitation_id" value="{{ invitation.slug }}">
+        <div class="gq-input-group"><label>Nama</label><input type="text" name="name" placeholder="Nama Lengkap" required></div>
+        <div class="gq-input-group"><label>Kehadiran</label><select name="attendance"><option value="Hadir">Insya Allah Hadir</option><option value="Tidak Hadir">Mohon Maaf, Tidak Hadir</option></select></div>
+        <div class="gq-input-group"><label>Jumlah Tamu</label><input type="number" name="guests" value="1" min="1" max="10"></div>
+        <div class="gq-input-group"><label>Ucapan & Doa</label><textarea name="message" rows="3" placeholder="Sampaikan doa terbaik Anda..."></textarea></div>
+        <div id="rsvp-resp"></div><button type="submit" class="gq-submit">Kirim Konfirmasi</button>
+    </form>
+    <div class="gq-footer"><div class="gq-footer-content"><div class="gq-divider" style="margin-bottom:18px;"><hr><span class="gq-star lg">✦</span><span class="gq-star">✦</span><span class="gq-star lg">✦</span><hr></div><p class="gq-footer-name">{{ invitation.couple_name_short }}</p><p class="gq-footer-date">{{ invitation.event_date }}</p><p class="gq-footer-credit">Golden Quill Collection — Castellant Invitations</p></div></div>
+</div>
+<div id="gq-music" class="gq-music"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg></div>
+{% endblock %}
+{% block scripts %}
+<script>
+    const bgMusic = document.getElementById('bg-music'), musicBtn = document.getElementById('gq-music');
+    document.getElementById('btn-open').addEventListener('click', () => {
+        const c = document.getElementById('cover'); c.style.transition = 'all 1.4s cubic-bezier(0.19,1,0.22,1)'; c.style.transform = 'translateY(-100%)'; c.style.opacity = '0';
+        document.getElementById('invitation-main').style.display = 'block'; bgMusic.play().catch(()=>{}); musicBtn.querySelector('svg').classList.add('rotating'); setTimeout(() => { c.style.display = 'none'; }, 1500);
+    });
+    musicBtn.addEventListener('click', () => { if (bgMusic.paused) { bgMusic.play(); musicBtn.querySelector('svg').classList.add('rotating'); } else { bgMusic.pause(); musicBtn.querySelector('svg').classList.remove('rotating'); } });
+    function copyText(text, btn) { navigator.clipboard.writeText(text).then(() => { const o = btn.textContent; btn.textContent = '✓ Tersalin!'; btn.style.background = 'var(--gq-gold)'; btn.style.color = 'var(--gq-text)'; setTimeout(() => { btn.textContent = o; btn.style.background = ''; btn.style.color = ''; }, 2000); }); }
+</script>
+{% endblock %}

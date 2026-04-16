@@ -1,0 +1,937 @@
+{% extends "base.html" %}
+
+{% block title %}Undangan Pernikahan {{ invitation.couple_name_short }} | Castellant{% endblock %}
+
+{% block meta_description %}Undangan pernikahan digital {{ invitation.couple_name_short }} pada tanggal {{ invitation.event_date }}.{% endblock %}
+
+{% block canonical %}https://castellant.id/invitation/{{ invitation.slug }}{% endblock %}
+
+{% block og_title %}Undangan Pernikahan {{ invitation.couple_name_short }}{% endblock %}
+{% block og_description %}Kami mengundang Anda untuk hadir di acara pernikahan {{ invitation.couple_name_short }} pada {{ invitation.event_date }}.{% endblock %}
+{% block og_image %}https://castellant.id/static/img/pearl_verdure_preview.png{% endblock %}
+
+{% block body_class %}invitation-body{% endblock %}
+{% block container_class %}invitation-container{% endblock %}
+
+{% block head %}
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Great+Vibes&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --pv-green:         #2D5045;   /* Deep forest teal */
+        --pv-green-dark:    #1A3330;
+        --pv-gold:          #C9A96E;   /* Champagne gold */
+        --pv-gold-light:    #E8D5A3;
+        --pv-ivory:         #F7F2E8;
+        --pv-cream:         #FAF6EE;
+        --pv-pearl:         #F0EAD6;
+        --pv-text-dark:     #2A1E14;
+        --pv-text-mid:      #4A3728;
+        --font-script:      'Great Vibes', cursive;
+        --font-serif:       'Cormorant Garamond', serif;
+        --font-sans:        'Jost', sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body.invitation-body {
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        background: var(--pv-green-dark);
+        overflow-x: hidden;
+    }
+
+    /* Blurred teal bg behind the card */
+    body.invitation-body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background: var(--pv-green-dark);
+        background-image: radial-gradient(ellipse at 30% 30%, #3a6655 0%, transparent 60%),
+                          radial-gradient(ellipse at 70% 80%, #1a3330 0%, transparent 60%);
+        z-index: -1;
+    }
+
+    /* ── Card Container ───────────────────────────────────── */
+    .invitation-container {
+        width: 100%;
+        max-width: 460px;
+        min-height: 100vh;
+        margin: 0 auto;
+        position: relative;
+        background: var(--pv-ivory);
+        overflow: hidden;
+    }
+
+    /* ── Cover Page ───────────────────────────────────────── */
+    #cover {
+        position: absolute;
+        inset: 0;
+        z-index: 100;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        padding-top: 0;
+        background: var(--pv-ivory);
+        overflow: hidden;
+    }
+
+    /* The big frame background fills entire cover */
+    .cover-bg-frame {
+        position: absolute;
+        inset: 0;
+        background: url('/static/img/pearl_verdure_bg.png') center center / cover no-repeat;
+        z-index: 0;
+    }
+
+    /* Content sits on top of the frame */
+    .cover-content {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        min-height: 100vh;
+        padding: 80px 50px 120px;
+        text-align: center;
+    }
+
+    .cover-label {
+        font-family: var(--font-sans);
+        font-size: 0.65rem;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        color: var(--pv-gold);
+        margin-bottom: 1rem;
+        font-weight: 500;
+    }
+
+    .cover-couple-name {
+        font-family: var(--font-script);
+        font-size: 3.8rem;
+        color: var(--pv-text-dark);
+        line-height: 1.1;
+        margin: 0.5rem 0 1.5rem;
+        text-shadow: 0 2px 10px rgba(201, 169, 110, 0.3);
+    }
+
+    .cover-date-band {
+        display: inline-block;
+        border-top: 1px solid var(--pv-gold);
+        border-bottom: 1px solid var(--pv-gold);
+        padding: 7px 30px;
+        font-family: var(--font-serif);
+        font-size: 0.85rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--pv-text-mid);
+        margin: 1rem 0 2rem;
+    }
+
+    .cover-guest-label {
+        font-family: var(--font-sans);
+        font-size: 0.6rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--pv-gold);
+        margin-bottom: 0.4rem;
+    }
+
+    .cover-guest-name {
+        font-family: var(--font-serif);
+        font-size: 1.3rem;
+        color: var(--pv-text-dark);
+        margin: 0 0 2rem;
+        font-weight: 600;
+    }
+
+    .pv-btn-open {
+        background: var(--pv-green);
+        color: var(--pv-gold-light);
+        border: 1px solid var(--pv-gold);
+        border-radius: 100px;
+        padding: 14px 48px;
+        font-family: var(--font-sans);
+        font-size: 0.75rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.4s ease;
+        box-shadow: 0 8px 30px rgba(45, 80, 69, 0.5);
+    }
+    .pv-btn-open:hover {
+        background: var(--pv-gold);
+        color: var(--pv-green-dark);
+        transform: translateY(-3px);
+        box-shadow: 0 12px 40px rgba(201, 169, 110, 0.5);
+    }
+
+    /* ── Main Invitation Content ──────────────────────────── */
+    #invitation-main {
+        display: none;
+        background: var(--pv-ivory);
+        min-height: 100vh;
+    }
+
+    /* Shared inner frame design */
+    .pv-frame {
+        margin: 0;
+        border-left: 4px solid var(--pv-green);
+        border-right: 4px solid var(--pv-green);
+        position: relative;
+    }
+
+    /* Section styles */
+    .pv-section {
+        padding: 60px 30px;
+        text-align: center;
+        position: relative;
+    }
+
+    .pv-section-header {
+        font-family: var(--font-sans);
+        font-size: 0.6rem;
+        letter-spacing: 5px;
+        text-transform: uppercase;
+        color: var(--pv-gold);
+        margin-bottom: 0.8rem;
+    }
+
+    .pv-section-title {
+        font-family: var(--font-script);
+        font-size: 3rem;
+        color: var(--pv-text-dark);
+        margin: 0 0 1.5rem;
+    }
+
+    /* ── Opening Banner with frame bg ───────────────────────── */
+    .pv-opening {
+        position: relative;
+        min-height: 340px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 40px;
+        text-align: center;
+        overflow: hidden;
+        background: var(--pv-green);
+    }
+
+    .pv-opening::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url('/static/img/pearl_verdure_bg.png') center top / cover no-repeat;
+        opacity: 0.85;
+    }
+
+    .pv-opening-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .pv-bismillah {
+        font-family: var(--font-serif);
+        font-size: 2rem;
+        color: var(--pv-gold-light);
+        margin-bottom: 1rem;
+        letter-spacing: 2px;
+    }
+
+    .pv-opening-names {
+        font-family: var(--font-script);
+        font-size: 4rem;
+        color: var(--pv-cream);
+        line-height: 1;
+        text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    }
+
+    .pv-ampersand {
+        font-family: var(--font-script);
+        font-size: 5rem;
+        color: var(--pv-gold);
+        line-height: 0.8;
+        display: block;
+        margin: 0.5rem 0;
+    }
+
+    /* ── Quote strip ─────────────────────────────────────── */
+    .pv-quote-strip {
+        background: var(--pv-green);
+        padding: 40px 30px;
+        text-align: center;
+    }
+
+    .pv-quote-text {
+        font-family: var(--font-serif);
+        font-style: italic;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: var(--pv-pearl);
+        max-width: 320px;
+        margin: 0 auto 1rem;
+    }
+
+    .pv-quote-source {
+        font-family: var(--font-sans);
+        font-size: 0.65rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--pv-gold);
+    }
+
+    /* ── Pearls Divider ──────────────────────────────────── */
+    .pv-pearl-divider {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 20px 0;
+    }
+    .pv-pearl-divider .pearl {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        background: radial-gradient(circle at 35% 35%, #fff 10%, var(--pv-gold-light) 40%, var(--pv-gold) 100%);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+    .pv-pearl-divider .pearl.big {
+        width: 12px; height: 12px;
+    }
+    .pv-pearl-divider hr {
+        flex: 1;
+        border: none;
+        height: 1px;
+        background: linear-gradient(to right, transparent, var(--pv-gold), transparent);
+    }
+
+    /* ── Person Card ─────────────────────────────────────── */
+    .pv-person-card {
+        margin: 30px 20px;
+        background: var(--pv-cream);
+        border: 1px solid rgba(201, 169, 110, 0.3);
+        border-radius: 20px;
+        padding: 30px 25px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .pv-person-card::before {
+        content: '';
+        position: absolute;
+        top: -20px; left: -20px;
+        width: 80px; height: 80px;
+        background: url('/static/img/pearl_verdure_bg.png') top left / 200px no-repeat;
+        opacity: 0.3;
+    }
+
+    .pv-arch-photo {
+        width: 180px;
+        height: 240px;
+        border-radius: 90px 90px 0 0;
+        overflow: hidden;
+        border: 2px solid var(--pv-gold);
+        margin: 0 auto 20px;
+        box-shadow: 0 10px 30px rgba(45, 80, 69, 0.2);
+    }
+    .pv-arch-photo img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+    }
+
+    .pv-person-name {
+        font-family: var(--font-script);
+        font-size: 2.8rem;
+        color: var(--pv-green);
+        margin-bottom: 0.3rem;
+    }
+
+    .pv-person-fullname {
+        font-family: var(--font-serif);
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--pv-text-dark);
+        margin-bottom: 0.8rem;
+    }
+
+    .pv-parents {
+        font-family: var(--font-serif);
+        font-size: 0.85rem;
+        color: var(--pv-text-mid);
+        line-height: 1.8;
+    }
+    .pv-parents .parent-label {
+        font-family: var(--font-sans);
+        font-size: 0.6rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--pv-gold);
+        margin-bottom: 4px;
+        display: block;
+    }
+
+    /* ── Event Cards ──────────────────────────────────────── */
+    .pv-event-card {
+        margin: 15px 20px;
+        background: var(--pv-cream);
+        border: 1px solid rgba(201, 169, 110, 0.4);
+        border-radius: 20px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .pv-event-header {
+        background: var(--pv-green);
+        padding: 12px 20px;
+        font-family: var(--font-sans);
+        font-size: 0.6rem;
+        letter-spacing: 4px;
+        text-transform: uppercase;
+        color: var(--pv-gold-light);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+    }
+
+    .pv-event-header::before,
+    .pv-event-header::after {
+        content: '❧';
+        opacity: 0.6;
+    }
+
+    .pv-event-body {
+        padding: 25px 20px;
+        text-align: center;
+    }
+
+    .pv-event-date {
+        font-family: var(--font-serif);
+        font-size: 1.2rem;
+        color: var(--pv-text-dark);
+        font-weight: 600;
+        margin-bottom: 6px;
+    }
+
+    .pv-event-time {
+        font-family: var(--font-sans);
+        font-size: 0.8rem;
+        color: var(--pv-gold);
+        letter-spacing: 2px;
+        margin-bottom: 16px;
+    }
+
+    .pv-event-venue {
+        font-family: var(--font-serif);
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--pv-green);
+        margin-bottom: 6px;
+    }
+
+    .pv-event-address {
+        font-family: var(--font-sans);
+        font-size: 0.8rem;
+        color: var(--pv-text-mid);
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+
+    .pv-map-btn {
+        display: inline-block;
+        background: transparent;
+        border: 1px solid var(--pv-green);
+        color: var(--pv-green);
+        border-radius: 100px;
+        padding: 10px 28px;
+        font-family: var(--font-sans);
+        font-size: 0.65rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .pv-map-btn:hover {
+        background: var(--pv-green);
+        color: var(--pv-gold-light);
+    }
+
+    /* ── Gallery ─────────────────────────────────────────── */
+    .pv-gallery-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3px;
+    }
+    .pv-gallery-grid div {
+        height: 180px;
+        overflow: hidden;
+        position: relative;
+    }
+    .pv-gallery-grid div img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    .pv-gallery-grid div:hover img { transform: scale(1.07); }
+    .pv-gallery-grid div:first-child {
+        grid-column: 1 / -1;
+        height: 250px;
+    }
+
+    /* ── Gift Section ────────────────────────────────────── */
+    .pv-gift-card {
+        margin: 12px 20px;
+        background: var(--pv-cream);
+        border: 1px dashed var(--pv-gold);
+        border-radius: 16px;
+        padding: 25px 20px;
+        text-align: center;
+    }
+    .pv-gift-bank {
+        font-family: var(--font-sans);
+        font-size: 0.6rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: var(--pv-gold);
+        margin-bottom: 8px;
+    }
+    .pv-gift-number {
+        font-family: var(--font-serif);
+        font-size: 1.6rem;
+        color: var(--pv-text-dark);
+        margin-bottom: 4px;
+    }
+    .pv-gift-holder {
+        font-family: var(--font-serif);
+        font-size: 0.9rem;
+        color: var(--pv-text-mid);
+        margin-bottom: 16px;
+    }
+    .pv-copy-btn {
+        background: var(--pv-green);
+        color: var(--pv-gold-light);
+        border: none;
+        border-radius: 100px;
+        padding: 8px 22px;
+        font-family: var(--font-sans);
+        font-size: 0.6rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+    .pv-copy-btn:hover {
+        background: var(--pv-gold);
+        color: var(--pv-green-dark);
+    }
+
+    /* ── RSVP Section ────────────────────────────────────── */
+    .pv-rsvp-form {
+        padding: 0 20px 40px;
+    }
+    .pv-input-group {
+        margin-bottom: 16px;
+        text-align: left;
+    }
+    .pv-input-group label {
+        display: block;
+        font-family: var(--font-sans);
+        font-size: 0.65rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--pv-gold);
+        margin-bottom: 6px;
+    }
+    .pv-input-group input,
+    .pv-input-group select,
+    .pv-input-group textarea {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1px solid rgba(201, 169, 110, 0.4);
+        border-radius: 12px;
+        background: var(--pv-cream);
+        font-family: var(--font-serif);
+        font-size: 0.95rem;
+        color: var(--pv-text-dark);
+        outline: none;
+        transition: border-color 0.3s;
+    }
+    .pv-input-group input:focus,
+    .pv-input-group select:focus,
+    .pv-input-group textarea:focus {
+        border-color: var(--pv-green);
+    }
+    .pv-rsvp-submit {
+        width: 100%;
+        background: var(--pv-green);
+        color: var(--pv-gold-light);
+        border: none;
+        border-radius: 100px;
+        padding: 14px;
+        font-family: var(--font-sans);
+        font-size: 0.75rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.4s;
+        margin-top: 8px;
+        box-shadow: 0 8px 30px rgba(45, 80, 69, 0.4);
+    }
+    .pv-rsvp-submit:hover {
+        background: var(--pv-gold);
+        color: var(--pv-green-dark);
+        transform: translateY(-2px);
+    }
+
+    /* ── Footer ──────────────────────────────────────────── */
+    .pv-footer {
+        position: relative;
+        overflow: hidden;
+        background: var(--pv-green);
+        text-align: center;
+        padding: 60px 20px 40px;
+    }
+    .pv-footer::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url('/static/img/pearl_verdure_bg.png') center bottom / cover no-repeat;
+        opacity: 0.5;
+    }
+    .pv-footer-content {
+        position: relative;
+        z-index: 2;
+    }
+    .pv-footer-name {
+        font-family: var(--font-script);
+        font-size: 3.5rem;
+        color: var(--pv-gold-light);
+        text-shadow: 0 4px 20px rgba(0,0,0,0.4);
+        margin-bottom: 0.5rem;
+    }
+    .pv-footer-credit {
+        font-family: var(--font-sans);
+        font-size: 0.5rem;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: rgba(232, 213, 163, 0.5);
+        margin-top: 1.5rem;
+    }
+
+    /* ── Music Widget ─────────────────────────────────────── */
+    .pv-music-widget {
+        position: fixed;
+        bottom: 24px;
+        right: calc(50% - 215px);
+        z-index: 200;
+        width: 50px; height: 50px;
+        background: var(--pv-green);
+        border: 1px solid var(--pv-gold);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 8px 24px rgba(45, 80, 69, 0.5);
+    }
+    .pv-music-widget:hover {
+        background: var(--pv-gold);
+        transform: scale(1.1);
+    }
+    .pv-music-widget:hover svg { color: var(--pv-green); }
+    .pv-music-widget svg { color: var(--pv-gold-light); }
+    .rotating { animation: spin 4s linear infinite; }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    @media (max-width: 460px) {
+        .pv-music-widget { right: 16px; }
+    }
+
+    /* ── Animate.css shorthand ─────────────────────────────── */
+    .pv-fade { opacity: 0; animation: pvFade 1.2s ease forwards; }
+    .pv-fade-delay-1 { animation-delay: 0.3s; }
+    .pv-fade-delay-2 { animation-delay: 0.6s; }
+    .pv-fade-delay-3 { animation-delay: 0.9s; }
+    @keyframes pvFade { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+{% endblock %}
+
+{% block audio_source %}
+<source src="{{ invitation.song_url }}" type="audio/mpeg">
+{% endblock %}
+
+{% block content %}
+<!-- ═══════════════════════════════════════════════════════
+     COVER
+════════════════════════════════════════════════════════ -->
+<div id="cover">
+    <div class="cover-bg-frame"></div>
+    <div class="cover-content">
+        <p class="cover-label pv-fade">The Wedding of</p>
+
+        <h1 class="cover-couple-name pv-fade pv-fade-delay-1">{{ invitation.couple_name_short }}</h1>
+
+        <div class="cover-date-band pv-fade pv-fade-delay-2">{{ invitation.event_date }}</div>
+
+        <div class="pv-pearl-divider" style="width: 180px;" id="cover-pearl">
+            <hr><span class="pearl big"></span><span class="pearl"></span><span class="pearl big"></span><hr>
+        </div>
+
+        <p class="cover-guest-label pv-fade pv-fade-delay-2">Kepada Yth.</p>
+        <h3 class="cover-guest-name pv-fade pv-fade-delay-3">Tamu Undangan</h3>
+
+        <button id="btn-open" class="pv-btn-open pv-fade pv-fade-delay-3">
+            Buka Undangan
+        </button>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════
+     MAIN INVITATION
+════════════════════════════════════════════════════════ -->
+<div id="invitation-main" class="pv-frame">
+
+    <!-- Opening with frame bg -->
+    <div class="pv-opening">
+        <div class="pv-opening-content">
+            <p class="pv-bismillah">﷽</p>
+            <div class="pv-pearl-divider" style="width: 200px;">
+                <hr><span class="pearl"></span><span class="pearl big"></span><span class="pearl"></span><hr>
+            </div>
+            <div class="pv-opening-names">
+                {{ invitation.bride.name }}
+                <span class="pv-ampersand">&</span>
+                {{ invitation.groom.name }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Quote -->
+    <div class="pv-quote-strip">
+        <p class="pv-quote-text">"{{ invitation.quote.text }}"</p>
+        <p class="pv-quote-source">{{ invitation.quote.source }}</p>
+    </div>
+
+    <!-- Section: Mempelai -->
+    <div class="pv-section" style="padding-bottom: 0;">
+        <p class="pv-section-header">The Couple</p>
+        <h2 class="pv-section-title">Mempelai</h2>
+    </div>
+
+    <!-- Bride Card -->
+    <div class="pv-person-card">
+        <div class="pv-arch-photo">
+            <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride.name }}">
+        </div>
+        <p class="pv-person-name">{{ invitation.bride.name }}</p>
+        <p class="pv-person-fullname">{{ invitation.bride.full_name }}</p>
+        <div class="pv-pearl-divider" style="width: 120px; margin: 12px auto;">
+            <hr><span class="pearl big"></span><hr>
+        </div>
+        <div class="pv-parents">
+            <span class="parent-label">Putri dari</span>
+            Bapak {{ invitation.bride.father_name }}<br>
+            &amp; Ibu {{ invitation.bride.mother_name }}
+        </div>
+    </div>
+
+    <!-- Vine separator -->
+    <div style="text-align: center; padding: 10px 0; font-size: 2.5rem; font-family: var(--font-script); color: var(--pv-gold);">&amp;</div>
+
+    <!-- Groom Card -->
+    <div class="pv-person-card">
+        <div class="pv-arch-photo">
+            <img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom.name }}">
+        </div>
+        <p class="pv-person-name">{{ invitation.groom.name }}</p>
+        <p class="pv-person-fullname">{{ invitation.groom.full_name }}</p>
+        <div class="pv-pearl-divider" style="width: 120px; margin: 12px auto;">
+            <hr><span class="pearl big"></span><hr>
+        </div>
+        <div class="pv-parents">
+            <span class="parent-label">Putra dari</span>
+            Bapak {{ invitation.groom.father_name }}<br>
+            &amp; Ibu {{ invitation.groom.mother_name }}
+        </div>
+    </div>
+
+    <!-- Section: Acara -->
+    <div class="pv-section" style="padding-bottom: 0;">
+        <p class="pv-section-header">Save the Date</p>
+        <h2 class="pv-section-title">Acara</h2>
+    </div>
+
+    <!-- Akad -->
+    <div class="pv-event-card">
+        <div class="pv-event-header">Akad Nikah</div>
+        <div class="pv-event-body">
+            <p class="pv-event-date">{{ invitation.ceremony.date }}</p>
+            <p class="pv-event-time">{{ invitation.ceremony.time }}</p>
+            <div class="pv-pearl-divider" style="margin: 12px 0;">
+                <hr><span class="pearl"></span><span class="pearl big"></span><span class="pearl"></span><hr>
+            </div>
+            <p class="pv-event-venue">{{ invitation.ceremony.venue }}</p>
+            <p class="pv-event-address">{{ invitation.ceremony.address }}</p>
+            <a href="{{ invitation.ceremony.maps_url }}" target="_blank" class="pv-map-btn">Lihat Lokasi</a>
+        </div>
+    </div>
+
+    <!-- Resepsi -->
+    <div class="pv-event-card" style="margin-bottom: 20px;">
+        <div class="pv-event-header">Resepsi</div>
+        <div class="pv-event-body">
+            <p class="pv-event-date">{{ invitation.reception.date }}</p>
+            <p class="pv-event-time">{{ invitation.reception.time }}</p>
+            <div class="pv-pearl-divider" style="margin: 12px 0;">
+                <hr><span class="pearl"></span><span class="pearl big"></span><span class="pearl"></span><hr>
+            </div>
+            <p class="pv-event-venue">{{ invitation.reception.venue }}</p>
+            <p class="pv-event-address">{{ invitation.reception.address }}</p>
+            <a href="{{ invitation.reception.maps_url }}" target="_blank" class="pv-map-btn">Lihat Lokasi</a>
+        </div>
+    </div>
+
+    <!-- Section: Gallery -->
+    {% if !invitation.gallery_images.is_empty() %}
+    <div class="pv-section" style="padding-bottom: 0;">
+        <p class="pv-section-header">Our Story</p>
+        <h2 class="pv-section-title">Gallery</h2>
+    </div>
+    <div class="pv-gallery-grid">
+        {% for img in invitation.gallery_images %}
+        <div>
+            <img src="{{ img }}" alt="Gallery Photo {{ loop.index }}" loading="lazy">
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Section: Gifts -->
+    {% if !invitation.gift_accounts.is_empty() %}
+    <div class="pv-section" style="padding-bottom: 0;">
+        <p class="pv-section-header">Love Gift</p>
+        <h2 class="pv-section-title">Kado Digital</h2>
+    </div>
+    {% for account in invitation.gift_accounts %}
+    <div class="pv-gift-card">
+        <p class="pv-gift-bank">{{ account.bank_name }}</p>
+        <p class="pv-gift-number">{{ account.account_number }}</p>
+        <p class="pv-gift-holder">a.n {{ account.account_holder }}</p>
+        <button class="pv-copy-btn" onclick="copyToClipboard('{{ account.account_number }}')">
+            Salin Nomor
+        </button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- Section: RSVP -->
+    <div class="pv-section">
+        <p class="pv-section-header">Konfirmasi Kehadiran</p>
+        <h2 class="pv-section-title">RSVP</h2>
+    </div>
+
+    <form class="pv-rsvp-form" hx-post="/rsvp" hx-target="#rsvp-response" hx-swap="outerHTML"
+          action="/rsvp" method="POST">
+        <input type="hidden" name="invitation_id" value="{{ invitation.slug }}">
+        <div class="pv-input-group">
+            <label>Nama</label>
+            <input type="text" name="name" placeholder="Nama Lengkap" required>
+        </div>
+        <div class="pv-input-group">
+            <label>Kehadiran</label>
+            <select name="attendance" required>
+                <option value="Hadir">🌿 Insya Allah Hadir</option>
+                <option value="Tidak Hadir">Mohon Maaf, Tidak Dapat Hadir</option>
+            </select>
+        </div>
+        <div class="pv-input-group">
+            <label>Jumlah Tamu</label>
+            <input type="number" name="guests" value="1" min="1" max="10">
+        </div>
+        <div class="pv-input-group">
+            <label>Ucapan &amp; Doa</label>
+            <textarea name="message" rows="3" placeholder="Sampaikan ucapan terbaik Anda..."></textarea>
+        </div>
+        <div id="rsvp-response"></div>
+        <button type="submit" class="pv-rsvp-submit">Kirim Konfirmasi</button>
+    </form>
+
+    <!-- Footer with frame overlay -->
+    <div class="pv-footer">
+        <div class="pv-footer-content">
+            <div class="pv-pearl-divider" style="margin-bottom: 20px;">
+                <hr><span class="pearl"></span><span class="pearl big"></span><span class="pearl big"></span><span class="pearl big"></span><span class="pearl"></span><hr>
+            </div>
+            <p class="pv-footer-name">{{ invitation.couple_name_short }}</p>
+            <p style="font-family: var(--font-sans); font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(232,213,163,0.7);">
+                {{ invitation.event_date }}
+            </p>
+            <p class="pv-footer-credit">Pearl Verdure Collection — Castellant Invitations</p>
+        </div>
+    </div>
+</div>
+
+<!-- Music Widget -->
+<div id="pv-music-widget" class="pv-music-widget">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 18V5l12-2v13"></path>
+        <circle cx="6" cy="18" r="3"></circle>
+        <circle cx="18" cy="16" r="3"></circle>
+    </svg>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const btnOpen    = document.getElementById('btn-open');
+    const cover      = document.getElementById('cover');
+    const mainContent = document.getElementById('invitation-main');
+    const musicWidget = document.getElementById('pv-music-widget');
+    const bgMusic     = document.getElementById('bg-music');
+
+    btnOpen.addEventListener('click', () => {
+        // Slide cover up
+        cover.style.transition = 'all 1.4s cubic-bezier(0.19, 1, 0.22, 1)';
+        cover.style.transform  = 'translateY(-100%)';
+        cover.style.opacity    = '0';
+
+        mainContent.style.display = 'block';
+
+        bgMusic.play().catch(() => {});
+        musicWidget.querySelector('svg').classList.add('rotating');
+
+        setTimeout(() => { cover.style.display = 'none'; }, 1500);
+    });
+
+    musicWidget.addEventListener('click', () => {
+        if (bgMusic.paused) {
+            bgMusic.play();
+            musicWidget.querySelector('svg').classList.add('rotating');
+        } else {
+            bgMusic.pause();
+            musicWidget.querySelector('svg').classList.remove('rotating');
+        }
+    });
+
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            const btn = event.target;
+            const orig = btn.textContent;
+            btn.textContent = '✓ Tersalin!';
+            btn.style.background = 'var(--pv-gold)';
+            btn.style.color = 'var(--pv-green-dark)';
+            setTimeout(() => {
+                btn.textContent = orig;
+                btn.style.background = '';
+                btn.style.color = '';
+            }, 2000);
+        });
+    }
+</script>
+{% endblock %}
