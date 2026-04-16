@@ -281,10 +281,19 @@
         });
     }
 
+    function toggleMobileMenu() {
+        const menu = document.getElementById('mobile-menu');
+        menu.classList.toggle('show');
+        document.body.style.overflow = menu.classList.contains('show') ? 'hidden' : '';
+    }
+
     // Close when clicking outside
     window.onclick = function(event) {
-        if (!event.target.closest('.dropdown')) {
+        if (!event.target.closest('.dropdown') && !event.target.closest('.global-controls')) {
             closeAllDropdowns();
+        }
+        if (event.target === document.getElementById('mobile-menu')) {
+            toggleMobileMenu();
         }
     }
 
@@ -342,78 +351,100 @@
 
 {% block content %}
 <nav class="navbar animate__animated animate__fadeInDown">
-    <div class="nav-brand" style="display: flex; align-items: center; gap: 12px;">
-        <div style="display: flex; flex-direction: column;">
-            <a href="/" class="nav-logo">Castellant</a>
+    <div class="nav-brand">
+        <a href="/" class="nav-logo">Castellant</a>
+    </div>
+    
+    <div class="navbar-right">
+        <div class="nav-links">
+            <a href="/#collections" data-i18n="nav.collections">Collections</a>
+            <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
+            <a href="/#contact" data-i18n="nav.contact">Contact</a>
         </div>
-    </div>
-    <div class="nav-links">
-        <a href="/#collections" data-i18n="nav.collections">Collections</a>
-        <a href="/#pricing" data-i18n="nav.pricing">Pricing</a>
-        <a href="/#contact" data-i18n="nav.contact">Contact</a>
-    </div>
 
-    <div class="global-controls">
-        <div class="dropdown">
-            <button class="btn-global" id="lang-selector-btn" onclick="toggleDropdown('lang-dropdown')">
-                <span id="current-lang-flag">🇮🇩</span>
-                <span id="current-lang-code">ID</span>
-            </button>
-            <div class="dropdown-content" id="lang-dropdown">
-                <a href="#" onclick="setLanguage('id', '🇮🇩')">🇮🇩 Bahasa Indonesia</a>
-                <a href="#" onclick="setLanguage('en', '🇺🇸')">🇺🇸 English</a>
-                <a href="#" onclick="setLanguage('my', '🇲🇾')">🇲🇾 Bahasa Melayu</a>
-                <a href="#" onclick="setLanguage('vi', '🇻🇳')">🇻🇳 Tiếng Việt</a>
-                <a href="#" onclick="setLanguage('th', '🇹🇭')">🇹🇭 ไทย</a>
-                <a href="#" onclick="setLanguage('ja', '🇯🇵')">🇯🇵 日本語</a>
-                <a href="#" onclick="setLanguage('zh', '🇨🇳')">🇨🇳 简体中文</a>
-                <a href="#" onclick="setLanguage('ko', '🇰🇷')">🇰🇷 한국어</a>
-                <a href="#" onclick="setLanguage('nl', '🇳🇱')">🇳🇱 Nederlands</a>
-                <a href="#" onclick="setLanguage('de', '🇩🇪')">🇩🇪 Deutsch</a>
-                <a href="#" onclick="setLanguage('hi', '🇮🇳')">🇮🇳 हिन्दी</a>
-                <a href="#" onclick="setLanguage('ru', '🇷🇺')">🇷🇺 Русский</a>
-                <a href="#" onclick="setLanguage('es', '🇪🇸')">🇪🇸 Español</a>
-                <a href="#" onclick="setLanguage('ar', '🇸🇦')">🇸🇦 العربية</a>
+        <div class="global-controls">
+            <div class="dropdown">
+                <button class="btn-global" id="lang-selector-btn" onclick="toggleDropdown('lang-dropdown')">
+                    <span id="current-lang-flag">🇮🇩</span>
+                    <span id="current-lang-code">ID</span>
+                </button>
+                <div class="dropdown-content" id="lang-dropdown">
+                    <a href="#" onclick="setLanguage('id', '🇮🇩')">🇮🇩 Bahasa Indonesia</a>
+                    <a href="#" onclick="setLanguage('en', '🇺🇸')">🇺🇸 English</a>
+                    <a href="#" onclick="setLanguage('my', '🇲🇾')">🇲🇾 Bahasa Melayu</a>
+                    <a href="#" onclick="setLanguage('vi', '🇻🇳')">🇻🇳 Tiếng Việt</a>
+                    <a href="#" onclick="setLanguage('th', '🇹🇭')">🇹🇭 ไทย</a>
+                    <a href="#" onclick="setLanguage('ja', '🇯🇵')">🇯🇵 日本語</a>
+                    <a href="#" onclick="setLanguage('zh', '🇨🇳')">🇨🇳 简体中文</a>
+                    <a href="#" onclick="setLanguage('ko', '🇰🇷')">🇰🇷 한국어</a>
+                    <a href="#" onclick="setLanguage('nl', '🇳🇱')">🇳🇱 Nederlands</a>
+                    <a href="#" onclick="setLanguage('de', '🇩🇪')">🇩🇪 Deutsch</a>
+                    <a href="#" onclick="setLanguage('hi', '🇮🇳')">🇮🇳 हिन्दी</a>
+                    <a href="#" onclick="setLanguage('ru', '🇷🇺')">🇷🇺 Русский</a>
+                    <a href="#" onclick="setLanguage('es', '🇪🇸')">🇪🇸 Español</a>
+                    <a href="#" onclick="setLanguage('ar', '🇸🇦')">🇸🇦 العربية</a>
+                </div>
+            </div>
+            <div class="dropdown">
+                <button class="btn-global" id="currency-selector-btn" onclick="toggleDropdown('currency-dropdown')">
+                    <span id="current-currency-symbol">Rp</span>
+                    <span id="current-currency-code">IDR</span>
+                </button>
+                <div class="dropdown-content" id="currency-dropdown">
+                    <a href="#" onclick="setCurrency('IDR', 'Rp', 1)">IDR - Rp</a>
+                    <a href="#" onclick="setCurrency('INR', '₹', 0.0053)">INR - ₹</a>
+                    <a href="#" onclick="setCurrency('RUB', '₽', 0.0058)">RUB - ₽</a>
+                    <a href="#" onclick="setCurrency('MYR', 'RM', 0.00028)">MYR - RM</a>
+                    <a href="#" onclick="setCurrency('VND', '₫', 1.57)">VND - ₫</a>
+                    <a href="#" onclick="setCurrency('THB', '฿', 0.0023)">THB - ฿</a>
+                    <a href="#" onclick="setCurrency('USD', '$', 0.000062)">USD - $</a>
+                    <a href="#" onclick="setCurrency('EUR', '€', 0.000058)">EUR - €</a>
+                    <a href="#" onclick="setCurrency('GBP', '£', 0.000050)">GBP - £</a>
+                    <a href="#" onclick="setCurrency('JPY', '¥', 0.0095)">JPY - ¥</a>
+                    <a href="#" onclick="setCurrency('SGD', 'S$', 0.000084)">SGD - S$</a>
+                    <a href="#" onclick="setCurrency('AUD', 'A$', 0.000096)">AUD - A$</a>
+                    <a href="#" onclick="setCurrency('CNY', '¥', 0.00045)">CNY - ¥</a>
+                    <a href="#" onclick="setCurrency('KRW', '₩', 0.086)">KRW - ₩</a>
+                </div>
             </div>
         </div>
-        <div class="dropdown">
-            <button class="btn-global" id="currency-selector-btn" onclick="toggleDropdown('currency-dropdown')">
-                <span id="current-currency-symbol">Rp</span>
-                <span id="current-currency-code">IDR</span>
-            </button>
-            <div class="dropdown-content" id="currency-dropdown">
-                <a href="#" onclick="setCurrency('IDR', 'Rp', 1)">IDR - Rp</a>
-                <a href="#" onclick="setCurrency('INR', '₹', 0.0053)">INR - ₹</a>
-                <a href="#" onclick="setCurrency('RUB', '₽', 0.0058)">RUB - ₽</a>
-                <a href="#" onclick="setCurrency('MYR', 'RM', 0.00028)">MYR - RM</a>
-                <a href="#" onclick="setCurrency('VND', '₫', 1.57)">VND - ₫</a>
-                <a href="#" onclick="setCurrency('THB', '฿', 0.0023)">THB - ฿</a>
-                <a href="#" onclick="setCurrency('USD', '$', 0.000062)">USD - $</a>
-                <a href="#" onclick="setCurrency('EUR', '€', 0.000058)">EUR - €</a>
-                <a href="#" onclick="setCurrency('GBP', '£', 0.000050)">GBP - £</a>
-                <a href="#" onclick="setCurrency('JPY', '¥', 0.0095)">JPY - ¥</a>
-                <a href="#" onclick="setCurrency('SGD', 'S$', 0.000084)">SGD - S$</a>
-                <a href="#" onclick="setCurrency('AUD', 'A$', 0.000096)">AUD - A$</a>
-                <a href="#" onclick="setCurrency('CNY', '¥', 0.00045)">CNY - ¥</a>
-                <a href="#" onclick="setCurrency('KRW', '₩', 0.086)">KRW - ₩</a>
+
+        <div class="user-control" style="display: flex; align-items: center;">
+            {% if let Some(u) = user %}
+            <div class="user-profile">
+                <div class="user-info desktop-only">
+                    <span class="user-name">{{ u.name.as_deref().unwrap_or("User") }}</span>
+                    <a href="/auth/logout" class="user-logout" data-i18n="nav.logout">Logout</a>
+                </div>
+                <img src="{{ u.avatar_url.as_deref().unwrap_or("") }}" alt="Avatar" class="user-avatar">
             </div>
+            {% else %}
+            <a href="/auth/google" class="btn-google-simple">
+                <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" width="14" alt="G">
+                <span data-i18n="nav.signin" class="desktop-only">Sign In</span>
+            </a>
+            {% endif %}
+        </div>
+
+        <div class="burger-menu" onclick="toggleMobileMenu()">
+            <div class="line"></div>
+            <div class="line"></div>
+            <div class="line"></div>
         </div>
     </div>
-    {% if let Some(u) = user %}
-    <div class="user-profile">
-        <div class="user-info">
-            <span class="user-name">{{ u.name.as_deref().unwrap_or("User") }}</span>
-            <a href="/auth/logout" class="user-logout" data-i18n="nav.logout">Logout</a>
-        </div>
-        <img src="{{ u.avatar_url.as_deref().unwrap_or("") }}" alt="Avatar" class="user-avatar">
-    </div>
-    {% else %}
-    <a href="/auth/google" class="btn-google-simple">
-        <img src="https://www.gstatic.com/images/branding/product/1x/gsa_512dp.png" width="14" alt="G">
-        <span data-i18n="nav.signin">Sign In</span>
-    </a>
-    {% endif %}
 </nav>
+
+<!-- Mobile Menu Overlay -->
+<div class="mobile-menu-overlay" id="mobile-menu">
+    <div class="mobile-menu-content">
+        <div class="mobile-menu-close" onclick="toggleMobileMenu()">&times;</div>
+        <div class="mobile-links">
+            <a href="/#collections" onclick="toggleMobileMenu()" data-i18n="nav.collections">Collections</a>
+            <a href="/#pricing" onclick="toggleMobileMenu()" data-i18n="nav.pricing">Pricing</a>
+            <a href="/#contact" onclick="toggleMobileMenu()" data-i18n="nav.contact">Contact</a>
+        </div>
+    </div>
+</div>
 
 {% block site_content %}{% endblock %}
 
