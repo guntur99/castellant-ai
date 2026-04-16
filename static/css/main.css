@@ -1,3 +1,9 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -28,6 +34,10 @@ h1, h2, h3, .serif {
     margin: 0 auto;
 }
 
+.text-center {
+    text-align: center !important;
+}
+
 /* Invitation Mobile Viewport Constraint */
 .invitation-body {
     background: #f0f0f0;
@@ -54,19 +64,36 @@ h1, h2, h3, .serif {
     width: calc(100% - 20px);
     max-width: 1000px;
     margin: 0 auto;
-    height: 60px; /* Reduced for mobile feel */
+    height: 64px;
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
     box-shadow: var(--glass-shadow);
     backdrop-filter: var(--glass-blur);
     border-radius: 100px;
-    padding: 0 1.5rem; /* Increased padding for better breathing room */
+    padding: 0 1.8rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 0;
     z-index: 1000;
-    transition: all 0.3s ease;
-    box-sizing: border-box; /* Critical for preventing overflow */
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+    box-sizing: border-box;
+    overflow: visible; /* Allow absolute children to overflow */
+}
+
+.nav-brand {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+}
+
+.nav-logo {
+    font-family: var(--font-script);
+    font-size: 2.2rem;
+    color: var(--color-accent-red);
+    text-decoration: none;
+    line-height: 1;
+    white-space: nowrap;
 }
 
 @media (min-width: 768px) {
@@ -78,47 +105,55 @@ h1, h2, h3, .serif {
 
 .nav-brand {
     flex-shrink: 0;
-    min-width: 180px; /* Ensure logo area is preserved */
-}
-
-.nav-links {
-    display: none; /* Hide for extreme simplicity on mobile */
+    min-width: 120px; /* Reduced for mobile safety */
 }
 
 @media (min-width: 768px) {
-    .nav-links {
-        display: flex;
-        gap: 1.5rem;
+    .nav-brand {
+        min-width: 180px;
     }
 }
+
+
+/* nav-links is defined below with proper responsive rules */
+
 
 .btn-google-simple {
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: white;
-    border: 1px solid #ddd;
-    padding: 0.5rem 1rem;
+    gap: 6px;
+    background: rgba(255,255,255,0.6);
+    border: 1px solid rgba(0,0,0,0.08);
+    height: 38px;
+    padding: 0 14px;
     border-radius: 50px;
     text-decoration: none;
     color: #444;
-    font-size: 0.8rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
+    font-size: 0.72rem;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    letter-spacing: 0.3px;
 }
 
 .btn-google-simple:hover {
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    background: white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    transform: translateY(-1px);
 }
 
 .hero-title {
-    font-size: 2.5rem; /* Better for mobile */
+    font-size: 2.5rem;
     line-height: 1.2;
+    text-align: center;
+    width: 100%;
 }
 
 @media (min-width: 768px) {
     .hero-title {
         font-size: 4rem;
+        text-align: center;
     }
 }
 
@@ -151,42 +186,53 @@ h1, h2, h3, .serif {
 .navbar-right {
     display: flex;
     align-items: center;
-    gap: 10px; /* Precise gap for mobile */
+    gap: 12px;
     height: 100%;
+    flex-shrink: 0;
 }
 
 @media (min-width: 768px) {
     .navbar-right {
-        gap: 1.5rem;
+        gap: 1.2rem;
     }
 }
 
 .nav-links {
-    display: flex;
-    gap: 1.5rem;
+    display: none;
+    background: none; /* No background - prevents shadow effect */
+    box-shadow: none;
 }
 
-@media (max-width: 1100px) {
+@media (min-width: 1100px) {
     .nav-links {
-        display: none;
+        display: flex;
+        gap: 2rem;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        align-items: center;
+        background: none;
+        box-shadow: none;
     }
 }
 
 .nav-links a {
     text-decoration: none;
     color: var(--color-text-primary);
-    font-size: 0.75rem; /* Slightly smaller for better fit */
+    font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 1px;
     font-weight: 600;
     transition: all 0.3s ease;
-    white-space: nowrap; /* Prevent text wrapping inside nav links */
+    white-space: nowrap;
+    background: none;
 }
 
 .nav-links a:hover {
     color: var(--color-accent-rose);
     transform: translateY(-1px);
 }
+
 
 /* User Profile Sync */
 .user-profile {
@@ -237,21 +283,31 @@ h1, h2, h3, .serif {
 }
 
 .user-avatar {
-    width: 32px;
-    height: 32px;
+    width: 38px; /* Matched with btn-global roundness */
+    height: 38px;
     border-radius: 50%;
     border: 2px solid white;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
     object-fit: cover;
+    transition: all 0.3s ease;
 }
 
-/* Burger Menu */
+.user-avatar:hover {
+    transform: scale(1.05);
+}
+
+/* user-control inherits btn-google-simple pill style */
+
+/* Burger Menu Refined (Shifted to end of group) */
 .burger-menu {
     display: none;
     cursor: pointer;
     flex-direction: column;
-    gap: 4px;
-    padding: 5px;
+    gap: 5px;
+    padding: 8px 4px;
+    width: 24px;
+    transition: all 0.3s ease;
+    align-items: flex-end; /* Standard aesthetic */
 }
 
 @media (max-width: 1100px) {
@@ -261,11 +317,22 @@ h1, h2, h3, .serif {
 }
 
 .burger-menu .line {
-    width: 18px;
     height: 2px;
     background-color: var(--color-text-primary);
-    border-radius: 2px;
+    border-radius: 10px;
     transition: all 0.3s ease;
+}
+
+.burger-menu .line:nth-child(1) { width: 100%; }
+.burger-menu .line:nth-child(2) { width: 70%; }
+.burger-menu .line:nth-child(3) { width: 100%; }
+
+.burger-menu:hover .line {
+    background-color: var(--color-accent-red);
+}
+
+.burger-menu:hover .line:nth-child(2) {
+    width: 100%;
 }
 
 /* Mobile Overlay */
@@ -327,6 +394,12 @@ h1, h2, h3, .serif {
     gap: 15px;
 }
 
+@media (min-width: 1100px) {
+    .navbar {
+        justify-content: space-between; /* Restore desktop layout */
+    }
+}
+
 @media (max-width: 1100px) {
     .desktop-only {
         display: none !important;
@@ -342,6 +415,19 @@ h1, h2, h3, .serif {
     align-items: center;
     padding-top: 100px;
     text-align: center;
+    width: 100%;
+}
+
+/* Global Section Centering */
+section h2,
+section h3,
+section p,
+.section-title,
+.section-desc,
+.collections-title,
+.pricing-title,
+.contact-title {
+    text-align: center;
 }
 
 .hero-subtitle {
@@ -350,7 +436,9 @@ h1, h2, h3, .serif {
     text-transform: uppercase;
     letter-spacing: 4px;
     color: var(--color-accent-rose);
-    margin-bottom: 2rem;
+    margin: 0 auto 2rem;
+    text-align: center;
+    display: block;
 }
 
 .hero-title {
@@ -358,6 +446,7 @@ h1, h2, h3, .serif {
     line-height: 1.1;
     max-width: 800px;
     margin: 0 auto 2rem;
+    text-align: center;
 }
 
 .hero-title em {
@@ -369,8 +458,20 @@ h1, h2, h3, .serif {
     max-width: 600px;
     color: var(--color-text-muted);
     font-size: 1.1rem;
-    margin-bottom: 3rem;
+    margin: 0 auto 3rem;
+    text-align: center;
+    width: 100%;
 }
+
+.hero-cta {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
 
 /* Collection Cards */
 .collections-title {
@@ -560,22 +661,37 @@ h1, h2, h3, .serif {
         padding-top: 120px;
         min-height: auto;
         padding-bottom: 60px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
     }
 
     .hero-title {
         font-size: 2.8rem;
-        width: 100%;
-        padding: 0 10px;
+        max-width: 100%;
+        padding: 0 1rem;
+        margin: 0 auto 1.5rem;
     }
 
     .hero-desc {
         font-size: 0.95rem;
-        padding: 0 20px;
+        padding: 0 1.5rem;
+        max-width: 100%;
+        margin: 0 auto 2.5rem;
     }
 
-    .hero-subtitle {
-        letter-spacing: 2px;
-        margin-bottom: 1rem;
+    .hero-cta {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 0 2rem;
+        align-items: center;
+    }
+
+    .hero-cta .btn {
+        width: 100%;
+        max-width: 300px;
     }
 
     /* Grid & Cards Adaptation */
@@ -654,6 +770,15 @@ h1, h2, h3, .serif {
 @media (max-width: 480px) {
     .hero-title {
         font-size: 2.2rem;
+        text-align: center !important;
+    }
+
+    .hero-desc {
+        text-align: center !important;
+    }
+    
+    .hero-subtitle {
+        text-align: center !important;
     }
     
     .nav-brand .nav-logo {
