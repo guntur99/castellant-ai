@@ -46,11 +46,26 @@ pub struct CreateInvitationTemplate {
     pub is_dev: bool,
 }
 
+#[derive(Serialize, Clone)]
+pub struct TemplateMetadata {
+    pub id: String,
+    pub title: String,
+    pub desc: String,
+    pub category: String,
+    pub price: i32,
+    pub preview_img: String,
+    pub plan: String,
+}
+
 #[derive(Template)]
 #[template(path = "invitation/templates_list.html")]
 pub struct TemplatesListTemplate {
     pub user: Option<User>,
     pub active_category: String,
+    pub templates: Vec<TemplateMetadata>,
+    pub current_page: i32,
+    pub total_pages: i32,
+    pub search_query: String,
     pub is_dev: bool,
 }
 
@@ -59,6 +74,134 @@ pub async fn templates_list(
     Query(params): Query<HashMap<String, String>>,
     jar: PrivateCookieJar,
 ) -> impl IntoResponse {
+    let templates_data = vec![
+        TemplateMetadata { 
+            id: "vintage".to_string(), 
+            title: "Vintage Archival".to_string(),
+            desc: "Hand-drawn botanicals meets neoclassical architecture. A design for those who value tradition.".to_string(),
+            category: "essential".to_string(),
+            price: 50000,
+            preview_img: "/static/img/vintage_preview.png".to_string(),
+            plan: "essential".to_string(),
+        },
+        TemplateMetadata { 
+            id: "minimalist".to_string(), 
+            title: "Modern Minimalist".to_string(),
+            desc: "The purity of typography and wide-open spaces. A sanctuary of calm for the contemporary tastemaker.".to_string(),
+            category: "essential".to_string(),
+            price: 50000,
+            preview_img: "/static/img/minimalist_preview.png".to_string(),
+            plan: "essential".to_string(),
+        },
+        TemplateMetadata { 
+            id: "noir".to_string(), 
+            title: "Architectural Noir".to_string(),
+            desc: "Deep contrasts and structural bold lines. For invitations that demand presence and command attention.".to_string(),
+            category: "essential".to_string(),
+            price: 50000,
+            preview_img: "/static/img/noir_preview.png".to_string(),
+            plan: "essential".to_string(),
+        },
+        TemplateMetadata { 
+            id: "ivory_halo".to_string(), 
+            title: "Ivory Halo".to_string(),
+            desc: "Taupe lace mandala with a delicate gold halo frame. Islamic elegance meets timeless beauty.".to_string(),
+            category: "signature".to_string(),
+            price: 100000,
+            preview_img: "/static/img/ivory_halo_preview.png".to_string(),
+            plan: "signature".to_string(),
+        },
+        TemplateMetadata { 
+            id: "blush_petal".to_string(), 
+            title: "Blush Petal".to_string(),
+            desc: "Soft peach gradient with white 3D botanical vines and magnolia blooms. Romantic and feminine.".to_string(),
+            category: "signature".to_string(),
+            price: 100000,
+            preview_img: "/static/img/blush_petal_preview.png".to_string(),
+            plan: "signature".to_string(),
+        },
+        TemplateMetadata { 
+            id: "pearl_verdure".to_string(), 
+            title: "Pearl Verdure".to_string(),
+            desc: "Deep forest green with champagne gold 3D botanical frame and pearl accents. Dramatic luxury.".to_string(),
+            category: "signature".to_string(),
+            price: 100000,
+            preview_img: "/static/img/pearl_verdure_preview.png".to_string(),
+            plan: "signature".to_string(),
+        },
+        TemplateMetadata { 
+            id: "emerald_filigree".to_string(), 
+            title: "Emerald Filigree".to_string(),
+            desc: "Forest green with ornate gold filigree scrollwork and ivory magnolia blooms. Opulent grandeur.".to_string(),
+            category: "signature".to_string(),
+            price: 100000,
+            preview_img: "/static/img/emerald_filigree_preview.png".to_string(),
+            plan: "signature".to_string(),
+        },
+        TemplateMetadata { 
+            id: "crimson_grace".to_string(), 
+            title: "Crimson Grace".to_string(),
+            desc: "Split ivory-terracotta with white lace flowers and Islamic arch medallion. Bold, soulful beauty.".to_string(),
+            category: "signature".to_string(),
+            price: 100000,
+            preview_img: "/static/img/crimson_grace_preview.png".to_string(),
+            plan: "signature".to_string(),
+        },
+        TemplateMetadata { 
+            id: "golden_quill".to_string(), 
+            title: "Golden Quill".to_string(),
+            desc: "Dark green with ultra-detailed gold quilling botanical frame. The pinnacle of paper art luxury.".to_string(),
+            category: "signature".to_string(),
+            price: 100000,
+            preview_img: "/static/img/golden_quill_preview.png".to_string(),
+            plan: "signature".to_string(),
+        },
+        TemplateMetadata { 
+            id: "azure_solace".to_string(), 
+            title: "Azure Solace".to_string(),
+            desc: "A serene blend of Aegean blue and silver foil, reflecting the calm of an ocean dawn.".to_string(),
+            category: "signature".to_string(),
+            price: 100000,
+            preview_img: "https://images.unsplash.com/photo-1549333321-22fca4666ca0?auto=format&fit=crop&q=80&w=800".to_string(),
+            plan: "signature".to_string(),
+        },
+        TemplateMetadata { 
+            id: "midnight_silk".to_string(), 
+            title: "Midnight Silk".to_string(),
+            desc: "Mysterious charcoal background with iridescent silk patterns and platinum typography.".to_string(),
+            category: "archival".to_string(),
+            price: 150000,
+            preview_img: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&q=80&w=800".to_string(),
+            plan: "archival".to_string(),
+        },
+        TemplateMetadata { 
+            id: "radiant_bloom".to_string(), 
+            title: "Radiant Bloom".to_string(),
+            desc: "Vibrant floral illustrations with modern serif fonts. Full of life and joy.".to_string(),
+            category: "essential".to_string(),
+            price: 50000,
+            preview_img: "https://images.unsplash.com/photo-1522673607200-164841babd3c?auto=format&fit=crop&q=80&w=800".to_string(),
+            plan: "essential".to_string(),
+        },
+        TemplateMetadata { 
+            id: "timeless_marble".to_string(), 
+            title: "Timeless Marble".to_string(),
+            desc: "Carrara marble texture with gold leaf veins. A classic choice for the ages.".to_string(),
+            category: "archival".to_string(),
+            price: 150000,
+            preview_img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800".to_string(),
+            plan: "archival".to_string(),
+        },
+        TemplateMetadata { 
+            id: "royal_velvet".to_string(), 
+            title: "Royal Velvet".to_string(),
+            desc: "Deep purple tones with royal crest elements and silver thread details.".to_string(),
+            category: "archival".to_string(),
+            price: 150000,
+            preview_img: "https://images.unsplash.com/photo-1604076913837-52ab56298ba9?auto=format&fit=crop&q=80&w=800".to_string(),
+            plan: "archival".to_string(),
+        },
+    ];
     let user = match jar.get("user_id") {
         Some(cookie) => {
             let uid = Uuid::parse_str(cookie.value()).ok();
@@ -76,10 +219,29 @@ pub async fn templates_list(
     };
 
     let category = params.get("category").cloned().unwrap_or_else(|| "all".to_string());
-    
+    let search = params.get("search").cloned().unwrap_or_default().to_lowercase();
+    let page = params.get("page").and_then(|p| p.parse::<i32>().ok()).unwrap_or(1);
+    let per_page = 6;
+
+    let filtered: Vec<TemplateMetadata> = templates_data.into_iter()
+        .filter(|t| category == "all" || t.category == category)
+        .filter(|t| search.is_empty() || t.title.to_lowercase().contains(&search) || t.desc.to_lowercase().contains(&search))
+        .collect();
+
+    let total_pages = ((filtered.len() as f32) / (per_page as f32)).ceil() as i32;
+    let start_idx = ((page - 1) * per_page) as usize;
+    let paginated = filtered.into_iter()
+        .skip(start_idx)
+        .take(per_page as usize)
+        .collect();
+
     HtmlTemplate(TemplatesListTemplate { 
         user, 
         active_category: category,
+        templates: paginated,
+        current_page: page,
+        total_pages,
+        search_query: search,
         is_dev: state.is_dev
     }).into_response()
 }

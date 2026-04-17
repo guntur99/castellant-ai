@@ -2,7 +2,7 @@
 
 {% block site_content %}
 <section class="container" style="padding: 100px 0;">
-    <div style="text-align: center; margin-bottom: 5rem;" class="animate__animated animate__fadeIn">
+    <div style="text-align: center; margin-bottom: 4rem;" class="animate__animated animate__fadeIn">
         <h1 class="serif" style="font-size: clamp(2.5rem, 6vw, 4rem); margin-top: 2.5rem; margin-bottom: 1.5rem;"
             data-i18n="templates.title">Select Your <em>Design Aesthetic</em></h1>
         <p style="color: var(--color-text-muted); max-width: 600px; margin: 0 auto; line-height: 1.8;"
@@ -12,310 +12,103 @@
         </p>
     </div>
 
+    <!-- Search Bar -->
+    <div style="max-width: 600px; margin: 0 auto 3rem; position: relative;" class="animate__animated animate__fadeInUp">
+        <input type="text" id="template-search" placeholder="Search for your dream design..." 
+               value="{{ search_query }}"
+               style="width: 100%; padding: 1.2rem 3.5rem 1.2rem 2rem; border-radius: 100px; border: 1px solid #eee; background: white; font-family: var(--font-sans); box-shadow: 0 10px 30px rgba(0,0,0,0.03); outline: none; transition: all 0.3s ease;">
+        <div style="position: absolute; right: 2rem; top: 50%; transform: translateY(-50%); opacity: 0.3;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </div>
+    </div>
+
     <!-- Filter Chips -->
     <div class="filter-zone"
         style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 4rem; flex-wrap: wrap;">
-        <button class="filter-chip {% if active_category == " all" %}active{% endif %}" onclick="filterTemplates('all')"
+        <button class="filter-chip {% if active_category == "all" %}active{% endif %}" onclick="filterTemplates('all')"
             data-filter="all" data-i18n="templates.filter.all">All Collections</button>
-        <button class="filter-chip {% if active_category == " essential" %}active{% endif %}"
+        <button class="filter-chip {% if active_category == "essential" %}active{% endif %}"
             onclick="filterTemplates('essential')" data-filter="essential" data-i18n="templates.filter.essential">Essential Estate</button>
-        <button class="filter-chip {% if active_category == " signature" %}active{% endif %}"
+        <button class="filter-chip {% if active_category == "signature" %}active{% endif %}"
             onclick="filterTemplates('signature')" data-filter="signature" data-i18n="templates.filter.signature">Signature Heritage</button>
-        <button class="filter-chip {% if active_category == " archival" %}active{% endif %}"
+        <button class="filter-chip {% if active_category == "archival" %}active{% endif %}"
             onclick="filterTemplates('archival')" data-filter="archival" data-i18n="templates.filter.archival">Imperial Archival</button>
     </div>
 
     <div class="templates-grid" id="templates-grid">
-        <!-- Empty State (Hidden) -->
-        <div id="empty-state" style="display: none; grid-column: 1 / -1; padding: 5rem 0; text-align: center;">
+        {% if templates.is_empty() %}
+        <!-- Empty State -->
+        <div id="empty-state" style="grid-column: 1 / -1; padding: 5rem 0; text-align: center;">
             <div style="font-size: 3rem; margin-bottom: 1.5rem; opacity: 0.3;">🏛️</div>
             <h3 class="serif" style="font-size: 1.8rem; color: #2A1E14; margin-bottom: 1rem;"
                 data-i18n="templates.empty.title">Coming Soon</h3>
             <p style="color: #999; max-width: 400px; margin: 0 auto;" data-i18n="templates.empty.desc">Our artisans are
                 currently crafting new legacies for this collection. Please choose from our available estates.</p>
         </div>
-
-        <!-- Vintage -->
-        <div class="template-card-container" data-category="essential">
-            <div class="collection-card">
-                <div class="card-preview">
-                    <img src="/static/img/vintage_preview.png" alt="Vintage Archival">
-                    <div class="price-badge-lg badge-essential" data-base-price="50000">Rp 50k</div>
-                </div>
-                <div style="padding: 2rem; text-align: left;">
-                    <div style="margin-bottom: 1rem;">
-                        <span
-                            style="font-size: 0.6rem; color: #8E6E53; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;"
-                            data-i18n="templates.category.essential">Essential Collection</span>
-                        <h3 class="serif" style="font-size: 1.4rem; margin: 0.3rem 0;"
-                            data-i18n="templates.vintage.title">Vintage Archival</h3>
+        {% else %}
+            {% for t in templates %}
+            <div class="template-card-container" data-category="{{ t.category }}">
+                <div class="collection-card">
+                    <div class="card-preview">
+                        <img src="{{ t.preview_img }}" alt="{{ t.title }}">
+                        <div class="price-badge-lg badge-{{ t.category }}" data-base-price="{{ t.price }}">Rp {{ t.price / 1000 }}k</div>
                     </div>
-                    <p style="color: #888; font-size: 0.8rem; line-height: 1.6; margin-bottom: 1.5rem;"
-                        data-i18n="templates.vintage.desc">
-                        Hand-drawn botanicals meets neoclassical architecture. A design for those who value tradition.
-                    </p>
-                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <a href="/invitation/vintage-sample" target="_blank" class="btn-luxe-outline"
-                            style="flex: 1; justify-content: center; padding: 1rem; font-size: 0.85rem;">
-                            <span data-i18n="templates.preview">Preview</span>
-                        </a>
-                        <a href="/create?template=vintage&plan=essential" class="btn-luxe-primary"
-                            style="flex: 1.5; justify-content: center; padding: 1.1rem; font-size: 0.9rem;">
-                            <span data-i18n="templates.choose">Choose Design</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Minimalist -->
-        <div class="template-card-container" data-category="essential">
-            <div class="collection-card">
-                <div class="card-preview">
-                    <img src="/static/img/minimalist_preview.png" alt="Modern Minimalist">
-                    <div class="price-badge-lg badge-essential" data-base-price="50000">Rp 50k</div>
-                </div>
-                <div style="padding: 2rem; text-align: left;">
-                    <div style="margin-bottom: 1rem;">
-                        <span
-                            style="font-size: 0.6rem; color: #8E6E53; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;"
-                            data-i18n="templates.category.essential">Essential Collection</span>
-                        <h3 class="serif" style="font-size: 1.4rem; margin: 0.3rem 0;"
-                            data-i18n="templates.minimalist.title">Modern Minimalist</h3>
-                    </div>
-                    <p style="color: #888; font-size: 0.8rem; line-height: 1.6; margin-bottom: 1.5rem;"
-                        data-i18n="templates.minimalist.desc">
-                        The purity of typography and wide-open spaces. A sanctuary of calm for the contemporary
-                        tastemaker.
-                    </p>
-                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <a href="/invitation/minimalist-sample" target="_blank" class="btn-luxe-outline"
-                            style="flex: 1; justify-content: center; padding: 1rem; font-size: 0.85rem;">
-                            <span data-i18n="templates.preview">Preview</span>
-                        </a>
-                        <a href="/create?template=minimalist&plan=essential" class="btn-luxe-primary"
-                            style="flex: 1.5; justify-content: center; padding: 1.1rem; font-size: 0.9rem;">
-                            <span data-i18n="templates.choose">Choose Design</span>
-                        </a>
+                    <div style="padding: 2rem; text-align: left;">
+                        <div style="margin-bottom: 1rem;">
+                            <span class="category-label-{{ t.category }}"
+                                style="font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;"
+                                data-i18n="templates.category.{{ t.category }}">
+                                {{ t.category }} Collection
+                            </span>
+                            <h3 class="serif" style="font-size: 1.4rem; margin: 0.3rem 0;"
+                                data-i18n="templates.{{ t.id }}.title">{{ t.title }}</h3>
+                        </div>
+                        <p style="color: #888; font-size: 0.8rem; line-height: 1.6; margin-bottom: 1.5rem;"
+                            data-i18n="templates.{{ t.id }}.desc">
+                            {{ t.desc }}
+                        </p>
+                        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                            <a href="/invitation/{{ t.id }}-sample" target="_blank" class="btn-luxe-outline"
+                                style="flex: 1; justify-content: center; padding: 1rem; font-size: 0.85rem;">
+                                <span data-i18n="templates.preview">Preview</span>
+                            </a>
+                            <a href="/create?template={{ t.id }}&plan={{ t.plan }}" class="btn-luxe-primary btn-plan-{{ t.category }}"
+                                style="flex: 1.5; justify-content: center; padding: 1.1rem; font-size: 0.9rem;">
+                                <span data-i18n="templates.choose">Choose Design</span>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <!-- Noir -->
-        <div class="template-card-container" data-category="essential">
-            <div class="collection-card">
-                <div class="card-preview">
-                    <img src="/static/img/noir_preview.png" alt="Architectural Noir" style="filter: contrast(1.1);">
-                    <div class="price-badge-lg badge-essential" data-base-price="50000">Rp 50k</div>
-                </div>
-                <div style="padding: 2rem; text-align: left;">
-                    <div style="margin-bottom: 1rem;">
-                        <span
-                            style="font-size: 0.6rem; color: #8E6E53; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;"
-                            data-i18n="templates.category.essential">Essential Collection</span>
-                        <h3 class="serif" style="font-size: 1.4rem; margin: 0.3rem 0;" data-i18n="templates.noir.title">
-                            Architectural Noir</h3>
-                    </div>
-                    <p style="color: #888; font-size: 0.8rem; line-height: 1.6; margin-bottom: 1.5rem;"
-                        data-i18n="templates.noir.desc">
-                        Deep contrasts and structural bold lines. For invitations that demand presence and command
-                        attention.
-                    </p>
-                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <a href="/invitation/noir-sample" target="_blank" class="btn-luxe-outline"
-                            style="flex: 1; justify-content: center; padding: 1rem; font-size: 0.85rem;">
-                            <span data-i18n="templates.preview">Preview</span>
-                        </a>
-                        <a href="/create?template=noir&plan=essential" class="btn-luxe-primary"
-                            style="flex: 1.5; justify-content: center; padding: 1.1rem; font-size: 0.9rem;">
-                            <span data-i18n="templates.choose">Choose Design</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Ivory Halo (Signature) -->
-        <div class="template-card-container" data-category="signature">
-            <div class="collection-card">
-                <div class="card-preview">
-                    <img src="/static/img/ivory_halo_preview.png" alt="Ivory Halo">
-                    <div class="price-badge-lg badge-signature" data-base-price="100000">Rp 100k</div>
-                </div>
-                <div style="padding: 2rem; text-align: left;">
-                    <div style="margin-bottom: 1rem;">
-                        <span
-                            style="font-size: 0.6rem; color: #B8AA9A; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;"
-                            data-i18n="templates.category.signature">Signature Collection</span>
-                        <h3 class="serif" style="font-size: 1.4rem; margin: 0.3rem 0;"
-                            data-i18n="templates.ivory_halo.title">Ivory Halo</h3>
-                    </div>
-                    <p style="color: #888; font-size: 0.8rem; line-height: 1.6; margin-bottom: 1.5rem;"
-                        data-i18n="templates.ivory_halo.desc">Taupe lace mandala with a delicate gold halo frame.
-                        Islamic elegance meets timeless beauty.</p>
-                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <a href="/invitation/ivory-halo-sample" target="_blank" class="btn-luxe-outline"
-                            style="flex: 1; justify-content: center; padding: 1rem; font-size: 0.85rem;"><span
-                                data-i18n="templates.preview">Preview</span></a>
-                        <a href="/create?template=ivory_halo&plan=signature" class="btn-luxe-primary"
-                            style="flex: 1.5; justify-content: center; padding: 1.1rem; font-size: 0.9rem; background: linear-gradient(135deg, #B8AA9A 0%, #C5A869 100%);"><span
-                                data-i18n="templates.choose">Choose Design</span></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Blush Petal (Signature) -->
-        <div class="template-card-container" data-category="signature">
-            <div class="collection-card">
-                <div class="card-preview">
-                    <img src="/static/img/blush_petal_preview.png" alt="Blush Petal">
-                    <div class="price-badge-lg badge-signature" data-base-price="100000">Rp 100k</div>
-                </div>
-                <div style="padding: 2rem; text-align: left;">
-                    <div style="margin-bottom: 1rem;">
-                        <span
-                            style="font-size: 0.6rem; color: #E8A990; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;"
-                            data-i18n="templates.category.signature">Signature Collection</span>
-                        <h3 class="serif" style="font-size: 1.4rem; margin: 0.3rem 0;"
-                            data-i18n="templates.blush_petal.title">Blush Petal</h3>
-                    </div>
-                    <p style="color: #888; font-size: 0.8rem; line-height: 1.6; margin-bottom: 1.5rem;"
-                        data-i18n="templates.blush_petal.desc">Soft peach gradient with white 3D botanical vines and
-                        magnolia blooms. Romantic and feminine.</p>
-                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <a href="/invitation/blush-petal-sample" target="_blank" class="btn-luxe-outline"
-                            style="flex: 1; justify-content: center; padding: 1rem; font-size: 0.85rem;"><span
-                                data-i18n="templates.preview">Preview</span></a>
-                        <a href="/create?template=blush_petal&plan=signature" class="btn-luxe-primary"
-                            style="flex: 1.5; justify-content: center; padding: 1.1rem; font-size: 0.9rem; background: linear-gradient(135deg, #E8A990 0%, #C47B6A 100%);"><span
-                                data-i18n="templates.choose">Choose Design</span></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Pearl Verdure (Signature) -->
-        <div class="template-card-container" data-category="signature">
-            <div class="collection-card">
-                <div class="card-preview">
-                    <img src="/static/img/pearl_verdure_preview.png" alt="Pearl Verdure">
-                    <div class="price-badge-lg badge-signature" data-base-price="100000">Rp 100k</div>
-                </div>
-                <div style="padding: 2rem; text-align: left;">
-                    <div style="margin-bottom: 1rem;">
-                        <span
-                            style="font-size: 0.6rem; color: #2D5045; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;"
-                            data-i18n="templates.category.signature">Signature Collection</span>
-                        <h3 class="serif" style="font-size: 1.4rem; margin: 0.3rem 0;"
-                            data-i18n="templates.pearl_verdure.title">Pearl Verdure</h3>
-                    </div>
-                    <p style="color: #888; font-size: 0.8rem; line-height: 1.6; margin-bottom: 1.5rem;"
-                        data-i18n="templates.pearl_verdure.desc">Deep forest green with champagne gold 3D botanical
-                        frame and pearl accents. Dramatic luxury.</p>
-                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <a href="/invitation/pearl-verdure-sample" target="_blank" class="btn-luxe-outline"
-                            style="flex: 1; justify-content: center; padding: 1rem; font-size: 0.85rem;"><span
-                                data-i18n="templates.preview">Preview</span></a>
-                        <a href="/create?template=pearl_verdure&plan=signature" class="btn-luxe-primary"
-                            style="flex: 1.5; justify-content: center; padding: 1.1rem; font-size: 0.9rem; background: linear-gradient(135deg, #2D5045 0%, #C9A96E 100%);"><span
-                                data-i18n="templates.choose">Choose Design</span></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Emerald Filigree (Signature) -->
-        <div class="template-card-container" data-category="signature">
-            <div class="collection-card">
-                <div class="card-preview">
-                    <img src="/static/img/emerald_filigree_preview.png" alt="Emerald Filigree">
-                    <div class="price-badge-lg badge-signature" data-base-price="100000">Rp 100k</div>
-                </div>
-                <div style="padding: 2rem; text-align: left;">
-                    <div style="margin-bottom: 1rem;">
-                        <span
-                            style="font-size: 0.6rem; color: #1E4034; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;"
-                            data-i18n="templates.category.signature">Signature Collection</span>
-                        <h3 class="serif" style="font-size: 1.4rem; margin: 0.3rem 0;"
-                            data-i18n="templates.emerald_filigree.title">Emerald Filigree</h3>
-                    </div>
-                    <p style="color: #888; font-size: 0.8rem; line-height: 1.6; margin-bottom: 1.5rem;"
-                        data-i18n="templates.emerald_filigree.desc">Forest green with ornate gold filigree scrollwork
-                        and ivory magnolia blooms. Opulent grandeur.</p>
-                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <a href="/invitation/emerald-filigree-sample" target="_blank" class="btn-luxe-outline"
-                            style="flex: 1; justify-content: center; padding: 1rem; font-size: 0.85rem;"><span
-                                data-i18n="templates.preview">Preview</span></a>
-                        <a href="/create?template=emerald_filigree&plan=signature" class="btn-luxe-primary"
-                            style="flex: 1.5; justify-content: center; padding: 1.1rem; font-size: 0.9rem; background: linear-gradient(135deg, #1E4034 0%, #C9A455 100%);"><span
-                                data-i18n="templates.choose">Choose Design</span></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Crimson Grace (Signature) -->
-        <div class="template-card-container" data-category="signature">
-            <div class="collection-card">
-                <div class="card-preview">
-                    <img src="/static/img/crimson_grace_preview.png" alt="Crimson Grace">
-                    <div class="price-badge-lg badge-signature" data-base-price="100000">Rp 100k</div>
-                </div>
-                <div style="padding: 2rem; text-align: left;">
-                    <div style="margin-bottom: 1rem;">
-                        <span
-                            style="font-size: 0.6rem; color: #8B2B1C; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;"
-                            data-i18n="templates.category.signature">Signature Collection</span>
-                        <h3 class="serif" style="font-size: 1.4rem; margin: 0.3rem 0;"
-                            data-i18n="templates.crimson_grace.title">Crimson Grace</h3>
-                    </div>
-                    <p style="color: #888; font-size: 0.8rem; line-height: 1.6; margin-bottom: 1.5rem;"
-                        data-i18n="templates.crimson_grace.desc">Split ivory-terracotta with white lace flowers and
-                        Islamic arch medallion. Bold, soulful beauty.</p>
-                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <a href="/invitation/crimson-grace-sample" target="_blank" class="btn-luxe-outline"
-                            style="flex: 1; justify-content: center; padding: 1rem; font-size: 0.85rem;"><span
-                                data-i18n="templates.preview">Preview</span></a>
-                        <a href="/create?template=crimson_grace&plan=signature" class="btn-luxe-primary"
-                            style="flex: 1.5; justify-content: center; padding: 1.1rem; font-size: 0.9rem; background: linear-gradient(115deg, #8B2B1C 0%, #C5A255 100%);"><span
-                                data-i18n="templates.choose">Choose Design</span></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Golden Quill (Signature) -->
-        <div class="template-card-container" data-category="signature">
-            <div class="collection-card">
-                <div class="card-preview">
-                    <img src="/static/img/golden_quill_preview.png" alt="Golden Quill">
-                    <div class="price-badge-lg badge-signature" data-base-price="100000">Rp 100k</div>
-                </div>
-                <div style="padding: 2rem; text-align: left;">
-                    <div style="margin-bottom: 1rem;">
-                        <span
-                            style="font-size: 0.6rem; color: #1C3D2E; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;"
-                            data-i18n="templates.category.signature">Signature Collection</span>
-                        <h3 class="serif" style="font-size: 1.4rem; margin: 0.3rem 0;"
-                            data-i18n="templates.golden_quill.title">Golden Quill</h3>
-                    </div>
-                    <p style="color: #888; font-size: 0.8rem; line-height: 1.6; margin-bottom: 1.5rem;"
-                        data-i18n="templates.golden_quill.desc">Dark green with ultra-detailed gold quilling botanical
-                        frame. The pinnacle of paper art luxury.</p>
-                    <div style="display: flex; gap: 1rem; margin-top: 2rem;">
-                        <a href="/invitation/golden-quill-sample" target="_blank" class="btn-luxe-outline"
-                            style="flex: 1; justify-content: center; padding: 1rem; font-size: 0.85rem;"><span
-                                data-i18n="templates.preview">Preview</span></a>
-                        <a href="/create?template=golden_quill&plan=signature" class="btn-luxe-primary"
-                            style="flex: 1.5; justify-content: center; padding: 1.1rem; font-size: 0.9rem; background: linear-gradient(135deg, #1C3D2E 0%, #C9A035 100%);"><span
-                                data-i18n="templates.choose">Choose Design</span></a>
-                    </div>
-                </div>
-            </div>
-        </div>
+            {% endfor %}
+        {% endif %}
     </div>
+
+    <!-- Pagination -->
+    {% if total_pages > 1 %}
+    <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 5rem;">
+        {% if current_page > 1 %}
+        <a href="?category={{ active_category }}&search={{ search_query }}&page={{ current_page - 1 }}" class="page-nav">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+        </a>
+        {% endif %}
+
+        <div style="display: flex; gap: 0.5rem;">
+            {% for i in 1..total_pages + 1 %}
+            <a href="?category={{ active_category }}&search={{ search_query }}&page={{ i }}" 
+               class="page-num {% if i == current_page %}active{% endif %}">
+                {{ i }}
+            </a>
+            {% endfor %}
+        </div>
+
+        {% if current_page < total_pages %}
+        <a href="?category={{ active_category }}&search={{ search_query }}&page={{ current_page + 1 }}" class="page-nav">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
 </section>
 
 <style>
@@ -323,6 +116,20 @@
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
         gap: 2.5rem;
+    }
+
+    /* Category Labels */
+    .category-label-essential { color: #8E6E53; }
+    .category-label-signature { color: #B8AA9A; }
+    .category-label-archival { color: #1D3557; }
+
+    /* Button Variations */
+    .btn-plan-signature { background: linear-gradient(135deg, #B8AA9A 0%, #C5A869 100%) !important; }
+    .btn-plan-archival { background: linear-gradient(135deg, #1D3557 0%, #457B9D 100%) !important; }
+
+    #template-search:focus {
+        border-color: #D4A373 !important;
+        box-shadow: 0 10px 40px rgba(212, 163, 115, 0.1) !important;
     }
 
     .filter-chip {
@@ -351,12 +158,40 @@
         box-shadow: 0 10px 20px rgba(142, 110, 83, 0.2);
     }
 
+    .page-num, .page-nav {
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: white;
+        border: 1px solid #eee;
+        color: var(--color-text-muted);
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .page-num.active {
+        background: var(--color-accent-red);
+        border-color: var(--color-accent-red);
+        color: white;
+        box-shadow: 0 8px 20px rgba(139, 42, 42, 0.2);
+    }
+
+    .page-num:hover:not(.active), .page-nav:hover {
+        border-color: var(--color-accent-rose);
+        color: var(--color-accent-red);
+        transform: translateY(-2px);
+    }
+
     .btn-luxe-outline {
         display: flex;
         align-items: center;
         background: transparent;
-        border: 1px solid #D4A373;
-        color: #D4A373;
+        border: 1px solid #eee;
+        color: var(--color-text-primary);
         border-radius: 50px;
         text-decoration: none;
         font-family: var(--font-serif);
@@ -369,20 +204,10 @@
     }
 
     .btn-luxe-outline:hover {
-        background: #D4A373;
-        color: white;
-        box-shadow: 0 10px 25px rgba(212, 163, 115, 0.3);
+        border-color: #D4A373;
+        color: #D4A373;
+        box-shadow: 0 10px 25px rgba(212, 163, 115, 0.1);
         transform: translateY(-3px);
-    }
-
-    .btn-luxe-outline .arrow-icon {
-        margin-left: 12px;
-        font-size: 0.9rem;
-        transition: transform 0.4s ease;
-    }
-
-    .btn-luxe-outline:hover .arrow-icon {
-        transform: translateX(5px) rotate(15deg);
     }
 
     .btn-luxe-primary {
@@ -408,81 +233,35 @@
         box-shadow: 0 15px 30px rgba(142, 110, 83, 0.4);
     }
 
-    .btn-luxe-primary::after {
-        content: '';
-        position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
-        background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-        transform: rotate(45deg);
-        transition: 0.8s;
-    }
-
-    .btn-luxe-primary:hover::after {
-        left: 100%;
-        top: 100%;
-    }
-
     @media (max-width: 768px) {
         .templates-grid {
             grid-template-columns: 1fr;
         }
-
-        .filter-zone {
-            gap: 0.8rem;
-        }
-
-        .filter-chip {
-            padding: 0.6rem 1.2rem;
-            font-size: 0.75rem;
-        }
+        .filter-zone { gap: 0.8rem; }
+        .filter-chip { padding: 0.6rem 1.2rem; font-size: 0.75rem; }
     }
 </style>
 
 <script>
-    function filterTemplates(category) {
-        const cards = document.querySelectorAll('.template-card-container');
-        const chips = document.querySelectorAll('.filter-chip');
-        let visibleCount = 0;
+    const searchInput = document.getElementById('template-search');
+    let searchTimeout;
 
-        chips.forEach(chip => {
-            if (chip.getAttribute('data-filter') === category) {
-                chip.classList.add('active');
-            } else {
-                chip.classList.remove('active');
-            }
-        });
-
-        cards.forEach(card => {
-            if (category === 'all' || card.getAttribute('data-category') === category) {
-                card.style.display = 'block';
-                card.classList.add('animate__animated', 'animate__fadeIn');
-                visibleCount++;
-            } else {
-                card.style.display = 'none';
-            }
-        });
-
-        const emptyState = document.getElementById('empty-state');
-        if (visibleCount === 0) {
-            emptyState.style.display = 'block';
-            emptyState.classList.add('animate__animated', 'animate__fadeIn');
-        } else {
-            emptyState.style.display = 'none';
-        }
-
-        // Update URL without reload
-        const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?category=' + category;
-        window.history.pushState({ path: newUrl }, '', newUrl);
-    }
-
-    // Initial filter from URL or state
-    window.addEventListener('load', function () {
-        const urlParams = new URLSearchParams(window.location.search);
-        const cat = urlParams.get('category') || '{{ active_category }}' || 'all';
-        filterTemplates(cat);
+    searchInput.addEventListener('input', (e) => {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            const query = e.target.value;
+            const url = new URL(window.location.href);
+            url.searchParams.set('search', query);
+            url.searchParams.set('page', '1'); // Reset to page 1 on search
+            window.location.href = url.toString();
+        }, 800);
     });
+
+    function filterTemplates(category) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('category', category);
+        url.searchParams.set('page', '1'); // Reset to page 1 on filter
+        window.location.href = url.toString();
+    }
 </script>
 {% endblock %}
