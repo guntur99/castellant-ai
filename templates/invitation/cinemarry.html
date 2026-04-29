@@ -1,0 +1,1979 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Love, The Series — Anita & Zarda</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --nf-red: #E50914;
+  --nf-red-dark: #B20710;
+  --nf-black: #000000;
+  --nf-dark: #141414;
+  --nf-card: #1a1a1a;
+  --nf-border: #2a2a2a;
+  --nf-white: #FFFFFF;
+  --nf-gray: #a3a3a3;
+  --nf-lgray: #666;
+  --font-display: 'Bebas Neue', sans-serif;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', sans-serif;
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--nf-black);
+  color: var(--nf-white);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  cursor: default;
+}
+
+/* ── NOISE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+/* ═══════════════════════════════════════
+   OPENING SCREEN
+═══════════════════════════════════════ */
+#opening {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9997;
+  transition: opacity 1s ease, transform 1s ease;
+}
+#opening.hide {
+  opacity: 0;
+  transform: scale(1.08);
+  pointer-events: none;
+}
+
+.opening-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 48px;
+}
+.nf-n {
+  font-family: var(--font-display);
+  font-size: 52px;
+  color: var(--nf-red);
+  letter-spacing: -2px;
+  line-height: 1;
+}
+.nf-label {
+  font-family: var(--font-body);
+  font-size: 10px;
+  letter-spacing: .4em;
+  color: var(--nf-gray);
+  text-transform: uppercase;
+  font-weight: 500;
+  padding-top: 4px;
+}
+.opening-tagline {
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: .5em;
+  color: var(--nf-gray);
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.opening-title {
+  font-family: var(--font-display);
+  font-size: clamp(54px, 14vw, 110px);
+  letter-spacing: 2px;
+  line-height: .95;
+  text-align: center;
+  margin-bottom: 8px;
+}
+.opening-title span { color: var(--nf-red); }
+.opening-sub {
+  font-family: var(--font-serif);
+  font-size: clamp(16px, 4vw, 22px);
+  font-style: italic;
+  color: var(--nf-gray);
+  margin-bottom: 12px;
+}
+.opening-season {
+  font-size: 11px;
+  letter-spacing: .35em;
+  color: var(--nf-lgray);
+  text-transform: uppercase;
+  margin-bottom: 48px;
+}
+.dear-wrap {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 6px;
+  padding: 16px 32px;
+  text-align: center;
+  margin-bottom: 40px;
+}
+.dear-lbl { font-size: 10px; letter-spacing: .3em; color: var(--nf-lgray); text-transform: uppercase; margin-bottom: 6px; }
+.dear-name { font-family: var(--font-serif); font-size: 20px; font-style: italic; }
+.open-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--nf-red);
+  color: #fff;
+  border: none;
+  padding: 16px 40px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: .05em;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background .2s, transform .2s;
+}
+.open-btn:hover { background: var(--nf-red-dark); transform: scale(1.03); }
+.open-btn svg { width: 20px; height: 20px; }
+
+/* ═══════════════════════════════════════
+   MAIN CONTENT
+═══════════════════════════════════════ */
+#main { opacity: 0; transition: opacity 1s ease .2s; }
+#main.show { opacity: 1; }
+
+/* ═══════════════════════════════════════
+   TOP NAV
+═══════════════════════════════════════ */
+.top-nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  padding: 16px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 100;
+  background: linear-gradient(180deg, rgba(0,0,0,.9) 0%, transparent 100%);
+  transition: background .4s;
+}
+.top-nav.scrolled {
+  background: rgba(20,20,20,.97);
+  backdrop-filter: blur(8px);
+}
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--nf-red);
+  letter-spacing: 1px;
+}
+.nav-links { display: flex; gap: 24px; }
+.nav-link {
+  color: var(--nf-gray);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: .05em;
+  transition: color .2s;
+}
+.nav-link:hover { color: #fff; }
+@media(max-width:640px) { .nav-links { display: none; } .top-nav { padding: 14px 20px; } }
+
+/* ═══════════════════════════════════════
+   HERO — CINEMATIC BILLBOARD
+═══════════════════════════════════════ */
+.hero {
+  position: relative;
+  height: 100vh;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+}
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(0deg, #000 0%, transparent 50%),
+    linear-gradient(90deg, rgba(0,0,0,.8) 0%, transparent 60%),
+    linear-gradient(180deg, rgba(0,0,0,.5) 0%, transparent 30%);
+  z-index: 1;
+}
+.hero-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(229,9,20,.6);
+  animation: float-particle var(--dur, 8s) ease-in-out infinite;
+  filter: blur(1px);
+}
+@keyframes float-particle {
+  0%,100% { transform: translateY(0) rotate(0deg); opacity: var(--op,.3); }
+  50% { transform: translateY(-40px) rotate(180deg); opacity: calc(var(--op,.3)*.4); }
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 0 48px 80px;
+  max-width: 700px;
+}
+@media(max-width:640px) { .hero-content { padding: 0 20px 100px; } }
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--nf-red);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 2px;
+  margin-bottom: 16px;
+}
+.hero-series-title {
+  font-family: var(--font-display);
+  font-size: clamp(60px, 14vw, 130px);
+  letter-spacing: 2px;
+  line-height: .9;
+  margin-bottom: 6px;
+}
+.hero-series-title .red { color: var(--nf-red); }
+.hero-series-title .thin {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: 0.4em;
+  font-weight: 400;
+  display: block;
+  color: var(--nf-gray);
+  letter-spacing: 0.15em;
+  margin-bottom: 8px;
+}
+.hero-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+.hero-rating {
+  border: 2px solid rgba(255,255,255,.5);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  letter-spacing: .05em;
+}
+.hero-year { font-size: 13px; color: var(--nf-gray); }
+.hero-ep { font-size: 13px; color: var(--nf-gray); }
+.hero-match {
+  font-size: 13px;
+  font-weight: 600;
+  color: #46d369;
+}
+.hero-desc {
+  font-size: 14px;
+  color: #ccc;
+  line-height: 1.7;
+  max-width: 480px;
+  margin-bottom: 28px;
+}
+.hero-cta-row { display: flex; gap: 12px; flex-wrap: wrap; }
+.btn-play {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #fff;
+  color: #000;
+  border: none;
+  padding: 13px 28px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background .2s;
+  text-decoration: none;
+}
+.btn-play:hover { background: rgba(255,255,255,.8); }
+.btn-play svg { width: 20px; height: 20px; }
+.btn-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(109,109,110,.7);
+  color: #fff;
+  border: none;
+  padding: 13px 24px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background .2s;
+}
+.btn-info:hover { background: rgba(109,109,110,.5); }
+.btn-info svg { width: 20px; height: 20px; }
+
+/* cinematic letterbox bars */
+.letterbox-top, .letterbox-bot {
+  position: absolute;
+  left: 0; right: 0;
+  height: 40px;
+  background: #000;
+  z-index: 3;
+}
+.letterbox-top { top: 0; }
+.letterbox-bot { bottom: 0; }
+
+/* ═══════════════════════════════════════
+   EPISODES ROW — a.k.a. sections
+═══════════════════════════════════════ */
+.episodes-row {
+  padding: 0 48px 8px;
+  margin-top: -20px;
+  position: relative;
+  z-index: 4;
+}
+@media(max-width:640px) { .episodes-row { padding: 0 12px 8px; } }
+.row-header {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.row-title {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+.row-see-all {
+  font-size: 12px;
+  color: var(--nf-red);
+  font-weight: 600;
+  letter-spacing: .05em;
+  cursor: pointer;
+  text-transform: uppercase;
+  opacity: 0;
+  transition: opacity .2s;
+}
+.row-header:hover .row-see-all { opacity: 1; }
+.cards-scroll {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.cards-scroll::-webkit-scrollbar { display: none; }
+
+/* ═══════════════════════════════════════
+   EPISODE CARD
+═══════════════════════════════════════ */
+.ep-card {
+  flex-shrink: 0;
+  width: clamp(200px, 30vw, 280px);
+  border-radius: 4px;
+  overflow: hidden;
+  background: var(--nf-card);
+  position: relative;
+  cursor: pointer;
+  transition: transform .25s, z-index .25s;
+}
+.ep-card:hover {
+  transform: scale(1.06);
+  z-index: 10;
+  box-shadow: 0 16px 48px rgba(0,0,0,.8), 0 0 0 2px var(--nf-red);
+}
+.ep-thumb {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: var(--nf-border);
+  position: relative;
+  overflow: hidden;
+}
+.ep-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter .3s;
+  filter: brightness(.85);
+}
+.ep-card:hover .ep-thumb img { filter: brightness(1); }
+.ep-thumb-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(0,0,0,.7) 0%, transparent 50%);
+}
+.ep-num {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-family: var(--font-display);
+  font-size: 40px;
+  color: rgba(255,255,255,.15);
+  line-height: 1;
+  user-select: none;
+}
+.ep-duration {
+  position: absolute;
+  bottom: 8px;
+  right: 10px;
+  font-size: 11px;
+  color: var(--nf-gray);
+  background: rgba(0,0,0,.6);
+  padding: 2px 6px;
+  border-radius: 2px;
+}
+.ep-body { padding: 12px; }
+.ep-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.ep-desc {
+  font-size: 12px;
+  color: var(--nf-gray);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.ep-play-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform .2s;
+}
+.ep-play-icon svg { color: #000; width: 22px; height: 22px; }
+.ep-card:hover .ep-play-icon { transform: translate(-50%, -50%) scale(1); }
+
+/* ═══════════════════════════════════════
+   COUNTDOWN — "release date" style
+═══════════════════════════════════════ */
+.countdown-wrap {
+  padding: 48px;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a0000 100%);
+  border-top: 1px solid var(--nf-border);
+  border-bottom: 1px solid var(--nf-border);
+  text-align: center;
+}
+@media(max-width:640px) { .countdown-wrap { padding: 40px 20px; } }
+.countdown-eyebrow {
+  font-size: 11px;
+  letter-spacing: .4em;
+  color: var(--nf-red);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+.countdown-title {
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 5vw, 36px);
+  font-style: italic;
+  color: var(--nf-gray);
+  margin-bottom: 36px;
+}
+.countdown-grid {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.cd-item {
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--nf-border);
+  border-radius: 4px;
+  padding: 20px 20px 16px;
+  min-width: 86px;
+  position: relative;
+  overflow: hidden;
+}
+.cd-item::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--nf-red);
+  transform: scaleX(0);
+  animation: cd-bar 1s ease forwards;
+  animation-delay: .5s;
+}
+@keyframes cd-bar { to { transform: scaleX(1); } }
+.cd-num {
+  font-family: var(--font-display);
+  font-size: 52px;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+.cd-unit {
+  font-size: 10px;
+  letter-spacing: .25em;
+  text-transform: uppercase;
+  color: var(--nf-lgray);
+}
+
+/* ═══════════════════════════════════════
+   FEATURED — WIDE BANNER
+═══════════════════════════════════════ */
+.featured-wrap {
+  padding: 48px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  align-items: center;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+@media(max-width:768px) {
+  .featured-wrap { grid-template-columns: 1fr; padding: 40px 20px; gap: 32px; }
+}
+.featured-img-wrap {
+  position: relative;
+  border-radius: 6px;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+}
+.featured-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(.75);
+}
+.featured-img-wrap::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(229,9,20,.3);
+  border-radius: 6px;
+}
+.featured-badge {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  background: var(--nf-red);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 2px;
+}
+.featured-label {
+  font-size: 11px;
+  letter-spacing: .35em;
+  color: var(--nf-red);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.featured-title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 6vw, 64px);
+  letter-spacing: 2px;
+  line-height: .95;
+  margin-bottom: 16px;
+}
+.featured-quote {
+  font-family: var(--font-serif);
+  font-size: clamp(14px, 2.5vw, 18px);
+  font-style: italic;
+  color: var(--nf-gray);
+  line-height: 1.75;
+  border-left: 3px solid var(--nf-red);
+  padding-left: 20px;
+  margin-bottom: 20px;
+}
+.featured-ref {
+  font-size: 12px;
+  color: var(--nf-lgray);
+  letter-spacing: .1em;
+  margin-bottom: 28px;
+}
+
+/* ═══════════════════════════════════════
+   CAST — COUPLE CARDS
+═══════════════════════════════════════ */
+.cast-section { padding: 48px; }
+@media(max-width:640px) { .cast-section { padding: 40px 20px; } }
+.cast-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  max-width: 700px;
+  margin: 32px auto 0;
+  border: 1px solid var(--nf-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+@media(max-width:500px) { .cast-grid { grid-template-columns: 1fr; } }
+.cast-card {
+  background: var(--nf-card);
+  padding: 32px 28px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  transition: background .3s;
+}
+.cast-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--nf-red);
+  transform: scaleX(0);
+  transition: transform .3s;
+}
+.cast-card:hover { background: #222; }
+.cast-card:hover::before { transform: scaleX(1); }
+.cast-avatar {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  position: relative;
+  overflow: hidden;
+  border: 3px solid var(--nf-border);
+  transition: border-color .3s;
+}
+.cast-card:hover .cast-avatar { border-color: var(--nf-red); }
+.cast-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.cast-role {
+  font-size: 10px;
+  letter-spacing: .3em;
+  color: var(--nf-red);
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.cast-name {
+  font-family: var(--font-serif);
+  font-size: 22px;
+  margin-bottom: 8px;
+}
+.cast-parents {
+  font-size: 12px;
+  color: var(--nf-gray);
+  line-height: 1.65;
+}
+
+/* ═══════════════════════════════════════
+   TIMELINE — "EPISODES GUIDE"
+═══════════════════════════════════════ */
+.timeline-section {
+  padding: 48px;
+  background: var(--nf-dark);
+  border-top: 1px solid var(--nf-border);
+}
+@media(max-width:640px) { .timeline-section { padding: 40px 20px; } }
+.ep-list { max-width: 700px; margin: 32px auto 0; }
+.ep-row {
+  display: flex;
+  gap: 20px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--nf-border);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .6s ease, transform .6s ease;
+}
+.ep-row.visible { opacity: 1; transform: translateY(0); }
+.ep-row:last-child { border-bottom: none; }
+.ep-num-badge {
+  font-family: var(--font-display);
+  font-size: 42px;
+  color: rgba(255,255,255,.12);
+  line-height: 1;
+  min-width: 52px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.ep-info { flex: 1; }
+.ep-info-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.ep-info-title {
+  font-family: var(--font-serif);
+  font-size: 19px;
+  font-weight: 700;
+}
+.ep-info-month {
+  font-size: 12px;
+  color: var(--nf-gray);
+  border: 1px solid var(--nf-border);
+  padding: 3px 10px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.ep-info-track {
+  font-size: 11px;
+  color: var(--nf-red);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.ep-info-desc {
+  font-size: 13px;
+  color: var(--nf-gray);
+  line-height: 1.7;
+}
+.ep-thumb-mini {
+  width: 120px;
+  height: 68px;
+  border-radius: 4px;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+  background: var(--nf-border);
+}
+.ep-thumb-mini img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(.7);
+}
+.ep-thumb-mini-play {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ep-thumb-mini-play svg { color: rgba(255,255,255,.7); width: 24px; height: 24px; }
+@media(max-width:500px) { .ep-thumb-mini { display: none; } }
+
+/* ═══════════════════════════════════════
+   EVENT — "SCREENING"
+═══════════════════════════════════════ */
+.screening-section {
+  padding: 48px;
+  text-align: center;
+}
+@media(max-width:640px) { .screening-section { padding: 40px 20px; } }
+.screening-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+  max-width: 720px;
+  margin: 32px auto 0;
+}
+@media(max-width:600px) { .screening-cards { grid-template-columns: 1fr; } }
+.screening-card {
+  background: var(--nf-card);
+  padding: 32px 28px;
+  text-align: left;
+  position: relative;
+  overflow: hidden;
+}
+.screening-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--nf-red);
+}
+.screening-type {
+  display: inline-block;
+  background: var(--nf-red);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .3em;
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border-radius: 2px;
+  margin-bottom: 18px;
+}
+.screening-date {
+  font-family: var(--font-display);
+  font-size: 36px;
+  letter-spacing: 1px;
+  line-height: 1.1;
+  margin-bottom: 20px;
+}
+.screening-detail {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+  align-items: flex-start;
+}
+.screening-icon { color: var(--nf-red); flex-shrink: 0; margin-top: 2px; }
+.screening-icon svg { width: 15px; height: 15px; }
+.screening-text { font-size: 13px; color: var(--nf-gray); line-height: 1.6; }
+.maps-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 18px;
+  background: none;
+  border: 1px solid rgba(255,255,255,.2);
+  color: #fff;
+  padding: 9px 18px;
+  border-radius: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: border-color .2s, background .2s;
+  font-family: var(--font-body);
+}
+.maps-btn:hover { border-color: var(--nf-red); background: rgba(229,9,20,.1); color: var(--nf-red); }
+.maps-btn svg { width: 13px; height: 13px; }
+
+/* ═══════════════════════════════════════
+   GALLERY — "STILL FRAMES"
+═══════════════════════════════════════ */
+.gallery-section { padding: 0 48px 48px; }
+@media(max-width:640px) { .gallery-section { padding: 0 12px 40px; } }
+.gallery-strip {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding-bottom: 4px;
+  margin-bottom: 4px;
+}
+.gallery-strip::-webkit-scrollbar { display: none; }
+.gallery-frame {
+  flex-shrink: 0;
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 3px;
+}
+.gallery-frame img {
+  display: block;
+  height: 200px;
+  width: auto;
+  object-fit: cover;
+  filter: grayscale(30%) brightness(.75);
+  transition: filter .3s, transform .4s;
+}
+.gallery-frame:hover img { filter: grayscale(0%) brightness(1); transform: scale(1.04); }
+.gallery-frame-num {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: rgba(255,255,255,.2);
+  line-height: 1;
+}
+
+/* ═══════════════════════════════════════
+   GIFT — "DIGITAL PASS"
+═══════════════════════════════════════ */
+.gift-section { padding: 0 48px 48px; }
+@media(max-width:640px) { .gift-section { padding: 0 20px 40px; } }
+.gift-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 600px;
+  margin: 32px auto 0;
+}
+@media(max-width:480px) { .gift-cards { grid-template-columns: 1fr; } }
+.gift-card {
+  background: var(--nf-card);
+  border: 1px solid var(--nf-border);
+  border-radius: 6px;
+  padding: 24px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.gift-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--nf-red) 0%, transparent 100%);
+}
+.gift-bank-lbl {
+  font-size: 10px;
+  letter-spacing: .3em;
+  color: var(--nf-lgray);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.gift-bank-name {
+  font-family: var(--font-display);
+  font-size: 32px;
+  letter-spacing: 2px;
+  margin-bottom: 4px;
+}
+.gift-holder {
+  font-size: 12px;
+  color: var(--nf-gray);
+  margin-bottom: 16px;
+}
+.gift-number {
+  font-size: 18px;
+  font-family: 'Courier New', monospace;
+  letter-spacing: .12em;
+  margin-bottom: 14px;
+  color: #e0e0e0;
+}
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  color: var(--nf-gray);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 14px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all .2s;
+  font-family: var(--font-body);
+  letter-spacing: .03em;
+}
+.copy-btn:hover { background: rgba(229,9,20,.15); border-color: var(--nf-red); color: var(--nf-red); }
+.copy-btn.copied { color: #46d369; border-color: #46d369; background: rgba(70,211,105,.1); }
+.copy-btn svg { width: 13px; height: 13px; }
+
+/* ═══════════════════════════════════════
+   RSVP — "JOIN THE AUDIENCE"
+═══════════════════════════════════════ */
+.rsvp-section {
+  background: var(--nf-dark);
+  border-top: 1px solid var(--nf-border);
+  padding: 64px 48px;
+}
+@media(max-width:640px) { .rsvp-section { padding: 48px 20px; } }
+.rsvp-inner { max-width: 560px; margin: 0 auto; }
+.rsvp-stats {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+.rsvp-stat {
+  flex: 1;
+  min-width: 90px;
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--nf-border);
+  border-radius: 4px;
+  padding: 16px;
+  text-align: center;
+}
+.rsvp-stat-num {
+  font-family: var(--font-display);
+  font-size: 40px;
+  color: var(--nf-red);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.rsvp-stat-lbl {
+  font-size: 10px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--nf-lgray);
+}
+.form-group { margin-bottom: 18px; }
+.form-label {
+  font-size: 11px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--nf-gray);
+  margin-bottom: 8px;
+  display: block;
+  font-weight: 600;
+}
+.form-input {
+  width: 100%;
+  background: rgba(255,255,255,.05);
+  border: 1px solid var(--nf-border);
+  border-radius: 4px;
+  padding: 13px 16px;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 15px;
+  outline: none;
+  transition: border-color .2s;
+}
+.form-input:focus { border-color: var(--nf-red); }
+.form-input::placeholder { color: var(--nf-lgray); }
+.form-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-color: rgba(255,255,255,.05);
+  padding-right: 44px;
+  cursor: pointer;
+}
+textarea.form-input { min-height: 90px; resize: vertical; }
+.guest-btns { display: flex; gap: 6px; }
+.guest-btn {
+  flex: 1;
+  background: rgba(255,255,255,.05);
+  border: 1px solid var(--nf-border);
+  border-radius: 4px;
+  padding: 12px;
+  color: var(--nf-gray);
+  font-size: 15px;
+  cursor: pointer;
+  transition: all .15s;
+  font-family: var(--font-body);
+}
+.guest-btn.active {
+  background: rgba(229,9,20,.15);
+  border-color: var(--nf-red);
+  color: var(--nf-red);
+  font-weight: 600;
+}
+.rsvp-btn {
+  width: 100%;
+  background: var(--nf-red);
+  border: none;
+  border-radius: 4px;
+  padding: 16px;
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s, transform .15s;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  margin-top: 8px;
+}
+.rsvp-btn:hover { background: var(--nf-red-dark); transform: scale(1.01); }
+
+/* ═══════════════════════════════════════
+   REVIEWS / WISHES
+═══════════════════════════════════════ */
+.reviews-section { padding: 0 48px 48px; }
+@media(max-width:640px) { .reviews-section { padding: 0 20px 40px; } }
+.reviews-list { max-width: 600px; margin: 24px auto 0; display: flex; flex-direction: column; gap: 10px; }
+.review-card {
+  background: var(--nf-card);
+  border: 1px solid var(--nf-border);
+  border-radius: 4px;
+  padding: 18px 20px;
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity .5s, transform .5s;
+}
+.review-card.visible { opacity: 1; transform: translateY(0); }
+.review-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.review-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  background: var(--nf-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+  font-family: var(--font-display);
+}
+.review-meta { flex: 1; }
+.review-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.review-stars { color: var(--nf-red); font-size: 12px; letter-spacing: 2px; }
+.review-status { font-size: 11px; color: #46d369; font-weight: 500; margin-left: auto; white-space: nowrap; }
+.review-text { font-size: 13px; color: var(--nf-gray); line-height: 1.65; }
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+.footer {
+  background: linear-gradient(0deg, #0a0000 0%, #141414 100%);
+  border-top: 1px solid var(--nf-border);
+  padding: 80px 48px 48px;
+  text-align: center;
+}
+@media(max-width:640px) { .footer { padding: 60px 20px 40px; } }
+.footer-logo {
+  font-family: var(--font-display);
+  font-size: 40px;
+  color: var(--nf-red);
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+}
+.footer-names {
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 7vw, 48px);
+  font-style: italic;
+  margin-bottom: 20px;
+}
+.footer-text {
+  font-size: 14px;
+  color: var(--nf-gray);
+  line-height: 1.75;
+  max-width: 460px;
+  margin: 0 auto 32px;
+}
+.footer-end-quote {
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-style: italic;
+  color: var(--nf-lgray);
+  margin-bottom: 40px;
+}
+.footer-brand { font-size: 11px; color: var(--nf-lgray); letter-spacing: .15em; }
+.footer-brand a { color: var(--nf-red); text-decoration: none; }
+.footer-divider { width: 60px; height: 1px; background: var(--nf-red); margin: 28px auto; }
+
+/* ═══════════════════════════════════════
+   BOTTOM NAV
+═══════════════════════════════════════ */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(0,0,0,.92);
+  backdrop-filter: blur(12px);
+  border-top: 1px solid var(--nf-border);
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0 max(10px, env(safe-area-inset-bottom));
+  z-index: 100;
+  transform: translateY(100%);
+  transition: transform .6s ease 1s;
+}
+.bottom-nav.show { transform: translateY(0); }
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  color: var(--nf-lgray);
+  text-decoration: none;
+  font-size: 9px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 4px 12px;
+  transition: color .2s;
+}
+.nav-item svg { width: 20px; height: 20px; }
+.nav-item:hover, .nav-item.active { color: #fff; }
+.nav-item.active svg { color: var(--nf-red); }
+
+/* ═══════════════════════════════════════
+   LIGHTBOX
+═══════════════════════════════════════ */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.97);
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.lightbox.open { display: flex; }
+.lightbox-img {
+  max-width: 90vw;
+  max-height: 88vh;
+  border-radius: 4px;
+  object-fit: contain;
+}
+.lb-close {
+  position: absolute;
+  top: 20px; right: 20px;
+  background: rgba(255,255,255,.1);
+  border: none; color: #fff;
+  font-size: 22px; cursor: pointer;
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 4px;
+  font-family: var(--font-body);
+  transition: background .2s;
+}
+.lb-close:hover { background: var(--nf-red); }
+.lb-nav {
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  background: rgba(255,255,255,.08);
+  border: none; color: #fff;
+  font-size: 28px; cursor: pointer;
+  width: 52px; height: 80px;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s;
+}
+.lb-nav:hover { background: rgba(229,9,20,.5); }
+.lb-prev { left: 12px; border-radius: 0 4px 4px 0; }
+.lb-next { right: 12px; border-radius: 4px 0 0 4px; }
+.lb-counter {
+  position: absolute;
+  bottom: 20px; left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px; color: var(--nf-gray);
+  letter-spacing: .1em;
+}
+
+/* ═══════════════════════════════════════
+   TOAST
+═══════════════════════════════════════ */
+.toast {
+  position: fixed;
+  bottom: 90px; left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: var(--nf-red);
+  color: #fff;
+  padding: 11px 24px;
+  border-radius: 3px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  opacity: 0;
+  transition: opacity .3s, transform .3s;
+  pointer-events: none;
+  white-space: nowrap;
+  z-index: 9999;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* section headings common */
+.s-eyebrow {
+  font-size: 11px;
+  letter-spacing: .4em;
+  color: var(--nf-red);
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.s-heading {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 6vw, 52px);
+  letter-spacing: 2px;
+  line-height: 1;
+  margin-bottom: 12px;
+}
+.s-sub {
+  font-size: 14px;
+  color: var(--nf-gray);
+  line-height: 1.7;
+  max-width: 520px;
+  margin-bottom: 0;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- OPENING                                 -->
+<!-- ═══════════════════════════════════════ -->
+<div id="opening">
+  <div class="opening-logo">
+    <div class="nf-n">N</div>
+    <div class="nf-label">Original<br>Wedding</div>
+  </div>
+  <p class="opening-tagline">A Netflix Original Event</p>
+  <h1 class="opening-title">LOVE,<br>THE <span>SERIES</span></h1>
+  <p class="opening-sub">Starring Anita & Zarda</p>
+  <p class="opening-season">Season 1 · Episode 1 · Premiere 2026</p>
+  <div class="dear-wrap">
+    <p class="dear-lbl">Exclusively Streaming For</p>
+    <p class="dear-name">Ade Guntur Fitridullah & Partner</p>
+  </div>
+  <button class="open-btn" onclick="openInvitation()">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+    Watch Now
+  </button>
+</div>
+
+<!-- ═══════════════════════════════════════ -->
+<!-- MAIN                                    -->
+<!-- ═══════════════════════════════════════ -->
+<div id="main">
+
+  <!-- TOP NAV -->
+  <nav class="top-nav" id="topNav">
+    <div class="nav-logo">LOVE<span style="color:#fff">.</span></div>
+    <div class="nav-links">
+      <a href="#home" class="nav-link">Home</a>
+      <a href="#cast" class="nav-link">Cast</a>
+      <a href="#screening" class="nav-link">Screening</a>
+      <a href="#rsvp" class="nav-link">RSVP</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="letterbox-top"></div>
+    <canvas class="hero-canvas" id="heroCanvas"></canvas>
+    <div class="hero-particles" id="heroParticles"></div>
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <div class="hero-badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/></svg>
+        N ORIGINAL WEDDING
+      </div>
+      <h1 class="hero-series-title">
+        <span class="thin">a love story in three acts</span>
+        ANITA<br>&amp; ZARDA
+      </h1>
+      <div class="hero-meta-row">
+        <span class="hero-match">❤ 99% Match</span>
+        <span class="hero-year">2026</span>
+        <span class="hero-rating">ROMANTIC</span>
+        <span class="hero-ep">3 Episodes</span>
+      </div>
+      <p class="hero-desc">
+        Dua jiwa yang bertemu di antara lemparan bowling dan sushi—kini melangkah ke babak paling epik dalam hidup mereka. Sebuah kisah cinta yang tidak akan pernah Anda lewatkan.
+      </p>
+      <div class="hero-cta-row">
+        <a href="#screening" class="btn-play">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          Hadir Sekarang
+        </a>
+        <a href="#cast" class="btn-info">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          More Info
+        </a>
+      </div>
+    </div>
+    <div class="letterbox-bot"></div>
+  </section>
+
+  <!-- EPISODES ROW — GALLERY -->
+  <div style="background:var(--nf-dark);padding-top:32px">
+    <div class="episodes-row">
+      <div class="row-header">
+        <span class="row-title">Still Frames: Gallery</span>
+        <span class="row-see-all">See All</span>
+      </div>
+      <div class="cards-scroll" id="epCards"></div>
+    </div>
+
+    <!-- COUNTDOWN -->
+    <div class="countdown-wrap" id="event">
+      <p class="countdown-eyebrow">Premiere Date</p>
+      <h3 class="countdown-title">Countdown to The Most Epic Episode</h3>
+      <div class="countdown-grid">
+        <div class="cd-item"><div class="cd-num" id="cdDays">00</div><div class="cd-unit">Days</div></div>
+        <div class="cd-item"><div class="cd-num" id="cdHours">00</div><div class="cd-unit">Hours</div></div>
+        <div class="cd-item"><div class="cd-num" id="cdMinutes">00</div><div class="cd-unit">Min</div></div>
+        <div class="cd-item"><div class="cd-num" id="cdSeconds">00</div><div class="cd-unit">Sec</div></div>
+      </div>
+    </div>
+
+    <!-- VERSE -->
+    <div class="featured-wrap">
+      <div class="featured-img-wrap">
+        <div class="featured-badge">Featured Scene</div>
+        <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&q=80" alt="Wedding">
+      </div>
+      <div>
+        <p class="featured-label">From The Script</p>
+        <h2 class="featured-title">THE SACRED<br>VOWS</h2>
+        <p class="featured-quote">
+          "Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya..."
+        </p>
+        <p class="featured-ref">— Surah Ar-Rum : 21</p>
+      </div>
+    </div>
+
+    <!-- CAST -->
+    <section class="cast-section" id="cast">
+      <p class="s-eyebrow">Featured Cast</p>
+      <h2 class="s-heading">THE LEADS</h2>
+      <p class="s-sub" style="margin-bottom:0">Dua pemeran utama dalam kisah cinta terbesar musim ini.</p>
+      <div class="cast-grid">
+        <div class="cast-card">
+          <div class="cast-avatar">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=300&fit=crop&q=80" alt="Anita">
+          </div>
+          <div class="cast-role">Mempelai Wanita</div>
+          <div class="cast-name">Anita Pangestuti, S.Kom</div>
+          <div class="cast-parents">Putri Pertama dari<br><strong>Bpk. Taryono & Ibu Wiwit Jayanti</strong></div>
+        </div>
+        <div class="cast-card">
+          <div class="cast-avatar">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&q=80" alt="Zarda">
+          </div>
+          <div class="cast-role">Mempelai Pria</div>
+          <div class="cast-name">Zardarian Ahadika N, S.Kom</div>
+          <div class="cast-parents">Putra Kedua dari<br><strong>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</strong></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EPISODE GUIDE / TIMELINE -->
+    <section class="timeline-section">
+      <p class="s-eyebrow">Episode Guide</p>
+      <h2 class="s-heading">OUR LOVE STORY</h2>
+      <div class="ep-list" id="epList">
+        <div class="ep-row">
+          <div class="ep-num-badge">1</div>
+          <div class="ep-info">
+            <div class="ep-info-track">S01 · E01 · Pilot</div>
+            <div class="ep-info-header">
+              <div class="ep-info-title">Awal Pertemuan</div>
+              <div class="ep-info-month">Juni 2025</div>
+            </div>
+            <div class="ep-info-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami yang tak terduga.</div>
+          </div>
+          <div class="ep-thumb-mini">
+            <img src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=300&q=80" alt="">
+            <div class="ep-thumb-mini-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+          </div>
+        </div>
+        <div class="ep-row">
+          <div class="ep-num-badge">2</div>
+          <div class="ep-info">
+            <div class="ep-info-track">S01 · E02 · Rising Action</div>
+            <div class="ep-info-header">
+              <div class="ep-info-title">Lamaran</div>
+              <div class="ep-info-month">Nov 2025</div>
+            </div>
+            <div class="ep-info-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal yang mengubah segalanya menuju masa depan bersama.</div>
+          </div>
+          <div class="ep-thumb-mini">
+            <img src="https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=300&q=80" alt="">
+            <div class="ep-thumb-mini-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+          </div>
+        </div>
+        <div class="ep-row">
+          <div class="ep-num-badge">3</div>
+          <div class="ep-info">
+            <div class="ep-info-track">S01 · E03 · Season Finale</div>
+            <div class="ep-info-header">
+              <div class="ep-info-title">Pernikahan</div>
+              <div class="ep-info-month">24 Mei 2026</div>
+            </div>
+            <div class="ep-info-desc">Episode paling ditunggu-tunggu. Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya. Anda diundang menjadi bagian dari momen ini.</div>
+          </div>
+          <div class="ep-thumb-mini">
+            <img src="https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=300&q=80" alt="">
+            <div class="ep-thumb-mini-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCREENING / EVENT -->
+    <section class="screening-section" id="screening">
+      <p class="s-eyebrow">Screening Schedule</p>
+      <h2 class="s-heading">ON STAGE</h2>
+      <p class="s-sub" style="margin:0 auto 0;text-align:center">Hadir dan saksikan momen paling sinematik dalam kehidupan kami.</p>
+      <div class="screening-cards">
+        <div class="screening-card">
+          <span class="screening-type">Akad Nikah</span>
+          <div class="screening-date">MINGGU<br>24 MEI 2026</div>
+          <div class="screening-detail">
+            <span class="screening-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></span>
+            <span class="screening-text">08.00 WIB</span>
+          </div>
+          <div class="screening-detail">
+            <span class="screening-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></span>
+            <span class="screening-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span>
+          </div>
+          <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="maps-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            Get Directions
+          </a>
+        </div>
+        <div class="screening-card">
+          <span class="screening-type">Resepsi</span>
+          <div class="screening-date">MINGGU<br>24 MEI 2026</div>
+          <div class="screening-detail">
+            <span class="screening-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></span>
+            <span class="screening-text">11.00 – 13.00 WIB</span>
+          </div>
+          <div class="screening-detail">
+            <span class="screening-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></span>
+            <span class="screening-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span>
+          </div>
+          <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="maps-btn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            Get Directions
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- GALLERY FILM STRIP -->
+    <section style="padding:0 0 8px;overflow:hidden;">
+      <div style="padding:0 48px 16px;" class="gallery-section" id="gallery">
+        <p class="s-eyebrow" style="padding:0 0 4px">Still Frames</p>
+        <h2 class="s-heading">GALERI FOTO</h2>
+      </div>
+      <div class="gallery-strip" id="galleryStrip"></div>
+    </section>
+
+    <!-- DIGITAL GIFT -->
+    <section style="padding:48px" id="gift">
+      <p class="s-eyebrow">Digital Pass</p>
+      <h2 class="s-heading">AMPLOP DIGITAL</h2>
+      <p class="s-sub">Doa restu sudah sangat cukup, namun jika ingin berbagi kebahagiaan lewat amplop digital, kami menerima dengan senang hati.</p>
+      <div class="gift-cards">
+        <div class="gift-card">
+          <div class="gift-bank-lbl">Bank</div>
+          <div class="gift-bank-name">BCA</div>
+          <div class="gift-holder">Zardarian Ahadika N</div>
+          <div class="gift-number">8210 3705 61</div>
+          <button class="copy-btn" onclick="copyText('8210370561',this)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            Salin Nomor
+          </button>
+        </div>
+        <div class="gift-card">
+          <div class="gift-bank-lbl">Bank</div>
+          <div class="gift-bank-name">BNI</div>
+          <div class="gift-holder">Anita Pangestuti</div>
+          <div class="gift-number">1192 9784 03</div>
+          <button class="copy-btn" onclick="copyText('1192978403',this)">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            Salin Nomor
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RSVP -->
+    <section class="rsvp-section" id="rsvp">
+      <p class="s-eyebrow" style="text-align:center">Get on the List</p>
+      <h2 class="s-heading" style="text-align:center">RSVP</h2>
+      <div class="rsvp-inner" style="margin-top:40px">
+        <div class="rsvp-stats">
+          <div class="rsvp-stat"><div class="rsvp-stat-num">7</div><div class="rsvp-stat-lbl">Respons</div></div>
+          <div class="rsvp-stat"><div class="rsvp-stat-num">7</div><div class="rsvp-stat-lbl">Hadir</div></div>
+          <div class="rsvp-stat"><div class="rsvp-stat-num">13</div><div class="rsvp-stat-lbl">Total Tamu</div></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nama Lengkap</label>
+          <input type="text" class="form-input" placeholder="Masukkan nama Anda" id="rsvpName">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Konfirmasi Kehadiran</label>
+          <select class="form-input form-select" id="rsvpStatus">
+            <option value="">Pilih status kehadiran</option>
+            <option value="hadir">Hadir</option>
+            <option value="tidak">Tidak Hadir</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Jumlah Tamu</label>
+          <div class="guest-btns">
+            <button class="guest-btn active" onclick="selectGuests(1,this)">1 Orang</button>
+            <button class="guest-btn" onclick="selectGuests(2,this)">2 Orang</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ucapan & Pesan</label>
+          <textarea class="form-input" placeholder="Tuliskan ucapan untuk Anita & Zarda..." id="rsvpMsg"></textarea>
+        </div>
+        <button class="rsvp-btn" onclick="submitRSVP()">Konfirmasi Kehadiran</button>
+      </div>
+    </section>
+
+    <!-- REVIEWS / WISHES -->
+    <section class="reviews-section" style="padding-top:48px">
+      <p class="s-eyebrow">Audience Reviews</p>
+      <h2 class="s-heading">UCAPAN & DOA</h2>
+      <div class="reviews-list" id="reviewsList">
+        <div class="review-card visible">
+          <div class="review-head">
+            <div class="review-avatar">A</div>
+            <div class="review-meta">
+              <div class="review-name">Ayu Rahmawati</div>
+              <div class="review-stars">★★★★★</div>
+            </div>
+            <div class="review-status">✓ Hadir · 2 tamu</div>
+          </div>
+          <div class="review-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu Anita & Zarda! 🌿</div>
+        </div>
+        <div class="review-card visible">
+          <div class="review-head">
+            <div class="review-avatar" style="background:#185fa5">R</div>
+            <div class="review-meta">
+              <div class="review-name">Reza Firmansyah</div>
+              <div class="review-stars">★★★★★</div>
+            </div>
+            <div class="review-status">✓ Hadir · 1 tamu</div>
+          </div>
+          <div class="review-text">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan kebahagiaan yang tidak pernah habis. Aamiin!</div>
+        </div>
+        <div class="review-card visible">
+          <div class="review-head">
+            <div class="review-avatar" style="background:#639922">S</div>
+            <div class="review-meta">
+              <div class="review-name">Sinta Dewi</div>
+              <div class="review-stars">★★★★★</div>
+            </div>
+            <div class="review-status">✓ Hadir · 2 tamu</div>
+          </div>
+          <div class="review-text">Wishing you both a lifetime of love and laughter. Semoga langkah kalian selalu diberkahi Allah SWT 💚</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="footer-logo">LOVE.</div>
+      <h2 class="footer-names">Anita & Zarda</h2>
+      <p class="footer-text">Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu kepada kami.</p>
+      <div class="footer-divider"></div>
+      <p class="footer-end-quote">"Kami yang berbahagia,<br><span style="color:#fff;font-size:1.3em">Anita & Zarda</span>"</p>
+      <p class="footer-brand">Digital Invitation by <a href="#">BridesSpace</a> · A Netflix-Style Original</p>
+    </footer>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav" id="bottomNav">
+  <a href="#home" class="nav-item active">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home
+  </a>
+  <a href="#cast" class="nav-item">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>Cast
+  </a>
+  <a href="#screening" class="nav-item">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>Screening
+  </a>
+  <a href="#gift" class="nav-item">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2.18c.07-.23.18-.46.18-.71C18 3.47 16.53 2 14.71 2c-.87 0-1.65.36-2.22.93L12 3.4l-.49-.47C10.94 2.36 10.16 2 9.29 2 7.47 2 6 3.47 6 5.29c0 .25.11.48.18.71H4c-1.11 0-2 .89-2 2v13c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5.29-2c.47 0 .79.32.79.79S15.18 5.58 14.71 5.58h-1.53l.75-.75c.2-.2.49-.33.78-.33z"/></svg>Gift
+  </a>
+  <a href="#rsvp" class="nav-item">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>RSVP
+  </a>
+</nav>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" onclick="closeLightbox()">✕</button>
+  <button class="lb-nav lb-prev" onclick="lbPrev()">‹</button>
+  <img class="lightbox-img" id="lbImg" src="" alt="">
+  <button class="lb-nav lb-next" onclick="lbNext()">›</button>
+  <div class="lb-counter" id="lbCounter"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ═══════════════════════════════════════
+   DATA
+═══════════════════════════════════════ */
+const GALLERY = [
+  { src:"https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80", wide:"https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&q=90" },
+  { src:"https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&q=80", wide:"https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1200&q=90" },
+  { src:"https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&q=80", wide:"https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1200&q=90" },
+  { src:"https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&q=80", wide:"https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=1200&q=90" },
+  { src:"https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=600&q=80", wide:"https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=1200&q=90" },
+  { src:"https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=600&q=80", wide:"https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=1200&q=90" },
+  { src:"https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=600&q=80", wide:"https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=1200&q=90" },
+  { src:"https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80", wide:"https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=1200&q=90" },
+];
+
+const EP_THUMBS = [
+  "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&q=80",
+  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&q=80",
+  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&q=80",
+  "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=500&q=80",
+  "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=500&q=80",
+  "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=500&q=80",
+];
+
+let lbIdx = 0;
+let guestCount = 1;
+let toastTimer;
+
+/* ═══════════════════════════════════════
+   OPENING
+═══════════════════════════════════════ */
+function openInvitation() {
+  document.getElementById('opening').classList.add('hide');
+  const main = document.getElementById('main');
+  setTimeout(() => main.classList.add('show'), 150);
+  document.getElementById('bottomNav').classList.add('show');
+  setTimeout(initAll, 500);
+}
+
+function initAll() {
+  buildHeroCanvas();
+  buildParticles();
+  buildEpCards();
+  buildGalleryStrip();
+  startCountdown();
+  initScrollAnim();
+  initNavHighlight();
+  initTopNav();
+}
+
+/* ═══════════════════════════════════════
+   HERO CANVAS — animated film grain + glow
+═══════════════════════════════════════ */
+function buildHeroCanvas() {
+  const canvas = document.getElementById('heroCanvas');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h;
+  function resize() {
+    w = canvas.width = canvas.offsetWidth;
+    h = canvas.height = canvas.offsetHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // draw a cinematic dark background with red ambient glow
+  function draw() {
+    ctx.clearRect(0,0,w,h);
+    // Dark base
+    ctx.fillStyle='#000';
+    ctx.fillRect(0,0,w,h);
+    // Red ambient glow top-right
+    const g1 = ctx.createRadialGradient(w*.75,h*.15,0,w*.75,h*.15,w*.5);
+    g1.addColorStop(0,'rgba(229,9,20,0.12)');
+    g1.addColorStop(1,'rgba(0,0,0,0)');
+    ctx.fillStyle=g1;
+    ctx.fillRect(0,0,w,h);
+    // Subtle grid lines
+    ctx.strokeStyle='rgba(255,255,255,0.02)';
+    ctx.lineWidth=1;
+    for(let x=0;x<w;x+=80){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke();}
+    for(let y=0;y<h;y+=80){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke();}
+  }
+  draw();
+}
+
+function buildParticles() {
+  const wrap = document.getElementById('heroParticles');
+  if(!wrap) return;
+  for(let i=0;i<18;i++){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const sz = Math.random()*4+1;
+    p.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*100}%;--dur:${(Math.random()*8+5).toFixed(1)}s;--op:${(Math.random()*.4+.1).toFixed(2)};animation-delay:${(Math.random()*6).toFixed(1)}s`;
+    wrap.appendChild(p);
+  }
+}
+
+/* ═══════════════════════════════════════
+   EPISODE CARDS (thumbnails row)
+═══════════════════════════════════════ */
+function buildEpCards() {
+  const wrap = document.getElementById('epCards');
+  if(!wrap) return;
+  const cards = [
+    { num:'01', title:'Opening Scene', desc:'Ketika dua jiwa bertemu untuk pertama kalinya.', dur:'42m', img: EP_THUMBS[0] },
+    { num:'02', title:'Rising Action', desc:'Rasa itu tumbuh lebih dalam setiap harinya.', dur:'38m', img: EP_THUMBS[1] },
+    { num:'03', title:'The Proposal', desc:'Momen yang paling dinanti dalam kisah ini.', dur:'55m', img: EP_THUMBS[2] },
+    { num:'04', title:'Behind The Scene', desc:'Persiapan menuju hari paling istimewa.', dur:'29m', img: EP_THUMBS[3] },
+    { num:'05', title:'Season Finale', desc:'Pernikahan — episode yang tidak akan terlupakan.', dur:'∞', img: EP_THUMBS[4] },
+    { num:'06', title:'Bonus Episode', desc:'Momen-momen yang tidak tertangkap kamera.', dur:'21m', img: EP_THUMBS[5] },
+  ];
+  cards.forEach((c,i)=>{
+    const el = document.createElement('div');
+    el.className = 'ep-card';
+    el.innerHTML = `
+      <div class="ep-thumb">
+        <img src="${c.img}" alt="${c.title}" loading="lazy">
+        <div class="ep-thumb-overlay"></div>
+        <div class="ep-num">${c.num}</div>
+        <div class="ep-duration">${c.dur}</div>
+      </div>
+      <div class="ep-play-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+      <div class="ep-body">
+        <div class="ep-title">${c.title}</div>
+        <div class="ep-desc">${c.desc}</div>
+      </div>
+    `;
+    el.addEventListener('click',()=>openLightbox(i));
+    wrap.appendChild(el);
+  });
+}
+
+/* ═══════════════════════════════════════
+   GALLERY STRIP
+═══════════════════════════════════════ */
+function buildGalleryStrip() {
+  const strip = document.getElementById('galleryStrip');
+  if(!strip) return;
+  GALLERY.forEach((g,i)=>{
+    const f = document.createElement('div');
+    f.className='gallery-frame';
+    f.innerHTML=`<img src="${g.src}" alt="Photo ${i+1}" loading="lazy"><div class="gallery-frame-num">${String(i+1).padStart(2,'0')}</div>`;
+    f.addEventListener('click',()=>openLightbox(i));
+    strip.appendChild(f);
+  });
+}
+
+/* ═══════════════════════════════════════
+   LIGHTBOX
+═══════════════════════════════════════ */
+function openLightbox(idx) {
+  lbIdx = idx % GALLERY.length;
+  updateLb();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow='';
+}
+function lbPrev() { lbIdx=(lbIdx-1+GALLERY.length)%GALLERY.length; updateLb(); }
+function lbNext() { lbIdx=(lbIdx+1)%GALLERY.length; updateLb(); }
+function updateLb() {
+  document.getElementById('lbImg').src = GALLERY[lbIdx].wide || GALLERY[lbIdx].src;
+  document.getElementById('lbCounter').textContent = `${lbIdx+1} / ${GALLERY.length}`;
+}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lightbox').classList.contains('open')) return;
+  if(e.key==='Escape') closeLightbox();
+  if(e.key==='ArrowLeft') lbPrev();
+  if(e.key==='ArrowRight') lbNext();
+});
+
+/* ═══════════════════════════════════════
+   COUNTDOWN
+═══════════════════════════════════════ */
+function startCountdown() {
+  const target = new Date('2026-05-24T08:00:00');
+  function tick(){
+    const diff = target - new Date();
+    if(diff<=0){ ['cdDays','cdHours','cdMinutes','cdSeconds'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='00';}); return; }
+    const d=document.getElementById('cdDays'), h=document.getElementById('cdHours'),
+          m=document.getElementById('cdMinutes'), s=document.getElementById('cdSeconds');
+    if(d)d.textContent=String(Math.floor(diff/86400000)).padStart(2,'0');
+    if(h)h.textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
+    if(m)m.textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+    if(s)s.textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+  }
+  tick(); setInterval(tick,1000);
+}
+
+/* ═══════════════════════════════════════
+   SCROLL ANIMATIONS
+═══════════════════════════════════════ */
+function initScrollAnim() {
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+  },{threshold:.12});
+  document.querySelectorAll('.ep-row, .review-card').forEach(el=>obs.observe(el));
+}
+
+/* ═══════════════════════════════════════
+   NAV HIGHLIGHT
+═══════════════════════════════════════ */
+function initNavHighlight() {
+  const secIds = ['home','cast','screening','gift','rsvp'];
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+        const a=document.querySelector(`.nav-item[href="#${e.target.id}"]`);
+        if(a) a.classList.add('active');
+      }
+    });
+  },{rootMargin:'-35% 0px -35% 0px'});
+  secIds.forEach(id=>{const el=document.getElementById(id);if(el) obs.observe(el);});
+}
+
+function initTopNav() {
+  const nav = document.getElementById('topNav');
+  window.addEventListener('scroll',()=>{
+    nav.classList.toggle('scrolled', window.scrollY > 80);
+  });
+}
+
+/* ═══════════════════════════════════════
+   RSVP
+═══════════════════════════════════════ */
+function selectGuests(n,btn){
+  guestCount=n;
+  document.querySelectorAll('.guest-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+function submitRSVP() {
+  const name=document.getElementById('rsvpName').value.trim();
+  const status=document.getElementById('rsvpStatus').value;
+  const msg=document.getElementById('rsvpMsg').value.trim();
+  if(!name||!status){ showToast('Mohon isi nama dan status kehadiran'); return; }
+  const initials=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const colors=['#E50914','#185fa5','#639922','#ba7517','#534ab7'];
+  const color=colors[Math.floor(Math.random()*colors.length)];
+  const statusText=status==='hadir'?`✓ Hadir · ${guestCount} tamu`:'✗ Tidak Hadir';
+  const card=document.createElement('div');
+  card.className='review-card';
+  card.innerHTML=`
+    <div class="review-head">
+      <div class="review-avatar" style="background:${color}">${initials}</div>
+      <div class="review-meta"><div class="review-name">${name}</div><div class="review-stars">★★★★★</div></div>
+      <div class="review-status">${statusText}</div>
+    </div>
+    <div class="review-text">${msg||'Selamat dan semoga bahagia selalu!'}</div>
+  `;
+  const list=document.getElementById('reviewsList');
+  list.prepend(card);
+  setTimeout(()=>card.classList.add('visible'),50);
+  document.getElementById('rsvpName').value='';
+  document.getElementById('rsvpStatus').value='';
+  document.getElementById('rsvpMsg').value='';
+  showToast('Terima kasih! Konfirmasi berhasil 🎉');
+  document.querySelector('.reviews-section').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ═══════════════════════════════════════
+   COPY
+═══════════════════════════════════════ */
+function copyText(text,btn){
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.classList.add('copied');
+    btn.innerHTML=`<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Tersalin!`;
+    showToast('Nomor rekening tersalin!');
+    setTimeout(()=>{
+      btn.classList.remove('copied');
+      btn.innerHTML=`<svg viewBox="0 0 24 24" fill="currentColor" style="width:13px;height:13px"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> Salin Nomor`;
+    },2500);
+  }).catch(()=>showToast('Nomor: '+text));
+}
+
+/* ═══════════════════════════════════════
+   TOAST
+═══════════════════════════════════════ */
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
+}
+</script>
+</body>
+</html>

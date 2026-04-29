@@ -75,131 +75,41 @@ pub async fn templates_list(
     jar: PrivateCookieJar,
 ) -> impl IntoResponse {
     let templates_data = vec![
-        TemplateMetadata { 
-            id: "vintage".to_string(), 
-            title: "Vintage Archival".to_string(),
-            desc: "Hand-drawn botanicals meets neoclassical architecture. A design for those who value tradition.".to_string(),
-            category: "essential".to_string(),
+        TemplateMetadata {
+            id: "trendvibe".to_string(),
+            title: "Castellan VibePulse".to_string(),
+            desc: "Nikmati pengalaman vertikal eksklusif khas Castellant yang dinamis dan modern, terinspirasi dari tren TikTok untuk momen yang tak terlupakan.".to_string(),
             price: 50000,
-            preview_img: "/static/img/vintage_preview.png".to_string(),
-            plan: "essential".to_string(),
+            preview_img: "/static/img/trendvibe_preview.png".to_string(),
+            category: "premium".to_string(),
+            plan: "premium".to_string(),
         },
-        TemplateMetadata { 
-            id: "minimalist".to_string(), 
-            title: "Modern Minimalist".to_string(),
-            desc: "The purity of typography and wide-open spaces. A sanctuary of calm for the contemporary tastemaker.".to_string(),
-            category: "essential".to_string(),
+        TemplateMetadata {
+            id: "loveanthem".to_string(),
+            title: "Castellan SoulBeat".to_string(),
+            desc: "Mainkan melodi cinta Anda dalam antarmuka premium Castellant bergaya Spotify, merayakan perjalanan hati Anda bagaikan lagu hits terpopuler.".to_string(),
             price: 50000,
-            preview_img: "/static/img/minimalist_preview.png".to_string(),
-            plan: "essential".to_string(),
+            preview_img: "/static/img/loveanthem_preview.png".to_string(),
+            category: "premium".to_string(),
+            plan: "premium".to_string(),
         },
-        TemplateMetadata { 
-            id: "noir".to_string(), 
-            title: "Architectural Noir".to_string(),
-            desc: "Deep contrasts and structural bold lines. For invitations that demand presence and command attention.".to_string(),
-            category: "essential".to_string(),
+        TemplateMetadata {
+            id: "cinemarry".to_string(),
+            title: "Castellan CineLove".to_string(),
+            desc: "Saksikan keajaiban pernikahan Anda dalam format sinematik Castellant ala Netflix, di mana kisah cinta Anda adalah tayangan utama yang memukau.".to_string(),
             price: 50000,
-            preview_img: "/static/img/noir_preview.png".to_string(),
-            plan: "essential".to_string(),
+            preview_img: "/static/img/cinemarry_preview.png".to_string(),
+            category: "premium".to_string(),
+            plan: "premium".to_string(),
         },
-        TemplateMetadata { 
-            id: "ivory_halo".to_string(), 
-            title: "Ivory Halo".to_string(),
-            desc: "Taupe lace mandala with a delicate gold halo frame. Islamic elegance meets timeless beauty.".to_string(),
-            category: "signature".to_string(),
-            price: 100000,
-            preview_img: "/static/img/ivory_halo_preview.png".to_string(),
-            plan: "signature".to_string(),
-        },
-        TemplateMetadata { 
-            id: "blush_petal".to_string(), 
-            title: "Blush Petal".to_string(),
-            desc: "Soft peach gradient with white 3D botanical vines and magnolia blooms. Romantic and feminine.".to_string(),
-            category: "signature".to_string(),
-            price: 100000,
-            preview_img: "/static/img/blush_petal_preview.png".to_string(),
-            plan: "signature".to_string(),
-        },
-        TemplateMetadata { 
-            id: "pearl_verdure".to_string(), 
-            title: "Pearl Verdure".to_string(),
-            desc: "Deep forest green with champagne gold 3D botanical frame and pearl accents. Dramatic luxury.".to_string(),
-            category: "signature".to_string(),
-            price: 100000,
-            preview_img: "/static/img/pearl_verdure_preview.png".to_string(),
-            plan: "signature".to_string(),
-        },
-        TemplateMetadata { 
-            id: "emerald_filigree".to_string(), 
-            title: "Emerald Filigree".to_string(),
-            desc: "Forest green with ornate gold filigree scrollwork and ivory magnolia blooms. Opulent grandeur.".to_string(),
-            category: "signature".to_string(),
-            price: 100000,
-            preview_img: "/static/img/emerald_filigree_preview.png".to_string(),
-            plan: "signature".to_string(),
-        },
-        TemplateMetadata { 
-            id: "crimson_grace".to_string(), 
-            title: "Crimson Grace".to_string(),
-            desc: "Split ivory-terracotta with white lace flowers and Islamic arch medallion. Bold, soulful beauty.".to_string(),
-            category: "signature".to_string(),
-            price: 100000,
-            preview_img: "/static/img/crimson_grace_preview.png".to_string(),
-            plan: "signature".to_string(),
-        },
-        TemplateMetadata { 
-            id: "golden_quill".to_string(), 
-            title: "Golden Quill".to_string(),
-            desc: "Dark green with ultra-detailed gold quilling botanical frame. The pinnacle of paper art luxury.".to_string(),
-            category: "signature".to_string(),
-            price: 100000,
-            preview_img: "/static/img/golden_quill_preview.png".to_string(),
-            plan: "signature".to_string(),
-        },
-        TemplateMetadata { 
-            id: "azure_solace".to_string(), 
-            title: "Azure Solace".to_string(),
-            desc: "A serene blend of Aegean blue and silver foil, reflecting the calm of an ocean dawn.".to_string(),
-            category: "signature".to_string(),
-            price: 100000,
-            preview_img: "https://images.unsplash.com/photo-1549333321-22fca4666ca0?auto=format&fit=crop&q=80&w=800".to_string(),
-            plan: "signature".to_string(),
-        },
-        TemplateMetadata { 
-            id: "midnight_silk".to_string(), 
-            title: "Midnight Silk".to_string(),
-            desc: "Mysterious charcoal background with iridescent silk patterns and platinum typography.".to_string(),
-            category: "archival".to_string(),
-            price: 150000,
-            preview_img: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&q=80&w=800".to_string(),
-            plan: "archival".to_string(),
-        },
-        TemplateMetadata { 
-            id: "radiant_bloom".to_string(), 
-            title: "Radiant Bloom".to_string(),
-            desc: "Vibrant floral illustrations with modern serif fonts. Full of life and joy.".to_string(),
-            category: "essential".to_string(),
+        TemplateMetadata {
+            id: "cairide".to_string(),
+            title: "Castellan CaiRide".to_string(),
+            desc: "Hadirkan keseruan dalam setiap perjalanan menuju hari bahagia Anda dengan antarmuka dinamis khas Castellant bergaya aplikasi transportasi terpopuler.".to_string(),
             price: 50000,
-            preview_img: "https://images.unsplash.com/photo-1522673607200-164841babd3c?auto=format&fit=crop&q=80&w=800".to_string(),
-            plan: "essential".to_string(),
-        },
-        TemplateMetadata { 
-            id: "timeless_marble".to_string(), 
-            title: "Timeless Marble".to_string(),
-            desc: "Carrara marble texture with gold leaf veins. A classic choice for the ages.".to_string(),
-            category: "archival".to_string(),
-            price: 150000,
-            preview_img: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800".to_string(),
-            plan: "archival".to_string(),
-        },
-        TemplateMetadata { 
-            id: "royal_velvet".to_string(), 
-            title: "Royal Velvet".to_string(),
-            desc: "Deep purple tones with royal crest elements and silver thread details.".to_string(),
-            category: "archival".to_string(),
-            price: 150000,
-            preview_img: "https://images.unsplash.com/photo-1604076913837-52ab56298ba9?auto=format&fit=crop&q=80&w=800".to_string(),
-            plan: "archival".to_string(),
+            preview_img: "/static/img/cairide_preview.png".to_string(),
+            category: "premium".to_string(),
+            plan: "premium".to_string(),
         },
     ];
     let user = match jar.get("user_id") {
@@ -417,7 +327,7 @@ pub async fn create_invitation(
         (None, None)
     };
 
-    let template_name = fields.get("template_name").cloned().unwrap_or_else(|| "vintage".to_string());
+    let template_name = fields.get("template_name").cloned().unwrap_or_else(|| "caiktok".to_string());
 
     let invitation_id = sqlx::query_scalar::<_, Uuid>(
         "INSERT INTO invitations (user_id, slug, couple_name_short, event_date, template_name, bride_data, groom_data, ceremony_data, reception_data, quote_data, plan_name, payment_link, payment_invoice_id) 
@@ -590,6 +500,7 @@ where
 #[derive(Template)]
 #[template(path = "home.html")]
 pub struct HomeTemplate {
+    #[allow(dead_code)]
     pub user: Option<User>,
     pub invitations: Vec<InvitationRow>,
     #[allow(dead_code)]
@@ -597,72 +508,36 @@ pub struct HomeTemplate {
 }
 
 #[derive(Template)]
-#[template(path = "invitation/vintage.html")]
-pub struct VintageTemplate {
+#[template(path = "invitation/trendvibe.html")]
+pub struct TrendVibeTemplate {
+    #[allow(dead_code)]
     pub invitation: Invitation,
     #[allow(dead_code)]
     pub is_dev: bool,
 }
 
 #[derive(Template)]
-#[template(path = "invitation/minimalist.html")]
-pub struct MinimalistTemplate {
+#[template(path = "invitation/loveanthem.html")]
+pub struct LoveAnthemTemplate {
+    #[allow(dead_code)]
     pub invitation: Invitation,
     #[allow(dead_code)]
     pub is_dev: bool,
 }
 
 #[derive(Template)]
-#[template(path = "invitation/noir.html")]
-pub struct NoirTemplate {
+#[template(path = "invitation/cinemarry.html")]
+pub struct CineMarryTemplate {
+    #[allow(dead_code)]
     pub invitation: Invitation,
     #[allow(dead_code)]
     pub is_dev: bool,
 }
 
 #[derive(Template)]
-#[template(path = "invitation/pearl_verdure.html")]
-pub struct PearlVerdureTemplate {
-    pub invitation: Invitation,
+#[template(path = "invitation/we-gojek.html")]
+pub struct CaiRideTemplate {
     #[allow(dead_code)]
-    pub is_dev: bool,
-}
-
-#[derive(Template)]
-#[template(path = "invitation/ivory_halo.html")]
-pub struct IvoryHaloTemplate {
-    pub invitation: Invitation,
-    #[allow(dead_code)]
-    pub is_dev: bool,
-}
-
-#[derive(Template)]
-#[template(path = "invitation/blush_petal.html")]
-pub struct BlushPetalTemplate {
-    pub invitation: Invitation,
-    #[allow(dead_code)]
-    pub is_dev: bool,
-}
-
-#[derive(Template)]
-#[template(path = "invitation/emerald_filigree.html")]
-pub struct EmeraldFiligreeTemplate {
-    pub invitation: Invitation,
-    #[allow(dead_code)]
-    pub is_dev: bool,
-}
-
-#[derive(Template)]
-#[template(path = "invitation/crimson_grace.html")]
-pub struct CrimsonGraceTemplate {
-    pub invitation: Invitation,
-    #[allow(dead_code)]
-    pub is_dev: bool,
-}
-
-#[derive(Template)]
-#[template(path = "invitation/golden_quill.html")]
-pub struct GoldenQuillTemplate {
     pub invitation: Invitation,
     #[allow(dead_code)]
     pub is_dev: bool,
@@ -760,30 +635,21 @@ pub async fn invitation_detail(
             };
 
             match row.template_name.as_str() {
-                "minimalist" => HtmlTemplate(MinimalistTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "noir" => HtmlTemplate(NoirTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "pearl_verdure" => HtmlTemplate(PearlVerdureTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "ivory_halo" => HtmlTemplate(IvoryHaloTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "blush_petal" => HtmlTemplate(BlushPetalTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "emerald_filigree" => HtmlTemplate(EmeraldFiligreeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "crimson_grace" => HtmlTemplate(CrimsonGraceTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "golden_quill" => HtmlTemplate(GoldenQuillTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                _ => HtmlTemplate(VintageTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "loveanthem" => HtmlTemplate(LoveAnthemTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "cinemarry" => HtmlTemplate(CineMarryTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "cairide" => HtmlTemplate(CaiRideTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
             }
         },
         _ => {
             // Fallback for samples
             if slug.ends_with("-sample") || slug == "sample" {
                 let (couple_name, template_name) = match slug.as_str() {
-                    "minimalist-sample" => ("Julia & Romeo", "minimalist"),
-                    "noir-sample" => ("Sara & Benjamin", "noir"),
-                    "pearl-verdure-sample" => ("Amara & Rayan", "pearl_verdure"),
-                    "ivory-halo-sample" => ("Zahra & Ibrahim", "ivory_halo"),
-                    "blush-petal-sample" => ("Alya & Daffa", "blush_petal"),
-                    "emerald-filigree-sample" => ("Nayla & Farhan", "emerald_filigree"),
-                    "crimson-grace-sample" => ("Siti & Arman", "crimson_grace"),
-                    "golden-quill-sample" => ("Dewi & Reza", "golden_quill"),
-                    _ => ("Romeo & Julia", "vintage"),
+                    "trendvibe-sample" => ("Anita & Zarda", "trendvibe"),
+                    "loveanthem-sample" => ("Anita & Zarda", "loveanthem"),
+                    "cinemarry-sample" => ("Anita & Zarda", "cinemarry"),
+                    "cairide-sample" => ("Anita & Zarda", "cairide"),
+                    _ => ("Anita & Zarda", "trendvibe"),
                 };
 
                 let invitation = Invitation {
@@ -838,15 +704,10 @@ pub async fn invitation_detail(
                 };
                 
                 match template_name {
-                    "minimalist" => HtmlTemplate(MinimalistTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "noir" => HtmlTemplate(NoirTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "pearl_verdure" => HtmlTemplate(PearlVerdureTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "ivory_halo" => HtmlTemplate(IvoryHaloTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "blush_petal" => HtmlTemplate(BlushPetalTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "emerald_filigree" => HtmlTemplate(EmeraldFiligreeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "crimson_grace" => HtmlTemplate(CrimsonGraceTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "golden_quill" => HtmlTemplate(GoldenQuillTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    _ => HtmlTemplate(VintageTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "loveanthem" => HtmlTemplate(LoveAnthemTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "cinemarry" => HtmlTemplate(CineMarryTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "cairide" => HtmlTemplate(CaiRideTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 }
             } else {
                 (StatusCode::NOT_FOUND, "Invitation not found").into_response()
