@@ -46,6 +46,32 @@ pub struct CreateInvitationTemplate {
     pub is_dev: bool,
 }
 
+#[derive(Deserialize)]
+pub struct PreviewRequest {
+    pub template_name: String,
+    pub couple_name_short: String,
+    pub bride_name: String,
+    pub bride_full_name: String,
+    pub groom_name: String,
+    pub groom_full_name: String,
+    pub bride_father: String,
+    pub bride_mother: String,
+    pub groom_father: String,
+    pub groom_mother: String,
+    pub ceremony_date: String,
+    pub ceremony_time: String,
+    pub ceremony_venue: String,
+    pub ceremony_address: String,
+    pub ceremony_maps: String,
+    pub reception_date: String,
+    pub reception_time: String,
+    pub reception_venue: String,
+    pub reception_address: String,
+    pub reception_maps: String,
+    pub quote_text: String,
+    pub quote_source: String,
+}
+
 #[derive(Serialize, Clone)]
 pub struct TemplateMetadata {
     pub id: String,
@@ -790,4 +816,66 @@ pub async fn sitemap(State(state): State<AppState>) -> impl IntoResponse {
         .header("Content-Type", "application/xml")
         .body(xml)
         .unwrap()
+}
+pub async fn preview(
+    State(state): State<AppState>,
+    axum::Json(payload): axum::Json<PreviewRequest>,
+) -> impl IntoResponse {
+    let invitation = Invitation {
+        slug: "preview".to_string(),
+        couple_name_short: payload.couple_name_short,
+        bride: Person {
+            name: payload.bride_name,
+            full_name: payload.bride_full_name,
+            father_name: payload.bride_father,
+            mother_name: payload.bride_mother,
+            image_url: "/static/img/bride.jpg".to_string(),
+        },
+        groom: Person {
+            name: payload.groom_name,
+            full_name: payload.groom_full_name,
+            father_name: payload.groom_father,
+            mother_name: payload.groom_mother,
+            image_url: "/static/img/groom.jpg".to_string(),
+        },
+        event_date: payload.ceremony_date.clone(),
+        ceremony: EventDetails {
+            date: payload.ceremony_date,
+            time: payload.ceremony_time,
+            venue: payload.ceremony_venue,
+            address: payload.ceremony_address,
+            maps_url: payload.ceremony_maps,
+        },
+        reception: EventDetails {
+            date: payload.reception_date,
+            time: payload.reception_time,
+            venue: payload.reception_venue,
+            address: payload.reception_address,
+            maps_url: payload.reception_maps,
+        },
+        quote: Quote {
+            text: payload.quote_text,
+            source: payload.quote_source,
+        },
+        gallery_images: vec![
+            "/static/img/gallery1.jpg".to_string(),
+            "/static/img/gallery2.jpg".to_string(),
+            "/static/img/gallery3.jpg".to_string(),
+        ],
+        gift_accounts: vec![
+            GiftAccount {
+                bank_name: "BCA".to_string(),
+                account_number: "1234567890".to_string(),
+                account_holder: "Preview User".to_string(),
+            },
+        ],
+        song_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3".to_string(),
+    };
+
+    match payload.template_name.as_str() {
+        "loveanthem" => HtmlTemplate(LoveAnthemTemplate { invitation, is_dev: state.is_dev }).into_response(),
+        "cinemarry" => HtmlTemplate(CineMarryTemplate { invitation, is_dev: state.is_dev }).into_response(),
+        "cairide" => HtmlTemplate(CaiRideTemplate { invitation, is_dev: state.is_dev }).into_response(),
+        _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+    }
 }

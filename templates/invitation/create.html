@@ -5,12 +5,15 @@
     <div class="container" style="max-width: 900px;">
         <div class="create-header text-center" style="margin-bottom: 4rem;">
             <span class="hero-subtitle">Bespoke Creation</span>
-            <h1 class="serif" style="font-size: clamp(2.5rem, 5vw, 4rem); margin-top: 1rem;">Craft Your <em>Digital Keepsake</em></h1>
+            <h1 class="serif" style="font-size: clamp(2.5rem, 5vw, 4rem); margin-top: 1rem;">Craft Your <em>Digital
+                    Keepsake</em></h1>
         </div>
 
-        <div class="creation-container paper-bg" style="border-radius: 40px; box-shadow: var(--shadow-large); overflow: hidden; border: 1px solid rgba(0,0,0,0.05); background: white;">
+        <div class="creation-container paper-bg"
+            style="border-radius: 40px; box-shadow: var(--shadow-large); overflow: hidden; border: 1px solid rgba(0,0,0,0.05); background: white;">
             <!-- Progress Tracker -->
-            <div class="progress-steps" style="display: flex; background: #fdfdfd; border-bottom: 1px solid #f0f0f0; padding: 1.5rem 1rem; overflow-x: auto; white-space: nowrap;">
+            <div class="progress-steps"
+                style="margin-left: 1rem; display: flex; background: #fdfdfd; border-bottom: 1px solid #f0f0f0; padding: 1.5rem 1rem; overflow-x: auto; white-space: nowrap;">
                 <div class="step-item active" id="step-1-indicator">
                     <span class="step-num">01</span>
                     <span class="step-label" data-i18n="create.basic">Basic</span>
@@ -44,84 +47,123 @@
                         <h3 class="serif accent-title">Informasi Dasar</h3>
                         <div class="input-group" style="margin-top: 1.5rem;">
                             <label>Couple Name (Short Version)</label>
-                            <input type="text" name="couple_name_short" id="in-name" placeholder="Romeo & Julia" required>
+                            <input type="text" name="couple_name_short" id="in-name" placeholder="Romeo & Julia"
+                                required oninput="autoSlug()">
                         </div>
-                        
+
                         <div class="form-grid">
                             <div class="input-group">
                                 <label>Custom URL Slug</label>
-                                <input type="text" name="slug" id="in-slug" placeholder="romeo-julia" required>
+                                <input type="text" name="slug" id="in-slug" placeholder="romeo-julia" required
+                                    oninput="isSlugManuallyEdited = true">
                             </div>
                             <div class="input-group">
                                 <label>Wedding Date</label>
-                                <input type="text" name="event_date" id="in-date" placeholder="October 24, 2026" required>
+                                <input type="text" name="event_date" id="in-date" placeholder="October 24, 2026"
+                                    required oninput="syncReception()">
+                            </div>
+                        </div>
+                        <div class="form-grid" style="margin-top: 1rem;">
+                            <div class="input-group">
+                                <label>Waktu Akad</label>
+                                <input type="text" name="ceremony_time" id="in-time" placeholder="09:00 - 11:00 WIB"
+                                    required oninput="syncReception()">
                             </div>
                         </div>
 
                         <div class="input-group" style="margin-top: 2rem;">
-                            <label>Select Aesthetic Template</label>
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1rem;">
+                                <label style="margin-bottom: 0;">Select Aesthetic Template</label>
+                                <div style="position: relative; width: 220px;">
+                                    <input type="text" id="template-search" placeholder="Cari template..."
+                                        style="width: 100%; padding: 0.6rem 1rem 0.6rem 2.2rem; border-radius: 50px; border: 1px solid #eee; background: #fafafa; font-size: 0.8rem;"
+                                        oninput="filterTemplates()">
+                                    <span
+                                        style="position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); font-size: 0.8rem; opacity: 0.4;">🔍</span>
+                                </div>
+                            </div>
                             <div class="template-selector">
                                 <label class="tpl-card">
                                     <input type="radio" name="template_name" value="trendvibe" checked>
                                     <div class="tpl-content">
-                                        <div class="tpl-image" style="background-image: url('/static/img/trendvibe_preview.png');"></div>
+                                        <div class="tpl-image"
+                                            style="background-image: url('/static/img/trendvibe_preview.png');"></div>
                                         <div class="tpl-info">
                                             <div class="tpl-indicator"></div>
                                             <span class="serif">Castellan VibePulse</span>
                                             <div style="margin-top: 4px;">
-                                                <span style="text-decoration: line-through; opacity: 0.5; font-size: 0.8rem; margin-right: 8px;">Rp 100.000</span>
+                                                <span
+                                                    style="text-decoration: line-through; opacity: 0.5; font-size: 0.8rem; margin-right: 8px;">Rp
+                                                    100.000</span>
                                                 <span class="tpl-price">Rp 50.000</span>
                                             </div>
-                                            <p>Nikmati pengalaman vertikal eksklusif khas Castellant terinspirasi dari tren TikTok.</p>
-                                            <a href="/invitation/trendvibe-sample" target="_blank" class="preview-link" onclick="event.stopPropagation();">Live Preview ↗</a>
+                                            <p>Nikmati pengalaman vertikal eksklusif khas Castellant terinspirasi dari
+                                                tren TikTok.</p>
+                                            <a href="/invitation/trendvibe-sample" target="_blank" class="preview-link"
+                                                onclick="event.stopPropagation();">Live Preview ↗</a>
                                         </div>
                                     </div>
                                 </label>
                                 <label class="tpl-card">
                                     <input type="radio" name="template_name" value="loveanthem">
                                     <div class="tpl-content">
-                                        <div class="tpl-image" style="background-image: url('/static/img/loveanthem_preview.png');"></div>
+                                        <div class="tpl-image"
+                                            style="background-image: url('/static/img/loveanthem_preview.png');"></div>
                                         <div class="tpl-info">
                                             <div class="tpl-indicator"></div>
                                             <span class="serif">Castellan SoulBeat</span>
                                             <div style="margin-top: 4px;">
-                                                <span style="text-decoration: line-through; opacity: 0.5; font-size: 0.8rem; margin-right: 8px;">Rp 100.000</span>
+                                                <span
+                                                    style="text-decoration: line-through; opacity: 0.5; font-size: 0.8rem; margin-right: 8px;">Rp
+                                                    100.000</span>
                                                 <span class="tpl-price">Rp 50.000</span>
                                             </div>
-                                            <p>Mainkan melodi cinta Anda dalam antarmuka premium Castellant bergaya Spotify.</p>
-                                            <a href="/invitation/loveanthem-sample" target="_blank" class="preview-link" onclick="event.stopPropagation();">Live Preview ↗</a>
+                                            <p>Mainkan melodi cinta Anda dalam antarmuka premium Castellant bergaya
+                                                Spotify.</p>
+                                            <a href="/invitation/loveanthem-sample" target="_blank" class="preview-link"
+                                                onclick="event.stopPropagation();">Live Preview ↗</a>
                                         </div>
                                     </div>
                                 </label>
                                 <label class="tpl-card">
                                     <input type="radio" name="template_name" value="cinemarry">
                                     <div class="tpl-content">
-                                        <div class="tpl-image" style="background-image: url('/static/img/cinemarry_preview.png');"></div>
+                                        <div class="tpl-image"
+                                            style="background-image: url('/static/img/cinemarry_preview.png');"></div>
                                         <div class="tpl-info">
                                             <div class="tpl-indicator"></div>
                                             <span class="serif">Castellan CineLove</span>
                                             <div style="margin-top: 4px;">
-                                                <span style="text-decoration: line-through; opacity: 0.5; font-size: 0.8rem; margin-right: 8px;">Rp 100.000</span>
+                                                <span
+                                                    style="text-decoration: line-through; opacity: 0.5; font-size: 0.8rem; margin-right: 8px;">Rp
+                                                    100.000</span>
                                                 <span class="tpl-price">Rp 50.000</span>
                                             </div>
-                                            <p>Saksikan keajaiban pernikahan Anda dalam format sinematik Castellant ala Netflix.</p>
-                                            <a href="/invitation/cinemarry-sample" target="_blank" class="preview-link" onclick="event.stopPropagation();">Live Preview ↗</a>
+                                            <p>Saksikan keajaiban pernikahan Anda dalam format sinematik Castellant ala
+                                                Netflix.</p>
+                                            <a href="/invitation/cinemarry-sample" target="_blank" class="preview-link"
+                                                onclick="event.stopPropagation();">Live Preview ↗</a>
                                         </div>
                                     </div>
                                 </label>
                                 <label class="tpl-card">
                                     <input type="radio" name="template_name" value="cairide">
                                     <div class="tpl-content">
-                                        <div class="tpl-image" style="background-image: url('/static/img/cairide_preview.png');"></div>
+                                        <div class="tpl-image"
+                                            style="background-image: url('/static/img/cairide_preview.png');"></div>
                                         <div class="tpl-info">
                                             <div class="tpl-indicator"></div>
                                             <span class="serif">Castellan CaiRide</span>
                                             <div style="margin-top: 4px;">
-                                                <span style="text-decoration: line-through; opacity: 0.5; font-size: 0.8rem; margin-right: 8px;">Rp 100.000</span>
+                                                <span
+                                                    style="text-decoration: line-through; opacity: 0.5; font-size: 0.8rem; margin-right: 8px;">Rp
+                                                    100.000</span>
                                                 <span class="tpl-price">Rp 50.000</span>
                                             </div>
                                             <p>Hadirkan keseruan dalam setiap perjalanan menuju hari bahagia Anda.</p>
-                                            <a href="/invitation/cairide-sample" target="_blank" class="preview-link" onclick="event.stopPropagation();">Live Preview ↗</a>
+                                            <a href="/invitation/cairide-sample" target="_blank" class="preview-link"
+                                                onclick="event.stopPropagation();">Live Preview ↗</a>
                                         </div>
                                     </div>
                                 </label>
@@ -146,19 +188,30 @@
                                 <h3 class="serif accent-title" data-i18n="create.field.bride">Mempelai Wanita</h3>
                                 <div class="input-group" style="margin-top: 1.5rem;">
                                     <label data-i18n="create.field.nickname">Nama Panggilan</label>
-                                    <input type="text" name="bride_name" id="in-bride-name" placeholder="Julia" required>
+                                    <input type="text" name="bride_name" id="in-bride-name" placeholder="Julia"
+                                        required>
                                 </div>
                                 <div class="input-group" style="margin-top: 1rem;">
                                     <label data-i18n="create.field.fullname">Nama Lengkap</label>
-                                    <input type="text" name="bride_full_name" placeholder="Juliet Capulet" required>
+                                    <input type="text" name="bride_full_name" id="in-bride-full-name"
+                                        placeholder="Juliet Capulet" required>
+                                </div>
+                                <div class="input-group" style="margin-top: 1rem;">
+                                    <label>Nama Orang Tua (Ayah & Ibu)</label>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                        <input type="text" name="bride_father" id="in-bride-father" placeholder="Ayah">
+                                        <input type="text" name="bride_mother" id="in-bride-mother" placeholder="Ibu">
+                                    </div>
                                 </div>
                                 <div class="input-group" style="margin-top: 1rem;">
                                     <label data-i18n="create.field.photo">Foto Profile</label>
                                     <div class="upload-zone">
                                         <i class="upload-icon">📸</i>
-                                        <span class="upload-text" data-i18n="create.field.upload_text">Klik atau seret foto di sini</span>
+                                        <span class="upload-text" data-i18n="create.field.upload_text">Klik atau seret
+                                            foto di sini</span>
                                         <span class="file-name-display"></span>
-                                        <input type="file" name="bride_photo" accept="image/*" onchange="handleFileSelect(this)">
+                                        <input type="file" name="bride_photo" accept="image/*"
+                                            onchange="handleFileSelect(this)">
                                     </div>
                                 </div>
                             </div>
@@ -168,11 +221,20 @@
                                 <h3 class="serif accent-title" data-i18n="create.field.groom">Mempelai Pria</h3>
                                 <div class="input-group" style="margin-top: 1.5rem;">
                                     <label data-i18n="create.field.nickname">Nama Panggilan</label>
-                                    <input type="text" name="groom_name" id="in-groom-name" placeholder="Romeo" required>
+                                    <input type="text" name="groom_name" id="in-groom-name" placeholder="Romeo"
+                                        required>
                                 </div>
                                 <div class="input-group" style="margin-top: 1rem;">
                                     <label data-i18n="create.field.fullname">Nama Lengkap</label>
-                                    <input type="text" name="groom_full_name" placeholder="Romeo Montague" required>
+                                    <input type="text" name="groom_full_name" id="in-groom-full-name"
+                                        placeholder="Romeo Montague" required>
+                                </div>
+                                <div class="input-group" style="margin-top: 1rem;">
+                                    <label>Nama Orang Tua (Ayah & Ibu)</label>
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                        <input type="text" name="groom_father" id="in-groom-father" placeholder="Ayah">
+                                        <input type="text" name="groom_mother" id="in-groom-mother" placeholder="Ibu">
+                                    </div>
                                 </div>
                                 <div class="input-group" style="margin-top: 1rem;">
                                     <label>Foto Profile</label>
@@ -180,7 +242,8 @@
                                         <i class="upload-icon">📸</i>
                                         <span class="upload-text">Klik atau seret foto mempelai pria di sini</span>
                                         <span class="file-name-display"></span>
-                                        <input type="file" name="groom_photo" accept="image/*" onchange="handleFileSelect(this)">
+                                        <input type="file" name="groom_photo" accept="image/*"
+                                            onchange="handleFileSelect(this)">
                                     </div>
                                 </div>
                             </div>
@@ -200,76 +263,117 @@
                 <div class="form-step" id="step-3" style="display: none;">
                     <div class="step-content">
                         <h3 class="serif accent-title">Ceremony & Gallery</h3>
-                        
+
                         <div class="events-gallery-grid">
                             <!-- Column 1: Lokasi Akad & Resepsi -->
                             <div class="events-container">
-                                <div class="ceremony-details" style="background: #fff; padding: 2.5rem; border-radius: 30px; border: 1px solid #f0f0f0; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.02);">
-                                    <label style="margin-bottom: 2rem; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; font-weight: 800; color: #2A1E14;">
-                                        <span style="background: #fdf6f0; padding: 8px; border-radius: 12px;">📍</span> Lokasi Akad
+                                <div class="ceremony-details"
+                                    style="background: #fff; padding: 2.5rem; border-radius: 30px; border: 1px solid #f0f0f0; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.02);">
+                                    <label
+                                        style="margin-bottom: 2rem; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; font-weight: 800; color: #2A1E14;">
+                                        <span style="background: #fdf6f0; padding: 8px; border-radius: 12px;">📍</span>
+                                        Lokasi Akad
                                     </label>
-                                    
+
                                     <div class="input-group" style="margin-bottom: 1.5rem;">
                                         <label>Nama Venue</label>
-                                        <input type="text" name="ceremony_venue" id="in-venue" placeholder="contoh: Masjid Raya Baiturrahman" required oninput="syncReception()">
+                                        <input type="text" name="ceremony_venue" id="in-venue"
+                                            placeholder="contoh: Masjid Raya Baiturrahman" required
+                                            oninput="syncReception()">
                                     </div>
-                                    
+
                                     <div class="input-group" style="margin-bottom: 1.5rem;">
                                         <label>Alamat Lengkap</label>
-                                        <textarea name="ceremony_address" id="in-address" placeholder="Jl. Diponegoro No. 1..." rows="2" oninput="syncReception()"></textarea>
+                                        <textarea name="ceremony_address" id="in-address"
+                                            placeholder="Jl. Diponegoro No. 1..." rows="2"
+                                            oninput="syncReception()"></textarea>
                                     </div>
 
                                     <div class="input-group">
                                         <label>Google Maps Link (Optional)</label>
-                                        <input type="text" name="ceremony_maps" id="in-maps" placeholder="https://goo.gl/maps/..." oninput="syncReception()">
+                                        <input type="text" name="ceremony_maps" id="in-maps"
+                                            placeholder="https://goo.gl/maps/..." oninput="syncReception()">
                                     </div>
                                 </div>
 
-                                <div class="reception-toggle" style="margin-bottom: 2rem; padding: 1rem 2rem; background: #fafafa; border-radius: 20px;">
-                                    <label style="display: flex; align-items: center; gap: 1rem; cursor: pointer; font-size: 0.9rem; font-weight: 600;">
-                                        <input type="checkbox" id="same-as-ceremony" checked onchange="toggleReception()" style="width: 18px; height: 18px; accent-color: #8E6E53;">
+                                <div class="reception-toggle"
+                                    style="margin-bottom: 2rem; padding: 1rem 2rem; background: #fafafa; border-radius: 20px;">
+                                    <label
+                                        style="display: flex; align-items: center; gap: 1rem; cursor: pointer; font-size: 0.9rem; font-weight: 600;">
+                                        <input type="checkbox" id="same-as-ceremony" checked
+                                            onchange="toggleReception()"
+                                            style="width: 18px; height: 18px; accent-color: #8E6E53;">
                                         <span>Lokasi Resepsi sama dengan Akad</span>
                                     </label>
                                 </div>
 
-                                <div id="reception-section" class="ceremony-details" style="display: none; background: #fff; padding: 2.5rem; border-radius: 30px; border: 1px dashed #d4c4b5;">
-                                    <label style="margin-bottom: 2rem; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; font-weight: 800; color: #2A1E14;">
-                                        <span style="background: #f0f9fd; padding: 8px; border-radius: 12px;">🎊</span> Lokasi Resepsi
+                                <div id="reception-section" class="ceremony-details"
+                                    style="display: none; background: #fff; padding: 2.5rem; border-radius: 30px; border: 1px dashed #d4c4b5;">
+                                    <label
+                                        style="margin-bottom: 2rem; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; font-weight: 800; color: #2A1E14;">
+                                        <span style="background: #f0f9fd; padding: 8px; border-radius: 12px;">🎊</span>
+                                        Lokasi Resepsi
                                     </label>
-                                    
+
                                     <div class="input-group" style="margin-bottom: 1.5rem;">
                                         <label>Nama Venue Resepsi</label>
-                                        <input type="text" name="reception_venue" id="in-reception-venue" placeholder="contoh: Grand Ballroom Hotel">
+                                        <input type="text" name="reception_venue" id="in-reception-venue"
+                                            placeholder="contoh: Grand Ballroom Hotel">
                                     </div>
-                                    
+
                                     <div class="input-group" style="margin-bottom: 1.5rem;">
                                         <label>Alamat Resepsi</label>
-                                        <textarea name="reception_address" id="in-reception-address" placeholder="Jl. Sudirman No. 1..." rows="2"></textarea>
+                                        <textarea name="reception_address" id="in-reception-address"
+                                            placeholder="Jl. Sudirman No. 1..." rows="2"></textarea>
+                                    </div>
+
+                                    <div class="input-group" style="margin-bottom: 1.5rem;">
+                                        <label>Tanggal & Waktu Resepsi</label>
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                            <input type="text" name="reception_date" id="in-reception-date"
+                                                placeholder="Tanggal">
+                                            <input type="text" name="reception_time" id="in-reception-time"
+                                                placeholder="Waktu">
+                                        </div>
                                     </div>
 
                                     <div class="input-group">
                                         <label>Google Maps Link Resepsi</label>
-                                        <input type="text" name="reception_maps" id="in-reception-maps" placeholder="https://goo.gl/maps/...">
+                                        <input type="text" name="reception_maps" id="in-reception-maps"
+                                            placeholder="https://goo.gl/maps/...">
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Column 2: Gallery -->
                             <div class="gallery-column">
-                                <div class="gallery-upload" style="background: #fff; padding: 2.5rem; border-radius: 30px; border: 1px solid #f0f0f0; box-shadow: 0 10px 30px rgba(0,0,0,0.02); height: 100%;">
-                                    <label style="margin-bottom: 2rem; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; font-weight: 800; color: #2A1E14;">
-                                        <span style="background: #f0fdf4; padding: 8px; border-radius: 12px;">🖼️</span> Gallery Photos
+                                <div class="gallery-upload"
+                                    style="background: #fff; padding: 2.5rem; border-radius: 30px; border: 1px solid #f0f0f0; box-shadow: 0 10px 30px rgba(0,0,0,0.02); height: 100%;">
+                                    <label
+                                        style="margin-bottom: 2rem; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; font-weight: 800; color: #2A1E14;">
+                                        <span style="background: #f0fdf4; padding: 8px; border-radius: 12px;">🖼️</span>
+                                        Gallery Photos
                                     </label>
-                                    <div class="upload-zone" style="height: 400px; border: 2px dashed #e0e0e0; background: #fafafa; border-radius: 25px;">
+                                    <div class="upload-zone"
+                                        style="height: 400px; border: 2px dashed #e0e0e0; background: #fafafa; border-radius: 25px;">
                                         <div class="upload-content" style="text-align: center; padding: 2rem;">
                                             <div style="font-size: 3rem; margin-bottom: 1.5rem;">✨</div>
-                                            <h4 class="serif" style="font-size: 1.2rem; margin-bottom: 0.8rem; color: #4A3728;">Art Gallery Collection</h4>
-                                            <p style="font-size: 0.85rem; color: #999; line-height: 1.6; max-width: 250px; margin: 0 auto;">Seret & lepaskan koleksi foto terbaik Anda untuk melengkapi estetika undangan digital ini.</p>
-                                            <div class="file-name-display" style="margin-top: 1.5rem; background: #8E6E53; color: white; padding: 0.5rem 1.2rem; border-radius: 50px; font-size: 0.8rem; display: none;"></div>
+                                            <h4 class="serif"
+                                                style="font-size: 1.2rem; margin-bottom: 0.8rem; color: #4A3728;">Art
+                                                Gallery Collection</h4>
+                                            <p
+                                                style="font-size: 0.85rem; color: #999; line-height: 1.6; max-width: 250px; margin: 0 auto;">
+                                                Seret & lepaskan koleksi foto terbaik Anda untuk melengkapi estetika
+                                                undangan digital ini.</p>
+                                            <div class="file-name-display"
+                                                style="margin-top: 1.5rem; background: #8E6E53; color: white; padding: 0.5rem 1.2rem; border-radius: 50px; font-size: 0.8rem; display: none;">
+                                            </div>
                                         </div>
-                                        <input type="file" name="gallery[]" accept="image/*" multiple onchange="handleFileSelect(this)">
+                                        <input type="file" name="gallery[]" accept="image/*" multiple
+                                            onchange="handleFileSelect(this)">
                                     </div>
-                                    <div style="margin-top: 2rem; display: flex; justify-content: space-between; font-size: 0.75rem; color: #bbb;">
+                                    <div
+                                        style="margin-top: 2rem; display: flex; justify-content: space-between; font-size: 0.75rem; color: #bbb;">
                                         <span>JPG, PNG supported</span>
                                         <span>Max 6-12 photos recommended</span>
                                     </div>
@@ -277,13 +381,21 @@
                             </div>
                         </div>
 
-                        <div class="quote-section" style="margin-top: 4rem; padding: 4rem; background: #fffbf8; border-radius: 40px; border: 1px solid #fdf0e5; text-align: center;">
-                            <label style="font-family: var(--font-serif); font-style: italic; color: #8E6E53; margin-bottom: 1.5rem; display: block;">"The Sacred Bond"</label>
-                            <textarea name="quote_text" placeholder="Tuliskan ayat suci atau kata-kata mutiara yang menggambarkan perjalanan cinta Anda..." 
-                                style="text-align: center; font-style: italic; background: transparent; border: none; font-size: 1.2rem; color: #4A3728; width: 100%;" rows="3"></textarea>
+                        <div class="quote-section"
+                            style="margin-top: 4rem; padding: 4rem; background: #fffbf8; border-radius: 40px; border: 1px solid #fdf0e5; text-align: center;">
+                            <label
+                                style="font-family: var(--font-serif); font-style: italic; color: #8E6E53; margin-bottom: 1.5rem; display: block;">"The
+                                Sacred Bond"</label>
+                            <textarea name="quote_text" id="in-quote"
+                                placeholder="Tuliskan ayat suci atau kata-kata mutiara yang menggambarkan perjalanan cinta Anda..."
+                                style="text-align: center; font-style: italic; background: transparent; border: none; font-size: 1.2rem; color: #4A3728; width: 100%;"
+                                rows="3"></textarea>
+                            <input type="text" name="quote_source" id="in-quote-source" placeholder="- QS. Ar-Rum: 21"
+                                style="text-align: center; border: none; background: transparent; color: #8E6E53; font-weight: 700; width: 100%; margin-top: 1rem;">
                         </div>
 
-                        <div style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div
+                            style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
                             <button type="button" class="btn-back" onclick="prevStep(2)">← Back</button>
                             <button type="button" class="btn-elegant" onclick="updatePreview(); nextStep(4)">
                                 <span>Preview Draft</span>
@@ -297,42 +409,61 @@
                 <div class="form-step" id="step-4" style="display: none;">
                     <div style="padding: 3rem; text-align: center;">
                         <h3 class="serif accent-title">Summary Preview</h3>
-                        
-                        <div class="preview-card" style="margin: 3rem auto; padding: 4rem; border: none; border-radius: 40px; background: #fff; max-width: 650px; box-shadow: 0 20px 60px rgba(0,0,0,0.08); position: relative; overflow: hidden;">
-                            <div style="position: absolute; top: 0; left: 0; width: 100%; height: 8px; background: linear-gradient(90deg, #8E6E53, #D4A373);"></div>
-                            
-                            <span class="hero-subtitle" style="letter-spacing: 4px; font-size: 0.7rem;">Official Invitation Draft</span>
-                            <h2 class="serif" id="pv-name" style="font-size: 3rem; margin: 1.5rem 0; color: #2A1E14;">Romeo & Julia</h2>
-                            
-                            <div style="display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 2.5rem; background: #fafafa; padding: 1.5rem; border-radius: 20px;">
-                                <p id="pv-slug" style="color: #999; font-size: 0.75rem; margin: 0; letter-spacing: 1px;">Main URL: /invitation/romeo-julia</p>
-                                <div style="height: 1px; background: #eee; width: 50px; margin: 0 auto;"></div>
-                                <p style="color: #8E6E53; font-weight: 800; margin: 0; font-size: 0.9rem;">
-                                    Live Preview: <a id="pv-preview-link" href="#" target="_blank" style="color: inherit; text-decoration: underline;">/preview/romeo-julia</a>
-                                </p>
+
+                        <div
+                            style="margin: 2rem auto; max-width: 500px; display: flex; flex-direction: column; align-items: center; gap: 3rem;">
+                            <div class="phone-mockup-container">
+                                <div class="phone-mockup">
+                                    <div class="phone-speaker"></div>
+                                    <div class="phone-screen-wrap">
+                                        <div id="preview-loader" class="preview-loader">
+                                            <div class="spinner"></div>
+                                            <p>Rendering your masterpiece...</p>
+                                        </div>
+                                        <iframe id="live-preview-iframe" src="about:blank" frameborder="0"></iframe>
+                                    </div>
+                                    <div class="phone-button"></div>
+                                </div>
                             </div>
 
-                            <div style="margin: 2.5rem 0; padding: 2.5rem 0; border-top: 1px double #eee; border-bottom: 1px double #eee;">
-                                <p style="font-size: 0.85rem; color: #999; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 1rem;">Sacred Union Ceremony</p>
-                                <p class="serif" id="pv-date" style="font-size: 1.4rem; color: #4A3728; margin-bottom: 0.5rem;">October 24, 2026</p>
-                                <div style="font-size: 0.8rem; color: #bbb; margin: 0.5rem 0;">at</div>
-                                <p class="serif" id="pv-venue" style="font-size: 1.3rem; color: #4A3728; line-height: 1.4;">The Grand Ballroom</p>
-                            </div>
-                            
-                            <div style="display: flex; justify-content: center; gap: 2rem; align-items: center;">
-                                <div style="text-align: left;">
-                                    <p style="font-size: 0.65rem; color: #bbb; text-transform: uppercase;">Design Aesthetic</p>
-                                    <p id="pv-template" style="color: #333; font-weight: 800; font-size: 0.9rem;">Vintage Archival</p>
-                                </div>
-                                <div style="width: 1px; height: 30px; background: #eee;"></div>
-                                <div style="text-align: left;">
-                                    <p style="font-size: 0.65rem; color: #bbb; text-transform: uppercase;">Investment Plan</p>
-                                    <p id="pv-plan" style="color: #8E6E53; font-weight: 800; font-size: 0.9rem;">Essential Estate</p>
-                                </div>
+                            <div
+                                style="width: 100%; text-align: left; padding: 2.5rem; background: #fff; border-radius: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.03); border: 1px solid #f5f5f5;">
+                                <h4 class="serif"
+                                    style="font-size: 1.2rem; color: #2A1E14; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
+                                    <span style="font-size: 1.5rem;">💡</span>
+                                    <span>Pro-Tips for Perfection</span>
+                                </h4>
+                                <ul style="list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem;">
+                                    <li
+                                        style="display: flex; gap: 12px; font-size: 0.85rem; color: #666; line-height: 1.5;">
+                                        <span style="color: var(--color-accent-rose); font-weight: 900;">•</span>
+                                        <span>Periksa kembali penulisan nama gelar dan orang tua agar sesuai dengan
+                                            protokol undangan.</span>
+                                    </li>
+                                    <li
+                                        style="display: flex; gap: 12px; font-size: 0.85rem; color: #666; line-height: 1.5;">
+                                        <span style="color: var(--color-accent-rose); font-weight: 900;">•</span>
+                                        <span>Klik tombol <strong>Get Directions</strong> di preview untuk memastikan
+                                            titik lokasi Google Maps sudah akurat.</span>
+                                    </li>
+                                    <li
+                                        style="display: flex; gap: 12px; font-size: 0.85rem; color: #666; line-height: 1.5;">
+                                        <span style="color: var(--color-accent-rose); font-weight: 900;">•</span>
+                                        <span>Gunakan foto dengan orientasi portrait (tegak) untuk hasil visual terbaik
+                                            di layar ponsel.</span>
+                                    </li>
+                                    <li
+                                        style="display: flex; gap: 12px; font-size: 0.85rem; color: #666; line-height: 1.5;">
+                                        <span style="color: var(--color-accent-rose); font-weight: 900;">•</span>
+                                        <span>Anda masih bisa mengganti tema atau mengedit detail kapan saja sebelum
+                                            melakukan pembayaran akhir.</span>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
 
-                        <div style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div
+                            style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
                             <button type="button" class="btn-back" onclick="prevStep(3)">← Back</button>
                             <button type="button" class="btn-elegant" onclick="nextStep(5)">
                                 <span>Proceed to Payment</span>
@@ -346,15 +477,20 @@
                 <div class="form-step" id="step-5" style="display: none;">
                     <div style="padding: 3rem; text-align: center;">
                         <h3 class="serif accent-title">Investment Completion</h3>
-                        
-                        <div style="margin: 3rem auto; max-width: 550px; padding: 4rem; background: #fff; border-radius: 40px; box-shadow: 0 30px 70px rgba(0,0,0,0.07); position: relative; border: 1px solid #f8f8f8;">
+
+                        <div
+                            style="margin: 3rem auto; max-width: 550px; padding: 4rem; background: #fff; border-radius: 40px; box-shadow: 0 30px 70px rgba(0,0,0,0.07); position: relative; border: 1px solid #f8f8f8;">
                             <div style="margin-bottom: 3.5rem;">
                                 <div style="font-size: 2.5rem; margin-bottom: 1rem; color: #8E6E53;">🏛️</div>
-                                <h4 class="serif" style="font-size: 1.8rem; color: #2A1E14; margin-bottom: 0.5rem;">A Legacy in the Making</h4>
-                                <p style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 3px; color: #bbb; font-weight: 700;">Castellant Secure Selection</p>
+                                <h4 class="serif" style="font-size: 1.8rem; color: #2A1E14; margin-bottom: 0.5rem;">A
+                                    Legacy in the Making</h4>
+                                <p
+                                    style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 3px; color: #bbb; font-weight: 700;">
+                                    Castellant Secure Selection</p>
                             </div>
 
-                            <div style="text-align: left; margin-bottom: 3rem; background: #fafafa; padding: 2.5rem; border-radius: 30px; border: 1px solid #f0f0f0;">
+                            <div
+                                style="text-align: left; margin-bottom: 3rem; background: #fafafa; padding: 2.5rem; border-radius: 30px; border: 1px solid #f0f0f0;">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 1.2rem;">
                                     <span style="color: #999; font-size: 0.9rem;">Selected Collection</span>
                                     <span style="font-weight: 800; color: #2A1E14;">Essential Estate</span>
@@ -364,30 +500,39 @@
                                     <span style="font-weight: 600; color: #2A1E14;">Lifetime Digital Legacy</span>
                                 </div>
                                 <div style="height: 1px; background: #eee; margin: 1.8rem 0; position: relative;">
-                                    <span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #fafafa; padding: 0 10px; font-size: 0.6rem; color: #ccc;">VALUATION</span>
+                                    <span
+                                        style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #fafafa; padding: 0 10px; font-size: 0.6rem; color: #ccc;">VALUATION</span>
                                 </div>
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <span style="font-weight: 800; font-size: 1.1rem; color: #2A1E14;">Total Investment</span>
-                                    <span class="serif" id="pv-total-final" data-base-price="50000" style="font-size: 2.2rem; color: #8E6E53; font-weight: 800;">Rp 50.000</span>
+                                    <span style="font-weight: 800; font-size: 1.1rem; color: #2A1E14;">Total
+                                        Investment</span>
+                                    <span class="serif" id="pv-total-final" data-base-price="50000"
+                                        style="font-size: 2.2rem; color: #8E6E53; font-weight: 800;">Rp 50.000</span>
                                 </div>
                             </div>
 
-                            <p style="color: #666; font-size: 0.9rem; line-height: 1.8; margin-bottom: 3rem; padding: 0 1rem; font-style: italic;">
-                                "Your digital heirloom is moments away from being published. We ensure every detail is preserved with architectural precision and timeless elegance."
+                            <p
+                                style="color: #666; font-size: 0.9rem; line-height: 1.8; margin-bottom: 3rem; padding: 0 1rem; font-style: italic;">
+                                "Your digital heirloom is moments away from being published. We ensure every detail is
+                                preserved with architectural precision and timeless elegance."
                             </p>
-                            
-                            <div style="display: flex; align-items: center; justify-content: center; gap: 15px; padding-top: 2rem; border-top: 1px solid #f8f8f8;">
-                                <div style="display: flex; align-items: center; gap: 5px; color: #bbb; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px;">
+
+                            <div
+                                style="display: flex; align-items: center; justify-content: center; gap: 15px; padding-top: 2rem; border-top: 1px solid #f8f8f8;">
+                                <div
+                                    style="display: flex; align-items: center; gap: 5px; color: #bbb; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px;">
                                     <span>🛡️</span> Encrypted Checkout
                                 </div>
                                 <div style="width: 4px; height: 4px; background: #eee; border-radius: 50%;"></div>
-                                <div style="display: flex; align-items: center; gap: 5px; color: #bbb; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px;">
+                                <div
+                                    style="display: flex; align-items: center; gap: 5px; color: #bbb; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px;">
                                     <span>💎</span> Genuine Quality
                                 </div>
                             </div>
                         </div>
 
-                        <div style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div
+                            style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
                             <button type="button" class="btn-back" onclick="prevStep(4)">← Back</button>
                             <button type="submit" class="btn-elegant primary" style="padding: 1.5rem 4rem;">
                                 <span>Complete Order</span>
@@ -402,74 +547,323 @@
 </section>
 
 <style>
-    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem; }
-    .couple-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
-    .events-gallery-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; margin-top: 2rem; }
-    .step-content { padding: 3rem; }
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+
+    .couple-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+    }
+
+    .events-gallery-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+        margin-top: 2rem;
+    }
+
+    .step-content {
+        padding: 3rem;
+    }
 
     @media (max-width: 768px) {
-        .form-grid, .couple-grid, .events-gallery-grid { grid-template-columns: 1fr; gap: 2rem; }
-        .step-content { padding: 1.5rem; }
-        .creation-container { border-radius: 0; }
-        .progress-steps { padding: 1rem 0.5rem; }
-        .preview-card, .payment-card { padding: 2rem 1.5rem !important; }
-        .quote-section { padding: 2rem !important; }
-        .btn-elegant { width: 100%; justify-content: center; }
-        .form-step div[style*="justify-content: space-between"] { flex-direction: column-reverse; gap: 1rem; }
-        .btn-back { width: 100%; text-align: center; }
+
+        .form-grid,
+        .couple-grid,
+        .events-gallery-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .step-content {
+            padding: 1.5rem;
+        }
+
+        .creation-container {
+            border-radius: 0;
+        }
+
+        .progress-steps {
+            padding: 1rem 0.5rem;
+        }
+
+        .preview-card,
+        .payment-card {
+            padding: 2rem 1.5rem !important;
+        }
+
+        .quote-section {
+            padding: 2rem !important;
+        }
+
+        .btn-elegant {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .form-step div[style*="justify-content: space-between"] {
+            flex-direction: column-reverse;
+            gap: 1rem;
+        }
+
+        .btn-back {
+            width: 100%;
+            text-align: center;
+        }
     }
 
-    .accent-title { color: var(--color-accent-red); font-size: 1.4rem; border-bottom: 1px solid #fce8e8; padding-bottom: 0.8rem; margin-bottom: 1rem; }
-    .tpl-info .serif { 
-        display: block; 
-        font-weight: 800; 
-        margin-bottom: 0.3rem; 
-        font-size: 1.2rem; 
-        color: #2A1E14; 
-        letter-spacing: -0.5px;
+    .accent-title {
+        color: var(--color-accent-red);
+        font-size: 1.4rem;
+        border-bottom: 1px solid #fce8e8;
+        padding-bottom: 0.8rem;
+        margin-bottom: 1rem;
     }
-    .tpl-price { 
-        display: inline-block; 
-        font-size: 0.75rem; 
-        font-weight: 800; 
-        color: white; 
-        background: var(--color-accent-red); 
-        padding: 2px 10px; 
-        border-radius: 20px; 
+
+    /* Phone Mockup */
+    .phone-mockup {
+        width: 350px;
+        height: 700px;
+        background: #111;
+        border-radius: 50px;
+        padding: 12px;
+        position: relative;
+        box-shadow: 0 40px 100px rgba(0, 0, 0, 0.2);
+        border: 4px solid #222;
+        margin: 0 auto;
+    }
+
+    .phone-speaker {
+        position: absolute;
+        top: 30px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 5px;
+        background: #333;
+        border-radius: 10px;
+        z-index: 10;
+    }
+
+    .phone-screen-wrap {
+        width: 100%;
+        height: 100%;
+        background: #fff;
+        border-radius: 40px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    #live-preview-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
+
+    .phone-button {
+        position: absolute;
+        bottom: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 2px solid #222;
+    }
+
+    .preview-loader {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 5;
+        gap: 1rem;
+    }
+
+    .preview-loader p {
+        font-size: 0.8rem;
+        color: #888;
+        font-weight: 600;
+    }
+
+    .spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid #f3f3f3;
+        border-top: 3px solid var(--color-accent-rose);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .creation-container>form>.form-step[style*="max-width: 800px"] {
+            grid-template-columns: 1fr !important;
+        }
+
+        .phone-mockup {
+            width: 300px;
+            height: 600px;
+        }
+    }
+
+    .tpl-price {
+        display: inline-block;
+        font-size: 0.75rem;
+        font-weight: 800;
+        color: white;
+        background: var(--color-accent-red);
+        padding: 2px 10px;
+        border-radius: 20px;
         margin-bottom: 0.6rem;
         letter-spacing: 0.5px;
     }
-    .tpl-info p { font-size: 0.7rem; color: #999; margin: 0; line-height: 1.4; }
-    .tpl-indicator { 
-        width: 12px; height: 12px; border: 2px solid #ddd; border-radius: 50%; 
-        margin: 0 auto 0.8rem; transition: all 0.3s;
+
+    .tpl-info p {
+        font-size: 0.7rem;
+        color: #999;
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    .tpl-indicator {
+        width: 12px;
+        height: 12px;
+        border: 2px solid #ddd;
+        border-radius: 50%;
+        margin: 0 auto 0.8rem;
+        transition: all 0.3s;
         background: white;
     }
-    .tpl-card input:checked + .tpl-content .tpl-indicator {
+
+    .tpl-card input:checked+.tpl-content .tpl-indicator {
         background: var(--color-accent-rose);
         border-color: var(--color-accent-rose);
-        box-shadow: 0 0 0 4px rgba(255,182,193,0.2);
+        box-shadow: 0 0 0 4px rgba(255, 182, 193, 0.2);
     }
 
-    .input-group label { display: block; font-family: var(--font-serif); font-weight: 700; font-size: 0.85rem; color: #333; margin-bottom: 0.4rem; }
-    .input-group input[type="text"], .input-group textarea {
-        width: 100%; padding: 1rem; border-radius: 15px; border: 1px solid #f0f0f0; background: #fafafa; font-family: var(--font-sans);
+    .input-group label {
+        display: block;
+        font-family: var(--font-serif);
+        font-weight: 700;
+        font-size: 0.85rem;
+        color: #333;
+        margin-bottom: 0.4rem;
     }
-    
-    .progress-steps { gap: 1rem; align-items: center; justify-content: center; width: 100%; margin: 0 auto; }
-    .step-item { display: flex; align-items: center; gap: 0.8rem; opacity: 0.2; transition: all 0.3s ease; flex-shrink: 0; }
-    .step-item.active { opacity: 1; }
-    .step-num { font-family: var(--font-serif); font-weight: 700; font-size: 1.1rem; color: var(--color-accent-red); }
-    .step-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; color: #666; }
-    .step-divider { width: 30px; height: 1px; background: #eee; flex-shrink: 0; }
 
-    .plan-mini { cursor: pointer; }
-    .plan-mini input { display: none; }
-    .plan-box { padding: 1rem; border: 1px solid #eee; border-radius: 15px; text-align: center; background: white; transition: all 0.3s ease; }
-    .plan-box .p-name { display: block; font-size: 0.8rem; font-weight: 700; color: #666; }
-    .plan-box .p-price { display: block; font-family: var(--font-serif); font-size: 1.1rem; color: #333; }
-    .plan-mini input:checked + .plan-box { border-color: var(--color-accent-rose); background: #fff9f9; box-shadow: 0 4px 10px rgba(255,182,193,0.3); }
-    .plan-mini input:checked + .plan-box .p-name { color: var(--color-accent-rose); }
+    .input-group input[type="text"],
+    .input-group textarea {
+        width: 100%;
+        padding: 1rem;
+        border-radius: 15px;
+        border: 1px solid #f0f0f0;
+        background: #fafafa;
+        font-family: var(--font-sans);
+    }
+
+    .progress-steps {
+        gap: 1rem;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .step-item {
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+        opacity: 0.2;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+    }
+
+    .step-item.active {
+        opacity: 1;
+    }
+
+    .step-num {
+        font-family: var(--font-serif);
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: var(--color-accent-red);
+    }
+
+    .step-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+        color: #666;
+    }
+
+    .step-divider {
+        width: 30px;
+        height: 1px;
+        background: #eee;
+        flex-shrink: 0;
+    }
+
+    .plan-mini {
+        cursor: pointer;
+    }
+
+    .plan-mini input {
+        display: none;
+    }
+
+    .plan-box {
+        padding: 1rem;
+        border: 1px solid #eee;
+        border-radius: 15px;
+        text-align: center;
+        background: white;
+        transition: all 0.3s ease;
+    }
+
+    .plan-box .p-name {
+        display: block;
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #666;
+    }
+
+    .plan-box .p-price {
+        display: block;
+        font-family: var(--font-serif);
+        font-size: 1.1rem;
+        color: #333;
+    }
+
+    .plan-mini input:checked+.plan-box {
+        border-color: var(--color-accent-rose);
+        background: #fff9f9;
+        box-shadow: 0 4px 10px rgba(255, 182, 193, 0.3);
+    }
+
+    .plan-mini input:checked+.plan-box .p-name {
+        color: var(--color-accent-rose);
+    }
 
     /* Elegant Upload Zones */
     .upload-zone {
@@ -486,26 +880,34 @@
         align-items: center;
         gap: 0.8rem;
     }
+
     .upload-zone:hover {
         border-color: var(--color-accent-rose);
         background: #fffafa;
     }
+
     .upload-zone input[type="file"] {
         position: absolute;
-        top: 0; left: 0; width: 100%; height: 100%;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
         opacity: 0;
         cursor: pointer;
     }
+
     .upload-icon {
         font-size: 1.5rem;
         color: #ccc;
     }
+
     .upload-text {
         font-size: 0.75rem;
         color: #999;
         font-weight: 500;
         line-height: 1.4;
     }
+
     .file-name-display {
         font-size: 0.75rem;
         color: var(--color-accent-rose);
@@ -514,81 +916,145 @@
         display: none;
     }
 
-    .template-selector { 
-        display: grid; 
-        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
-        gap: 1.5rem; 
+    .template-selector {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.5rem;
         margin-top: 1.5rem;
     }
-    .tpl-card { cursor: pointer; transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); position: relative; }
-    .tpl-card:hover { transform: translateY(-8px); }
-    .tpl-card input { display: none; }
-    
-    .tpl-content { 
-        border-radius: 25px; 
-        border: 1px solid #f0f0f0; 
-        background: white; 
-        transition: all 0.4s; 
-        overflow: hidden; 
-        box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+
+    .tpl-card {
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        position: relative;
+    }
+
+    .tpl-card:hover {
+        transform: translateY(-8px);
+    }
+
+    .tpl-card input {
+        display: none;
+    }
+
+    .tpl-content {
+        border-radius: 25px;
+        border: 1px solid #f0f0f0;
+        background: white;
+        transition: all 0.4s;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
         height: 100%;
         display: flex;
         flex-direction: column;
     }
-    .tpl-image { 
-        height: 160px; 
-        background-size: cover; 
+
+    .tpl-image {
+        height: 160px;
+        background-size: cover;
         background-position: center;
         border-bottom: 1px solid #f8f8f8;
     }
-    .tpl-info { padding: 1.5rem; text-align: center; flex-grow: 1; display: flex; flex-direction: column; align-items: center; }
-    
-    .tpl-card input:checked + .tpl-content { 
-        border-color: #8E6E53; 
-        background: #fffdfb; 
+
+    .tpl-info {
+        padding: 1.5rem;
+        text-align: center;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .tpl-card input:checked+.tpl-content {
+        border-color: #8E6E53;
+        background: #fffdfb;
         box-shadow: 0 15px 35px rgba(142, 110, 83, 0.15);
     }
 
-    .tpl-price { 
-        display: inline-block; 
-        font-size: 0.7rem; 
-        font-weight: 800; 
-        color: white; 
+    .tpl-price {
+        display: inline-block;
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: white;
         background: linear-gradient(135deg, #8E6E53, #4A3728);
-        padding: 4px 14px; 
-        border-radius: 50px; 
+        padding: 4px 14px;
+        border-radius: 50px;
         margin-bottom: 0.8rem;
         letter-spacing: 1px;
         text-transform: uppercase;
     }
-    
-    .tpl-indicator { 
-        width: 14px; height: 14px; border: 2px solid #eee; border-radius: 50%; 
-        margin: 0 auto 1rem; transition: all 0.3s;
+
+    .tpl-indicator {
+        width: 14px;
+        height: 14px;
+        border: 2px solid #eee;
+        border-radius: 50%;
+        margin: 0 auto 1rem;
+        transition: all 0.3s;
         background: white;
     }
-    .tpl-card input:checked + .tpl-content .tpl-indicator {
+
+    .tpl-card input:checked+.tpl-content .tpl-indicator {
         background: #8E6E53;
         border-color: #8E6E53;
         box-shadow: 0 0 0 3px rgba(142, 110, 83, 0.2);
     }
 
-    .btn-elegant { 
-        display: flex; align-items: center; gap: 12px; background: white; color: #333; 
-        border: 1px solid #eee; padding: 1.2rem 3rem; border-radius: 50px; 
-        font-weight: 700; cursor: pointer; transition: all 0.3s;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    .btn-elegant {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: white;
+        color: #333;
+        border: 1px solid #eee;
+        padding: 1.2rem 3rem;
+        border-radius: 50px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
         text-transform: uppercase;
         letter-spacing: 1.5px;
         font-size: 0.8rem;
     }
-    .btn-elegant:hover { background: #333; color: white; transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-    .btn-elegant.primary { background: linear-gradient(135deg, #4A3728, #2A1E14); color: white; border: none; }
 
-    .btn-back { background: transparent; border: none; color: #999; font-weight: 600; cursor: pointer; padding: 1rem; transition: 0.3s; }
-    .btn-back:hover { color: #333; transform: translateX(-5px); }
-    textarea:focus, input:focus { outline: none; }
-    textarea { resize: none; }
+    .btn-elegant:hover {
+        background: #333;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-elegant.primary {
+        background: linear-gradient(135deg, #4A3728, #2A1E14);
+        color: white;
+        border: none;
+    }
+
+    .btn-back {
+        background: transparent;
+        border: none;
+        color: #999;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 1rem;
+        transition: 0.3s;
+    }
+
+    .btn-back:hover {
+        color: #333;
+        transform: translateX(-5px);
+    }
+
+    textarea:focus,
+    input:focus {
+        outline: none;
+    }
+
+    textarea {
+        resize: none;
+    }
+
     .preview-link {
         display: inline-block;
         margin-top: 8px;
@@ -602,6 +1068,7 @@
         background: rgba(166, 35, 35, 0.05);
         border: 1px solid rgba(166, 35, 35, 0.1);
     }
+
     .preview-link:hover {
         background: var(--color-accent-red);
         color: white;
@@ -610,13 +1077,96 @@
 
 <script>
     function nextStep(step) {
+        if (step === 4) {
+            loadLivePreview();
+        }
         document.querySelectorAll('.form-step').forEach(s => s.style.display = 'none');
         document.getElementById('step-' + step).style.display = 'block';
-        
+
         document.querySelectorAll('.step-item').forEach(i => i.classList.remove('active'));
         document.getElementById('step-' + step + '-indicator').classList.add('active');
-        
+
+        updatePreview();
         window.scrollTo({ top: 150, behavior: 'smooth' });
+    }
+
+    async function loadLivePreview() {
+        const loader = document.getElementById('preview-loader');
+        const iframe = document.getElementById('live-preview-iframe');
+        loader.style.display = 'flex';
+
+        const formData = {
+            template_name: document.querySelector('input[name="template_name"]:checked').value,
+            couple_name_short: document.getElementById('in-name').value,
+            bride_name: document.getElementById('in-bride-name').value,
+            bride_full_name: document.querySelector('input[name="bride_full_name"]').value,
+            groom_name: document.getElementById('in-groom-name').value,
+            groom_full_name: document.querySelector('input[name="groom_full_name"]').value,
+            bride_father: document.querySelector('input[name="bride_father"]').value || "-",
+            bride_mother: document.querySelector('input[name="bride_mother"]').value || "-",
+            groom_father: document.querySelector('input[name="groom_father"]').value || "-",
+            groom_mother: document.querySelector('input[name="groom_mother"]').value || "-",
+            ceremony_date: document.getElementById('in-date').value,
+            ceremony_time: document.getElementById('in-time').value,
+            ceremony_venue: document.getElementById('in-venue').value,
+            ceremony_address: document.getElementById('in-address').value,
+            ceremony_maps: document.getElementById('in-maps').value,
+            reception_date: document.getElementById('in-reception-date')?.value || document.getElementById('in-date').value,
+            reception_time: document.getElementById('in-reception-time')?.value || "",
+            reception_venue: document.getElementById('in-reception-venue')?.value || "",
+            reception_address: document.getElementById('in-reception-address')?.value || "",
+            reception_maps: document.getElementById('in-reception-maps')?.value || "",
+            quote_text: document.getElementById('in-quote').value,
+            quote_source: document.getElementById('in-quote-source').value,
+        };
+
+        try {
+            const response = await fetch('/api/preview', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+            const html = await response.text();
+
+            const doc = iframe.contentWindow.document;
+            doc.open();
+            doc.write(html);
+            doc.close();
+
+            setTimeout(() => { loader.style.display = 'none'; }, 500);
+        } catch (error) {
+            console.error('Preview failed:', error);
+            loader.innerHTML = '<p style="color:red">Failed to load preview. Please check your connection.</p>';
+        }
+    }
+
+    function filterTemplates() {
+        const query = document.getElementById('template-search').value.toLowerCase();
+        const cards = document.querySelectorAll('.tpl-card');
+
+        cards.forEach(card => {
+            const title = card.querySelector('.serif').innerText.toLowerCase();
+            const desc = card.querySelector('p').innerText.toLowerCase();
+            if (title.includes(query) || desc.includes(query)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    let isSlugManuallyEdited = false;
+    function autoSlug() {
+        if (isSlugManuallyEdited) return;
+        const name = document.getElementById('in-name').value;
+        const slugInput = document.getElementById('in-slug');
+        if (slugInput) {
+            slugInput.value = name.toLowerCase()
+                .replace(/&/g, 'and')
+                .replace(/[^a-z0-9 ]/g, '')
+                .trim()
+                .replace(/\s+/g, '-');
+        }
     }
 
     function prevStep(step) {
@@ -668,10 +1218,10 @@
         let planDisplay = "Essential Estate";
         let priceDisplay = "Rp 50.000";
         let basePrice = "50000";
-        
+
         if (plan === 'signature') { planDisplay = "Signature Heritage"; priceDisplay = "Rp 100.000"; basePrice = "100000"; }
         if (plan === 'archival') { planDisplay = "Imperial Archival"; priceDisplay = "Rp 300.000"; basePrice = "300000"; }
-        
+
         if (elPlan) elPlan.innerText = planDisplay;
         if (elTotal) {
             elTotal.innerText = priceDisplay;
@@ -689,11 +1239,11 @@
         const zone = input.parentElement;
         const display = zone.querySelector('.file-name-display');
         const text = zone.querySelector('.upload-text');
-        
+
         if (input.files && input.files.length > 0) {
             let name = input.files[0].name;
             if (input.files.length > 1) name = input.files.length + " files selected";
-            
+
             display.innerText = "✓ " + name;
             display.style.display = 'block';
             text.style.display = 'none';
@@ -714,13 +1264,15 @@
             document.getElementById('in-reception-venue').value = document.getElementById('in-venue').value;
             document.getElementById('in-reception-address').value = document.getElementById('in-address').value;
             document.getElementById('in-reception-maps').value = document.getElementById('in-maps').value;
+            document.getElementById('in-reception-date').value = document.getElementById('in-date').value;
+            document.getElementById('in-reception-time').value = document.getElementById('in-time').value;
         }
     }
 
     // Initialize from URL params or state
-    window.onload = function() {
+    window.onload = function () {
         const urlParams = new URLSearchParams(window.location.search);
-        
+
         // Auto-select template
         const tpl = urlParams.get('template');
         if (tpl) {

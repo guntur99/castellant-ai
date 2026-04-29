@@ -100,6 +100,7 @@ async fn main() {
         .route("/create", get(handlers::create_invitation_page))
         .route("/templates", get(handlers::templates_list))
         .route("/api/invitation", post(handlers::create_invitation))
+        .route("/api/preview", post(handlers::preview))
         .route("/sitemap.xml", get(handlers::sitemap))
         .route("/robots.txt", get(|| async { 
             tokio::fs::read_to_string("static/robots.txt").await.unwrap_or_else(|_| "".to_string()) 
