@@ -223,6 +223,24 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             category: "premium".to_string(),
             plan: "signature".to_string(),
         },
+        TemplateMetadata {
+            id: "wedding-applemusic".to_string(),
+            title: "Castellan Melody".to_string(),
+            desc: "Rayakan harmoni cinta Anda dengan estetika Apple Music yang elegan. Fokus pada album art foto Anda dan lirik cerita cinta yang mengalir.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-applemusic_preview.png".to_string(),
+            category: "premium".to_string(),
+            plan: "premium".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-capcut".to_string(),
+            title: "Castellan Edit".to_string(),
+            desc: "Kisah cinta Anda adalah mahakarya yang sedang diedit. Desain dinamis ala timeline CapCut dengan energi kreatif yang meluap.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-capcut_preview.png".to_string(),
+            category: "premium".to_string(),
+            plan: "premium".to_string(),
+        },
     ]
 }
 
@@ -754,6 +772,24 @@ pub struct WeddingWrathV2Template {
     pub is_dev: bool,
 }
 
+#[derive(Template)]
+#[template(path = "invitation/wedding-applemusic.html")]
+pub struct AppleMusicTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-capcut.html")]
+pub struct WeCapCutTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
 pub async fn home(
     State(state): State<AppState>,
     jar: PrivateCookieJar,
@@ -861,6 +897,8 @@ pub async fn invitation_detail(
                 "wedding-netflix-v2" => HtmlTemplate(WeddingNetflixV2Template { invitation, is_dev: state.is_dev }).into_response(),
                 "wedding-prime" => HtmlTemplate(WeddingPrimeTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "wedding-wrath-v2" => HtmlTemplate(WeddingWrathV2Template { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-applemusic" => HtmlTemplate(AppleMusicTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-capcut" => HtmlTemplate(WeCapCutTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
             }
         },
@@ -882,6 +920,8 @@ pub async fn invitation_detail(
                     "wedding-netflix-v2-sample" => ("Anita & Zarda", "wedding-netflix-v2"),
                     "wedding-prime-sample" => ("Anita & Zarda", "wedding-prime"),
                     "wedding-wrath-v2-sample" => ("Anita & Zarda", "wedding-wrath-v2"),
+                    "wedding-applemusic-sample" => ("Anita & Zarda", "wedding-applemusic"),
+                    "we-capcut-sample" => ("Anita & Zarda", "we-capcut"),
                     _ => ("Anita & Zarda", "trendvibe"),
                 };
 
@@ -950,6 +990,8 @@ pub async fn invitation_detail(
                     "wedding-netflix-v2" => HtmlTemplate(WeddingNetflixV2Template { invitation, is_dev: state.is_dev }).into_response(),
                     "wedding-prime" => HtmlTemplate(WeddingPrimeTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     "wedding-wrath-v2" => HtmlTemplate(WeddingWrathV2Template { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-applemusic" => HtmlTemplate(AppleMusicTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-capcut" => HtmlTemplate(WeCapCutTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 }
             } else {

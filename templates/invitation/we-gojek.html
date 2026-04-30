@@ -1,1588 +1,2845 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Wedding of {{ invitation.bride.name }} & {{ invitation.groom.name }} · Castellant</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&family=Unbounded:wght@400;700;900&display=swap" rel="stylesheet">
-<style>
-:root {
-  --gk-green: #00AA13;
-  --gk-green-light: #00D219;
-  --gk-green-dim: rgba(0,170,19,0.12);
-  --gk-green-glow: rgba(0,170,19,0.35);
-  --gk-black: #0A0A0A;
-  --gk-dark: #111111;
-  --gk-card: #181818;
-  --gk-card2: #1E1E1E;
-  --gk-border: rgba(255,255,255,0.07);
-  --gk-white: #FFFFFF;
-  --gk-gray: #8A8A8A;
-  --gk-lgray: #3A3A3A;
-  --gk-red: #E53935;
-  --gk-orange: #FF6D00;
-  --gk-yellow: #FFD600;
-  --font-h: 'Unbounded', sans-serif;
-  --font-b: 'Plus Jakarta Sans', sans-serif;
-  --radius: 20px;
-  --radius-sm: 12px;
-}
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{
-  background:var(--gk-black);
-  color:var(--gk-white);
-  font-family:var(--font-b);
-  overflow-x:hidden;
-  cursor:none;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Wedding of {{ invitation.bride.name }} & {{ invitation.groom.name }} · Castellant</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&family=Unbounded:wght@400;700;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --gk-green: #00AA13;
+            --gk-green-light: #00D219;
+            --gk-green-dim: rgba(0, 170, 19, 0.12);
+            --gk-green-glow: rgba(0, 170, 19, 0.35);
+            --gk-black: #0A0A0A;
+            --gk-dark: #111111;
+            --gk-card: #181818;
+            --gk-card2: #1E1E1E;
+            --gk-border: rgba(255, 255, 255, 0.07);
+            --gk-white: #FFFFFF;
+            --gk-gray: #8A8A8A;
+            --gk-lgray: #3A3A3A;
+            --gk-red: #E53935;
+            --gk-orange: #FF6D00;
+            --gk-yellow: #FFD600;
+            --font-h: 'Unbounded', sans-serif;
+            --font-b: 'Plus Jakarta Sans', sans-serif;
+            --radius: 20px;
+            --radius-sm: 12px;
+        }
 
-/* CUSTOM CURSOR */
-.cursor{
-  position:fixed;width:10px;height:10px;background:var(--gk-green);
-  border-radius:50%;pointer-events:none;z-index:99999;
-  transition:transform .1s;mix-blend-mode:screen;
-}
-.cursor-ring{
-  position:fixed;width:36px;height:36px;border:1.5px solid var(--gk-green);
-  border-radius:50%;pointer-events:none;z-index:99998;
-  transition:transform .18s ease,width .3s,height .3s,border-color .3s;
-  transform:translate(-50%,-50%);
-  mix-blend-mode:screen;opacity:.7;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
 
-/* ── NOISE OVERLAY ── */
-body::before{
-  content:'';position:fixed;inset:0;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
-  opacity:.025;pointer-events:none;z-index:9990;
-}
+        html {
+            scroll-behavior: smooth
+        }
 
-/* ── OPENING ── */
-#opening{
-  position:fixed;inset:0;
-  background:var(--gk-black);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  z-index:9995;
-  padding:24px;text-align:center;
-  transition:opacity .9s cubic-bezier(.4,0,.2,1),transform .9s cubic-bezier(.4,0,.2,1);
-}
-#opening.hide{opacity:0;transform:scale(1.06);pointer-events:none}
+        body {
+            background: var(--gk-black);
+            color: var(--gk-white);
+            font-family: var(--font-b);
+            overflow-x: hidden;
+            cursor: none;
+        }
 
-/* Gojek logo ring animation */
-.gk-logo-ring{
-  position:relative;width:100px;height:100px;margin:0 auto 24px;
-}
-.gk-logo-ring svg.ring-svg{
-  position:absolute;inset:0;width:100%;height:100%;
-  animation:spin-ring 3s linear infinite;
-}
-@keyframes spin-ring{to{transform:rotate(360deg)}}
-.gk-logo-inner{
-  position:absolute;inset:10px;background:var(--gk-green);
-  border-radius:50%;display:flex;align-items:center;justify-content:center;
-  animation:pulse-inner 2s ease-in-out infinite;
-}
-@keyframes pulse-inner{0%,100%{box-shadow:0 0 0 0 var(--gk-green-glow)}50%{box-shadow:0 0 0 16px transparent}}
-.gk-logo-inner svg{width:48px;height:48px}
+        /* CUSTOM CURSOR */
+        .cursor {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: var(--gk-green);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transition: transform .1s;
+            mix-blend-mode: screen;
+        }
 
-.opening-eyebrow{
-  font-size:10px;letter-spacing:.5em;color:var(--gk-green);
-  text-transform:uppercase;font-weight:600;margin-bottom:14px;
-}
-.opening-names{
-  font-family:var(--font-h);font-size:clamp(30px,8vw,52px);
-  font-weight:900;margin-bottom:6px;
-  background:linear-gradient(135deg,#fff 30%,var(--gk-green) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  line-height:1.1;
-}
-.opening-sub{font-size:13px;color:var(--gk-gray);letter-spacing:.1em;margin-bottom:36px}
-.dear-pill{
-  display:inline-flex;align-items:center;gap:10px;
-  background:var(--gk-card);border:1px solid var(--gk-border);
-  border-radius:50px;padding:10px 20px;margin-bottom:36px;
-}
-.dear-pill-dot{width:8px;height:8px;background:var(--gk-green);border-radius:50%;animation:blink 1.2s ease-in-out infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.dear-pill-text{font-size:13px;color:var(--gk-gray)}
-.dear-pill-name{font-size:14px;font-weight:600;color:var(--gk-white)}
+        .cursor-ring {
+            position: fixed;
+            width: 36px;
+            height: 36px;
+            border: 1.5px solid var(--gk-green);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99998;
+            transition: transform .18s ease, width .3s, height .3s, border-color .3s;
+            transform: translate(-50%, -50%);
+            mix-blend-mode: screen;
+            opacity: .7;
+        }
 
-.open-btn{
-  position:relative;overflow:hidden;
-  background:var(--gk-green);color:#000;border:none;
-  padding:18px 52px;border-radius:50px;
-  font-family:var(--font-h);font-size:13px;font-weight:700;
-  letter-spacing:.06em;cursor:pointer;
-  transition:transform .2s,box-shadow .2s;
-  text-transform:uppercase;
-}
-.open-btn::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,.2) 0%,transparent 60%);
-}
-.open-btn:hover{
-  transform:scale(1.05);
-  box-shadow:0 8px 40px var(--gk-green-glow);
-}
-.open-btn .btn-shine{
-  position:absolute;top:0;left:-100%;width:60%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
-  animation:btn-shine 2.5s ease-in-out infinite;
-}
-@keyframes btn-shine{0%{left:-100%}100%{left:200%}}
+        /* ── NOISE OVERLAY ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
+            opacity: .025;
+            pointer-events: none;
+            z-index: 9990;
+        }
 
-/* ── MAIN ── */
-#main{opacity:0;transition:opacity .8s ease .2s}
-#main.show{opacity:1}
+        /* ── OPENING ── */
+        #opening {
+            position: fixed;
+            inset: 0;
+            background: var(--gk-black);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9995;
+            padding: 24px;
+            text-align: center;
+            transition: opacity .9s cubic-bezier(.4, 0, .2, 1), transform .9s cubic-bezier(.4, 0, .2, 1);
+        }
 
-/* ── HERO ── */
-.hero-section{
-  min-height:100vh;
-  background:radial-gradient(ellipse 80% 50% at 50% -10%,rgba(0,170,19,.18) 0%,transparent 70%),
-             var(--gk-black);
-  display:flex;flex-direction:column;align-items:center;
-  justify-content:flex-end;
-  padding:0 20px 100px;
-  text-align:center;
-  position:relative;overflow:hidden;
-}
+        #opening.hide {
+            opacity: 0;
+            transform: scale(1.06);
+            pointer-events: none
+        }
 
-/* Gojek grid lines */
-.hero-grid{
-  position:absolute;inset:0;
-  background-image:
-    linear-gradient(rgba(0,170,19,.04) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(0,170,19,.04) 1px,transparent 1px);
-  background-size:40px 40px;
-  pointer-events:none;
-}
-.hero-grid::after{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 60% 40% at 50% 0%,transparent 40%,var(--gk-black) 100%);
-}
+        /* Gojek logo ring animation */
+        .gk-logo-ring {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 24px;
+        }
 
-/* Hero illustration — GoRide bike silhouette */
-.hero-bike-wrap{
-  position:absolute;top:0;left:0;right:0;bottom:0;
-  display:flex;align-items:center;justify-content:center;
-  pointer-events:none;
-}
-.hero-bg-text{
-  font-family:var(--font-h);font-size:clamp(80px,22vw,200px);
-  font-weight:900;
-  color:rgba(0,170,19,.04);
-  white-space:nowrap;
-  letter-spacing:-.02em;
-  animation:hero-float 6s ease-in-out infinite;
-  user-select:none;
-}
-@keyframes hero-float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-12px) scale(1.01)}}
+        .gk-logo-ring svg.ring-svg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            animation: spin-ring 3s linear infinite;
+        }
 
-/* Floating service pills */
-.float-pills{
-  position:absolute;top:0;left:0;right:0;bottom:0;
-  pointer-events:none;overflow:hidden;
-}
-.float-pill{
-  position:absolute;
-  background:var(--gk-card);
-  border:1px solid var(--gk-border);
-  border-radius:50px;
-  padding:8px 14px 8px 10px;
-  display:flex;align-items:center;gap:8px;
-  font-size:12px;font-weight:600;
-  animation:pill-float var(--dur,6s) ease-in-out var(--delay,0s) infinite;
-  opacity:.7;
-  white-space:nowrap;
-}
-.float-pill .pill-icon{
-  width:28px;height:28px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:14px;
-}
-@keyframes pill-float{
-  0%,100%{transform:translateY(0) rotate(var(--rot,0deg))}
-  50%{transform:translateY(-14px) rotate(var(--rot,0deg))}
-}
+        @keyframes spin-ring {
+            to {
+                transform: rotate(360deg)
+            }
+        }
 
-/* Hero order card */
-.hero-order-card{
-  position:relative;z-index:2;
-  width:min(480px,92vw);
-  background:var(--gk-card);
-  border:1px solid var(--gk-border);
-  border-radius:var(--radius);
-  padding:28px 28px 24px;
-  margin-bottom:32px;
-  text-align:left;
-  box-shadow:0 32px 80px rgba(0,0,0,.6),0 0 0 1px rgba(0,170,19,.1);
-}
-.order-header{
-  display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:20px;
-}
-.order-app-label{
-  display:flex;align-items:center;gap:8px;
-  font-size:11px;letter-spacing:.2em;
-  color:var(--gk-green);text-transform:uppercase;font-weight:600;
-}
-.order-app-label .gk-dot{
-  width:8px;height:8px;background:var(--gk-green);border-radius:50%;
-}
-.order-status-badge{
-  background:rgba(0,170,19,.15);
-  color:var(--gk-green);
-  font-size:10px;font-weight:700;
-  letter-spacing:.15em;text-transform:uppercase;
-  padding:4px 12px;border-radius:20px;
-}
+        .gk-logo-inner {
+            position: absolute;
+            inset: 10px;
+            background: var(--gk-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse-inner 2s ease-in-out infinite;
+        }
 
-.order-names{
-  font-family:var(--font-h);
-  font-size:clamp(22px,5.5vw,34px);
-  font-weight:900;line-height:1.1;
-  margin-bottom:8px;
-}
-.order-names span{color:var(--gk-green)}
-.order-subtitle{font-size:13px;color:var(--gk-gray);margin-bottom:22px}
+        @keyframes pulse-inner {
 
-/* Driver info style — couple info */
-.order-driver-row{
-  display:flex;align-items:center;gap:12px;
-  background:var(--gk-card2);
-  border-radius:var(--radius-sm);
-  padding:14px 16px;
-  margin-bottom:16px;
-}
-.driver-avatar{
-  width:44px;height:44px;border-radius:50%;
-  border:2px solid var(--gk-green);overflow:hidden;flex-shrink:0;
-}
-.driver-avatar img{width:100%;height:100%;object-fit:cover}
-.driver-info{flex:1}
-.driver-name{font-size:14px;font-weight:700;margin-bottom:2px}
-.driver-role{font-size:11px;color:var(--gk-gray)}
-.driver-rating{
-  display:flex;align-items:center;gap:4px;
-  font-size:12px;font-weight:700;color:var(--gk-yellow);
-}
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 var(--gk-green-glow)
+            }
 
-/* Route / location */
-.order-route{
-  display:flex;flex-direction:column;gap:0;
-  background:var(--gk-card2);border-radius:var(--radius-sm);
-  padding:14px 16px;margin-bottom:20px;
-}
-.route-point{
-  display:flex;align-items:center;gap:10px;
-  padding:4px 0;
-}
-.route-icon{
-  width:20px;display:flex;flex-direction:column;align-items:center;flex-shrink:0;
-}
-.route-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.route-dot.green{background:var(--gk-green)}
-.route-dot.red{background:var(--gk-red)}
-.route-dashes{
-  width:1px;height:24px;
-  background:repeating-linear-gradient(180deg,var(--gk-lgray) 0 4px,transparent 4px 8px);
-  margin:2px auto;
-}
-.route-label{font-size:11px;color:var(--gk-gray)}
-.route-value{font-size:13px;font-weight:600}
+            50% {
+                box-shadow: 0 0 0 16px transparent
+            }
+        }
 
-.order-cta-row{display:flex;gap:10px}
-.order-cta{
-  flex:1;padding:14px;border-radius:var(--radius-sm);
-  font-family:var(--font-b);font-size:13px;font-weight:700;
-  cursor:pointer;border:none;transition:transform .15s,box-shadow .2s;
-}
-.order-cta.primary{
-  background:var(--gk-green);color:#000;
-}
-.order-cta.primary:hover{
-  transform:scale(1.02);box-shadow:0 6px 24px var(--gk-green-glow);
-}
-.order-cta.secondary{
-  background:var(--gk-card2);color:var(--gk-white);
-  border:1px solid var(--gk-border);
-}
-.order-cta.secondary:hover{background:var(--gk-lgray)}
+        .gk-logo-inner svg {
+            width: 48px;
+            height: 48px
+        }
 
-/* ── COUNTDOWN as ETA ── */
-.eta-section{
-  background:var(--gk-dark);
-  border-top:1px solid var(--gk-border);
-  border-bottom:1px solid var(--gk-border);
-  padding:48px 20px;text-align:center;
-}
-.eta-label{
-  display:inline-flex;align-items:center;gap:8px;
-  font-size:11px;letter-spacing:.3em;text-transform:uppercase;
-  color:var(--gk-green);font-weight:600;margin-bottom:16px;
-}
-.eta-label svg{animation:spin-ring 4s linear infinite}
-.eta-title{font-family:var(--font-h);font-size:clamp(18px,4vw,26px);font-weight:700;margin-bottom:28px}
-.eta-grid{
-  display:flex;justify-content:center;gap:10px;flex-wrap:wrap;
-  max-width:400px;margin:0 auto;
-}
-.eta-item{
-  background:var(--gk-card);border:1px solid var(--gk-border);
-  border-radius:var(--radius-sm);
-  padding:20px 14px 16px;min-width:76px;
-  position:relative;overflow:hidden;
-}
-.eta-item::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(180deg,var(--gk-green-dim) 0%,transparent 100%);
-}
-.eta-num{
-  font-family:var(--font-h);font-size:38px;font-weight:900;
-  line-height:1;margin-bottom:4px;color:var(--gk-white);position:relative;
-}
-.eta-unit{
-  font-size:9px;letter-spacing:.2em;text-transform:uppercase;
-  color:var(--gk-gray);position:relative;
-}
+        .opening-eyebrow {
+            font-size: 10px;
+            letter-spacing: .5em;
+            color: var(--gk-green);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
 
-/* ── VERSE ── */
-.verse-section{
-  padding:64px 20px;text-align:center;
-  background:radial-gradient(ellipse 60% 40% at 50% 50%,rgba(0,170,19,.05) 0%,transparent 70%);
-}
-.verse-deco{
-  display:flex;align-items:center;justify-content:center;gap:16px;
-  margin-bottom:28px;
-}
-.verse-deco-line{
-  height:1px;width:60px;
-  background:linear-gradient(90deg,transparent,var(--gk-green));
-}
-.verse-deco-line:last-child{
-  background:linear-gradient(90deg,var(--gk-green),transparent);
-}
-.verse-icon{font-size:20px}
-.verse-text{
-  font-size:clamp(14px,3.5vw,18px);font-style:italic;
-  line-height:1.8;color:var(--gk-gray);
-  max-width:580px;margin:0 auto 12px;
-  font-weight:300;
-}
-.verse-ref{
-  font-size:12px;color:var(--gk-green);
-  letter-spacing:.15em;font-weight:600;
-}
+        .opening-names {
+            font-family: var(--font-h);
+            font-size: clamp(30px, 8vw, 52px);
+            font-weight: 900;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, #fff 30%, var(--gk-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.1;
+        }
 
-/* ── SECTION COMMON ── */
-.sec-tag{
-  display:inline-flex;align-items:center;gap:6px;
-  font-size:10px;letter-spacing:.3em;text-transform:uppercase;
-  color:var(--gk-green);font-weight:700;margin-bottom:10px;
-}
-.sec-title{
-  font-family:var(--font-h);font-size:clamp(22px,5vw,36px);
-  font-weight:900;line-height:1.15;margin-bottom:16px;
-}
-.sec-text{font-size:14px;color:var(--gk-gray);line-height:1.75}
+        .opening-sub {
+            font-size: 13px;
+            color: var(--gk-gray);
+            letter-spacing: .1em;
+            margin-bottom: 36px
+        }
 
-/* ── COUPLE as GoWedding Profiles ── */
-.couple-section{padding:64px 20px;text-align:center}
-.couple-vs{
-  display:flex;align-items:center;justify-content:center;gap:12px;
-  margin:12px 0 28px;
-}
-.couple-vs-line{flex:1;max-width:80px;height:1px;background:var(--gk-lgray)}
-.couple-vs-icon{
-  width:40px;height:40px;background:var(--gk-green);
-  border-radius:50%;display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-h);font-size:12px;font-weight:900;color:#000;
-  box-shadow:0 0 20px var(--gk-green-glow);
-}
-.couple-cards{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:14px;max-width:560px;margin:0 auto;
-}
-@media(max-width:480px){.couple-cards{grid-template-columns:1fr}}
-.couple-card{
-  background:var(--gk-card);
-  border:1px solid var(--gk-border);
-  border-radius:var(--radius);padding:24px 18px;
-  transition:border-color .3s,transform .3s,box-shadow .3s;
-  position:relative;overflow:hidden;
-}
-.couple-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,var(--gk-green),transparent);
-  opacity:0;transition:opacity .3s;
-}
-.couple-card:hover{
-  border-color:rgba(0,170,19,.3);
-  transform:translateY(-4px);
-  box-shadow:0 16px 48px rgba(0,0,0,.4),0 0 24px rgba(0,170,19,.1);
-}
-.couple-card:hover::before{opacity:1}
-.couple-verified{
-  position:absolute;top:14px;right:14px;
-  width:22px;height:22px;background:var(--gk-green);
-  border-radius:50%;display:flex;align-items:center;justify-content:center;
-}
-.couple-verified svg{width:12px;height:12px;fill:#000}
-.couple-avatar{
-  width:88px;height:88px;border-radius:50%;
-  margin:0 auto 14px;
-  border:2.5px solid var(--gk-green);
-  overflow:hidden;position:relative;
-}
-.couple-avatar::after{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(circle at 30% 30%,rgba(255,255,255,.1),transparent);
-}
-.couple-avatar img{width:100%;height:100%;object-fit:cover}
-.couple-tag{
-  display:inline-block;
-  background:var(--gk-green-dim);color:var(--gk-green);
-  font-size:9px;letter-spacing:.2em;text-transform:uppercase;
-  font-weight:700;padding:3px 10px;border-radius:20px;margin-bottom:8px;
-}
-.couple-name{font-family:var(--font-h);font-size:16px;font-weight:700;margin-bottom:6px}
-.couple-parents{font-size:11px;color:var(--gk-gray);line-height:1.65}
-.couple-stars{
-  display:flex;justify-content:center;gap:2px;
-  margin:10px 0 6px;
-}
-.couple-stars svg{width:12px;height:12px;fill:var(--gk-yellow)}
-.couple-rating{font-size:11px;color:var(--gk-yellow);font-weight:700}
+        .dear-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--gk-card);
+            border: 1px solid var(--gk-border);
+            border-radius: 50px;
+            padding: 10px 20px;
+            margin-bottom: 36px;
+        }
 
-/* ── EVENT as GoSchedule ── */
-.event-section{
-  background:var(--gk-dark);padding:64px 20px;
-  border-top:1px solid var(--gk-border);
-}
-.event-cards{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:14px;max-width:580px;margin:28px auto 0;
-}
-@media(max-width:480px){.event-cards{grid-template-columns:1fr}}
-.event-card{
-  background:var(--gk-card);border-radius:var(--radius);
-  padding:24px 20px;border:1px solid var(--gk-border);
-  position:relative;overflow:hidden;
-}
-.event-card::after{
-  content:'';position:absolute;bottom:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,var(--gk-green),var(--gk-green-light));
-}
-.event-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  background:var(--gk-green-dim);color:var(--gk-green);
-  font-size:10px;letter-spacing:.15em;text-transform:uppercase;
-  font-weight:700;padding:5px 12px;border-radius:20px;margin-bottom:16px;
-}
-.event-badge-dot{width:6px;height:6px;background:var(--gk-green);border-radius:50%;animation:blink 1.2s infinite}
-.event-name{font-family:var(--font-h);font-size:20px;font-weight:700;margin-bottom:14px;line-height:1.2}
-.event-info-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px}
-.event-info-icon{
-  width:28px;height:28px;background:var(--gk-card2);
-  border-radius:8px;display:flex;align-items:center;justify-content:center;
-  flex-shrink:0;
-}
-.event-info-icon svg{width:14px;height:14px;fill:var(--gk-green)}
-.event-info-text{font-size:12px;color:var(--gk-gray);line-height:1.5;padding-top:4px}
-.event-info-text strong{color:var(--gk-white);display:block;font-size:13px;margin-bottom:1px}
-.event-maps-btn{
-  display:inline-flex;align-items:center;gap:6px;
-  margin-top:14px;
-  background:var(--gk-green);color:#000;
-  font-size:11px;font-family:var(--font-b);font-weight:700;
-  padding:9px 18px;border-radius:50px;
-  cursor:pointer;text-decoration:none;
-  transition:transform .15s,box-shadow .2s;
-  letter-spacing:.05em;
-}
-.event-maps-btn:hover{transform:scale(1.04);box-shadow:0 6px 20px var(--gk-green-glow)}
-.event-maps-btn svg{width:13px;height:13px;fill:#000}
+        .dear-pill-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--gk-green);
+            border-radius: 50%;
+            animation: blink 1.2s ease-in-out infinite
+        }
 
-/* ── TIMELINE as GoTrack ── */
-.timeline-section{padding:64px 20px}
-.gotrack-header{
-  max-width:680px;margin:0 auto 36px;
-  display:flex;align-items:flex-end;justify-content:space-between;
-  flex-wrap:wrap;gap:12px;
-}
-.gotrack-status{
-  display:flex;align-items:center;gap:6px;
-  font-size:12px;color:var(--gk-green);font-weight:600;
-}
-.gotrack-ping{
-  width:8px;height:8px;background:var(--gk-green);border-radius:50%;
-  animation:ping 1.5s ease-in-out infinite;
-}
-@keyframes ping{
-  0%{box-shadow:0 0 0 0 var(--gk-green-glow)}
-  100%{box-shadow:0 0 0 10px transparent}
-}
+        @keyframes blink {
 
-.timeline{max-width:560px;margin:0 auto;position:relative}
-.timeline::before{
-  content:'';position:absolute;left:22px;top:4px;bottom:4px;width:1.5px;
-  background:linear-gradient(180deg,var(--gk-green) 0%,var(--gk-lgray) 60%,transparent 100%);
-}
-.tl-item{
-  display:flex;gap:22px;margin-bottom:40px;
-  opacity:0;transform:translateX(-18px);
-  transition:opacity .6s ease,transform .6s ease;
-}
-.tl-item.visible{opacity:1;transform:translateX(0)}
-.tl-dot-wrap{
-  display:flex;flex-direction:column;align-items:center;
-  flex-shrink:0;z-index:1;
-}
-.tl-dot{
-  width:44px;height:44px;border-radius:50%;
-  background:var(--gk-green);
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--font-h);font-size:14px;font-weight:900;color:#000;
-  box-shadow:0 0 0 4px rgba(0,170,19,.15);
-  flex-shrink:0;
-}
-.tl-dot.done{background:var(--gk-card2);border:1.5px solid var(--gk-green);color:var(--gk-green)}
-.tl-body{padding-top:8px}
-.tl-tag{
-  font-size:10px;letter-spacing:.25em;text-transform:uppercase;
-  color:var(--gk-green);font-weight:700;margin-bottom:3px;
-}
-.tl-date{font-size:11px;color:var(--gk-gray);margin-bottom:5px}
-.tl-title{font-family:var(--font-h);font-size:18px;font-weight:700;margin-bottom:8px}
-.tl-desc{font-size:13px;color:var(--gk-gray);line-height:1.7}
+            0%,
+            100% {
+                opacity: 1
+            }
 
-/* ── GALLERY as GoGallery ── */
-.gallery-section{padding:64px 0}
-.gallery-header{
-  max-width:680px;margin:0 auto 28px;padding:0 20px;
-  display:flex;align-items:center;justify-content:space-between;
-}
-.gallery-track-wrap{position:relative;overflow:hidden;padding:8px 0}
-.gallery-fade-l{position:absolute;left:0;top:0;bottom:0;width:80px;background:linear-gradient(90deg,var(--gk-black),transparent);z-index:2;pointer-events:none}
-.gallery-fade-r{position:absolute;right:0;top:0;bottom:0;width:80px;background:linear-gradient(270deg,var(--gk-black),transparent);z-index:2;pointer-events:none}
-.gallery-track{display:flex;gap:12px;width:max-content;will-change:transform}
-.gallery-item{
-  flex-shrink:0;
-  width:clamp(140px,35vw,195px);height:clamp(180px,45vw,255px);
-  border-radius:var(--radius-sm);overflow:hidden;
-  background:var(--gk-card);position:relative;cursor:pointer;
-  transition:transform .3s,box-shadow .3s;
-  border:1px solid var(--gk-border);
-}
-.gallery-item:hover{transform:scale(1.04);box-shadow:0 12px 40px rgba(0,0,0,.5),0 0 0 1.5px var(--gk-green)}
-.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform .5s,filter .4s;filter:saturate(0.8);display:block}
-.gallery-item:hover img{transform:scale(1.08);filter:saturate(1.1)}
-.gallery-overlay{position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(0,0,0,.65) 100%)}
-.gallery-num{
-  position:absolute;bottom:10px;left:12px;
-  font-size:10px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.6);
-}
-.gallery-dots{display:flex;justify-content:center;gap:5px;margin-top:18px}
-.gallery-dot{width:5px;height:5px;border-radius:50%;background:var(--gk-lgray);transition:background .3s,width .3s;cursor:pointer}
-.gallery-dot.active{background:var(--gk-green);width:18px;border-radius:3px}
+            50% {
+                opacity: .3
+            }
+        }
 
-/* ── GIFT as GoTransfer ── */
-.gift-section{padding:64px 20px;text-align:center}
-.gift-cards{
-  display:grid;grid-template-columns:1fr 1fr;
-  gap:12px;max-width:500px;margin:24px auto 0;
-}
-@media(max-width:480px){.gift-cards{grid-template-columns:1fr}}
-.gift-card{
-  background:var(--gk-card);border-radius:var(--radius);
-  padding:22px 18px;border:1px solid var(--gk-border);
-  position:relative;overflow:hidden;text-align:left;
-  transition:border-color .3s;
-}
-.gift-card:hover{border-color:rgba(0,170,19,.3)}
-.gift-card-glow{
-  position:absolute;top:-30px;right:-30px;
-  width:100px;height:100px;
-  background:radial-gradient(circle,var(--gk-green-dim),transparent 70%);
-  pointer-events:none;
-}
-.gift-bank-chip{
-  display:inline-flex;align-items:center;gap:6px;
-  background:var(--gk-card2);border-radius:8px;
-  padding:5px 10px;margin-bottom:14px;
-}
-.gift-bank-chip-icon{
-  width:20px;height:20px;border-radius:4px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:10px;font-weight:900;color:#000;
-}
-.gift-bank-chip-label{font-size:10px;color:var(--gk-gray);letter-spacing:.1em;text-transform:uppercase;font-weight:600}
-.gift-acct-name{font-size:13px;font-weight:700;margin-bottom:10px}
-.gift-number{
-  font-size:17px;font-family:'Courier New',monospace;
-  letter-spacing:.12em;margin-bottom:12px;
-  color:var(--gk-white);font-weight:700;
-}
-.copy-btn{
-  display:inline-flex;align-items:center;gap:6px;
-  background:var(--gk-green-dim);border:1px solid rgba(0,170,19,.2);
-  color:var(--gk-green);font-size:11px;font-family:var(--font-b);
-  font-weight:700;padding:8px 14px;border-radius:50px;
-  cursor:pointer;transition:background .15s,transform .15s;
-  letter-spacing:.05em;
-}
-.copy-btn:hover{background:rgba(0,170,19,.2);transform:scale(1.03)}
-.copy-btn.copied{color:#000;background:var(--gk-green);border-color:var(--gk-green)}
+        .dear-pill-text {
+            font-size: 13px;
+            color: var(--gk-gray)
+        }
 
-/* ── RSVP as GoInput ── */
-.rsvp-section{
-  background:var(--gk-dark);padding:64px 20px;
-  border-top:1px solid var(--gk-border);
-}
-.rsvp-stats{
-  display:flex;gap:10px;margin-bottom:36px;
-  flex-wrap:wrap;justify-content:center;
-}
-.rsvp-stat{
-  background:var(--gk-card);border-radius:var(--radius-sm);
-  padding:18px 22px;text-align:center;
-  border:1px solid var(--gk-border);min-width:90px;
-  flex:1;max-width:130px;
-}
-.rsvp-stat-num{
-  font-family:var(--font-h);font-size:32px;font-weight:900;
-  color:var(--gk-green);line-height:1;
-}
-.rsvp-stat-label{font-size:10px;color:var(--gk-gray);letter-spacing:.15em;text-transform:uppercase;margin-top:5px}
+        .dear-pill-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gk-white)
+        }
 
-.rsvp-form{max-width:500px;margin:0 auto}
-.form-group{margin-bottom:18px}
-.form-label{
-  font-size:11px;letter-spacing:.15em;text-transform:uppercase;
-  color:var(--gk-gray);margin-bottom:8px;display:block;font-weight:600;
-}
-.form-input{
-  width:100%;background:var(--gk-card);
-  border:1.5px solid var(--gk-border);
-  border-radius:var(--radius-sm);
-  padding:13px 15px;color:var(--gk-white);
-  font-family:var(--font-b);font-size:14px;
-  outline:none;transition:border-color .2s,box-shadow .2s;
-}
-.form-input:focus{
-  border-color:var(--gk-green);
-  box-shadow:0 0 0 3px rgba(0,170,19,.1);
-}
-.form-input::placeholder{color:var(--gk-lgray)}
-.form-select{
-  appearance:none;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238A8A8A' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 14px center;
-  padding-right:42px;cursor:pointer;
-}
-textarea.form-input{min-height:90px;resize:vertical}
-.guests-row{display:flex;gap:8px}
-.guest-btn{
-  flex:1;background:var(--gk-card);border:1.5px solid var(--gk-border);
-  border-radius:var(--radius-sm);padding:13px;
-  color:var(--gk-gray);font-family:var(--font-b);font-size:14px;
-  cursor:pointer;transition:all .15s;font-weight:600;
-}
-.guest-btn.active{
-  background:var(--gk-green-dim);
-  border-color:var(--gk-green);
-  color:var(--gk-green);
-}
-.rsvp-submit-btn{
-  width:100%;background:var(--gk-green);border:none;
-  border-radius:50px;padding:16px;
-  color:#000;font-family:var(--font-h);
-  font-size:13px;font-weight:700;
-  cursor:pointer;transition:transform .15s,box-shadow .2s;
-  text-transform:uppercase;letter-spacing:.08em;margin-top:8px;
-  position:relative;overflow:hidden;
-}
-.rsvp-submit-btn::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);
-}
-.rsvp-submit-btn:hover{transform:scale(1.02);box-shadow:0 8px 30px var(--gk-green-glow)}
+        .open-btn {
+            position: relative;
+            overflow: hidden;
+            background: var(--gk-green);
+            color: #000;
+            border: none;
+            padding: 18px 52px;
+            border-radius: 50px;
+            font-family: var(--font-h);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: .06em;
+            cursor: pointer;
+            transition: transform .2s, box-shadow .2s;
+            text-transform: uppercase;
+        }
 
-/* ── WISHES ── */
-.wishes-section{padding:64px 20px}
-.wishes-list{max-width:560px;margin:28px auto 0;display:flex;flex-direction:column;gap:10px}
-.wish-card{
-  background:var(--gk-card);border-radius:var(--radius-sm);
-  padding:18px;border:1px solid var(--gk-border);
-  opacity:0;transform:translateY(14px);
-  transition:opacity .5s,transform .5s;
-}
-.wish-card.visible{opacity:1;transform:translateY(0)}
-.wish-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.wish-avatar{
-  width:36px;height:36px;border-radius:50%;
-  background:var(--gk-green);
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:700;color:#000;flex-shrink:0;
-}
-.wish-name{font-size:13px;font-weight:700}
-.wish-status{font-size:10px;color:var(--gk-green);margin-top:1px;font-weight:600}
-.wish-text{font-size:13px;color:var(--gk-gray);line-height:1.65}
+        .open-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, .2) 0%, transparent 60%);
+        }
 
-/* ── FOOTER ── */
-.footer-section{
-  background:linear-gradient(0deg,#001500 0%,var(--gk-black) 100%);
-  padding:80px 20px 40px;text-align:center;
-  border-top:1px solid var(--gk-border);
-  position:relative;overflow:hidden;
-}
-.footer-grid-bg{
-  position:absolute;inset:0;
-  background-image:linear-gradient(rgba(0,170,19,.03) 1px,transparent 1px),
-                   linear-gradient(90deg,rgba(0,170,19,.03) 1px,transparent 1px);
-  background-size:30px 30px;pointer-events:none;
-}
-.footer-logo-ring{
-  width:72px;height:72px;
-  background:var(--gk-green);border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  margin:0 auto 20px;
-  box-shadow:0 0 40px var(--gk-green-glow);
-}
-.footer-logo-ring svg{width:38px;height:38px}
-.footer-names{
-  font-family:var(--font-h);
-  font-size:clamp(26px,7vw,44px);
-  font-weight:900;margin-bottom:12px;
-  background:linear-gradient(135deg,#fff 40%,var(--gk-green) 100%);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-}
-.footer-text{
-  font-size:13px;color:var(--gk-gray);
-  line-height:1.75;max-width:440px;margin:0 auto 28px;
-}
-.footer-sig{
-  font-family:var(--font-h);
-  font-style:normal;font-size:18px;
-  color:rgba(255,255,255,.5);margin-bottom:6px;
-}
-.footer-sig span{color:var(--gk-white);font-size:22px}
-.footer-brand{
-  font-size:11px;color:var(--gk-lgray);letter-spacing:.15em;margin-top:28px;
-}
-.footer-brand a{color:var(--gk-green);text-decoration:none;font-weight:700}
+        .open-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 40px var(--gk-green-glow);
+        }
 
-/* ── BOTTOM NAV ── */
-.bottom-nav{
-  position:fixed;bottom:0;left:0;right:0;
-  background:rgba(10,10,10,.92);backdrop-filter:blur(20px);
-  -webkit-backdrop-filter:blur(20px);
-  border-top:1px solid var(--gk-border);
-  display:flex;justify-content:space-around;
-  padding:10px 0 max(10px,env(safe-area-inset-bottom));
-  z-index:100;transform:translateY(100%);
-  transition:transform .5s ease 1s;
-}
-.bottom-nav.show{transform:translateY(0)}
-.nav-item{
-  display:flex;flex-direction:column;align-items:center;
-  gap:3px;cursor:pointer;
-  color:var(--gk-gray);text-decoration:none;
-  transition:color .15s;
-  font-size:9px;letter-spacing:.06em;padding:4px 10px;
-  border-radius:8px;text-transform:uppercase;font-weight:700;
-}
-.nav-item:hover,.nav-item.active{color:var(--gk-white)}
-.nav-item.active .nav-icon-wrap{
-  background:var(--gk-green);
-  border-radius:10px;
-}
-.nav-icon-wrap{
-  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
-  transition:background .2s;
-}
-.nav-icon-wrap svg{width:18px;height:18px}
-.nav-item.active svg{fill:#000}
+        .open-btn .btn-shine {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .3), transparent);
+            animation: btn-shine 2.5s ease-in-out infinite;
+        }
 
-/* ── LIGHTBOX ── */
-.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:9998;display:none;align-items:center;justify-content:center}
-.lightbox.open{display:flex}
-.lightbox-img{max-width:90vw;max-height:88vh;border-radius:10px;object-fit:contain}
-.lightbox-close{position:absolute;top:20px;right:20px;background:rgba(255,255,255,.08);border:none;color:white;font-size:22px;cursor:pointer;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center}
-.lightbox-close:hover{background:rgba(255,255,255,.15)}
-.lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);border:none;color:white;font-size:22px;cursor:pointer;width:48px;height:64px;border-radius:8px;display:flex;align-items:center;justify-content:center}
-.lightbox-nav:hover{background:rgba(255,255,255,.15)}
-.lightbox-prev{left:12px}.lightbox-next{right:12px}
-.lightbox-counter{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:12px;color:var(--gk-gray);font-weight:600}
+        @keyframes btn-shine {
+            0% {
+                left: -100%
+            }
 
-/* ── TOAST ── */
-.toast{
-  position:fixed;bottom:90px;left:50%;
-  transform:translateX(-50%) translateY(20px);
-  background:var(--gk-green);color:#000;
-  padding:11px 22px;border-radius:50px;
-  font-size:12px;font-weight:700;
-  opacity:0;transition:opacity .3s,transform .3s;
-  pointer-events:none;white-space:nowrap;z-index:9999;
-  letter-spacing:.05em;
-}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+            100% {
+                left: 200%
+            }
+        }
 
-/* ── SCROLL REVEAL ── */
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
-.reveal.visible{opacity:1;transform:translateY(0)}
-</style>
+        /* ── MAIN ── */
+        #main {
+            opacity: 0;
+            transition: opacity .8s ease .2s
+        }
+
+        #main.show {
+            opacity: 1
+        }
+
+        /* ── HERO ── */
+        .hero-section {
+            min-height: 100vh;
+            background: radial-gradient(ellipse 80% 50% at 50% -10%, rgba(0, 170, 19, .18) 0%, transparent 70%),
+                var(--gk-black);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            padding: 0 20px 100px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Gojek grid lines */
+        .hero-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0, 170, 19, .04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 170, 19, .04) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+        }
+
+        .hero-grid::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse 60% 40% at 50% 0%, transparent 40%, var(--gk-black) 100%);
+        }
+
+        /* Hero illustration — GoRide bike silhouette */
+        .hero-bike-wrap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+        }
+
+        .hero-bg-text {
+            font-family: var(--font-h);
+            font-size: clamp(80px, 22vw, 200px);
+            font-weight: 900;
+            color: rgba(0, 170, 19, .04);
+            white-space: nowrap;
+            letter-spacing: -.02em;
+            animation: hero-float 6s ease-in-out infinite;
+            user-select: none;
+        }
+
+        @keyframes hero-float {
+
+            0%,
+            100% {
+                transform: translateY(0) scale(1)
+            }
+
+            50% {
+                transform: translateY(-12px) scale(1.01)
+            }
+        }
+
+        /* Floating service pills */
+        .float-pills {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .float-pill {
+            position: absolute;
+            background: var(--gk-card);
+            border: 1px solid var(--gk-border);
+            border-radius: 50px;
+            padding: 8px 14px 8px 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            animation: pill-float var(--dur, 6s) ease-in-out var(--delay, 0s) infinite;
+            opacity: .7;
+            white-space: nowrap;
+        }
+
+        .float-pill .pill-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        @keyframes pill-float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(var(--rot, 0deg))
+            }
+
+            50% {
+                transform: translateY(-14px) rotate(var(--rot, 0deg))
+            }
+        }
+
+        /* Hero order card */
+        .hero-order-card {
+            position: relative;
+            z-index: 2;
+            width: min(480px, 92vw);
+            background: var(--gk-card);
+            border: 1px solid var(--gk-border);
+            border-radius: var(--radius);
+            padding: 28px 28px 24px;
+            margin-bottom: 32px;
+            text-align: left;
+            box-shadow: 0 32px 80px rgba(0, 0, 0, .6), 0 0 0 1px rgba(0, 170, 19, .1);
+        }
+
+        .order-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .order-app-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            letter-spacing: .2em;
+            color: var(--gk-green);
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .order-app-label .gk-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--gk-green);
+            border-radius: 50%;
+        }
+
+        .order-status-badge {
+            background: rgba(0, 170, 19, .15);
+            color: var(--gk-green);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .order-names {
+            font-family: var(--font-h);
+            font-size: clamp(22px, 5.5vw, 34px);
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 8px;
+        }
+
+        .order-names span {
+            color: var(--gk-green)
+        }
+
+        .order-subtitle {
+            font-size: 13px;
+            color: var(--gk-gray);
+            margin-bottom: 22px
+        }
+
+        /* Driver info style — couple info */
+        .order-driver-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--gk-card2);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+            margin-bottom: 16px;
+        }
+
+        .driver-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--gk-green);
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .driver-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .driver-info {
+            flex: 1
+        }
+
+        .driver-name {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 2px
+        }
+
+        .driver-role {
+            font-size: 11px;
+            color: var(--gk-gray)
+        }
+
+        .driver-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--gk-yellow);
+        }
+
+        /* Route / location */
+        .order-route {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            background: var(--gk-card2);
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+            margin-bottom: 20px;
+        }
+
+        .route-point {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 0;
+        }
+
+        .route-icon {
+            width: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .route-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0
+        }
+
+        .route-dot.green {
+            background: var(--gk-green)
+        }
+
+        .route-dot.red {
+            background: var(--gk-red)
+        }
+
+        .route-dashes {
+            width: 1px;
+            height: 24px;
+            background: repeating-linear-gradient(180deg, var(--gk-lgray) 0 4px, transparent 4px 8px);
+            margin: 2px auto;
+        }
+
+        .route-label {
+            font-size: 11px;
+            color: var(--gk-gray)
+        }
+
+        .route-value {
+            font-size: 13px;
+            font-weight: 600
+        }
+
+        .order-cta-row {
+            display: flex;
+            gap: 10px
+        }
+
+        .order-cta {
+            flex: 1;
+            padding: 14px;
+            border-radius: var(--radius-sm);
+            font-family: var(--font-b);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: transform .15s, box-shadow .2s;
+        }
+
+        .order-cta.primary {
+            background: var(--gk-green);
+            color: #000;
+        }
+
+        .order-cta.primary:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 24px var(--gk-green-glow);
+        }
+
+        .order-cta.secondary {
+            background: var(--gk-card2);
+            color: var(--gk-white);
+            border: 1px solid var(--gk-border);
+        }
+
+        .order-cta.secondary:hover {
+            background: var(--gk-lgray)
+        }
+
+        /* ── COUNTDOWN as ETA ── */
+        .eta-section {
+            background: var(--gk-dark);
+            border-top: 1px solid var(--gk-border);
+            border-bottom: 1px solid var(--gk-border);
+            padding: 48px 20px;
+            text-align: center;
+        }
+
+        .eta-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            letter-spacing: .3em;
+            text-transform: uppercase;
+            color: var(--gk-green);
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .eta-label svg {
+            animation: spin-ring 4s linear infinite
+        }
+
+        .eta-title {
+            font-family: var(--font-h);
+            font-size: clamp(18px, 4vw, 26px);
+            font-weight: 700;
+            margin-bottom: 28px
+        }
+
+        .eta-grid {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .eta-item {
+            background: var(--gk-card);
+            border: 1px solid var(--gk-border);
+            border-radius: var(--radius-sm);
+            padding: 20px 14px 16px;
+            min-width: 76px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .eta-item::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, var(--gk-green-dim) 0%, transparent 100%);
+        }
+
+        .eta-num {
+            font-family: var(--font-h);
+            font-size: 38px;
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 4px;
+            color: var(--gk-white);
+            position: relative;
+        }
+
+        .eta-unit {
+            font-size: 9px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--gk-gray);
+            position: relative;
+        }
+
+        /* ── VERSE ── */
+        .verse-section {
+            padding: 64px 20px;
+            text-align: center;
+            background: radial-gradient(ellipse 60% 40% at 50% 50%, rgba(0, 170, 19, .05) 0%, transparent 70%);
+        }
+
+        .verse-deco {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .verse-deco-line {
+            height: 1px;
+            width: 60px;
+            background: linear-gradient(90deg, transparent, var(--gk-green));
+        }
+
+        .verse-deco-line:last-child {
+            background: linear-gradient(90deg, var(--gk-green), transparent);
+        }
+
+        .verse-icon {
+            font-size: 20px
+        }
+
+        .verse-text {
+            font-size: clamp(14px, 3.5vw, 18px);
+            font-style: italic;
+            line-height: 1.8;
+            color: var(--gk-gray);
+            max-width: 580px;
+            margin: 0 auto 12px;
+            font-weight: 300;
+        }
+
+        .verse-ref {
+            font-size: 12px;
+            color: var(--gk-green);
+            letter-spacing: .15em;
+            font-weight: 600;
+        }
+
+        /* ── SECTION COMMON ── */
+        .sec-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            letter-spacing: .3em;
+            text-transform: uppercase;
+            color: var(--gk-green);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .sec-title {
+            font-family: var(--font-h);
+            font-size: clamp(22px, 5vw, 36px);
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 16px;
+        }
+
+        .sec-text {
+            font-size: 14px;
+            color: var(--gk-gray);
+            line-height: 1.75
+        }
+
+        /* ── COUPLE as GoWedding Profiles ── */
+        .couple-section {
+            padding: 64px 20px;
+            text-align: center
+        }
+
+        .couple-vs {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin: 12px 0 28px;
+        }
+
+        .couple-vs-line {
+            flex: 1;
+            max-width: 80px;
+            height: 1px;
+            background: var(--gk-lgray)
+        }
+
+        .couple-vs-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gk-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-h);
+            font-size: 12px;
+            font-weight: 900;
+            color: #000;
+            box-shadow: 0 0 20px var(--gk-green-glow);
+        }
+
+        .couple-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        @media(max-width:480px) {
+            .couple-cards {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .couple-card {
+            background: var(--gk-card);
+            border: 1px solid var(--gk-border);
+            border-radius: var(--radius);
+            padding: 24px 18px;
+            transition: border-color .3s, transform .3s, box-shadow .3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .couple-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gk-green), transparent);
+            opacity: 0;
+            transition: opacity .3s;
+        }
+
+        .couple-card:hover {
+            border-color: rgba(0, 170, 19, .3);
+            transform: translateY(-4px);
+            box-shadow: 0 16px 48px rgba(0, 0, 0, .4), 0 0 24px rgba(0, 170, 19, .1);
+        }
+
+        .couple-card:hover::before {
+            opacity: 1
+        }
+
+        .couple-verified {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 22px;
+            height: 22px;
+            background: var(--gk-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .couple-verified svg {
+            width: 12px;
+            height: 12px;
+            fill: #000
+        }
+
+        .couple-avatar {
+            width: 88px;
+            height: 88px;
+            border-radius: 50%;
+            margin: 0 auto 14px;
+            border: 2.5px solid var(--gk-green);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .couple-avatar::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, .1), transparent);
+        }
+
+        .couple-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .couple-tag {
+            display: inline-block;
+            background: var(--gk-green-dim);
+            color: var(--gk-green);
+            font-size: 9px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-bottom: 8px;
+        }
+
+        .couple-name {
+            font-family: var(--font-h);
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 6px
+        }
+
+        .couple-parents {
+            font-size: 11px;
+            color: var(--gk-gray);
+            line-height: 1.65
+        }
+
+        .couple-stars {
+            display: flex;
+            justify-content: center;
+            gap: 2px;
+            margin: 10px 0 6px;
+        }
+
+        .couple-stars svg {
+            width: 12px;
+            height: 12px;
+            fill: var(--gk-yellow)
+        }
+
+        .couple-rating {
+            font-size: 11px;
+            color: var(--gk-yellow);
+            font-weight: 700
+        }
+
+        /* ── EVENT as GoSchedule ── */
+        .event-section {
+            background: var(--gk-dark);
+            padding: 64px 20px;
+            border-top: 1px solid var(--gk-border);
+        }
+
+        .event-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            max-width: 580px;
+            margin: 28px auto 0;
+        }
+
+        @media(max-width:480px) {
+            .event-cards {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .event-card {
+            background: var(--gk-card);
+            border-radius: var(--radius);
+            padding: 24px 20px;
+            border: 1px solid var(--gk-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .event-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--gk-green), var(--gk-green-light));
+        }
+
+        .event-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--gk-green-dim);
+            color: var(--gk-green);
+            font-size: 10px;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+        }
+
+        .event-badge-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--gk-green);
+            border-radius: 50%;
+            animation: blink 1.2s infinite
+        }
+
+        .event-name {
+            font-family: var(--font-h);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            line-height: 1.2
+        }
+
+        .event-info-row {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 8px
+        }
+
+        .event-info-icon {
+            width: 28px;
+            height: 28px;
+            background: var(--gk-card2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .event-info-icon svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--gk-green)
+        }
+
+        .event-info-text {
+            font-size: 12px;
+            color: var(--gk-gray);
+            line-height: 1.5;
+            padding-top: 4px
+        }
+
+        .event-info-text strong {
+            color: var(--gk-white);
+            display: block;
+            font-size: 13px;
+            margin-bottom: 1px
+        }
+
+        .event-maps-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 14px;
+            background: var(--gk-green);
+            color: #000;
+            font-size: 11px;
+            font-family: var(--font-b);
+            font-weight: 700;
+            padding: 9px 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform .15s, box-shadow .2s;
+            letter-spacing: .05em;
+        }
+
+        .event-maps-btn:hover {
+            transform: scale(1.04);
+            box-shadow: 0 6px 20px var(--gk-green-glow)
+        }
+
+        .event-maps-btn svg {
+            width: 13px;
+            height: 13px;
+            fill: #000
+        }
+
+        /* ── TIMELINE as GoTrack ── */
+        .timeline-section {
+            padding: 64px 20px
+        }
+
+        .gotrack-header {
+            max-width: 680px;
+            margin: 0 auto 36px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .gotrack-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--gk-green);
+            font-weight: 600;
+        }
+
+        .gotrack-ping {
+            width: 8px;
+            height: 8px;
+            background: var(--gk-green);
+            border-radius: 50%;
+            animation: ping 1.5s ease-in-out infinite;
+        }
+
+        @keyframes ping {
+            0% {
+                box-shadow: 0 0 0 0 var(--gk-green-glow)
+            }
+
+            100% {
+                box-shadow: 0 0 0 10px transparent
+            }
+        }
+
+        .timeline {
+            max-width: 560px;
+            margin: 0 auto;
+            position: relative
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 22px;
+            top: 4px;
+            bottom: 4px;
+            width: 1.5px;
+            background: linear-gradient(180deg, var(--gk-green) 0%, var(--gk-lgray) 60%, transparent 100%);
+        }
+
+        .tl-item {
+            display: flex;
+            gap: 22px;
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateX(-18px);
+            transition: opacity .6s ease, transform .6s ease;
+        }
+
+        .tl-item.visible {
+            opacity: 1;
+            transform: translateX(0)
+        }
+
+        .tl-dot-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+            z-index: 1;
+        }
+
+        .tl-dot {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--gk-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-h);
+            font-size: 14px;
+            font-weight: 900;
+            color: #000;
+            box-shadow: 0 0 0 4px rgba(0, 170, 19, .15);
+            flex-shrink: 0;
+        }
+
+        .tl-dot.done {
+            background: var(--gk-card2);
+            border: 1.5px solid var(--gk-green);
+            color: var(--gk-green)
+        }
+
+        .tl-body {
+            padding-top: 8px
+        }
+
+        .tl-tag {
+            font-size: 10px;
+            letter-spacing: .25em;
+            text-transform: uppercase;
+            color: var(--gk-green);
+            font-weight: 700;
+            margin-bottom: 3px;
+        }
+
+        .tl-date {
+            font-size: 11px;
+            color: var(--gk-gray);
+            margin-bottom: 5px
+        }
+
+        .tl-title {
+            font-family: var(--font-h);
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px
+        }
+
+        .tl-desc {
+            font-size: 13px;
+            color: var(--gk-gray);
+            line-height: 1.7
+        }
+
+        /* ── GALLERY as GoGallery ── */
+        .gallery-section {
+            padding: 64px 0
+        }
+
+        .gallery-header {
+            max-width: 680px;
+            margin: 0 auto 28px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .gallery-track-wrap {
+            position: relative;
+            overflow: hidden;
+            padding: 8px 0
+        }
+
+        .gallery-fade-l {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 80px;
+            background: linear-gradient(90deg, var(--gk-black), transparent);
+            z-index: 2;
+            pointer-events: none
+        }
+
+        .gallery-fade-r {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 80px;
+            background: linear-gradient(270deg, var(--gk-black), transparent);
+            z-index: 2;
+            pointer-events: none
+        }
+
+        .gallery-track {
+            display: flex;
+            gap: 12px;
+            width: max-content;
+            will-change: transform
+        }
+
+        .gallery-item {
+            flex-shrink: 0;
+            width: clamp(140px, 35vw, 195px);
+            height: clamp(180px, 45vw, 255px);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            background: var(--gk-card);
+            position: relative;
+            cursor: pointer;
+            transition: transform .3s, box-shadow .3s;
+            border: 1px solid var(--gk-border);
+        }
+
+        .gallery-item:hover {
+            transform: scale(1.04);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, .5), 0 0 0 1.5px var(--gk-green)
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .5s, filter .4s;
+            filter: saturate(0.8);
+            display: block
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.08);
+            filter: saturate(1.1)
+        }
+
+        .gallery-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 50%, rgba(0, 0, 0, .65) 100%)
+        }
+
+        .gallery-num {
+            position: absolute;
+            bottom: 10px;
+            left: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .1em;
+            color: rgba(255, 255, 255, .6);
+        }
+
+        .gallery-dots {
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+            margin-top: 18px
+        }
+
+        .gallery-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--gk-lgray);
+            transition: background .3s, width .3s;
+            cursor: pointer
+        }
+
+        .gallery-dot.active {
+            background: var(--gk-green);
+            width: 18px;
+            border-radius: 3px
+        }
+
+        /* ── GIFT as GoTransfer ── */
+        .gift-section {
+            padding: 64px 20px;
+            text-align: center
+        }
+
+        .gift-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            max-width: 500px;
+            margin: 24px auto 0;
+        }
+
+        @media(max-width:480px) {
+            .gift-cards {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .gift-card {
+            background: var(--gk-card);
+            border-radius: var(--radius);
+            padding: 22px 18px;
+            border: 1px solid var(--gk-border);
+            position: relative;
+            overflow: hidden;
+            text-align: left;
+            transition: border-color .3s;
+        }
+
+        .gift-card:hover {
+            border-color: rgba(0, 170, 19, .3)
+        }
+
+        .gift-card-glow {
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, var(--gk-green-dim), transparent 70%);
+            pointer-events: none;
+        }
+
+        .gift-bank-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--gk-card2);
+            border-radius: 8px;
+            padding: 5px 10px;
+            margin-bottom: 14px;
+        }
+
+        .gift-bank-chip-icon {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 900;
+            color: #000;
+        }
+
+        .gift-bank-chip-label {
+            font-size: 10px;
+            color: var(--gk-gray);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            font-weight: 600
+        }
+
+        .gift-acct-name {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 10px
+        }
+
+        .gift-number {
+            font-size: 17px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: .12em;
+            margin-bottom: 12px;
+            color: var(--gk-white);
+            font-weight: 700;
+        }
+
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--gk-green-dim);
+            border: 1px solid rgba(0, 170, 19, .2);
+            color: var(--gk-green);
+            font-size: 11px;
+            font-family: var(--font-b);
+            font-weight: 700;
+            padding: 8px 14px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: background .15s, transform .15s;
+            letter-spacing: .05em;
+        }
+
+        .copy-btn:hover {
+            background: rgba(0, 170, 19, .2);
+            transform: scale(1.03)
+        }
+
+        .copy-btn.copied {
+            color: #000;
+            background: var(--gk-green);
+            border-color: var(--gk-green)
+        }
+
+        /* ── RSVP as GoInput ── */
+        .rsvp-section {
+            background: var(--gk-dark);
+            padding: 64px 20px;
+            border-top: 1px solid var(--gk-border);
+        }
+
+        .rsvp-stats {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 36px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .rsvp-stat {
+            background: var(--gk-card);
+            border-radius: var(--radius-sm);
+            padding: 18px 22px;
+            text-align: center;
+            border: 1px solid var(--gk-border);
+            min-width: 90px;
+            flex: 1;
+            max-width: 130px;
+        }
+
+        .rsvp-stat-num {
+            font-family: var(--font-h);
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--gk-green);
+            line-height: 1;
+        }
+
+        .rsvp-stat-label {
+            font-size: 10px;
+            color: var(--gk-gray);
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            margin-top: 5px
+        }
+
+        .rsvp-form {
+            max-width: 500px;
+            margin: 0 auto
+        }
+
+        .form-group {
+            margin-bottom: 18px
+        }
+
+        .form-label {
+            font-size: 11px;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: var(--gk-gray);
+            margin-bottom: 8px;
+            display: block;
+            font-weight: 600;
+        }
+
+        .form-input {
+            width: 100%;
+            background: var(--gk-card);
+            border: 1.5px solid var(--gk-border);
+            border-radius: var(--radius-sm);
+            padding: 13px 15px;
+            color: var(--gk-white);
+            font-family: var(--font-b);
+            font-size: 14px;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--gk-green);
+            box-shadow: 0 0 0 3px rgba(0, 170, 19, .1);
+        }
+
+        .form-input::placeholder {
+            color: var(--gk-lgray)
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238A8A8A' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 42px;
+            cursor: pointer;
+        }
+
+        textarea.form-input {
+            min-height: 90px;
+            resize: vertical
+        }
+
+        .guests-row {
+            display: flex;
+            gap: 8px
+        }
+
+        .guest-btn {
+            flex: 1;
+            background: var(--gk-card);
+            border: 1.5px solid var(--gk-border);
+            border-radius: var(--radius-sm);
+            padding: 13px;
+            color: var(--gk-gray);
+            font-family: var(--font-b);
+            font-size: 14px;
+            cursor: pointer;
+            transition: all .15s;
+            font-weight: 600;
+        }
+
+        .guest-btn.active {
+            background: var(--gk-green-dim);
+            border-color: var(--gk-green);
+            color: var(--gk-green);
+        }
+
+        .rsvp-submit-btn {
+            width: 100%;
+            background: var(--gk-green);
+            border: none;
+            border-radius: 50px;
+            padding: 16px;
+            color: #000;
+            font-family: var(--font-h);
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform .15s, box-shadow .2s;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            margin-top: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .rsvp-submit-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, .15), transparent);
+        }
+
+        .rsvp-submit-btn:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 30px var(--gk-green-glow)
+        }
+
+        /* ── WISHES ── */
+        .wishes-section {
+            padding: 64px 20px
+        }
+
+        .wishes-list {
+            max-width: 560px;
+            margin: 28px auto 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px
+        }
+
+        .wish-card {
+            background: var(--gk-card);
+            border-radius: var(--radius-sm);
+            padding: 18px;
+            border: 1px solid var(--gk-border);
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity .5s, transform .5s;
+        }
+
+        .wish-card.visible {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .wish-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px
+        }
+
+        .wish-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gk-green);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #000;
+            flex-shrink: 0;
+        }
+
+        .wish-name {
+            font-size: 13px;
+            font-weight: 700
+        }
+
+        .wish-status {
+            font-size: 10px;
+            color: var(--gk-green);
+            margin-top: 1px;
+            font-weight: 600
+        }
+
+        .wish-text {
+            font-size: 13px;
+            color: var(--gk-gray);
+            line-height: 1.65
+        }
+
+        /* ── FOOTER ── */
+        .footer-section {
+            background: linear-gradient(0deg, #001500 0%, var(--gk-black) 100%);
+            padding: 80px 20px 40px;
+            text-align: center;
+            border-top: 1px solid var(--gk-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer-grid-bg {
+            position: absolute;
+            inset: 0;
+            background-image: linear-gradient(rgba(0, 170, 19, .03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 170, 19, .03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            pointer-events: none;
+        }
+
+        .footer-logo-ring {
+            width: 72px;
+            height: 72px;
+            background: var(--gk-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 40px var(--gk-green-glow);
+        }
+
+        .footer-logo-ring svg {
+            width: 38px;
+            height: 38px
+        }
+
+        .footer-names {
+            font-family: var(--font-h);
+            font-size: clamp(26px, 7vw, 44px);
+            font-weight: 900;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #fff 40%, var(--gk-green) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .footer-text {
+            font-size: 13px;
+            color: var(--gk-gray);
+            line-height: 1.75;
+            max-width: 440px;
+            margin: 0 auto 28px;
+        }
+
+        .footer-sig {
+            font-family: var(--font-h);
+            font-style: normal;
+            font-size: 18px;
+            color: rgba(255, 255, 255, .5);
+            margin-bottom: 6px;
+        }
+
+        .footer-sig span {
+            color: var(--gk-white);
+            font-size: 22px
+        }
+
+        .footer-brand {
+            font-size: 11px;
+            color: var(--gk-lgray);
+            letter-spacing: .15em;
+            margin-top: 28px;
+        }
+
+        .footer-brand a {
+            color: var(--gk-green);
+            text-decoration: none;
+            font-weight: 700
+        }
+
+        /* ── BOTTOM NAV ── */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, .92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--gk-border);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 max(10px, env(safe-area-inset-bottom));
+            z-index: 100;
+            transform: translateY(100%);
+            transition: transform .5s ease 1s;
+        }
+
+        .bottom-nav.show {
+            transform: translateY(0)
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
+            color: var(--gk-gray);
+            text-decoration: none;
+            transition: color .15s;
+            font-size: 9px;
+            letter-spacing: .06em;
+            padding: 4px 10px;
+            border-radius: 8px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: var(--gk-white)
+        }
+
+        .nav-item.active .nav-icon-wrap {
+            background: var(--gk-green);
+            border-radius: 10px;
+        }
+
+        .nav-icon-wrap {
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .2s;
+        }
+
+        .nav-icon-wrap svg {
+            width: 18px;
+            height: 18px
+        }
+
+        .nav-item.active svg {
+            fill: #000
+        }
+
+        /* ── LIGHTBOX ── */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .97);
+            z-index: 9998;
+            display: none;
+            align-items: center;
+            justify-content: center
+        }
+
+        .lightbox.open {
+            display: flex
+        }
+
+        .lightbox-img {
+            max-width: 90vw;
+            max-height: 88vh;
+            border-radius: 10px;
+            object-fit: contain
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, .08);
+            border: none;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .lightbox-close:hover {
+            background: rgba(255, 255, 255, .15)
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, .08);
+            border: none;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+            width: 48px;
+            height: 64px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .lightbox-nav:hover {
+            background: rgba(255, 255, 255, .15)
+        }
+
+        .lightbox-prev {
+            left: 12px
+        }
+
+        .lightbox-next {
+            right: 12px
+        }
+
+        .lightbox-counter {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: var(--gk-gray);
+            font-weight: 600
+        }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--gk-green);
+            color: #000;
+            padding: 11px 22px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 700;
+            opacity: 0;
+            transition: opacity .3s, transform .3s;
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 9999;
+            letter-spacing: .05em;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0)
+        }
+
+        /* ── SCROLL REVEAL ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity .7s ease, transform .7s ease
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0)
+        }
+    </style>
 </head>
+
 <body>
 
-<!-- CURSOR -->
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
+    <!-- CURSOR -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
 
-<!-- ── OPENING ── -->
-<div id="opening">
-  <div class="gk-logo-ring">
-    <svg class="ring-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="50" cy="50" r="47" stroke="rgba(0,170,19,0.3)" stroke-width="1.5" stroke-dasharray="8 6"/>
-    </svg>
-    <div class="gk-logo-inner">
-      <!-- Gojek G logo -->
-      <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M24 8C15.163 8 8 15.163 8 24s7.163 16 16 16c8.837 0 16-7.163 16-16h-8c0 4.418-3.582 8-8 8-4.418 0-8-3.582-8-8s3.582-8 8-8c2.21 0 4.21.895 5.657 2.343L26 21h14V7l-4.343 4.343C33.21 9.1 28.793 8 24 8z" fill="black"/>
-      </svg>
-    </div>
-  </div>
-  <p class="opening-eyebrow">GoWedding · Digital Invitation</p>
-  <h1 class="opening-names">{{ invitation.couple_name_short }}</h1>
-  <p class="opening-sub">Wedding Day · 24 Mei 2026</p>
-  <div class="dear-pill">
-    <div class="dear-pill-dot"></div>
-    <div>
-      <div class="dear-pill-text">Kepada Yth.</div>
-      <div class="dear-pill-name">Ade Guntur Fitridullah & Partner</div>
-    </div>
-  </div>
-  <button class="open-btn" onclick="openInvitation()">
-    <span class="btn-shine"></span>
-    Open Invitation
-  </button>
-</div>
-
-<!-- ── MAIN ── -->
-<div id="main">
-
-  <!-- HERO -->
-  <section class="hero-section" id="home">
-    <div class="hero-grid"></div>
-
-    <!-- Big BG text -->
-    <div class="hero-bike-wrap">
-      <div class="hero-bg-text">GOWEDDING</div>
-    </div>
-
-    <!-- Floating service pills -->
-    <div class="float-pills">
-      <div class="float-pill" style="top:12%;left:4%;--dur:5s;--delay:0s;--rot:-4deg">
-        <div class="pill-icon" style="background:#00AA13">💍</div>
-        GoRing
-      </div>
-      <div class="float-pill" style="top:8%;right:5%;--dur:6.5s;--delay:.5s;--rot:3deg">
-        <div class="pill-icon" style="background:#e53935">💐</div>
-        GoFlower
-      </div>
-      <div class="float-pill" style="top:28%;left:2%;--dur:7s;--delay:.8s;--rot:-2deg">
-        <div class="pill-icon" style="background:#FF6D00">🎂</div>
-        GoCake
-      </div>
-      <div class="float-pill" style="top:22%;right:2%;--dur:5.5s;--delay:1.2s;--rot:5deg">
-        <div class="pill-icon" style="background:#4a9eff">📷</div>
-        GoPhoto
-      </div>
-      <div class="float-pill" style="top:42%;left:1%;--dur:6s;--delay:.3s;--rot:-3deg">
-        <div class="pill-icon" style="background:#c084fc">🎵</div>
-        GoMusic
-      </div>
-      <div class="float-pill" style="top:38%;right:1%;--dur:7.5s;--delay:1.5s;--rot:2deg">
-        <div class="pill-icon" style="background:#FFD600">🍽️</div>
-        GoFood
-      </div>
-    </div>
-
-    <!-- Order Card -->
-    <div class="hero-order-card reveal">
-      <div class="order-header">
-        <div class="order-app-label">
-          <div class="gk-dot"></div>
-          GoWedding
+    <!-- ── OPENING ── -->
+    <div id="opening">
+        <div class="gk-logo-ring">
+            <svg class="ring-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="47" stroke="rgba(0,170,19,0.3)" stroke-width="1.5" stroke-dasharray="8 6" />
+            </svg>
+            <div class="gk-logo-inner">
+                <!-- Gojek G logo -->
+                <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M24 8C15.163 8 8 15.163 8 24s7.163 16 16 16c8.837 0 16-7.163 16-16h-8c0 4.418-3.582 8-8 8-4.418 0-8-3.582-8-8s3.582-8 8-8c2.21 0 4.21.895 5.657 2.343L26 21h14V7l-4.343 4.343C33.21 9.1 28.793 8 24 8z"
+                        fill="black" />
+                </svg>
+            </div>
         </div>
-        <div class="order-status-badge">LIVE ✦</div>
-      </div>
-
-      <div class="order-names">
-        Anita<br><span>&</span> Zarda
-      </div>
-      <p class="order-subtitle">Mempelai kami mengundang kehadiran Anda</p>
-
-      <!-- Bride & Groom drivers -->
-      <div class="order-driver-row">
-        <div class="driver-avatar">
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita">
+        <p class="opening-eyebrow">GoWedding · Digital Invitation</p>
+        <h1 class="opening-names">{{ invitation.couple_name_short }}</h1>
+        <p class="opening-sub">Wedding Day · 24 Mei 2026</p>
+        <div class="dear-pill">
+            <div class="dear-pill-dot"></div>
+            <div>
+                <div class="dear-pill-text">Kepada Yth.</div>
+                <div class="dear-pill-name">Ade Guntur Fitridullah & Partner</div>
+            </div>
         </div>
-        <div class="driver-info">
-          <div class="driver-name">Anita Pangestuti, S.Kom</div>
-          <div class="driver-role">Mempelai Wanita</div>
-        </div>
-        <div class="driver-rating">
-          <svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:#FFD600"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          5.0
-        </div>
-      </div>
-      <div class="order-driver-row" style="margin-top:-8px">
-        <div class="driver-avatar">
-          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda">
-        </div>
-        <div class="driver-info">
-          <div class="driver-name">Zardarian Ahadika N, S.Kom</div>
-          <div class="driver-role">Mempelai Pria</div>
-        </div>
-        <div class="driver-rating">
-          <svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:#FFD600"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          5.0
-        </div>
-      </div>
-
-      <!-- Route -->
-      <div class="order-route">
-        <div class="route-point">
-          <div class="route-icon">
-            <div class="route-dot green"></div>
-          </div>
-          <div>
-            <div class="route-label">Dari hati</div>
-            <div class="route-value">Awal Pertemuan · Juni 2025</div>
-          </div>
-        </div>
-        <div style="padding-left:9px"><div class="route-dashes"></div></div>
-        <div class="route-point">
-          <div class="route-icon">
-            <div class="route-dot red"></div>
-          </div>
-          <div>
-            <div class="route-label">Menuju ikatan suci</div>
-            <div class="route-value">Graha Yadika, Ciledug · 24 Mei 2026</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="order-cta-row">
-        <button class="order-cta primary" onclick="document.querySelector('#rsvp').scrollIntoView({behavior:'smooth'})">RSVP Sekarang</button>
-        <button class="order-cta secondary" onclick="document.querySelector('#event').scrollIntoView({behavior:'smooth'})">Lihat Detail</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- ETA / COUNTDOWN -->
-  <div class="eta-section">
-    <div class="eta-label">
-      <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
-      ETA ke Hari Pernikahan
-    </div>
-    <h3 class="eta-title">Menghitung Mundur...</h3>
-    <div class="eta-grid">
-      <div class="eta-item"><div class="eta-num" id="cdDays">00</div><div class="eta-unit">Hari</div></div>
-      <div class="eta-item"><div class="eta-num" id="cdHours">00</div><div class="eta-unit">Jam</div></div>
-      <div class="eta-item"><div class="eta-num" id="cdMinutes">00</div><div class="eta-unit">Menit</div></div>
-      <div class="eta-item"><div class="eta-num" id="cdSeconds">00</div><div class="eta-unit">Detik</div></div>
-    </div>
-  </div>
-
-  <!-- VERSE -->
-  <div class="verse-section">
-    <div class="verse-deco">
-      <div class="verse-deco-line"></div>
-      <div class="verse-icon">✦</div>
-      <div class="verse-deco-line"></div>
-    </div>
-    <p class="verse-text">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya..."</p>
-    <p class="verse-ref">— Surah Ar-Rum : 21</p>
-  </div>
-
-  <!-- COUPLE -->
-  <section class="couple-section" id="couple">
-    <div class="reveal" style="text-align:center">
-      <p class="sec-tag">✦ Featured Profiles</p>
-      <h2 class="sec-title">Pasangan Kami</h2>
-    </div>
-    <div class="couple-vs">
-      <div class="couple-vs-line"></div>
-      <div class="couple-vs-icon">&</div>
-      <div class="couple-vs-line"></div>
-    </div>
-    <div class="couple-cards">
-      <div class="couple-card reveal">
-        <div class="couple-verified">
-          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-        </div>
-        <div class="couple-avatar">
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=300&fit=crop&q=80" alt="Anita" loading="lazy">
-        </div>
-        <div class="couple-tag">Mempelai Wanita</div>
-        <div class="couple-name">Anita Pangestuti, S.Kom</div>
-        <div class="couple-stars">
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-        </div>
-        <div class="couple-rating">5.0 (∞ ulasan)</div>
-        <div class="couple-parents" style="margin-top:10px">Putri Pertama dari<br><strong style="color:#fff">Bpk. Taryono &<br>Ibu Wiwit Jayanti</strong></div>
-      </div>
-      <div class="couple-card reveal" style="transition-delay:.1s">
-        <div class="couple-verified">
-          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
-        </div>
-        <div class="couple-avatar">
-          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&q=80" alt="Zarda" loading="lazy">
-        </div>
-        <div class="couple-tag">Mempelai Pria</div>
-        <div class="couple-name">Zardarian Ahadika N, S.Kom</div>
-        <div class="couple-stars">
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-        </div>
-        <div class="couple-rating">5.0 (∞ ulasan)</div>
-        <div class="couple-parents" style="margin-top:10px">Putra Kedua dari<br><strong style="color:#fff">Bpk. Wan Sabran, M.MAR &<br>Ibu Titik Sundari, M.Si</strong></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- EVENT -->
-  <section class="event-section" id="event">
-    <div class="reveal" style="max-width:680px;margin:0 auto;text-align:center">
-      <p class="sec-tag">📍 GoSchedule</p>
-      <h2 class="sec-title">Waktu & Tempat</h2>
-      <p class="sec-text" style="max-width:440px;margin:0 auto">Tandai kalender Anda dan jadilah bagian dari momen terindah kami.</p>
-    </div>
-    <div class="event-cards">
-      <div class="event-card reveal">
-        <div class="event-badge"><div class="event-badge-dot"></div>Akad Nikah</div>
-        <div class="event-name">Minggu,<br>24 Mei 2026</div>
-        <div class="event-info-row">
-          <div class="event-info-icon">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
-          </div>
-          <div class="event-info-text">
-            <strong>08.00 WIB</strong>
-            Hingga selesai
-          </div>
-        </div>
-        <div class="event-info-row">
-          <div class="event-info-icon">
-            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-          </div>
-          <div class="event-info-text">
-            <strong>Graha Yadika</strong>
-            Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang
-          </div>
-        </div>
-        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="event-maps-btn">
-          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-          Buka di Maps
-        </a>
-      </div>
-      <div class="event-card reveal" style="transition-delay:.1s">
-        <div class="event-badge"><div class="event-badge-dot"></div>Resepsi</div>
-        <div class="event-name">Minggu,<br>24 Mei 2026</div>
-        <div class="event-info-row">
-          <div class="event-info-icon">
-            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
-          </div>
-          <div class="event-info-text">
-            <strong>11.00 – 13.00 WIB</strong>
-            Silahkan datang tepat waktu
-          </div>
-        </div>
-        <div class="event-info-row">
-          <div class="event-info-icon">
-            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-          </div>
-          <div class="event-info-text">
-            <strong>Graha Yadika</strong>
-            Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang
-          </div>
-        </div>
-        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="event-maps-btn">
-          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-          Buka di Maps
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- TIMELINE / GoTrack -->
-  <section class="timeline-section">
-    <div class="gotrack-header reveal">
-      <div>
-        <p class="sec-tag">🗺 GoTrack</p>
-        <h2 class="sec-title" style="margin-bottom:0">Our Love Story</h2>
-      </div>
-      <div class="gotrack-status">
-        <div class="gotrack-ping"></div>
-        Sedang berlangsung
-      </div>
-    </div>
-    <div class="timeline">
-      <div class="tl-item">
-        <div class="tl-dot-wrap"><div class="tl-dot">1</div></div>
-        <div class="tl-body">
-          <div class="tl-tag">Track 01</div>
-          <div class="tl-date">Juni 2025</div>
-          <div class="tl-title">Awal Pertemuan</div>
-          <div class="tl-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</div>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot-wrap"><div class="tl-dot done">✓</div></div>
-        <div class="tl-body">
-          <div class="tl-tag">Track 02</div>
-          <div class="tl-date">November 2025</div>
-          <div class="tl-title">Lamaran</div>
-          <div class="tl-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div>
-        </div>
-      </div>
-      <div class="tl-item">
-        <div class="tl-dot-wrap"><div class="tl-dot" style="background:var(--gk-orange);box-shadow:0 0 0 4px rgba(255,109,0,.15)">★</div></div>
-        <div class="tl-body">
-          <div class="tl-tag">Track 03</div>
-          <div class="tl-date">Mei 2026</div>
-          <div class="tl-title">Pernikahan</div>
-          <div class="tl-desc">Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- GALLERY -->
-  <section class="gallery-section">
-    <div class="gallery-header reveal">
-      <div>
-        <p class="sec-tag">📸 GoGallery</p>
-        <h2 class="sec-title" style="font-size:24px;margin-bottom:0">Galeri Foto</h2>
-      </div>
-      <div style="font-size:11px;color:var(--gk-gray);display:flex;align-items:center;gap:6px;font-weight:600">
-        <div style="width:6px;height:6px;background:var(--gk-green);border-radius:50%;animation:blink 1.2s infinite"></div>
-        AUTO-SLIDE
-      </div>
-    </div>
-    <div class="gallery-track-wrap" id="galleryWrap"
-      onmouseenter="pauseGallery()" onmouseleave="resumeGallery()"
-      ontouchstart="pauseGallery()" ontouchend="resumeGallery()">
-      <div class="gallery-fade-l"></div>
-      <div class="gallery-fade-r"></div>
-      <div class="gallery-track" id="galleryTrack"></div>
-    </div>
-    <div class="gallery-dots" id="galleryDots"></div>
-  </section>
-
-  <!-- GIFT / GoTransfer -->
-  <section class="gift-section" id="gift">
-    <div class="reveal" style="max-width:680px;margin:0 auto;text-align:center">
-      <p class="sec-tag">💸 GoTransfer</p>
-      <h2 class="sec-title">Amplop Digital</h2>
-      <p class="sec-text" style="max-width:420px;margin:0 auto 32px">Doa restu sudah sangat cukup, namun jika memberi merupakan tanda kasih, kami dengan senang hati menerimanya.</p>
-    </div>
-    <div class="gift-cards">
-      <div class="gift-card reveal">
-        <div class="gift-card-glow"></div>
-        <div class="gift-bank-chip">
-          <div class="gift-bank-chip-icon" style="background:#005BAA;color:white;font-size:9px;font-weight:900;border-radius:4px;padding:2px">BCA</div>
-          <span class="gift-bank-chip-label">Bank BCA</span>
-        </div>
-        <div class="gift-acct-name">Zardarian Ahadika N</div>
-        <div class="gift-number">8210 3705 61</div>
-        <button class="copy-btn" onclick="copyText('8210370561',this)">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-          Salin Nomor
+        <button class="open-btn" onclick="openInvitation()">
+            <span class="btn-shine"></span>
+            Open Invitation
         </button>
-      </div>
-      <div class="gift-card reveal" style="transition-delay:.1s">
-        <div class="gift-card-glow"></div>
-        <div class="gift-bank-chip">
-          <div class="gift-bank-chip-icon" style="background:#FF6600;color:white;font-size:9px;font-weight:900;border-radius:4px;padding:2px">BNI</div>
-          <span class="gift-bank-chip-label">Bank BNI</span>
+    </div>
+
+    <!-- ── MAIN ── -->
+    <div id="main">
+
+        <!-- HERO -->
+        <section class="hero-section" id="home">
+            <div class="hero-grid"></div>
+
+            <!-- Big BG text -->
+            <div class="hero-bike-wrap">
+                <div class="hero-bg-text">GOWEDDING</div>
+            </div>
+
+            <!-- Floating service pills -->
+            <div class="float-pills">
+                <div class="float-pill" style="top:12%;left:4%;--dur:5s;--delay:0s;--rot:-4deg">
+                    <div class="pill-icon" style="background:#00AA13">💍</div>
+                    GoRing
+                </div>
+                <div class="float-pill" style="top:8%;right:5%;--dur:6.5s;--delay:.5s;--rot:3deg">
+                    <div class="pill-icon" style="background:#e53935">💐</div>
+                    GoFlower
+                </div>
+                <div class="float-pill" style="top:28%;left:2%;--dur:7s;--delay:.8s;--rot:-2deg">
+                    <div class="pill-icon" style="background:#FF6D00">🎂</div>
+                    GoCake
+                </div>
+                <div class="float-pill" style="top:22%;right:2%;--dur:5.5s;--delay:1.2s;--rot:5deg">
+                    <div class="pill-icon" style="background:#4a9eff">📷</div>
+                    GoPhoto
+                </div>
+                <div class="float-pill" style="top:42%;left:1%;--dur:6s;--delay:.3s;--rot:-3deg">
+                    <div class="pill-icon" style="background:#c084fc">🎵</div>
+                    GoMusic
+                </div>
+                <div class="float-pill" style="top:38%;right:1%;--dur:7.5s;--delay:1.5s;--rot:2deg">
+                    <div class="pill-icon" style="background:#FFD600">🍽️</div>
+                    GoFood
+                </div>
+            </div>
+
+            <!-- Order Card -->
+            <div class="hero-order-card reveal">
+                <div class="order-header">
+                    <div class="order-app-label">
+                        <div class="gk-dot"></div>
+                        GoWedding
+                    </div>
+                    <div class="order-status-badge">LIVE ✦</div>
+                </div>
+
+                <div class="order-names">
+                    Anita<br><span>&</span> Zarda
+                </div>
+                <p class="order-subtitle">Mempelai kami mengundang kehadiran Anda</p>
+
+                <!-- Bride & Groom drivers -->
+                <div class="order-driver-row">
+                    <div class="driver-avatar">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80"
+                            alt="Anita">
+                    </div>
+                    <div class="driver-info">
+                        <div class="driver-name">Anita Pangestuti, S.Kom</div>
+                        <div class="driver-role">Mempelai Wanita</div>
+                    </div>
+                    <div class="driver-rating">
+                        <svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:#FFD600">
+                            <path
+                                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                        5.0
+                    </div>
+                </div>
+                <div class="order-driver-row" style="margin-top:-8px">
+                    <div class="driver-avatar">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80"
+                            alt="Zarda">
+                    </div>
+                    <div class="driver-info">
+                        <div class="driver-name">Zardarian Ahadika N, S.Kom</div>
+                        <div class="driver-role">Mempelai Pria</div>
+                    </div>
+                    <div class="driver-rating">
+                        <svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:#FFD600">
+                            <path
+                                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                        5.0
+                    </div>
+                </div>
+
+                <!-- Route -->
+                <div class="order-route">
+                    <div class="route-point">
+                        <div class="route-icon">
+                            <div class="route-dot green"></div>
+                        </div>
+                        <div>
+                            <div class="route-label">Dari hati</div>
+                            <div class="route-value">Awal Pertemuan · Juni 2025</div>
+                        </div>
+                    </div>
+                    <div style="padding-left:9px">
+                        <div class="route-dashes"></div>
+                    </div>
+                    <div class="route-point">
+                        <div class="route-icon">
+                            <div class="route-dot red"></div>
+                        </div>
+                        <div>
+                            <div class="route-label">Menuju ikatan suci</div>
+                            <div class="route-value">Graha Yadika, Ciledug · 24 Mei 2026</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-cta-row">
+                    <button class="order-cta primary"
+                        onclick="document.querySelector('#rsvp').scrollIntoView({behavior:'smooth'})">RSVP
+                        Sekarang</button>
+                    <button class="order-cta secondary"
+                        onclick="document.querySelector('#event').scrollIntoView({behavior:'smooth'})">Lihat
+                        Detail</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ETA / COUNTDOWN -->
+        <div class="eta-section">
+            <div class="eta-label">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor">
+                    <path
+                        d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
+                </svg>
+                ETA ke Hari Pernikahan
+            </div>
+            <h3 class="eta-title">Menghitung Mundur...</h3>
+            <div class="eta-grid">
+                <div class="eta-item">
+                    <div class="eta-num" id="cdDays">00</div>
+                    <div class="eta-unit">Hari</div>
+                </div>
+                <div class="eta-item">
+                    <div class="eta-num" id="cdHours">00</div>
+                    <div class="eta-unit">Jam</div>
+                </div>
+                <div class="eta-item">
+                    <div class="eta-num" id="cdMinutes">00</div>
+                    <div class="eta-unit">Menit</div>
+                </div>
+                <div class="eta-item">
+                    <div class="eta-num" id="cdSeconds">00</div>
+                    <div class="eta-unit">Detik</div>
+                </div>
+            </div>
         </div>
-        <div class="gift-acct-name">Anita Pangestuti</div>
-        <div class="gift-number">1192 9784 03</div>
-        <button class="copy-btn" onclick="copyText('1192978403',this)">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-          Salin Nomor
-        </button>
-      </div>
-    </div>
-  </section>
 
-  <!-- RSVP -->
-  <section class="rsvp-section" id="rsvp">
-    <div class="reveal" style="max-width:680px;margin:0 auto;text-align:center">
-      <p class="sec-tag">📋 GoRSVP</p>
-      <h2 class="sec-title">Konfirmasi Kehadiran</h2>
-    </div>
-    <div class="rsvp-stats">
-      <div class="rsvp-stat reveal">
-        <div class="rsvp-stat-num">7</div>
-        <div class="rsvp-stat-label">Respons</div>
-      </div>
-      <div class="rsvp-stat reveal" style="transition-delay:.1s">
-        <div class="rsvp-stat-num">7</div>
-        <div class="rsvp-stat-label">Hadir</div>
-      </div>
-      <div class="rsvp-stat reveal" style="transition-delay:.2s">
-        <div class="rsvp-stat-num">13</div>
-        <div class="rsvp-stat-label">Total Tamu</div>
-      </div>
-    </div>
-    <div class="rsvp-form reveal">
-      <div class="form-group">
-        <label class="form-label">Nama Lengkap</label>
-        <input type="text" class="form-input" placeholder="Masukkan nama Anda" id="rsvpName">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Status Kehadiran</label>
-        <select class="form-input form-select" id="rsvpStatus">
-          <option value="">Pilih status kehadiran</option>
-          <option value="hadir">✅ Hadir</option>
-          <option value="tidak">❌ Tidak Hadir</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Jumlah Tamu</label>
-        <div class="guests-row">
-          <button class="guest-btn active" onclick="selectGuests(1,this)">1 Orang</button>
-          <button class="guest-btn" onclick="selectGuests(2,this)">2 Orang</button>
+        <!-- VERSE -->
+        <div class="verse-section">
+            <div class="verse-deco">
+                <div class="verse-deco-line"></div>
+                <div class="verse-icon">✦</div>
+                <div class="verse-deco-line"></div>
+            </div>
+            <p class="verse-text">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan
+                untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya..."</p>
+            <p class="verse-ref">— Surah Ar-Rum : 21</p>
         </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Ucapan & Doa</label>
-        <textarea class="form-input" placeholder="Tuliskan ucapan untuk {{ invitation.couple_name_short }}..." id="rsvpMsg"></textarea>
-      </div>
-      <button class="rsvp-submit-btn" onclick="submitRSVP()">Konfirmasi Sekarang →</button>
+
+        <!-- COUPLE -->
+        <section class="couple-section" id="couple">
+            <div class="reveal" style="text-align:center">
+                <p class="sec-tag">✦ Featured Profiles</p>
+                <h2 class="sec-title">Pasangan Kami</h2>
+            </div>
+            <div class="couple-vs">
+                <div class="couple-vs-line"></div>
+                <div class="couple-vs-icon">&</div>
+                <div class="couple-vs-line"></div>
+            </div>
+            <div class="couple-cards">
+                <div class="couple-card reveal">
+                    <div class="couple-verified">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                        </svg>
+                    </div>
+                    <div class="couple-avatar">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=300&fit=crop&q=80"
+                            alt="Anita" loading="lazy">
+                    </div>
+                    <div class="couple-tag">Mempelai Wanita</div>
+                    <div class="couple-name">Anita Pangestuti, S.Kom</div>
+                    <div class="couple-stars">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                    </div>
+                    <div class="couple-rating">5.0 (∞ ulasan)</div>
+                    <div class="couple-parents" style="margin-top:10px">Putri Pertama dari<br><strong
+                            style="color:#fff">Bpk. Taryono &<br>Ibu Wiwit Jayanti</strong></div>
+                </div>
+                <div class="couple-card reveal" style="transition-delay:.1s">
+                    <div class="couple-verified">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                        </svg>
+                    </div>
+                    <div class="couple-avatar">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&q=80"
+                            alt="Zarda" loading="lazy">
+                    </div>
+                    <div class="couple-tag">Mempelai Pria</div>
+                    <div class="couple-name">Zardarian Ahadika N, S.Kom</div>
+                    <div class="couple-stars">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                        </svg>
+                    </div>
+                    <div class="couple-rating">5.0 (∞ ulasan)</div>
+                    <div class="couple-parents" style="margin-top:10px">Putra Kedua dari<br><strong
+                            style="color:#fff">Bpk. Wan Sabran, M.MAR &<br>Ibu Titik Sundari, M.Si</strong></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EVENT -->
+        <section class="event-section" id="event">
+            <div class="reveal" style="max-width:680px;margin:0 auto;text-align:center">
+                <p class="sec-tag">📍 GoSchedule</p>
+                <h2 class="sec-title">Waktu & Tempat</h2>
+                <p class="sec-text" style="max-width:440px;margin:0 auto">Tandai kalender Anda dan jadilah bagian dari
+                    momen terindah kami.</p>
+            </div>
+            <div class="event-cards">
+                <div class="event-card reveal">
+                    <div class="event-badge">
+                        <div class="event-badge-dot"></div>Akad Nikah
+                    </div>
+                    <div class="event-name">Minggu,<br>24 Mei 2026</div>
+                    <div class="event-info-row">
+                        <div class="event-info-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z" />
+                            </svg>
+                        </div>
+                        <div class="event-info-text">
+                            <strong>08.00 WIB</strong>
+                            Hingga selesai
+                        </div>
+                    </div>
+                    <div class="event-info-row">
+                        <div class="event-info-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                            </svg>
+                        </div>
+                        <div class="event-info-text">
+                            <strong>Graha Yadika</strong>
+                            Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang
+                        </div>
+                    </div>
+                    <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="event-maps-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                        </svg>
+                        Buka di Maps
+                    </a>
+                </div>
+                <div class="event-card reveal" style="transition-delay:.1s">
+                    <div class="event-badge">
+                        <div class="event-badge-dot"></div>Resepsi
+                    </div>
+                    <div class="event-name">Minggu,<br>24 Mei 2026</div>
+                    <div class="event-info-row">
+                        <div class="event-info-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z" />
+                            </svg>
+                        </div>
+                        <div class="event-info-text">
+                            <strong>11.00 – 13.00 WIB</strong>
+                            Silahkan datang tepat waktu
+                        </div>
+                    </div>
+                    <div class="event-info-row">
+                        <div class="event-info-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path
+                                    d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                            </svg>
+                        </div>
+                        <div class="event-info-text">
+                            <strong>Graha Yadika</strong>
+                            Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang
+                        </div>
+                    </div>
+                    <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="event-maps-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                        </svg>
+                        Buka di Maps
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- TIMELINE / GoTrack -->
+        <section class="timeline-section">
+            <div class="gotrack-header reveal">
+                <div>
+                    <p class="sec-tag">🗺 GoTrack</p>
+                    <h2 class="sec-title" style="margin-bottom:0">Our Love Story</h2>
+                </div>
+                <div class="gotrack-status">
+                    <div class="gotrack-ping"></div>
+                    Sedang berlangsung
+                </div>
+            </div>
+            <div class="timeline">
+                <div class="tl-item">
+                    <div class="tl-dot-wrap">
+                        <div class="tl-dot">1</div>
+                    </div>
+                    <div class="tl-body">
+                        <div class="tl-tag">Track 01</div>
+                        <div class="tl-date">Juni 2025</div>
+                        <div class="tl-title">Awal Pertemuan</div>
+                        <div class="tl-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita
+                            mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</div>
+                    </div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-dot-wrap">
+                        <div class="tl-dot done">✓</div>
+                    </div>
+                    <div class="tl-body">
+                        <div class="tl-tag">Track 02</div>
+                        <div class="tl-date">November 2025</div>
+                        <div class="tl-title">Lamaran</div>
+                        <div class="tl-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami
+                            mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div>
+                    </div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-dot-wrap">
+                        <div class="tl-dot"
+                            style="background:var(--gk-orange);box-shadow:0 0 0 4px rgba(255,109,0,.15)">★</div>
+                    </div>
+                    <div class="tl-body">
+                        <div class="tl-tag">Track 03</div>
+                        <div class="tl-date">Mei 2026</div>
+                        <div class="tl-title">Pernikahan</div>
+                        <div class="tl-desc">Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan suci
+                            pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GALLERY -->
+        <section class="gallery-section">
+            <div class="gallery-header reveal">
+                <div>
+                    <p class="sec-tag">📸 GoGallery</p>
+                    <h2 class="sec-title" style="font-size:24px;margin-bottom:0">Galeri Foto</h2>
+                </div>
+                <div
+                    style="font-size:11px;color:var(--gk-gray);display:flex;align-items:center;gap:6px;font-weight:600">
+                    <div
+                        style="width:6px;height:6px;background:var(--gk-green);border-radius:50%;animation:blink 1.2s infinite">
+                    </div>
+                    AUTO-SLIDE
+                </div>
+            </div>
+            <div class="gallery-track-wrap" id="galleryWrap" onmouseenter="pauseGallery()"
+                onmouseleave="resumeGallery()" ontouchstart="pauseGallery()" ontouchend="resumeGallery()">
+                <div class="gallery-fade-l"></div>
+                <div class="gallery-fade-r"></div>
+                <div class="gallery-track" id="galleryTrack"></div>
+            </div>
+            <div class="gallery-dots" id="galleryDots"></div>
+        </section>
+
+        <!-- GIFT / GoTransfer -->
+        <section class="gift-section" id="gift">
+            <div class="reveal" style="max-width:680px;margin:0 auto;text-align:center">
+                <p class="sec-tag">💸 GoTransfer</p>
+                <h2 class="sec-title">Amplop Digital</h2>
+                <p class="sec-text" style="max-width:420px;margin:0 auto 32px">Doa restu sudah sangat cukup, namun jika
+                    memberi merupakan tanda kasih, kami dengan senang hati menerimanya.</p>
+            </div>
+            <div class="gift-cards">
+                <div class="gift-card reveal">
+                    <div class="gift-card-glow"></div>
+                    <div class="gift-bank-chip">
+                        <div class="gift-bank-chip-icon"
+                            style="background:#005BAA;color:white;font-size:9px;font-weight:900;border-radius:4px;padding:2px">
+                            BCA</div>
+                        <span class="gift-bank-chip-label">Bank BCA</span>
+                    </div>
+                    <div class="gift-acct-name">Zardarian Ahadika N</div>
+                    <div class="gift-number">8210 3705 61</div>
+                    <button class="copy-btn" onclick="copyText('8210370561',this)">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                        </svg>
+                        Salin Nomor
+                    </button>
+                </div>
+                <div class="gift-card reveal" style="transition-delay:.1s">
+                    <div class="gift-card-glow"></div>
+                    <div class="gift-bank-chip">
+                        <div class="gift-bank-chip-icon"
+                            style="background:#FF6600;color:white;font-size:9px;font-weight:900;border-radius:4px;padding:2px">
+                            BNI</div>
+                        <span class="gift-bank-chip-label">Bank BNI</span>
+                    </div>
+                    <div class="gift-acct-name">Anita Pangestuti</div>
+                    <div class="gift-number">1192 9784 03</div>
+                    <button class="copy-btn" onclick="copyText('1192978403',this)">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                        </svg>
+                        Salin Nomor
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- RSVP -->
+        <section class="rsvp-section" id="rsvp">
+            <div class="reveal" style="max-width:680px;margin:0 auto;text-align:center">
+                <p class="sec-tag">📋 GoRSVP</p>
+                <h2 class="sec-title">Konfirmasi Kehadiran</h2>
+            </div>
+            <div class="rsvp-stats">
+                <div class="rsvp-stat reveal">
+                    <div class="rsvp-stat-num">7</div>
+                    <div class="rsvp-stat-label">Respons</div>
+                </div>
+                <div class="rsvp-stat reveal" style="transition-delay:.1s">
+                    <div class="rsvp-stat-num">7</div>
+                    <div class="rsvp-stat-label">Hadir</div>
+                </div>
+                <div class="rsvp-stat reveal" style="transition-delay:.2s">
+                    <div class="rsvp-stat-num">13</div>
+                    <div class="rsvp-stat-label">Total Tamu</div>
+                </div>
+            </div>
+            <div class="rsvp-form reveal">
+                <div class="form-group">
+                    <label class="form-label">Nama Lengkap</label>
+                    <input type="text" class="form-input" placeholder="Masukkan nama Anda" id="rsvpName">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Status Kehadiran</label>
+                    <select class="form-input form-select" id="rsvpStatus">
+                        <option value="">Pilih status kehadiran</option>
+                        <option value="hadir">✅ Hadir</option>
+                        <option value="tidak">❌ Tidak Hadir</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Jumlah Tamu</label>
+                    <div class="guests-row">
+                        <button class="guest-btn active" onclick="selectGuests(1,this)">1 Orang</button>
+                        <button class="guest-btn" onclick="selectGuests(2,this)">2 Orang</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Ucapan & Doa</label>
+                    <textarea class="form-input"
+                        placeholder="Tuliskan ucapan untuk {{ invitation.couple_name_short }}..."
+                        id="rsvpMsg"></textarea>
+                </div>
+                <button class="rsvp-submit-btn" onclick="submitRSVP()">Konfirmasi Sekarang →</button>
+            </div>
+        </section>
+
+        <!-- WISHES -->
+        <section class="wishes-section">
+            <div class="reveal" style="max-width:680px;margin:0 auto">
+                <p class="sec-tag">💬 GoWishes</p>
+                <h2 class="sec-title">Ucapan & Doa</h2>
+            </div>
+            <div class="wishes-list" id="wishesList">
+                <div class="wish-card visible">
+                    <div class="wish-header">
+                        <div class="wish-avatar">A</div>
+                        <div>
+                            <div class="wish-name">Ayu Rahmawati</div>
+                            <div class="wish-status">✅ Hadir · 2 tamu</div>
+                        </div>
+                    </div>
+                    <div class="wish-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah,
+                        wa rahmah. Bahagia selalu Anita & Zarda! 🌿</div>
+                </div>
+                <div class="wish-card visible">
+                    <div class="wish-header">
+                        <div class="wish-avatar" style="background:#4a9eff">R</div>
+                        <div>
+                            <div class="wish-name">Reza Firmansyah</div>
+                            <div class="wish-status">✅ Hadir · 1 tamu</div>
+                        </div>
+                    </div>
+                    <div class="wish-text">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan
+                        kebahagiaan yang tidak pernah habis. Aamiin! 🎉</div>
+                </div>
+                <div class="wish-card visible">
+                    <div class="wish-header">
+                        <div class="wish-avatar" style="background:#ff6b6b">S</div>
+                        <div>
+                            <div class="wish-name">Sinta Dewi</div>
+                            <div class="wish-status">✅ Hadir · 2 tamu</div>
+                        </div>
+                    </div>
+                    <div class="wish-text">Wishing you both a lifetime of love and laughter. Semoga langkah kalian
+                        selalu diberkahi Allah SWT 💚</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer-section">
+            <div class="footer-grid-bg"></div>
+            <div style="position:relative;z-index:1">
+                <div class="footer-logo-ring">
+                    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M24 8C15.163 8 8 15.163 8 24s7.163 16 16 16c8.837 0 16-7.163 16-16h-8c0 4.418-3.582 8-8 8-4.418 0-8-3.582-8-8s3.582-8 8-8c2.21 0 4.21.895 5.657 2.343L26 21h14V7l-4.343 4.343C33.21 9.1 28.793 8 24 8z"
+                            fill="black" />
+                    </svg>
+                </div>
+                <p class="footer-names">{{ invitation.couple_name_short }}</p>
+                <p class="footer-text">Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i
+                    berkenan hadir dan memberikan do'a restu kepada kami.</p>
+                <p class="footer-sig">Kami yang berbahagia,<br><span>{{ invitation.couple_name_short }}</span></p>
+            </div>
+        </footer>
     </div>
-  </section>
 
-  <!-- WISHES -->
-  <section class="wishes-section">
-    <div class="reveal" style="max-width:680px;margin:0 auto">
-      <p class="sec-tag">💬 GoWishes</p>
-      <h2 class="sec-title">Ucapan & Doa</h2>
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav" id="bottomNav">
+        <a href="#home" class="nav-item active">
+            <div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                </svg></div>
+            Home
+        </a>
+        <a href="#couple" class="nav-item">
+            <div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+                </svg></div>
+            Couple
+        </a>
+        <a href="#event" class="nav-item">
+            <div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z" />
+                </svg></div>
+            Event
+        </a>
+        <a href="#gift" class="nav-item">
+            <div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M20 6h-2.18c.07-.23.18-.46.18-.71C18 3.47 16.53 2 14.71 2c-.87 0-1.65.36-2.22.93L12 3.4l-.49-.47C10.94 2.36 10.16 2 9.29 2 7.47 2 6 3.47 6 5.29c0 .25.11.48.18.71H4c-1.11 0-2 .89-2 2v13c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5.29-2c.47 0 .79.32.79.79S15.18 5.58 14.71 5.58h-1.53l.75-.75c.2-.2.49-.33.78-.33zM9.29 4c.29 0 .58.13.78.33l.75.75H9.29C8.82 5.08 8.5 4.76 8.5 4.29S8.82 4 9.29 4zM11 19H4v-6h7v6zm0-8H4V8h7v3zm9 8h-7v-6h7v6zm0-8h-7V8h7v3z" />
+                </svg></div>
+            Gift
+        </a>
+        <a href="#rsvp" class="nav-item">
+            <div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
+                </svg></div>
+            RSVP
+        </a>
+    </nav>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+        <button class="lightbox-nav lightbox-prev" onclick="lightboxPrev()">‹</button>
+        <img class="lightbox-img" id="lightboxImg" src="" alt="">
+        <button class="lightbox-nav lightbox-next" onclick="lightboxNext()">›</button>
+        <div class="lightbox-counter" id="lightboxCounter"></div>
     </div>
-    <div class="wishes-list" id="wishesList">
-      <div class="wish-card visible">
-        <div class="wish-header"><div class="wish-avatar">A</div><div><div class="wish-name">Ayu Rahmawati</div><div class="wish-status">✅ Hadir · 2 tamu</div></div></div>
-        <div class="wish-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu Anita & Zarda! 🌿</div>
-      </div>
-      <div class="wish-card visible">
-        <div class="wish-header"><div class="wish-avatar" style="background:#4a9eff">R</div><div><div class="wish-name">Reza Firmansyah</div><div class="wish-status">✅ Hadir · 1 tamu</div></div></div>
-        <div class="wish-text">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan kebahagiaan yang tidak pernah habis. Aamiin! 🎉</div>
-      </div>
-      <div class="wish-card visible">
-        <div class="wish-header"><div class="wish-avatar" style="background:#ff6b6b">S</div><div><div class="wish-name">Sinta Dewi</div><div class="wish-status">✅ Hadir · 2 tamu</div></div></div>
-        <div class="wish-text">Wishing you both a lifetime of love and laughter. Semoga langkah kalian selalu diberkahi Allah SWT 💚</div>
-      </div>
-    </div>
-  </section>
 
-  <!-- FOOTER -->
-  <footer class="footer-section">
-    <div class="footer-grid-bg"></div>
-    <div style="position:relative;z-index:1">
-      <div class="footer-logo-ring">
-        <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M24 8C15.163 8 8 15.163 8 24s7.163 16 16 16c8.837 0 16-7.163 16-16h-8c0 4.418-3.582 8-8 8-4.418 0-8-3.582-8-8s3.582-8 8-8c2.21 0 4.21.895 5.657 2.343L26 21h14V7l-4.343 4.343C33.21 9.1 28.793 8 24 8z" fill="black"/>
-        </svg>
-      </div>
-      <p class="footer-names">{{ invitation.couple_name_short }}</p>
-      <p class="footer-text">Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu kepada kami.</p>
-      <p class="footer-sig">Kami yang berbahagia,<br><span>{{ invitation.couple_name_short }}</span></p>
-      <p class="footer-brand">Digital Invitation by <a href="/">Castellant</a></p>
-    </div>
-  </footer>
-</div>
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
 
-<!-- BOTTOM NAV -->
-<nav class="bottom-nav" id="bottomNav">
-  <a href="#home" class="nav-item active">
-    <div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
-    Home
-  </a>
-  <a href="#couple" class="nav-item">
-    <div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
-    Couple
-  </a>
-  <a href="#event" class="nav-item">
-    <div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg></div>
-    Event
-  </a>
-  <a href="#gift" class="nav-item">
-    <div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2.18c.07-.23.18-.46.18-.71C18 3.47 16.53 2 14.71 2c-.87 0-1.65.36-2.22.93L12 3.4l-.49-.47C10.94 2.36 10.16 2 9.29 2 7.47 2 6 3.47 6 5.29c0 .25.11.48.18.71H4c-1.11 0-2 .89-2 2v13c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5.29-2c.47 0 .79.32.79.79S15.18 5.58 14.71 5.58h-1.53l.75-.75c.2-.2.49-.33.78-.33zM9.29 4c.29 0 .58.13.78.33l.75.75H9.29C8.82 5.08 8.5 4.76 8.5 4.29S8.82 4 9.29 4zM11 19H4v-6h7v6zm0-8H4V8h7v3zm9 8h-7v-6h7v6zm0-8h-7V8h7v3z"/></svg></div>
-    Gift
-  </a>
-  <a href="#rsvp" class="nav-item">
-    <div class="nav-icon-wrap"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg></div>
-    RSVP
-  </a>
-</nav>
+    <script>
+        /* ── CURSOR ── */
+        const cursor = document.getElementById('cursor');
+        const cursorRing = document.getElementById('cursorRing');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            cursor.style.left = mx - 5 + 'px'; cursor.style.top = my - 5 + 'px';
+        });
+        function animCursor() {
+            rx += (mx - rx) * 0.12; ry += (my - ry) * 0.12;
+            cursorRing.style.left = rx + 'px'; cursorRing.style.top = ry + 'px';
+            requestAnimationFrame(animCursor);
+        }
+        animCursor();
+        document.querySelectorAll('button,a,.gallery-item,.copy-btn,.event-maps-btn').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                cursorRing.style.width = '56px'; cursorRing.style.height = '56px';
+                cursorRing.style.borderColor = 'var(--gk-green)';
+            });
+            el.addEventListener('mouseleave', () => {
+                cursorRing.style.width = '36px'; cursorRing.style.height = '36px';
+                cursorRing.style.borderColor = 'var(--gk-green)';
+            });
+        });
 
-<!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox">
-  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
-  <button class="lightbox-nav lightbox-prev" onclick="lightboxPrev()">‹</button>
-  <img class="lightbox-img" id="lightboxImg" src="" alt="">
-  <button class="lightbox-nav lightbox-next" onclick="lightboxNext()">›</button>
-  <div class="lightbox-counter" id="lightboxCounter"></div>
-</div>
+        /* ── GALLERY DATA ── */
+        const GALLERY_IMGS = [
+            "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=650&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=650&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&h=650&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=500&h=650&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=500&h=650&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=500&h=650&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=500&h=650&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=650&fit=crop&q=80",
+        ];
 
-<!-- TOAST -->
-<div class="toast" id="toast"></div>
+        /* ── STATE ── */
+        let galleryOffset = 0, galleryPaused = false, galleryItemW = 0, galleryOrigCount = 0, activeDot = 0;
+        let lightboxIdx = 0;
+        let guestCount = 1;
 
-<script>
-/* ── CURSOR ── */
-const cursor = document.getElementById('cursor');
-const cursorRing = document.getElementById('cursorRing');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{
-  mx=e.clientX; my=e.clientY;
-  cursor.style.left=mx-5+'px'; cursor.style.top=my-5+'px';
-});
-function animCursor(){
-  rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12;
-  cursorRing.style.left=rx+'px'; cursorRing.style.top=ry+'px';
-  requestAnimationFrame(animCursor);
-}
-animCursor();
-document.querySelectorAll('button,a,.gallery-item,.copy-btn,.event-maps-btn').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{
-    cursorRing.style.width='56px'; cursorRing.style.height='56px';
-    cursorRing.style.borderColor='var(--gk-green)';
-  });
-  el.addEventListener('mouseleave',()=>{
-    cursorRing.style.width='36px'; cursorRing.style.height='36px';
-    cursorRing.style.borderColor='var(--gk-green)';
-  });
-});
+        /* ── OPEN ── */
+        function openInvitation() {
+            document.getElementById('opening').classList.add('hide');
+            const main = document.getElementById('main');
+            setTimeout(() => main.classList.add('show'), 100);
+            document.getElementById('bottomNav').classList.add('show');
+            setTimeout(initAll, 400);
+        }
 
-/* ── GALLERY DATA ── */
-const GALLERY_IMGS = [
-  "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=650&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=650&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&h=650&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=500&h=650&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=500&h=650&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=500&h=650&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=500&h=650&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=650&fit=crop&q=80",
-];
+        function initAll() {
+            startCountdown();
+            buildGallery();
+            initScrollAnim();
+            initNavHighlight();
+        }
 
-/* ── STATE ── */
-let galleryOffset=0,galleryPaused=false,galleryItemW=0,galleryOrigCount=0,activeDot=0;
-let lightboxIdx=0;
-let guestCount=1;
+        /* ── COUNTDOWN ── */
+        function startCountdown() {
+            const target = new Date('2026-05-24T08:00:00');
+            function tick() {
+                const diff = target - new Date();
+                if (diff <= 0) { ['cdDays', 'cdHours', 'cdMinutes', 'cdSeconds'].forEach(id => document.getElementById(id).textContent = '00'); return; }
+                document.getElementById('cdDays').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
+                document.getElementById('cdHours').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
+                document.getElementById('cdMinutes').textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
+                document.getElementById('cdSeconds').textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+            }
+            tick(); setInterval(tick, 1000);
+        }
 
-/* ── OPEN ── */
-function openInvitation(){
-  document.getElementById('opening').classList.add('hide');
-  const main=document.getElementById('main');
-  setTimeout(()=>main.classList.add('show'),100);
-  document.getElementById('bottomNav').classList.add('show');
-  setTimeout(initAll,400);
-}
+        /* ── GALLERY ── */
+        function buildGallery() {
+            const track = document.getElementById('galleryTrack');
+            const dotsWrap = document.getElementById('galleryDots');
+            galleryOrigCount = GALLERY_IMGS.length;
 
-function initAll(){
-  startCountdown();
-  buildGallery();
-  initScrollAnim();
-  initNavHighlight();
-}
+            const allImgs = [...GALLERY_IMGS, ...GALLERY_IMGS, ...GALLERY_IMGS];
+            allImgs.forEach((src, i) => {
+                const realIdx = i % galleryOrigCount;
+                const item = document.createElement('div');
+                item.className = 'gallery-item';
+                item.innerHTML = `<img src="${src}" alt="Photo ${realIdx + 1}" loading="lazy"><div class="gallery-overlay"></div><div class="gallery-num">${String(realIdx + 1).padStart(2, '0')}</div>`;
+                item.addEventListener('click', () => openLightbox(realIdx));
+                track.appendChild(item);
+            });
 
-/* ── COUNTDOWN ── */
-function startCountdown(){
-  const target=new Date('2026-05-24T08:00:00');
-  function tick(){
-    const diff=target-new Date();
-    if(diff<=0){['cdDays','cdHours','cdMinutes','cdSeconds'].forEach(id=>document.getElementById(id).textContent='00');return;}
-    document.getElementById('cdDays').textContent=String(Math.floor(diff/86400000)).padStart(2,'0');
-    document.getElementById('cdHours').textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
-    document.getElementById('cdMinutes').textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
-    document.getElementById('cdSeconds').textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0');
-  }
-  tick(); setInterval(tick,1000);
-}
+            GALLERY_IMGS.forEach((_, i) => {
+                const d = document.createElement('div');
+                d.className = 'gallery-dot' + (i === 0 ? ' active' : '');
+                d.addEventListener('click', () => jumpGalleryTo(i));
+                dotsWrap.appendChild(d);
+            });
 
-/* ── GALLERY ── */
-function buildGallery(){
-  const track=document.getElementById('galleryTrack');
-  const dotsWrap=document.getElementById('galleryDots');
-  galleryOrigCount=GALLERY_IMGS.length;
+            requestAnimationFrame(() => {
+                const fi = track.querySelector('.gallery-item');
+                if (!fi) return;
+                const gap = parseInt(getComputedStyle(track).gap) || 12;
+                galleryItemW = fi.offsetWidth + gap;
+                galleryOffset = galleryOrigCount * galleryItemW;
+                track.style.transform = `translateX(-${galleryOffset}px)`;
+                startGallery();
+            });
+        }
 
-  const allImgs=[...GALLERY_IMGS,...GALLERY_IMGS,...GALLERY_IMGS];
-  allImgs.forEach((src,i)=>{
-    const realIdx=i%galleryOrigCount;
-    const item=document.createElement('div');
-    item.className='gallery-item';
-    item.innerHTML=`<img src="${src}" alt="Photo ${realIdx+1}" loading="lazy"><div class="gallery-overlay"></div><div class="gallery-num">${String(realIdx+1).padStart(2,'0')}</div>`;
-    item.addEventListener('click',()=>openLightbox(realIdx));
-    track.appendChild(item);
-  });
+        function startGallery() {
+            const track = document.getElementById('galleryTrack');
+            if (!track) return;
+            const totalW = galleryOrigCount * galleryItemW;
+            function tick() {
+                if (!galleryPaused) {
+                    galleryOffset += 0.55;
+                    if (galleryOffset >= totalW * 2) galleryOffset -= totalW;
+                    if (galleryOffset < totalW) galleryOffset += totalW;
+                    track.style.transform = `translateX(-${galleryOffset}px)`;
+                    const ri = Math.floor(((galleryOffset - totalW) / galleryItemW)) % galleryOrigCount;
+                    const di = ((ri % galleryOrigCount) + galleryOrigCount) % galleryOrigCount;
+                    if (di !== activeDot) {
+                        activeDot = di;
+                        document.querySelectorAll('.gallery-dot').forEach((d, i) => d.classList.toggle('active', i === activeDot));
+                    }
+                }
+                requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        }
+        function pauseGallery() { galleryPaused = true }
+        function resumeGallery() { galleryPaused = false }
+        function jumpGalleryTo(idx) {
+            const totalW = galleryOrigCount * galleryItemW;
+            galleryOffset = totalW + idx * galleryItemW;
+            document.getElementById('galleryTrack').style.transform = `translateX(-${galleryOffset}px)`;
+        }
 
-  GALLERY_IMGS.forEach((_,i)=>{
-    const d=document.createElement('div');
-    d.className='gallery-dot'+(i===0?' active':'');
-    d.addEventListener('click',()=>jumpGalleryTo(i));
-    dotsWrap.appendChild(d);
-  });
+        /* ── LIGHTBOX ── */
+        function openLightbox(idx) {
+            lightboxIdx = idx; updateLightbox();
+            document.getElementById('lightbox').classList.add('open');
+            document.body.style.overflow = 'hidden'; pauseGallery();
+        }
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('open');
+            document.body.style.overflow = ''; resumeGallery();
+        }
+        function lightboxPrev() { lightboxIdx = (lightboxIdx - 1 + GALLERY_IMGS.length) % GALLERY_IMGS.length; updateLightbox(); }
+        function lightboxNext() { lightboxIdx = (lightboxIdx + 1) % GALLERY_IMGS.length; updateLightbox(); }
+        function updateLightbox() {
+            document.getElementById('lightboxImg').src = GALLERY_IMGS[lightboxIdx];
+            document.getElementById('lightboxCounter').textContent = `${lightboxIdx + 1} / ${GALLERY_IMGS.length}`;
+        }
+        document.addEventListener('keydown', e => {
+            if (!document.getElementById('lightbox').classList.contains('open')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowLeft') lightboxPrev();
+            if (e.key === 'ArrowRight') lightboxNext();
+        });
 
-  requestAnimationFrame(()=>{
-    const fi=track.querySelector('.gallery-item');
-    if(!fi) return;
-    const gap=parseInt(getComputedStyle(track).gap)||12;
-    galleryItemW=fi.offsetWidth+gap;
-    galleryOffset=galleryOrigCount*galleryItemW;
-    track.style.transform=`translateX(-${galleryOffset}px)`;
-    startGallery();
-  });
-}
+        /* ── SCROLL ANIM ── */
+        function initScrollAnim() {
+            const obs = new IntersectionObserver(entries => {
+                entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+            }, { threshold: .12 });
+            document.querySelectorAll('.tl-item,.wish-card').forEach(el => obs.observe(el));
 
-function startGallery(){
-  const track=document.getElementById('galleryTrack');
-  if(!track) return;
-  const totalW=galleryOrigCount*galleryItemW;
-  function tick(){
-    if(!galleryPaused){
-      galleryOffset+=0.55;
-      if(galleryOffset>=totalW*2) galleryOffset-=totalW;
-      if(galleryOffset<totalW) galleryOffset+=totalW;
-      track.style.transform=`translateX(-${galleryOffset}px)`;
-      const ri=Math.floor(((galleryOffset-totalW)/galleryItemW))%galleryOrigCount;
-      const di=((ri%galleryOrigCount)+galleryOrigCount)%galleryOrigCount;
-      if(di!==activeDot){
-        activeDot=di;
-        document.querySelectorAll('.gallery-dot').forEach((d,i)=>d.classList.toggle('active',i===activeDot));
-      }
-    }
-    requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
-}
-function pauseGallery(){galleryPaused=true}
-function resumeGallery(){galleryPaused=false}
-function jumpGalleryTo(idx){
-  const totalW=galleryOrigCount*galleryItemW;
-  galleryOffset=totalW+idx*galleryItemW;
-  document.getElementById('galleryTrack').style.transform=`translateX(-${galleryOffset}px)`;
-}
+            const obs2 = new IntersectionObserver(entries => {
+                entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+            }, { threshold: .08 });
+            document.querySelectorAll('.reveal').forEach(el => obs2.observe(el));
+        }
 
-/* ── LIGHTBOX ── */
-function openLightbox(idx){
-  lightboxIdx=idx; updateLightbox();
-  document.getElementById('lightbox').classList.add('open');
-  document.body.style.overflow='hidden'; pauseGallery();
-}
-function closeLightbox(){
-  document.getElementById('lightbox').classList.remove('open');
-  document.body.style.overflow=''; resumeGallery();
-}
-function lightboxPrev(){lightboxIdx=(lightboxIdx-1+GALLERY_IMGS.length)%GALLERY_IMGS.length; updateLightbox();}
-function lightboxNext(){lightboxIdx=(lightboxIdx+1)%GALLERY_IMGS.length; updateLightbox();}
-function updateLightbox(){
-  document.getElementById('lightboxImg').src=GALLERY_IMGS[lightboxIdx];
-  document.getElementById('lightboxCounter').textContent=`${lightboxIdx+1} / ${GALLERY_IMGS.length}`;
-}
-document.addEventListener('keydown',e=>{
-  if(!document.getElementById('lightbox').classList.contains('open')) return;
-  if(e.key==='Escape') closeLightbox();
-  if(e.key==='ArrowLeft') lightboxPrev();
-  if(e.key==='ArrowRight') lightboxNext();
-});
+        /* ── NAV HIGHLIGHT ── */
+        function initNavHighlight() {
+            const obs = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                        const a = document.querySelector(`.nav-item[href="#${e.target.id}"]`);
+                        if (a) a.classList.add('active');
+                    }
+                });
+            }, { rootMargin: '-40% 0px -40% 0px' });
+            ['home', 'couple', 'event', 'gift', 'rsvp'].forEach(id => { const el = document.getElementById(id); if (el) obs.observe(el); });
+        }
 
-/* ── SCROLL ANIM ── */
-function initScrollAnim(){
-  const obs=new IntersectionObserver(entries=>{
-    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
-  },{threshold:.12});
-  document.querySelectorAll('.tl-item,.wish-card').forEach(el=>obs.observe(el));
+        /* ── RSVP ── */
+        function selectGuests(n, btn) {
+            guestCount = n;
+            document.querySelectorAll('.guest-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+        function submitRSVP() {
+            const name = document.getElementById('rsvpName').value.trim();
+            const status = document.getElementById('rsvpStatus').value;
+            const msg = document.getElementById('rsvpMsg').value.trim();
+            if (!name || !status) { showToast('⚠️ Mohon isi nama dan status kehadiran'); return; }
+            const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+            const colors = ['#00AA13', '#4a9eff', '#ff6b6b', '#FFD600', '#c084fc', '#FF6D00'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const statusText = status === 'hadir' ? `✅ Hadir · ${guestCount} tamu` : '❌ Tidak Hadir';
+            const card = document.createElement('div');
+            card.className = 'wish-card';
+            card.innerHTML = `<div class="wish-header"><div class="wish-avatar" style="background:${color};color:${color === '#FFD600' ? '#000' : '#fff'}">${initials}</div><div><div class="wish-name">${name}</div><div class="wish-status">${statusText}</div></div></div><div class="wish-text">${msg || 'Selamat dan semoga bahagia selalu! 💚'}</div>`;
+            document.getElementById('wishesList').prepend(card);
+            setTimeout(() => card.classList.add('visible'), 50);
+            document.getElementById('rsvpName').value = '';
+            document.getElementById('rsvpStatus').value = '';
+            document.getElementById('rsvpMsg').value = '';
+            showToast('🎉 Terima kasih! Konfirmasi berhasil');
+            window.scrollTo({ top: document.querySelector('.wishes-section').offsetTop - 80, behavior: 'smooth' });
+        }
 
-  const obs2=new IntersectionObserver(entries=>{
-    entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
-  },{threshold:.08});
-  document.querySelectorAll('.reveal').forEach(el=>obs2.observe(el));
-}
+        /* ── COPY ── */
+        function copyText(text, btn) {
+            navigator.clipboard.writeText(text).then(() => {
+                btn.classList.add('copied');
+                btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Tersalin!';
+                showToast('✅ Nomor rekening tersalin!');
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> Salin Nomor';
+                }, 2500);
+            }).catch(() => showToast('Salin manual: ' + text));
+        }
 
-/* ── NAV HIGHLIGHT ── */
-function initNavHighlight(){
-  const obs=new IntersectionObserver(entries=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting){
-        document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-        const a=document.querySelector(`.nav-item[href="#${e.target.id}"]`);
-        if(a) a.classList.add('active');
-      }
-    });
-  },{rootMargin:'-40% 0px -40% 0px'});
-  ['home','couple','event','gift','rsvp'].forEach(id=>{const el=document.getElementById(id);if(el) obs.observe(el);});
-}
-
-/* ── RSVP ── */
-function selectGuests(n,btn){
-  guestCount=n;
-  document.querySelectorAll('.guest-btn').forEach(b=>b.classList.remove('active'));
-  btn.classList.add('active');
-}
-function submitRSVP(){
-  const name=document.getElementById('rsvpName').value.trim();
-  const status=document.getElementById('rsvpStatus').value;
-  const msg=document.getElementById('rsvpMsg').value.trim();
-  if(!name||!status){showToast('⚠️ Mohon isi nama dan status kehadiran');return;}
-  const initials=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  const colors=['#00AA13','#4a9eff','#ff6b6b','#FFD600','#c084fc','#FF6D00'];
-  const color=colors[Math.floor(Math.random()*colors.length)];
-  const statusText=status==='hadir'?`✅ Hadir · ${guestCount} tamu`:'❌ Tidak Hadir';
-  const card=document.createElement('div');
-  card.className='wish-card';
-  card.innerHTML=`<div class="wish-header"><div class="wish-avatar" style="background:${color};color:${color==='#FFD600'?'#000':'#fff'}">${initials}</div><div><div class="wish-name">${name}</div><div class="wish-status">${statusText}</div></div></div><div class="wish-text">${msg||'Selamat dan semoga bahagia selalu! 💚'}</div>`;
-  document.getElementById('wishesList').prepend(card);
-  setTimeout(()=>card.classList.add('visible'),50);
-  document.getElementById('rsvpName').value='';
-  document.getElementById('rsvpStatus').value='';
-  document.getElementById('rsvpMsg').value='';
-  showToast('🎉 Terima kasih! Konfirmasi berhasil');
-  window.scrollTo({top:document.querySelector('.wishes-section').offsetTop-80,behavior:'smooth'});
-}
-
-/* ── COPY ── */
-function copyText(text,btn){
-  navigator.clipboard.writeText(text).then(()=>{
-    btn.classList.add('copied');
-    btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Tersalin!';
-    showToast('✅ Nomor rekening tersalin!');
-    setTimeout(()=>{
-      btn.classList.remove('copied');
-      btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> Salin Nomor';
-    },2500);
-  }).catch(()=>showToast('Salin manual: '+text));
-}
-
-/* ── TOAST ── */
-let toastTimer;
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.textContent=msg; t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>t.classList.remove('show'),2800);
-}
-</script>
+        /* ── TOAST ── */
+        let toastTimer;
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+        }
+    </script>
 </body>
+
 </html>
