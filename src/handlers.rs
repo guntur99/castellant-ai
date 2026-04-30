@@ -95,12 +95,8 @@ pub struct TemplatesListTemplate {
     pub is_dev: bool,
 }
 
-pub async fn templates_list(
-    State(state): State<AppState>,
-    Query(params): Query<HashMap<String, String>>,
-    jar: PrivateCookieJar,
-) -> impl IntoResponse {
-    let templates_data = vec![
+pub fn get_all_templates() -> Vec<TemplateMetadata> {
+    vec![
         TemplateMetadata {
             id: "trendvibe".to_string(),
             title: "Castellan VibePulse".to_string(),
@@ -129,6 +125,87 @@ pub async fn templates_list(
             plan: "premium".to_string(),
         },
         TemplateMetadata {
+            id: "shopee-live-wedding".to_string(),
+            title: "Castellan ShopeeLive".to_string(),
+            desc: "Bawa keseruan belanja live ke dalam undangan pernikahan Anda dengan antarmuka interaktif khas Shopee Live yang ceria dan penuh energi.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/shopee-live-wedding_preview.png".to_string(),
+            category: "premium".to_string(),
+            plan: "premium".to_string(),
+        },
+        TemplateMetadata {
+            id: "tiktok-live-wedding".to_string(),
+            title: "Castellan TikTokLive".to_string(),
+            desc: "Rasakan sensasi viral dengan tema TikTok Live yang dinamis, memungkinkan tamu Anda berinteraksi layaknya sedang menonton siaran langsung momen bahagia Anda.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/tiktok-live-wedding_preview.png".to_string(),
+            category: "premium".to_string(),
+            plan: "premium".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-uber".to_string(),
+            title: "Castellan UberRide".to_string(),
+            desc: "Perjalanan cinta yang elegan dan global dengan desain minimalis modern khas Uber, mengantarkan setiap tamu menuju hari istimewa Anda dengan gaya.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-uber_preview.png".to_string(),
+            category: "premium".to_string(),
+            plan: "premium".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-disney".to_string(),
+            title: "Castellan DisneyMagic".to_string(),
+            desc: "Wujudkan dongeng impian Anda dengan sentuhan magis Disney, di mana setiap detail undangan memancarkan keajaiban dan romansa ala kerajaan.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-disney_preview.png".to_string(),
+            category: "premium".to_string(),
+            plan: "premium".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-facebook".to_string(),
+            title: "Castellan FaceLove".to_string(),
+            desc: "Hubungkan kenangan dan kebahagiaan dengan desain yang terinspirasi dari media sosial favorit, menciptakan ruang berbagi cinta yang akrab dan personal.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-facebook_preview.png".to_string(),
+            category: "premium".to_string(),
+            plan: "premium".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-iphone-theme".to_string(),
+            title: "Castellan iWedding".to_string(),
+            desc: "Kemewahan teknologi dalam genggaman dengan antarmuka iOS yang bersih, intuitif, dan sangat premium untuk mempresentasikan kisah cinta modern Anda.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-iphone-theme_preview.png".to_string(),
+            category: "premium".to_string(),
+            plan: "premium".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-netflix-v2".to_string(),
+            title: "Castellan CineLove Max".to_string(),
+            desc: "Edisi terbaru dari pengalaman sinematik Castellant, kini dengan fitur lebih mendalam dan visual yang lebih tajam layaknya tayangan blockbusters terbaik.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-netflix-v2_preview.png".to_string(),
+            category: "premium".to_string(),
+            plan: "premium".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-prime".to_string(),
+            title: "Castellan PrimeLove".to_string(),
+            desc: "Layanan cinta eksklusif dengan estetika premium Amazon Prime, menjanjikan pengiriman kebahagiaan yang cepat, tepat, dan penuh kejutan manis.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-prime_preview.png".to_string(),
+            category: "premium".to_string(),
+            plan: "premium".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-wrath-v2".to_string(),
+            title: "Castellan EpicWrath".to_string(),
+            desc: "Tampilkan kekuatan dan intensitas cinta Anda dalam desain yang dramatis dan megah, terinspirasi dari epik fantasi yang legendaris.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-wrath-v2_preview.png".to_string(),
+            category: "premium".to_string(),
+            plan: "premium".to_string(),
+        },
+        TemplateMetadata {
             id: "cairide".to_string(),
             title: "Castellan CaiRide".to_string(),
             desc: "Hadirkan keseruan dalam setiap perjalanan menuju hari bahagia Anda dengan antarmuka dinamis khas Castellant bergaya aplikasi transportasi terpopuler.".to_string(),
@@ -137,7 +214,24 @@ pub async fn templates_list(
             category: "premium".to_string(),
             plan: "premium".to_string(),
         },
-    ];
+        TemplateMetadata {
+            id: "pinterlove".to_string(),
+            title: "Castellan PinterLove".to_string(),
+            desc: "Visual estetik dengan tata letak masonry yang memukau, terinspirasi dari Pinterest untuk momen tak terlupakan.".to_string(),
+            price: 75000,
+            preview_img: "/static/img/pinterlove_preview.png".to_string(),
+            category: "premium".to_string(),
+            plan: "signature".to_string(),
+        },
+    ]
+}
+
+pub async fn templates_list(
+    State(state): State<AppState>,
+    Query(params): Query<HashMap<String, String>>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let templates_data = get_all_templates();
     let user = match jar.get("user_id") {
         Some(cookie) => {
             let uid = Uuid::parse_str(cookie.value()).ok();
@@ -529,6 +623,7 @@ pub struct HomeTemplate {
     #[allow(dead_code)]
     pub user: Option<User>,
     pub invitations: Vec<InvitationRow>,
+    pub templates: Vec<TemplateMetadata>,
     #[allow(dead_code)]
     pub is_dev: bool,
 }
@@ -569,6 +664,96 @@ pub struct CaiRideTemplate {
     pub is_dev: bool,
 }
 
+#[derive(Template)]
+#[template(path = "invitation/pinterlove.html")]
+pub struct PinterLoveTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/shopee-live-wedding.html")]
+pub struct ShopeeLiveWeddingTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/tiktok-live-wedding.html")]
+pub struct TiktokLiveWeddingTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-uber.html")]
+pub struct WeUberTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-disney.html")]
+pub struct WeddingDisneyTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-facebook.html")]
+pub struct WeddingFacebookTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-iphone-theme.html")]
+pub struct WeddingIphoneThemeTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-netflix-v2.html")]
+pub struct WeddingNetflixV2Template {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-prime.html")]
+pub struct WeddingPrimeTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-wrath-v2.html")]
+pub struct WeddingWrathV2Template {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
 pub async fn home(
     State(state): State<AppState>,
     jar: PrivateCookieJar,
@@ -596,7 +781,9 @@ pub async fn home(
         }
     }
 
-    HtmlTemplate(HomeTemplate { user, invitations, is_dev: state.is_dev }).into_response()
+    let templates = get_all_templates().into_iter().take(6).collect();
+
+    HtmlTemplate(HomeTemplate { user, invitations, templates, is_dev: state.is_dev }).into_response()
 }
 
 pub async fn invitation_detail(
@@ -664,6 +851,16 @@ pub async fn invitation_detail(
                 "loveanthem" => HtmlTemplate(LoveAnthemTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "cinemarry" => HtmlTemplate(CineMarryTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "cairide" => HtmlTemplate(CaiRideTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "pinterlove" => HtmlTemplate(PinterLoveTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "shopee-live-wedding" => HtmlTemplate(ShopeeLiveWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "tiktok-live-wedding" => HtmlTemplate(TiktokLiveWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-uber" => HtmlTemplate(WeUberTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-disney" => HtmlTemplate(WeddingDisneyTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-facebook" => HtmlTemplate(WeddingFacebookTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-iphone-theme" => HtmlTemplate(WeddingIphoneThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-netflix-v2" => HtmlTemplate(WeddingNetflixV2Template { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-prime" => HtmlTemplate(WeddingPrimeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-wrath-v2" => HtmlTemplate(WeddingWrathV2Template { invitation, is_dev: state.is_dev }).into_response(),
                 _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
             }
         },
@@ -675,6 +872,16 @@ pub async fn invitation_detail(
                     "loveanthem-sample" => ("Anita & Zarda", "loveanthem"),
                     "cinemarry-sample" => ("Anita & Zarda", "cinemarry"),
                     "cairide-sample" => ("Anita & Zarda", "cairide"),
+                    "pinterlove-sample" => ("Anita & Zarda", "pinterlove"),
+                    "shopee-live-wedding-sample" => ("Anita & Zarda", "shopee-live-wedding"),
+                    "tiktok-live-wedding-sample" => ("Anita & Zarda", "tiktok-live-wedding"),
+                    "we-uber-sample" => ("Anita & Zarda", "we-uber"),
+                    "wedding-disney-sample" => ("Anita & Zarda", "wedding-disney"),
+                    "wedding-facebook-sample" => ("Anita & Zarda", "wedding-facebook"),
+                    "wedding-iphone-theme-sample" => ("Anita & Zarda", "wedding-iphone-theme"),
+                    "wedding-netflix-v2-sample" => ("Anita & Zarda", "wedding-netflix-v2"),
+                    "wedding-prime-sample" => ("Anita & Zarda", "wedding-prime"),
+                    "wedding-wrath-v2-sample" => ("Anita & Zarda", "wedding-wrath-v2"),
                     _ => ("Anita & Zarda", "trendvibe"),
                 };
 
@@ -733,6 +940,16 @@ pub async fn invitation_detail(
                     "loveanthem" => HtmlTemplate(LoveAnthemTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     "cinemarry" => HtmlTemplate(CineMarryTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     "cairide" => HtmlTemplate(CaiRideTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "pinterlove" => HtmlTemplate(PinterLoveTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "shopee-live-wedding" => HtmlTemplate(ShopeeLiveWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "tiktok-live-wedding" => HtmlTemplate(TiktokLiveWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-uber" => HtmlTemplate(WeUberTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-disney" => HtmlTemplate(WeddingDisneyTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-facebook" => HtmlTemplate(WeddingFacebookTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-iphone-theme" => HtmlTemplate(WeddingIphoneThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-netflix-v2" => HtmlTemplate(WeddingNetflixV2Template { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-prime" => HtmlTemplate(WeddingPrimeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-wrath-v2" => HtmlTemplate(WeddingWrathV2Template { invitation, is_dev: state.is_dev }).into_response(),
                     _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 }
             } else {
@@ -876,6 +1093,7 @@ pub async fn preview(
         "loveanthem" => HtmlTemplate(LoveAnthemTemplate { invitation, is_dev: state.is_dev }).into_response(),
         "cinemarry" => HtmlTemplate(CineMarryTemplate { invitation, is_dev: state.is_dev }).into_response(),
         "cairide" => HtmlTemplate(CaiRideTemplate { invitation, is_dev: state.is_dev }).into_response(),
+        "pinterlove" => HtmlTemplate(PinterLoveTemplate { invitation, is_dev: state.is_dev }).into_response(),
         _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
     }
 }

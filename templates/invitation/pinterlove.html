@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Wedding of {{ invitation.bride.name }} & {{ invitation.groom.name }} · Castellant</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --pin-red: #E60023;
+  --pin-red-dark: #ad081b;
+  --pin-black: #111111;
+  --pin-white: #FFFFFF;
+  --pin-bg: #FFFFFF;
+  --pin-gray: #767676;
+  --pin-light: #efefef;
+  --pin-card: #ffffff;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-serif: 'Playfair Display', serif;
+  --radius-pin: 16px;
+  --radius-btn: 100px;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--pin-bg);
+  color: var(--pin-black);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+/* ── OPENING ── */
+#opening {
+  position: fixed; inset: 0;
+  background: var(--pin-white);
+  z-index: 10000;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 24px;
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+#opening.hide { opacity: 0; pointer-events: none; }
+
+.op-logo { width: 40px; margin-bottom: 24px; }
+.op-img { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin-bottom: 24px; border: 6px solid var(--pin-light); }
+.op-title { font-family: var(--font-serif); font-size: 32px; font-weight: 900; margin-bottom: 8px; }
+.op-subtitle { font-size: 15px; color: var(--pin-gray); margin-bottom: 40px; font-weight: 500; }
+.op-btn {
+  background: var(--pin-red); color: white; border: none;
+  padding: 16px 40px; border-radius: var(--radius-btn);
+  font-weight: 700; font-size: 16px; cursor: pointer;
+  transition: transform 0.2s, background 0.2s;
+}
+.op-btn:hover { background: var(--pin-red-dark); transform: scale(1.05); }
+
+/* ── TOP NAV ── */
+.top-nav {
+  position: fixed; top: 0; left: 0; width: 100%; height: 64px;
+  background: white; display: flex; align-items: center; padding: 0 16px;
+  z-index: 9998; border-bottom: 1px solid #f0f0f0;
+}
+.top-nav-logo { width: 24px; margin-right: 12px; }
+.top-nav-search {
+  flex: 1; background: #efefef; height: 40px; border-radius: 100px;
+  display: flex; align-items: center; padding: 0 16px; color: var(--pin-gray);
+  font-size: 14px; margin-right: 12px;
+}
+.top-nav-icon { width: 24px; opacity: 0.6; margin-left: 8px; }
+
+/* ── SECTIONS FLOW ── */
+.section { padding: 40px 16px 20px; }
+.section-label { 
+  font-size: 12px; font-weight: 800; text-transform: uppercase; 
+  letter-spacing: 2px; color: var(--pin-gray); text-align: center;
+  margin-bottom: 10px;
+}
+.section-title {
+  font-family: var(--font-serif); font-size: 28px; font-weight: 900;
+  text-align: center; margin-bottom: 30px; letter-spacing: -0.5px;
+}
+
+/* ── MASONRY CLUSTERS ── */
+.masonry-grid {
+  column-count: 2; column-gap: 8px;
+}
+@media (min-width: 768px) { .masonry-grid { column-count: 3; } }
+
+.pin-card {
+  break-inside: avoid; margin-bottom: 16px; position: relative;
+}
+.pin-img-wrap {
+  width: 100%; border-radius: var(--radius-pin); overflow: hidden;
+  position: relative; line-height: 0;
+}
+.pin-img { width: 100%; height: auto; }
+.pin-overlay {
+  position: absolute; inset: 0; background: rgba(0,0,0,0.1);
+  display: flex; flex-direction: column; justify-content: space-between;
+  padding: 12px; opacity: 0; transition: opacity 0.3s;
+}
+.pin-card:hover .pin-overlay { opacity: 1; }
+.pin-save-btn {
+  align-self: flex-end; background: var(--pin-red); color: white;
+  border: none; padding: 8px 16px; border-radius: 100px;
+  font-weight: 700; font-size: 13px; cursor: pointer;
+}
+
+/* ── FEATURED VIDEO PIN ── */
+.video-pin {
+  width: 100%; margin-bottom: 24px; border-radius: var(--radius-pin);
+  overflow: hidden; background: #000; position: relative;
+  aspect-ratio: 16 / 9;
+}
+.video-pin iframe, .video-pin video { width: 100%; height: 100%; border: none; }
+.video-pin-label {
+  position: absolute; bottom: 16px; left: 16px;
+  background: rgba(255,255,255,0.9); padding: 6px 12px;
+  border-radius: 100px; font-size: 12px; font-weight: 800;
+  display: flex; align-items: center; gap: 6px;
+}
+
+/* ── TEXT PINS ── */
+.pin-card-text {
+  background: white; border: 1px solid #f0f0f0; border-radius: var(--radius-pin);
+  padding: 24px;
+}
+.text-pin-label { font-size: 10px; font-weight: 800; text-transform: uppercase; color: var(--pin-red); margin-bottom: 12px; }
+.text-pin-title { font-size: 20px; font-weight: 800; margin-bottom: 12px; line-height: 1.2; font-family: var(--font-serif); }
+.text-pin-desc { font-size: 14px; color: var(--pin-gray); line-height: 1.6; }
+
+/* ── BOTTOM NAV ── */
+.bottom-nav {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+  background: white; border-radius: 100px;
+  padding: 8px 12px; display: flex; gap: 12px; z-index: 9999;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+.nav-btn {
+  width: 48px; height: 48px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; color: var(--pin-black); text-decoration: none;
+}
+.nav-btn.active svg { fill: var(--pin-black); }
+.nav-btn:not(.active) svg { fill: #767676; }
+
+/* ── REVEAL ── */
+.reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s ease-out; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+</style>
+</head>
+<body>
+
+<div id="cursor" style="position:fixed; width:12px; height:12px; background:var(--pin-red); border-radius:50%; pointer-events:none; z-index:100000; transform:translate(-50%,-50%); display:none;"></div>
+
+<!-- OPENING -->
+<section id="opening">
+  <svg class="op-logo" viewBox="0 0 24 24" fill="#E60023"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.261 7.929-7.261 4.162 0 7.397 2.965 7.397 6.93 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.75 2.85c-.272 1.035-1.006 2.332-1.496 3.13 1.123.346 2.312.535 3.546.535 6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+  <img src="{{ invitation.bride.image_url }}" class="op-img" alt="Wedding">
+  <h1 class="op-title">The Wedding of<br>{{ invitation.bride.name }} & {{ invitation.groom.name }}</h1>
+  <p class="op-subtitle">Mengarungi samudera cinta bersama</p>
+  <button class="op-btn" onclick="openInvitation()">Mulai Menjelajah</button>
+</section>
+
+<!-- TOP NAV -->
+<nav class="top-nav" id="topNav" style="display: none;">
+  <svg class="top-nav-logo" viewBox="0 0 24 24" fill="#E60023"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738.098.119.112.224.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.261 7.929-7.261 4.162 0 7.397 2.965 7.397 6.93 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.75 2.85c-.272 1.035-1.006 2.332-1.496 3.13 1.123.346 2.312.535 3.546.535 6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+  <div class="top-nav-search">Cari "Detail Acara"</div>
+  <svg class="top-nav-icon" viewBox="0 0 24 24" fill="#111" style="width:20px"><path d="M12 24c-6.627 0-12-5.373-12-12s5.373-12 12-12 12 5.373 12 12-5.373 12-12 12zm0-2c5.523 0 10-4.477 10-10s-4.477-10-10-10-10 4.477-10 10 4.477 10 10 10zm-1-11v-4h2v4h4v2h-4v4h-2v-4h-4v-2h4z"/></svg>
+</nav>
+
+<!-- MAIN CONTENT FLOW -->
+<main id="main" style="display: none; padding-top: 64px;">
+  
+  <!-- SECTION 1: THE COUPLE -->
+  <section class="section">
+    <p class="section-label">Meet the Couple</p>
+    <h2 class="section-title">The Happy Pair</h2>
+    <div class="masonry-grid">
+      <!-- Bride Pin -->
+      <div class="pin-card reveal">
+        <div class="pin-img-wrap">
+          <img src="{{ invitation.bride.image_url }}" class="pin-img" alt="Bride">
+          <div class="pin-overlay"><button class="pin-save-btn">Save</button></div>
+        </div>
+        <div class="pin-card-text" style="border-top:none; border-radius:0 0 16px 16px; padding:15px">
+          <p class="text-pin-title" style="font-size:16px">{{ invitation.bride.full_name }}</p>
+          <p class="text-pin-desc" style="font-size:12px">Putri tercinta dari {{ invitation.bride.father_name }} & {{ invitation.bride.mother_name }}</p>
+        </div>
+      </div>
+      <!-- Groom Pin -->
+      <div class="pin-card reveal">
+        <div class="pin-img-wrap">
+          <img src="{{ invitation.groom.image_url }}" class="pin-img" alt="Groom">
+          <div class="pin-overlay"><button class="pin-save-btn">Save</button></div>
+        </div>
+        <div class="pin-card-text" style="border-top:none; border-radius:0 0 16px 16px; padding:15px">
+          <p class="text-pin-title" style="font-size:16px">{{ invitation.groom.full_name }}</p>
+          <p class="text-pin-desc" style="font-size:12px">Putra tercinta dari {{ invitation.groom.father_name }} & {{ invitation.groom.mother_name }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 2: THE HIGHLIGHT (VIDEO) -->
+  <section class="section" style="background: #FDF4F4;">
+    <p class="section-label">Featured Moment</p>
+    <h2 class="section-title">Our Sacred Story</h2>
+    <div class="reveal">
+      <div class="video-pin">
+        <!-- Placeholder for a romantic video / If user has a real video we would embed it here -->
+        <video autoplay muted loop playsinline poster="{{ invitation.gallery_images[0] }}">
+          <source src="https://assets.mixkit.co/videos/preview/mixkit-wedding-couple-walking-in-the-field-1234-large.mp4" type="video/mp4">
+        </video>
+        <div class="video-pin-label">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          Featured Video
+        </div>
+      </div>
+    </div>
+    <div class="pin-card-text reveal" style="max-width:600px; margin: 0 auto; text-align: center;">
+      <p class="text-pin-label">Our Quote</p>
+      <p class="text-pin-title">"{{ invitation.quote.text }}"</p>
+      <p class="text-pin-desc">— {{ invitation.quote.source }}</p>
+    </div>
+  </section>
+
+  <!-- SECTION 3: THE CELEBRATION -->
+  <section class="section">
+    <p class="section-label">Save the Date</p>
+    <h2 class="section-title">Wedding Itinerary</h2>
+    <div class="masonry-grid">
+      <!-- Akad Pin -->
+      <div class="pin-card reveal">
+        <div class="pin-card-text" style="background: var(--pin-black); color: white;">
+          <p class="text-pin-label" style="color: #FFB6B6;">Special Event</p>
+          <p class="text-pin-title" style="color: white;">Akad Nikah</p>
+          <p class="text-pin-desc" style="color: rgba(255,255,255,0.7);">{{ invitation.ceremony.date }}<br>{{ invitation.ceremony.time }}</p>
+          <hr style="opacity: 0.1; margin: 15px 0">
+          <p class="text-pin-desc" style="color: white; font-weight: 600;">{{ invitation.ceremony.venue }}</p>
+          <a href="{{ invitation.ceremony.maps_url }}" target="_blank" style="display: block; background: var(--pin-red); color: white; padding: 10px; border-radius: 10px; text-align: center; text-decoration: none; font-weight: 700; font-size: 13px; margin-top: 15px;">Lihat Lokasi</a>
+        </div>
+      </div>
+      <!-- Reception Pin -->
+      <div class="pin-card reveal">
+        <div class="pin-card-text">
+          <p class="text-pin-label">Main Party</p>
+          <p class="text-pin-title">Resepsi</p>
+          <p class="text-pin-desc">{{ invitation.reception.date }}<br>{{ invitation.reception.time }}</p>
+          <hr style="opacity: 0.1; margin: 15px 0">
+          <p class="text-pin-desc" style="font-weight: 600;">{{ invitation.reception.venue }}</p>
+          <a href="{{ invitation.reception.maps_url }}" target="_blank" style="display: block; background: #efefef; color: black; padding: 10px; border-radius: 10px; text-align: center; text-decoration: none; font-weight: 700; font-size: 13px; margin-top: 15px;">Buka Peta</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECTION 4: GALLERY -->
+  <section class="section" style="background: #fafafa;">
+    <p class="section-label">Moments</p>
+    <h2 class="section-title">Our Gallery</h2>
+    <div class="masonry-grid">
+      {% for img in invitation.gallery_images %}
+      <div class="pin-card reveal">
+        <div class="pin-img-wrap">
+          <img src="{{ img }}" class="pin-img" alt="Gallery">
+          <div class="pin-overlay"><button class="pin-save-btn">Save</button></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- SECTION 5: GIFTS & RSVP -->
+  <section class="section" style="padding-bottom: 120px;">
+    <p class="section-label">RSVP & Gifts</p>
+    <h2 class="section-title">Share the Love</h2>
+    <div class="masonry-grid">
+      <!-- Gift Pin -->
+      <div class="pin-card reveal">
+        <div class="pin-card-text" style="background: #f8f9fa;">
+          <p class="text-pin-label">Wedding Gift</p>
+          <p class="text-pin-title">Kado Digital</p>
+          {% for acc in invitation.gift_accounts %}
+          <div style="background: white; padding: 12px; border-radius: 12px; margin-top: 10px; border: 1px solid #eee">
+            <p style="font-size: 11px; font-weight: 800; color: var(--pin-red)">{{ acc.bank_name }}</p>
+            <p style="font-size: 15px; font-weight: 800; margin: 2px 0">{{ acc.account_number }}</p>
+            <p style="font-size: 11px; color: var(--pin-gray)">a.n {{ acc.account_holder }}</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <!-- RSVP Pin -->
+      <div class="pin-card reveal">
+        <div class="pin-card-text" style="background: var(--pin-red); color: white;">
+          <p class="text-pin-label" style="color: white; opacity: 0.8">Konfirmasi</p>
+          <p class="text-pin-title" style="color: white;">Kehadiran Tamu</p>
+          <div style="margin-top: 15px;">
+            <input type="text" id="rsvpName" placeholder="Nama Anda" style="width: 100%; padding: 10px; border-radius: 8px; border: none; margin-bottom: 8px; font-size: 13px;">
+            <select id="rsvpStatus" style="width: 100%; padding: 10px; border-radius: 8px; border: none; font-size: 13px;">
+              <option value="hadir">Akan Hadir</option>
+              <option value="tidak">Tidak Hadir</option>
+            </select>
+            <button onclick="submitRSVP()" style="width: 100%; margin-top: 12px; background: white; color: var(--pin-red); border: none; padding: 12px; border-radius: 8px; font-weight: 800; cursor: pointer;">Simpan Pin</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- BOTTOM NAV (PINTEREST STYLE) -->
+<nav class="bottom-nav" id="bottomNav" style="display: none;">
+  <a href="#" class="nav-btn active"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M22 10v11a1 1 0 0 1-1 1h-6v-8H9v8H3a1 1 0 0 1-1-1V10l10-8 10 8z"/></svg></a>
+  <a href="#" class="nav-btn"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M10 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm10.707 1.293-4.389-4.389A9.96 9.96 0 0 0 10 0C4.477 0 0 4.477 0 10s4.477 10 10 10a9.96 9.96 0 0 0 6.904-2.693l4.389 4.389 1.414-1.414z"/></svg></a>
+  <a href="#" class="nav-btn"><svg width="24" height="24" viewBox="0 0 24 24"><path d="M12 24C5.373 24 0 18.627 0 12S5.373 0 12 0s12 5.373 12 12-5.373 12-12 12zm0-2c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10zm-1-11v-4h2v4h4v2h-4v4h-2v-4h-4v-2h4z"/></svg></a>
+</nav>
+
+<audio id="bgm" loop>
+  <source src="https://cdn.pixabay.com/audio/2022/03/10/audio_c8c8a73456.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+function openInvitation() {
+  document.getElementById('opening').classList.add('hide');
+  document.getElementById('main').style.display = 'block';
+  document.getElementById('topNav').style.display = 'flex';
+  document.getElementById('bottomNav').style.display = 'flex';
+  document.getElementById('bgm').play();
+  setTimeout(handleScroll, 100);
+}
+
+function handleScroll() {
+  const reveals = document.querySelectorAll('.reveal');
+  reveals.forEach(el => {
+    const top = el.getBoundingClientRect().top;
+    if (top < window.innerHeight - 50) {
+      el.classList.add('visible');
+    }
+  });
+}
+window.addEventListener('scroll', handleScroll);
+
+function submitRSVP() {
+  const name = document.getElementById('rsvpName').value;
+  if (!name) { alert('Harap isi nama Anda'); return; }
+  alert('Terima kasih, ' + name + '! RSVP Anda telah tersimpan.');
+}
+
+// Cursor logic
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top = e.clientY + 'px';
+});
+document.addEventListener('mouseenter', () => cursor.style.display = 'block');
+document.addEventListener('mouseleave', () => cursor.style.display = 'none');
+</script>
+
+</body>
+</html>

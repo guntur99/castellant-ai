@@ -1,0 +1,1595 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Anita & Zarda</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+
+/* ─────────────────────────────────────
+   iOS TOKENS
+───────────────────────────────────── */
+:root {
+  --bg:          #000;
+  --bg2:         #0C0C0E;
+  --surface:     rgba(28,28,30,0.8);
+  --card:        #1C1C1E;
+  --card2:       #2C2C2E;
+  --sep:         rgba(255,255,255,0.08);
+  --sep-hi:      rgba(255,255,255,0.14);
+  --white:       #FFFFFF;
+  --label:       #FFFFFF;
+  --label2:      #EBEBF5;
+  --label3:      rgba(235,235,245,0.6);
+  --label4:      rgba(235,235,245,0.3);
+  --blue:        #0A84FF;
+  --green:       #30D158;
+  --indigo:      #5E5CE6;
+  --pink:        #FF375F;
+  --orange:      #FF9F0A;
+  --teal:        #5AC8FA;
+  --blur:        blur(40px) saturate(180%);
+  --blur-md:     blur(20px) saturate(160%);
+  --blur-sm:     blur(12px);
+  --r-xl:        22px;
+  --r-lg:        16px;
+  --r-md:        12px;
+  --r-sm:        8px;
+  --font:        -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  --font-serif:  'Playfair Display', Georgia, serif;
+  --spring:      cubic-bezier(0.34,1.56,0.64,1);
+  --ease:        cubic-bezier(0.25,0.46,0.45,0.94);
+}
+
+/* ─────────────────────────────────────
+   BASE
+───────────────────────────────────── */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+html { scroll-behavior:smooth; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; }
+body {
+  background: var(--bg);
+  color: var(--label);
+  font-family: var(--font);
+  overflow-x: hidden;
+  /* Safe areas for iPhone notch/home bar */
+  padding-top: env(safe-area-inset-top);
+}
+::selection { background:rgba(10,132,255,.35); }
+
+/* Grain */
+body::after {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:9990;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity:.5;
+}
+
+/* ─────────────────────────────────────
+   LOCK SCREEN  ── iOS 17 style
+───────────────────────────────────── */
+#lock {
+  position:fixed; inset:0; z-index:9999;
+  display:flex; flex-direction:column; align-items:center;
+  overflow:hidden;
+  transition:opacity .7s var(--ease), transform .7s var(--ease);
+}
+#lock.unlock { opacity:0; transform:scale(1.06) translateY(-20px); pointer-events:none; }
+
+/* Wallpaper — blurred gradient photo */
+.lock-wall {
+  position:absolute; inset:0;
+  background:
+    url('https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=85') center/cover no-repeat;
+}
+.lock-wall::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(180deg,
+    rgba(0,0,0,.25) 0%,
+    rgba(0,0,0,.1) 40%,
+    rgba(0,0,0,.45) 80%,
+    rgba(0,0,0,.75) 100%);
+}
+
+/* Status bar */
+.lock-statusbar {
+  position:relative; z-index:2;
+  width:100%; padding:14px 24px 0;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.sb-time { font-size:16px; font-weight:600; letter-spacing:-.02em; }
+.sb-icons { display:flex; align-items:center; gap:6px; }
+.sb-icon { font-size:13px; }
+
+/* Dynamic Island */
+.dynamic-island {
+  position:relative; z-index:2;
+  width:120px; height:34px;
+  background:#000;
+  border-radius:20px;
+  margin:8px auto 0;
+  display:flex; align-items:center; justify-content:center; gap:6px;
+  transition:width .4s var(--spring), height .4s var(--spring), border-radius .4s var(--spring);
+}
+.dynamic-island.expanded {
+  width:280px; height:52px; border-radius:28px;
+}
+.di-cam { width:10px; height:10px; border-radius:50%; background:#1C1C1E; border:1.5px solid #2C2C2E; }
+.di-speaker { width:52px; height:5px; border-radius:3px; background:#111; }
+.di-music {
+  display:none; align-items:center; gap:8px;
+  padding:0 14px; width:100%;
+}
+.dynamic-island.expanded .di-music { display:flex; }
+.dynamic-island.expanded .di-cam,
+.dynamic-island.expanded .di-speaker { display:none; }
+.di-music-icon { width:32px; height:32px; border-radius:8px; background:var(--blue); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.di-music-icon svg { width:16px; height:16px; }
+.di-music-info { flex:1; min-width:0; }
+.di-music-title { font-size:12px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.di-music-artist { font-size:10px; color:var(--label3); }
+.di-music-eq { display:flex; align-items:flex-end; gap:2px; height:12px; }
+.di-eq-bar { width:2px; border-radius:1px; background:var(--blue); animation:dieq var(--s,.5s) ease-in-out infinite alternate; }
+@keyframes dieq { from{height:2px} to{height:100%} }
+.di-eq-bar.stopped { animation:none; height:4px; opacity:.4; }
+
+/* Clock */
+.lock-clock-wrap {
+  position:relative; z-index:2;
+  text-align:center; margin-top:auto; padding-bottom:8px;
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding-top:20px;
+}
+.lock-clock {
+  font-weight:200; font-size:clamp(80px,22vw,110px);
+  letter-spacing:-6px; line-height:1;
+  text-shadow:0 2px 20px rgba(0,0,0,.3);
+}
+.lock-date-str {
+  font-size:clamp(16px,4vw,20px); font-weight:400;
+  color:rgba(255,255,255,.85); letter-spacing:.01em;
+  margin-top:8px;
+}
+
+/* Notification card */
+.lock-notif {
+  position:relative; z-index:2;
+  width:min(340px, calc(100vw - 40px));
+  background:rgba(28,28,30,.75);
+  backdrop-filter:var(--blur-md); -webkit-backdrop-filter:var(--blur-md);
+  border:1px solid var(--sep-hi); border-radius:var(--r-xl);
+  padding:14px 16px; margin:16px 0;
+}
+.ln-top { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+.ln-app-icon {
+  width:32px; height:32px; border-radius:8px;
+  background:var(--blue); display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.ln-app-icon svg { width:18px; height:18px; }
+.ln-app-name { font-size:12px; font-weight:500; color:var(--label3); }
+.ln-time { margin-left:auto; font-size:12px; color:var(--label4); }
+.ln-title { font-size:15px; font-weight:600; margin-bottom:3px; }
+.ln-body { font-size:14px; color:var(--label3); line-height:1.4; }
+.ln-guest { font-family:var(--font-serif); font-size:17px; font-style:italic; color:var(--white); margin:8px 0 4px; }
+
+/* Slide to open */
+.lock-slide {
+  position:relative; z-index:2;
+  margin-bottom:max(32px, env(safe-area-inset-bottom, 24px));
+  display:flex; flex-direction:column; align-items:center; gap:12px;
+}
+.slide-pill {
+  width:min(280px, 70vw); height:52px;
+  background:rgba(255,255,255,.15);
+  backdrop-filter:var(--blur-sm); -webkit-backdrop-filter:var(--blur-sm);
+  border:1px solid rgba(255,255,255,.2); border-radius:26px;
+  display:flex; align-items:center; padding:4px;
+  cursor:pointer; position:relative; overflow:hidden;
+}
+.slide-thumb {
+  width:44px; height:44px; border-radius:22px;
+  background:rgba(255,255,255,.95);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; position:relative; z-index:1;
+  animation:slide-hint 2.5s ease-in-out 2s infinite;
+}
+.slide-thumb svg { width:20px; height:20px; color:#000; }
+@keyframes slide-hint {
+  0%,70%,100%{transform:translateX(0)}
+  85%{transform:translateX(12px)}
+}
+.slide-label {
+  flex:1; text-align:center; font-size:15px; font-weight:500;
+  color:rgba(255,255,255,.7); padding-right:44px;
+}
+.lock-home-indicator {
+  width:134px; height:5px; border-radius:3px;
+  background:rgba(255,255,255,.35);
+}
+
+/* ─────────────────────────────────────
+   MAIN APP
+───────────────────────────────────── */
+#app { opacity:0; transition:opacity .7s var(--ease) .15s; }
+#app.show { opacity:1; }
+
+/* ─────────────────────────────────────
+   STATUS BAR (in app)
+───────────────────────────────────── */
+.app-statusbar {
+  position:sticky; top:0; z-index:200;
+  background:rgba(0,0,0,.8);
+  backdrop-filter:var(--blur-sm); -webkit-backdrop-filter:var(--blur-sm);
+  border-bottom:1px solid var(--sep);
+  padding:12px 20px 10px;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.asb-left { font-size:15px; font-weight:700; letter-spacing:-.02em; }
+.asb-right { display:flex; align-items:center; gap:12px; }
+.asb-icon { color:var(--blue); font-size:16px; cursor:pointer; }
+.asb-music-pill {
+  display:flex; align-items:center; gap:6px;
+  background:var(--card2); border-radius:20px;
+  padding:5px 10px 5px 6px; cursor:pointer;
+  transition:background .15s;
+}
+.asb-music-pill:hover { background:#3C3C3E; }
+.asb-m-icon { width:24px; height:24px; border-radius:6px; background:var(--blue); display:flex; align-items:center; justify-content:center; }
+.asb-m-icon svg { width:12px; height:12px; }
+.asb-m-text { font-size:12px; font-weight:500; }
+.asb-m-eq { display:flex; align-items:flex-end; gap:1.5px; height:10px; }
+.asb-m-bar { width:2px; border-radius:1px; background:var(--blue); }
+
+/* ─────────────────────────────────────
+   PAGE SECTIONS — iOS grouped table style
+───────────────────────────────────── */
+
+/* Hero / Now Playing */
+.hero-section {
+  min-height:100svh;
+  position:relative; overflow:hidden;
+  display:flex; flex-direction:column;
+}
+
+/* Full bleed wallpaper */
+.hero-wall {
+  position:absolute; inset:0;
+  background:url('https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=85') center/cover no-repeat;
+}
+.hero-wall::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(180deg,
+    rgba(0,0,0,.15) 0%,
+    rgba(0,0,0,.05) 30%,
+    rgba(0,0,0,.6) 65%,
+    rgba(0,0,0,1) 100%);
+}
+
+/* Hero content */
+.hero-content {
+  position:relative; z-index:2;
+  margin-top:auto;
+  padding:0 24px 32px;
+}
+.hero-eyebrow {
+  font-size:13px; font-weight:500;
+  letter-spacing:.12em; text-transform:uppercase;
+  color:rgba(255,255,255,.6); margin-bottom:8px;
+}
+.hero-title {
+  font-family:var(--font-serif);
+  font-size:clamp(48px,12vw,80px); font-weight:400;
+  line-height:.95; letter-spacing:-.02em;
+  margin-bottom:12px;
+}
+.hero-title em { font-style:italic; color:rgba(255,255,255,.5); }
+.hero-sub {
+  font-size:17px; font-weight:300; color:rgba(255,255,255,.7);
+  line-height:1.5; margin-bottom:24px; max-width:340px;
+}
+
+/* Pill buttons row */
+.hero-pills { display:flex; gap:10px; flex-wrap:wrap; }
+.pill-btn {
+  display:flex; align-items:center; gap:7px;
+  background:rgba(255,255,255,.12);
+  backdrop-filter:var(--blur-sm); -webkit-backdrop-filter:var(--blur-sm);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:30px; padding:10px 18px;
+  font-size:14px; font-weight:500; color:var(--white);
+  cursor:pointer; text-decoration:none;
+  transition:background .15s, transform .1s;
+}
+.pill-btn:active { transform:scale(.96); }
+.pill-btn.primary { background:var(--white); color:#000; }
+.pill-btn svg { width:15px; height:15px; }
+
+/* ─────────────────────────────────────
+   SECTION WRAPPERS — iOS grouped style
+───────────────────────────────────── */
+.ios-section { padding:32px 20px; }
+.ios-section + .ios-section { padding-top:0; }
+
+.ios-header {
+  padding:0 6px 12px;
+  display:flex; align-items:flex-end; justify-content:space-between;
+}
+.ios-h-title {
+  font-size:clamp(22px,6vw,30px); font-weight:700;
+  letter-spacing:-.02em; line-height:1.1;
+}
+.ios-h-title em { font-family:var(--font-serif); font-weight:400; font-style:italic; color:var(--label3); font-size:1.1em; }
+.ios-h-sub { font-size:13px; color:var(--blue); font-weight:500; }
+
+/* iOS grouped table */
+.ios-group {
+  background:var(--card); border-radius:var(--r-xl);
+  overflow:hidden;
+}
+.ios-row {
+  display:flex; align-items:center; gap:14px;
+  padding:14px 16px;
+  border-bottom:1px solid var(--sep);
+  transition:background .1s;
+  cursor:default;
+}
+.ios-row:last-child { border-bottom:none; }
+.ios-row:active { background:rgba(255,255,255,.04); }
+.ios-row-icon {
+  width:32px; height:32px; border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; font-size:16px;
+}
+.ios-row-body { flex:1; min-width:0; }
+.ios-row-label { font-size:17px; font-weight:400; }
+.ios-row-value { font-size:14px; color:var(--label3); margin-top:2px; line-height:1.4; }
+.ios-row-trail { color:var(--label4); display:flex; align-items:center; gap:4px; }
+.ios-row-trail svg { width:16px; height:16px; }
+.ios-chevron { color:var(--label4); }
+.ios-chevron svg { width:16px; height:16px; }
+
+/* Divider label */
+.ios-section-label {
+  font-size:13px; font-weight:400;
+  color:var(--label3); text-transform:uppercase;
+  letter-spacing:.06em; padding:0 6px 8px;
+  margin-top:28px;
+}
+.ios-section-footer {
+  font-size:13px; color:var(--label3);
+  padding:8px 6px 0; line-height:1.5;
+}
+
+/* ─────────────────────────────────────
+   COUNTDOWN  — widget style
+───────────────────────────────────── */
+.widget-row {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:10px; margin-top:10px;
+}
+.widget-sm {
+  background:var(--card); border-radius:var(--r-xl);
+  padding:16px; text-align:center;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  position:relative; overflow:hidden;
+}
+.widget-sm::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:linear-gradient(90deg,transparent,var(--sep-hi),transparent);
+}
+.w-num {
+  font-size:48px; font-weight:200; letter-spacing:-2px;
+  line-height:1; font-variant-numeric:tabular-nums;
+  font-family:var(--font-serif);
+}
+.w-unit { font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:var(--label3); margin-top:4px; }
+.widget-lg {
+  background:var(--card); border-radius:var(--r-xl);
+  padding:20px; grid-column:1/-1;
+  display:flex; gap:16px; align-items:center;
+}
+.widget-lg-icon { font-size:32px; }
+.widget-lg-text { flex:1; }
+.widget-lg-title { font-size:15px; font-weight:600; margin-bottom:3px; }
+.widget-lg-sub { font-size:13px; color:var(--label3); line-height:1.5; }
+
+/* ─────────────────────────────────────
+   PROFILE / COUPLE — contact card style
+───────────────────────────────────── */
+.contact-card {
+  background:var(--card); border-radius:var(--r-xl);
+  overflow:hidden; margin-bottom:12px;
+}
+.cc-photo-banner {
+  height:160px; position:relative;
+  background:linear-gradient(135deg,#1a1a2e,#16213e);
+  overflow:hidden;
+}
+.cc-photo-banner img {
+  width:100%; height:100%; object-fit:cover;
+  filter:brightness(.85) saturate(.9);
+}
+.cc-photo-banner::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(180deg,transparent 40%,var(--card) 100%);
+}
+.cc-avatar {
+  position:absolute; bottom:-24px; left:20px;
+  width:80px; height:80px; border-radius:50%;
+  border:3px solid var(--card);
+  overflow:hidden; z-index:1;
+  box-shadow:0 4px 20px rgba(0,0,0,.5);
+}
+.cc-avatar img { width:100%; height:100%; object-fit:cover; }
+.cc-body { padding:32px 20px 20px; }
+.cc-name { font-size:24px; font-weight:700; letter-spacing:-.02em; margin-bottom:2px; }
+.cc-role { font-size:14px; color:var(--blue); font-weight:500; margin-bottom:12px; }
+.cc-detail { font-size:14px; color:var(--label3); line-height:1.6; }
+.cc-actions { display:flex; gap:8px; padding:0 20px 20px; }
+.cc-action-btn {
+  flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;
+  background:var(--card2); border-radius:var(--r-md); padding:10px 8px;
+  font-size:12px; font-weight:500; color:var(--blue); cursor:pointer;
+  transition:background .1s;
+}
+.cc-action-btn:active { background:#3C3C3E; }
+.cc-action-btn svg { width:20px; height:20px; }
+
+/* ─────────────────────────────────────
+   MAPS CARD
+───────────────────────────────────── */
+.maps-card {
+  background:var(--card); border-radius:var(--r-xl);
+  overflow:hidden; margin-bottom:12px;
+}
+.maps-preview {
+  height:160px; position:relative;
+  background:
+    linear-gradient(rgba(0,0,0,.3),rgba(0,0,0,.3)),
+    url('https://images.unsplash.com/photo-1568667256549-094345857637?w=600&q=80') center/cover;
+}
+.maps-overlay-badge {
+  position:absolute; top:12px; left:12px;
+  background:rgba(0,0,0,.6); backdrop-filter:var(--blur-sm);
+  border-radius:20px; padding:5px 12px;
+  font-size:12px; font-weight:600; color:white;
+  border:1px solid rgba(255,255,255,.15);
+}
+.maps-pin {
+  position:absolute; top:50%; left:50%;
+  transform:translate(-50%,-50%);
+  font-size:28px;
+  filter:drop-shadow(0 4px 8px rgba(0,0,0,.5));
+}
+.maps-info { padding:16px 18px; }
+.maps-name { font-size:17px; font-weight:600; margin-bottom:4px; }
+.maps-addr { font-size:14px; color:var(--label3); line-height:1.5; margin-bottom:14px; }
+.maps-open-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  color:var(--blue); font-size:15px; font-weight:500;
+  text-decoration:none; transition:opacity .15s;
+}
+.maps-open-btn:hover { opacity:.7; }
+.maps-open-btn svg { width:16px; height:16px; }
+
+/* ─────────────────────────────────────
+   TIMELINE — activity feed
+───────────────────────────────────── */
+.activity-feed { display:flex; flex-direction:column; gap:0; }
+.af-item {
+  display:flex; gap:14px; position:relative;
+  opacity:0; transform:translateY(16px);
+  transition:opacity .6s var(--ease), transform .6s var(--ease);
+}
+.af-item.vis { opacity:1; transform:translateY(0); }
+.af-left { display:flex; flex-direction:column; align-items:center; flex-shrink:0; }
+.af-dot {
+  width:36px; height:36px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:16px; flex-shrink:0; z-index:1;
+}
+.af-line { width:1px; flex:1; background:var(--sep); margin:4px 0; min-height:24px; }
+.af-item:last-child .af-line { display:none; }
+.af-body { padding:4px 0 28px; flex:1; }
+.af-tag { font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--blue); margin-bottom:3px; font-weight:500; }
+.af-date-str { font-size:12px; color:var(--label4); margin-bottom:6px; }
+.af-title { font-size:17px; font-weight:600; margin-bottom:6px; }
+.af-desc { font-size:14px; color:var(--label3); line-height:1.65; }
+
+/* ─────────────────────────────────────
+   GALLERY — iOS Photos style
+───────────────────────────────────── */
+.gallery-section { padding:32px 0; }
+.gallery-section .ios-header { padding:0 20px 12px; }
+.gal-strip-wrap { overflow:hidden; position:relative; padding:4px 0; }
+.gal-fade-l { position:absolute; left:0; top:0; bottom:0; width:40px; background:linear-gradient(90deg,var(--bg2),transparent); z-index:2; pointer-events:none; }
+.gal-fade-r { position:absolute; right:0; top:0; bottom:0; width:40px; background:linear-gradient(270deg,var(--bg2),transparent); z-index:2; pointer-events:none; }
+.gal-strip { display:flex; gap:4px; will-change:transform; padding:0 20px; }
+.gal-item {
+  flex-shrink:0;
+  width:clamp(130px,35vw,180px);
+  height:clamp(160px,44vw,230px);
+  border-radius:var(--r-md); overflow:hidden;
+  background:var(--card); cursor:pointer; position:relative;
+  transition:transform .35s var(--spring);
+}
+.gal-item:active { transform:scale(.96); }
+.gal-item img { width:100%; height:100%; object-fit:cover; display:block; }
+.gal-item::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(180deg,transparent 55%,rgba(0,0,0,.4) 100%);
+  opacity:0; transition:opacity .3s;
+}
+.gal-item:hover::after { opacity:1; }
+.gal-dots { display:flex; justify-content:center; gap:5px; padding:12px 20px 0; }
+.gal-dot { width:5px; height:5px; border-radius:50%; background:var(--card2); transition:background .25s, width .25s; cursor:pointer; }
+.gal-dot.on { background:var(--label3); width:16px; border-radius:3px; }
+
+/* ─────────────────────────────────────
+   WALLET — gift cards
+───────────────────────────────────── */
+.wallet-stack { position:relative; margin-bottom:8px; }
+.wallet-card {
+  border-radius:var(--r-xl); padding:24px;
+  position:relative; overflow:hidden;
+  color:white; min-height:160px;
+  display:flex; flex-direction:column; justify-content:space-between;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+  transition:transform .3s var(--spring);
+}
+.wc-1 { background:linear-gradient(135deg,#1C3A6E,#0A2340); margin-bottom:12px; }
+.wc-2 { background:linear-gradient(135deg,#2D1B4E,#1A0E2D); }
+.wallet-card::before {
+  content:''; position:absolute;
+  top:-40px; right:-40px;
+  width:160px; height:160px; border-radius:50%;
+  background:rgba(255,255,255,.06);
+}
+.wallet-card::after {
+  content:''; position:absolute;
+  bottom:-20px; left:-20px;
+  width:100px; height:100px; border-radius:50%;
+  background:rgba(255,255,255,.04);
+}
+.wc-top { display:flex; justify-content:space-between; align-items:flex-start; position:relative; z-index:1; }
+.wc-bank { font-size:24px; font-weight:700; letter-spacing:-.02em; }
+.wc-chip {
+  width:36px; height:28px; border-radius:6px;
+  background:linear-gradient(135deg,rgba(255,215,0,.8),rgba(255,165,0,.6));
+  display:flex; align-items:center; justify-content:center;
+}
+.wc-chip::after { content:''; width:26px; height:18px; border:1px solid rgba(0,0,0,.2); border-radius:4px; }
+.wc-mid { position:relative; z-index:1; }
+.wc-label { font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:rgba(255,255,255,.5); margin-bottom:4px; }
+.wc-name { font-size:16px; font-weight:500; }
+.wc-bottom { display:flex; justify-content:space-between; align-items:flex-end; position:relative; z-index:1; }
+.wc-number { font-family:'Courier New',monospace; font-size:15px; letter-spacing:.08em; }
+.wc-copy-btn {
+  display:flex; align-items:center; gap:5px;
+  background:rgba(255,255,255,.15); border:none;
+  color:white; font-family:var(--font); font-size:12px; font-weight:500;
+  padding:7px 14px; border-radius:20px; cursor:pointer;
+  transition:background .15s; backdrop-filter:var(--blur-sm);
+}
+.wc-copy-btn:active { background:rgba(255,255,255,.25); transform:scale(.96); }
+.wc-copy-btn.copied { background:rgba(48,209,88,.25); color:#30D158; }
+
+/* ─────────────────────────────────────
+   RSVP — form card
+───────────────────────────────────── */
+.form-card { background:var(--card); border-radius:var(--r-xl); overflow:hidden; }
+.form-row { padding:0 16px; }
+.form-row + .form-row { border-top:1px solid var(--sep); }
+.fr-label { font-size:12px; color:var(--label3); text-transform:uppercase; letter-spacing:.08em; padding-top:12px; margin-bottom:4px; }
+.fr-input {
+  width:100%; background:transparent; border:none; outline:none;
+  color:var(--white); font-family:var(--font); font-size:17px;
+  padding:0 0 12px; caret-color:var(--blue);
+  -webkit-appearance:none;
+}
+.fr-input::placeholder { color:var(--label4); }
+.fr-select { appearance:none; cursor:pointer; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23636366' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 0 center; padding-right:20px; }
+textarea.fr-input { resize:vertical; min-height:80px; padding-top:4px; }
+.seg-control { display:flex; gap:6px; padding:8px 0 14px; }
+.seg-btn {
+  flex:1; background:var(--card2); border:none; border-radius:var(--r-sm);
+  padding:10px; color:var(--label3); font-family:var(--font);
+  font-size:16px; cursor:pointer; transition:all .15s;
+}
+.seg-btn.on { background:var(--blue); color:white; }
+.ios-submit-btn {
+  width:100%; background:var(--blue); border:none; border-radius:var(--r-xl);
+  padding:16px; color:white; font-family:var(--font);
+  font-size:17px; font-weight:600; cursor:pointer;
+  transition:opacity .15s, transform .1s;
+  letter-spacing:-.01em; margin-top:12px;
+}
+.ios-submit-btn:active { opacity:.8; transform:scale(.98); }
+
+/* Stats row */
+.stats-row { display:flex; gap:10px; margin-bottom:20px; }
+.stat-card {
+  flex:1; background:var(--card); border-radius:var(--r-lg);
+  padding:16px 12px; text-align:center;
+}
+.stat-num { font-family:var(--font-serif); font-size:38px; font-weight:400; color:var(--blue); line-height:1; }
+.stat-lbl { font-size:11px; color:var(--label3); letter-spacing:.1em; text-transform:uppercase; margin-top:5px; }
+
+/* ─────────────────────────────────────
+   MESSAGES — wishes
+───────────────────────────────────── */
+.msg-list { display:flex; flex-direction:column; gap:16px; }
+.msg-bubble-wrap {
+  display:flex; gap:10px; align-items:flex-end;
+  opacity:0; transform:translateY(12px);
+  transition:opacity .5s var(--ease), transform .5s var(--ease);
+}
+.msg-bubble-wrap.vis { opacity:1; transform:translateY(0); }
+.msg-avatar {
+  width:36px; height:36px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; font-weight:700; flex-shrink:0; margin-bottom:18px;
+}
+.msg-content { flex:1; max-width:85%; }
+.msg-sender { font-size:13px; color:var(--label3); margin-bottom:4px; }
+.msg-bubble {
+  background:var(--card2); border-radius:18px 18px 18px 4px;
+  padding:10px 14px; display:inline-block; max-width:100%;
+}
+.msg-text { font-size:15px; line-height:1.5; }
+.msg-status { font-size:11px; color:var(--label4); margin-top:4px; text-align:left; }
+
+/* ─────────────────────────────────────
+   FOOTER
+───────────────────────────────────── */
+.footer {
+  padding:48px 24px max(40px,env(safe-area-inset-bottom,40px));
+  text-align:center;
+  background:linear-gradient(0deg,rgba(10,132,255,.04),transparent);
+  border-top:1px solid var(--sep);
+}
+.footer-names { font-family:var(--font-serif); font-size:42px; font-style:italic; margin-bottom:12px; }
+.footer-body { font-size:15px; color:var(--label3); line-height:1.7; max-width:400px; margin:0 auto 32px; }
+.footer-brand { font-size:12px; color:var(--label4); letter-spacing:.1em; }
+.footer-brand a { color:var(--blue); text-decoration:none; }
+
+/* ─────────────────────────────────────
+   TAB BAR — iOS bottom tab
+───────────────────────────────────── */
+.tab-bar {
+  position:fixed; bottom:0; left:0; right:0; z-index:100;
+  background:rgba(0,0,0,.85);
+  backdrop-filter:var(--blur-md); -webkit-backdrop-filter:var(--blur-md);
+  border-top:1px solid var(--sep);
+  padding:8px 0 max(8px,env(safe-area-inset-bottom,8px));
+  transform:translateY(100%);
+  transition:transform .5s var(--spring) .6s;
+}
+.tab-bar.show { transform:translateY(0); }
+.tab-inner { display:flex; justify-content:space-around; }
+.tab-item {
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  text-decoration:none; color:var(--label4);
+  font-size:10px; letter-spacing:.02em;
+  padding:4px 12px; border-radius:10px;
+  transition:color .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.tab-item.on { color:var(--blue); }
+.tab-item svg { width:22px; height:22px; }
+.tab-badge {
+  position:relative; display:inline-block;
+}
+.tab-badge::after {
+  content:''; position:absolute; top:-2px; right:-2px;
+  width:8px; height:8px; border-radius:50%;
+  background:var(--pink); border:2px solid #000;
+  display:none;
+}
+.tab-badge.has-notif::after { display:block; }
+
+/* ─────────────────────────────────────
+   LIGHTBOX
+───────────────────────────────────── */
+.lb {
+  position:fixed; inset:0; z-index:9997;
+  background:#000; display:none; flex-direction:column;
+  transition:opacity .3s;
+}
+.lb.open { display:flex; }
+.lb-header {
+  padding:max(56px,env(safe-area-inset-top,44px)) 20px 12px;
+  display:flex; justify-content:space-between; align-items:center;
+  background:rgba(0,0,0,.7); backdrop-filter:var(--blur-sm);
+}
+.lb-header-title { font-size:17px; font-weight:600; }
+.lb-close-btn { font-size:15px; color:var(--blue); font-weight:500; cursor:pointer; padding:4px 8px; }
+.lb-main { flex:1; display:flex; align-items:center; justify-content:center; padding:8px; }
+.lb-img { max-width:100%; max-height:100%; object-fit:contain; border-radius:var(--r-md); }
+.lb-footer { padding:12px 20px max(24px,env(safe-area-inset-bottom,24px)); display:flex; justify-content:space-between; align-items:center; }
+.lb-count-text { font-size:15px; color:var(--label3); }
+.lb-nav-btns { display:flex; gap:24px; }
+.lb-nav-btn {
+  width:44px; height:44px; border-radius:50%;
+  background:var(--card2); border:none; color:var(--white);
+  font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:background .1s;
+}
+.lb-nav-btn:active { background:#3C3C3E; }
+
+/* ─────────────────────────────────────
+   TOAST — iOS style
+───────────────────────────────────── */
+.toast {
+  position:fixed; bottom:calc(max(80px,env(safe-area-inset-bottom,80px)) + 12px);
+  left:50%; transform:translateX(-50%) translateY(20px);
+  background:rgba(44,44,46,.92); backdrop-filter:var(--blur-sm);
+  border:1px solid var(--sep-hi); border-radius:20px;
+  color:white; padding:12px 20px; font-size:14px; font-weight:500;
+  opacity:0; transition:opacity .3s, transform .3s;
+  pointer-events:none; white-space:nowrap; z-index:9999;
+}
+.toast.on { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ─────────────────────────────────────
+   MUSIC BOTTOM SHEET
+───────────────────────────────────── */
+.music-sheet {
+  position:fixed; inset:0; z-index:9996;
+  display:flex; flex-direction:column; justify-content:flex-end;
+  background:rgba(0,0,0,.5); backdrop-filter:var(--blur-sm);
+  opacity:0; pointer-events:none; transition:opacity .3s;
+}
+.music-sheet.open { opacity:1; pointer-events:all; }
+.music-panel {
+  background:rgba(18,18,18,.97); backdrop-filter:var(--blur);
+  border-radius:28px 28px 0 0; padding:12px 24px max(40px,env(safe-area-inset-bottom,40px));
+  transform:translateY(100%); transition:transform .4s var(--spring);
+}
+.music-sheet.open .music-panel { transform:translateY(0); }
+.panel-handle { width:36px; height:4px; border-radius:2px; background:var(--card2); margin:0 auto 20px; }
+.panel-title { font-size:13px; color:var(--label3); text-align:center; margin-bottom:20px; text-transform:uppercase; letter-spacing:.1em; }
+.music-artwork {
+  width:min(280px,70vw); height:min(280px,70vw);
+  border-radius:var(--r-xl); background:linear-gradient(135deg,#1a2a4a,#0a1628);
+  margin:0 auto 24px; overflow:hidden;
+  box-shadow:0 24px 60px rgba(0,0,0,.6);
+  transition:transform .3s var(--spring);
+}
+.music-artwork.playing { transform:scale(1.04); }
+.music-artwork img { width:100%; height:100%; object-fit:cover; }
+.music-meta { text-align:center; margin-bottom:20px; }
+.music-title-big { font-family:var(--font-serif); font-size:24px; font-style:italic; margin-bottom:4px; }
+.music-artist-big { font-size:16px; color:var(--label3); }
+/* Progress */
+.music-progress { margin-bottom:16px; }
+.music-prog-bar { height:4px; background:var(--card2); border-radius:2px; margin-bottom:8px; cursor:pointer; position:relative; }
+.music-prog-fill { height:100%; background:var(--label3); border-radius:2px; transition:width .5s linear; }
+.music-times { display:flex; justify-content:space-between; font-size:12px; color:var(--label4); }
+/* Controls */
+.music-controls { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.mc-btn { background:none; border:none; cursor:pointer; color:var(--label2); display:flex; align-items:center; justify-content:center; padding:8px; transition:opacity .15s; }
+.mc-btn:active { opacity:.5; }
+.mc-btn svg { width:28px; height:28px; }
+.mc-play {
+  width:64px; height:64px; border-radius:50%;
+  background:var(--label); color:#000;
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .15s var(--spring);
+}
+.mc-play:active { transform:scale(.92); }
+.mc-play svg { width:28px; height:28px; }
+.music-vol { display:flex; align-items:center; gap:12px; }
+.vol-icon { font-size:16px; }
+.vol-bar { flex:1; height:4px; background:var(--card2); border-radius:2px; cursor:pointer; }
+.vol-fill { height:100%; background:var(--label3); border-radius:2px; width:40%; }
+
+/* ─────────────────────────────────────
+   UTILITY
+───────────────────────────────────── */
+.reveal { opacity:0; transform:translateY(16px); transition:opacity .65s var(--ease), transform .65s var(--ease); }
+.reveal.vis { opacity:1; transform:translateY(0); }
+.d1{transition-delay:.08s} .d2{transition-delay:.16s} .d3{transition-delay:.24s}
+
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════
+     AUDIO
+══════════════════════════ -->
+<audio id="bgAudio" loop preload="none">
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
+</audio>
+
+<!-- ══════════════════════════
+     LOCK SCREEN
+══════════════════════════ -->
+<div id="lock">
+  <div class="lock-wall"></div>
+
+  <!-- Status bar -->
+  <div class="lock-statusbar">
+    <span class="sb-time" id="lockTime">9:41</span>
+    <div class="sb-icons">
+      <span class="sb-icon">●●●●</span>
+      <span class="sb-icon">▲</span>
+      <span class="sb-icon">🔋</span>
+    </div>
+  </div>
+
+  <!-- Dynamic Island -->
+  <div class="dynamic-island" id="dynIsland">
+    <div class="di-cam"></div>
+    <div class="di-speaker"></div>
+    <div class="di-music">
+      <div class="di-music-icon">
+        <svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+      <div class="di-music-info">
+        <div class="di-music-title">Wedding Day</div>
+        <div class="di-music-artist">Anita & Zarda</div>
+      </div>
+      <div class="di-music-eq" id="diEq">
+        <div class="di-eq-bar stopped" style="--s:.5s"></div>
+        <div class="di-eq-bar stopped" style="--s:.7s;animation-delay:.06s"></div>
+        <div class="di-eq-bar stopped" style="--s:.45s;animation-delay:.12s"></div>
+        <div class="di-eq-bar stopped" style="--s:.6s;animation-delay:.04s"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Clock -->
+  <div class="lock-clock-wrap">
+    <div class="lock-clock" id="lockClock">9:41</div>
+    <div class="lock-date-str" id="lockDate">Minggu, 24 Mei 2026</div>
+  </div>
+
+  <!-- Notification -->
+  <div class="lock-notif">
+    <div class="ln-top">
+      <div class="ln-app-icon">
+        <svg viewBox="0 0 24 24" fill="white"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      </div>
+      <span class="ln-app-name">Undangan Pernikahan</span>
+      <span class="ln-time">sekarang</span>
+    </div>
+    <div class="ln-title">Anita & Zarda mengundang Anda 💌</div>
+    <div class="ln-body">Kepada Yth.</div>
+    <div class="ln-guest">Ade Guntur Fitridullah & Partner</div>
+    <div class="ln-body">Dengan penuh kebahagiaan kami mengundang kehadiran Anda.</div>
+  </div>
+
+  <!-- Slide -->
+  <div class="lock-slide">
+    <div class="slide-pill" onclick="openApp()">
+      <div class="slide-thumb">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </div>
+      <span class="slide-label">Buka Undangan</span>
+    </div>
+    <div class="lock-home-indicator"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════
+     APP
+══════════════════════════ -->
+<div id="app">
+
+  <!-- Status bar sticky -->
+  <div class="app-statusbar">
+    <span class="asb-left">Anita & Zarda 💌</span>
+    <div class="asb-right">
+      <div class="asb-music-pill" id="musicPill" onclick="openMusicSheet()">
+        <div class="asb-m-icon">
+          <svg id="asbPlayIcon" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="asbPauseIcon" viewBox="0 0 24 24" fill="white" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </div>
+        <span class="asb-m-text" id="asbTitle">Wedding Day</span>
+        <div class="asb-m-eq" id="asbEq">
+          <div class="asb-m-bar" style="height:4px"></div>
+          <div class="asb-m-bar" style="height:7px"></div>
+          <div class="asb-m-bar" style="height:5px"></div>
+          <div class="asb-m-bar" style="height:9px"></div>
+          <div class="asb-m-bar" style="height:6px"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── HERO ── -->
+  <section class="hero-section" id="home">
+    <div class="hero-wall"></div>
+    <div class="hero-content">
+      <p class="hero-eyebrow">24 Mei 2026 · Tangerang</p>
+      <h1 class="hero-title">Anita<br><em>&</em><br>Zarda</h1>
+      <p class="hero-sub">Dengan penuh rasa syukur, kami mengundang Anda hadir di hari istimewa kami.</p>
+      <div class="hero-pills">
+        <div class="pill-btn primary" onclick="openMusicSheet()">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          Putar Musik
+        </div>
+        <a href="#event" class="pill-btn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+          Lihat Jadwal
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── COUNTDOWN ── -->
+  <div class="ios-section">
+    <div class="ios-header">
+      <span class="ios-h-title">Menuju <em>Hari Spesial</em></span>
+    </div>
+    <div class="widget-row">
+      <div class="widget-sm reveal"><div class="w-num" id="cdD">25</div><div class="w-unit">Hari</div></div>
+      <div class="widget-sm reveal d1"><div class="w-num" id="cdH">00</div><div class="w-unit">Jam</div></div>
+      <div class="widget-sm reveal d2"><div class="w-num" id="cdM">00</div><div class="w-unit">Menit</div></div>
+      <div class="widget-sm reveal d3"><div class="w-num" id="cdS">00</div><div class="w-unit">Detik</div></div>
+    </div>
+    <div class="widget-lg reveal" style="margin-top:10px">
+      <div class="widget-lg-icon">📅</div>
+      <div class="widget-lg-text">
+        <div class="widget-lg-title">Minggu, 24 Mei 2026</div>
+        <div class="widget-lg-sub">Akad 08.00 WIB · Resepsi 11.00–13.00 WIB<br>Graha Yadika, Ciledug, Tangerang</div>
+      </div>
+    </div>
+    <!-- Verse -->
+    <div style="padding:20px 6px 0;text-align:center" class="reveal">
+      <div style="width:1px;height:40px;background:linear-gradient(180deg,transparent,var(--sep-hi));margin:0 auto 16px"></div>
+      <p style="font-family:var(--font-serif);font-style:italic;font-size:16px;color:var(--label3);line-height:1.7;max-width:500px;margin:0 auto 10px">
+        "Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri..."
+      </p>
+      <p style="font-size:12px;color:var(--label4);letter-spacing:.06em">— Surah Ar-Rum : 21</p>
+    </div>
+  </div>
+
+  <!-- ── COUPLE ── -->
+  <section class="ios-section" id="couple" style="padding-top:8px">
+    <div class="ios-header">
+      <span class="ios-h-title">Pasangan <em>Kami</em></span>
+    </div>
+
+    <div class="contact-card reveal">
+      <div class="cc-photo-banner">
+        <img src="https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=700&q=80" alt="" loading="lazy">
+        <div class="cc-avatar"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita"></div>
+      </div>
+      <div class="cc-body">
+        <div class="cc-name">Anita Pangestuti, S.Kom</div>
+        <div class="cc-role">Mempelai Wanita</div>
+        <div class="cc-detail">Putri Pertama dari Bpk. Taryono & Ibu Wiwit Jayanti</div>
+      </div>
+      <div class="cc-actions">
+        <div class="cc-action-btn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/></svg>
+          Doa
+        </div>
+        <div class="cc-action-btn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          RSVP
+        </div>
+      </div>
+    </div>
+
+    <div class="contact-card reveal d1">
+      <div class="cc-photo-banner">
+        <img src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=700&q=80" alt="" loading="lazy">
+        <div class="cc-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda"></div>
+      </div>
+      <div class="cc-body">
+        <div class="cc-name">Zardarian Ahadika N, S.Kom</div>
+        <div class="cc-role">Mempelai Pria</div>
+        <div class="cc-detail">Putra Kedua dari Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</div>
+      </div>
+      <div class="cc-actions">
+        <div class="cc-action-btn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z"/></svg>
+          Doa
+        </div>
+        <div class="cc-action-btn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+          RSVP
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── EVENT ── -->
+  <section class="ios-section" id="event" style="padding-top:8px">
+    <div class="ios-header">
+      <span class="ios-h-title">Waktu <em>& Tempat</em></span>
+    </div>
+
+    <!-- Akad -->
+    <div class="ios-section-label">Akad Nikah</div>
+    <div class="ios-group reveal">
+      <div class="ios-row">
+        <div class="ios-row-icon" style="background:rgba(10,132,255,.15)">📅</div>
+        <div class="ios-row-body">
+          <div class="ios-row-label">Minggu, 24 Mei 2026</div>
+          <div class="ios-row-value">08.00 WIB</div>
+        </div>
+      </div>
+      <div class="ios-row">
+        <div class="ios-row-icon" style="background:rgba(255,159,10,.15)">📍</div>
+        <div class="ios-row-body">
+          <div class="ios-row-label">Graha Yadika</div>
+          <div class="ios-row-value">Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resepsi -->
+    <div class="ios-section-label">Resepsi</div>
+    <div class="ios-group reveal d1">
+      <div class="ios-row">
+        <div class="ios-row-icon" style="background:rgba(48,209,88,.15)">🕐</div>
+        <div class="ios-row-body">
+          <div class="ios-row-label">11.00 – 13.00 WIB</div>
+          <div class="ios-row-value">Minggu, 24 Mei 2026</div>
+        </div>
+      </div>
+      <div class="ios-row">
+        <div class="ios-row-icon" style="background:rgba(255,159,10,.15)">📍</div>
+        <div class="ios-row-body">
+          <div class="ios-row-label">Graha Yadika</div>
+          <div class="ios-row-value">Lokasi yang sama — Ciledug, Tangerang</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Maps card -->
+    <div style="height:12px"></div>
+    <div class="maps-card reveal d2">
+      <div class="maps-preview">
+        <div class="maps-overlay-badge">Graha Yadika</div>
+        <div class="maps-pin">📍</div>
+      </div>
+      <div class="maps-info">
+        <div class="maps-name">Graha Yadika</div>
+        <div class="maps-addr">Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Kota Tangerang, Banten 15157</div>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="maps-open-btn">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Buka di Apple Maps
+        </a>
+      </div>
+    </div>
+    <div class="ios-section-footer reveal">Pastikan Anda hadir tepat waktu. Jangan lupa konfirmasi kehadiran di bawah 💌</div>
+  </section>
+
+  <!-- ── TIMELINE ── -->
+  <section class="ios-section" style="padding-top:8px">
+    <div class="ios-header">
+      <span class="ios-h-title">Kisah <em>Cinta Kami</em></span>
+    </div>
+    <div class="activity-feed">
+      <div class="af-item">
+        <div class="af-left">
+          <div class="af-dot" style="background:rgba(10,132,255,.2);font-size:18px">💙</div>
+          <div class="af-line"></div>
+        </div>
+        <div class="af-body">
+          <div class="af-tag">Chapter 1</div>
+          <div class="af-date-str">Juni 2025</div>
+          <div class="af-title">Awal Pertemuan</div>
+          <div class="af-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</div>
+        </div>
+      </div>
+      <div class="af-item">
+        <div class="af-left">
+          <div class="af-dot" style="background:rgba(255,159,10,.2);font-size:18px">💍</div>
+          <div class="af-line"></div>
+        </div>
+        <div class="af-body">
+          <div class="af-tag">Chapter 2</div>
+          <div class="af-date-str">November 2025</div>
+          <div class="af-title">Lamaran</div>
+          <div class="af-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div>
+        </div>
+      </div>
+      <div class="af-item">
+        <div class="af-left">
+          <div class="af-dot" style="background:rgba(48,209,88,.2);font-size:18px">🤍</div>
+        </div>
+        <div class="af-body">
+          <div class="af-tag">Chapter 3</div>
+          <div class="af-date-str">Mei 2026</div>
+          <div class="af-title">Pernikahan</div>
+          <div class="af-desc">Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── GALLERY ── -->
+  <section class="gallery-section">
+    <div class="ios-header" style="padding:0 20px 12px">
+      <span class="ios-h-title">Galeri <em>Foto</em></span>
+      <span class="ios-h-sub" style="font-size:13px">Auto-swipe</span>
+    </div>
+    <div class="gal-strip-wrap" id="galWrap" onmouseenter="pauseGal()" onmouseleave="resumeGal()" ontouchstart="pauseGal()" ontouchend="resumeGal()">
+      <div class="gal-fade-l"></div>
+      <div class="gal-fade-r"></div>
+      <div class="gal-strip" id="galTrack"></div>
+    </div>
+    <div class="gal-dots" id="galDots"></div>
+  </section>
+
+  <!-- ── GIFT ── -->
+  <section class="ios-section" id="gift" style="padding-top:8px">
+    <div class="ios-header">
+      <span class="ios-h-title">Amplop <em>Digital</em></span>
+    </div>
+    <p style="font-size:15px;color:var(--label3);padding:0 6px 16px;line-height:1.6">Doa restu sudah sangat cukup, namun jika memberi merupakan tanda kasih, kami dengan senang hati menerimanya.</p>
+    <div class="wallet-card wc-1 reveal">
+      <div class="wc-top">
+        <div class="wc-bank">BCA</div>
+        <div class="wc-chip"></div>
+      </div>
+      <div class="wc-mid">
+        <div class="wc-label">Pemilik Rekening</div>
+        <div class="wc-name">Zardarian Ahadika N</div>
+      </div>
+      <div class="wc-bottom">
+        <div class="wc-number">8210 3705 61</div>
+        <button class="wc-copy-btn" onclick="copyNum('8210370561',this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+          Salin
+        </button>
+      </div>
+    </div>
+    <div class="wallet-card wc-2 reveal d1">
+      <div class="wc-top">
+        <div class="wc-bank">BNI</div>
+        <div class="wc-chip"></div>
+      </div>
+      <div class="wc-mid">
+        <div class="wc-label">Pemilik Rekening</div>
+        <div class="wc-name">Anita Pangestuti</div>
+      </div>
+      <div class="wc-bottom">
+        <div class="wc-number">1192 9784 03</div>
+        <button class="wc-copy-btn" onclick="copyNum('1192978403',this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+          Salin
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RSVP ── -->
+  <section class="ios-section" id="rsvp" style="padding-top:8px">
+    <div class="ios-header">
+      <span class="ios-h-title">Konfirmasi <em>Kehadiran</em></span>
+    </div>
+    <div class="stats-row">
+      <div class="stat-card reveal"><div class="stat-num">7</div><div class="stat-lbl">Respons</div></div>
+      <div class="stat-card reveal d1"><div class="stat-num">7</div><div class="stat-lbl">Hadir</div></div>
+      <div class="stat-card reveal d2"><div class="stat-num">13</div><div class="stat-lbl">Tamu</div></div>
+    </div>
+    <div class="form-card reveal">
+      <div class="form-row">
+        <div class="fr-label">Nama Lengkap</div>
+        <input type="text" class="fr-input" placeholder="Nama Anda" id="rsvpName">
+      </div>
+      <div class="form-row">
+        <div class="fr-label">Kehadiran</div>
+        <select class="fr-input fr-select" id="rsvpStatus">
+          <option value="">Pilih...</option>
+          <option value="hadir">Hadir</option>
+          <option value="tidak">Tidak Hadir</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <div class="fr-label">Jumlah Tamu</div>
+        <div class="seg-control">
+          <button class="seg-btn on" onclick="selGuest(1,this)">1 orang</button>
+          <button class="seg-btn" onclick="selGuest(2,this)">2 orang</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="fr-label">Ucapan</div>
+        <textarea class="fr-input" placeholder="Tuliskan ucapan untuk Anita & Zarda..." id="rsvpMsg"></textarea>
+      </div>
+    </div>
+    <button class="ios-submit-btn reveal" onclick="submitRSVP()">Konfirmasi Kehadiran</button>
+  </section>
+
+  <!-- ── WISHES ── -->
+  <section class="ios-section" style="padding-top:8px">
+    <div class="ios-header">
+      <span class="ios-h-title">Ucapan <em>& Doa</em></span>
+    </div>
+    <div class="msg-list" id="msgList">
+      <div class="msg-bubble-wrap vis">
+        <div class="msg-avatar" style="background:rgba(10,132,255,.2);color:var(--blue)">A</div>
+        <div class="msg-content">
+          <div class="msg-sender">Ayu Rahmawati</div>
+          <div class="msg-bubble"><div class="msg-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu! 🌿</div></div>
+          <div class="msg-status">✓ Hadir · 2 tamu</div>
+        </div>
+      </div>
+      <div class="msg-bubble-wrap vis">
+        <div class="msg-avatar" style="background:rgba(94,92,230,.2);color:#5E5CE6">R</div>
+        <div class="msg-content">
+          <div class="msg-sender">Reza Firmansyah</div>
+          <div class="msg-bubble"><div class="msg-text">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan kebahagiaan. Aamiin!</div></div>
+          <div class="msg-status">✓ Hadir · 1 tamu</div>
+        </div>
+      </div>
+      <div class="msg-bubble-wrap vis">
+        <div class="msg-avatar" style="background:rgba(255,149,0,.2);color:#FF9500">S</div>
+        <div class="msg-content">
+          <div class="msg-sender">Sinta Dewi</div>
+          <div class="msg-bubble"><div class="msg-text">Wishing you a lifetime of love. Semoga langkah kalian selalu diberkahi Allah SWT 💙</div></div>
+          <div class="msg-status">✓ Hadir · 2 tamu</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-names">Anita & Zarda</div>
+    <p class="footer-body">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu berkenan hadir dan memberikan do'a restu.</p>
+    <p style="font-family:var(--font-serif);font-style:italic;font-size:18px;color:var(--label3);margin-bottom:24px">Kami yang berbahagia ❤️</p>
+    <p class="footer-brand">Digital Invitation by <a href="#">BridesSpace</a></p>
+  </footer>
+
+</div><!-- /app -->
+
+<!-- TAB BAR -->
+<nav class="tab-bar" id="tabBar">
+  <div class="tab-inner">
+    <a href="#home" class="tab-item on">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      Home
+    </a>
+    <a href="#couple" class="tab-item">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+      Pasangan
+    </a>
+    <a href="#event" class="tab-item">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+      Jadwal
+    </a>
+    <a href="#gift" class="tab-item">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2.18c.07-.23.18-.46.18-.71C18 3.47 16.53 2 14.71 2c-.87 0-1.65.36-2.22.93L12 3.4l-.49-.47C10.94 2.36 10.16 2 9.29 2 7.47 2 6 3.47 6 5.29c0 .25.11.48.18.71H4c-1.11 0-2 .89-2 2v13c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5.29-2c.47 0 .79.32.79.79S15.18 5.58 14.71 5.58h-1.53l.75-.75c.2-.2.49-.33.78-.33zM9.29 4c.29 0 .58.13.78.33l.75.75H9.29C8.82 5.08 8.5 4.76 8.5 4.29S8.82 4 9.29 4zM11 19H4v-6h7v6zm0-8H4V8h7v3zm9 8h-7v-6h7v6zm0-8h-7V8h7v3z"/></svg>
+      Hadiah
+    </a>
+    <a href="#rsvp" class="tab-item tab-badge has-notif">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      RSVP
+    </a>
+  </div>
+</nav>
+
+<!-- MUSIC BOTTOM SHEET -->
+<div class="music-sheet" id="musicSheet" onclick="closeMusicSheet(event)">
+  <div class="music-panel" onclick="e=>e.stopPropagation()">
+    <div class="panel-handle"></div>
+    <div class="panel-title">Now Playing</div>
+    <div class="music-artwork" id="musicArtwork">
+      <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=400&fit=crop&q=80" alt="">
+    </div>
+    <div class="music-meta">
+      <div class="music-title-big">Wedding Day</div>
+      <div class="music-artist-big">Anita & Zarda · Forever Anthem</div>
+    </div>
+    <div class="music-progress">
+      <div class="music-prog-bar" id="progBar" onclick="seekMusic(event)">
+        <div class="music-prog-fill" id="progFill" style="width:0%"></div>
+      </div>
+      <div class="music-times"><span id="progCur">0:00</span><span>3:24</span></div>
+    </div>
+    <div class="music-controls">
+      <button class="mc-btn" onclick="seekBack()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+      </button>
+      <button class="mc-btn mc-play" id="mcPlay" onclick="togglePlay()">
+        <svg id="mcPlayIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="mcPauseIcon" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+      </button>
+      <button class="mc-btn" onclick="seekFwd()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z"/></svg>
+      </button>
+    </div>
+    <div class="music-vol">
+      <span class="vol-icon">🔈</span>
+      <div class="vol-bar"><div class="vol-fill"></div></div>
+      <span class="vol-icon">🔊</span>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lb">
+  <div class="lb-header">
+    <span class="lb-header-title">Galeri Foto</span>
+    <span class="lb-close-btn" onclick="closeLB()">Selesai</span>
+  </div>
+  <div class="lb-main">
+    <img class="lb-img" id="lbImg" src="" alt="">
+  </div>
+  <div class="lb-footer">
+    <span class="lb-count-text" id="lbCt"></span>
+    <div class="lb-nav-btns">
+      <button class="lb-nav-btn" onclick="lbP()">‹</button>
+      <button class="lb-nav-btn" onclick="lbN()">›</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══════ DATA ══════ */
+const IMGS = [
+  "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=680&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=680&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&h=680&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=500&h=680&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=500&h=680&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=500&h=680&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=500&h=680&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=680&fit=crop&q=80",
+];
+
+/* ══════ STATE ══════ */
+let playing=false, progPct=0, progTimer=null;
+let gOff=0, gPaused=false, gOrig=0, gIW=0, gDot=0;
+let lbI=0, gCount=1;
+
+/* ══════ CLOCK ══════ */
+function tickClock(){
+  const n=new Date();
+  const h=n.getHours(), m=String(n.getMinutes()).padStart(2,'0');
+  const t=h+':'+m;
+  ['lockTime','lockClock'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t;});
+  const days=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+  const mons=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const ds=days[n.getDay()]+', '+n.getDate()+' '+mons[n.getMonth()]+' '+n.getFullYear();
+  const dd=document.getElementById('lockDate');if(dd)dd.textContent=ds;
+}
+tickClock(); setInterval(tickClock,15000);
+
+/* ══════ OPEN APP ══════ */
+function openApp(){
+  document.getElementById('lock').classList.add('unlock');
+  const app=document.getElementById('app');
+  setTimeout(()=>app.classList.add('show'),100);
+  document.getElementById('tabBar').classList.add('show');
+  setTimeout(initApp, 400);
+}
+
+function initApp(){
+  countdown();
+  buildGallery();
+  initReveal();
+  initTabHL();
+  // Expand Dynamic Island briefly to show music
+  expandIsland();
+}
+
+/* ══════ DYNAMIC ISLAND ══════ */
+function expandIsland(){
+  const di=document.getElementById('dynIsland');
+  di.classList.add('expanded');
+  setTimeout(()=>di.classList.remove('expanded'),3500);
+}
+
+/* ══════ MUSIC ══════ */
+function openMusicSheet(){
+  document.getElementById('musicSheet').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeMusicSheet(e){
+  if(e.target.id==='musicSheet'){
+    document.getElementById('musicSheet').classList.remove('open');
+    document.body.style.overflow='';
+  }
+}
+function togglePlay(){
+  playing=!playing;
+  const audio=document.getElementById('bgAudio');
+  if(playing){
+    audio.volume=.35; audio.play().catch(()=>{});
+    setPlayUI(true);
+    progTimer=setInterval(()=>{
+      progPct=Math.min(progPct+(100/204),100);
+      updateProg();
+      if(progPct>=100){progPct=0;}
+    },1000);
+  } else {
+    audio.pause(); clearInterval(progTimer);
+    setPlayUI(false);
+  }
+}
+function setPlayUI(on){
+  // Music sheet
+  document.getElementById('mcPlayIcon').style.display=on?'none':'block';
+  document.getElementById('mcPauseIcon').style.display=on?'block':'none';
+  document.getElementById('musicArtwork').classList.toggle('playing',on);
+  // Status bar
+  document.getElementById('asbPlayIcon').style.display=on?'none':'block';
+  document.getElementById('asbPauseIcon').style.display=on?'block':'none';
+  // Animate status bar EQ
+  animASBEq(on);
+  // Dynamic Island EQ bars
+  document.querySelectorAll('.di-eq-bar').forEach(b=>b.classList.toggle('stopped',!on));
+}
+function animASBEq(on){
+  const bars=document.querySelectorAll('#asbEq .asb-m-bar');
+  const base=[4,7,5,9,6];
+  if(on){
+    let af;
+    function t(){
+      bars.forEach(b=>b.style.height=(Math.random()*8+3)+'px');
+      af=requestAnimationFrame(t);
+    }
+    window._asbEqAF=t; t();
+  } else {
+    cancelAnimationFrame(window._asbEqAF);
+    bars.forEach((b,i)=>b.style.height=base[i]+'px');
+  }
+}
+function updateProg(){
+  document.getElementById('progFill').style.width=progPct+'%';
+  const s=Math.round((progPct/100)*204);
+  document.getElementById('progCur').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
+}
+function seekMusic(e){
+  const bar=document.getElementById('progBar');
+  const r=bar.getBoundingClientRect();
+  progPct=Math.max(0,Math.min(100,((e.clientX-r.left)/r.width)*100));
+  updateProg();
+}
+function seekBack(){progPct=Math.max(0,progPct-10);updateProg();}
+function seekFwd(){progPct=Math.min(100,progPct+10);updateProg();}
+
+/* ══════ COUNTDOWN ══════ */
+function countdown(){
+  const t=new Date('2026-05-24T08:00:00');
+  function tick(){
+    const d=t-new Date();
+    if(d<=0){['cdD','cdH','cdM','cdS'].forEach(id=>document.getElementById(id).textContent='00');return;}
+    document.getElementById('cdD').textContent=String(Math.floor(d/86400000)).padStart(2,'0');
+    document.getElementById('cdH').textContent=String(Math.floor((d%86400000)/3600000)).padStart(2,'0');
+    document.getElementById('cdM').textContent=String(Math.floor((d%3600000)/60000)).padStart(2,'0');
+    document.getElementById('cdS').textContent=String(Math.floor((d%60000)/1000)).padStart(2,'0');
+  }
+  tick();setInterval(tick,1000);
+}
+
+/* ══════ GALLERY ══════ */
+function buildGallery(){
+  const tr=document.getElementById('galTrack');
+  const dt=document.getElementById('galDots');
+  gOrig=IMGS.length;
+  [...IMGS,...IMGS,...IMGS].forEach((src,i)=>{
+    const ri=i%gOrig;
+    const el=document.createElement('div');
+    el.className='gal-item';
+    el.innerHTML=`<img src="${src}" alt="Foto ${ri+1}" loading="lazy">`;
+    el.addEventListener('click',()=>openLB(ri));
+    tr.appendChild(el);
+  });
+  IMGS.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='gal-dot'+(i===0?' on':'');
+    d.addEventListener('click',()=>jumpGal(i));
+    dt.appendChild(d);
+  });
+  requestAnimationFrame(()=>{
+    const first=tr.querySelector('.gal-item');
+    if(!first)return;
+    gIW=first.offsetWidth+4;
+    gOff=gOrig*gIW;
+    tr.style.transform=`translateX(-${gOff}px)`;
+    runGal();
+  });
+}
+function runGal(){
+  const tr=document.getElementById('galTrack');
+  if(!tr)return;
+  const tot=gOrig*gIW;
+  function tick(){
+    if(!gPaused){
+      gOff+=0.5;
+      if(gOff>=tot*2)gOff-=tot;
+      if(gOff<tot)gOff+=tot;
+      tr.style.transform=`translateX(-${gOff}px)`;
+      const ri=Math.floor(((gOff-tot)/gIW))%gOrig;
+      const di=((ri%gOrig)+gOrig)%gOrig;
+      if(di!==gDot){
+        gDot=di;
+        document.querySelectorAll('.gal-dot').forEach((d,i)=>d.classList.toggle('on',i===gDot));
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+function pauseGal(){gPaused=true;}
+function resumeGal(){gPaused=false;}
+function jumpGal(i){const tot=gOrig*gIW;gOff=tot+i*gIW;document.getElementById('galTrack').style.transform=`translateX(-${gOff}px)`;}
+
+/* ══════ LIGHTBOX ══════ */
+function openLB(i){lbI=i;showLB();document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden';pauseGal();}
+function closeLB(){document.getElementById('lb').classList.remove('open');document.body.style.overflow='';resumeGal();}
+function lbP(){lbI=(lbI-1+IMGS.length)%IMGS.length;showLB();}
+function lbN(){lbI=(lbI+1)%IMGS.length;showLB();}
+function showLB(){document.getElementById('lbImg').src=IMGS[lbI];document.getElementById('lbCt').textContent=(lbI+1)+' / '+IMGS.length;}
+document.addEventListener('keydown',e=>{if(!document.getElementById('lb').classList.contains('open'))return;if(e.key==='Escape')closeLB();if(e.key==='ArrowLeft')lbP();if(e.key==='ArrowRight')lbN();});
+
+/* ══════ REVEAL ══════ */
+function initReveal(){
+  const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');});},{threshold:.1});
+  document.querySelectorAll('.reveal,.af-item,.msg-bubble-wrap').forEach(el=>obs.observe(el));
+}
+
+/* ══════ TAB ══════ */
+function initTabHL(){
+  const obs=new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(e.isIntersecting){
+        document.querySelectorAll('.tab-item').forEach(t=>t.classList.remove('on'));
+        const a=document.querySelector(`.tab-item[href="#${e.target.id}"]`);
+        if(a)a.classList.add('on');
+      }
+    });
+  },{rootMargin:'-40% 0px -40% 0px'});
+  ['home','couple','event','gift','rsvp'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el);});
+}
+
+/* ══════ RSVP ══════ */
+function selGuest(n,btn){gCount=n;document.querySelectorAll('.seg-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+function submitRSVP(){
+  const name=document.getElementById('rsvpName').value.trim();
+  const status=document.getElementById('rsvpStatus').value;
+  const msg=document.getElementById('rsvpMsg').value.trim();
+  if(!name||!status){toast('Mohon isi nama dan status kehadiran');return;}
+  const ini=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const pals=[
+    {bg:'rgba(10,132,255,.2)',c:'var(--blue)'},
+    {bg:'rgba(94,92,230,.2)',c:'#5E5CE6'},
+    {bg:'rgba(255,149,0,.2)',c:'#FF9500'},
+    {bg:'rgba(48,209,88,.2)',c:'#30D158'},
+    {bg:'rgba(255,69,58,.2)',c:'#FF453A'},
+  ];
+  const p=pals[Math.floor(Math.random()*pals.length)];
+  const stxt=status==='hadir'?`✓ Hadir · ${gCount} orang`:'✗ Tidak Hadir';
+  const wrap=document.createElement('div');
+  wrap.className='msg-bubble-wrap';
+  wrap.innerHTML=`<div class="msg-avatar" style="background:${p.bg};color:${p.c}">${ini}</div><div class="msg-content"><div class="msg-sender">${name}</div><div class="msg-bubble"><div class="msg-text">${msg||'Selamat dan semoga bahagia selalu! 💙'}</div></div><div class="msg-status">${stxt}</div></div>`;
+  document.getElementById('msgList').prepend(wrap);
+  setTimeout(()=>wrap.classList.add('vis'),50);
+  document.getElementById('rsvpName').value='';
+  document.getElementById('rsvpStatus').value='';
+  document.getElementById('rsvpMsg').value='';
+  // Remove badge
+  document.querySelector('.tab-badge').classList.remove('has-notif');
+  toast('Terima kasih! Konfirmasi berhasil 🎉');
+  window.scrollTo({top:document.querySelector('.wishes-section')||document.getElementById('msgList'),behavior:'smooth'});
+}
+
+/* ══════ COPY ══════ */
+function copyNum(num,btn){
+  navigator.clipboard.writeText(num).then(()=>{
+    btn.classList.add('copied');
+    btn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Tersalin';
+    toast('Nomor rekening tersalin! 👍');
+    setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML='<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> Salin';},2500);
+  }).catch(()=>toast('Salin manual: '+num));
+}
+
+/* ══════ TOAST ══════ */
+let _tt;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('on'),2800);}
+</script>
+</body>
+</html>

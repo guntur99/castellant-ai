@@ -1,0 +1,1670 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>BRIDGEFLIX — Anita & Zarda</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Barlow+Condensed:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+
+/* ═══════════════════════════════════════
+   TOKENS
+═══════════════════════════════════════ */
+:root {
+  --nf-red:       #E50914;
+  --nf-red-dark:  #B20710;
+  --nf-red-glow:  rgba(229,9,20,0.35);
+  --nf-bg:        #141414;
+  --nf-bg2:       #0F0F0F;
+  --nf-surface:   #1F1F1F;
+  --nf-card:      #2A2A2A;
+  --nf-border:    rgba(255,255,255,0.08);
+  --nf-white:     #FFFFFF;
+  --nf-gray1:     #E5E5E5;
+  --nf-gray2:     #B3B3B3;
+  --nf-gray3:     #808080;
+  --nf-gray4:     #404040;
+  --nf-gold:      #F5C518;
+  --font-title:   'Bebas Neue', 'Impact', sans-serif;
+  --font-cond:    'Barlow Condensed', sans-serif;
+  --font-body:    'Barlow', sans-serif;
+  --ease:         cubic-bezier(0.25,0.46,0.45,0.94);
+  --spring:       cubic-bezier(0.34,1.56,0.64,1);
+}
+
+/* ═══════════════════════════════════════
+   BASE
+═══════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--nf-bg2);
+  color: var(--nf-white);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  cursor: default;
+}
+::selection { background: rgba(229,9,20,.4); }
+
+/* scanline grain */
+body::before {
+  content:''; position:fixed; inset:0; pointer-events:none; z-index:9990;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,.03) 2px,
+    rgba(0,0,0,.03) 4px
+  );
+}
+
+/* ═══════════════════════════════════════
+   SPLASH / INTRO
+═══════════════════════════════════════ */
+#splash {
+  position:fixed; inset:0; z-index:9999;
+  background:#000;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  transition: opacity .8s var(--ease), transform .8s var(--ease);
+}
+#splash.out { opacity:0; transform:scale(1.04); pointer-events:none; }
+
+.splash-logo {
+  position:relative; margin-bottom:60px;
+}
+.logo-nf {
+  font-family: var(--font-title);
+  font-size: clamp(48px, 14vw, 80px);
+  letter-spacing: -2px;
+  color: var(--nf-red);
+  display:flex; align-items:center; gap:6px;
+  text-shadow: 0 0 60px var(--nf-red-glow);
+  animation: logo-in .8s var(--ease) both;
+}
+.logo-nf .logo-bridge { color: var(--nf-white); }
+.logo-nf .logo-flix  { color: var(--nf-red); }
+.logo-tagline {
+  font-family: var(--font-cond);
+  font-size:13px; letter-spacing:.4em;
+  text-transform:uppercase; color: var(--nf-gray3);
+  text-align:center; margin-top:8px;
+  animation: fade-up .8s var(--ease) .2s both;
+}
+@keyframes logo-in {
+  from { opacity:0; transform:scale(.85); filter:blur(20px); }
+  to   { opacity:1; transform:scale(1);   filter:blur(0); }
+}
+@keyframes fade-up {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* Profiles row */
+.profiles-label {
+  font-family: var(--font-body); font-weight:400;
+  font-size: clamp(20px,4vw,28px);
+  color: var(--nf-gray1); margin-bottom:32px;
+  animation: fade-up .7s var(--ease) .4s both;
+}
+.profiles-row {
+  display:flex; gap:20px; flex-wrap:wrap; justify-content:center;
+  animation: fade-up .7s var(--ease) .55s both;
+}
+.profile-item {
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+  cursor:pointer; transition:transform .2s var(--spring);
+}
+.profile-item:hover { transform:scale(1.08); }
+.profile-item:hover .profile-name { color:var(--nf-white); }
+.profile-avatar {
+  width:clamp(80px,18vw,110px);
+  height:clamp(80px,18vw,110px);
+  border-radius:6px; overflow:hidden;
+  border:3px solid transparent;
+  transition:border-color .2s;
+  position:relative;
+}
+.profile-item:hover .profile-avatar { border-color:var(--nf-white); }
+.profile-item.selected .profile-avatar { border-color:var(--nf-white); }
+.profile-avatar img { width:100%; height:100%; object-fit:cover; display:block; }
+.profile-avatar .profile-letter {
+  width:100%; height:100%;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-title); font-size:42px;
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+}
+.profile-name { font-size:14px; color:var(--nf-gray2); font-weight:400; }
+.profile-kids-badge {
+  position:absolute; bottom:4px; right:4px;
+  background:var(--nf-red); border-radius:4px;
+  font-size:9px; font-weight:700; padding:2px 5px;
+  font-family:var(--font-cond); letter-spacing:.05em;
+}
+
+.splash-btn {
+  margin-top:40px;
+  background: var(--nf-red); color: var(--nf-white);
+  font-family: var(--font-body); font-size:16px; font-weight:600;
+  padding:14px 48px; border-radius:4px; border:none;
+  cursor:pointer; letter-spacing:.02em;
+  transition:background .15s, transform .1s;
+  animation: fade-up .7s var(--ease) .7s both;
+}
+.splash-btn:hover { background:var(--nf-red-dark); }
+.splash-btn:active { transform:scale(.97); }
+
+/* ═══════════════════════════════════════
+   APP
+═══════════════════════════════════════ */
+#app { opacity:0; transition:opacity .7s var(--ease) .1s; }
+#app.show { opacity:1; }
+
+/* ═══════════════════════════════════════
+   NAVBAR
+═══════════════════════════════════════ */
+.nf-nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  padding:0 4% ;
+  background:linear-gradient(180deg,rgba(0,0,0,.85) 0%,transparent 100%);
+  transition:background .4s;
+  display:flex; align-items:center; justify-content:space-between;
+  height:68px;
+}
+.nf-nav.solid {
+  background:var(--nf-bg2);
+  border-bottom:1px solid var(--nf-border);
+}
+.nav-logo {
+  font-family: var(--font-title);
+  font-size:32px; letter-spacing:-1px;
+  color:var(--nf-red);
+  text-shadow:0 0 20px var(--nf-red-glow);
+  flex-shrink:0;
+}
+.nav-links {
+  display:flex; gap:24px; align-items:center;
+  list-style:none;
+}
+.nav-links a {
+  font-size:14px; color:var(--nf-gray2); text-decoration:none;
+  transition:color .15s; font-weight:400;
+}
+.nav-links a:hover, .nav-links a.on { color:var(--nf-white); }
+.nav-right { display:flex; align-items:center; gap:16px; }
+.nav-search {
+  background:none; border:none; color:var(--nf-gray2);
+  cursor:pointer; padding:4px; transition:color .15s;
+}
+.nav-search:hover { color:var(--nf-white); }
+.nav-avatar {
+  width:32px; height:32px; border-radius:4px;
+  background:linear-gradient(135deg,#e50914,#831010);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-title); font-size:16px; cursor:pointer;
+}
+
+/* ═══════════════════════════════════════
+   HERO BANNER
+═══════════════════════════════════════ */
+.hero {
+  position:relative; height:100svh; min-height:560px;
+  overflow:hidden; display:flex; align-items:flex-end;
+}
+.hero-bg {
+  position:absolute; inset:0;
+  background:url('https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&q=85') center/cover no-repeat;
+}
+.hero-bg::after {
+  content:''; position:absolute; inset:0;
+  background:
+    linear-gradient(90deg, rgba(0,0,0,.85) 0%, rgba(0,0,0,.2) 60%, transparent 100%),
+    linear-gradient(0deg, rgba(0,0,0,1) 0%, rgba(0,0,0,.4) 25%, transparent 60%);
+}
+
+/* Floating genre badges */
+.hero-badges {
+  position:absolute; top:30%; right:5%;
+  display:flex; flex-direction:column; gap:8px; z-index:2;
+  opacity:0; animation:fade-up .8s var(--ease) 1s forwards;
+}
+.genre-badge {
+  background:rgba(0,0,0,.6); border:1px solid var(--nf-border);
+  backdrop-filter:blur(12px);
+  border-radius:4px; padding:6px 14px;
+  font-family:var(--font-cond); font-size:12px;
+  letter-spacing:.12em; text-transform:uppercase; color:var(--nf-gray2);
+}
+.genre-badge.hot {
+  background:rgba(229,9,20,.15); border-color:rgba(229,9,20,.3);
+  color:var(--nf-red);
+}
+
+.hero-content {
+  position:relative; z-index:2;
+  padding:0 4% 80px;
+  max-width:640px;
+}
+.hero-eyebrow {
+  font-family:var(--font-cond); font-size:13px; font-weight:600;
+  letter-spacing:.25em; text-transform:uppercase;
+  color:var(--nf-red); margin-bottom:12px;
+  display:flex; align-items:center; gap:8px;
+}
+.hero-eyebrow::before {
+  content:''; display:inline-block; width:24px; height:2px;
+  background:var(--nf-red);
+}
+.hero-title {
+  font-family:var(--font-title);
+  font-size:clamp(56px,12vw,100px);
+  line-height:.92; letter-spacing:1px;
+  margin-bottom:16px;
+  text-shadow:2px 4px 30px rgba(0,0,0,.8);
+}
+.hero-meta {
+  display:flex; align-items:center; gap:12px;
+  margin-bottom:16px; flex-wrap:wrap;
+}
+.hero-match { color:#4CAF50; font-weight:600; font-size:15px; }
+.hero-year, .hero-rating { font-size:14px; color:var(--nf-gray2); }
+.hero-rating-badge {
+  border:1px solid var(--nf-gray3);
+  padding:2px 6px; font-size:11px; font-weight:600;
+  color:var(--nf-gray2); border-radius:2px;
+}
+.hero-desc {
+  font-size:clamp(14px,2.5vw,16px); line-height:1.7;
+  color:var(--nf-gray1); margin-bottom:24px;
+  max-width:520px;
+  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+}
+.hero-btns { display:flex; gap:12px; flex-wrap:wrap; }
+.nf-btn {
+  display:inline-flex; align-items:center; gap:8px;
+  font-family:var(--font-body); font-size:16px; font-weight:600;
+  padding:12px 28px; border-radius:4px; border:none;
+  cursor:pointer; transition:background .15s, opacity .15s, transform .1s;
+  text-decoration:none; white-space:nowrap;
+}
+.nf-btn:active { transform:scale(.97); }
+.nf-btn-play {
+  background:var(--nf-white); color:#000;
+}
+.nf-btn-play:hover { background:#ccc; }
+.nf-btn-play svg { width:20px; height:20px; }
+.nf-btn-info {
+  background:rgba(109,109,110,.7); color:var(--nf-white);
+  backdrop-filter:blur(8px);
+}
+.nf-btn-info:hover { background:rgba(109,109,110,.5); }
+.nf-btn-info svg { width:20px; height:20px; }
+
+/* Progress bar under hero */
+.hero-progress {
+  position:absolute; bottom:0; left:0; right:0; z-index:3;
+  height:3px; background:rgba(255,255,255,.1);
+}
+.hero-progress-fill {
+  height:100%; background:var(--nf-red);
+  width:0%; transition:width .5s linear;
+}
+
+/* ═══════════════════════════════════════
+   SECTION ROWS
+═══════════════════════════════════════ */
+.content-area { padding:0 0 100px; }
+.row-section { padding:32px 0; }
+.row-label {
+  font-family:var(--font-cond); font-size:clamp(16px,3.5vw,22px);
+  font-weight:600; letter-spacing:.04em;
+  color:var(--nf-gray1); padding:0 4% 14px;
+  display:flex; align-items:center; gap:10px;
+}
+.row-label .row-label-red { color:var(--nf-red); }
+.row-label .row-see-all {
+  font-size:13px; color:#54b9c5; font-weight:500;
+  margin-left:auto; cursor:pointer; opacity:0;
+  transition:opacity .2s;
+}
+.row-section:hover .row-see-all { opacity:1; }
+
+/* Horizontal scroll strip */
+.row-strip {
+  display:flex; gap:8px;
+  overflow-x:auto; overflow-y:visible;
+  padding:8px 4% 16px;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.row-strip::-webkit-scrollbar { display:none; }
+
+/* Card */
+.nf-card {
+  flex-shrink:0;
+  width:clamp(140px,36vw,200px);
+  border-radius:4px; overflow:hidden;
+  position:relative; cursor:pointer;
+  transition:transform .3s var(--ease), box-shadow .3s;
+  background:var(--nf-card);
+}
+.nf-card:hover {
+  transform:scale(1.08);
+  box-shadow:0 16px 40px rgba(0,0,0,.7), 0 0 0 2px rgba(255,255,255,.1);
+  z-index:10;
+}
+.nf-card img {
+  width:100%; aspect-ratio:2/3;
+  object-fit:cover; display:block;
+  transition:filter .3s;
+}
+.nf-card:hover img { filter:brightness(.7); }
+.card-overlay {
+  position:absolute; inset:0;
+  background:linear-gradient(0deg,rgba(0,0,0,.9) 0%,transparent 50%);
+  opacity:0; transition:opacity .3s; padding:12px;
+  display:flex; flex-direction:column; justify-content:flex-end;
+}
+.nf-card:hover .card-overlay { opacity:1; }
+.card-title { font-family:var(--font-cond); font-size:13px; font-weight:600; margin-bottom:4px; line-height:1.3; }
+.card-tags { display:flex; gap:4px; flex-wrap:wrap; }
+.card-tag { font-size:9px; background:rgba(229,9,20,.3); border:1px solid rgba(229,9,20,.4); border-radius:2px; padding:1px 5px; color:#ff8087; font-family:var(--font-cond); letter-spacing:.08em; }
+.card-mini-btn {
+  position:absolute; top:8px; right:8px;
+  width:28px; height:28px; border-radius:50%;
+  background:rgba(0,0,0,.6); backdrop-filter:blur(8px);
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; transition:opacity .2s;
+  border:1px solid rgba(255,255,255,.15);
+}
+.nf-card:hover .card-mini-btn { opacity:1; }
+.card-mini-btn svg { width:12px; height:12px; }
+
+/* Wide card (16:9) */
+.nf-card-wide {
+  width:clamp(200px,50vw,280px);
+}
+.nf-card-wide img { aspect-ratio:16/9; }
+
+/* ═══════════════════════════════════════
+   EPISODE PANEL — love story
+═══════════════════════════════════════ */
+.episode-section { padding:32px 4%; }
+.ep-header {
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom:20px;
+}
+.ep-title-row {
+  font-family:var(--font-title); font-size:clamp(22px,5vw,36px);
+  letter-spacing:.02em;
+}
+.ep-season-sel {
+  background:var(--nf-surface); border:1px solid var(--nf-border);
+  color:var(--nf-white); font-family:var(--font-body);
+  font-size:15px; padding:8px 14px; border-radius:4px;
+  cursor:pointer; appearance:none;
+}
+.episode-card {
+  display:flex; gap:14px; padding:14px 0;
+  border-bottom:1px solid var(--nf-border);
+  cursor:pointer; transition:background .15s;
+  border-radius:4px;
+}
+.episode-card:last-child { border-bottom:none; }
+.episode-card:hover { background:rgba(255,255,255,.03); }
+.ep-num {
+  font-family:var(--font-title); font-size:28px;
+  color:var(--nf-gray3); flex-shrink:0;
+  width:32px; text-align:center; align-self:center;
+}
+.ep-thumb {
+  flex-shrink:0; width:clamp(100px,25vw,140px);
+  aspect-ratio:16/9; border-radius:4px; overflow:hidden;
+  background:var(--nf-card); position:relative;
+}
+.ep-thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+.ep-thumb-overlay {
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(0,0,0,.3); opacity:0; transition:opacity .2s;
+}
+.episode-card:hover .ep-thumb-overlay { opacity:1; }
+.ep-thumb-play {
+  width:36px; height:36px; border-radius:50%;
+  background:rgba(255,255,255,.9);
+  display:flex; align-items:center; justify-content:center;
+}
+.ep-thumb-play svg { width:16px; height:16px; color:#000; }
+.ep-body { flex:1; min-width:0; }
+.ep-name { font-size:16px; font-weight:600; margin-bottom:4px; }
+.ep-duration { font-size:13px; color:var(--nf-red); margin-bottom:6px; font-family:var(--font-cond); letter-spacing:.05em; }
+.ep-desc { font-size:13px; color:var(--nf-gray2); line-height:1.6;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.ep-progress { margin-top:8px; height:3px; background:var(--nf-gray4); border-radius:2px; }
+.ep-progress-fill { height:100%; background:var(--nf-red); border-radius:2px; }
+
+/* ═══════════════════════════════════════
+   EVENT / PREMIERE INFO
+═══════════════════════════════════════ */
+.premiere-section { padding:0 4% 32px; }
+.premiere-banner {
+  background:linear-gradient(135deg, #1a0a0a, #2d0505);
+  border:1px solid rgba(229,9,20,.2);
+  border-radius:8px; overflow:hidden; position:relative;
+}
+.premiere-banner::before {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(229,9,20,.08),transparent);
+}
+.pb-content { position:relative; z-index:1; padding:28px; }
+.pb-label {
+  font-family:var(--font-cond); font-size:11px; letter-spacing:.3em;
+  text-transform:uppercase; color:var(--nf-red); margin-bottom:10px;
+  display:flex; align-items:center; gap:8px;
+}
+.pb-label::before {
+  content:''; display:inline-block; width:6px; height:6px;
+  border-radius:50%; background:var(--nf-red);
+  animation:blink 1.5s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+.pb-title { font-family:var(--font-title); font-size:clamp(28px,7vw,52px); margin-bottom:8px; line-height:1; }
+.pb-meta { font-size:15px; color:var(--nf-gray2); margin-bottom:20px; line-height:1.6; }
+.premiere-grid {
+  display:grid; grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+@media(max-width:440px){.premiere-grid{grid-template-columns:1fr}}
+.pb-info-card {
+  background:rgba(0,0,0,.4); border-radius:6px;
+  border:1px solid var(--nf-border); padding:16px;
+}
+.pb-ic-label { font-family:var(--font-cond); font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--nf-gray3); margin-bottom:6px; }
+.pb-ic-val { font-size:16px; font-weight:600; }
+.pb-ic-sub { font-size:12px; color:var(--nf-gray3); margin-top:3px; }
+.pb-ic-icon { font-size:22px; margin-bottom:8px; }
+.maps-link {
+  display:inline-flex; align-items:center; gap:6px;
+  color:var(--nf-red); font-size:14px; text-decoration:none;
+  margin-top:8px; transition:opacity .15s;
+}
+.maps-link:hover { opacity:.7; }
+.maps-link svg { width:14px; height:14px; }
+
+/* ═══════════════════════════════════════
+   COUNTDOWN — "Time Until Premiere"
+═══════════════════════════════════════ */
+.countdown-section {
+  padding:0 4% 32px;
+}
+.cd-card {
+  background:var(--nf-surface); border-radius:8px;
+  border:1px solid var(--nf-border); padding:24px;
+  display:flex; flex-direction:column; align-items:center; gap:20px;
+}
+.cd-top {
+  text-align:center;
+}
+.cd-eyebrow { font-family:var(--font-cond); font-size:11px; letter-spacing:.3em; text-transform:uppercase; color:var(--nf-red); margin-bottom:8px; }
+.cd-headline { font-family:var(--font-title); font-size:clamp(20px,5vw,32px); }
+.cd-nums { display:flex; gap:12px; flex-wrap:wrap; justify-content:center; }
+.cd-box {
+  min-width:72px; padding:14px 12px 12px;
+  background:var(--nf-card); border-radius:6px;
+  border:1px solid var(--nf-border); text-align:center;
+  position:relative; overflow:hidden;
+}
+.cd-box::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:1px;
+  background:var(--nf-red); opacity:.5;
+}
+.cd-n { font-family:var(--font-title); font-size:44px; line-height:1; color:var(--nf-white); }
+.cd-u { font-family:var(--font-cond); font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--nf-gray3); margin-top:4px; }
+
+/* ═══════════════════════════════════════
+   COUPLE CARDS — "Cast"
+═══════════════════════════════════════ */
+.cast-section { padding:0 4% 32px; }
+.cast-label {
+  font-family:var(--font-cond); font-size:clamp(16px,3.5vw,22px);
+  font-weight:600; color:var(--nf-gray1); margin-bottom:16px;
+  display:flex; align-items:center; gap:8px;
+}
+.cast-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media(max-width:400px){.cast-grid{grid-template-columns:1fr}}
+.cast-card {
+  background:var(--nf-surface); border-radius:8px;
+  border:1px solid var(--nf-border);
+  overflow:hidden; position:relative;
+  transition:border-color .2s, transform .25s var(--ease);
+}
+.cast-card:hover { border-color:rgba(229,9,20,.4); transform:scale(1.02); }
+.cast-photo {
+  width:100%; aspect-ratio:3/4; position:relative; overflow:hidden;
+}
+.cast-photo img { width:100%; height:100%; object-fit:cover; display:block; filter:grayscale(20%); transition:filter .3s; }
+.cast-card:hover .cast-photo img { filter:grayscale(0%); }
+.cast-photo-overlay {
+  position:absolute; inset:0;
+  background:linear-gradient(0deg,rgba(20,20,20,1) 0%,transparent 50%);
+}
+.cast-body { padding:14px; }
+.cast-role {
+  font-family:var(--font-cond); font-size:10px; letter-spacing:.2em;
+  text-transform:uppercase; color:var(--nf-red); margin-bottom:4px;
+}
+.cast-name { font-family:var(--font-cond); font-size:20px; font-weight:700; line-height:1.1; margin-bottom:6px; }
+.cast-info { font-size:13px; color:var(--nf-gray2); line-height:1.55; }
+.cast-imdb {
+  margin-top:10px; display:flex; align-items:center; gap:6px;
+}
+.imdb-badge {
+  background:var(--nf-gold); color:#000;
+  font-size:10px; font-weight:800; padding:2px 6px; border-radius:2px;
+  font-family:var(--font-cond); letter-spacing:.04em;
+}
+.imdb-score { font-size:12px; color:var(--nf-gray2); }
+
+/* ═══════════════════════════════════════
+   GALLERY — "Screenshots"
+═══════════════════════════════════════ */
+.gallery-section { padding:0 0 32px; }
+.gal-header { padding:0 4% 14px; display:flex; align-items:center; justify-content:space-between; }
+.gal-strip-wrap { overflow:hidden; position:relative; }
+.gal-fade-l { position:absolute; left:0; top:0; bottom:0; width:60px; background:linear-gradient(90deg,var(--nf-bg2),transparent); z-index:2; pointer-events:none; }
+.gal-fade-r { position:absolute; right:0; top:0; bottom:0; width:60px; background:linear-gradient(270deg,var(--nf-bg2),transparent); z-index:2; pointer-events:none; }
+.gal-track { display:flex; gap:6px; will-change:transform; padding:0 4%; }
+.gal-item {
+  flex-shrink:0;
+  width:clamp(180px,45vw,240px);
+  aspect-ratio:16/9;
+  border-radius:4px; overflow:hidden;
+  background:var(--nf-card); cursor:pointer; position:relative;
+  transition:transform .3s var(--ease), box-shadow .3s;
+}
+.gal-item:hover { transform:scale(1.05); box-shadow:0 12px 30px rgba(0,0,0,.6); z-index:5; }
+.gal-item img { width:100%; height:100%; object-fit:cover; display:block; transition:filter .3s; }
+.gal-item:hover img { filter:brightness(.6); }
+.gal-item-overlay {
+  position:absolute; inset:0;
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; transition:opacity .2s;
+}
+.gal-item:hover .gal-item-overlay { opacity:1; }
+.gal-play-btn {
+  width:44px; height:44px; border-radius:50%;
+  background:rgba(255,255,255,.9);
+  display:flex; align-items:center; justify-content:center;
+}
+.gal-play-btn svg { width:18px; height:18px; color:#000; }
+.gal-dots { display:flex; justify-content:center; gap:5px; padding:14px 4% 0; }
+.gal-dot { width:4px; height:4px; border-radius:50%; background:var(--nf-gray4); transition:background .25s, width .25s; cursor:pointer; }
+.gal-dot.on { background:var(--nf-red); width:16px; border-radius:2px; }
+
+/* ═══════════════════════════════════════
+   GIFT — "Purchase / Rent"
+═══════════════════════════════════════ */
+.gift-section { padding:0 4% 32px; }
+.gift-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media(max-width:420px){.gift-grid{grid-template-columns:1fr}}
+.gift-card {
+  background:var(--nf-surface); border-radius:8px;
+  border:1px solid var(--nf-border); padding:20px;
+  position:relative; overflow:hidden;
+  transition:border-color .2s;
+}
+.gift-card:hover { border-color:rgba(229,9,20,.3); }
+.gift-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:var(--nf-red);
+}
+.gc-label { font-family:var(--font-cond); font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--nf-gray3); margin-bottom:6px; }
+.gc-bank { font-family:var(--font-title); font-size:30px; letter-spacing:.02em; margin-bottom:4px; }
+.gc-name { font-size:13px; color:var(--nf-gray2); margin-bottom:16px; }
+.gc-num { font-family:'Courier New',monospace; font-size:15px; letter-spacing:.1em; color:var(--nf-gray1); margin-bottom:14px; }
+.gc-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  background:var(--nf-red); color:var(--nf-white);
+  font-family:var(--font-body); font-size:13px; font-weight:600;
+  padding:8px 16px; border-radius:4px; border:none; cursor:pointer;
+  transition:background .15s; letter-spacing:.02em;
+}
+.gc-btn:hover { background:var(--nf-red-dark); }
+.gc-btn.done { background:rgba(76,175,80,.8); }
+
+/* ═══════════════════════════════════════
+   RSVP — "Leave a Review"
+═══════════════════════════════════════ */
+.rsvp-section { padding:0 4% 32px; }
+.review-stats {
+  display:flex; gap:12px; margin-bottom:20px; flex-wrap:wrap;
+}
+.rs-item {
+  background:var(--nf-surface); border-radius:6px;
+  border:1px solid var(--nf-border); padding:16px 20px;
+  text-align:center; flex:1; min-width:80px;
+}
+.rs-num { font-family:var(--font-title); font-size:38px; color:var(--nf-red); line-height:1; }
+.rs-lbl { font-family:var(--font-cond); font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:var(--nf-gray3); margin-top:4px; }
+.nf-form { background:var(--nf-surface); border-radius:8px; border:1px solid var(--nf-border); overflow:hidden; }
+.nf-field { padding:0 16px; border-bottom:1px solid var(--nf-border); }
+.nf-field:last-of-type { border-bottom:none; }
+.nf-field-label { font-family:var(--font-cond); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--nf-gray3); padding-top:12px; margin-bottom:4px; }
+.nf-input {
+  width:100%; background:transparent; border:none; outline:none;
+  color:var(--nf-white); font-family:var(--font-body); font-size:16px;
+  padding:0 0 12px; caret-color:var(--nf-red);
+  -webkit-appearance:none;
+}
+.nf-input::placeholder { color:var(--nf-gray4); }
+.nf-select { appearance:none; cursor:pointer; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23808080' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 0 center; padding-right:20px; }
+textarea.nf-input { min-height:80px; resize:vertical; padding-top:4px; }
+.rating-row { display:flex; gap:6px; padding:8px 0 12px; }
+.star-btn {
+  font-size:28px; background:none; border:none; cursor:pointer;
+  transition:transform .15s var(--spring); filter:grayscale(1);
+  line-height:1;
+}
+.star-btn.lit { filter:grayscale(0); transform:scale(1.15); }
+.star-btn:hover { transform:scale(1.2); filter:grayscale(0); }
+.guest-btns { display:flex; gap:8px; padding:8px 0 12px; }
+.gb-btn {
+  flex:1; background:var(--nf-card); border:1px solid var(--nf-border);
+  color:var(--nf-gray2); font-family:var(--font-body); font-size:15px;
+  padding:10px; border-radius:4px; cursor:pointer; transition:all .15s;
+}
+.gb-btn.on { background:rgba(229,9,20,.15); border-color:var(--nf-red); color:var(--nf-red); font-weight:600; }
+.nf-submit {
+  width:100%; background:var(--nf-red); color:var(--nf-white);
+  font-family:var(--font-body); font-size:16px; font-weight:700;
+  padding:15px; border:none; border-radius:6px; cursor:pointer;
+  transition:background .15s, transform .1s; letter-spacing:.02em;
+  margin-top:12px;
+}
+.nf-submit:hover { background:var(--nf-red-dark); }
+.nf-submit:active { transform:scale(.98); }
+
+/* ═══════════════════════════════════════
+   REVIEWS / WISHES
+═══════════════════════════════════════ */
+.reviews-section { padding:0 4% 32px; }
+.review-list { display:flex; flex-direction:column; gap:16px; }
+.review-card {
+  background:var(--nf-surface); border-radius:8px;
+  border:1px solid var(--nf-border); padding:18px;
+  opacity:0; transform:translateY(16px);
+  transition:opacity .5s var(--ease), transform .5s var(--ease);
+}
+.review-card.vis { opacity:1; transform:translateY(0); }
+.rc-top { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.rc-avatar {
+  width:38px; height:38px; border-radius:4px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-title); font-size:20px; flex-shrink:0;
+}
+.rc-name { font-size:15px; font-weight:600; }
+.rc-stars { display:flex; gap:2px; margin-top:2px; }
+.rc-star { font-size:12px; }
+.rc-status { margin-left:auto; font-family:var(--font-cond); font-size:11px; letter-spacing:.1em; text-transform:uppercase; }
+.rc-status.hadir { color:#4CAF50; }
+.rc-status.tidak { color:var(--nf-gray3); }
+.rc-body { font-size:14px; color:var(--nf-gray2); line-height:1.65; }
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+.nf-footer {
+  padding:48px 4% max(32px,env(safe-area-inset-bottom,32px));
+  border-top:1px solid var(--nf-border);
+  text-align:center;
+}
+.footer-logo-big {
+  font-family:var(--font-title); font-size:clamp(28px,7vw,48px);
+  letter-spacing:-1px; color:var(--nf-red);
+  text-shadow:0 0 30px var(--nf-red-glow);
+  margin-bottom:8px;
+}
+.footer-names {
+  font-family:var(--font-title); font-size:clamp(32px,8vw,56px);
+  letter-spacing:.03em; color:var(--nf-white); margin-bottom:14px;
+}
+.footer-body {
+  font-size:15px; color:var(--nf-gray2); line-height:1.7;
+  max-width:440px; margin:0 auto 32px;
+}
+.footer-brand { font-size:12px; color:var(--nf-gray3); letter-spacing:.08em; }
+.footer-brand a { color:var(--nf-red); text-decoration:none; }
+.footer-links {
+  display:flex; flex-wrap:wrap; justify-content:center; gap:16px;
+  font-size:13px; color:var(--nf-gray3); margin-bottom:24px;
+}
+.footer-links span { cursor:pointer; transition:color .15s; }
+.footer-links span:hover { color:var(--nf-white); }
+
+/* ═══════════════════════════════════════
+   BOTTOM NAV
+═══════════════════════════════════════ */
+.nf-bottom-nav {
+  position:fixed; bottom:0; left:0; right:0; z-index:100;
+  background:rgba(0,0,0,.92); backdrop-filter:blur(20px);
+  border-top:1px solid var(--nf-border);
+  padding:8px 0 max(8px,env(safe-area-inset-bottom,8px));
+  transform:translateY(100%);
+  transition:transform .5s var(--spring) .5s;
+}
+.nf-bottom-nav.show { transform:translateY(0); }
+.nb-inner { display:flex; justify-content:space-around; }
+.nb-item {
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+  text-decoration:none; color:var(--nf-gray3);
+  font-family:var(--font-cond); font-size:10px; letter-spacing:.08em;
+  padding:4px 12px; transition:color .15s;
+}
+.nb-item svg { width:22px; height:22px; }
+.nb-item.on, .nb-item:hover { color:var(--nf-white); }
+.nb-item.on svg { color:var(--nf-red); }
+
+/* ═══════════════════════════════════════
+   MUSIC PLAYER  "Now Streaming"
+═══════════════════════════════════════ */
+.music-bar {
+  position:fixed; bottom:60px; left:0; right:0; z-index:99;
+  background:rgba(20,20,20,.95); backdrop-filter:blur(16px);
+  border-top:1px solid var(--nf-border);
+  padding:10px 16px;
+  display:flex; align-items:center; gap:12px;
+  transform:translateY(100%);
+  transition:transform .4s var(--spring) .8s;
+}
+.music-bar.show { transform:translateY(0); }
+.mb-art {
+  width:44px; height:44px; border-radius:4px; overflow:hidden;
+  border:1px solid var(--nf-border); flex-shrink:0;
+}
+.mb-art img { width:100%; height:100%; object-fit:cover; }
+.mb-info { flex:1; min-width:0; }
+.mb-title { font-size:14px; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.mb-sub { font-size:12px; color:var(--nf-gray3); margin-top:2px; }
+.mb-eq { display:flex; align-items:flex-end; gap:2px; height:16px; margin-right:4px; }
+.mb-eq-bar { width:3px; background:var(--nf-red); border-radius:1px; animation:mbeq var(--s,.5s) ease-in-out infinite alternate; }
+.mb-eq-bar.stop { animation:none; height:3px; }
+@keyframes mbeq { from{height:3px} to{height:100%} }
+.mb-ctrl {
+  display:flex; align-items:center; gap:8px;
+}
+.mb-btn {
+  background:none; border:none; color:var(--nf-gray2);
+  cursor:pointer; padding:6px; transition:color .15s;
+  display:flex; align-items:center;
+}
+.mb-btn:hover { color:var(--nf-white); }
+.mb-btn svg { width:20px; height:20px; }
+.mb-play-btn {
+  width:36px; height:36px; border-radius:50%;
+  background:var(--nf-white); color:#000;
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .15s var(--spring);
+}
+.mb-play-btn:hover { transform:scale(1.1); }
+.mb-play-btn svg { width:16px; height:16px; }
+
+/* ═══════════════════════════════════════
+   LIGHTBOX
+═══════════════════════════════════════ */
+.lb {
+  position:fixed; inset:0; z-index:9997;
+  background:rgba(0,0,0,.97);
+  display:none; flex-direction:column;
+}
+.lb.open { display:flex; }
+.lb-header {
+  padding:20px 20px 12px;
+  display:flex; justify-content:space-between; align-items:center;
+  background:rgba(0,0,0,.5);
+}
+.lb-h-title { font-family:var(--font-cond); font-size:16px; letter-spacing:.1em; text-transform:uppercase; color:var(--nf-gray2); }
+.lb-close { font-size:14px; color:var(--nf-red); cursor:pointer; font-family:var(--font-cond); letter-spacing:.1em; padding:4px 8px; }
+.lb-main { flex:1; display:flex; align-items:center; justify-content:center; padding:16px; }
+.lb-img { max-width:100%; max-height:100%; object-fit:contain; border-radius:4px; }
+.lb-footer { padding:14px 20px max(20px,env(safe-area-inset-bottom,20px)); display:flex; justify-content:space-between; align-items:center; }
+.lb-ct { font-family:var(--font-cond); font-size:13px; color:var(--nf-gray3); letter-spacing:.1em; }
+.lb-navs { display:flex; gap:12px; }
+.lb-nav-btn {
+  width:44px; height:44px; border-radius:4px;
+  background:var(--nf-surface); border:1px solid var(--nf-border);
+  color:var(--nf-white); font-size:18px; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition:background .15s;
+}
+.lb-nav-btn:hover { background:var(--nf-card); }
+
+/* ═══════════════════════════════════════
+   TOAST
+═══════════════════════════════════════ */
+.toast {
+  position:fixed; bottom:130px; left:50%; transform:translateX(-50%) translateY(20px);
+  background:rgba(40,40,40,.96); backdrop-filter:blur(12px);
+  border:1px solid var(--nf-border); border-left:3px solid var(--nf-red);
+  color:var(--nf-white); padding:12px 20px; border-radius:4px;
+  font-size:14px; font-weight:500;
+  opacity:0; transition:opacity .3s, transform .3s;
+  pointer-events:none; white-space:nowrap; z-index:9999;
+}
+.toast.on { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ═══════════════════════════════════════
+   SCROLL REVEAL
+═══════════════════════════════════════ */
+.reveal { opacity:0; transform:translateY(20px); transition:opacity .65s var(--ease), transform .65s var(--ease); }
+.reveal.vis { opacity:1; transform:translateY(0); }
+.d1{transition-delay:.1s} .d2{transition-delay:.2s} .d3{transition-delay:.3s}
+</style>
+</head>
+<body>
+
+<!-- AUDIO -->
+<audio id="bgAudio" loop preload="none">
+  <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" type="audio/mpeg">
+</audio>
+
+<!-- ══════════════════════════════════════
+     SPLASH — Profile Select
+══════════════════════════════════════ -->
+<div id="splash">
+  <div class="splash-logo">
+    <div class="logo-nf">
+      <span class="logo-bridge">BRIDGE</span><span class="logo-flix">FLIX</span>
+    </div>
+    <div class="logo-tagline">The Wedding Streaming Series</div>
+  </div>
+
+  <p class="profiles-label">Siapa yang menonton?</p>
+
+  <div class="profiles-row">
+    <div class="profile-item" onclick="selectProfile(this, 'Ade Guntur')">
+      <div class="profile-avatar">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="">
+      </div>
+      <span class="profile-name">Ade Guntur</span>
+    </div>
+    <div class="profile-item" onclick="selectProfile(this, 'Partner')">
+      <div class="profile-avatar">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="">
+      </div>
+      <span class="profile-name">Partner</span>
+    </div>
+    <div class="profile-item" onclick="selectProfile(this, 'Tamu')">
+      <div class="profile-avatar">
+        <div class="profile-letter" style="background:linear-gradient(135deg,#1a3a2e,#0d2318)">T</div>
+      </div>
+      <span class="profile-name">Tamu</span>
+    </div>
+    <div class="profile-item" onclick="selectProfile(this, 'Keluarga')">
+      <div class="profile-avatar">
+        <div class="profile-letter" style="background:linear-gradient(135deg,#3a1a1a,#1a0808)">K</div>
+        <span class="profile-kids-badge">FAM</span>
+      </div>
+      <span class="profile-name">Keluarga</span>
+    </div>
+  </div>
+
+  <button class="splash-btn" id="splashBtn" onclick="openApp()" style="opacity:.4;pointer-events:none">Tonton Sekarang</button>
+</div>
+
+<!-- ══════════════════════════════════════
+     APP
+══════════════════════════ -->
+<div id="app">
+
+  <!-- NAVBAR -->
+  <nav class="nf-nav" id="nfNav">
+    <div class="nav-logo">BRIDGEFLIX</div>
+    <ul class="nav-links">
+      <li><a href="#" class="on">Beranda</a></li>
+      <li><a href="#couple">Pasangan</a></li>
+      <li><a href="#event">Jadwal</a></li>
+      <li><a href="#rsvp">RSVP</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="nav-search" onclick="toast('🔍 Cari undangan...')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      </button>
+      <div class="nav-avatar" id="navAvatar">?</div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-bg"></div>
+
+    <div class="hero-badges">
+      <div class="genre-badge hot">🔥 Trending #1</div>
+      <div class="genre-badge">Romance</div>
+      <div class="genre-badge">Drama</div>
+      <div class="genre-badge">Halal</div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-eyebrow">Series Perdana 2026</div>
+      <h1 class="hero-title">ANITA<br>& ZARDA</h1>
+      <div class="hero-meta">
+        <span class="hero-match">98% Match</span>
+        <span class="hero-year">2026</span>
+        <span class="hero-rating-badge">17+</span>
+        <span class="hero-year">1 Season</span>
+        <span class="hero-year">HD</span>
+      </div>
+      <p class="hero-desc">
+        Kisah cinta yang dimulai dari sebuah pertemuan tak terduga di meja bowling, berkembang menjadi komitmen seumur hidup. Sebuah series tentang cinta, keluarga, dan janji yang tak tergoyahkan.
+      </p>
+      <div class="hero-btns">
+        <button class="nf-btn nf-btn-play" onclick="togglePlay()">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <span id="heroPlayText">Putar</span>
+        </button>
+        <a href="#episode" class="nf-btn nf-btn-info">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+          Info Lainnya
+        </a>
+      </div>
+    </div>
+    <div class="hero-progress">
+      <div class="hero-progress-fill" id="heroProgFill"></div>
+    </div>
+  </section>
+
+  <!-- CONTENT AREA -->
+  <div class="content-area">
+
+    <!-- COUNTDOWN -->
+    <div class="countdown-section reveal">
+      <div class="cd-card">
+        <div class="cd-top">
+          <div class="cd-eyebrow">📡 Live Premiere Countdown</div>
+          <div class="cd-headline">Season Finale Tayang dalam:</div>
+        </div>
+        <div class="cd-nums">
+          <div class="cd-box"><div class="cd-n" id="cdD">00</div><div class="cd-u">Hari</div></div>
+          <div class="cd-box"><div class="cd-n" id="cdH">00</div><div class="cd-u">Jam</div></div>
+          <div class="cd-box"><div class="cd-n" id="cdM">00</div><div class="cd-u">Menit</div></div>
+          <div class="cd-box"><div class="cd-n" id="cdS">00</div><div class="cd-u">Detik</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOP PICKS ROW -->
+    <div class="row-section reveal">
+      <div class="row-label">
+        Populer di BridgeFlix
+        <span class="row-label-red">● LIVE</span>
+        <span class="row-see-all">Lihat Semua</span>
+      </div>
+      <div class="row-strip">
+        <div class="nf-card" onclick="toast('💍 Akad Nikah — 24 Mei 2026')">
+          <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=300&h=450&fit=crop&q=80" alt="Akad">
+          <div class="card-overlay">
+            <div class="card-title">Akad Nikah</div>
+            <div class="card-tags"><span class="card-tag">Sacred</span><span class="card-tag">Live</span></div>
+          </div>
+          <div class="card-mini-btn"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
+        </div>
+        <div class="nf-card" onclick="toast('🎊 Resepsi — 24 Mei 2026')">
+          <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=300&h=450&fit=crop&q=80" alt="Resepsi">
+          <div class="card-overlay">
+            <div class="card-title">Resepsi Pernikahan</div>
+            <div class="card-tags"><span class="card-tag">Celebration</span></div>
+          </div>
+          <div class="card-mini-btn"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
+        </div>
+        <div class="nf-card" onclick="toast('💞 Love Story — Mulai Juni 2025')">
+          <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=300&h=450&fit=crop&q=80" alt="Story">
+          <div class="card-overlay">
+            <div class="card-title">Our Love Story</div>
+            <div class="card-tags"><span class="card-tag">Romance</span></div>
+          </div>
+          <div class="card-mini-btn"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
+        </div>
+        <div class="nf-card" onclick="toast('💍 The Proposal — Nov 2025')">
+          <img src="https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=300&h=450&fit=crop&q=80" alt="Proposal">
+          <div class="card-overlay">
+            <div class="card-title">The Proposal</div>
+            <div class="card-tags"><span class="card-tag">Drama</span></div>
+          </div>
+          <div class="card-mini-btn"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
+        </div>
+        <div class="nf-card" onclick="toast('🌹 Behind The Scenes')">
+          <img src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=300&h=450&fit=crop&q=80" alt="BTS">
+          <div class="card-overlay">
+            <div class="card-title">Behind The Love</div>
+            <div class="card-tags"><span class="card-tag">Documentary</span></div>
+          </div>
+          <div class="card-mini-btn"><svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EPISODE LIST — Love Story -->
+    <div class="episode-section reveal" id="episode">
+      <div class="ep-header">
+        <div class="ep-title-row">Episode</div>
+        <select class="ep-season-sel">
+          <option>Season 1: Our Story</option>
+        </select>
+      </div>
+
+      <div class="episode-card">
+        <div class="ep-num">1</div>
+        <div class="ep-thumb">
+          <img src="https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=280&h=158&fit=crop&q=80" alt="">
+          <div class="ep-thumb-overlay">
+            <div class="ep-thumb-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+          </div>
+        </div>
+        <div class="ep-body">
+          <div class="ep-name">Awal Pertemuan</div>
+          <div class="ep-duration">Juni 2025 · 42m</div>
+          <div class="ep-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling. Sebuah pertemuan yang mengubah segalanya.</div>
+          <div class="ep-progress"><div class="ep-progress-fill" style="width:100%"></div></div>
+        </div>
+      </div>
+
+      <div class="episode-card">
+        <div class="ep-num">2</div>
+        <div class="ep-thumb">
+          <img src="https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=280&h=158&fit=crop&q=80" alt="">
+          <div class="ep-thumb-overlay">
+            <div class="ep-thumb-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+          </div>
+        </div>
+        <div class="ep-body">
+          <div class="ep-name">Rasa yang Tumbuh</div>
+          <div class="ep-duration">Agustus 2025 · 38m</div>
+          <div class="ep-desc">Dari sekadar teman menjadi lebih dari itu. Momen-momen kecil yang perlahan membangun sesuatu yang besar.</div>
+          <div class="ep-progress"><div class="ep-progress-fill" style="width:100%"></div></div>
+        </div>
+      </div>
+
+      <div class="episode-card">
+        <div class="ep-num">3</div>
+        <div class="ep-thumb">
+          <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=280&h=158&fit=crop&q=80" alt="">
+          <div class="ep-thumb-overlay">
+            <div class="ep-thumb-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+          </div>
+        </div>
+        <div class="ep-body">
+          <div class="ep-name">Lamaran — Season Finale Bagian 1</div>
+          <div class="ep-duration">November 2025 · 55m</div>
+          <div class="ep-desc">Di hadapan keluarga, Zarda berlutut dan mengucapkan kata-kata yang telah lama ia simpan dalam hati.</div>
+          <div class="ep-progress"><div class="ep-progress-fill" style="width:60%"></div></div>
+        </div>
+      </div>
+
+      <div class="episode-card">
+        <div class="ep-num">4</div>
+        <div class="ep-thumb">
+          <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=280&h=158&fit=crop&q=80" alt="">
+          <div class="ep-thumb-overlay">
+            <div class="ep-thumb-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
+          </div>
+        </div>
+        <div class="ep-body">
+          <div class="ep-name">Pernikahan — Season Finale 🔴 LIVE</div>
+          <div class="ep-duration">24 Mei 2026 · Segera Hadir</div>
+          <div class="ep-desc">Episode penutup yang telah dinantikan. Saksikan momen bersejarah mereka secara langsung.</div>
+          <div class="ep-progress" style="background:rgba(229,9,20,.15)"><div class="ep-progress-fill" style="width:0%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PREMIERE INFO -->
+    <div class="premiere-section reveal" id="event">
+      <div class="premiere-banner">
+        <div class="pb-content">
+          <div class="pb-label">Siaran Langsung</div>
+          <div class="pb-title">Season Finale<br>Premiere</div>
+          <div class="pb-meta">Minggu, 24 Mei 2026 · Graha Yadika, Tangerang</div>
+          <div class="premiere-grid">
+            <div class="pb-info-card">
+              <div class="pb-ic-icon">🕗</div>
+              <div class="pb-ic-label">Akad Nikah</div>
+              <div class="pb-ic-val">08.00 WIB</div>
+            </div>
+            <div class="pb-info-card">
+              <div class="pb-ic-icon">🎉</div>
+              <div class="pb-ic-label">Resepsi</div>
+              <div class="pb-ic-val">11.00–13.00</div>
+              <div class="pb-ic-sub">WIB</div>
+            </div>
+            <div class="pb-info-card" style="grid-column:1/-1">
+              <div class="pb-ic-icon">📍</div>
+              <div class="pb-ic-label">Lokasi</div>
+              <div class="pb-ic-val" style="font-size:14px">Graha Yadika</div>
+              <div class="pb-ic-sub">Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div>
+              <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="maps-link">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                Buka di Maps
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAST -->
+    <div class="cast-section reveal" id="couple">
+      <div class="cast-label">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        Cast Utama
+      </div>
+      <div class="cast-grid">
+        <div class="cast-card">
+          <div class="cast-photo">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=530&fit=crop&q=80" alt="Anita" loading="lazy">
+            <div class="cast-photo-overlay"></div>
+          </div>
+          <div class="cast-body">
+            <div class="cast-role">Mempelai Wanita</div>
+            <div class="cast-name">Anita Pangestuti</div>
+            <div class="cast-info">S.Kom · Putri Pertama Bpk. Taryono & Ibu Wiwit Jayanti</div>
+            <div class="cast-imdb">
+              <span class="imdb-badge">IMDb</span>
+              <span class="imdb-score">⭐ 9.8 / 10</span>
+            </div>
+          </div>
+        </div>
+        <div class="cast-card">
+          <div class="cast-photo">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=530&fit=crop&q=80" alt="Zarda" loading="lazy">
+            <div class="cast-photo-overlay"></div>
+          </div>
+          <div class="cast-body">
+            <div class="cast-role">Mempelai Pria</div>
+            <div class="cast-name">Zardarian Ahadika</div>
+            <div class="cast-info">S.Kom · Putra Kedua Bpk. Wan Sabran & Ibu Titik Sundari</div>
+            <div class="cast-imdb">
+              <span class="imdb-badge">IMDb</span>
+              <span class="imdb-score">⭐ 9.7 / 10</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MORE LIKE THIS ROW -->
+    <div class="row-section reveal">
+      <div class="row-label">
+        Konten Serupa
+        <span class="row-see-all">Lihat Semua</span>
+      </div>
+      <div class="row-strip">
+        <div class="nf-card-wide nf-card" onclick="toast('🌸 Perjalanan Cinta')">
+          <img src="https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=400&h=225&fit=crop&q=80" alt="">
+          <div class="card-overlay"><div class="card-title">Perjalanan Cinta</div><div class="card-tags"><span class="card-tag">Romance</span></div></div>
+        </div>
+        <div class="nf-card-wide nf-card" onclick="toast('💍 Sebuah Janji')">
+          <img src="https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=400&h=225&fit=crop&q=80" alt="">
+          <div class="card-overlay"><div class="card-title">Sebuah Janji</div><div class="card-tags"><span class="card-tag">Drama</span></div></div>
+        </div>
+        <div class="nf-card-wide nf-card" onclick="toast('🎊 Hari Bahagia')">
+          <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=225&fit=crop&q=80" alt="">
+          <div class="card-overlay"><div class="card-title">Hari Bahagia</div><div class="card-tags"><span class="card-tag">Special</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GALLERY -->
+    <div class="gallery-section reveal">
+      <div class="gal-header">
+        <div class="row-label" style="padding:0;font-size:clamp(16px,3.5vw,22px)">
+          Screenshots & Trailers
+        </div>
+      </div>
+      <div class="gal-strip-wrap" id="galWrap" onmouseenter="pauseGal()" onmouseleave="resumeGal()" ontouchstart="pauseGal()" ontouchend="resumeGal()">
+        <div class="gal-fade-l"></div>
+        <div class="gal-fade-r"></div>
+        <div class="gal-track" id="galTrack"></div>
+      </div>
+      <div class="gal-dots" id="galDots"></div>
+    </div>
+
+    <!-- GIFT -->
+    <div class="gift-section reveal" id="gift">
+      <div class="row-label" style="padding:0 0 14px">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2.18c.07-.23.18-.46.18-.71C18 3.47 16.53 2 14.71 2c-.87 0-1.65.36-2.22.93L12 3.4l-.49-.47C10.94 2.36 10.16 2 9.29 2 7.47 2 6 3.47 6 5.29c0 .25.11.48.18.71H4c-1.11 0-2 .89-2 2v13c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/></svg>
+        Amplop Digital
+      </div>
+      <p style="font-size:14px;color:var(--nf-gray2);margin-bottom:16px;line-height:1.6">Doa restu sudah sangat cukup. Namun jika ingin memberi, kami terima dengan sepenuh hati.</p>
+      <div class="gift-grid">
+        <div class="gift-card">
+          <div class="gc-label">Bank</div>
+          <div class="gc-bank">BCA</div>
+          <div class="gc-name">Zardarian Ahadika N</div>
+          <div class="gc-num">8210 3705 61</div>
+          <button class="gc-btn" onclick="copyNum('8210370561',this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            Salin Nomor
+          </button>
+        </div>
+        <div class="gift-card">
+          <div class="gc-label">Bank</div>
+          <div class="gc-bank">BNI</div>
+          <div class="gc-name">Anita Pangestuti</div>
+          <div class="gc-num">1192 9784 03</div>
+          <button class="gc-btn" onclick="copyNum('1192978403',this)">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            Salin Nomor
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RSVP -->
+    <div class="rsvp-section reveal" id="rsvp">
+      <div class="row-label" style="padding:0 0 14px">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        Konfirmasi Kehadiran
+      </div>
+      <div class="review-stats">
+        <div class="rs-item"><div class="rs-num">7</div><div class="rs-lbl">Respons</div></div>
+        <div class="rs-item"><div class="rs-num">7</div><div class="rs-lbl">Hadir</div></div>
+        <div class="rs-item"><div class="rs-num">13</div><div class="rs-lbl">Tamu</div></div>
+      </div>
+      <div class="nf-form">
+        <div class="nf-field">
+          <div class="nf-field-label">Nama Lengkap</div>
+          <input type="text" class="nf-input" placeholder="Nama Anda" id="rsvpName">
+        </div>
+        <div class="nf-field">
+          <div class="nf-field-label">Rating Bintang</div>
+          <div class="rating-row">
+            <button class="star-btn" onclick="rateStar(1)">⭐</button>
+            <button class="star-btn" onclick="rateStar(2)">⭐</button>
+            <button class="star-btn" onclick="rateStar(3)">⭐</button>
+            <button class="star-btn" onclick="rateStar(4)">⭐</button>
+            <button class="star-btn" onclick="rateStar(5)">⭐</button>
+          </div>
+        </div>
+        <div class="nf-field">
+          <div class="nf-field-label">Konfirmasi Kehadiran</div>
+          <select class="nf-input nf-select" id="rsvpStatus">
+            <option value="">Pilih...</option>
+            <option value="hadir">Hadir</option>
+            <option value="tidak">Tidak Hadir</option>
+          </select>
+        </div>
+        <div class="nf-field">
+          <div class="nf-field-label">Jumlah Tamu</div>
+          <div class="guest-btns">
+            <button class="gb-btn on" onclick="selG(1,this)">1 orang</button>
+            <button class="gb-btn" onclick="selG(2,this)">2 orang</button>
+          </div>
+        </div>
+        <div class="nf-field">
+          <div class="nf-field-label">Ulasan & Ucapan</div>
+          <textarea class="nf-input" placeholder="Tuliskan ucapan untuk Anita & Zarda..." id="rsvpMsg"></textarea>
+        </div>
+      </div>
+      <button class="nf-submit" onclick="submitRSVP()">Kirim Konfirmasi</button>
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="reviews-section reveal">
+      <div class="row-label" style="padding:0 0 14px">Reviews Penonton</div>
+      <div class="review-list" id="reviewList">
+        <div class="review-card vis">
+          <div class="rc-top">
+            <div class="rc-avatar" style="background:rgba(229,9,20,.15);color:#e50914">A</div>
+            <div>
+              <div class="rc-name">Ayu Rahmawati</div>
+              <div class="rc-stars"><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span class="rc-star">⭐</span></div>
+            </div>
+            <span class="rc-status hadir">✓ Hadir · 2 orang</span>
+          </div>
+          <div class="rc-body">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. 10/10 would recommend!</div>
+        </div>
+        <div class="review-card vis">
+          <div class="rc-top">
+            <div class="rc-avatar" style="background:rgba(94,92,230,.15);color:#5E5CE6">R</div>
+            <div>
+              <div class="rc-name">Reza Firmansyah</div>
+              <div class="rc-stars"><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span class="rc-star">⭐</span></div>
+            </div>
+            <span class="rc-status hadir">✓ Hadir · 1 orang</span>
+          </div>
+          <div class="rc-body">Alhamdulillah! Ini adalah series terbaik yang pernah saya saksikan. Plot twist lamaran benar-benar membuat terharu!</div>
+        </div>
+        <div class="review-card vis">
+          <div class="rc-top">
+            <div class="rc-avatar" style="background:rgba(255,149,0,.15);color:#FF9500">S</div>
+            <div>
+              <div class="rc-name">Sinta Dewi</div>
+              <div class="rc-stars"><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span class="rc-star">⭐</span></div>
+            </div>
+            <span class="rc-status hadir">✓ Hadir · 2 orang</span>
+          </div>
+          <div class="rc-body">Cinematic, emosional, dan penuh cinta. Semoga season 2 nya (kehidupan berumah tangga) lebih seru! 💙</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="nf-footer">
+      <div class="footer-logo-big">BRIDGEFLIX</div>
+      <div class="footer-names">ANITA & ZARDA</div>
+      <p class="footer-body">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu berkenan hadir dan memberikan do'a restu kepada kami.</p>
+      <div class="footer-links">
+        <span onclick="toast('FAQ tersedia segera')">FAQ</span>
+        <span onclick="toast('Hubungi panitia')">Kontak</span>
+        <span onclick="window.scrollTo({top:0,behavior:\'smooth\'})">Kembali ke Atas</span>
+        <span onclick="toast('🍪 Cookies: Cinta saja')">Cookie Preferences</span>
+      </div>
+      <p class="footer-brand">Digital Invitation by <a href="#">BridesSpace</a> · © 2026 BRIDGEFLIX</p>
+    </footer>
+
+  </div><!-- /content-area -->
+
+</div><!-- /app -->
+
+<!-- BOTTOM NAV -->
+<nav class="nf-bottom-nav" id="nfBottomNav">
+  <div class="nb-inner">
+    <a href="#home" class="nb-item on">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+      Beranda
+    </a>
+    <a href="#couple" class="nb-item">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+      Cast
+    </a>
+    <a href="#event" class="nb-item">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+      Jadwal
+    </a>
+    <a href="#gift" class="nb-item">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2.18c.07-.23.18-.46.18-.71C18 3.47 16.53 2 14.71 2c-.87 0-1.65.36-2.22.93L12 3.4l-.49-.47C10.94 2.36 10.16 2 9.29 2 7.47 2 6 3.47 6 5.29c0 .25.11.48.18.71H4c-1.11 0-2 .89-2 2v13c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/></svg>
+      Hadiah
+    </a>
+    <a href="#rsvp" class="nb-item">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      RSVP
+    </a>
+  </div>
+</nav>
+
+<!-- MUSIC BAR -->
+<div class="music-bar" id="musicBar">
+  <div class="mb-art"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=100&h=100&fit=crop&q=80" alt=""></div>
+  <div class="mb-info">
+    <div class="mb-title">Wedding Day — Anita & Zarda</div>
+    <div class="mb-sub">BridgeFlix Original Soundtrack</div>
+  </div>
+  <div class="mb-eq" id="mbEq">
+    <div class="mb-eq-bar stop" style="--s:.5s"></div>
+    <div class="mb-eq-bar stop" style="--s:.7s;animation-delay:.06s"></div>
+    <div class="mb-eq-bar stop" style="--s:.45s;animation-delay:.12s"></div>
+    <div class="mb-eq-bar stop" style="--s:.8s;animation-delay:.04s"></div>
+    <div class="mb-eq-bar stop" style="--s:.6s;animation-delay:.18s"></div>
+  </div>
+  <div class="mb-ctrl">
+    <button class="mb-btn" onclick="seek(-10)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg></button>
+    <button class="mb-btn mb-play-btn" onclick="togglePlay()">
+      <svg id="mbPI" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      <svg id="mbPause" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+    </button>
+    <button class="mb-btn" onclick="seek(10)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z"/></svg></button>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lb">
+  <div class="lb-header">
+    <span class="lb-h-title">Gallery</span>
+    <span class="lb-close" onclick="closeLB()">TUTUP</span>
+  </div>
+  <div class="lb-main"><img class="lb-img" id="lbImg" src="" alt=""></div>
+  <div class="lb-footer">
+    <span class="lb-ct" id="lbCt"></span>
+    <div class="lb-navs">
+      <button class="lb-nav-btn" onclick="lbP()">‹</button>
+      <button class="lb-nav-btn" onclick="lbN()">›</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ══ DATA ══ */
+const IMGS=[
+  "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=340&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&h=340&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=340&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&h=340&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=600&h=340&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=600&h=340&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=600&h=340&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=340&fit=crop&q=80",
+];
+
+/* ══ STATE ══ */
+let playing=false,progPct=0,progTmr=null;
+let gOff=0,gPaused=false,gOrig=0,gIW=0,gDot=0;
+let lbI=0,gCount=1,starRating=5;
+let selectedProfile='';
+
+/* ══ PROFILE SELECT ══ */
+function selectProfile(el,name){
+  selectedProfile=name;
+  document.querySelectorAll('.profile-item').forEach(p=>p.classList.remove('selected'));
+  el.classList.add('selected');
+  const btn=document.getElementById('splashBtn');
+  btn.style.opacity='1'; btn.style.pointerEvents='auto';
+  btn.textContent='Menonton sebagai '+name;
+}
+
+function openApp(){
+  if(!selectedProfile){toast('Pilih profil terlebih dahulu');return;}
+  document.getElementById('splash').classList.add('out');
+  const app=document.getElementById('app');
+  setTimeout(()=>app.classList.add('show'),100);
+  document.getElementById('nfBottomNav').classList.add('show');
+  setTimeout(()=>document.getElementById('musicBar').classList.add('show'),800);
+  setTimeout(initApp,400);
+  // Update nav avatar
+  document.getElementById('navAvatar').textContent=selectedProfile[0].toUpperCase();
+}
+
+function initApp(){
+  countdown();
+  buildGallery();
+  initReveal();
+  initNavHL();
+  initNavSolid();
+  initHeroProgress();
+}
+
+/* ══ NAV SOLID ══ */
+function initNavSolid(){
+  window.addEventListener('scroll',()=>{
+    document.getElementById('nfNav').classList.toggle('solid',window.scrollY>80);
+  });
+}
+
+/* ══ HERO PROGRESS (fake playback) ══ */
+let heroP=0;
+function initHeroProgress(){
+  setInterval(()=>{
+    if(playing){heroP=Math.min(heroP+.5,100);document.getElementById('heroProgFill').style.width=heroP+'%';}
+  },300);
+}
+
+/* ══ MUSIC ══ */
+function togglePlay(){
+  playing=!playing;
+  const audio=document.getElementById('bgAudio');
+  if(playing){
+    audio.volume=.3; audio.play().catch(()=>{});
+    setPlayUI(true);
+  } else {
+    audio.pause();
+    setPlayUI(false);
+  }
+}
+function setPlayUI(on){
+  document.getElementById('mbPI').style.display=on?'none':'block';
+  document.getElementById('mbPause').style.display=on?'block':'none';
+  document.getElementById('heroPlayText').textContent=on?'Jeda':'Putar';
+  document.querySelectorAll('.mb-eq-bar').forEach(b=>b.classList.toggle('stop',!on));
+}
+function seek(s){ /* visual only */ toast(s>0?'⏩ Maju 10 detik':'⏪ Mundur 10 detik'); }
+
+/* ══ COUNTDOWN ══ */
+function countdown(){
+  const t=new Date('2026-05-24T08:00:00');
+  function tick(){
+    const d=t-new Date();
+    if(d<=0){['cdD','cdH','cdM','cdS'].forEach(id=>document.getElementById(id).textContent='00');return;}
+    document.getElementById('cdD').textContent=String(Math.floor(d/86400000)).padStart(2,'0');
+    document.getElementById('cdH').textContent=String(Math.floor((d%86400000)/3600000)).padStart(2,'0');
+    document.getElementById('cdM').textContent=String(Math.floor((d%3600000)/60000)).padStart(2,'0');
+    document.getElementById('cdS').textContent=String(Math.floor((d%60000)/1000)).padStart(2,'0');
+  }
+  tick();setInterval(tick,1000);
+}
+
+/* ══ GALLERY ══ */
+function buildGallery(){
+  const tr=document.getElementById('galTrack'),dt=document.getElementById('galDots');
+  gOrig=IMGS.length;
+  [...IMGS,...IMGS,...IMGS].forEach((src,i)=>{
+    const ri=i%gOrig;
+    const el=document.createElement('div');
+    el.className='gal-item';
+    el.innerHTML=`<img src="${src}" alt="Gallery ${ri+1}" loading="lazy"><div class="gal-item-overlay"><div class="gal-play-btn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div></div>`;
+    el.addEventListener('click',()=>openLB(ri));
+    tr.appendChild(el);
+  });
+  IMGS.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='gal-dot'+(i===0?' on':'');
+    d.addEventListener('click',()=>jumpGal(i));
+    dt.appendChild(d);
+  });
+  requestAnimationFrame(()=>{
+    const first=tr.querySelector('.gal-item');
+    if(!first)return;
+    gIW=first.offsetWidth+6;
+    gOff=gOrig*gIW;
+    tr.style.transform=`translateX(-${gOff}px)`;
+    runGal();
+  });
+}
+function runGal(){
+  const tr=document.getElementById('galTrack');
+  if(!tr)return;
+  const tot=gOrig*gIW;
+  function tick(){
+    if(!gPaused){
+      gOff+=0.55;
+      if(gOff>=tot*2)gOff-=tot;
+      if(gOff<tot)gOff+=tot;
+      tr.style.transform=`translateX(-${gOff}px)`;
+      const ri=Math.floor(((gOff-tot)/gIW))%gOrig;
+      const di=((ri%gOrig)+gOrig)%gOrig;
+      if(di!==gDot){
+        gDot=di;
+        document.querySelectorAll('.gal-dot').forEach((d,i)=>d.classList.toggle('on',i===gDot));
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+function pauseGal(){gPaused=true;}
+function resumeGal(){gPaused=false;}
+function jumpGal(i){const tot=gOrig*gIW;gOff=tot+i*gIW;document.getElementById('galTrack').style.transform=`translateX(-${gOff}px)`;}
+
+/* ══ LIGHTBOX ══ */
+function openLB(i){lbI=i;showLB();document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden';pauseGal();}
+function closeLB(){document.getElementById('lb').classList.remove('open');document.body.style.overflow='';resumeGal();}
+function lbP(){lbI=(lbI-1+IMGS.length)%IMGS.length;showLB();}
+function lbN(){lbI=(lbI+1)%IMGS.length;showLB();}
+function showLB(){document.getElementById('lbImg').src=IMGS[lbI];document.getElementById('lbCt').textContent=(lbI+1)+' / '+IMGS.length;}
+document.addEventListener('keydown',e=>{if(!document.getElementById('lb').classList.contains('open'))return;if(e.key==='Escape')closeLB();if(e.key==='ArrowLeft')lbP();if(e.key==='ArrowRight')lbN();});
+
+/* ══ STAR RATING ══ */
+function rateStar(n){
+  starRating=n;
+  const btns=document.querySelectorAll('.star-btn');
+  btns.forEach((b,i)=>b.classList.toggle('lit',i<n));
+}
+
+/* ══ REVEAL ══ */
+function initReveal(){
+  const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');});},{threshold:.08});
+  document.querySelectorAll('.reveal,.review-card').forEach(el=>obs.observe(el));
+}
+
+/* ══ NAV TAB HIGHLIGHT ══ */
+function initNavHL(){
+  const obs=new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(e.isIntersecting){
+        document.querySelectorAll('.nb-item').forEach(n=>n.classList.remove('on'));
+        const a=document.querySelector(`.nb-item[href="#${e.target.id}"]`);
+        if(a)a.classList.add('on');
+      }
+    });
+  },{rootMargin:'-40% 0px -40% 0px'});
+  ['home','couple','event','gift','rsvp'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el);});
+}
+
+/* ══ RSVP ══ */
+function selG(n,btn){gCount=n;document.querySelectorAll('.gb-btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+function submitRSVP(){
+  const name=document.getElementById('rsvpName').value.trim();
+  const status=document.getElementById('rsvpStatus').value;
+  const msg=document.getElementById('rsvpMsg').value.trim();
+  if(!name||!status){toast('Mohon isi nama dan status kehadiran');return;}
+  const ini=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const pals=[
+    {bg:'rgba(229,9,20,.15)',c:'#e50914'},
+    {bg:'rgba(94,92,230,.15)',c:'#5E5CE6'},
+    {bg:'rgba(255,149,0,.15)',c:'#FF9500'},
+    {bg:'rgba(48,209,88,.15)',c:'#30D158'},
+  ];
+  const p=pals[Math.floor(Math.random()*pals.length)];
+  const stars='⭐'.repeat(starRating);
+  const stxt=status==='hadir'?`✓ Hadir · ${gCount} orang`:'✗ Tidak Hadir';
+  const card=document.createElement('div');
+  card.className='review-card';
+  card.innerHTML=`<div class="rc-top"><div class="rc-avatar" style="background:${p.bg};color:${p.c}">${ini}</div><div><div class="rc-name">${name}</div><div class="rc-stars"><span class="rc-star">${stars}</span></div></div><span class="rc-status hadir">${stxt}</span></div><div class="rc-body">${msg||'Selamat dan semoga bahagia selalu! 🎬'}</div>`;
+  document.getElementById('reviewList').prepend(card);
+  setTimeout(()=>card.classList.add('vis'),50);
+  document.getElementById('rsvpName').value='';
+  document.getElementById('rsvpStatus').value='';
+  document.getElementById('rsvpMsg').value='';
+  document.querySelectorAll('.star-btn').forEach(b=>b.classList.remove('lit'));
+  starRating=5;
+  toast('Terima kasih! Konfirmasi berhasil 🎉');
+}
+
+/* ══ COPY ══ */
+function copyNum(num,btn){
+  navigator.clipboard.writeText(num).then(()=>{
+    btn.classList.add('done');
+    btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Tersalin!';
+    toast('Nomor rekening tersalin! 👍');
+    setTimeout(()=>{btn.classList.remove('done');btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> Salin Nomor';},2500);
+  }).catch(()=>toast('Salin manual: '+num));
+}
+
+/* ══ TOAST ══ */
+let _tt;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('on'),2800);}
+</script>
+</body>
+</html>
