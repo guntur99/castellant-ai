@@ -241,6 +241,15 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             category: "premium".to_string(),
             plan: "premium".to_string(),
         },
+        TemplateMetadata {
+            id: "bereal-wedding".to_string(),
+            title: "Castellan BeReal".to_string(),
+            desc: "No filter, just love. Undangan autentik bergaya BeReal — dual kamera, raw moments, dan notifikasi yang bikin penasaran.".to_string(),
+            price: 75000,
+            preview_img: "/static/img/bereal-wedding_preview.png".to_string(),
+            category: "premium".to_string(),
+            plan: "signature".to_string(),
+        },
     ]
 }
 
@@ -790,6 +799,15 @@ pub struct WeCapCutTemplate {
     pub is_dev: bool,
 }
 
+#[derive(Template)]
+#[template(path = "invitation/bereal-wedding.html")]
+pub struct BeRealWeddingTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
 pub async fn home(
     State(state): State<AppState>,
     jar: PrivateCookieJar,
@@ -899,6 +917,7 @@ pub async fn invitation_detail(
                 "wedding-wrath-v2" => HtmlTemplate(WeddingWrathV2Template { invitation, is_dev: state.is_dev }).into_response(),
                 "wedding-applemusic" => HtmlTemplate(AppleMusicTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "we-capcut" => HtmlTemplate(WeCapCutTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "bereal-wedding" => HtmlTemplate(BeRealWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
             }
         },
@@ -922,6 +941,7 @@ pub async fn invitation_detail(
                     "wedding-wrath-v2-sample" => ("Anita & Zarda", "wedding-wrath-v2"),
                     "wedding-applemusic-sample" => ("Anita & Zarda", "wedding-applemusic"),
                     "we-capcut-sample" => ("Anita & Zarda", "we-capcut"),
+                    "bereal-wedding-sample" => ("Anita & Zarda", "bereal-wedding"),
                     _ => ("Anita & Zarda", "trendvibe"),
                 };
 
@@ -992,6 +1012,7 @@ pub async fn invitation_detail(
                     "wedding-wrath-v2" => HtmlTemplate(WeddingWrathV2Template { invitation, is_dev: state.is_dev }).into_response(),
                     "wedding-applemusic" => HtmlTemplate(AppleMusicTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     "we-capcut" => HtmlTemplate(WeCapCutTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "bereal-wedding" => HtmlTemplate(BeRealWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 }
             } else {
