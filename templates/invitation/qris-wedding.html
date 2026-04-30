@@ -1,0 +1,2607 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRIS · Undangan Pernikahan Nazma & Gunturr</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --qr-red: #E63027;
+            --qr-red2: #C0211A;
+            --qr-blue: #1B4FA8;
+            --qr-blue2: #1249A2;
+            --qr-green: #178B3E;
+            --qr-gold: #C8960C;
+            --qr-bg: #F2F4F7;
+            --qr-white: #FFFFFF;
+            --qr-border: #E0E4EA;
+            --qr-text: #1A1D23;
+            --qr-sub: #6B7280;
+            --qr-light: #F8FAFC;
+            --mono: 'IBM Plex Mono', monospace;
+            --body: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--qr-bg);
+            font-family: var(--body);
+            color: var(--qr-text);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ════════════════════════
+   OPENING
+════════════════════════ */
+        #opening {
+            position: fixed;
+            inset: 0;
+            z-index: 999;
+            background: var(--qr-white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 32px;
+            text-align: center;
+            transition: opacity .6s ease, transform .6s ease;
+        }
+
+        #opening.hide {
+            opacity: 0;
+            transform: translateY(-16px);
+            pointer-events: none;
+        }
+
+        .op-qris-logo {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            margin: 0 auto 24px;
+        }
+
+        /* QRIS letter blocks */
+        .qris-q {
+            background: var(--qr-red);
+            color: #fff;
+        }
+
+        .qris-r {
+            background: var(--qr-blue);
+            color: #fff;
+        }
+
+        .qris-i {
+            background: var(--qr-green);
+            color: #fff;
+        }
+
+        .qris-s {
+            background: var(--qr-gold);
+            color: #fff;
+        }
+
+        .qris-letter {
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--mono);
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -.02em;
+        }
+
+        .qris-letter:first-child {
+            border-radius: 8px 0 0 8px;
+        }
+
+        .qris-letter:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+
+        .op-scan-ring {
+            width: 100px;
+            height: 100px;
+            border-radius: 16px;
+            border: 3px dashed var(--qr-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            position: relative;
+            animation: scan-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes scan-pulse {
+
+            0%,
+            100% {
+                border-color: var(--qr-border);
+            }
+
+            50% {
+                border-color: var(--qr-red);
+                box-shadow: 0 0 0 4px rgba(230, 48, 39, .08);
+            }
+        }
+
+        .op-scan-ring svg {
+            width: 56px;
+            height: 56px;
+        }
+
+        .op-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(230, 48, 39, .08);
+            border: 1px solid rgba(230, 48, 39, .2);
+            color: var(--qr-red);
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            padding: 5px 14px;
+            border-radius: 20px;
+            margin-bottom: 16px;
+        }
+
+        .op-tag-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--qr-red);
+            border-radius: 50%;
+            animation: blink .9s infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .2
+            }
+        }
+
+        .op-title {
+            font-family: var(--mono);
+            font-size: clamp(11px, 3vw, 13px);
+            color: var(--qr-sub);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .op-names {
+            font-size: clamp(28px, 7vw, 44px);
+            font-weight: 800;
+            color: var(--qr-text);
+            line-height: 1.15;
+            margin-bottom: 4px;
+        }
+
+        .op-nominal {
+            font-family: var(--mono);
+            font-size: clamp(18px, 5vw, 26px);
+            font-weight: 700;
+            color: var(--qr-red);
+            margin-bottom: 6px;
+            letter-spacing: -.01em;
+        }
+
+        .op-nominal span {
+            font-size: .7em;
+            font-weight: 400;
+            opacity: .7;
+        }
+
+        .op-dear {
+            background: var(--qr-light);
+            border: 1px solid var(--qr-border);
+            border-radius: 10px;
+            padding: 12px 20px;
+            margin: 20px 0 24px;
+        }
+
+        .op-dear-l {
+            font-size: 10px;
+            color: var(--qr-sub);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .op-dear-n {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--qr-text);
+        }
+
+        .op-btn {
+            background: var(--qr-red);
+            color: #fff;
+            border: none;
+            padding: 15px 48px;
+            border-radius: 8px;
+            font-family: var(--body);
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: .04em;
+            cursor: pointer;
+            transition: background .15s, transform .15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .op-btn:hover {
+            background: var(--qr-red2);
+            transform: translateY(-1px);
+        }
+
+        .op-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: #fff;
+        }
+
+        .op-footer-logos {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .bank-pill {
+            background: var(--qr-light);
+            border: 1px solid var(--qr-border);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-family: var(--mono);
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--qr-sub);
+            letter-spacing: .05em;
+        }
+
+        /* ════════════════════════
+   MAIN LAYOUT
+════════════════════════ */
+        #main {
+            opacity: 0;
+            transition: opacity .6s ease .1s;
+        }
+
+        #main.show {
+            opacity: 1;
+        }
+
+        /* Status bar at very top */
+        .status-bar {
+            background: var(--qr-red);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sb-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sb-logo {
+            display: flex;
+            gap: 0;
+        }
+
+        .sb-letter {
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--mono);
+            font-size: 10px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .sb-divider {
+            width: 1px;
+            background: rgba(255, 255, 255, .3);
+            margin: 2px 0;
+        }
+
+        .sb-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, .85);
+            letter-spacing: .05em;
+        }
+
+        .sb-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sb-secure {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: rgba(255, 255, 255, .75);
+            font-weight: 500;
+        }
+
+        .sb-secure svg {
+            width: 11px;
+            height: 11px;
+            fill: rgba(255, 255, 255, .75);
+        }
+
+        .sb-bi {
+            font-size: 10px;
+            color: rgba(255, 255, 255, .6);
+            font-weight: 500;
+            letter-spacing: .04em;
+        }
+
+        /* Container */
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 16px 14px max(40px, env(safe-area-inset-bottom));
+        }
+
+        /* ════════════════════════
+   PAYMENT CARD
+════════════════════════ */
+        .payment-card {
+            background: var(--qr-white);
+            border-radius: 16px;
+            border: 1px solid var(--qr-border);
+            box-shadow: 0 2px 16px rgba(0, 0, 0, .06), 0 1px 4px rgba(0, 0, 0, .04);
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        /* Card header */
+        .card-header {
+            padding: 16px 20px 14px;
+            border-bottom: 1px solid var(--qr-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ch-merchant {}
+
+        .ch-merchant-label {
+            font-size: 10px;
+            color: var(--qr-sub);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .ch-merchant-name {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--qr-text);
+        }
+
+        .ch-merchant-id {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--qr-sub);
+            margin-top: 1px;
+        }
+
+        .ch-status {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+        }
+
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(23, 139, 62, .1);
+            border: 1px solid rgba(23, 139, 62, .2);
+            color: var(--qr-green);
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            letter-spacing: .06em;
+            text-transform: uppercase;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--qr-green);
+            border-radius: 50%;
+            animation: blink .9s infinite;
+        }
+
+        .ch-time {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--qr-sub);
+        }
+
+        /* QR Section */
+        .qr-section {
+            padding: 20px;
+            text-align: center;
+            position: relative;
+            border-bottom: 1px solid var(--qr-border);
+        }
+
+        .qr-label {
+            font-size: 10px;
+            color: var(--qr-sub);
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .qr-label::before,
+        .qr-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--qr-border);
+        }
+
+        /* THE QR CODE — built entirely with CSS/SVG */
+        .qr-frame {
+            width: 220px;
+            height: 220px;
+            margin: 0 auto;
+            position: relative;
+            border-radius: 12px;
+            padding: 14px;
+            background: #fff;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, .1), 0 1px 6px rgba(0, 0, 0, .06);
+            border: 1px solid var(--qr-border);
+        }
+
+        .qr-scan-line {
+            position: absolute;
+            left: 14px;
+            right: 14px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--qr-red), transparent);
+            top: 14px;
+            z-index: 2;
+            animation: scan-line 2.4s ease-in-out infinite;
+        }
+
+        @keyframes scan-line {
+            0% {
+                top: 14px;
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                top: calc(100% - 14px);
+                opacity: 0;
+            }
+        }
+
+        .qr-corners {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+        }
+
+        .qr-corner {
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            border-color: var(--qr-red);
+            border-style: solid;
+        }
+
+        .qr-corner.tl {
+            top: 8px;
+            left: 8px;
+            border-width: 3px 0 0 3px;
+            border-radius: 4px 0 0 0;
+        }
+
+        .qr-corner.tr {
+            top: 8px;
+            right: 8px;
+            border-width: 3px 3px 0 0;
+            border-radius: 0 4px 0 0;
+        }
+
+        .qr-corner.bl {
+            bottom: 8px;
+            left: 8px;
+            border-width: 0 0 3px 3px;
+            border-radius: 0 0 0 4px;
+        }
+
+        .qr-corner.br {
+            bottom: 8px;
+            right: 8px;
+            border-width: 0 3px 3px 0;
+            border-radius: 0 0 4px 0;
+        }
+
+        /* SVG QR code pattern */
+        .qr-svg {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        /* Center logo on QR */
+        .qr-center-logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: var(--qr-white);
+            border: 2px solid var(--qr-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .12);
+            z-index: 3;
+        }
+
+        .qr-center-logo svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* Bank logos row */
+        .bank-logos-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+
+        .bank-logo-pill {
+            background: var(--qr-light);
+            border: 1px solid var(--qr-border);
+            border-radius: 5px;
+            padding: 3px 8px;
+            font-family: var(--mono);
+            font-size: 9px;
+            font-weight: 700;
+            color: var(--qr-sub);
+            letter-spacing: .04em;
+            white-space: nowrap;
+        }
+
+        .bank-logo-pill.bca {
+            color: #003087;
+            border-color: #003087;
+            background: rgba(0, 48, 135, .05);
+        }
+
+        .bank-logo-pill.bni {
+            color: #E65C00;
+            border-color: #E65C00;
+            background: rgba(230, 92, 0, .05);
+        }
+
+        .bank-logo-pill.bri {
+            color: #00529C;
+            border-color: #00529C;
+            background: rgba(0, 82, 156, .05);
+        }
+
+        .bank-logo-pill.mandiri {
+            color: #003D79;
+            border-color: #003D79;
+            background: rgba(0, 61, 121, .05);
+        }
+
+        .bank-logo-pill.gopay {
+            color: #00AED6;
+            border-color: #00AED6;
+            background: rgba(0, 174, 214, .05);
+        }
+
+        .bank-logo-pill.ovo {
+            color: #4C3494;
+            border-color: #4C3494;
+            background: rgba(76, 52, 148, .05);
+        }
+
+        .bank-logo-pill.dana {
+            color: #118EEA;
+            border-color: #118EEA;
+            background: rgba(17, 142, 234, .05);
+        }
+
+        /* Amount section */
+        .amount-section {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--qr-border);
+            text-align: center;
+        }
+
+        .amount-label {
+            font-size: 11px;
+            color: var(--qr-sub);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .amount-value {
+            font-family: var(--mono);
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--qr-red);
+            letter-spacing: -.02em;
+            line-height: 1.1;
+        }
+
+        .amount-sub {
+            font-size: 12px;
+            color: var(--qr-sub);
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .amount-sub svg {
+            width: 12px;
+            height: 12px;
+            fill: var(--qr-green);
+        }
+
+        /* Info rows */
+        .info-rows {
+            padding: 0 20px;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 13px 0;
+            border-bottom: 1px dashed var(--qr-border);
+            gap: 12px;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .ir-key {
+            font-size: 12px;
+            color: var(--qr-sub);
+            font-weight: 500;
+            flex-shrink: 0;
+        }
+
+        .ir-val {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--qr-text);
+            text-align: right;
+            word-break: break-word;
+        }
+
+        .ir-val.mono {
+            font-family: var(--mono);
+            font-size: 12px;
+        }
+
+        .ir-val.green {
+            color: var(--qr-green);
+        }
+
+        .ir-val.red {
+            color: var(--qr-red);
+        }
+
+        .ir-val.blue {
+            color: var(--qr-blue);
+        }
+
+        /* Card footer */
+        .card-footer {
+            background: var(--qr-light);
+            border-top: 1px solid var(--qr-border);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cf-bi {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 10px;
+            color: var(--qr-sub);
+            font-weight: 500;
+        }
+
+        .cf-bi svg {
+            width: 13px;
+            height: 13px;
+            fill: var(--qr-sub);
+            opacity: .7;
+        }
+
+        .cf-secure {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: var(--qr-green);
+            font-weight: 600;
+        }
+
+        .cf-secure svg {
+            width: 11px;
+            height: 11px;
+            fill: var(--qr-green);
+        }
+
+        /* ════════════════════════
+   COUNTDOWN CARD
+════════════════════════ */
+        .countdown-card {
+            background: var(--qr-white);
+            border-radius: 14px;
+            border: 1px solid var(--qr-border);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .05);
+            padding: 16px 20px;
+            margin-bottom: 12px;
+        }
+
+        .cc-title {
+            font-size: 11px;
+            color: var(--qr-sub);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cc-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--qr-border);
+        }
+
+        .cd-boxes {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .cd-box {
+            flex: 1;
+            background: var(--qr-light);
+            border: 1px solid var(--qr-border);
+            border-radius: 8px;
+            padding: 10px 6px;
+            text-align: center;
+        }
+
+        .cd-n {
+            font-family: var(--mono);
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--qr-text);
+            line-height: 1;
+        }
+
+        .cd-u {
+            font-size: 9px;
+            color: var(--qr-sub);
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            margin-top: 3px;
+        }
+
+        .cd-colon {
+            font-family: var(--mono);
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--qr-border);
+            margin-top: -6px;
+            flex-shrink: 0;
+        }
+
+        /* ════════════════════════
+   VERSE CARD
+════════════════════════ */
+        .verse-card {
+            background: var(--qr-white);
+            border-radius: 14px;
+            border: 1px solid var(--qr-border);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .05);
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .verse-accent {
+            height: 3px;
+            background: linear-gradient(90deg, var(--qr-red), var(--qr-blue), var(--qr-green), var(--qr-gold));
+        }
+
+        .verse-body {
+            padding: 16px 20px;
+            text-align: center;
+        }
+
+        .verse-icon {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .verse-text {
+            font-size: 14px;
+            font-style: italic;
+            color: var(--qr-sub);
+            line-height: 1.8;
+            margin-bottom: 8px;
+        }
+
+        .verse-ref {
+            font-size: 11px;
+            color: var(--qr-red);
+            font-weight: 700;
+            letter-spacing: .05em;
+        }
+
+        /* ════════════════════════
+   SECTION CARDS (Couple, Event, etc.)
+════════════════════════ */
+        .section-card {
+            background: var(--qr-white);
+            border-radius: 14px;
+            border: 1px solid var(--qr-border);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .05);
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .sc-head {
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid var(--qr-border);
+            background: var(--qr-light);
+        }
+
+        .sc-head-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: var(--qr-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .sc-head-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--qr-text);
+        }
+
+        .sc-head-sub {
+            font-size: 10px;
+            color: var(--qr-sub);
+            margin-top: 1px;
+        }
+
+        .sc-body {
+            padding: 16px;
+        }
+
+        /* Couple */
+        .couple-grid {
+            display: grid;
+            grid-template-columns: 1fr 24px 1fr;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .c-card {
+            background: var(--qr-light);
+            border: 1px solid var(--qr-border);
+            border-radius: 10px;
+            padding: 14px 10px;
+            text-align: center;
+        }
+
+        .c-av {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid var(--qr-red);
+            overflow: hidden;
+            margin: 0 auto 10px;
+        }
+
+        .c-av img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .c-role {
+            font-size: 9px;
+            color: var(--qr-red);
+            font-weight: 700;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            margin-bottom: 3px;
+        }
+
+        .c-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--qr-text);
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .c-parents {
+            font-size: 10px;
+            color: var(--qr-sub);
+            line-height: 1.55;
+        }
+
+        .c-amp {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--qr-border);
+            text-align: center;
+            line-height: 1;
+        }
+
+        /* Event receipt style */
+        .ev-receipt {
+            background: var(--qr-light);
+            border: 1px solid var(--qr-border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .ev-receipt:last-child {
+            margin-bottom: 0;
+        }
+
+        .ev-receipt-head {
+            background: var(--qr-red);
+            padding: 10px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ev-receipt-type {
+            font-size: 11px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .ev-receipt-date {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: rgba(255, 255, 255, .8);
+            font-weight: 600;
+        }
+
+        .ev-receipt-rows {
+            padding: 12px 14px;
+        }
+
+        .ev-r {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .ev-r:last-child {
+            margin-bottom: 0;
+        }
+
+        .ev-r-ic {
+            width: 14px;
+            height: 14px;
+            fill: var(--qr-red);
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .ev-r-text {
+            color: var(--qr-sub);
+            line-height: 1.5;
+        }
+
+        .ev-map-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 8px;
+            background: var(--qr-red);
+            color: #fff;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 6px;
+            transition: background .15s;
+        }
+
+        .ev-map-btn:hover {
+            background: var(--qr-red2);
+        }
+
+        /* Timeline receipt */
+        .tl-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .tl-item {
+            display: flex;
+            gap: 12px;
+            padding-bottom: 20px;
+            position: relative;
+        }
+
+        .tl-item::before {
+            content: '';
+            position: absolute;
+            left: 14px;
+            top: 28px;
+            bottom: 0;
+            width: 1px;
+            background: var(--qr-border);
+        }
+
+        .tl-item:last-child::before {
+            display: none;
+        }
+
+        .tl-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            flex-shrink: 0;
+            background: var(--qr-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--mono);
+            font-size: 11px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .tl-body {
+            flex: 1;
+        }
+
+        .tl-track {
+            font-size: 9px;
+            color: var(--qr-red);
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .tl-when {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--qr-sub);
+            margin-bottom: 4px;
+        }
+
+        .tl-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--qr-text);
+            margin-bottom: 4px;
+        }
+
+        .tl-desc {
+            font-size: 12px;
+            color: var(--qr-sub);
+            line-height: 1.65;
+        }
+
+        /* Gallery grid */
+        .gal-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+        }
+
+        .gal-item {
+            aspect-ratio: 1;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            background: var(--qr-light);
+            position: relative;
+        }
+
+        .gal-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .35s, filter .3s;
+            filter: brightness(.95) saturate(.9);
+        }
+
+        .gal-item:hover img {
+            transform: scale(1.06);
+            filter: brightness(1) saturate(1.05);
+        }
+
+        .gal-item:hover::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(230, 48, 39, .08);
+        }
+
+        /* Gift receipt */
+        .gift-receipt {
+            background: var(--qr-light);
+            border: 1px solid var(--qr-border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gift-receipt::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--qr-red);
+        }
+
+        .gr-bank {
+            font-size: 10px;
+            color: var(--qr-sub);
+            text-transform: uppercase;
+            letter-spacing: .1em;
+            margin-bottom: 2px;
+        }
+
+        .gr-name {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--qr-text);
+            margin-bottom: 2px;
+        }
+
+        .gr-holder {
+            font-size: 11px;
+            color: var(--qr-sub);
+            margin-bottom: 10px;
+        }
+
+        .gr-num {
+            font-family: var(--mono);
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: .12em;
+            color: var(--qr-text);
+            background: #fff;
+            border: 1px solid var(--qr-border);
+            padding: 7px 12px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--qr-red);
+            color: #fff;
+            border: none;
+            font-size: 11px;
+            font-weight: 700;
+            font-family: var(--body);
+            padding: 7px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background .15s;
+        }
+
+        .copy-btn:hover {
+            background: var(--qr-red2);
+        }
+
+        .copy-btn.ok {
+            background: var(--qr-green);
+        }
+
+        /* ════════════════════════
+   RSVP — styled as payment form
+════════════════════════ */
+        .rsvp-card {
+            background: var(--qr-white);
+            border-radius: 14px;
+            border: 1px solid var(--qr-border);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .05);
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .rsvp-stats {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid var(--qr-border);
+        }
+
+        .rs {
+            flex: 1;
+            padding: 12px 8px;
+            text-align: center;
+            border-right: 1px solid var(--qr-border);
+        }
+
+        .rs:last-child {
+            border-right: none;
+        }
+
+        .rs-n {
+            font-family: var(--mono);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--qr-red);
+            line-height: 1;
+        }
+
+        .rs-l {
+            font-size: 9px;
+            color: var(--qr-sub);
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            margin-top: 2px;
+        }
+
+        .rsvp-form {
+            padding: 16px;
+        }
+
+        .fg {
+            margin-bottom: 12px;
+        }
+
+        .fl {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--qr-sub);
+            letter-spacing: .07em;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .fi {
+            width: 100%;
+            background: var(--qr-light);
+            border: 1px solid var(--qr-border);
+            border-radius: 8px;
+            padding: 11px 13px;
+            color: var(--qr-text);
+            font-family: var(--body);
+            font-size: 13px;
+            outline: none;
+            transition: border-color .2s, box-shadow .2s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .fi:focus {
+            border-color: var(--qr-red);
+            box-shadow: 0 0 0 3px rgba(230, 48, 39, .1);
+        }
+
+        .fi::placeholder {
+            color: #b0b7c3;
+        }
+
+        select.fi {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 34px;
+            cursor: pointer;
+        }
+
+        textarea.fi {
+            min-height: 80px;
+            resize: none;
+        }
+
+        .gbtn-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .gbtn {
+            flex: 1;
+            background: var(--qr-light);
+            border: 1px solid var(--qr-border);
+            border-radius: 8px;
+            padding: 10px;
+            color: var(--qr-sub);
+            font-family: var(--body);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all .15s;
+        }
+
+        .gbtn.on {
+            background: rgba(230, 48, 39, .08);
+            border-color: var(--qr-red);
+            color: var(--qr-red);
+            font-weight: 700;
+        }
+
+        .rsvp-submit {
+            width: 100%;
+            background: var(--qr-red);
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            color: #fff;
+            font-family: var(--body);
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            letter-spacing: .04em;
+            margin-top: 4px;
+            transition: background .15s, transform .1s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .rsvp-submit:hover {
+            background: var(--qr-red2);
+            transform: translateY(-1px);
+        }
+
+        .rsvp-submit svg {
+            width: 16px;
+            height: 16px;
+            fill: #fff;
+        }
+
+        /* ════════════════════════
+   WISHES — like transaction list
+════════════════════════ */
+        .wishes-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .wish-item {
+            background: var(--qr-white);
+            border: 1px solid var(--qr-border);
+            border-radius: 12px;
+            padding: 14px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, .04);
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity .5s, transform .5s;
+        }
+
+        .wish-item.vis {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .wi-head {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .wi-av {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--qr-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #fff;
+            flex-shrink: 0;
+        }
+
+        .wi-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--qr-text);
+        }
+
+        .wi-status {
+            font-size: 10px;
+            color: var(--qr-green);
+            font-weight: 600;
+            margin-top: 1px;
+        }
+
+        .wi-ref {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: #b0b7c3;
+            margin-top: 1px;
+        }
+
+        .wi-text {
+            font-size: 12px;
+            color: var(--qr-sub);
+            line-height: 1.65;
+        }
+
+        .wi-stars {
+            color: #F59E0B;
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+
+        /* ════════════════════════
+   BOTTOM NAV
+════════════════════════ */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, .96);
+            backdrop-filter: blur(16px);
+            border-top: 1px solid var(--qr-border);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+            z-index: 100;
+            transform: translateY(100%);
+            transition: transform .5s ease 1s;
+        }
+
+        .bottom-nav.show {
+            transform: translateY(0);
+        }
+
+        .nav-i {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
+            color: #b0b7c3;
+            text-decoration: none;
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            transition: color .15s;
+        }
+
+        .nav-i svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .nav-i.on,
+        .nav-i:hover {
+            color: var(--qr-red);
+        }
+
+        /* ════════════════════════
+   LIGHTBOX
+════════════════════════ */
+        .lb {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .95);
+            z-index: 200;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lb.open {
+            display: flex;
+        }
+
+        .lb-img {
+            max-width: 94vw;
+            max-height: 84vh;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .lb-close {
+            position: absolute;
+            top: 18px;
+            right: 16px;
+            background: rgba(255, 255, 255, .1);
+            border: none;
+            color: #fff;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lb-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, .1);
+            border: none;
+            color: #fff;
+            font-size: 26px;
+            cursor: pointer;
+            width: 42px;
+            height: 56px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lb-prev {
+            left: 10px;
+        }
+
+        .lb-next {
+            right: 10px;
+        }
+
+        .lb-ctr {
+            position: absolute;
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: rgba(255, 255, 255, .4);
+        }
+
+        /* ════════════════════════
+   TOAST
+════════════════════════ */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(10px);
+            background: var(--qr-text);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            opacity: 0;
+            transition: opacity .25s, transform .25s;
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--qr-green);
+            flex-shrink: 0;
+        }
+
+        /* ════════════════════════
+   RECEIPT TEAR EFFECT
+════════════════════════ */
+        .tear {
+            height: 16px;
+            width: 100%;
+            background:
+                radial-gradient(circle at 10px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 30px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 50px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 70px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 90px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 110px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 130px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 150px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 170px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 190px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 210px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 230px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 250px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 270px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 290px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 310px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 330px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 350px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 370px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 390px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 410px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 430px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 450px -1px, var(--qr-bg) 6px, transparent 6px),
+                radial-gradient(circle at 470px -1px, var(--qr-bg) 6px, transparent 6px);
+            background-color: var(--qr-white);
+        }
+
+        .tear.bottom {
+            transform: rotate(180deg);
+            background-color: var(--qr-white);
+        }
+
+        /* scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity .55s ease, transform .55s ease;
+        }
+
+        .reveal.vis {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ══ OPENING ══ -->
+    <div id="opening">
+        <div class="op-qris-logo">
+            <div class="qris-letter qris-q">Q</div>
+            <div class="qris-letter qris-r">R</div>
+            <div class="qris-letter qris-i">I</div>
+            <div class="qris-letter qris-s">S</div>
+        </div>
+
+        <div class="op-scan-ring">
+            <!-- Mini QR icon -->
+            <svg viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="4" width="20" height="20" rx="3" stroke="#E63027" stroke-width="3" />
+                <rect x="9" y="9" width="10" height="10" fill="#E63027" rx="1" />
+                <rect x="32" y="4" width="20" height="20" rx="3" stroke="#E63027" stroke-width="3" />
+                <rect x="37" y="9" width="10" height="10" fill="#E63027" rx="1" />
+                <rect x="4" y="32" width="20" height="20" rx="3" stroke="#E63027" stroke-width="3" />
+                <rect x="9" y="37" width="10" height="10" fill="#E63027" rx="1" />
+                <rect x="32" y="32" width="5" height="5" fill="#E63027" rx="1" />
+                <rect x="40" y="32" width="5" height="5" fill="#E63027" rx="1" />
+                <rect x="48" y="32" width="5" height="5" fill="#E63027" rx="1" />
+                <rect x="32" y="40" width="5" height="5" fill="#E63027" rx="1" />
+                <rect x="40" y="40" width="5" height="5" fill="#E63027" rx="1" />
+                <rect x="48" y="48" width="5" height="5" fill="#E63027" rx="1" />
+                <rect x="32" y="48" width="5" height="5" fill="#E63027" rx="1" />
+                <rect x="48" y="40" width="5" height="5" fill="#E63027" rx="1" />
+                <rect x="40" y="48" width="5" height="5" fill="#E63027" rx="1" />
+            </svg>
+        </div>
+
+        <div class="op-tag">
+            <div class="op-tag-dot"></div>Scan untuk hadir
+        </div>
+        <div class="op-title">UNDANGAN PERNIKAHAN · INDONESIA</div>
+        <div class="op-names">Nazma & Gunturr</div>
+        <div class="op-nominal">Rp <span>HADIR</span></div>
+
+        <div class="op-dear">
+            <div class="op-dear-l">Kepada Yth.</div>
+            <div class="op-dear-n">Ade Guntur Fitridullah & Partner</div>
+        </div>
+
+        <button class="op-btn" onclick="openApp()">
+            <svg viewBox="0 0 24 24">
+                <path
+                    d="M9.5 6.5v3h-3v-3h3M11 5H5v6h6V5zm-1.5 9.5v3h-3v-3h3M11 13H5v6h6v-6zm6.5-6.5v3h-3v-3h3M21 5h-6v6h6V5zm-3 8h-1.5v1.5H18V13zm-1.5 1.5H15V16h1.5v-1.5zm1.5 1.5h-1.5V17H18v-1.5zm-1.5 1.5H15v1.5h1.5V18zm1.5 1.5h-1.5V21H18v-1.5zm1.5-3H18v1.5h1.5V15zm0 3h-1.5V19.5H21V18zm0-4.5h-1.5v1.5H21V13.5z" />
+            </svg>
+            Buka Undangan
+        </button>
+
+        <div class="op-footer-logos">
+            <div class="bank-pill">BI Approved</div>
+            <div class="bank-pill">256-bit SSL</div>
+            <div class="bank-pill">SNAP 2.0</div>
+            <div class="bank-pill">GPN Certified</div>
+        </div>
+    </div>
+
+    <!-- ══ MAIN APP ══ -->
+    <div id="main">
+
+        <!-- Status bar -->
+        <div class="status-bar">
+            <div class="sb-left">
+                <div class="sb-logo">
+                    <div class="sb-letter" style="background:rgba(255,255,255,.15)">Q</div>
+                    <div class="sb-letter" style="background:rgba(255,255,255,.1)">R</div>
+                    <div class="sb-letter" style="background:rgba(255,255,255,.08)">I</div>
+                    <div class="sb-letter" style="background:rgba(255,255,255,.06)">S</div>
+                </div>
+                <div class="sb-divider" style="height:16px"></div>
+                <span class="sb-label">WEDDING EDITION</span>
+            </div>
+            <div class="sb-right">
+                <div class="sb-secure">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                    </svg>
+                    Aman & Terverifikasi
+                </div>
+                <span class="sb-bi">Bank Indonesia</span>
+            </div>
+        </div>
+
+        <div class="container">
+
+            <!-- ── MAIN PAYMENT CARD ── -->
+            <div class="payment-card reveal" id="home">
+
+                <!-- Card Header -->
+                <div class="card-header">
+                    <div class="ch-merchant">
+                        <div class="ch-merchant-label">Nama Merchant</div>
+                        <div class="ch-merchant-name">Nazma & Gunturr</div>
+                        <div class="ch-merchant-id">MID: WEDDING·24052026·TANGERANG</div>
+                    </div>
+                    <div class="ch-status">
+                        <div class="status-pill">
+                            <div class="status-dot"></div>
+                            AKTIF
+                        </div>
+                        <div class="ch-time" id="liveTime">--:--:--</div>
+                    </div>
+                </div>
+
+                <!-- QR Code -->
+                <div class="qr-section">
+                    <div class="qr-label">Scan QR Code</div>
+                    <div class="qr-frame">
+                        <div class="qr-scan-line"></div>
+                        <div class="qr-corners">
+                            <div class="qr-corner tl"></div>
+                            <div class="qr-corner tr"></div>
+                            <div class="qr-corner bl"></div>
+                            <div class="qr-corner br"></div>
+                        </div>
+
+                        <!-- Hand-crafted QR SVG pattern -->
+                        <svg class="qr-svg" viewBox="0 0 192 192" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Top-left finder -->
+                            <rect x="8" y="8" width="56" height="56" rx="6" fill="#1A1D23" />
+                            <rect x="16" y="16" width="40" height="40" rx="3" fill="white" />
+                            <rect x="22" y="22" width="28" height="28" rx="2" fill="#1A1D23" />
+
+                            <!-- Top-right finder -->
+                            <rect x="128" y="8" width="56" height="56" rx="6" fill="#1A1D23" />
+                            <rect x="136" y="16" width="40" height="40" rx="3" fill="white" />
+                            <rect x="142" y="22" width="28" height="28" rx="2" fill="#1A1D23" />
+
+                            <!-- Bottom-left finder -->
+                            <rect x="8" y="128" width="56" height="56" rx="6" fill="#1A1D23" />
+                            <rect x="16" y="136" width="40" height="40" rx="3" fill="white" />
+                            <rect x="22" y="142" width="28" height="28" rx="2" fill="#1A1D23" />
+
+                            <!-- Data modules — randomized pattern -->
+                            <rect x="72" y="8" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="88" y="8" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="104" y="8" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="72" y="24" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="104" y="24" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="72" y="40" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="80" y="40" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="96" y="40" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="112" y="40" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="72" y="56" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="96" y="56" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="112" y="56" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="72" y="72" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="88" y="72" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="104" y="72" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="120" y="72" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="8" y="72" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="24" y="72" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="40" y="72" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="56" y="72" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="8" y="88" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="40" y="88" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="56" y="88" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="88" y="88" width="8" height="8" rx="1" fill="#E63027" />
+                            <rect x="104" y="88" width="8" height="8" rx="1" fill="#E63027" />
+                            <rect x="128" y="88" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="144" y="88" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="160" y="88" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="176" y="88" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="8" y="104" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="24" y="104" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="56" y="104" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="88" y="104" width="8" height="8" rx="1" fill="#E63027" />
+                            <rect x="104" y="104" width="8" height="8" rx="1" fill="#E63027" />
+                            <rect x="120" y="104" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="136" y="104" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="160" y="104" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="8" y="120" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="40" y="120" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="56" y="120" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="72" y="120" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="88" y="120" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="112" y="120" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="136" y="120" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="160" y="120" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="176" y="120" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="72" y="136" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="88" y="136" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="104" y="136" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="120" y="136" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="144" y="136" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="160" y="136" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="72" y="152" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="96" y="152" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="112" y="152" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="136" y="152" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="152" y="152" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="176" y="152" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="72" y="168" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="88" y="168" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="104" y="168" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="120" y="168" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="144" y="168" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="168" y="168" width="8" height="8" rx="1" fill="#1A1D23" />
+                            <rect x="176" y="168" width="8" height="8" rx="1" fill="#1A1D23" />
+                        </svg>
+
+                        <!-- Center logo -->
+                        <div class="qr-center-logo">
+                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 2L13.09 8.26L19 6L14.74 11L21 12L14.74 13L19 18L13.09 15.74L12 22L10.91 15.74L5 18L9.26 13L3 12L9.26 11L5 6L10.91 8.26L12 2Z"
+                                    fill="#E63027" />
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Bank logos -->
+                    <div class="bank-logos-row">
+                        <span class="bank-logo-pill bca">BCA</span>
+                        <span class="bank-logo-pill bni">BNI</span>
+                        <span class="bank-logo-pill bri">BRI</span>
+                        <span class="bank-logo-pill mandiri">MANDIRI</span>
+                        <span class="bank-logo-pill gopay">GoPay</span>
+                        <span class="bank-logo-pill ovo">OVO</span>
+                        <span class="bank-logo-pill dana">DANA</span>
+                    </div>
+                </div>
+
+                <!-- Tear effect -->
+                <div class="tear"></div>
+
+                <!-- Amount -->
+                <div class="amount-section">
+                    <div class="amount-label">Nominal Kehadiran</div>
+                    <div class="amount-value">Rp HADIR</div>
+                    <div class="amount-sub">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                        </svg>
+                        Gratis · Cukup hadir & doakan kami
+                    </div>
+                </div>
+
+                <!-- Info rows -->
+                <div class="info-rows">
+                    <div class="info-row">
+                        <span class="ir-key">Pengirim</span>
+                        <span class="ir-val">Ade Guntur Fitridullah & Partner</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="ir-key">Merchant</span>
+                        <span class="ir-val">Nazma & Gunturr Wedding</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="ir-key">Tanggal</span>
+                        <span class="ir-val mono">Minggu, 24 Mei 2026</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="ir-key">Lokasi</span>
+                        <span class="ir-val">Graha Yadika, Tangerang</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="ir-key">Status</span>
+                        <span class="ir-val green">✓ MENUNGGU KEHADIRAN</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="ir-key">No. Referensi</span>
+                        <span class="ir-val mono red">AZ·240526·WEDDING</span>
+                    </div>
+                </div>
+
+                <!-- Tear bottom -->
+                <div class="tear bottom"></div>
+
+                <!-- Card footer -->
+                <div class="card-footer">
+                    <div class="cf-bi">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z" />
+                        </svg>
+                        Dikeluarkan oleh Bank Indonesia
+                    </div>
+                    <div class="cf-secure">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                        </svg>
+                        Terverifikasi
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── COUNTDOWN ── -->
+            <div class="countdown-card reveal" id="countdown">
+                <div class="cc-title">Batas Waktu Konfirmasi</div>
+                <div class="cd-boxes">
+                    <div class="cd-box">
+                        <div class="cd-n" id="cdD">00</div>
+                        <div class="cd-u">Hari</div>
+                    </div>
+                    <div class="cd-colon">:</div>
+                    <div class="cd-box">
+                        <div class="cd-n" id="cdH">00</div>
+                        <div class="cd-u">Jam</div>
+                    </div>
+                    <div class="cd-colon">:</div>
+                    <div class="cd-box">
+                        <div class="cd-n" id="cdM">00</div>
+                        <div class="cd-u">Menit</div>
+                    </div>
+                    <div class="cd-colon">:</div>
+                    <div class="cd-box">
+                        <div class="cd-n" id="cdS">00</div>
+                        <div class="cd-u">Detik</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── VERSE ── -->
+            <div class="verse-card reveal">
+                <div class="verse-accent"></div>
+                <div class="verse-body">
+                    <div class="verse-icon">🕌</div>
+                    <div class="verse-text">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan
+                        pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram
+                        kepadanya..."</div>
+                    <div class="verse-ref">— Surah Ar-Rum : 21</div>
+                </div>
+            </div>
+
+            <!-- ── COUPLE ── -->
+            <div class="section-card reveal" id="couple">
+                <div class="sc-head">
+                    <div class="sc-head-icon">💑</div>
+                    <div>
+                        <div class="sc-head-title">Data Penerima</div>
+                        <div class="sc-head-sub">Pasangan Pengantin</div>
+                    </div>
+                </div>
+                <div class="sc-body">
+                    <div class="couple-grid">
+                        <div class="c-card">
+                            <div class="c-av"><img
+                                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80"
+                                    alt="Nazma"></div>
+                            <div class="c-role">🌸 Mempelai WNazma</div>
+                            <div class="c-name">Nazma Putri, S.Kom</div>
+                            <div class="c-parents">Putri Pertama dari<br><strong>Bpk. Taryono &<br>Ibu Wiwit
+                                    Jayanti</strong></div>
+                        </div>
+                        <div class="c-amp">&</div>
+                        <div class="c-card">
+                            <div class="c-av"><img
+                                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80"
+                                    alt="Guntur"></div>
+                            <div class="c-role">🤵 Mempelai Pria</div>
+                            <div class="c-name">Guntur Putra, S.Kom</div>
+                            <div class="c-parents">Putra Kedua dari<br><strong>Bpk. Wan Sabran, M.MAR &<br>Ibu Titik
+                                    Sundari, M.Si</strong></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── EVENT ── -->
+            <div class="section-card reveal" id="event">
+                <div class="sc-head">
+                    <div class="sc-head-icon">📅</div>
+                    <div>
+                        <div class="sc-head-title">Detail Transaksi</div>
+                        <div class="sc-head-sub">Waktu & Tempat Acara</div>
+                    </div>
+                </div>
+                <div class="sc-body">
+                    <div class="ev-receipt">
+                        <div class="ev-receipt-head">
+                            <span class="ev-receipt-type">Akad Nikah</span>
+                            <span class="ev-receipt-date">08.00 WIB</span>
+                        </div>
+                        <div class="ev-receipt-rows">
+                            <div class="ev-r"><svg class="ev-r-ic" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                                </svg><span class="ev-r-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah,
+                                    Ciledug, Tangerang</span></div>
+                            <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-map-btn">📍
+                                Buka Google Maps</a>
+                        </div>
+                    </div>
+                    <div class="ev-receipt">
+                        <div class="ev-receipt-head">
+                            <span class="ev-receipt-type">Resepsi</span>
+                            <span class="ev-receipt-date">11.00–13.00 WIB</span>
+                        </div>
+                        <div class="ev-receipt-rows">
+                            <div class="ev-r"><svg class="ev-r-ic" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                                </svg><span class="ev-r-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah,
+                                    Ciledug, Tangerang</span></div>
+                            <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-map-btn">📍
+                                Buka Google Maps</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── LOVE STORY ── -->
+            <div class="section-card reveal" id="story">
+                <div class="sc-head">
+                    <div class="sc-head-icon" style="background:var(--qr-blue)">💛</div>
+                    <div>
+                        <div class="sc-head-title">Riwayat Transaksi</div>
+                        <div class="sc-head-sub">Love Story Nazma & Gunturr</div>
+                    </div>
+                </div>
+                <div class="sc-body">
+                    <div class="tl-list">
+                        <div class="tl-item">
+                            <div class="tl-dot">01</div>
+                            <div class="tl-body">
+                                <div class="tl-track">TRX-001 · PERTEMUAN</div>
+                                <div class="tl-when">Juni 2025</div>
+                                <div class="tl-title">Awal Pertemuan</div>
+                                <div class="tl-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling,
+                                    cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal
+                                    kisah kami.</div>
+                            </div>
+                        </div>
+                        <div class="tl-item">
+                            <div class="tl-dot">02</div>
+                            <div class="tl-body">
+                                <div class="tl-track">TRX-002 · LAMARAN</div>
+                                <div class="tl-when">November 2025</div>
+                                <div class="tl-title">Lamaran</div>
+                                <div class="tl-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan
+                                    keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tl-item">
+                            <div class="tl-dot">03</div>
+                            <div class="tl-body">
+                                <div class="tl-track">TRX-003 · PERNIKAHAN</div>
+                                <div class="tl-when">Mei 2026</div>
+                                <div class="tl-title">Pernikahan 🎉</div>
+                                <div class="tl-desc">Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan suci
+                                    pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama.</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── GALLERY ── -->
+            <div class="section-card reveal" id="gallery">
+                <div class="sc-head">
+                    <div class="sc-head-icon" style="background:var(--qr-green)">📸</div>
+                    <div>
+                        <div class="sc-head-title">Lampiran Bukti</div>
+                        <div class="sc-head-sub">Galeri Foto Pasangan</div>
+                    </div>
+                </div>
+                <div class="sc-body" style="padding:12px">
+                    <div class="gal-grid" id="galGrid"></div>
+                </div>
+            </div>
+
+            <!-- ── GIFT ── -->
+            <div class="section-card reveal" id="gift">
+                <div class="sc-head">
+                    <div class="sc-head-icon" style="background:var(--qr-gold)">🎁</div>
+                    <div>
+                        <div class="sc-head-title">Rekening Tujuan</div>
+                        <div class="sc-head-sub">Amplop Digital</div>
+                    </div>
+                </div>
+                <div class="sc-body">
+                    <p style="font-size:12px;color:var(--qr-sub);line-height:1.7;margin-bottom:14px">Doa restu sudah
+                        sangat cukup. Namun jika memberi adalah tanda kasih, kami dengan tulus menerimanya.</p>
+                    <div class="gift-receipt">
+                        <div class="gr-bank">Bank</div>
+                        <div class="gr-name">BCA</div>
+                        <div class="gr-holder">Guntur Putra</div>
+                        <div class="gr-num">8210 3705 61</div><br>
+                        <button class="copy-btn" onclick="copyAcc('8210370561',this)">Salin Nomor</button>
+                    </div>
+                    <div class="gift-receipt">
+                        <div class="gr-bank">Bank</div>
+                        <div class="gr-name">BNI</div>
+                        <div class="gr-holder">Nazma Putri</div>
+                        <div class="gr-num">1192 9784 03</div><br>
+                        <button class="copy-btn" onclick="copyAcc('1192978403',this)">Salin Nomor</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── RSVP ── -->
+            <div class="rsvp-card reveal" id="rsvp">
+                <div class="sc-head"
+                    style="background:var(--qr-light);border-bottom:1px solid var(--qr-border);border-radius:0">
+                    <div class="sc-head-icon">✉️</div>
+                    <div>
+                        <div class="sc-head-title">Form Konfirmasi</div>
+                        <div class="sc-head-sub">Seperti mengisi data transfer</div>
+                    </div>
+                </div>
+                <div class="rsvp-stats">
+                    <div class="rs">
+                        <div class="rs-n" id="stR">7</div>
+                        <div class="rs-l">Respons</div>
+                    </div>
+                    <div class="rs">
+                        <div class="rs-n" id="stH">7</div>
+                        <div class="rs-l">Hadir</div>
+                    </div>
+                    <div class="rs">
+                        <div class="rs-n" id="stT">13</div>
+                        <div class="rs-l">Total Tamu</div>
+                    </div>
+                </div>
+                <div class="rsvp-form">
+                    <div class="fg"><label class="fl">Nama Pengirim</label><input type="text" class="fi"
+                            placeholder="Nama lengkap kamu" id="rName"></div>
+                    <div class="fg">
+                        <label class="fl">Jenis Transaksi</label>
+                        <select class="fi" id="rStat">
+                            <option value="">Pilih status...</option>
+                            <option value="hadir">✅ Hadir</option>
+                            <option value="tidak">❌ Tidak Hadir</option>
+                        </select>
+                    </div>
+                    <div class="fg">
+                        <label class="fl">Jumlah Tamu</label>
+                        <div class="gbtn-row">
+                            <button class="gbtn on" onclick="setG(1,this)">1 Orang</button>
+                            <button class="gbtn" onclick="setG(2,this)">2 Orang</button>
+                        </div>
+                    </div>
+                    <div class="fg"><label class="fl">Catatan / Berita</label><textarea class="fi"
+                            placeholder="Ucapan & doa untuk Nazma & Gunturr..." id="rMsg"></textarea></div>
+                    <button class="rsvp-submit" onclick="doRSVP()">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                        </svg>
+                        Kirim Konfirmasi
+                    </button>
+                </div>
+            </div>
+
+            <!-- ── WISHES ── -->
+            <div class="section-card reveal" id="wishes">
+                <div class="sc-head">
+                    <div class="sc-head-icon" style="background:var(--qr-blue)">⭐</div>
+                    <div>
+                        <div class="sc-head-title">Riwayat Ucapan</div>
+                        <div class="sc-head-sub">Dari para tamu undangan</div>
+                    </div>
+                </div>
+                <div class="sc-body">
+                    <div class="wishes-list" id="wishesList">
+                        <div class="wish-item vis">
+                            <div class="wi-head">
+                                <div class="wi-av">A</div>
+                                <div>
+                                    <div class="wi-name">Ayu Rahmawati</div>
+                                    <div class="wi-status">✓ Hadir · 2 tamu</div>
+                                    <div class="wi-ref">REF: TRX·AYU·240526</div>
+                                </div>
+                            </div>
+                            <div class="wi-stars">★★★★★</div>
+                            <div class="wi-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah,
+                                mawaddah, wa rahmah. Bahagia selalu! 🌿</div>
+                        </div>
+                        <div class="wish-item vis">
+                            <div class="wi-head">
+                                <div class="wi-av" style="background:var(--qr-blue)">R</div>
+                                <div>
+                                    <div class="wi-name">Reza Firmansyah</div>
+                                    <div class="wi-status">✓ Hadir · 1 tamu</div>
+                                    <div class="wi-ref">REF: TRX·REZA·240526</div>
+                                </div>
+                            </div>
+                            <div class="wi-stars">★★★★★</div>
+                            <div class="wi-text">Alhamdulillah! Semoga pernikahannya membawa keberkahan yang tidak
+                                pernah habis. Aamiin!</div>
+                        </div>
+                        <div class="wish-item vis">
+                            <div class="wi-head">
+                                <div class="wi-av" style="background:var(--qr-green)">S</div>
+                                <div>
+                                    <div class="wi-name">Sinta Dewi</div>
+                                    <div class="wi-status">✓ Hadir · 2 tamu</div>
+                                    <div class="wi-ref">REF: TRX·SINTA·240526</div>
+                                </div>
+                            </div>
+                            <div class="wi-stars">★★★★★</div>
+                            <div class="wi-text">Wishing you both a lifetime of love and laughter. Semoga langkah kalian
+                                selalu diberkahi 💚</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer receipt -->
+            <div style="text-align:center;padding:20px 0 8px">
+                <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-bottom:8px">
+                    <div class="qris-letter qris-q"
+                        style="width:20px;height:20px;font-size:9px;border-radius:3px 0 0 3px">Q</div>
+                    <div class="qris-letter qris-r" style="width:20px;height:20px;font-size:9px">R</div>
+                    <div class="qris-letter qris-i" style="width:20px;height:20px;font-size:9px">I</div>
+                    <div class="qris-letter qris-s"
+                        style="width:20px;height:20px;font-size:9px;border-radius:0 3px 3px 0">S</div>
+                    <span style="font-size:11px;color:var(--qr-sub);font-weight:600;margin-left:4px">Wedding
+                        Edition</span>
+                </div>
+                <p style="font-size:11px;color:var(--qr-sub);line-height:1.7;max-width:320px;margin:0 auto">
+                    Undangan digital ini diproteksi oleh enkripsi 256-bit<br>dan diverifikasi oleh Bank
+                    Indonesia.<br><br>
+                    <strong style="color:var(--qr-text)">Nazma & Gunturr · 24 Mei 2026</strong>
+                </p>
+                <p style="font-size:10px;color:#b0b7c3;margin-top:12px;letter-spacing:.05em">DIGITAL INVITATION BY
+                    BRIDESSPACE</p>
+            </div>
+
+        </div><!-- /container -->
+    </div><!-- /main -->
+
+    <!-- Bottom Nav -->
+    <nav class="bottom-nav" id="botNav">
+        <a href="#home" class="nav-i on">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+            </svg>
+            QRIS
+        </a>
+        <a href="#couple" class="nav-i">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                <circle cx="9" cy="7" r="4" />
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+            </svg>
+            Couple
+        </a>
+        <a href="#event" class="nav-i">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2" />
+                <line x1="16" y1="2" x2="16" y2="6" />
+                <line x1="8" y1="2" x2="8" y2="6" />
+                <line x1="3" y1="10" x2="21" y2="10" />
+            </svg>
+            Event
+        </a>
+        <a href="#gift" class="nav-i">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 12 20 22 4 22 4 12" />
+                <rect x="2" y="7" width="20" height="5" />
+                <line x1="12" y1="22" x2="12" y2="7" />
+            </svg>
+            Gift
+        </a>
+        <a href="#rsvp" class="nav-i">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                <polyline points="22,6 12,13 2,6" />
+            </svg>
+            RSVP
+        </a>
+    </nav>
+
+    <!-- Lightbox -->
+    <div class="lb" id="lb">
+        <button class="lb-close" onclick="closeLb()">✕</button>
+        <button class="lb-nav lb-prev" onclick="lbGo(-1)">‹</button>
+        <img class="lb-img" id="lbImg" src="" alt="">
+        <button class="lb-nav lb-next" onclick="lbGo(1)">›</button>
+        <div class="lb-ctr" id="lbCtr"></div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const GALLERY = [
+            "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=800&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&h=800&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=800&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&h=800&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=600&h=800&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=600&h=800&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=600&h=800&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=800&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=600&h=800&fit=crop&q=80"
+        ];
+
+        let guestN = 1, lbIdx = 0, toastTO = null;
+
+        /* ── OPEN ── */
+        function openApp() {
+            document.getElementById('opening').classList.add('hide');
+            const main = document.getElementById('main');
+            setTimeout(() => { main.classList.add('show'); }, 100);
+            document.getElementById('botNav').classList.add('show');
+            setTimeout(init, 300);
+        }
+
+        function init() {
+            startClock();
+            startCountdown();
+            buildGallery();
+            initReveal();
+            initNavHL();
+        }
+
+        /* ── LIVE CLOCK ── */
+        function startClock() {
+            const el = document.getElementById('liveTime');
+            function tick() {
+                const n = new Date();
+                const h = String(n.getHours()).padStart(2, '0');
+                const m = String(n.getMinutes()).padStart(2, '0');
+                const s = String(n.getSeconds()).padStart(2, '0');
+                if (el) el.textContent = `${h}:${m}:${s}`;
+            }
+            tick(); setInterval(tick, 1000);
+        }
+
+        /* ── COUNTDOWN ── */
+        function startCountdown() {
+            const tgt = new Date('2026-05-24T08:00:00');
+            const set = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = String(v).padStart(2, '0'); };
+            function tick() {
+                const d = tgt - new Date();
+                if (d <= 0) { ['cdD', 'cdH', 'cdM', 'cdS'].forEach(id => set(id, 0)); return; }
+                set('cdD', Math.floor(d / 86400000));
+                set('cdH', Math.floor((d % 86400000) / 3600000));
+                set('cdM', Math.floor((d % 3600000) / 60000));
+                set('cdS', Math.floor((d % 60000) / 1000));
+            }
+            tick(); setInterval(tick, 1000);
+        }
+
+        /* ── GALLERY ── */
+        function buildGallery() {
+            const g = document.getElementById('galGrid');
+            GALLERY.forEach((src, i) => {
+                const d = document.createElement('div');
+                d.className = 'gal-item';
+                d.innerHTML = `<img src="${src}" alt="" loading="lazy">`;
+                d.onclick = () => openLb(i);
+                g.appendChild(d);
+            });
+        }
+
+        /* ── SCROLL REVEAL ── */
+        function initReveal() {
+            const obs = new IntersectionObserver(entries => {
+                entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+            }, { threshold: .1 });
+            document.querySelectorAll('.reveal, .wish-item').forEach(el => obs.observe(el));
+        }
+
+        /* ── NAV HIGHLIGHT ── */
+        function initNavHL() {
+            const obs = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        document.querySelectorAll('.nav-i').forEach(n => n.classList.remove('on'));
+                        const a = document.querySelector(`.nav-i[href="#${e.target.id}"]`);
+                        if (a) a.classList.add('on');
+                    }
+                });
+            }, { rootMargin: '-40% 0px -40% 0px' });
+            ['home', 'couple', 'event', 'story', 'gallery', 'gift', 'rsvp', 'wishes'].forEach(id => {
+                const el = document.getElementById(id); if (el) obs.observe(el);
+            });
+        }
+
+        /* ── LIGHTBOX ── */
+        function openLb(i) { lbIdx = i; updLb(); document.getElementById('lb').classList.add('open'); }
+        function closeLb() { document.getElementById('lb').classList.remove('open'); }
+        function lbGo(d) { lbIdx = (lbIdx + d + GALLERY.length) % GALLERY.length; updLb(); }
+        function updLb() { document.getElementById('lbImg').src = GALLERY[lbIdx]; document.getElementById('lbCtr').textContent = `${lbIdx + 1} / ${GALLERY.length}`; }
+        document.addEventListener('keydown', e => {
+            if (!document.getElementById('lb').classList.contains('open')) return;
+            if (e.key === 'Escape') closeLb();
+            if (e.key === 'ArrowLeft') lbGo(-1);
+            if (e.key === 'ArrowRight') lbGo(1);
+        });
+
+        /* ── RSVP ── */
+        function setG(n, btn) {
+            guestN = n;
+            document.querySelectorAll('.gbtn').forEach(b => b.classList.remove('on'));
+            btn.classList.add('on');
+        }
+        function doRSVP() {
+            const name = document.getElementById('rName').value.trim();
+            const stat = document.getElementById('rStat').value;
+            const msg = document.getElementById('rMsg').value.trim();
+            if (!name || !stat) { showToast('Mohon isi nama dan status kehadiran'); return; }
+
+            const ini = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+            const cols = ['#E63027', '#1B4FA8', '#178B3E', '#C8960C'];
+            const c = cols[Math.floor(Math.random() * cols.length)];
+            const stTxt = stat === 'hadir' ? `✓ Hadir · ${guestN} tamu` : '✗ Tidak Hadir';
+            const ref = `REF: TRX·${ini}·${Date.now().toString().slice(-6)}`;
+
+            const card = document.createElement('div');
+            card.className = 'wish-item';
+            card.innerHTML = `
+    <div class="wi-head">
+      <div class="wi-av" style="background:${c}">${ini}</div>
+      <div>
+        <div class="wi-name">${name}</div>
+        <div class="wi-status">${stTxt}</div>
+        <div class="wi-ref">${ref}</div>
+      </div>
+    </div>
+    <div class="wi-stars">★★★★★</div>
+    <div class="wi-text">${msg || 'Selamat dan semoga bahagia selalu! 💛'}</div>`;
+
+            const list = document.getElementById('wishesList');
+            if (list) { list.prepend(card); setTimeout(() => card.classList.add('vis'), 50); }
+
+            const bump = (id, n = 1) => { const e = document.getElementById(id); if (e) e.textContent = parseInt(e.textContent) + n; };
+            bump('stR');
+            if (stat === 'hadir') { bump('stH'); bump('stT', guestN); }
+
+            document.getElementById('rName').value = '';
+            document.getElementById('rStat').value = '';
+            document.getElementById('rMsg').value = '';
+
+            showToast('✓ Konfirmasi berhasil dikirim!');
+            setTimeout(() => document.getElementById('wishes').scrollIntoView({ behavior: 'smooth', block: 'start' }), 600);
+        }
+
+        /* ── COPY ── */
+        function copyAcc(text, btn) {
+            navigator.clipboard.writeText(text).then(() => {
+                btn.classList.add('ok'); btn.textContent = '✓ Tersalin!';
+                showToast('Nomor rekening tersalin!');
+                setTimeout(() => { btn.classList.remove('ok'); btn.textContent = 'Salin Nomor'; }, 2500);
+            }).catch(() => showToast('Salin: ' + text));
+        }
+
+        /* ── TOAST ── */
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            clearTimeout(toastTO);
+            toastTO = setTimeout(() => t.classList.remove('show'), 2800);
+        }
+    </script>
+</body>
+
+</html>

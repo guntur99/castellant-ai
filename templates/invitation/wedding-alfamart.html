@@ -1,0 +1,2445 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Struk Pernikahan — Nazma & Gunturr</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Staatliches&family=Nunito:wght@400;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --af-red: #E8192C;
+            --af-red2: #c0121f;
+            --af-blue: #003087;
+            --af-blue2: #001f5c;
+            --af-yellow: #FFD700;
+            --af-white: #FFFFFF;
+            --af-cream: #FFF9F0;
+            --af-paper: #FFFDF5;
+            --af-border: #D4C5A9;
+            --af-text: #1a1a1a;
+            --af-gray: #555555;
+            --af-lgray: #999999;
+            --af-green: #1a7a2e;
+            --font-receipt: 'Share Tech Mono', 'Courier New', monospace;
+            --font-display: 'Staatliches', sans-serif;
+            --font-body: 'Nunito', sans-serif;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: #e8e0d0;
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(232, 25, 44, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 48, 135, 0.04) 0%, transparent 50%);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        /* ── PAPER TEXTURE ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ══════════════════════════════════
+   OPENING — like Alfamart entrance gate
+══════════════════════════════════ */
+        #opening {
+            position: fixed;
+            inset: 0;
+            background: var(--af-red);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9997;
+            text-align: center;
+            padding: 24px;
+            transition: opacity .9s ease, transform .9s ease;
+            overflow: hidden;
+        }
+
+        #opening::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: var(--af-blue);
+            clip-path: polygon(0 30%, 100% 0%, 100% 100%, 0 100%);
+            z-index: 0;
+        }
+
+        #opening.hide {
+            opacity: 0;
+            transform: scale(1.05);
+            pointer-events: none;
+        }
+
+        .opening-inner {
+            position: relative;
+            z-index: 1;
+        }
+
+        .alfamart-logo-opening {
+            background: var(--af-white);
+            border-radius: 16px;
+            padding: 16px 36px;
+            display: inline-block;
+            margin-bottom: 28px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .25);
+        }
+
+        .logo-alf {
+            font-family: var(--font-display);
+            font-size: 42px;
+            letter-spacing: 2px;
+            color: var(--af-red);
+            line-height: 1;
+            display: block;
+        }
+
+        .logo-tagline {
+            font-family: var(--font-body);
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: .3em;
+            text-transform: uppercase;
+            color: var(--af-blue);
+            display: block;
+            margin-top: 2px;
+        }
+
+        .opening-title {
+            font-family: var(--font-receipt);
+            font-size: clamp(13px, 3vw, 17px);
+            color: rgba(255, 255, 255, .8);
+            letter-spacing: .05em;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .opening-names {
+            font-family: var(--font-display);
+            font-size: clamp(52px, 14vw, 96px);
+            color: var(--af-white);
+            letter-spacing: 3px;
+            line-height: .95;
+            margin-bottom: 8px;
+            text-shadow: 0 4px 24px rgba(0, 0, 0, .3);
+        }
+
+        .opening-sub {
+            font-family: var(--font-receipt);
+            font-size: 12px;
+            color: rgba(255, 255, 255, .6);
+            margin-bottom: 32px;
+            letter-spacing: .1em;
+        }
+
+        .opening-dear {
+            background: rgba(255, 255, 255, .12);
+            border: 2px dashed rgba(255, 255, 255, .3);
+            border-radius: 8px;
+            padding: 14px 28px;
+            margin-bottom: 28px;
+            backdrop-filter: blur(4px);
+        }
+
+        .opening-dear-lbl {
+            font-family: var(--font-receipt);
+            font-size: 10px;
+            color: rgba(255, 255, 255, .6);
+            text-transform: uppercase;
+            letter-spacing: .2em;
+            margin-bottom: 6px;
+        }
+
+        .opening-dear-name {
+            font-family: var(--font-body);
+            font-size: clamp(14px, 3vw, 18px);
+            font-weight: 700;
+            color: var(--af-white);
+        }
+
+        .open-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--af-yellow);
+            color: var(--af-blue2);
+            border: none;
+            padding: 15px 36px;
+            font-family: var(--font-body);
+            font-size: 15px;
+            font-weight: 900;
+            letter-spacing: .05em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform .2s, box-shadow .2s;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, .3);
+            text-transform: uppercase;
+        }
+
+        .open-btn:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 10px 32px rgba(0, 0, 0, .4);
+        }
+
+        /* ══════════════════════════════════
+   MAIN WRAPPER
+══════════════════════════════════ */
+        #main {
+            opacity: 0;
+            transition: opacity .8s ease .2s;
+            position: relative;
+            z-index: 1;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0 0 80px;
+        }
+
+        #main.show {
+            opacity: 1;
+        }
+
+        /* ══════════════════════════════════
+   ALFAMART STORE HEADER
+══════════════════════════════════ */
+        .store-header {
+            background: var(--af-red);
+            position: relative;
+            overflow: hidden;
+            padding-bottom: 0;
+        }
+
+        .store-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: var(--af-blue);
+            clip-path: polygon(0 60%, 100% 0%, 100% 100%, 0 100%);
+        }
+
+        /* Red section */
+        .store-top {
+            background: var(--af-red);
+            padding: 52px 24px 24px;
+            text-align: center;
+            position: relative;
+        }
+
+        .store-logo {
+            background: var(--af-white);
+            display: inline-block;
+            padding: 10px 28px 8px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, .2);
+        }
+
+        .store-logo-text {
+            font-family: var(--font-display);
+            font-size: 38px;
+            color: var(--af-red);
+            letter-spacing: 2px;
+            line-height: 1;
+            display: block;
+        }
+
+        .store-logo-sub {
+            font-family: var(--font-body);
+            font-size: 7px;
+            font-weight: 800;
+            letter-spacing: .35em;
+            color: var(--af-blue);
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .store-names {
+            font-family: var(--font-display);
+            font-size: clamp(48px, 13vw, 76px);
+            color: var(--af-white);
+            letter-spacing: 2px;
+            line-height: .95;
+            margin: 6px 0 4px;
+            text-shadow: 0 3px 12px rgba(0, 0, 0, .2);
+        }
+
+        .store-subtitle {
+            font-family: var(--font-receipt);
+            font-size: 11px;
+            color: rgba(255, 255, 255, .7);
+            letter-spacing: .15em;
+            text-transform: uppercase;
+        }
+
+        /* Blue section */
+        .store-blue {
+            background: var(--af-blue);
+            padding: 48px 24px 28px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .store-blue::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 32px;
+            background: var(--af-red);
+            clip-path: polygon(0 0, 100% 60%, 100% 0);
+            z-index: 0;
+        }
+
+        .store-address {
+            font-family: var(--font-receipt);
+            font-size: 12px;
+            color: rgba(255, 255, 255, .7);
+            line-height: 1.8;
+            letter-spacing: .05em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+        }
+
+        .store-tagline {
+            font-family: var(--font-body);
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--af-yellow);
+            letter-spacing: .05em;
+            text-transform: uppercase;
+        }
+
+        /* ══════════════════════════════════
+   PROMO BANNER
+══════════════════════════════════ */
+        .promo-banner {
+            background: var(--af-yellow);
+            padding: 14px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border-bottom: 3px solid var(--af-red);
+        }
+
+        .promo-badge {
+            background: var(--af-red);
+            color: white;
+            font-family: var(--font-display);
+            font-size: 28px;
+            padding: 4px 14px;
+            border-radius: 6px;
+            letter-spacing: 1px;
+            flex-shrink: 0;
+        }
+
+        .promo-text {
+            font-family: var(--font-body);
+            font-size: 14px;
+            font-weight: 900;
+            color: var(--af-blue2);
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            line-height: 1.3;
+        }
+
+        .promo-text span {
+            display: block;
+            font-weight: 400;
+            font-size: 11px;
+            color: var(--af-gray);
+            text-transform: none;
+            margin-top: 2px;
+        }
+
+        /* ══════════════════════════════════
+   RECEIPT — MAIN STRUK
+══════════════════════════════════ */
+        .receipt {
+            background: var(--af-paper);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* torn edge top */
+        .receipt::before {
+            content: '';
+            display: block;
+            height: 16px;
+            background:
+                radial-gradient(circle at 8px 0, transparent 6px, var(--af-paper) 6px) 0 0 / 16px 16px repeat-x,
+                var(--af-paper);
+            margin-top: -1px;
+        }
+
+        /* thermal line texture inside receipt */
+        .receipt-body {
+            padding: 8px 0 24px;
+        }
+
+        /* ── STRUK SECTION ── */
+        .struk-section {
+            padding: 16px 20px;
+            border-bottom: 1px dashed var(--af-border);
+        }
+
+        .struk-section:last-child {
+            border-bottom: none;
+        }
+
+        .struk-header {
+            text-align: center;
+            padding: 12px 20px 20px;
+            border-bottom: 2px dashed var(--af-border);
+        }
+
+        .struk-no {
+            font-family: var(--font-receipt);
+            font-size: 11px;
+            color: var(--af-lgray);
+            letter-spacing: .1em;
+            margin-bottom: 4px;
+        }
+
+        .struk-title {
+            font-family: var(--font-display);
+            font-size: 44px;
+            color: var(--af-red);
+            letter-spacing: 3px;
+            line-height: 1;
+            margin-bottom: 2px;
+        }
+
+        .struk-title-sub {
+            font-family: var(--font-receipt);
+            font-size: 11px;
+            color: var(--af-gray);
+            text-transform: uppercase;
+            letter-spacing: .12em;
+        }
+
+        /* ── KASIR / OPERATOR INFO ── */
+        .kasir-row {
+            font-family: var(--font-receipt);
+            font-size: 11px;
+            color: var(--af-gray);
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 20px;
+            letter-spacing: .04em;
+        }
+
+        /* ── ITEM ROWS ── */
+        .items-section {
+            padding: 16px 20px;
+            border-top: 2px solid var(--af-text);
+            border-bottom: 2px solid var(--af-text);
+            margin: 0;
+        }
+
+        .item-row {
+            margin-bottom: 12px;
+        }
+
+        .item-name {
+            font-family: var(--font-receipt);
+            font-size: 13px;
+            color: var(--af-text);
+            font-weight: bold;
+            letter-spacing: .02em;
+            margin-bottom: 2px;
+        }
+
+        .item-detail {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .item-qty-price {
+            font-family: var(--font-receipt);
+            font-size: 12px;
+            color: var(--af-gray);
+        }
+
+        .item-total {
+            font-family: var(--font-receipt);
+            font-size: 13px;
+            color: var(--af-text);
+            font-weight: bold;
+        }
+
+        .item-promo {
+            font-family: var(--font-receipt);
+            font-size: 10px;
+            color: var(--af-red);
+            letter-spacing: .04em;
+        }
+
+        .item-divider {
+            border: none;
+            border-top: 1px dotted var(--af-border);
+            margin: 10px 0;
+        }
+
+        /* ── TOTALS ── */
+        .totals-section {
+            padding: 14px 20px;
+            border-bottom: 2px dashed var(--af-border);
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--font-receipt);
+            font-size: 12px;
+            color: var(--af-gray);
+            margin-bottom: 4px;
+            letter-spacing: .03em;
+        }
+
+        .total-row.big {
+            font-size: 16px;
+            color: var(--af-text);
+            font-weight: bold;
+            border-top: 1px solid var(--af-text);
+            padding-top: 8px;
+            margin-top: 8px;
+            font-family: var(--font-display);
+            letter-spacing: 1px;
+        }
+
+        .total-row.red {
+            color: var(--af-red);
+        }
+
+        .total-row.green {
+            color: var(--af-green);
+        }
+
+        /* ── VERSE / PESAN ── */
+        .verse-receipt {
+            padding: 16px 20px;
+            text-align: center;
+            border-bottom: 1px dashed var(--af-border);
+            background: rgba(0, 48, 135, .03);
+        }
+
+        .verse-label {
+            font-family: var(--font-receipt);
+            font-size: 10px;
+            letter-spacing: .2em;
+            color: var(--af-lgray);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .verse-text {
+            font-family: var(--font-body);
+            font-size: 13px;
+            font-style: italic;
+            color: var(--af-gray);
+            line-height: 1.75;
+            margin-bottom: 6px;
+        }
+
+        .verse-ref {
+            font-family: var(--font-receipt);
+            font-size: 10px;
+            color: var(--af-lgray);
+            letter-spacing: .08em;
+        }
+
+        /* ── COUPLE CARDS ── */
+        .couple-section {
+            padding: 16px 20px;
+            border-bottom: 1px dashed var(--af-border);
+        }
+
+        .couple-title {
+            font-family: var(--font-receipt);
+            font-size: 10px;
+            letter-spacing: .3em;
+            color: var(--af-lgray);
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 14px;
+        }
+
+        .couple-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .couple-card {
+            background: var(--af-white);
+            border: 1px solid var(--af-border);
+            border-radius: 8px;
+            padding: 16px 12px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .couple-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--af-red);
+        }
+
+        .couple-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            margin: 0 auto 10px;
+            overflow: hidden;
+            border: 3px solid var(--af-red);
+        }
+
+        .couple-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .couple-role {
+            font-family: var(--font-receipt);
+            font-size: 8px;
+            letter-spacing: .2em;
+            color: var(--af-red);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .couple-name {
+            font-family: var(--font-display);
+            font-size: 20px;
+            color: var(--af-blue2);
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+            line-height: 1.1;
+        }
+
+        .couple-parents {
+            font-family: var(--font-receipt);
+            font-size: 9px;
+            color: var(--af-gray);
+            line-height: 1.6;
+            text-transform: uppercase;
+        }
+
+        /* ── COUNTDOWN — Jam Tangan ── */
+        .countdown-section {
+            padding: 16px 20px;
+            border-bottom: 1px dashed var(--af-border);
+            text-align: center;
+        }
+
+        .cd-label {
+            font-family: var(--font-receipt);
+            font-size: 10px;
+            letter-spacing: .25em;
+            color: var(--af-lgray);
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .cd-grid {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .cd-box {
+            background: var(--af-blue);
+            border-radius: 6px;
+            padding: 14px 12px 10px;
+            min-width: 72px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cd-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--af-yellow);
+        }
+
+        .cd-num {
+            font-family: var(--font-display);
+            font-size: 42px;
+            color: var(--af-white);
+            line-height: 1;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+
+        .cd-unit {
+            font-family: var(--font-receipt);
+            font-size: 8px;
+            letter-spacing: .2em;
+            color: rgba(255, 255, 255, .6);
+            text-transform: uppercase;
+        }
+
+        .cd-sep {
+            font-family: var(--font-display);
+            font-size: 36px;
+            color: var(--af-blue);
+            display: flex;
+            align-items: center;
+            padding-bottom: 14px;
+            animation: blink-sep 1s step-end infinite;
+        }
+
+        @keyframes blink-sep {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .2
+            }
+        }
+
+        /* ── TIMELINE items ── */
+        .timeline-section {
+            padding: 16px 20px;
+            border-bottom: 1px dashed var(--af-border);
+        }
+
+        .tl-label {
+            font-family: var(--font-receipt);
+            font-size: 10px;
+            letter-spacing: .25em;
+            color: var(--af-lgray);
+            text-transform: uppercase;
+            margin-bottom: 14px;
+            text-align: center;
+        }
+
+        .tl-item {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 0;
+            opacity: 0;
+            transform: translateX(-14px);
+            transition: opacity .5s ease, transform .5s ease;
+        }
+
+        .tl-item.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .tl-item:last-child .tl-line {
+            display: none;
+        }
+
+        .tl-left {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .tl-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--af-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 18px;
+            color: var(--af-white);
+            flex-shrink: 0;
+        }
+
+        .tl-line {
+            width: 2px;
+            flex: 1;
+            background: repeating-linear-gradient(180deg, var(--af-border) 0, var(--af-border) 6px, transparent 6px, transparent 10px);
+            min-height: 24px;
+            margin: 4px 0;
+        }
+
+        .tl-body {
+            padding: 6px 0 20px;
+            flex: 1;
+        }
+
+        .tl-tag {
+            font-family: var(--font-receipt);
+            font-size: 9px;
+            letter-spacing: .2em;
+            color: var(--af-red);
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .tl-row {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 4px;
+        }
+
+        .tl-title {
+            font-family: var(--font-display);
+            font-size: 24px;
+            color: var(--af-blue2);
+            letter-spacing: 1px;
+        }
+
+        .tl-date {
+            font-family: var(--font-receipt);
+            font-size: 10px;
+            color: var(--af-lgray);
+            background: rgba(0, 0, 0, .05);
+            padding: 2px 8px;
+            border-radius: 3px;
+        }
+
+        .tl-desc {
+            font-family: var(--font-body);
+            font-size: 12px;
+            color: var(--af-gray);
+            line-height: 1.65;
+        }
+
+        /* ── EVENT CARDS ── */
+        .event-section {
+            padding: 16px 20px;
+            border-bottom: 1px dashed var(--af-border);
+        }
+
+        .event-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .event-card {
+            background: var(--af-white);
+            border: 1.5px solid var(--af-border);
+            border-radius: 8px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .event-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--af-blue);
+        }
+
+        .event-type-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .event-type-badge {
+            background: var(--af-red);
+            color: var(--af-white);
+            font-family: var(--font-display);
+            font-size: 16px;
+            padding: 3px 14px;
+            border-radius: 4px;
+            letter-spacing: 1px;
+        }
+
+        .event-code {
+            font-family: var(--font-receipt);
+            font-size: 9px;
+            color: var(--af-lgray);
+            letter-spacing: .1em;
+        }
+
+        .event-date-big {
+            font-family: var(--font-display);
+            font-size: 32px;
+            color: var(--af-blue2);
+            letter-spacing: 1px;
+            line-height: 1.1;
+            margin-bottom: 10px;
+        }
+
+        .event-detail {
+            display: flex;
+            gap: 6px;
+            align-items: flex-start;
+            margin-bottom: 6px;
+        }
+
+        .event-icon {
+            color: var(--af-red);
+            flex-shrink: 0;
+            font-size: 14px;
+            margin-top: 1px;
+        }
+
+        .event-icon svg {
+            width: 13px;
+            height: 13px;
+        }
+
+        .event-text {
+            font-family: var(--font-receipt);
+            font-size: 11px;
+            color: var(--af-gray);
+            line-height: 1.6;
+            text-transform: uppercase;
+        }
+
+        .maps-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+            background: var(--af-blue);
+            color: var(--af-white);
+            border: none;
+            padding: 7px 14px;
+            border-radius: 4px;
+            font-family: var(--font-receipt);
+            font-size: 10px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background .2s;
+        }
+
+        .maps-btn:hover {
+            background: var(--af-blue2);
+        }
+
+        .maps-btn svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        /* ── GALLERY — grid ── */
+        .gallery-section {
+            padding: 16px 20px;
+            border-bottom: 1px dashed var(--af-border);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            margin-top: 12px;
+        }
+
+        .gallery-cell {
+            aspect-ratio: 1;
+            overflow: hidden;
+            border-radius: 4px;
+            position: relative;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color .2s, transform .2s;
+        }
+
+        .gallery-cell:hover {
+            border-color: var(--af-red);
+            transform: scale(1.02);
+        }
+
+        .gallery-cell img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: saturate(.85);
+            transition: filter .3s, transform .4s;
+        }
+
+        .gallery-cell:hover img {
+            filter: saturate(1.1);
+            transform: scale(1.08);
+        }
+
+        .gallery-cell-num {
+            position: absolute;
+            bottom: 4px;
+            right: 5px;
+            font-family: var(--font-receipt);
+            font-size: 9px;
+            color: rgba(255, 255, 255, .7);
+            background: rgba(0, 0, 0, .5);
+            padding: 1px 4px;
+            border-radius: 2px;
+        }
+
+        /* ── GIFT / AMPLOP ── */
+        .gift-section {
+            padding: 16px 20px;
+            border-bottom: 1px dashed var(--af-border);
+        }
+
+        .gift-cards {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .gift-card {
+            background: var(--af-white);
+            border: 1.5px solid var(--af-border);
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gift-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--af-red);
+        }
+
+        .gift-left {
+            flex: 1;
+            padding-left: 4px;
+        }
+
+        .gift-bank-badge {
+            display: inline-block;
+            background: var(--af-blue);
+            color: var(--af-white);
+            font-family: var(--font-display);
+            font-size: 22px;
+            padding: 2px 14px;
+            border-radius: 4px;
+            letter-spacing: 2px;
+            margin-bottom: 6px;
+        }
+
+        .gift-holder {
+            font-family: var(--font-receipt);
+            font-size: 10px;
+            color: var(--af-gray);
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            margin-bottom: 4px;
+        }
+
+        .gift-num {
+            font-family: var(--font-receipt);
+            font-size: 16px;
+            color: var(--af-text);
+            letter-spacing: .12em;
+        }
+
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--af-red);
+            color: var(--af-white);
+            border: none;
+            padding: 8px 14px;
+            border-radius: 4px;
+            font-family: var(--font-receipt);
+            font-size: 10px;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: background .2s;
+        }
+
+        .copy-btn:hover {
+            background: var(--af-red2);
+        }
+
+        .copy-btn.copied {
+            background: var(--af-green);
+        }
+
+        .copy-btn svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        /* ── RSVP ── */
+        .rsvp-section {
+            padding: 16px 20px;
+            border-bottom: 1px dashed var(--af-border);
+        }
+
+        .rsvp-counter {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .rsvp-stat {
+            flex: 1;
+            min-width: 80px;
+            background: var(--af-blue);
+            border-radius: 6px;
+            padding: 12px 10px;
+            text-align: center;
+        }
+
+        .rsvp-num {
+            font-family: var(--font-display);
+            font-size: 32px;
+            color: var(--af-yellow);
+            line-height: 1;
+            margin-bottom: 2px;
+            letter-spacing: 1px;
+        }
+
+        .rsvp-lbl {
+            font-family: var(--font-receipt);
+            font-size: 8px;
+            letter-spacing: .15em;
+            color: rgba(255, 255, 255, .6);
+            text-transform: uppercase;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-label {
+            display: block;
+            font-family: var(--font-receipt);
+            font-size: 9px;
+            letter-spacing: .25em;
+            color: var(--af-gray);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .form-input {
+            width: 100%;
+            background: var(--af-white);
+            border: 1.5px solid var(--af-border);
+            border-radius: 6px;
+            padding: 11px 14px;
+            color: var(--af-text);
+            font-family: var(--font-receipt);
+            font-size: 14px;
+            outline: none;
+            transition: border-color .2s;
+        }
+
+        .form-input:focus {
+            border-color: var(--af-red);
+        }
+
+        .form-input::placeholder {
+            color: var(--af-lgray);
+        }
+
+        .form-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23999' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-color: var(--af-white);
+            padding-right: 36px;
+            cursor: pointer;
+        }
+
+        textarea.form-input {
+            min-height: 80px;
+            resize: vertical;
+            font-family: var(--font-body);
+            font-size: 13px;
+        }
+
+        .guest-row {
+            display: flex;
+            gap: 6px;
+        }
+
+        .guest-btn {
+            flex: 1;
+            background: var(--af-white);
+            border: 1.5px solid var(--af-border);
+            border-radius: 6px;
+            padding: 10px;
+            color: var(--af-gray);
+            font-family: var(--font-receipt);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all .15s;
+        }
+
+        .guest-btn.active {
+            background: var(--af-red);
+            border-color: var(--af-red);
+            color: var(--af-white);
+            font-weight: bold;
+        }
+
+        .rsvp-btn {
+            width: 100%;
+            background: var(--af-red);
+            border: none;
+            border-radius: 6px;
+            padding: 14px;
+            color: var(--af-white);
+            font-family: var(--font-display);
+            font-size: 22px;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: background .2s, transform .15s;
+            margin-top: 8px;
+            box-shadow: 0 4px 16px rgba(232, 25, 44, .25);
+        }
+
+        .rsvp-btn:hover {
+            background: var(--af-red2);
+            transform: translateY(-1px);
+        }
+
+        /* ── WISH CARDS ── */
+        .wishes-section {
+            padding: 16px 20px;
+            border-bottom: 1px dashed var(--af-border);
+        }
+
+        .wishes-list {
+            margin-top: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .wish-card {
+            background: var(--af-white);
+            border: 1px solid var(--af-border);
+            border-radius: 6px;
+            padding: 12px 14px;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity .5s, transform .5s;
+        }
+
+        .wish-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .wish-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .wish-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            background: var(--af-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-size: 14px;
+            color: var(--af-white);
+            flex-shrink: 0;
+        }
+
+        .wish-name {
+            font-family: var(--font-body);
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--af-text);
+        }
+
+        .wish-status {
+            font-family: var(--font-receipt);
+            font-size: 10px;
+            color: var(--af-green);
+            margin-left: auto;
+            white-space: nowrap;
+        }
+
+        .wish-text {
+            font-family: var(--font-body);
+            font-size: 12px;
+            color: var(--af-gray);
+            line-height: 1.6;
+        }
+
+        /* ── BARCODE ── */
+        .barcode-section {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px dashed var(--af-border);
+        }
+
+        .barcode {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 1px;
+            height: 60px;
+            margin-bottom: 6px;
+        }
+
+        .bc-bar {
+            background: var(--af-text);
+            border-radius: 1px;
+        }
+
+        .barcode-num {
+            font-family: var(--font-receipt);
+            font-size: 11px;
+            color: var(--af-gray);
+            letter-spacing: .25em;
+        }
+
+        .barcode-label {
+            font-family: var(--font-receipt);
+            font-size: 9px;
+            color: var(--af-lgray);
+            letter-spacing: .15em;
+            margin-top: 2px;
+            text-transform: uppercase;
+        }
+
+        /* ── LOYALTY POINTS ── */
+        .points-section {
+            padding: 14px 20px;
+            background: var(--af-blue);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .points-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+
+        .points-text {
+            flex: 1;
+        }
+
+        .points-label {
+            font-family: var(--font-receipt);
+            font-size: 9px;
+            letter-spacing: .2em;
+            color: rgba(255, 255, 255, .6);
+            text-transform: uppercase;
+            margin-bottom: 2px;
+        }
+
+        .points-value {
+            font-family: var(--font-display);
+            font-size: 28px;
+            color: var(--af-yellow);
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+
+        .points-desc {
+            font-family: var(--font-receipt);
+            font-size: 10px;
+            color: rgba(255, 255, 255, .5);
+            margin-top: 2px;
+        }
+
+        /* ── FOOTER / STRUK BAWAH ── */
+        .receipt-footer {
+            padding: 16px 20px;
+            text-align: center;
+            border-top: 2px dashed var(--af-border);
+        }
+
+        .footer-thanks {
+            font-family: var(--font-display);
+            font-size: 32px;
+            color: var(--af-red);
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+
+        .footer-sub {
+            font-family: var(--font-receipt);
+            font-size: 10px;
+            color: var(--af-lgray);
+            text-transform: uppercase;
+            letter-spacing: .15em;
+            margin-bottom: 12px;
+        }
+
+        .footer-names {
+            font-family: var(--font-display);
+            font-size: 36px;
+            color: var(--af-blue2);
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+
+        .footer-msg {
+            font-family: var(--font-body);
+            font-size: 11px;
+            font-style: italic;
+            color: var(--af-gray);
+            line-height: 1.7;
+            max-width: 320px;
+            margin: 0 auto 14px;
+        }
+
+        .footer-brand {
+            font-family: var(--font-receipt);
+            font-size: 9px;
+            color: var(--af-lgray);
+            letter-spacing: .15em;
+            text-transform: uppercase;
+        }
+
+        .footer-brand a {
+            color: var(--af-red);
+            text-decoration: none;
+        }
+
+        /* torn edge bottom */
+        .receipt-torn-bottom {
+            height: 20px;
+            background:
+                radial-gradient(circle at 8px 100%, transparent 7px, var(--af-paper) 7px) 0 100% / 16px 20px repeat-x;
+            background-color: transparent;
+            margin-bottom: 24px;
+        }
+
+        /* ── SECTION LABEL ── */
+        .section-label {
+            font-family: var(--font-receipt);
+            font-size: 10px;
+            letter-spacing: .3em;
+            color: var(--af-lgray);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .section-label::before,
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--af-border);
+        }
+
+        /* ══════════════════════════════════
+   LIGHTBOX
+══════════════════════════════════ */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .95);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox.open {
+            display: flex;
+        }
+
+        .lb-img {
+            max-width: 90vw;
+            max-height: 88vh;
+            border-radius: 4px;
+            object-fit: contain;
+            border: 3px solid var(--af-red);
+        }
+
+        .lb-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: var(--af-red);
+            border: none;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-family: var(--font-display);
+        }
+
+        .lb-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--af-red);
+            border: none;
+            color: white;
+            font-size: 28px;
+            cursor: pointer;
+            width: 48px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .2s;
+        }
+
+        .lb-nav:hover {
+            background: var(--af-red2);
+        }
+
+        .lb-prev {
+            left: 8px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .lb-next {
+            right: 8px;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .lb-count {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--font-receipt);
+            font-size: 11px;
+            color: rgba(255, 255, 255, .6);
+            letter-spacing: .1em;
+        }
+
+        /* ══════════════════════════════════
+   BOTTOM NAV
+══════════════════════════════════ */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--af-white);
+            border-top: 2px solid var(--af-red);
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+            z-index: 200;
+            transform: translateY(100%);
+            transition: transform .6s ease 1s;
+        }
+
+        .bottom-nav.show {
+            transform: translateY(0);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            color: var(--af-lgray);
+            text-decoration: none;
+            font-family: var(--font-receipt);
+            font-size: 8px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            padding: 4px 10px;
+            transition: color .2s;
+        }
+
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .nav-item:hover,
+        .nav-item.active {
+            color: var(--af-red);
+        }
+
+        /* ══════════════════════════════════
+   TOAST
+══════════════════════════════════ */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(14px);
+            background: var(--af-red);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-family: var(--font-receipt);
+            font-size: 12px;
+            letter-spacing: .05em;
+            opacity: 0;
+            transition: opacity .3s, transform .3s;
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 9999;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ══════════════════════════════════
+   MARQUEE
+══════════════════════════════════ */
+        .marquee-wrap {
+            background: var(--af-yellow);
+            border-top: 2px solid var(--af-red);
+            border-bottom: 2px solid var(--af-red);
+            overflow: hidden;
+            white-space: nowrap;
+            padding: 7px 0;
+        }
+
+        .marquee-track {
+            display: inline-block;
+            animation: marquee-scroll 18s linear infinite;
+        }
+
+        .marquee-track:hover {
+            animation-play-state: paused;
+        }
+
+        .marquee-item {
+            display: inline-block;
+            font-family: var(--font-display);
+            font-size: 18px;
+            color: var(--af-red);
+            letter-spacing: 2px;
+            padding: 0 24px;
+        }
+
+        .marquee-sep {
+            color: var(--af-blue);
+        }
+
+        @keyframes marquee-scroll {
+            from {
+                transform: translateX(0)
+            }
+
+            to {
+                transform: translateX(-50%)
+            }
+        }
+
+        /* scanning line animation on receipt */
+        @keyframes scan-line {
+            0% {
+                top: 0;
+                opacity: .5;
+            }
+
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ══════════════════════════════════
+   OPENING
+══════════════════════════════════ -->
+    <div id="opening">
+        <div class="opening-inner">
+            <div class="alfamart-logo-opening">
+                <span class="logo-alf">Alfamart</span>
+                <span class="logo-tagline">Belanja Puas, Harga Pas</span>
+            </div>
+            <p class="opening-title">Struk Undangan Pernikahan</p>
+            <h1 class="opening-names">Nazma<br>&amp; Guntur</h1>
+            <p class="opening-sub">No. Struk: WED-2026-05-24 | 1 lembar</p>
+            <div class="opening-dear">
+                <p class="opening-dear-lbl">Pelanggan Setia:</p>
+                <p class="opening-dear-name">Ade Guntur Fitridullah & Partner</p>
+            </div>
+            <button class="open-btn" onclick="openInvitation()">
+                🛍️ Buka Struk
+            </button>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════
+   MAIN
+══════════════════════════════════ -->
+    <div id="main">
+
+        <!-- STORE HEADER -->
+        <div class="store-header" id="home">
+            <div class="store-top">
+                <div class="store-logo">
+                    <span class="store-logo-text">Alfamart</span>
+                    <span class="store-logo-sub">Wedding Edition</span>
+                </div>
+                <div class="store-names">Nazma<br>&amp; Guntur</div>
+                <div class="store-subtitle">Cabang: Hati ke Hati · Kode Toko: WED-2026</div>
+            </div>
+            <div class="store-blue">
+                <div class="store-address">
+                    Jl. Cinta Abadi No. 1, Pernikahan Bahagia<br>
+                    Kota Kenangan, Provinsi Harapan · 24 Mei 2026
+                </div>
+                <div class="store-tagline">✦ Belanja Cinta, Harga Doa ✦</div>
+            </div>
+        </div>
+
+        <!-- MARQUEE -->
+        <div class="marquee-wrap">
+            <div class="marquee-track">
+                <span class="marquee-item">SELAMAT DATANG DI PERNIKAHAN NAZMA &amp; GUNTUR</span>
+                <span class="marquee-item marquee-sep">✦</span>
+                <span class="marquee-item">24 MEI 2026 · GRAHA YADIKA TANGERANG</span>
+                <span class="marquee-item marquee-sep">✦</span>
+                <span class="marquee-item">KONFIRMASI KEHADIRAN ANDA SEKARANG</span>
+                <span class="marquee-item marquee-sep">✦</span>
+                <span class="marquee-item">SELAMAT DATANG DI PERNIKAHAN NAZMA &amp; GUNTUR</span>
+                <span class="marquee-item marquee-sep">✦</span>
+                <span class="marquee-item">24 MEI 2026 · GRAHA YADIKA TANGERANG</span>
+                <span class="marquee-item marquee-sep">✦</span>
+                <span class="marquee-item">KONFIRMASI KEHADIRAN ANDA SEKARANG</span>
+                <span class="marquee-item marquee-sep">✦</span>
+            </div>
+        </div>
+
+        <!-- PROMO BANNER -->
+        <div class="promo-banner">
+            <div class="promo-badge">PROMO</div>
+            <div class="promo-text">
+                GRATIS MASUK & MAKAN GRATIS!
+                <span>Berlaku hanya 24 Mei 2026 · Tidak dapat digabung dengan promo lain</span>
+            </div>
+        </div>
+
+        <!-- RECEIPT -->
+        <div class="receipt">
+            <div class="receipt-body">
+
+                <!-- STRUK HEADER -->
+                <div class="struk-header">
+                    <div class="struk-no">No. Struk: WED-20260524-001 | Kasir: Takdir</div>
+                    <div class="struk-title">STRUK NIKAH</div>
+                    <div class="struk-title-sub">Digital Wedding Receipt · Official Document</div>
+                </div>
+
+                <!-- KASIR INFO -->
+                <div style="padding:8px 0 4px;">
+                    <div class="kasir-row"><span>Tgl Transaksi</span><span>24 MEI 2026</span></div>
+                    <div class="kasir-row"><span>Operator</span><span>TUHAN YME</span></div>
+                    <div class="kasir-row"><span>Terminal</span><span>AKAD-NIKAH-001</span></div>
+                    <div class="kasir-row"><span>Member ID</span><span>Nazma-X-Guntur-4EVER</span></div>
+                </div>
+
+                <!-- ITEMS -->
+                <div class="items-section">
+
+                    <div class="item-row">
+                        <div class="item-name">1x PENGANTIN WNazma</div>
+                        <div class="item-detail">
+                            <span class="item-qty-price">Nazma Putri, S.Kom</span>
+                            <span class="item-total">SATU HATI</span>
+                        </div>
+                        <div class="item-promo">★ LIMITED EDITION · BEST WIFE MATERIAL</div>
+                    </div>
+
+                    <hr class="item-divider">
+
+                    <div class="item-row">
+                        <div class="item-name">1x PENGANTIN PRIA</div>
+                        <div class="item-detail">
+                            <span class="item-qty-price">Guntur Putra, S.Kom</span>
+                            <span class="item-total">SATU HATI</span>
+                        </div>
+                        <div class="item-promo">★ STOK TERBATAS · SUDAH DIPESAN Nazma</div>
+                    </div>
+
+                    <hr class="item-divider">
+
+                    <div class="item-row">
+                        <div class="item-name">1x AKAD NIKAH</div>
+                        <div class="item-detail">
+                            <span class="item-qty-price">08.00 WIB · Graha Yadika</span>
+                            <span class="item-total">HALAL</span>
+                        </div>
+                    </div>
+
+                    <hr class="item-divider">
+
+                    <div class="item-row">
+                        <div class="item-name">1x RESEPSI + MAKAN SIANG</div>
+                        <div class="item-detail">
+                            <span class="item-qty-price">11.00–13.00 WIB · Graha Yadika</span>
+                            <span class="item-total">GRATIS</span>
+                        </div>
+                        <div class="item-promo">★ PROMO SPESIAL · BERLAKU 1 HARI</div>
+                    </div>
+
+                    <hr class="item-divider">
+
+                    <div class="item-row">
+                        <div class="item-name">∞x DOA & RESTU</div>
+                        <div class="item-detail">
+                            <span class="item-qty-price">Dari seluruh tamu undangan</span>
+                            <span class="item-total">TAK TERNILAI</span>
+                        </div>
+                        <div class="item-promo">★ BONUS GRATIS · WAJIB DIBAWA PULANG</div>
+                    </div>
+
+                    <hr class="item-divider">
+
+                    <div class="item-row">
+                        <div class="item-name">1x SAKINAH MAWADDAH WARAHMAH</div>
+                        <div class="item-detail">
+                            <span class="item-qty-price">Paket Lengkap Rumah Tangga</span>
+                            <span class="item-total">∞ TAHUN</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- TOTALS -->
+                <div class="totals-section">
+                    <div class="total-row"><span>Subtotal</span><span>1 Pernikahan Bahagia</span></div>
+                    <div class="total-row green"><span>Diskon Cinta</span><span>- Semua Kesedihan</span></div>
+                    <div class="total-row red"><span>Promo "Jodoh Terbaik"</span><span>✓ Diterapkan</span></div>
+                    <div class="total-row"><span>Pajak Kebahagiaan</span><span>0%</span></div>
+                    <div class="total-row big"><span>TOTAL</span><span>SEUMUR HIDUP</span></div>
+                </div>
+
+                <!-- VERSE -->
+                <div class="verse-receipt">
+                    <div class="verse-label">— Firman Allah SWT —</div>
+                    <p class="verse-text">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan
+                        pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram
+                        kepadanya..."</p>
+                    <div class="verse-ref">Surah Ar-Rum : 21</div>
+                </div>
+
+                <!-- COUNTDOWN -->
+                <div class="countdown-section">
+                    <div class="cd-label">⏱ Hitung Mundur Hari H</div>
+                    <div class="cd-grid">
+                        <div class="cd-box">
+                            <div class="cd-num" id="cdDays">00</div>
+                            <div class="cd-unit">Hari</div>
+                        </div>
+                        <div class="cd-sep">:</div>
+                        <div class="cd-box">
+                            <div class="cd-num" id="cdHours">00</div>
+                            <div class="cd-unit">Jam</div>
+                        </div>
+                        <div class="cd-sep">:</div>
+                        <div class="cd-box">
+                            <div class="cd-num" id="cdMinutes">00</div>
+                            <div class="cd-unit">Menit</div>
+                        </div>
+                        <div class="cd-sep">:</div>
+                        <div class="cd-box">
+                            <div class="cd-num" id="cdSeconds">00</div>
+                            <div class="cd-unit">Detik</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- COUPLE -->
+                <div class="couple-section" id="cast">
+                    <div class="section-label">Profil Produk</div>
+                    <div class="couple-cards">
+                        <div class="couple-card">
+                            <div class="couple-avatar">
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80"
+                                    alt="Nazma">
+                            </div>
+                            <div class="couple-role">Mempelai WNazma</div>
+                            <div class="couple-name">Nazma Putri</div>
+                            <div class="couple-parents">S.Kom<br>Putri Pertama<br>Bpk. Taryono<br>& Ibu Wiwit Jayanti
+                            </div>
+                        </div>
+                        <div class="couple-card">
+                            <div class="couple-avatar">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80"
+                                    alt="Guntur">
+                            </div>
+                            <div class="couple-role">Mempelai Pria</div>
+                            <div class="couple-name">Guntur Putra</div>
+                            <div class="couple-parents">S.Kom<br>Putra Kedua<br>Bpk. Wan Sabran<br>& Ibu Titik Sundari
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TIMELINE -->
+                <div class="timeline-section">
+                    <div class="section-label">Riwayat Transaksi</div>
+                    <div id="timelineList">
+                        <div class="tl-item">
+                            <div class="tl-left">
+                                <div class="tl-dot">1</div>
+                                <div class="tl-line"></div>
+                            </div>
+                            <div class="tl-body">
+                                <div class="tl-tag">TRX-001 · JUNI 2025</div>
+                                <div class="tl-row"><span class="tl-title">Awal Pertemuan</span><span
+                                        class="tl-date">Jun 2025</span></div>
+                                <p class="tl-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling,
+                                    cerita mengalir di sela santapan sushi. Es krim manis jadi penutup yang sempurna.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="tl-item">
+                            <div class="tl-left">
+                                <div class="tl-dot">2</div>
+                                <div class="tl-line"></div>
+                            </div>
+                            <div class="tl-body">
+                                <div class="tl-tag">TRX-002 · NOV 2025</div>
+                                <div class="tl-row"><span class="tl-title">Lamaran</span><span class="tl-date">Nov
+                                        2025</span></div>
+                                <p class="tl-desc">Rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat
+                                    janji dalam momen awal yang mengubah segalanya.</p>
+                            </div>
+                        </div>
+                        <div class="tl-item">
+                            <div class="tl-left">
+                                <div class="tl-dot">3</div>
+                                <div class="tl-line"></div>
+                            </div>
+                            <div class="tl-body">
+                                <div class="tl-tag">TRX-003 · MEI 2026</div>
+                                <div class="tl-row"><span class="tl-title">Pernikahan</span><span class="tl-date">24 Mei
+                                        2026</span></div>
+                                <p class="tl-desc">Kini tiba babak paling istimewa. Dalam ikatan suci pernikahan, kami
+                                    berjanji untuk saling mencintai selamanya.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- EVENT -->
+                <div class="event-section" id="venue">
+                    <div class="section-label">Detail Produk</div>
+                    <div class="event-cards">
+                        <div class="event-card">
+                            <div class="event-type-row">
+                                <div class="event-type-badge">AKAD NIKAH</div>
+                                <div class="event-code">SKU: WED-AKD-001</div>
+                            </div>
+                            <div class="event-date-big">Minggu<br>24 Mei 2026</div>
+                            <div class="event-detail">
+                                <span class="event-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path
+                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
+                                    </svg></span>
+                                <span class="event-text">08.00 WIB</span>
+                            </div>
+                            <div class="event-detail">
+                                <span class="event-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path
+                                            d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                                    </svg></span>
+                                <span class="event-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug,
+                                    Tangerang</span>
+                            </div>
+                            <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="maps-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                                </svg>
+                                Lihat di Maps
+                            </a>
+                        </div>
+                        <div class="event-card">
+                            <div class="event-type-row">
+                                <div class="event-type-badge">RESEPSI</div>
+                                <div class="event-code">SKU: WED-RSP-001</div>
+                            </div>
+                            <div class="event-date-big">Minggu<br>24 Mei 2026</div>
+                            <div class="event-detail">
+                                <span class="event-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path
+                                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
+                                    </svg></span>
+                                <span class="event-text">11.00 – 13.00 WIB</span>
+                            </div>
+                            <div class="event-detail">
+                                <span class="event-icon"><svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path
+                                            d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                                    </svg></span>
+                                <span class="event-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug,
+                                    Tangerang</span>
+                            </div>
+                            <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="maps-btn">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                                </svg>
+                                Lihat di Maps
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GALLERY -->
+                <div class="gallery-section">
+                    <div class="section-label">Foto Produk</div>
+                    <div class="gallery-grid" id="galleryGrid"></div>
+                </div>
+
+                <!-- GIFT -->
+                <div class="gift-section" id="gift">
+                    <div class="section-label">Metode Pembayaran Kado</div>
+                    <div class="gift-cards">
+                        <div class="gift-card">
+                            <div class="gift-left">
+                                <div class="gift-bank-badge">BCA</div>
+                                <div class="gift-holder">Guntur Putra</div>
+                                <div class="gift-num">8210 3705 61</div>
+                            </div>
+                            <button class="copy-btn" onclick="copyText('8210370561',this)">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                                </svg>
+                                SALIN
+                            </button>
+                        </div>
+                        <div class="gift-card">
+                            <div class="gift-left">
+                                <div class="gift-bank-badge">BNI</div>
+                                <div class="gift-holder">Nazma Putri</div>
+                                <div class="gift-num">1192 9784 03</div>
+                            </div>
+                            <button class="copy-btn" onclick="copyText('1192978403',this)">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                                </svg>
+                                SALIN
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RSVP -->
+                <div class="rsvp-section" id="rsvp">
+                    <div class="section-label">Konfirmasi Kehadiran</div>
+                    <div class="rsvp-counter">
+                        <div class="rsvp-stat">
+                            <div class="rsvp-num">7</div>
+                            <div class="rsvp-lbl">Respons</div>
+                        </div>
+                        <div class="rsvp-stat">
+                            <div class="rsvp-num">7</div>
+                            <div class="rsvp-lbl">Hadir</div>
+                        </div>
+                        <div class="rsvp-stat">
+                            <div class="rsvp-num">13</div>
+                            <div class="rsvp-lbl">Tamu</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nama Pelanggan</label>
+                        <input type="text" class="form-input" placeholder="Masukkan nama Anda" id="rsvpName">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Status Kehadiran</label>
+                        <select class="form-input form-select" id="rsvpStatus">
+                            <option value="">Pilih status</option>
+                            <option value="hadir">✓ Hadir — Siap Belanja Bahagia</option>
+                            <option value="tidak">✗ Tidak Hadir — Stok Habis</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Jumlah Tamu</label>
+                        <div class="guest-row">
+                            <button class="guest-btn active" onclick="selGuests(1,this)">1 Orang</button>
+                            <button class="guest-btn" onclick="selGuests(2,this)">2 Orang</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Ucapan & Pesan</label>
+                        <textarea class="form-input" placeholder="Tulis ucapan untuk Nazma & Gunturr..."
+                            id="rsvpMsg"></textarea>
+                    </div>
+                    <button class="rsvp-btn" onclick="submitRSVP()">🛒 KONFIRMASI SEKARANG</button>
+                </div>
+
+                <!-- REVIEWS -->
+                <div class="wishes-section">
+                    <div class="section-label">Ulasan Pelanggan</div>
+                    <div class="wishes-list" id="wishesList">
+                        <div class="wish-card visible">
+                            <div class="wish-head">
+                                <div class="wish-avatar">A</div>
+                                <div>
+                                    <div class="wish-name">Ayu Rahmawati</div>
+                                    <div style="font-size:11px;color:var(--af-red)">★★★★★</div>
+                                </div>
+                                <div class="wish-status">✓ Hadir · 2 tamu</div>
+                            </div>
+                            <div class="wish-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah,
+                                mawaddah, wa rahmah. Bahagia selalu Nazma & Gunturr! 🌿</div>
+                        </div>
+                        <div class="wish-card visible">
+                            <div class="wish-head">
+                                <div class="wish-avatar" style="background:var(--af-blue)">R</div>
+                                <div>
+                                    <div class="wish-name">Reza Firmansyah</div>
+                                    <div style="font-size:11px;color:var(--af-red)">★★★★★</div>
+                                </div>
+                                <div class="wish-status">✓ Hadir · 1 tamu</div>
+                            </div>
+                            <div class="wish-text">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan
+                                kebahagiaan yang tidak pernah habis. Aamiin!</div>
+                        </div>
+                        <div class="wish-card visible">
+                            <div class="wish-head">
+                                <div class="wish-avatar" style="background:var(--af-green)">S</div>
+                                <div>
+                                    <div class="wish-name">Sinta Dewi</div>
+                                    <div style="font-size:11px;color:var(--af-red)">★★★★★</div>
+                                </div>
+                                <div class="wish-status">✓ Hadir · 2 tamu</div>
+                            </div>
+                            <div class="wish-text">Wishing you both a lifetime of love and laughter! Semoga langkah
+                                kalian selalu diberkahi. 💚</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BARCODE -->
+                <div class="barcode-section">
+                    <div class="barcode" id="barcodeEl"></div>
+                    <div class="barcode-num">WED 2026 0524 Nazma Guntur 4EVER</div>
+                    <div class="barcode-label">Scan untuk doa & restu · Valid seumur hidup</div>
+                </div>
+
+                <!-- POINTS -->
+                <div class="points-section">
+                    <div class="points-icon">⭐</div>
+                    <div class="points-text">
+                        <div class="points-label">Poin Alfamate Terkumpul</div>
+                        <div class="points-value">∞ POIN DOA</div>
+                        <div class="points-desc">Dari seluruh tamu · Berlaku selamanya</div>
+                    </div>
+                    <div style="text-align:right">
+                        <div
+                            style="font-family:var(--font-receipt);font-size:9px;color:rgba(255,255,255,.5);text-transform:uppercase;margin-bottom:3px;">
+                            Member Since</div>
+                        <div
+                            style="font-family:var(--font-display);font-size:20px;color:var(--af-yellow);letter-spacing:1px;">
+                            Jun 2025</div>
+                    </div>
+                </div>
+
+                <!-- FOOTER -->
+                <div class="receipt-footer">
+                    <div class="footer-thanks">TERIMA KASIH!</div>
+                    <div class="footer-sub">Atas kehadiran &amp; doa restu Anda</div>
+                    <div class="footer-names">Nazma &amp; Guntur</div>
+                    <p class="footer-msg">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila
+                        Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu kepada kami.</p>
+                    <div
+                        style="font-family:var(--font-receipt);font-size:11px;color:var(--af-gray);margin-bottom:8px;font-style:italic;">
+                        "Belanja Cinta, Harga Doa — Pasti Pas!"</div>
+                    <div class="footer-brand">Digital Invitation by <a href="#">BridesSpace</a> · Alfamart Wedding
+                        Edition</div>
+                </div>
+
+            </div>
+
+            <div class="receipt-torn-bottom"></div>
+
+        </div>
+
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <nav class="bottom-nav" id="bottomNav">
+        <a href="#home" class="nav-item active">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+            </svg>Struk
+        </a>
+        <a href="#cast" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+            </svg>Profil
+        </a>
+        <a href="#venue" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z" />
+            </svg>Acara
+        </a>
+        <a href="#gift" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M20 6h-2.18c.07-.23.18-.46.18-.71C18 3.47 16.53 2 14.71 2c-.87 0-1.65.36-2.22.93L12 3.4l-.49-.47C10.94 2.36 10.16 2 9.29 2 7.47 2 6 3.47 6 5.29c0 .25.11.48.18.71H4c-1.11 0-2 .89-2 2v13c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z" />
+            </svg>Kado
+        </a>
+        <a href="#rsvp" class="nav-item">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
+            </svg>RSVP
+        </a>
+    </nav>
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox">
+        <button class="lb-close" onclick="closeLb()">✕</button>
+        <button class="lb-nav lb-prev" onclick="lbNav(-1)">‹</button>
+        <img class="lb-img" id="lbImg" src="" alt="">
+        <button class="lb-nav lb-next" onclick="lbNav(1)">›</button>
+        <div class="lb-count" id="lbCount"></div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const IMGS = [
+            "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80",
+            "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&q=80",
+            "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&q=80",
+            "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&q=80",
+            "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=600&q=80",
+            "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=600&q=80",
+            "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=600&q=80",
+            "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&q=80",
+            "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=600&q=80",
+        ];
+
+        let lbIdx = 0;
+        let guestCount = 1;
+        let toastTimer;
+
+        function openInvitation() {
+            document.getElementById('opening').classList.add('hide');
+            setTimeout(() => document.getElementById('main').classList.add('show'), 150);
+            document.getElementById('bottomNav').classList.add('show');
+            setTimeout(initAll, 500);
+        }
+
+        function initAll() {
+            buildGallery();
+            buildBarcode();
+            startCountdown();
+            initScrollAnim();
+            initNavHighlight();
+        }
+
+        function buildGallery() {
+            const grid = document.getElementById('galleryGrid');
+            if (!grid) return;
+            IMGS.forEach((src, i) => {
+                const cell = document.createElement('div');
+                cell.className = 'gallery-cell';
+                cell.innerHTML = `<img src="${src}" alt="Foto ${i + 1}" loading="lazy"><div class="gallery-cell-num">${String(i + 1).padStart(2, '0')}</div>`;
+                cell.addEventListener('click', () => openLb(i));
+                grid.appendChild(cell);
+            });
+        }
+
+        function buildBarcode() {
+            const el = document.getElementById('barcodeEl');
+            if (!el) return;
+            const widths = [2, 1, 3, 1, 2, 1, 1, 3, 1, 2, 3, 1, 1, 2, 1, 3, 2, 1, 1, 2, 3, 1, 2, 1, 3, 1, 2, 1, 1, 2, 3, 2, 1, 1, 2, 1, 3, 1, 2, 2, 1, 3, 1];
+            widths.forEach((w, i) => {
+                const bar = document.createElement('div');
+                bar.className = 'bc-bar';
+                const h = 35 + Math.random() * 25;
+                bar.style.cssText = `width:${w}px;height:${h}px;opacity:${i % 2 === 0 ? 1 : 0}`;
+                el.appendChild(bar);
+            });
+        }
+
+        function startCountdown() {
+            const target = new Date('2026-05-24T08:00:00');
+            function tick() {
+                const diff = target - new Date();
+                const ids = ['cdDays', 'cdHours', 'cdMinutes', 'cdSeconds'];
+                if (diff <= 0) { ids.forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '00'; }); return; }
+                const vals = [Math.floor(diff / 86400000), Math.floor((diff % 86400000) / 3600000), Math.floor((diff % 3600000) / 60000), Math.floor((diff % 60000) / 1000)];
+                ids.forEach((id, i) => { const el = document.getElementById(id); if (el) el.textContent = String(vals[i]).padStart(2, '0'); });
+            }
+            tick(); setInterval(tick, 1000);
+        }
+
+        function initScrollAnim() {
+            const obs = new IntersectionObserver(entries => {
+                entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+            }, { threshold: .1 });
+            document.querySelectorAll('.tl-item, .wish-card').forEach(el => obs.observe(el));
+        }
+
+        function initNavHighlight() {
+            const obs = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                        const a = document.querySelector(`.nav-item[href="#${e.target.id}"]`);
+                        if (a) a.classList.add('active');
+                    }
+                });
+            }, { rootMargin: '-30% 0px -30% 0px' });
+            ['home', 'cast', 'venue', 'gift', 'rsvp'].forEach(id => { const el = document.getElementById(id); if (el) obs.observe(el); });
+        }
+
+        function openLb(i) {
+            lbIdx = i % IMGS.length;
+            updateLb();
+            document.getElementById('lightbox').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeLb() { document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow = ''; }
+        function lbNav(d) { lbIdx = (lbIdx + d + IMGS.length) % IMGS.length; updateLb(); }
+        function updateLb() {
+            document.getElementById('lbImg').src = IMGS[lbIdx];
+            document.getElementById('lbCount').textContent = `Foto ${lbIdx + 1} / ${IMGS.length}`;
+        }
+        document.addEventListener('keydown', e => {
+            if (!document.getElementById('lightbox').classList.contains('open')) return;
+            if (e.key === 'Escape') closeLb();
+            if (e.key === 'ArrowLeft') lbNav(-1);
+            if (e.key === 'ArrowRight') lbNav(1);
+        });
+
+        function selGuests(n, btn) {
+            guestCount = n;
+            document.querySelectorAll('.guest-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function submitRSVP() {
+            const name = document.getElementById('rsvpName').value.trim();
+            const status = document.getElementById('rsvpStatus').value;
+            const msg = document.getElementById('rsvpMsg').value.trim();
+            if (!name || !status) { showToast('⚠ Mohon isi nama dan status kehadiran!'); return; }
+            const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+            const colors = ['#E8192C', '#003087', '#1a7a2e', '#7a5c1a', '#6b1a7a'];
+            const bg = colors[Math.floor(Math.random() * colors.length)];
+            const stText = status === 'hadir' ? `✓ Hadir · ${guestCount} tamu` : '✗ Tidak Hadir';
+            const card = document.createElement('div');
+            card.className = 'wish-card';
+            card.innerHTML = `
+    <div class="wish-head">
+      <div class="wish-avatar" style="background:${bg}">${initials}</div>
+      <div><div class="wish-name">${name}</div><div style="font-size:11px;color:var(--af-red)">★★★★★</div></div>
+      <div class="wish-status">${stText}</div>
+    </div>
+    <div class="wish-text">${msg || 'Selamat dan semoga bahagia selalu! Belanja cinta, harga doa! 🎊'}</div>
+  `;
+            document.getElementById('wishesList').prepend(card);
+            setTimeout(() => card.classList.add('visible'), 50);
+            document.getElementById('rsvpName').value = '';
+            document.getElementById('rsvpStatus').value = '';
+            document.getElementById('rsvpMsg').value = '';
+            showToast('🛍️ Terima kasih! Kehadiran Anda berhasil dicatat!');
+            document.querySelector('.wishes-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function copyText(text, btn) {
+            navigator.clipboard.writeText(text).then(() => {
+                btn.classList.add('copied');
+                btn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" style="width:12px;height:12px"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> TERSALIN!`;
+                showToast('✓ Nomor rekening tersalin!');
+                setTimeout(() => {
+                    btn.classList.remove('copied');
+                    btn.innerHTML = `<svg viewBox="0 0 24 24" fill="currentColor" style="width:12px;height:12px"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> SALIN`;
+                }, 2500);
+            }).catch(() => showToast('Nomor: ' + text));
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+        }
+    </script>
+</body>
+
+</html>

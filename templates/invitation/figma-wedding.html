@@ -1,0 +1,2918 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nazma & Gunturr — Figma Wedding</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400;1,600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --fig-bg: #1e1e1e;
+            --fig-canvas: #2c2c2c;
+            --fig-panel: #2c2c2c;
+            --fig-panel-hi: #383838;
+            --fig-border: #3d3d3d;
+            --fig-border2: #4a4a4a;
+            --fig-text: #e0e0e0;
+            --fig-text2: #999;
+            --fig-text3: #666;
+            --fig-blue: #18a0fb;
+            --fig-purple: #7b61ff;
+            --fig-green: #14ae5c;
+            --fig-red: #f24822;
+            --fig-yellow: #ffcd29;
+            --fig-white: #ffffff;
+            --fig-frame: rgba(30, 30, 30, 0.96);
+            --serif: 'Cormorant Garamond', Georgia, serif;
+            --sans: 'DM Sans', sans-serif;
+            --mono: 'DM Mono', monospace;
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            background: var(--fig-bg);
+            color: var(--fig-text);
+            font-family: var(--sans);
+            font-size: 12px;
+            user-select: none;
+            cursor: default;
+        }
+
+        /* ─── TITLE BAR ─── */
+        .titlebar {
+            height: 40px;
+            background: var(--fig-panel);
+            border-bottom: 1px solid var(--fig-border);
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 100;
+            flex-shrink: 0;
+        }
+
+        .tb-left {
+            width: 240px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0 12px;
+        }
+
+        .fig-logo {
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fig-logo svg {
+            width: 16px;
+            height: 20px;
+        }
+
+        .tb-filename {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--fig-text);
+            letter-spacing: -.01em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tb-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .tb-tool-group {
+            display: flex;
+            align-items: center;
+            gap: 1px;
+            background: var(--fig-bg);
+            border-radius: 6px;
+            padding: 3px;
+        }
+
+        .tb-tool {
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--fig-text2);
+            cursor: pointer;
+            transition: background .1s, color .1s;
+            font-size: 13px;
+        }
+
+        .tb-tool:hover {
+            background: var(--fig-panel-hi);
+            color: var(--fig-text);
+        }
+
+        .tb-tool.on {
+            background: var(--fig-blue);
+            color: #fff;
+        }
+
+        .tb-tool svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .tb-right {
+            width: 240px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            padding: 0 12px;
+        }
+
+        .tb-badge {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-family: var(--mono);
+            cursor: pointer;
+        }
+
+        .tb-share {
+            background: var(--fig-blue);
+            color: #fff;
+            font-weight: 500;
+        }
+
+        .tb-present {
+            background: var(--fig-panel-hi);
+            color: var(--fig-text);
+            border: 1px solid var(--fig-border);
+        }
+
+        /* Multiplayer avatars */
+        .mp-avatars {
+            display: flex;
+            align-items: center;
+        }
+
+        .mp-av {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid var(--fig-panel);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 9px;
+            font-weight: 600;
+            margin-left: -6px;
+            cursor: pointer;
+        }
+
+        .mp-av:first-child {
+            margin-left: 0;
+        }
+
+        /* ─── LAYOUT ─── */
+        .app-body {
+            display: flex;
+            height: calc(100vh - 40px);
+            overflow: hidden;
+        }
+
+        /* ─── LEFT PANEL ─── */
+        .left-panel {
+            width: 240px;
+            flex-shrink: 0;
+            background: var(--fig-panel);
+            border-right: 1px solid var(--fig-border);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .panel-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--fig-border);
+            flex-shrink: 0;
+        }
+
+        .ptab {
+            flex: 1;
+            text-align: center;
+            padding: 8px 0;
+            font-size: 11px;
+            color: var(--fig-text2);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all .15s;
+            letter-spacing: .02em;
+        }
+
+        .ptab.on {
+            color: var(--fig-text);
+            border-bottom-color: var(--fig-blue);
+        }
+
+        .panel-scroll {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .panel-scroll::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .panel-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .panel-scroll::-webkit-scrollbar-thumb {
+            background: var(--fig-border2);
+            border-radius: 2px;
+        }
+
+        /* Layer rows */
+        .layer-section {
+            padding: 8px 0;
+        }
+
+        .layer-section-label {
+            padding: 4px 12px 2px;
+            font-size: 10px;
+            color: var(--fig-text3);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .layer-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            cursor: pointer;
+            border-radius: 0;
+            transition: background .1s;
+        }
+
+        .layer-row:hover {
+            background: var(--fig-panel-hi);
+        }
+
+        .layer-row.sel {
+            background: rgba(24, 160, 251, .18);
+        }
+
+        .layer-row.sel .lr-name {
+            color: var(--fig-blue);
+        }
+
+        .lr-indent {
+            flex-shrink: 0;
+        }
+
+        .lr-icon {
+            width: 12px;
+            height: 12px;
+            flex-shrink: 0;
+            opacity: .7;
+        }
+
+        .lr-name {
+            flex: 1;
+            font-size: 11px;
+            color: var(--fig-text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .lr-name.frame {
+            color: var(--fig-text2);
+        }
+
+        .lr-vis {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+            opacity: 0;
+            font-size: 10px;
+        }
+
+        .layer-row:hover .lr-vis {
+            opacity: .4;
+        }
+
+        /* Tree indent */
+        .ind1 {
+            width: 12px;
+        }
+
+        .ind2 {
+            width: 24px;
+        }
+
+        /* ─── CANVAS ─── */
+        .canvas-wrap {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: var(--fig-canvas);
+            background-image:
+                radial-gradient(circle, #3a3a3a 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        .canvas-inner {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(var(--zoom, .72));
+            transform-origin: center center;
+            transition: transform .3s cubic-bezier(.25, .46, .45, .94);
+            width: 1200px;
+        }
+
+        /* Zoom controls */
+        .zoom-bar {
+            position: absolute;
+            bottom: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--fig-panel);
+            border: 1px solid var(--fig-border);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            z-index: 50;
+            overflow: hidden;
+        }
+
+        .zoom-btn {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--fig-text2);
+            cursor: pointer;
+            font-size: 14px;
+            transition: background .1s, color .1s;
+        }
+
+        .zoom-btn:hover {
+            background: var(--fig-panel-hi);
+            color: var(--fig-text);
+        }
+
+        .zoom-pct {
+            padding: 0 8px;
+            font-size: 11px;
+            font-family: var(--mono);
+            color: var(--fig-text);
+            border-left: 1px solid var(--fig-border);
+            border-right: 1px solid var(--fig-border);
+            cursor: pointer;
+            min-width: 44px;
+            text-align: center;
+            line-height: 28px;
+        }
+
+        /* Canvas breadcrumb */
+        .canvas-breadcrumb {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: var(--fig-panel);
+            border: 1px solid var(--fig-border);
+            border-radius: 4px;
+            padding: 4px 10px;
+            font-size: 11px;
+            color: var(--fig-text2);
+            z-index: 50;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .crumb-sep {
+            color: var(--fig-text3);
+        }
+
+        .crumb-cur {
+            color: var(--fig-text);
+        }
+
+        /* ─── FIGMA FRAMES ─── */
+        .fig-frame {
+            position: absolute;
+            background: var(--fig-frame);
+        }
+
+        .frame-label {
+            position: absolute;
+            top: -22px;
+            left: 0;
+            font-size: 11px;
+            color: var(--fig-text2);
+            font-family: var(--sans);
+            white-space: nowrap;
+            letter-spacing: -.01em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .frame-label svg {
+            width: 10px;
+            height: 10px;
+        }
+
+        .frame-sel-outline {
+            position: absolute;
+            inset: -2px;
+            border: 2px solid var(--fig-blue);
+            border-radius: 2px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity .2s;
+        }
+
+        .fig-frame.sel .frame-sel-outline {
+            opacity: 1;
+        }
+
+        .fig-frame.sel .frame-label {
+            color: var(--fig-blue);
+        }
+
+        /* Resize handles */
+        .rhandle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border: 1px solid var(--fig-blue);
+            border-radius: 1px;
+            z-index: 2;
+            display: none;
+        }
+
+        .fig-frame.sel .rhandle {
+            display: block;
+        }
+
+        .rh-tl {
+            top: -5px;
+            left: -5px;
+            cursor: nwse-resize;
+        }
+
+        .rh-tr {
+            top: -5px;
+            right: -5px;
+            cursor: nesw-resize;
+        }
+
+        .rh-bl {
+            bottom: -5px;
+            left: -5px;
+            cursor: nesw-resize;
+        }
+
+        .rh-br {
+            bottom: -5px;
+            right: -5px;
+            cursor: nwse-resize;
+        }
+
+        .rh-tc {
+            top: -5px;
+            left: calc(50% - 4px);
+            cursor: ns-resize;
+        }
+
+        .rh-bc {
+            bottom: -5px;
+            left: calc(50% - 4px);
+            cursor: ns-resize;
+        }
+
+        .rh-lc {
+            top: calc(50% - 4px);
+            left: -5px;
+            cursor: ew-resize;
+        }
+
+        .rh-rc {
+            top: calc(50% - 4px);
+            right: -5px;
+            cursor: ew-resize;
+        }
+
+        /* ═══════ FRAME CONTENTS ═══════ */
+
+        /* HERO FRAME */
+        .frame-hero {
+            left: 0;
+            top: 0;
+            width: 520px;
+            height: 680px;
+            background: #111 url('https://images.unsplash.com/photo-1519741497674-611481863552?w=700&q=85') center/cover no-repeat;
+            overflow: hidden;
+            border-radius: 4px;
+        }
+
+        .frame-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, .2) 0%, rgba(0, 0, 0, .1) 40%, rgba(0, 0, 0, .75) 75%, rgba(0, 0, 0, .95) 100%);
+        }
+
+        .hero-inner {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero-tag {
+            margin: 28px 28px 0;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, .1);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, .2);
+            padding: 5px 12px;
+            border-radius: 20px;
+            width: fit-content;
+            font-size: 10px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .7);
+        }
+
+        .hero-tag-dot {
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--fig-blue);
+        }
+
+        .hero-text {
+            margin-top: auto;
+            padding: 0 28px 32px;
+        }
+
+        .hero-eyebrow {
+            font-size: 11px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, .45);
+            margin-bottom: 10px;
+            font-family: var(--mono);
+        }
+
+        .hero-name {
+            font-family: var(--serif);
+            font-style: italic;
+            font-weight: 300;
+            font-size: 72px;
+            line-height: .92;
+            letter-spacing: -.02em;
+            color: #fff;
+            margin-bottom: 14px;
+        }
+
+        .hero-name span {
+            opacity: .35;
+            font-style: normal;
+            font-size: .6em;
+            display: block;
+            margin: 4px 0;
+        }
+
+        .hero-sub {
+            font-size: 12px;
+            color: rgba(255, 255, 255, .55);
+            line-height: 1.7;
+            font-family: var(--mono);
+            margin-bottom: 22px;
+        }
+
+        .hero-cta-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .hcta {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border-radius: 4px;
+            padding: 9px 14px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity .15s;
+        }
+
+        .hcta:hover {
+            opacity: .85;
+        }
+
+        .hcta.primary {
+            background: #fff;
+            color: #000;
+        }
+
+        .hcta.ghost {
+            background: rgba(255, 255, 255, .1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, .2);
+            backdrop-filter: blur(6px);
+        }
+
+        /* COUNTDOWN FRAME */
+        .frame-cd {
+            left: 540px;
+            top: 0;
+            width: 280px;
+            height: 320px;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #1a1a1a;
+            border: 1px solid var(--fig-border);
+        }
+
+        .cd-header {
+            padding: 16px 18px 12px;
+            border-bottom: 1px solid var(--fig-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .cd-title {
+            font-size: 11px;
+            color: var(--fig-text2);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            font-family: var(--mono);
+        }
+
+        .cd-badge {
+            font-size: 9px;
+            background: rgba(24, 160, 251, .15);
+            color: var(--fig-blue);
+            padding: 2px 7px;
+            border-radius: 3px;
+            letter-spacing: .04em;
+            font-family: var(--mono);
+        }
+
+        .cd-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: var(--fig-border);
+            margin: 1px;
+        }
+
+        .cd-cell {
+            background: #1a1a1a;
+            padding: 18px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cd-num {
+            font-family: var(--serif);
+            font-size: 48px;
+            font-weight: 300;
+            color: var(--fig-text);
+            line-height: 1;
+            letter-spacing: -2px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .cd-unit {
+            font-size: 9px;
+            color: var(--fig-text3);
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            margin-top: 5px;
+            font-family: var(--mono);
+        }
+
+        .cd-footer {
+            padding: 12px 18px;
+            border-top: 1px solid var(--fig-border);
+        }
+
+        .cd-date {
+            font-size: 11px;
+            color: var(--fig-text);
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .cd-loc {
+            font-size: 10px;
+            color: var(--fig-text3);
+            font-family: var(--mono);
+        }
+
+        /* VERSE FRAME */
+        .frame-verse {
+            left: 540px;
+            top: 340px;
+            width: 280px;
+            height: 160px;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #141414;
+            border: 1px solid var(--fig-border);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px 20px;
+        }
+
+        .verse-q {
+            font-family: var(--serif);
+            font-style: italic;
+            font-size: 14px;
+            color: rgba(255, 255, 255, .6);
+            line-height: 1.65;
+            margin-bottom: 10px;
+        }
+
+        .verse-src {
+            font-size: 9px;
+            color: var(--fig-text3);
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            font-family: var(--mono);
+        }
+
+        /* COUPLE FRAME */
+        .frame-couple {
+            left: 540px;
+            top: 520px;
+            width: 540px;
+            height: 160px;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #1a1a1a;
+            border: 1px solid var(--fig-border);
+            display: flex;
+        }
+
+        .couple-half {
+            flex: 1;
+            padding: 18px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .couple-half+.couple-half {
+            border-left: 1px solid var(--fig-border);
+        }
+
+        .ch-tag {
+            font-size: 9px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            font-family: var(--mono);
+            margin-bottom: 8px;
+        }
+
+        .ch-name {
+            font-family: var(--serif);
+            font-style: italic;
+            font-size: 22px;
+            font-weight: 400;
+            color: var(--fig-text);
+            margin-bottom: 4px;
+        }
+
+        .ch-sub {
+            font-size: 10px;
+            color: var(--fig-text3);
+            line-height: 1.5;
+            font-family: var(--mono);
+        }
+
+        .ch-role {
+            font-size: 9px;
+            padding: 2px 8px;
+            border-radius: 3px;
+            width: fit-content;
+            font-family: var(--mono);
+            letter-spacing: .04em;
+        }
+
+        /* EVENT FRAME */
+        .frame-event {
+            left: 0;
+            top: 700px;
+            width: 380px;
+            height: 260px;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #1a1a1a;
+            border: 1px solid var(--fig-border);
+        }
+
+        .event-header {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--fig-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .event-h-title {
+            font-size: 11px;
+            color: var(--fig-text2);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            font-family: var(--mono);
+        }
+
+        .event-rows {}
+
+        .event-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 18px;
+            border-bottom: 1px solid var(--fig-border);
+        }
+
+        .event-row:last-child {
+            border-bottom: none;
+        }
+
+        .er-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .er-body {
+            flex: 1;
+        }
+
+        .er-type {
+            font-size: 9px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            font-family: var(--mono);
+            margin-bottom: 3px;
+        }
+
+        .er-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--fig-text);
+            margin-bottom: 2px;
+        }
+
+        .er-detail {
+            font-size: 10px;
+            color: var(--fig-text3);
+            font-family: var(--mono);
+        }
+
+        .er-time {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--fig-text2);
+            background: var(--fig-panel-hi);
+            padding: 4px 8px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        /* LOCATION FRAME */
+        .frame-location {
+            left: 400px;
+            top: 700px;
+            width: 300px;
+            height: 260px;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #1a1a1a;
+            border: 1px solid var(--fig-border);
+        }
+
+        .loc-map {
+            height: 150px;
+            background: linear-gradient(135deg, #1a2535, #0d1929),
+                url('https://images.unsplash.com/photo-1568667256549-094345857637?w=400&q=70') center/cover;
+            background-blend-mode: multiply;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loc-pin {
+            font-size: 28px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .6));
+        }
+
+        .loc-body {
+            padding: 12px 16px;
+        }
+
+        .loc-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--fig-text);
+            margin-bottom: 3px;
+        }
+
+        .loc-addr {
+            font-size: 10px;
+            color: var(--fig-text3);
+            font-family: var(--mono);
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+
+        .loc-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px;
+            color: var(--fig-blue);
+            font-family: var(--mono);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        /* TIMELINE FRAME */
+        .frame-timeline {
+            left: 720px;
+            top: 700px;
+            width: 360px;
+            height: 260px;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #1a1a1a;
+            border: 1px solid var(--fig-border);
+        }
+
+        .tl-header {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--fig-border);
+        }
+
+        .tl-h-title {
+            font-size: 11px;
+            color: var(--fig-text2);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            font-family: var(--mono);
+        }
+
+        .tl-rows {
+            padding: 8px 18px;
+        }
+
+        .tl-row {
+            display: flex;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--fig-border);
+        }
+
+        .tl-row:last-child {
+            border-bottom: none;
+        }
+
+        .tl-node-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding-top: 2px;
+        }
+
+        .tl-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .tl-line {
+            width: 1px;
+            flex: 1;
+            background: var(--fig-border);
+            margin: 3px 0;
+            min-height: 8px;
+        }
+
+        .tl-row:last-child .tl-line {
+            display: none;
+        }
+
+        .tl-content {
+            flex: 1;
+        }
+
+        .tl-chapter {
+            font-size: 9px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            font-family: var(--mono);
+            color: var(--fig-text3);
+            margin-bottom: 2px;
+        }
+
+        .tl-event {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--fig-text);
+            margin-bottom: 2px;
+        }
+
+        .tl-desc {
+            font-size: 10px;
+            color: var(--fig-text3);
+            line-height: 1.5;
+        }
+
+        .tl-date {
+            font-size: 9px;
+            font-family: var(--mono);
+            color: var(--fig-text3);
+        }
+
+        /* GALLERY FRAME */
+        .frame-gallery {
+            left: 0;
+            top: 980px;
+            width: 700px;
+            height: 220px;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #1a1a1a;
+            border: 1px solid var(--fig-border);
+        }
+
+        .gal-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--fig-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .gal-title {
+            font-size: 11px;
+            color: var(--fig-text2);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            font-family: var(--mono);
+        }
+
+        .gal-count {
+            font-size: 9px;
+            background: var(--fig-panel-hi);
+            color: var(--fig-text3);
+            padding: 2px 7px;
+            border-radius: 3px;
+            font-family: var(--mono);
+        }
+
+        .gal-grid {
+            display: flex;
+            gap: 2px;
+            padding: 2px;
+            height: 174px;
+        }
+
+        .gal-thumb {
+            flex-shrink: 0;
+            border-radius: 2px;
+            overflow: hidden;
+            cursor: pointer;
+            position: relative;
+            transition: opacity .15s;
+        }
+
+        .gal-thumb:hover {
+            opacity: .85;
+        }
+
+        .gal-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: saturate(.85) brightness(.9);
+            display: block;
+        }
+
+        .gal-thumb-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 6px 5px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, .6));
+            font-size: 9px;
+            color: rgba(255, 255, 255, .6);
+            font-family: var(--mono);
+            opacity: 0;
+            transition: opacity .2s;
+        }
+
+        .gal-thumb:hover .gal-thumb-label {
+            opacity: 1;
+        }
+
+        /* GIFT FRAME */
+        .frame-gift {
+            left: 720px;
+            top: 980px;
+            width: 360px;
+            height: 220px;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #1a1a1a;
+            border: 1px solid var(--fig-border);
+        }
+
+        .gift-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--fig-border);
+        }
+
+        .gift-title {
+            font-size: 11px;
+            color: var(--fig-text2);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            font-family: var(--mono);
+        }
+
+        .gift-cards {
+            padding: 8px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .gift-card {
+            border-radius: 4px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .gc-bca {
+            background: linear-gradient(135deg, #003087, #0057B8);
+        }
+
+        .gc-bni {
+            background: linear-gradient(135deg, #2d1b5e, #1a0e3d);
+        }
+
+        .gc-left {}
+
+        .gc-bank {
+            font-size: 14px;
+            font-weight: 700;
+            color: rgba(255, 255, 255, .9);
+            letter-spacing: -.01em;
+            margin-bottom: 2px;
+        }
+
+        .gc-holder {
+            font-size: 9px;
+            color: rgba(255, 255, 255, .5);
+            font-family: var(--mono);
+        }
+
+        .gc-num {
+            font-size: 11px;
+            color: rgba(255, 255, 255, .85);
+            font-family: var(--mono);
+            letter-spacing: .04em;
+        }
+
+        .gc-copy {
+            background: rgba(255, 255, 255, .15);
+            border: none;
+            color: rgba(255, 255, 255, .8);
+            font-family: var(--mono);
+            font-size: 9px;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background .15s;
+        }
+
+        .gc-copy:hover {
+            background: rgba(255, 255, 255, .25);
+        }
+
+        .gc-copy.ok {
+            background: rgba(20, 174, 92, .3);
+            color: #14ae5c;
+        }
+
+        /* RSVP FRAME */
+        .frame-rsvp {
+            left: 0;
+            top: 1220px;
+            width: 520px;
+            height: 380px;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #1a1a1a;
+            border: 1px solid var(--fig-border);
+        }
+
+        .rsvp-header {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--fig-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .rsvp-title {
+            font-size: 11px;
+            color: var(--fig-text2);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            font-family: var(--mono);
+        }
+
+        .rsvp-stats {
+            display: flex;
+            gap: 1px;
+            background: var(--fig-border);
+        }
+
+        .rs-cell {
+            flex: 1;
+            background: #1a1a1a;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .rs-num {
+            font-family: var(--serif);
+            font-size: 24px;
+            font-weight: 300;
+            color: var(--fig-blue);
+            line-height: 1;
+        }
+
+        .rs-lbl {
+            font-size: 9px;
+            color: var(--fig-text3);
+            font-family: var(--mono);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            margin-top: 3px;
+        }
+
+        .rsvp-form {
+            padding: 12px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .form-field {
+            border-bottom: 1px solid var(--fig-border);
+            padding: 0;
+        }
+
+        .form-field:last-of-type {
+            border-bottom: none;
+        }
+
+        .ff-label {
+            font-size: 9px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--fig-text3);
+            font-family: var(--mono);
+            padding-top: 10px;
+            margin-bottom: 4px;
+        }
+
+        .ff-input {
+            width: 100%;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--fig-text);
+            font-family: var(--mono);
+            font-size: 12px;
+            padding: 0 0 10px;
+            caret-color: var(--fig-blue);
+        }
+
+        .ff-input::placeholder {
+            color: var(--fig-border2);
+        }
+
+        .ff-select {
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .ff-textarea {
+            resize: none;
+            min-height: 50px;
+            line-height: 1.5;
+        }
+
+        .seg-row {
+            display: flex;
+            gap: 4px;
+            padding: 4px 0 10px;
+        }
+
+        .seg-opt {
+            flex: 1;
+            text-align: center;
+            background: var(--fig-panel-hi);
+            border: 1px solid var(--fig-border);
+            border-radius: 3px;
+            padding: 5px;
+            font-size: 10px;
+            font-family: var(--mono);
+            color: var(--fig-text3);
+            cursor: pointer;
+            transition: all .15s;
+        }
+
+        .seg-opt.on {
+            background: rgba(24, 160, 251, .2);
+            border-color: var(--fig-blue);
+            color: var(--fig-blue);
+        }
+
+        .rsvp-submit {
+            margin: 10px 18px 14px;
+            background: var(--fig-blue);
+            border: none;
+            border-radius: 4px;
+            padding: 10px;
+            color: #fff;
+            font-family: var(--sans);
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity .15s;
+            letter-spacing: -.01em;
+        }
+
+        .rsvp-submit:hover {
+            opacity: .88;
+        }
+
+        .rsvp-submit:active {
+            transform: scale(.98);
+        }
+
+        /* WISHES FRAME */
+        .frame-wishes {
+            left: 540px;
+            top: 1220px;
+            width: 540px;
+            height: 380px;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #1a1a1a;
+            border: 1px solid var(--fig-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .wishes-header {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--fig-border);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .wishes-title {
+            font-size: 11px;
+            color: var(--fig-text2);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+            font-family: var(--mono);
+        }
+
+        .wishes-scroll {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 16px;
+        }
+
+        .wishes-scroll::-webkit-scrollbar {
+            width: 3px;
+        }
+
+        .wishes-scroll::-webkit-scrollbar-thumb {
+            background: var(--fig-border);
+            border-radius: 2px;
+        }
+
+        .wish-row {
+            display: flex;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--fig-border);
+        }
+
+        .wish-row:last-child {
+            border-bottom: none;
+        }
+
+        .wish-av {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .wish-body {
+            flex: 1;
+        }
+
+        .wish-name {
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--fig-text);
+            margin-bottom: 2px;
+        }
+
+        .wish-text {
+            font-size: 11px;
+            color: var(--fig-text2);
+            line-height: 1.55;
+            font-family: var(--mono);
+        }
+
+        .wish-meta {
+            font-size: 9px;
+            color: var(--fig-text3);
+            font-family: var(--mono);
+            margin-top: 3px;
+        }
+
+        /* ─── RIGHT PANEL ─── */
+        .right-panel {
+            width: 240px;
+            flex-shrink: 0;
+            background: var(--fig-panel);
+            border-left: 1px solid var(--fig-border);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .right-panel::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .right-panel::-webkit-scrollbar-thumb {
+            background: var(--fig-border2);
+            border-radius: 2px;
+        }
+
+        .rp-section {
+            border-bottom: 1px solid var(--fig-border);
+        }
+
+        .rp-section-header {
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+
+        .rp-sh-title {
+            font-size: 11px;
+            color: var(--fig-text2);
+            letter-spacing: .02em;
+        }
+
+        .rp-sh-arrow {
+            color: var(--fig-text3);
+            font-size: 10px;
+            transition: transform .15s;
+        }
+
+        .rp-section.open .rp-sh-arrow {
+            transform: rotate(180deg);
+        }
+
+        .rp-body {
+            padding: 8px 12px;
+            display: none;
+        }
+
+        .rp-section.open .rp-body {
+            display: block;
+        }
+
+        /* Property rows */
+        .prop-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .prop-label {
+            width: 70px;
+            font-size: 10px;
+            color: var(--fig-text3);
+            flex-shrink: 0;
+        }
+
+        .prop-val {
+            flex: 1;
+            background: var(--fig-bg);
+            border: 1px solid var(--fig-border);
+            border-radius: 3px;
+            padding: 3px 7px;
+            font-size: 11px;
+            font-family: var(--mono);
+            color: var(--fig-text);
+            text-align: right;
+        }
+
+        .prop-val2 {
+            flex: 1;
+            display: flex;
+            gap: 4px;
+        }
+
+        .prop-mini {
+            flex: 1;
+            background: var(--fig-bg);
+            border: 1px solid var(--fig-border);
+            border-radius: 3px;
+            padding: 3px 5px;
+            font-size: 10px;
+            font-family: var(--mono);
+            color: var(--fig-text);
+            text-align: center;
+        }
+
+        .prop-color-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .prop-swatch {
+            width: 18px;
+            height: 18px;
+            border-radius: 3px;
+            flex-shrink: 0;
+            border: 1px solid var(--fig-border);
+        }
+
+        .prop-hex {
+            font-size: 11px;
+            font-family: var(--mono);
+            color: var(--fig-text);
+            flex: 1;
+        }
+
+        .prop-opacity {
+            width: 40px;
+            font-size: 11px;
+            font-family: var(--mono);
+            color: var(--fig-text2);
+            text-align: right;
+        }
+
+        /* Token pill */
+        .token-row {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .token-pill {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            background: var(--fig-bg);
+            border: 1px solid var(--fig-border);
+            border-radius: 4px;
+            padding: 5px 8px;
+        }
+
+        .token-swatch {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+            flex-shrink: 0;
+        }
+
+        .token-name {
+            font-size: 10px;
+            font-family: var(--mono);
+            color: var(--fig-text2);
+            flex: 1;
+        }
+
+        .token-val {
+            font-size: 10px;
+            font-family: var(--mono);
+            color: var(--fig-text3);
+        }
+
+        /* Export btn */
+        .export-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            background: transparent;
+            border: 1px solid var(--fig-border);
+            border-radius: 4px;
+            padding: 7px;
+            font-family: var(--sans);
+            font-size: 11px;
+            color: var(--fig-text);
+            cursor: pointer;
+            transition: background .1s;
+            margin-top: 6px;
+        }
+
+        .export-btn:hover {
+            background: var(--fig-panel-hi);
+        }
+
+        /* ─── CURSORS ─── */
+        .cursor {
+            position: absolute;
+            pointer-events: none;
+            z-index: 200;
+            transition: transform .05s linear;
+        }
+
+        .cursor-arrow {
+            width: 0;
+            height: 0;
+            border-left: 7px solid transparent;
+            border-right: 0px solid transparent;
+            border-bottom: 12px solid var(--c, #fff);
+            transform: rotate(-40deg);
+        }
+
+        .cursor-label {
+            position: absolute;
+            top: 12px;
+            left: 8px;
+            background: var(--c, #fff);
+            color: #000;
+            font-size: 9px;
+            font-weight: 600;
+            font-family: var(--sans);
+            padding: 2px 6px;
+            border-radius: 3px;
+            white-space: nowrap;
+        }
+
+        /* ─── CONTEXT MENU ─── */
+        .ctx-menu {
+            position: fixed;
+            z-index: 9000;
+            display: none;
+            background: var(--fig-panel);
+            border: 1px solid var(--fig-border2);
+            border-radius: 6px;
+            padding: 4px;
+            min-width: 180px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, .5);
+        }
+
+        .ctx-menu.show {
+            display: block;
+        }
+
+        .ctx-item {
+            padding: 6px 10px;
+            font-size: 11px;
+            color: var(--fig-text);
+            border-radius: 3px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .ctx-item:hover {
+            background: var(--fig-panel-hi);
+        }
+
+        .ctx-item.danger {
+            color: var(--fig-red);
+        }
+
+        .ctx-shortcut {
+            color: var(--fig-text3);
+            font-family: var(--mono);
+            font-size: 10px;
+        }
+
+        .ctx-sep {
+            height: 1px;
+            background: var(--fig-border);
+            margin: 3px 0;
+        }
+
+        /* ─── TOAST ─── */
+        .fig-toast {
+            position: fixed;
+            bottom: 56px;
+            left: 50%;
+            transform: translateX(-50%) translateY(8px);
+            background: var(--fig-panel);
+            border: 1px solid var(--fig-border2);
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-size: 11px;
+            font-family: var(--mono);
+            color: var(--fig-text);
+            opacity: 0;
+            transition: opacity .25s, transform .25s;
+            z-index: 9999;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        .fig-toast.on {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ─── LIGHTBOX ─── */
+        .lb-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 8000;
+            background: rgba(0, 0, 0, .85);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lb-overlay.open {
+            display: flex;
+        }
+
+        .lb-frame {
+            background: #111;
+            border: 1px solid var(--fig-border);
+            border-radius: 4px;
+            overflow: hidden;
+            max-width: 90vw;
+            max-height: 85vh;
+        }
+
+        .lb-top {
+            background: var(--fig-panel);
+            border-bottom: 1px solid var(--fig-border);
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .lb-top-label {
+            font-size: 11px;
+            color: var(--fig-text2);
+            font-family: var(--mono);
+        }
+
+        .lb-close {
+            color: var(--fig-text2);
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px 6px;
+            border-radius: 3px;
+            transition: background .1s;
+        }
+
+        .lb-close:hover {
+            background: var(--fig-panel-hi);
+        }
+
+        .lb-img-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .lb-img {
+            max-width: 70vw;
+            max-height: 70vh;
+            object-fit: contain;
+            border-radius: 3px;
+            display: block;
+        }
+
+        .lb-footer {
+            background: var(--fig-panel);
+            border-top: 1px solid var(--fig-border);
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .lb-count {
+            font-size: 10px;
+            font-family: var(--mono);
+            color: var(--fig-text3);
+        }
+
+        .lb-navs {
+            display: flex;
+            gap: 6px;
+        }
+
+        .lb-nav {
+            width: 28px;
+            height: 28px;
+            border-radius: 3px;
+            background: var(--fig-panel-hi);
+            border: 1px solid var(--fig-border);
+            color: var(--fig-text);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .1s;
+        }
+
+        .lb-nav:hover {
+            background: var(--fig-border2);
+        }
+
+        /* ─── MOBILE SCROLL FIX ─── */
+        @media (max-width: 768px) {
+            .left-panel {
+                display: none;
+            }
+
+            .right-panel {
+                display: none;
+            }
+
+            .canvas-wrap {
+                overflow: auto;
+            }
+
+            .canvas-inner {
+                position: relative;
+                top: auto;
+                left: auto;
+                transform: none;
+                transform: scale(.45);
+                transform-origin: top center;
+                margin: 20px auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ─────────────── TITLE BAR ─────────────── -->
+    <div class="titlebar">
+        <div class="tb-left">
+            <div class="fig-logo">
+                <svg viewBox="0 0 38 57" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 28.5A9.5 9.5 0 0 1 19 9.5h9.5a9.5 9.5 0 0 1 0 19H19z" fill="#1abcfe" />
+                    <path d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5A9.5 9.5 0 0 1 0 47.5z" fill="#0acf83" />
+                    <path d="M19 0v19h9.5a9.5 9.5 0 0 0 0-19H19z" fill="#ff7262" />
+                    <path d="M0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5z" fill="#f24e1e" />
+                    <path d="M0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z" fill="#a259ff" />
+                </svg>
+            </div>
+            <span class="tb-filename">Nazma-Guntur-wedding.fig</span>
+        </div>
+
+        <div class="tb-center">
+            <div class="tb-tool-group">
+                <div class="tb-tool" title="Move (V)">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M4 0l16 12-7 2-4 8L4 0z" />
+                    </svg>
+                </div>
+                <div class="tb-tool on" title="Frame (F)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
+                    </svg>
+                </div>
+                <div class="tb-tool" title="Shape (R)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="18" height="18" rx="2" />
+                    </svg>
+                </div>
+                <div class="tb-tool" title="Text (T)">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M5 4v3h5.5v12h3V7H19V4H5z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <div class="tb-right">
+            <div class="mp-avatars">
+                <div class="mp-av" style="background:#18a0fb;color:#fff" title="Nazma (editing)">AN</div>
+                <div class="mp-av" style="background:#7b61ff;color:#fff" title="Guntur (viewing)">ZR</div>
+                <div class="mp-av" style="background:#14ae5c;color:#fff" title="You">ME</div>
+            </div>
+            <div class="tb-badge tb-present" onclick="presentMode()">▶ Present</div>
+            <div class="tb-badge tb-share" onclick="showToast('Link undangan berhasil disalin! 🔗')">Share</div>
+        </div>
+    </div>
+
+    <!-- ─────────────── APP BODY ─────────────── -->
+    <div class="app-body">
+
+        <!-- LEFT PANEL -->
+        <div class="left-panel">
+            <div class="panel-tabs">
+                <div class="ptab on">Layers</div>
+                <div class="ptab">Assets</div>
+            </div>
+            <div class="panel-scroll">
+                <div class="layer-section">
+                    <div class="layer-section-label">Pages</div>
+                    <div class="layer-row sel">
+                        <svg class="lr-icon" viewBox="0 0 12 12" fill="currentColor">
+                            <rect x="1" y="1" width="10" height="10" rx="1" fill="none" stroke="currentColor"
+                                stroke-width="1" />
+                        </svg>
+                        <span class="lr-name">Wedding Invite</span>
+                    </div>
+                    <div class="layer-row">
+                        <svg class="lr-icon" viewBox="0 0 12 12" fill="currentColor">
+                            <rect x="1" y="1" width="10" height="10" rx="1" fill="none" stroke="currentColor"
+                                stroke-width="1" />
+                        </svg>
+                        <span class="lr-name" style="color:var(--fig-text3)">+ Add page</span>
+                    </div>
+                </div>
+
+                <div class="layer-section">
+                    <div class="layer-section-label">Frames</div>
+
+                    <div class="layer-row" onclick="selectFrame('hero')">
+                        <div class="ind1"></div>
+                        <svg class="lr-icon" viewBox="0 0 12 12" fill="none" stroke="#18a0fb" stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>
+                        <span class="lr-name frame">🖼 Hero</span>
+                        <span class="lr-vis">👁</span>
+                    </div>
+                    <div class="layer-row" onclick="selectFrame('cd')">
+                        <div class="ind1"></div>
+                        <svg class="lr-icon" viewBox="0 0 12 12" fill="none" stroke="#18a0fb" stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>
+                        <span class="lr-name frame">⏱ Countdown</span>
+                        <span class="lr-vis">👁</span>
+                    </div>
+                    <div class="layer-row" onclick="selectFrame('couple')">
+                        <div class="ind1"></div>
+                        <svg class="lr-icon" viewBox="0 0 12 12" fill="none" stroke="#18a0fb" stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>
+                        <span class="lr-name frame">💑 Pasangan</span>
+                        <span class="lr-vis">👁</span>
+                    </div>
+                    <div class="layer-row" onclick="selectFrame('event')">
+                        <div class="ind1"></div>
+                        <svg class="lr-icon" viewBox="0 0 12 12" fill="none" stroke="#18a0fb" stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>
+                        <span class="lr-name frame">📅 Jadwal</span>
+                        <span class="lr-vis">👁</span>
+                    </div>
+                    <div class="layer-row" onclick="selectFrame('location')">
+                        <div class="ind1"></div>
+                        <svg class="lr-icon" viewBox="0 0 12 12" fill="none" stroke="#18a0fb" stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>
+                        <span class="lr-name frame">📍 Lokasi</span>
+                        <span class="lr-vis">👁</span>
+                    </div>
+                    <div class="layer-row" onclick="selectFrame('gallery')">
+                        <div class="ind1"></div>
+                        <svg class="lr-icon" viewBox="0 0 12 12" fill="none" stroke="#18a0fb" stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>
+                        <span class="lr-name frame">🖼 Galeri</span>
+                        <span class="lr-vis">👁</span>
+                    </div>
+                    <div class="layer-row" onclick="selectFrame('gift')">
+                        <div class="ind1"></div>
+                        <svg class="lr-icon" viewBox="0 0 12 12" fill="none" stroke="#18a0fb" stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>
+                        <span class="lr-name frame">🎁 Hadiah</span>
+                        <span class="lr-vis">👁</span>
+                    </div>
+                    <div class="layer-row" onclick="selectFrame('rsvp')">
+                        <div class="ind1"></div>
+                        <svg class="lr-icon" viewBox="0 0 12 12" fill="none" stroke="#18a0fb" stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>
+                        <span class="lr-name frame">✉ RSVP</span>
+                        <span class="lr-vis">👁</span>
+                    </div>
+                    <div class="layer-row" onclick="selectFrame('wishes')">
+                        <div class="ind1"></div>
+                        <svg class="lr-icon" viewBox="0 0 12 12" fill="none" stroke="#18a0fb" stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>
+                        <span class="lr-name frame">💬 Ucapan</span>
+                        <span class="lr-vis">👁</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CANVAS -->
+        <div class="canvas-wrap" id="canvasWrap" oncontextmenu="showCtx(event)" onclick="dismissCtx()">
+
+            <!-- Breadcrumb -->
+            <div class="canvas-breadcrumb">
+                <span style="color:var(--fig-text3)">Wedding Invite</span>
+                <span class="crumb-sep">/</span>
+                <span class="crumb-cur" id="breadcrumbCur">Canvas</span>
+            </div>
+
+            <!-- Canvas inner -->
+            <div class="canvas-inner" id="canvasInner">
+
+                <!-- ── HERO FRAME ── -->
+                <div class="fig-frame frame-hero sel" id="frame-hero" onclick="selectFrame('hero')">
+                    <div class="frame-label">
+                        <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>
+                        Hero
+                    </div>
+                    <div class="frame-sel-outline"></div>
+                    <div class="rhandle rh-tl"></div>
+                    <div class="rhandle rh-tr"></div>
+                    <div class="rhandle rh-bl"></div>
+                    <div class="rhandle rh-br"></div>
+                    <div class="rhandle rh-tc"></div>
+                    <div class="rhandle rh-bc"></div>
+                    <div class="rhandle rh-lc"></div>
+                    <div class="rhandle rh-rc"></div>
+                    <div class="hero-inner">
+                        <div class="hero-tag">
+                            <div class="hero-tag-dot"></div>Wedding Invitation
+                        </div>
+                        <div class="hero-text">
+                            <div class="hero-eyebrow">24 · 05 · 2026 — Tangerang</div>
+                            <div class="hero-name">Nazma<span>&</span>Guntur</div>
+                            <div class="hero-sub">// Dengan penuh rasa syukur, kami<br>// mengundang kehadiran Anda.
+                            </div>
+                            <div class="hero-cta-row">
+                                <div class="hcta primary" onclick="scrollToRSVP()">RSVP →</div>
+                                <div class="hcta ghost" onclick="openMusicNote()">♪ Musik</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── COUNTDOWN FRAME ── -->
+                <div class="fig-frame frame-cd" id="frame-cd" onclick="selectFrame('cd')">
+                    <div class="frame-label"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>Countdown</div>
+                    <div class="frame-sel-outline"></div>
+                    <div class="rhandle rh-tl"></div>
+                    <div class="rhandle rh-tr"></div>
+                    <div class="rhandle rh-bl"></div>
+                    <div class="rhandle rh-br"></div>
+                    <div class="cd-header">
+                        <span class="cd-title">menuju hari-H</span>
+                        <span class="cd-badge">⏱ LIVE</span>
+                    </div>
+                    <div class="cd-grid">
+                        <div class="cd-cell">
+                            <div class="cd-num" id="cdD">--</div>
+                            <div class="cd-unit">hari</div>
+                        </div>
+                        <div class="cd-cell">
+                            <div class="cd-num" id="cdH">--</div>
+                            <div class="cd-unit">jam</div>
+                        </div>
+                        <div class="cd-cell">
+                            <div class="cd-num" id="cdM">--</div>
+                            <div class="cd-unit">menit</div>
+                        </div>
+                        <div class="cd-cell">
+                            <div class="cd-num" id="cdS">--</div>
+                            <div class="cd-unit">detik</div>
+                        </div>
+                    </div>
+                    <div class="cd-footer">
+                        <div class="cd-date">Minggu, 24 Mei 2026</div>
+                        <div class="cd-loc">// Akad 08.00 · Resepsi 11.00–13.00 · Graha Yadika</div>
+                    </div>
+                </div>
+
+                <!-- ── VERSE FRAME ── -->
+                <div class="fig-frame frame-verse" id="frame-verse" onclick="selectFrame('verse')">
+                    <div class="frame-label"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>Verse</div>
+                    <div class="frame-sel-outline"></div>
+                    <p class="verse-q">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan
+                        untukmu dari jenismu sendiri..."</p>
+                    <p class="verse-src">— Surah Ar-Rum : 21</p>
+                </div>
+
+                <!-- ── COUPLE FRAME ── -->
+                <div class="fig-frame frame-couple" id="frame-couple" onclick="selectFrame('couple')">
+                    <div class="frame-label"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>Pasangan</div>
+                    <div class="frame-sel-outline"></div>
+                    <div class="rhandle rh-tl"></div>
+                    <div class="rhandle rh-tr"></div>
+                    <div class="rhandle rh-bl"></div>
+                    <div class="rhandle rh-br"></div>
+                    <div class="couple-half">
+                        <div>
+                            <div class="ch-tag" style="color:#18a0fb">// mempelai wNazma</div>
+                            <div class="ch-name">Nazma Putri</div>
+                            <div class="ch-sub">S.Kom — Putri Pertama dari<br>Bpk. Taryono & Ibu Wiwit Jayanti</div>
+                        </div>
+                        <div class="ch-role" style="background:rgba(24,160,251,.12);color:var(--fig-blue)">@Nazma.Putri_
+                        </div>
+                    </div>
+                    <div class="couple-half">
+                        <div>
+                            <div class="ch-tag" style="color:#7b61ff">// mempelai pria</div>
+                            <div class="ch-name">Guntur Putra</div>
+                            <div class="ch-sub">S.Kom — Putra Kedua dari<br>Bpk. Wan Sabran & Ibu Titik Sundari</div>
+                        </div>
+                        <div class="ch-role" style="background:rgba(123,97,255,.12);color:var(--fig-purple)">
+                            @Gunturrian.n_</div>
+                    </div>
+                </div>
+
+                <!-- ── EVENT FRAME ── -->
+                <div class="fig-frame frame-event" id="frame-event" onclick="selectFrame('event')">
+                    <div class="frame-label"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>Jadwal</div>
+                    <div class="frame-sel-outline"></div>
+                    <div class="rhandle rh-tl"></div>
+                    <div class="rhandle rh-tr"></div>
+                    <div class="rhandle rh-bl"></div>
+                    <div class="rhandle rh-br"></div>
+                    <div class="event-header">
+                        <span class="event-h-title">event schedule</span>
+                        <span style="font-size:9px;font-family:var(--mono);color:var(--fig-text3)">24.05.2026</span>
+                    </div>
+                    <div class="event-rows">
+                        <div class="event-row">
+                            <div class="er-dot" style="background:#ffcd29"></div>
+                            <div class="er-body">
+                                <div class="er-type" style="color:#ffcd29">akad nikah</div>
+                                <div class="er-name">Minggu, 24 Mei 2026</div>
+                                <div class="er-detail">📍 Graha Yadika · Ciledug, Tangerang</div>
+                            </div>
+                            <div class="er-time">08:00</div>
+                        </div>
+                        <div class="event-row">
+                            <div class="er-dot" style="background:#14ae5c"></div>
+                            <div class="er-body">
+                                <div class="er-type" style="color:#14ae5c">resepsi</div>
+                                <div class="er-name">Minggu, 24 Mei 2026</div>
+                                <div class="er-detail">📍 Graha Yadika · Ciledug, Tangerang</div>
+                            </div>
+                            <div class="er-time">11–13</div>
+                        </div>
+                        <div class="event-row">
+                            <div class="er-dot" style="background:#7b61ff"></div>
+                            <div class="er-body">
+                                <div class="er-type" style="color:#7b61ff">dress code</div>
+                                <div class="er-name">Formal — Earthy Tones</div>
+                                <div class="er-detail">Cream · Sage · Dusty Rose · Beige</div>
+                            </div>
+                            <div class="er-time">🎨</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── LOCATION FRAME ── -->
+                <div class="fig-frame frame-location" id="frame-location" onclick="selectFrame('location')">
+                    <div class="frame-label"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>Lokasi</div>
+                    <div class="frame-sel-outline"></div>
+                    <div class="rhandle rh-tl"></div>
+                    <div class="rhandle rh-tr"></div>
+                    <div class="rhandle rh-bl"></div>
+                    <div class="rhandle rh-br"></div>
+                    <div class="loc-map">
+                        <div class="loc-pin">📍</div>
+                    </div>
+                    <div class="loc-body">
+                        <div class="loc-name">Graha Yadika</div>
+                        <div class="loc-addr">Jl. Palem Ganda Asri, Karang Tengah,<br>Ciledug, Kota Tangerang 15157
+                        </div>
+                        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="loc-link">
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+                            </svg>
+                            Open in Maps →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- ── TIMELINE FRAME ── -->
+                <div class="fig-frame frame-timeline" id="frame-timeline" onclick="selectFrame('timeline')">
+                    <div class="frame-label"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>Our Story</div>
+                    <div class="frame-sel-outline"></div>
+                    <div class="tl-header">
+                        <div class="tl-h-title">our story / timeline</div>
+                    </div>
+                    <div class="tl-rows">
+                        <div class="tl-row">
+                            <div class="tl-node-wrap">
+                                <div class="tl-dot" style="background:#18a0fb"></div>
+                                <div class="tl-line"></div>
+                            </div>
+                            <div class="tl-content">
+                                <div class="tl-chapter">chapter_01</div>
+                                <div class="tl-event">Awal Pertemuan</div>
+                                <div class="tl-desc">Bowling, sushi, es krim — dan kisah dimulai.</div>
+                            </div>
+                            <div class="tl-date">Jun 2025</div>
+                        </div>
+                        <div class="tl-row">
+                            <div class="tl-node-wrap">
+                                <div class="tl-dot" style="background:#7b61ff"></div>
+                                <div class="tl-line"></div>
+                            </div>
+                            <div class="tl-content">
+                                <div class="tl-chapter">chapter_02</div>
+                                <div class="tl-event">Lamaran</div>
+                                <div class="tl-desc">Di hadapan keluarga, janji pertama terucap.</div>
+                            </div>
+                            <div class="tl-date">Nov 2025</div>
+                        </div>
+                        <div class="tl-row">
+                            <div class="tl-node-wrap">
+                                <div class="tl-dot" style="background:#14ae5c"></div>
+                            </div>
+                            <div class="tl-content">
+                                <div class="tl-chapter">chapter_03</div>
+                                <div class="tl-event">Pernikahan</div>
+                                <div class="tl-desc">Ikatan suci untuk selamanya. ∞</div>
+                            </div>
+                            <div class="tl-date">May 2026</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── GALLERY FRAME ── -->
+                <div class="fig-frame frame-gallery" id="frame-gallery" onclick="selectFrame('gallery')">
+                    <div class="frame-label"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>Galeri</div>
+                    <div class="frame-sel-outline"></div>
+                    <div class="rhandle rh-tl"></div>
+                    <div class="rhandle rh-tr"></div>
+                    <div class="rhandle rh-bl"></div>
+                    <div class="rhandle rh-br"></div>
+                    <div class="gal-header">
+                        <span class="gal-title">gallery / moments</span>
+                        <span class="gal-count">8 frames</span>
+                    </div>
+                    <div class="gal-grid" id="galGrid"></div>
+                </div>
+
+                <!-- ── GIFT FRAME ── -->
+                <div class="fig-frame frame-gift" id="frame-gift" onclick="selectFrame('gift')">
+                    <div class="frame-label"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>Amplop Digital</div>
+                    <div class="frame-sel-outline"></div>
+                    <div class="rhandle rh-tl"></div>
+                    <div class="rhandle rh-tr"></div>
+                    <div class="rhandle rh-bl"></div>
+                    <div class="rhandle rh-br"></div>
+                    <div class="gift-header">
+                        <div class="gift-title">amplop digital / rekening</div>
+                    </div>
+                    <div class="gift-cards">
+                        <div class="gift-card gc-bca">
+                            <div class="gc-left">
+                                <div class="gc-bank">BCA</div>
+                                <div class="gc-holder">Guntur Putra</div>
+                                <div class="gc-num">8210 3705 61</div>
+                            </div>
+                            <button class="gc-copy"
+                                onclick="copyNum('8210370561',this);event.stopPropagation()">Copy</button>
+                        </div>
+                        <div class="gift-card gc-bni">
+                            <div class="gc-left">
+                                <div class="gc-bank">BNI</div>
+                                <div class="gc-holder">Nazma Putri</div>
+                                <div class="gc-num">1192 9784 03</div>
+                            </div>
+                            <button class="gc-copy"
+                                onclick="copyNum('1192978403',this);event.stopPropagation()">Copy</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── RSVP FRAME ── -->
+                <div class="fig-frame frame-rsvp" id="frame-rsvp" onclick="selectFrame('rsvp')">
+                    <div class="frame-label"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>RSVP</div>
+                    <div class="frame-sel-outline"></div>
+                    <div class="rhandle rh-tl"></div>
+                    <div class="rhandle rh-tr"></div>
+                    <div class="rhandle rh-bl"></div>
+                    <div class="rhandle rh-br"></div>
+                    <div class="rsvp-header">
+                        <span class="rsvp-title">konfirmasi kehadiran</span>
+                        <span style="font-size:9px;font-family:var(--mono);color:var(--fig-blue)">● 7 responses</span>
+                    </div>
+                    <div class="rsvp-stats">
+                        <div class="rs-cell">
+                            <div class="rs-num">7</div>
+                            <div class="rs-lbl">Respons</div>
+                        </div>
+                        <div class="rs-cell">
+                            <div class="rs-num">7</div>
+                            <div class="rs-lbl">Hadir</div>
+                        </div>
+                        <div class="rs-cell">
+                            <div class="rs-num">13</div>
+                            <div class="rs-lbl">Tamu</div>
+                        </div>
+                    </div>
+                    <div class="rsvp-form" onclick="event.stopPropagation()">
+                        <div class="form-field">
+                            <div class="ff-label">nama</div>
+                            <input class="ff-input" id="fName" placeholder="nama_anda..." type="text">
+                        </div>
+                        <div class="form-field">
+                            <div class="ff-label">kehadiran</div>
+                            <select class="ff-input ff-select" id="fStatus">
+                                <option value="">— pilih —</option>
+                                <option value="hadir">✓ hadir</option>
+                                <option value="tidak">✗ tidak hadir</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <div class="ff-label">tamu</div>
+                            <div class="seg-row">
+                                <div class="seg-opt on" onclick="selGuest(1,this)">1 orang</div>
+                                <div class="seg-opt" onclick="selGuest(2,this)">2 orang</div>
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <div class="ff-label">ucapan</div>
+                            <textarea class="ff-input ff-textarea" id="fMsg"
+                                placeholder="// tuliskan ucapan terbaik kamu..."></textarea>
+                        </div>
+                    </div>
+                    <button class="rsvp-submit" onclick="submitRSVP();event.stopPropagation()">Confirm → Send to
+                        Frame</button>
+                </div>
+
+                <!-- ── WISHES FRAME ── -->
+                <div class="fig-frame frame-wishes" id="frame-wishes" onclick="selectFrame('wishes')">
+                    <div class="frame-label"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor"
+                            stroke-width="1.5">
+                            <rect x="1" y="1" width="10" height="10" rx="1" />
+                        </svg>Ucapan & Doa</div>
+                    <div class="frame-sel-outline"></div>
+                    <div class="rhandle rh-tl"></div>
+                    <div class="rhandle rh-tr"></div>
+                    <div class="rhandle rh-bl"></div>
+                    <div class="rhandle rh-br"></div>
+                    <div class="wishes-header">
+                        <span class="wishes-title">ucapan & doa</span>
+                        <span style="font-size:9px;font-family:var(--mono);color:var(--fig-text3)" id="wishCount">3
+                            messages</span>
+                    </div>
+                    <div class="wishes-scroll" id="wishesList" onclick="event.stopPropagation()">
+                        <div class="wish-row">
+                            <div class="wish-av" style="background:rgba(24,160,251,.2);color:#18a0fb">AR</div>
+                            <div class="wish-body">
+                                <div class="wish-name">Ayu Rahmawati</div>
+                                <div class="wish-text">Selamat menempuh hidup baru! Semoga sakinah, mawaddah, wa rahmah.
+                                    🌿</div>
+                                <div class="wish-meta">✓ hadir · 2 tamu · 2 jam lalu</div>
+                            </div>
+                        </div>
+                        <div class="wish-row">
+                            <div class="wish-av" style="background:rgba(123,97,255,.2);color:#7b61ff">RF</div>
+                            <div class="wish-body">
+                                <div class="wish-name">Reza Firmansyah</div>
+                                <div class="wish-text">Alhamdulillah! Semoga pernikahannya membawa keberkahan. Aamiin!
+                                    🤍</div>
+                                <div class="wish-meta">✓ hadir · 1 tamu · 4 jam lalu</div>
+                            </div>
+                        </div>
+                        <div class="wish-row">
+                            <div class="wish-av" style="background:rgba(20,174,92,.2);color:#14ae5c">SD</div>
+                            <div class="wish-body">
+                                <div class="wish-name">Sinta Dewi</div>
+                                <div class="wish-text">Wishing you a lifetime of love. Semoga selalu diberkahi Allah SWT
+                                    💙</div>
+                                <div class="wish-meta">✓ hadir · 2 tamu · kemarin</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div><!-- /canvas-inner -->
+
+            <!-- Multiplayer cursors -->
+            <div class="cursor" id="cur1" style="--c:#18a0fb; left:30%; top:40%">
+                <div class="cursor-arrow"></div>
+                <div class="cursor-label">Nazma</div>
+            </div>
+            <div class="cursor" id="cur2" style="--c:#7b61ff; left:65%; top:25%">
+                <div class="cursor-arrow"></div>
+                <div class="cursor-label">Guntur</div>
+            </div>
+
+            <!-- Zoom bar -->
+            <div class="zoom-bar">
+                <div class="zoom-btn" onclick="adjustZoom(-0.1)">−</div>
+                <div class="zoom-pct" id="zoomLabel" onclick="resetZoom()">72%</div>
+                <div class="zoom-btn" onclick="adjustZoom(0.1)">+</div>
+            </div>
+
+        </div><!-- /canvas-wrap -->
+
+        <!-- RIGHT PANEL -->
+        <div class="right-panel" id="rightPanel">
+
+            <div class="rp-section open">
+                <div class="rp-section-header" onclick="toggleSection(this)">
+                    <span class="rp-sh-title">Frame</span>
+                    <span class="rp-sh-arrow">▾</span>
+                </div>
+                <div class="rp-body">
+                    <div class="prop-row">
+                        <span class="prop-label">X</span>
+                        <span class="prop-val" id="propX">0</span>
+                    </div>
+                    <div class="prop-row">
+                        <span class="prop-label">Y</span>
+                        <span class="prop-val" id="propY">0</span>
+                    </div>
+                    <div class="prop-row">
+                        <span class="prop-label">W</span>
+                        <span class="prop-val" id="propW">520</span>
+                    </div>
+                    <div class="prop-row">
+                        <span class="prop-label">H</span>
+                        <span class="prop-val" id="propH">680</span>
+                    </div>
+                    <div class="prop-row">
+                        <span class="prop-label">Rotation</span>
+                        <span class="prop-val">0°</span>
+                    </div>
+                    <div class="prop-row">
+                        <span class="prop-label">Radius</span>
+                        <span class="prop-val">4</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rp-section open">
+                <div class="rp-section-header" onclick="toggleSection(this)">
+                    <span class="rp-sh-title">Fill</span>
+                    <span class="rp-sh-arrow">▾</span>
+                </div>
+                <div class="rp-body">
+                    <div class="prop-color-row">
+                        <div class="prop-swatch" id="swatchFill" style="background:#111"></div>
+                        <span class="prop-hex" id="fillHex">#111111</span>
+                        <span class="prop-opacity">100%</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rp-section open">
+                <div class="rp-section-header" onclick="toggleSection(this)">
+                    <span class="rp-sh-title">Design Tokens</span>
+                    <span class="rp-sh-arrow">▾</span>
+                </div>
+                <div class="rp-body">
+                    <div class="token-row">
+                        <div class="token-pill">
+                            <div class="token-swatch" style="background:#18a0fb"></div>
+                            <span class="token-name">color/blue</span>
+                            <span class="token-val">#18a0fb</span>
+                        </div>
+                        <div class="token-pill">
+                            <div class="token-swatch" style="background:#7b61ff"></div>
+                            <span class="token-name">color/purple</span>
+                            <span class="token-val">#7b61ff</span>
+                        </div>
+                        <div class="token-pill">
+                            <div class="token-swatch" style="background:#1e1e1e"></div>
+                            <span class="token-name">color/bg</span>
+                            <span class="token-val">#1e1e1e</span>
+                        </div>
+                        <div class="token-pill">
+                            <div class="token-swatch" style="background:#e0e0e0"></div>
+                            <span class="token-name">color/text</span>
+                            <span class="token-val">#e0e0e0</span>
+                        </div>
+                        <div class="token-pill">
+                            <div class="token-swatch" style="background:transparent;border:1px solid #3d3d3d"></div>
+                            <span class="token-name">spacing/sm</span>
+                            <span class="token-val">8px</span>
+                        </div>
+                        <div class="token-pill">
+                            <div class="token-swatch" style="background:transparent;border:1px solid #3d3d3d"></div>
+                            <span class="token-name">radius/sm</span>
+                            <span class="token-val">4px</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rp-section open">
+                <div class="rp-section-header" onclick="toggleSection(this)">
+                    <span class="rp-sh-title">Export</span>
+                    <span class="rp-sh-arrow">▾</span>
+                </div>
+                <div class="rp-body">
+                    <div style="display:flex;gap:4px;margin-bottom:6px">
+                        <span style="font-size:9px;font-family:var(--mono);color:var(--fig-text3)">Format:</span>
+                        <span style="font-size:9px;font-family:var(--mono);color:var(--fig-blue)">PNG · 2×</span>
+                    </div>
+                    <button class="export-btn" onclick="showToast('Mengunduh wedding-invite.png...')">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                        </svg>
+                        Export Frame
+                    </button>
+                    <button class="export-btn" onclick="showToast('Link undangan berhasil disalin! 🔗')">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" />
+                        </svg>
+                        Copy Share Link
+                    </button>
+                </div>
+            </div>
+
+        </div><!-- /right-panel -->
+
+    </div><!-- /app-body -->
+
+    <!-- CONTEXT MENU -->
+    <div class="ctx-menu" id="ctxMenu">
+        <div class="ctx-item" onclick="showToast('Frame di-copy!')">Copy <span class="ctx-shortcut">⌘C</span></div>
+        <div class="ctx-item" onclick="showToast('Frame di-paste!')">Paste here <span class="ctx-shortcut">⌘V</span>
+        </div>
+        <div class="ctx-item">Duplicate <span class="ctx-shortcut">⌘D</span></div>
+        <div class="ctx-sep"></div>
+        <div class="ctx-item">Group selection <span class="ctx-shortcut">⌘G</span></div>
+        <div class="ctx-item">Frame selection <span class="ctx-shortcut">⌘⌥G</span></div>
+        <div class="ctx-sep"></div>
+        <div class="ctx-item">Copy as PNG</div>
+        <div class="ctx-item">Copy link</div>
+        <div class="ctx-sep"></div>
+        <div class="ctx-item danger">Delete <span class="ctx-shortcut">Del</span></div>
+    </div>
+
+    <!-- LIGHTBOX -->
+    <div class="lb-overlay" id="lb">
+        <div class="lb-frame">
+            <div class="lb-top">
+                <span class="lb-top-label" id="lbLabel">gallery / image_01.jpg</span>
+                <span class="lb-close" onclick="closeLB()">✕ Close</span>
+            </div>
+            <div class="lb-img-wrap">
+                <img class="lb-img" id="lbImg" src="" alt="">
+            </div>
+            <div class="lb-footer">
+                <span class="lb-count" id="lbCount">1 / 8</span>
+                <div class="lb-navs">
+                    <div class="lb-nav" onclick="lbPrev()">‹</div>
+                    <div class="lb-nav" onclick="lbNext()">›</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="fig-toast" id="figToast"></div>
+
+    <script>
+        /* ══ DATA ══ */
+        const PHOTOS = [
+            { src: "https://images.unsplash.com/photo-1519741497674-611481863552?w=700&q=80", name: "hero_shot.jpg", w: 70 },
+            { src: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=700&q=80", name: "ceremony.jpg", w: 100 },
+            { src: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=700&q=80", name: "couple_01.jpg", w: 70 },
+            { src: "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=700&q=80", name: "venue.jpg", w: 110 },
+            { src: "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=700&q=80", name: "details.jpg", w: 70 },
+            { src: "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=700&q=80", name: "ring.jpg", w: 80 },
+            { src: "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=700&q=80", name: "moment.jpg", w: 90 },
+            { src: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=700&q=80", name: "reception.jpg", w: 80 },
+        ];
+
+        const FRAME_PROPS = {
+            hero: { x: 0, y: 0, w: 520, h: 680, fill: "#111111" },
+            cd: { x: 540, y: 0, w: 280, h: 320, fill: "#1a1a1a" },
+            verse: { x: 540, y: 340, w: 280, h: 160, fill: "#141414" },
+            couple: { x: 540, y: 520, w: 540, h: 160, fill: "#1a1a1a" },
+            event: { x: 0, y: 700, w: 380, h: 260, fill: "#1a1a1a" },
+            location: { x: 400, y: 700, w: 300, h: 260, fill: "#1a1a1a" },
+            timeline: { x: 720, y: 700, w: 360, h: 260, fill: "#1a1a1a" },
+            gallery: { x: 0, y: 980, w: 700, h: 220, fill: "#1a1a1a" },
+            gift: { x: 720, y: 980, w: 360, h: 220, fill: "#1a1a1a" },
+            rsvp: { x: 0, y: 1220, w: 520, h: 380, fill: "#1a1a1a" },
+            wishes: { x: 540, y: 1220, w: 540, h: 380, fill: "#1a1a1a" },
+        };
+
+        let zoom = 0.72, guestCount = 1, lbIdx = 0, wishCount = 3;
+        let selectedFrame = 'hero';
+
+        /* ══ BUILD GALLERY ══ */
+        const grid = document.getElementById('galGrid');
+        PHOTOS.forEach((p, i) => {
+            const t = document.createElement('div');
+            t.className = 'gal-thumb';
+            t.style.width = p.w + 'px';
+            t.innerHTML = `<img src="${p.src}" loading="lazy" alt=""><div class="gal-thumb-label">${p.name}</div>`;
+            t.onclick = (e) => { e.stopPropagation(); openLB(i); };
+            grid.appendChild(t);
+        });
+
+        /* ══ COUNTDOWN ══ */
+        function countdown() {
+            const target = new Date('2026-05-24T08:00:00');
+            function tick() {
+                const d = target - new Date();
+                if (d <= 0) { ['cdD', 'cdH', 'cdM', 'cdS'].forEach(id => document.getElementById(id).textContent = '00'); return; }
+                document.getElementById('cdD').textContent = String(Math.floor(d / 86400000)).padStart(2, '0');
+                document.getElementById('cdH').textContent = String(Math.floor((d % 86400000) / 3600000)).padStart(2, '0');
+                document.getElementById('cdM').textContent = String(Math.floor((d % 3600000) / 60000)).padStart(2, '0');
+                document.getElementById('cdS').textContent = String(Math.floor((d % 60000) / 1000)).padStart(2, '0');
+            }
+            tick(); setInterval(tick, 1000);
+        }
+        countdown();
+
+        /* ══ FRAME SELECTION ══ */
+        function selectFrame(id) {
+            document.querySelectorAll('.fig-frame').forEach(f => f.classList.remove('sel'));
+            const el = document.getElementById('frame-' + id);
+            if (el) el.classList.add('sel');
+            selectedFrame = id;
+            document.getElementById('breadcrumbCur').textContent = id.charAt(0).toUpperCase() + id.slice(1);
+
+            const p = FRAME_PROPS[id] || FRAME_PROPS.hero;
+            document.getElementById('propX').textContent = p.x;
+            document.getElementById('propY').textContent = p.y;
+            document.getElementById('propW').textContent = p.w;
+            document.getElementById('propH').textContent = p.h;
+            document.getElementById('swatchFill').style.background = p.fill;
+            document.getElementById('fillHex').textContent = p.fill.toUpperCase();
+
+            // Highlight layer row
+            document.querySelectorAll('.layer-row').forEach(r => r.classList.remove('sel'));
+            const layers = document.querySelectorAll('.layer-row');
+            layers.forEach(r => {
+                if (r.getAttribute('onclick') && r.getAttribute('onclick').includes("'" + id + "'")) r.classList.add('sel');
+            });
+        }
+
+        /* ══ ZOOM ══ */
+        function adjustZoom(delta) {
+            zoom = Math.max(0.2, Math.min(2, zoom + delta));
+            document.getElementById('canvasInner').style.setProperty('--zoom', zoom);
+            document.getElementById('canvasInner').style.transform = `translate(-50%, -50%) scale(${zoom})`;
+            document.getElementById('zoomLabel').textContent = Math.round(zoom * 100) + '%';
+        }
+        function resetZoom() { zoom = 1; adjustZoom(0); }
+
+        // Mouse wheel zoom
+        document.getElementById('canvasWrap').addEventListener('wheel', e => {
+            if (e.ctrlKey || e.metaKey) {
+                e.preventDefault();
+                adjustZoom(e.deltaY > 0 ? -0.05 : 0.05);
+            }
+        }, { passive: false });
+
+        /* ══ FLOATING CURSORS ══ */
+        const cursors = [
+            { el: document.getElementById('cur1'), x: 30, y: 40, vx: 0.03, vy: 0.02 },
+            { el: document.getElementById('cur2'), x: 65, y: 25, vx: -0.02, vy: 0.03 },
+        ];
+        function animCursors() {
+            cursors.forEach(c => {
+                c.x += c.vx * (0.8 + Math.random() * 0.4);
+                c.y += c.vy * (0.8 + Math.random() * 0.4);
+                if (c.x < 5 || c.x > 95) c.vx *= -1;
+                if (c.y < 5 || c.y > 90) c.vy *= -1;
+                c.el.style.left = c.x + '%';
+                c.el.style.top = c.y + '%';
+            });
+            requestAnimationFrame(animCursors);
+        }
+        animCursors();
+
+        /* ══ CONTEXT MENU ══ */
+        function showCtx(e) {
+            e.preventDefault();
+            const m = document.getElementById('ctxMenu');
+            m.style.left = e.clientX + 'px';
+            m.style.top = e.clientY + 'px';
+            m.classList.add('show');
+        }
+        function dismissCtx() { document.getElementById('ctxMenu').classList.remove('show'); }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') dismissCtx(); });
+
+        /* ══ PANEL SECTIONS ══ */
+        function toggleSection(header) {
+            header.parentElement.classList.toggle('open');
+        }
+
+        /* ══ RSVP ══ */
+        function selGuest(n, el) {
+            guestCount = n;
+            document.querySelectorAll('.seg-opt').forEach(b => b.classList.remove('on'));
+            el.classList.add('on');
+        }
+        function submitRSVP() {
+            const name = document.getElementById('fName').value.trim();
+            const status = document.getElementById('fStatus').value;
+            const msg = document.getElementById('fMsg').value.trim();
+            if (!name || !status) { showToast('⚠ Isi nama dan kehadiran dulu'); return; }
+            const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+            const colors = [
+                { bg: 'rgba(24,160,251,.2)', c: '#18a0fb' },
+                { bg: 'rgba(123,97,255,.2)', c: '#7b61ff' },
+                { bg: 'rgba(20,174,92,.2)', c: '#14ae5c' },
+                { bg: 'rgba(255,205,41,.2)', c: '#ffcd29' },
+                { bg: 'rgba(242,72,34,.2)', c: '#f24822' },
+            ];
+            const col = colors[Math.floor(Math.random() * colors.length)];
+            const stxt = status === 'hadir' ? `✓ hadir · ${guestCount} orang · baru saja` : '✗ tidak hadir · baru saja';
+            const row = document.createElement('div');
+            row.className = 'wish-row';
+            row.innerHTML = `<div class="wish-av" style="background:${col.bg};color:${col.c}">${initials}</div><div class="wish-body"><div class="wish-name">${name}</div><div class="wish-text">${msg || '// Selamat dan semoga bahagia selalu! 💙'}</div><div class="wish-meta">${stxt}</div></div>`;
+            const list = document.getElementById('wishesList');
+            list.prepend(row);
+            wishCount++;
+            document.getElementById('wishCount').textContent = wishCount + ' messages';
+            document.getElementById('fName').value = '';
+            document.getElementById('fStatus').value = '';
+            document.getElementById('fMsg').value = '';
+            showToast('✓ Konfirmasi berhasil dikirim ke Frame Ucapan!');
+        }
+
+        /* ══ COPY ══ */
+        function copyNum(num, btn) {
+            navigator.clipboard.writeText(num).then(() => {
+                btn.classList.add('ok'); btn.textContent = '✓';
+                showToast('Nomor rekening tersalin: ' + num);
+                setTimeout(() => { btn.classList.remove('ok'); btn.textContent = 'Copy'; }, 2500);
+            }).catch(() => showToast('Copy manual: ' + num));
+        }
+
+        /* ══ LIGHTBOX ══ */
+        function openLB(i) {
+            lbIdx = i; showLBImg();
+            document.getElementById('lb').classList.add('open');
+        }
+        function closeLB() { document.getElementById('lb').classList.remove('open'); }
+        function lbPrev() { lbIdx = (lbIdx - 1 + PHOTOS.length) % PHOTOS.length; showLBImg(); }
+        function lbNext() { lbIdx = (lbIdx + 1) % PHOTOS.length; showLBImg(); }
+        function showLBImg() {
+            const p = PHOTOS[lbIdx];
+            document.getElementById('lbImg').src = p.src;
+            document.getElementById('lbLabel').textContent = 'gallery / ' + p.name;
+            document.getElementById('lbCount').textContent = (lbIdx + 1) + ' / ' + PHOTOS.length;
+        }
+        document.addEventListener('keydown', e => {
+            if (!document.getElementById('lb').classList.contains('open')) return;
+            if (e.key === 'Escape') closeLB();
+            if (e.key === 'ArrowLeft') lbPrev();
+            if (e.key === 'ArrowRight') lbNext();
+        });
+
+        /* ══ TOAST ══ */
+        let _tt;
+        function showToast(msg) {
+            const t = document.getElementById('figToast');
+            t.textContent = msg; t.classList.add('on');
+            clearTimeout(_tt); _tt = setTimeout(() => t.classList.remove('on'), 2800);
+        }
+
+        /* ══ MISC ══ */
+        function presentMode() { showToast('Present mode — tekan Esc untuk keluar'); }
+        function openMusicNote() { showToast('♪ Klik "Present" untuk mode musik'); }
+        function scrollToRSVP() {
+            selectFrame('rsvp');
+            document.getElementById('frame-rsvp').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Init selection
+        selectFrame('hero');
+    </script>
+</body>
+
+</html>

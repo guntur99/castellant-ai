@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wedding Invitation — Rania & Dimas</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════
+   GRAB DNA TOKENS
+   #00B14F · #00880F · white · off-white
+   DM Serif Display + DM Sans
+══════════════════════════════════════════ */
+:root {
+  --g:        #00B14F;   /* Grab Green */
+  --g-deep:   #008F3E;
+  --g-deeper: #006B2E;
+  --g-light:  #E8F9EE;
+  --g-pale:   #F0FAF4;
+  --g-glow:   rgba(0,177,79,.15);
+  --g-dot:    rgba(0,177,79,.08);
+  --black:    #1A1A1A;
+  --dark:     #2D2D2D;
+  --mid:      #6B7280;
+  --soft:     #9CA3AF;
+  --line:     #E5E7EB;
+  --bg:       #FAFAFA;
+  --white:    #FFFFFF;
+  --cream:    #F9F7F4;
+
+  --serif:  'DM Serif Display', Georgia, serif;
+  --sans:   'DM Sans', system-ui, sans-serif;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--black);
+  font-family: var(--sans);
+  overflow-x: hidden;
+}
+
+/* ──────────────────────────────
+   GRAB MAP DOT PATTERN
+────────────────────────────── */
+.dot-bg {
+  background-image: radial-gradient(var(--g-dot) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+}
+
+/* ══════════════════════════════════════════
+   OPENING SCREEN — Grab App style
+══════════════════════════════════════════ */
+#opening {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--white);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 40px 28px; text-align: center;
+  transition: opacity .8s ease, transform .8s ease;
+}
+#opening.out {
+  opacity: 0; transform: translateY(-24px); pointer-events: none;
+}
+
+/* Grab-style status bar */
+.open-statusbar {
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 48px;
+  background: var(--g);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+}
+.open-statusbar-left {
+  font-family: var(--sans); font-size: 11px; font-weight: 600;
+  color: rgba(255,255,255,.7); letter-spacing: .02em;
+}
+.open-statusbar-right {
+  display: flex; align-items: center; gap: 8px;
+}
+.signal-bar {
+  display: flex; align-items: flex-end; gap: 2px;
+}
+.signal-bar span {
+  width: 3px; background: rgba(255,255,255,.6); border-radius: 1px;
+}
+.signal-bar span:nth-child(1){ height:5px }
+.signal-bar span:nth-child(2){ height:8px }
+.signal-bar span:nth-child(3){ height:11px }
+.signal-bar span:nth-child(4){ height:14px }
+.battery {
+  width: 18px; height: 10px; border: 1.5px solid rgba(255,255,255,.6);
+  border-radius: 2px; position: relative;
+}
+.battery::after {
+  content: '';
+  position: absolute; right: -4px; top: 50%; transform: translateY(-50%);
+  width: 2px; height: 5px;
+  background: rgba(255,255,255,.6); border-radius: 0 1px 1px 0;
+}
+.battery-fill {
+  position: absolute; inset: 2px; right: 30%;
+  background: rgba(255,255,255,.7); border-radius: 1px;
+}
+
+/* Grab logo mark */
+.open-logo {
+  margin-bottom: 36px;
+  opacity: 0; animation: pop-in .6s cubic-bezier(.34,1.56,.64,1) .3s forwards;
+}
+.grab-logo-svg {
+  width: 64px; height: 64px;
+}
+
+/* App notification style card */
+.open-notif {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 20px 20px 20px 16px;
+  max-width: 340px; width: 100%;
+  display: flex; align-items: flex-start; gap: 14px;
+  margin-bottom: 32px; text-align: left;
+  box-shadow: 0 4px 24px rgba(0,0,0,.08);
+  opacity: 0; animation: slide-up .6s ease .6s forwards;
+}
+.notif-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  background: var(--g);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.notif-icon svg { width: 20px; height: 20px; fill: white; }
+.notif-body { flex: 1; }
+.notif-app { font-size: 11px; font-weight: 600; color: var(--mid); margin-bottom: 2px; letter-spacing: .01em; }
+.notif-title { font-size: 14px; font-weight: 600; color: var(--black); margin-bottom: 3px; line-height: 1.3; }
+.notif-msg { font-size: 13px; color: var(--mid); line-height: 1.5; }
+.notif-time { font-size: 11px; color: var(--soft); margin-top: 6px; }
+
+.open-names {
+  font-family: var(--serif);
+  font-size: clamp(44px, 13vw, 72px);
+  line-height: .9; color: var(--black);
+  margin-bottom: 8px;
+  opacity: 0; animation: slide-up .7s ease .9s forwards;
+}
+.open-names em {
+  display: block; font-style: italic;
+  color: var(--g); font-size: .55em;
+  line-height: 1.6;
+}
+
+.open-date {
+  font-size: 13px; font-weight: 500; color: var(--mid);
+  letter-spacing: .04em; text-transform: uppercase;
+  margin-bottom: 40px;
+  opacity: 0; animation: slide-up .6s ease 1.1s forwards;
+}
+
+.open-to-wrap {
+  background: var(--g-pale);
+  border: 1px solid rgba(0,177,79,.2);
+  border-radius: 12px;
+  padding: 16px 20px; max-width: 320px; width: 100%;
+  margin-bottom: 32px; text-align: center;
+  opacity: 0; animation: slide-up .6s ease 1.3s forwards;
+}
+.open-to-label {
+  font-size: 11px; font-weight: 500; color: var(--g-deep);
+  text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px;
+}
+.open-to-name {
+  font-family: var(--serif); font-style: italic;
+  font-size: clamp(18px, 5vw, 24px); color: var(--black);
+}
+
+.open-cta {
+  opacity: 0; animation: slide-up .6s ease 1.5s forwards;
+  width: 100%; max-width: 320px;
+}
+.open-btn {
+  width: 100%; background: var(--g);
+  border: none; border-radius: 12px;
+  padding: 17px 32px; color: white;
+  font-family: var(--sans); font-size: 15px; font-weight: 600;
+  cursor: pointer; letter-spacing: .01em;
+  transition: background .2s, transform .15s, box-shadow .2s;
+  box-shadow: 0 4px 20px rgba(0,177,79,.35);
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.open-btn:hover { background: var(--g-deep); box-shadow: 0 6px 28px rgba(0,177,79,.45); }
+.open-btn:active { transform: scale(.97); }
+.open-btn svg { width: 18px; height: 18px; fill: white; }
+
+/* ══════════════════════════════════════════
+   MAIN
+══════════════════════════════════════════ */
+#main { opacity: 0; transition: opacity .6s ease; }
+#main.show { opacity: 1; }
+
+/* ──────────────────────────────
+   TOP APP BAR
+────────────────────────────── */
+.app-bar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: var(--white);
+  border-bottom: 1px solid var(--line);
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+  transform: translateY(-100%);
+  transition: transform .4s ease, box-shadow .3s;
+}
+.app-bar.show { transform: translateY(0); }
+.app-bar.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,.08); }
+.appbar-logo {
+  display: flex; align-items: center; gap: 8px;
+}
+.appbar-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--g);
+}
+.appbar-title {
+  font-family: var(--serif); font-size: 16px; font-style: italic;
+  color: var(--black);
+}
+.appbar-date {
+  font-size: 12px; font-weight: 500; color: var(--mid);
+}
+
+/* ──────────────────────────────
+   HERO
+────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  background: var(--white);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 100px 24px 120px;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+/* Green top stripe */
+.hero::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--g) 0%, #00D160 50%, var(--g) 100%);
+}
+/* Dot pattern */
+.hero-dots {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background-image: radial-gradient(var(--g-dot) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+}
+
+/* BG Video */
+.hero-video-bg {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  opacity: .12; filter: grayscale(40%);
+  z-index: 0; pointer-events: none; display: none;
+}
+
+.hero-inner { position: relative; z-index: 2; }
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--g-light);
+  border: 1px solid rgba(0,177,79,.25);
+  border-radius: 100px;
+  padding: 6px 16px; margin-bottom: 32px;
+  font-size: 12px; font-weight: 600; color: var(--g-deep);
+  letter-spacing: .04em; text-transform: uppercase;
+}
+.hero-badge-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--g);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,100% { transform: scale(1); opacity: 1; }
+  50%      { transform: scale(1.5); opacity: .6; }
+}
+
+.hero-names {
+  font-family: var(--serif);
+  font-size: clamp(60px, 17vw, 140px);
+  line-height: .88; color: var(--black);
+  letter-spacing: -.02em;
+}
+.hero-and {
+  display: block; font-style: italic;
+  font-size: clamp(24px, 6vw, 52px);
+  color: var(--g); margin: 4px 0;
+}
+
+.hero-divider {
+  display: flex; align-items: center; gap: 16px;
+  max-width: 280px; margin: 32px auto;
+}
+.hero-divider-line { flex: 1; height: 1px; background: var(--line); }
+.hero-divider-icon {
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1px solid var(--line);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+
+.hero-date-chip {
+  display: inline-flex; flex-direction: column; align-items: center;
+  gap: 4px;
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 16px 32px;
+  box-shadow: 0 2px 16px rgba(0,0,0,.06);
+}
+.hero-date-main {
+  font-size: 15px; font-weight: 600; color: var(--black);
+  letter-spacing: .02em;
+}
+.hero-date-sub {
+  font-size: 12px; color: var(--mid); letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+/* ──────────────────────────────
+   SECTION COMMONS
+────────────────────────────── */
+.section-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600; color: var(--g-deep);
+  text-transform: uppercase; letter-spacing: .08em;
+  margin-bottom: 8px;
+}
+.section-tag::before {
+  content: '';
+  width: 16px; height: 2px; background: var(--g); border-radius: 1px;
+}
+.section-heading {
+  font-family: var(--serif);
+  font-size: clamp(28px, 7vw, 52px);
+  line-height: 1.05; color: var(--black);
+  margin-bottom: 16px;
+}
+.section-heading em { font-style: italic; color: var(--g); }
+.section-sub {
+  font-size: 15px; color: var(--mid); line-height: 1.75;
+  font-weight: 300; max-width: 480px;
+}
+
+/* ──────────────────────────────
+   VERSE
+────────────────────────────── */
+.verse-section {
+  padding: 80px 24px;
+  background: var(--g);
+  text-align: center; position: relative; overflow: hidden;
+}
+.verse-section::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,.07) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+.verse-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: rgba(255,255,255,.15);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px; font-size: 22px;
+}
+.verse-text {
+  font-family: var(--serif); font-style: italic;
+  font-size: clamp(16px, 3.5vw, 22px);
+  color: white; line-height: 1.8;
+  max-width: 560px; margin: 0 auto 16px;
+}
+.verse-ref {
+  font-size: 12px; font-weight: 500;
+  color: rgba(255,255,255,.65);
+  letter-spacing: .08em; text-transform: uppercase;
+}
+
+/* ──────────────────────────────
+   COUNTDOWN — Grab meter style
+────────────────────────────── */
+.countdown-section {
+  padding: 80px 24px;
+  background: var(--white);
+  text-align: center;
+}
+.countdown-grid {
+  display: flex; justify-content: center; gap: 12px;
+  flex-wrap: wrap; margin-top: 40px;
+}
+.cd-item {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 16px; padding: 24px 20px 20px;
+  min-width: 80px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  transition: box-shadow .3s, transform .3s;
+}
+.cd-item:hover { box-shadow: 0 6px 24px rgba(0,177,79,.15); transform: translateY(-2px); }
+.cd-item::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: var(--g);
+}
+.cd-num {
+  font-family: var(--serif);
+  font-size: clamp(36px, 9vw, 56px);
+  line-height: 1; color: var(--black); display: block;
+}
+.cd-unit {
+  font-size: 10px; font-weight: 600; color: var(--mid);
+  text-transform: uppercase; letter-spacing: .1em;
+  margin-top: 8px; display: block;
+}
+
+/* ──────────────────────────────
+   COUPLE — Grab Card style
+────────────────────────────── */
+.couple-section {
+  padding: 80px 24px;
+  background: var(--cream);
+}
+.couple-cards {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px; max-width: 600px; margin: 40px auto 0;
+}
+@media(max-width:500px){ .couple-cards { grid-template-columns: 1fr; } }
+
+.couple-card {
+  background: var(--white);
+  border-radius: 20px; padding: 32px 24px 28px;
+  text-align: center;
+  border: 1px solid var(--line);
+  box-shadow: 0 2px 16px rgba(0,0,0,.06);
+  transition: transform .3s, box-shadow .3s;
+  position: relative; overflow: hidden;
+}
+.couple-card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--g), #00D160);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform .4s cubic-bezier(.77,0,.18,1);
+}
+.couple-card:hover { transform: translateY(-4px); box-shadow: 0 8px 32px rgba(0,177,79,.12); }
+.couple-card:hover::before { transform: scaleX(1); }
+
+.couple-photo {
+  width: 96px; height: 96px; border-radius: 50%;
+  overflow: hidden; margin: 0 auto 20px;
+  border: 3px solid var(--g-light);
+  position: relative;
+  transition: border-color .3s;
+}
+.couple-card:hover .couple-photo { border-color: var(--g); }
+.couple-photo img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: grayscale(10%);
+  transition: filter .4s, transform .4s;
+}
+.couple-card:hover .couple-photo img { filter: grayscale(0%); transform: scale(1.06); }
+
+/* Verified badge */
+.couple-verified {
+  position: absolute; bottom: 0; right: 0;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--g);
+  border: 2px solid white;
+  display: flex; align-items: center; justify-content: center;
+}
+.couple-verified svg { width: 12px; height: 12px; fill: white; }
+
+.couple-role {
+  font-size: 10px; font-weight: 600; color: var(--g-deep);
+  text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px;
+}
+.couple-name {
+  font-family: var(--serif);
+  font-size: clamp(22px, 5vw, 28px);
+  color: var(--black); margin-bottom: 4px;
+}
+.couple-fullname {
+  font-size: 13px; font-style: italic; color: var(--mid);
+  margin-bottom: 16px;
+}
+.couple-parents {
+  font-size: 13px; color: var(--mid); line-height: 1.7;
+}
+.couple-parents strong { color: var(--black); font-weight: 500; }
+
+/* Rating stars */
+.couple-rating {
+  display: flex; align-items: center; justify-content: center; gap: 3px;
+  margin-top: 16px;
+}
+.star { color: var(--g); font-size: 14px; }
+.rating-val {
+  font-size: 12px; font-weight: 600; color: var(--mid); margin-left: 4px;
+}
+
+/* ──────────────────────────────
+   EVENT — Grab booking card
+────────────────────────────── */
+.event-section {
+  padding: 80px 24px;
+  background: var(--white);
+}
+.event-cards {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px; max-width: 600px; margin: 40px auto 0;
+}
+@media(max-width:500px){ .event-cards { grid-template-columns: 1fr; } }
+
+.event-card {
+  background: var(--white);
+  border: 1px solid var(--line);
+  border-radius: 20px; padding: 28px 24px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,.05);
+  transition: box-shadow .3s, transform .3s;
+}
+.event-card:hover { box-shadow: 0 8px 32px rgba(0,177,79,.12); transform: translateY(-3px); }
+
+/* Grab green status pill */
+.event-status {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--g-light);
+  border: 1px solid rgba(0,177,79,.2);
+  border-radius: 100px;
+  padding: 4px 10px; margin-bottom: 16px;
+  font-size: 11px; font-weight: 600; color: var(--g-deep);
+}
+.event-status-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--g);
+}
+
+.event-type {
+  font-family: var(--serif); font-size: clamp(20px, 5vw, 26px);
+  color: var(--black); margin-bottom: 20px;
+}
+
+.event-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin-bottom: 10px;
+}
+.event-row-icon {
+  width: 20px; height: 20px; flex-shrink: 0;
+  margin-top: 1px;
+  display: flex; align-items: center; justify-content: center;
+}
+.event-row-icon svg { width: 14px; height: 14px; fill: var(--g); }
+.event-row-text { font-size: 13px; color: var(--mid); line-height: 1.6; }
+.event-row-text strong { color: var(--black); font-weight: 500; }
+
+.event-maps-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin-top: 20px;
+  background: var(--g);
+  border: none; border-radius: 10px;
+  padding: 11px 16px; width: 100%;
+  color: white; font-family: var(--sans);
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; text-decoration: none;
+  transition: background .2s, transform .15s;
+}
+.event-maps-btn:hover { background: var(--g-deep); }
+.event-maps-btn:active { transform: scale(.97); }
+.event-maps-btn svg { width: 14px; height: 14px; fill: white; }
+
+/* ──────────────────────────────
+   TIMELINE
+────────────────────────────── */
+.timeline-section {
+  padding: 80px 24px;
+  background: var(--cream);
+}
+.timeline {
+  max-width: 540px; margin: 40px auto 0;
+  position: relative; padding-left: 48px;
+}
+.tl-spine {
+  position: absolute; left: 14px; top: 12px; bottom: 12px;
+  width: 2px;
+  background: linear-gradient(180deg, var(--g) 0%, rgba(0,177,79,.1) 100%);
+  border-radius: 1px;
+}
+.tl-item {
+  margin-bottom: 48px; position: relative;
+  opacity: 0; transform: translateX(-16px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.tl-item.visible { opacity: 1; transform: translateX(0); }
+.tl-dot {
+  position: absolute; left: -42px; top: 2px;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--g);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 0 4px rgba(0,177,79,.15);
+}
+.tl-dot svg { width: 13px; height: 13px; fill: white; }
+.tl-tag {
+  font-size: 11px; font-weight: 600; color: var(--g-deep);
+  text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px;
+}
+.tl-when {
+  font-size: 12px; color: var(--soft); margin-bottom: 6px;
+  font-weight: 500; letter-spacing: .03em;
+}
+.tl-title {
+  font-family: var(--serif); font-size: clamp(18px, 4vw, 23px);
+  color: var(--black); margin-bottom: 8px;
+}
+.tl-desc { font-size: 14px; color: var(--mid); line-height: 1.75; font-weight: 300; }
+
+/* ──────────────────────────────
+   VIDEO SECTION
+────────────────────────────── */
+.video-section {
+  padding: 80px 24px;
+  background: var(--white);
+}
+.video-frame-wrap {
+  max-width: 640px; margin: 40px auto 0;
+}
+.video-outer {
+  border-radius: 20px; overflow: hidden;
+  position: relative; aspect-ratio: 16/9;
+  background: var(--cream);
+  border: 1px solid var(--line);
+  box-shadow: 0 4px 32px rgba(0,0,0,.1);
+  cursor: pointer;
+}
+.video-outer video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%; object-fit: cover;
+  display: block;
+}
+.video-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,.35);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 12px;
+  z-index: 2;
+  transition: background .3s;
+}
+.video-outer.playing .video-overlay { background: transparent; pointer-events: none; }
+.video-outer.playing .play-btn-wrap,
+.video-outer.playing .video-play-label { opacity: 0; }
+
+.play-btn-wrap {
+  width: 64px; height: 64px; border-radius: 50%;
+  background: var(--g);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 4px 24px rgba(0,177,79,.5);
+  transition: transform .2s, box-shadow .2s;
+}
+.video-outer:hover .play-btn-wrap {
+  transform: scale(1.08);
+  box-shadow: 0 6px 32px rgba(0,177,79,.65);
+}
+.play-btn-wrap svg { width: 24px; height: 24px; fill: white; margin-left: 4px; }
+.video-play-label {
+  font-size: 13px; font-weight: 600; color: white;
+  letter-spacing: .04em; text-transform: uppercase;
+}
+
+/* Upload hint */
+.video-hint {
+  position: absolute; inset: 0; z-index: 3;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 10px;
+  pointer-events: none;
+}
+.video-hint.hidden { display: none; }
+.hint-box {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: rgba(0,0,0,.08);
+  display: flex; align-items: center; justify-content: center;
+}
+.hint-box svg { width: 24px; height: 24px; stroke: rgba(255,255,255,.5); fill: none; stroke-width: 1.5; }
+.hint-txt {
+  font-size: 13px; color: rgba(255,255,255,.6);
+  text-align: center; line-height: 1.6;
+}
+
+.video-caption {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: 16px; padding: 0 4px;
+}
+.video-cap-left .cap-label {
+  font-size: 11px; font-weight: 600; color: var(--g-deep);
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.video-cap-left .cap-title {
+  font-family: var(--serif); font-size: 17px; font-style: italic; color: var(--black);
+}
+.video-cap-right {
+  font-size: 12px; color: var(--soft);
+  font-weight: 500;
+}
+
+/* ──────────────────────────────
+   GALLERY
+────────────────────────────── */
+.gallery-section { padding: 80px 0; background: var(--cream); }
+.gallery-header {
+  display: flex; align-items: flex-end;
+  justify-content: space-between;
+  max-width: 640px; margin: 0 auto 28px; padding: 0 24px;
+}
+.gallery-live {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 600; color: var(--g-deep);
+  text-transform: uppercase; letter-spacing: .06em;
+}
+.gallery-live-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: var(--g);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+.gallery-wrap { position: relative; overflow: hidden; width: 100%; padding: 8px 0; }
+.gallery-fade-l {
+  position: absolute; left: 0; top: 0; bottom: 0; width: 80px;
+  background: linear-gradient(90deg, var(--cream), transparent); z-index: 2; pointer-events: none;
+}
+.gallery-fade-r {
+  position: absolute; right: 0; top: 0; bottom: 0; width: 80px;
+  background: linear-gradient(270deg, var(--cream), transparent); z-index: 2; pointer-events: none;
+}
+.gallery-track { display: flex; gap: 12px; width: max-content; will-change: transform; }
+.gallery-item {
+  flex-shrink: 0;
+  width: clamp(140px, 35vw, 200px);
+  height: clamp(180px, 44vw, 260px);
+  overflow: hidden; position: relative; cursor: pointer;
+  border-radius: 16px; border: 1px solid var(--line);
+}
+.gallery-item img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform .5s, filter .4s;
+  filter: grayscale(15%);
+}
+.gallery-item:hover img { transform: scale(1.06); filter: grayscale(0%); }
+.gallery-item::after {
+  content: '';
+  position: absolute; inset: 0; border-radius: 16px;
+  border: 2px solid transparent;
+  transition: border-color .3s;
+}
+.gallery-item:hover::after { border-color: var(--g); }
+.gallery-dots {
+  display: flex; justify-content: center; gap: 6px;
+  margin-top: 20px; padding: 0 24px;
+}
+.g-dot { height: 4px; width: 20px; border-radius: 2px; background: var(--line); cursor: pointer; transition: all .3s; }
+.g-dot.active { background: var(--g); width: 40px; }
+
+/* ──────────────────────────────
+   LIGHTBOX
+────────────────────────────── */
+.lightbox {
+  position: fixed; inset: 0; background: rgba(0,0,0,.92);
+  z-index: 9998; display: none; align-items: center; justify-content: center;
+}
+.lightbox.open { display: flex; }
+.lb-img { max-width: 92vw; max-height: 88vh; object-fit: contain; border-radius: 12px; }
+.lb-close {
+  position: absolute; top: 20px; right: 20px;
+  background: rgba(255,255,255,.1); backdrop-filter: blur(8px);
+  border: none; color: white; width: 44px; height: 44px;
+  border-radius: 50%; font-size: 18px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s;
+}
+.lb-close:hover { background: rgba(0,177,79,.4); }
+.lb-prev, .lb-next {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: rgba(255,255,255,.1); backdrop-filter: blur(8px);
+  border: none; color: white; width: 48px; height: 48px;
+  border-radius: 50%; font-size: 22px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background .2s;
+}
+.lb-prev { left: 16px; } .lb-next { right: 16px; }
+.lb-prev:hover, .lb-next:hover { background: rgba(0,177,79,.4); }
+.lb-counter {
+  position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+  font-size: 12px; color: rgba(255,255,255,.6); font-weight: 500;
+  letter-spacing: .08em;
+}
+
+/* ──────────────────────────────
+   GIFT — Grab Pay style
+────────────────────────────── */
+.gift-section {
+  padding: 80px 24px;
+  background: var(--white);
+}
+.grabpay-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--g-light);
+  border: 1px solid rgba(0,177,79,.2);
+  border-radius: 12px; padding: 10px 16px;
+  margin: 0 auto 40px; display: flex;
+  max-width: 300px;
+}
+.grabpay-icon {
+  width: 32px; height: 32px; border-radius: 8px;
+  background: var(--g);
+  display: flex; align-items: center; justify-content: center;
+}
+.grabpay-icon svg { width: 16px; height: 16px; fill: white; }
+.grabpay-text { flex: 1; }
+.grabpay-text .gp-label { font-size: 10px; font-weight: 600; color: var(--g-deep); text-transform: uppercase; letter-spacing: .06em; }
+.grabpay-text .gp-name { font-size: 13px; font-weight: 500; color: var(--black); }
+
+.gift-cards {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 16px; max-width: 540px; margin: 0 auto;
+}
+@media(max-width:480px){ .gift-cards { grid-template-columns: 1fr; } }
+.gift-card {
+  background: var(--white);
+  border: 1px solid var(--line); border-radius: 20px;
+  padding: 28px 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,.05);
+  transition: box-shadow .3s;
+}
+.gift-card:hover { box-shadow: 0 6px 24px rgba(0,177,79,.12); }
+.gift-bank-logo {
+  font-family: var(--serif); font-size: 36px;
+  color: var(--g); margin-bottom: 4px; line-height: 1;
+}
+.gift-bank-name { font-size: 12px; color: var(--mid); margin-bottom: 14px; font-weight: 500; }
+.gift-account-name { font-size: 13px; color: var(--mid); margin-bottom: 4px; }
+.gift-number {
+  font-size: 18px; font-weight: 600; color: var(--black);
+  letter-spacing: .1em; margin-bottom: 20px;
+  font-family: 'DM Sans', monospace;
+}
+.copy-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; background: var(--g-light);
+  border: 1px solid rgba(0,177,79,.2); border-radius: 10px;
+  padding: 11px; color: var(--g-deep);
+  font-family: var(--sans); font-size: 12px; font-weight: 600;
+  cursor: pointer; letter-spacing: .02em;
+  transition: background .2s, border-color .2s;
+}
+.copy-btn:hover { background: var(--g); color: white; border-color: var(--g); }
+.copy-btn.copied { background: var(--g); color: white; border-color: var(--g); }
+.copy-btn svg { width: 14px; height: 14px; fill: currentColor; }
+
+/* ──────────────────────────────
+   RSVP — Grab booking flow
+────────────────────────────── */
+.rsvp-section {
+  padding: 80px 24px;
+  background: var(--cream);
+}
+.rsvp-stats {
+  display: flex; gap: 12px;
+  max-width: 480px; margin: 0 auto 48px;
+}
+.rsvp-stat {
+  flex: 1; background: var(--white);
+  border: 1px solid var(--line); border-radius: 16px;
+  padding: 20px 16px; text-align: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+.stat-num {
+  font-family: var(--serif); font-size: 40px;
+  color: var(--black); line-height: 1;
+}
+.stat-label {
+  font-size: 11px; font-weight: 600; color: var(--mid);
+  text-transform: uppercase; letter-spacing: .06em; margin-top: 6px;
+}
+
+.rsvp-card {
+  background: var(--white);
+  border: 1px solid var(--line); border-radius: 24px;
+  padding: 32px 28px;
+  max-width: 520px; margin: 0 auto;
+  box-shadow: 0 4px 24px rgba(0,0,0,.07);
+}
+.form-row { margin-bottom: 24px; }
+.form-label {
+  font-size: 12px; font-weight: 600; color: var(--mid);
+  text-transform: uppercase; letter-spacing: .06em;
+  display: block; margin-bottom: 8px;
+}
+.form-input {
+  width: 100%;
+  background: var(--bg); border: 1.5px solid var(--line);
+  border-radius: 12px; padding: 14px 16px;
+  color: var(--black); font-family: var(--sans);
+  font-size: 15px; outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.form-input:focus {
+  border-color: var(--g);
+  box-shadow: 0 0 0 3px rgba(0,177,79,.12);
+}
+.form-input::placeholder { color: var(--soft); }
+.form-select {
+  appearance: none; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 6 5-6' stroke='%236B7280' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 16px center;
+  background-color: var(--bg);
+}
+textarea.form-input { min-height: 100px; resize: vertical; }
+.guests-row { display: flex; gap: 8px; }
+.guest-btn {
+  flex: 1; background: var(--bg);
+  border: 1.5px solid var(--line); border-radius: 10px;
+  padding: 12px 8px; color: var(--mid);
+  font-family: var(--sans); font-size: 15px; font-weight: 600;
+  cursor: pointer; transition: all .2s;
+}
+.guest-btn.active {
+  border-color: var(--g); color: var(--g-deep);
+  background: var(--g-light);
+}
+.rsvp-submit {
+  width: 100%; background: var(--g); border: none;
+  border-radius: 14px; padding: 17px;
+  color: white; font-family: var(--sans);
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 4px 20px rgba(0,177,79,.35);
+  transition: background .2s, transform .15s, box-shadow .2s;
+  margin-top: 8px;
+}
+.rsvp-submit:hover { background: var(--g-deep); box-shadow: 0 6px 28px rgba(0,177,79,.45); }
+.rsvp-submit:active { transform: scale(.97); }
+.rsvp-submit svg { width: 18px; height: 18px; fill: white; }
+
+/* ──────────────────────────────
+   WISHES
+────────────────────────────── */
+.wishes-section {
+  padding: 80px 24px;
+  background: var(--white);
+}
+.wishes-list {
+  max-width: 560px; margin: 40px auto 0;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.wish-card {
+  background: var(--white);
+  border: 1px solid var(--line); border-radius: 16px;
+  padding: 20px; opacity: 0; transform: translateY(12px);
+  transition: opacity .5s ease, transform .5s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+.wish-card.visible { opacity: 1; transform: translateY(0); }
+.wish-head { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.wish-avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--g);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif); font-size: 14px; color: white; flex-shrink: 0;
+}
+.wish-name { font-size: 14px; font-weight: 600; color: var(--black); }
+.wish-status {
+  font-size: 11px; font-weight: 500; color: var(--g-deep);
+  display: flex; align-items: center; gap: 4px;
+}
+.wish-status::before {
+  content: ''; width: 5px; height: 5px; border-radius: 50%;
+  background: var(--g); display: inline-block;
+}
+.wish-text { font-size: 14px; color: var(--mid); line-height: 1.7; font-style: italic; }
+
+/* ──────────────────────────────
+   FOOTER
+────────────────────────────── */
+.footer {
+  padding: 80px 24px 60px; text-align: center;
+  background: var(--g);
+  position: relative; overflow: hidden;
+}
+.footer::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(rgba(255,255,255,.07) 1.5px, transparent 1.5px);
+  background-size: 24px 24px; pointer-events: none;
+}
+.footer-inner { position: relative; z-index: 1; }
+.footer-logo {
+  margin: 0 auto 28px;
+  width: 56px; height: 56px;
+  background: rgba(255,255,255,.15); border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+}
+.footer-logo svg { width: 28px; height: 28px; fill: white; }
+.footer-names {
+  font-family: var(--serif);
+  font-size: clamp(40px, 10vw, 72px);
+  color: white; line-height: .9; margin-bottom: 8px;
+}
+.footer-names em { font-style: italic; font-size: .65em; display: block; line-height: 1.6; opacity: .8; }
+.footer-date {
+  font-size: 13px; font-weight: 500; color: rgba(255,255,255,.7);
+  text-transform: uppercase; letter-spacing: .06em; margin: 20px 0 32px;
+}
+.footer-divider {
+  width: 40px; height: 2px; background: rgba(255,255,255,.3);
+  border-radius: 1px; margin: 0 auto 28px;
+}
+.footer-text {
+  font-size: 15px; color: rgba(255,255,255,.75);
+  line-height: 1.8; max-width: 420px; margin: 0 auto 40px;
+  font-style: italic;
+}
+.footer-credit {
+  font-size: 11px; color: rgba(255,255,255,.4);
+  font-weight: 500; letter-spacing: .04em;
+}
+
+/* ──────────────────────────────
+   BOTTOM NAV — Grab tab bar
+────────────────────────────── */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: white;
+  border-top: 1px solid var(--line);
+  display: flex; justify-content: space-around;
+  padding: 8px 0 max(10px, env(safe-area-inset-bottom));
+  z-index: 1000;
+  transform: translateY(100%);
+  transition: transform .4s ease;
+  box-shadow: 0 -4px 20px rgba(0,0,0,.08);
+}
+.bottom-nav.show { transform: translateY(0); }
+.nav-item {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  cursor: pointer; color: var(--soft);
+  text-decoration: none;
+  transition: color .2s;
+  font-size: 9px; font-weight: 600;
+  letter-spacing: .04em; text-transform: uppercase;
+  padding: 4px 10px;
+}
+.nav-item:hover, .nav-item.active { color: var(--g); }
+.nav-item.active svg { stroke: var(--g); }
+.nav-item svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+
+/* ──────────────────────────────
+   TOAST — Grab snackbar
+────────────────────────────── */
+.toast {
+  position: fixed; bottom: 80px; left: 50%;
+  transform: translateX(-50%) translateY(16px);
+  background: var(--black); color: white;
+  font-size: 13px; font-weight: 500;
+  padding: 12px 24px; border-radius: 100px;
+  z-index: 10000; opacity: 0; pointer-events: none;
+  transition: all .3s; white-space: nowrap;
+  display: flex; align-items: center; gap: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,.2);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast-icon { width: 16px; height: 16px; background: var(--g); border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.toast-icon svg { width: 9px; height: 9px; fill: white; }
+
+/* ──────────────────────────────
+   ANIMATIONS
+────────────────────────────── */
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(.7); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ OPENING ══════════ -->
+<div id="opening">
+  <!-- Grab-style status bar -->
+  <div class="open-statusbar">
+    <div class="open-statusbar-left">Wedding Invitation</div>
+    <div class="open-statusbar-right">
+      <div class="signal-bar">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <div class="battery"><div class="battery-fill"></div></div>
+    </div>
+  </div>
+
+  <!-- Grab logo -->
+  <div class="open-logo">
+    <svg class="grab-logo-svg" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="64" height="64" rx="16" fill="#00B14F"/>
+      <!-- Heart icon -->
+      <path d="M32 44s-14-9.5-14-18.5A8 8 0 0 1 32 20.5 8 8 0 0 1 46 25.5C46 34.5 32 44 32 44z" fill="white"/>
+    </svg>
+  </div>
+
+  <!-- Notification card -->
+  <div class="open-notif">
+    <div class="notif-icon">
+      <svg viewBox="0 0 24 24"><path d="M12 22s-8-5.5-8-11A8 8 0 0 1 20 11c0 5.5-8 11-8 11z"/></svg>
+    </div>
+    <div class="notif-body">
+      <div class="notif-app">Wedding App · Sekarang</div>
+      <div class="notif-title">Kamu mendapat undangan pernikahan 💍</div>
+      <div class="notif-msg">Rania &amp; Dimas mengundangmu hadir di hari istimewa mereka.</div>
+      <div class="notif-time">24 Mei 2026 · Graha Yadika, Tangerang</div>
+    </div>
+  </div>
+
+  <div class="open-names">
+    RANIA<em>&amp;</em>DIMAS
+  </div>
+
+  <div class="open-date">Minggu, 24 Mei 2026</div>
+
+  <div class="open-to-wrap">
+    <div class="open-to-label">Kepada Yth.</div>
+    <div class="open-to-name" id="guestName">Tamu Undangan</div>
+  </div>
+
+  <div class="open-cta">
+    <button class="open-btn" onclick="openInvitation()">
+      <svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      <span>Buka Undangan</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══════════ MAIN ══════════ -->
+<div id="main">
+
+  <!-- APP BAR -->
+  <div class="app-bar" id="appBar">
+    <div class="appbar-logo">
+      <div class="appbar-dot"></div>
+      <div class="appbar-title">Rania &amp; Dimas</div>
+    </div>
+    <div class="appbar-date">24 · 05 · 2026</div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <video class="hero-video-bg" id="heroBgVideo" autoplay muted loop playsinline src=""></video>
+    <div class="hero-dots"></div>
+    <div class="hero-inner">
+      <div class="hero-badge">
+        <div class="hero-badge-dot"></div>
+        Wedding Day · 24 Mei 2026
+      </div>
+
+      <h1 class="hero-names">
+        RANIA
+        <span class="hero-and">&amp;</span>
+        DIMAS
+      </h1>
+
+      <div class="hero-divider">
+        <div class="hero-divider-line"></div>
+        <div class="hero-divider-icon">💍</div>
+        <div class="hero-divider-line"></div>
+      </div>
+
+      <div class="hero-date-chip">
+        <div class="hero-date-main">Minggu, 24 Mei 2026</div>
+        <div class="hero-date-sub">Akad 08.00 · Resepsi 11.00 WIB · Graha Yadika</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VERSE -->
+  <section class="verse-section">
+    <div class="verse-icon">🕌</div>
+    <p class="verse-text">
+      "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan hidup dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya."
+    </p>
+    <div class="verse-ref">QS. Ar-Ruum : 21</div>
+  </section>
+
+  <!-- COUNTDOWN -->
+  <section class="countdown-section">
+    <div style="max-width:640px;margin:0 auto;padding:0 24px">
+      <div class="section-tag">Hitung Mundur</div>
+      <h2 class="section-heading">Menuju Hari <em>Istimewa</em></h2>
+    </div>
+    <div class="countdown-grid">
+      <div class="cd-item"><span class="cd-num" id="cdDays">00</span><span class="cd-unit">Hari</span></div>
+      <div class="cd-item"><span class="cd-num" id="cdHours">00</span><span class="cd-unit">Jam</span></div>
+      <div class="cd-item"><span class="cd-num" id="cdMinutes">00</span><span class="cd-unit">Menit</span></div>
+      <div class="cd-item"><span class="cd-num" id="cdSeconds">00</span><span class="cd-unit">Detik</span></div>
+    </div>
+  </section>
+
+  <!-- COUPLE -->
+  <section class="couple-section" id="couple">
+    <div style="max-width:640px;margin:0 auto;padding:0 24px">
+      <div class="section-tag">Mempelai</div>
+      <h2 class="section-heading">Pasangan <em>Kami</em></h2>
+      <p class="section-sub">Dua jiwa yang dipertemukan oleh takdir dan disatukan oleh cinta.</p>
+    </div>
+    <div class="couple-cards">
+      <div class="couple-card">
+        <div class="couple-photo">
+          <img src="https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=400&q=80" alt="Rania"
+               onerror="this.src='https://placehold.co/200x200/00B14F/white?text=R'">
+          <div class="couple-verified">
+            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+        </div>
+        <div class="couple-role">Mempelai WNazma</div>
+        <div class="couple-name">Rania</div>
+        <div class="couple-fullname">Rania Aulia Putri</div>
+        <p class="couple-parents">Putri dari<br><strong>Bpk. Ahmad Fauzi</strong><br><strong>Ibu Siti Rahma</strong></p>
+        <div class="couple-rating">
+          <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+          <span class="rating-val">5.0</span>
+        </div>
+      </div>
+      <div class="couple-card">
+        <div class="couple-photo">
+          <img src="https://images.unsplash.com/photo-1500048993953-d23a436266cf?w=400&q=80" alt="Dimas"
+               onerror="this.src='https://placehold.co/200x200/00B14F/white?text=D'">
+          <div class="couple-verified">
+            <svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          </div>
+        </div>
+        <div class="couple-role">Mempelai Pria</div>
+        <div class="couple-name">Dimas</div>
+        <div class="couple-fullname">Dimas Arka Pratama</div>
+        <p class="couple-parents">Putra dari<br><strong>Bpk. Hendra Saputra</strong><br><strong>Ibu Dewi Lestari</strong></p>
+        <div class="couple-rating">
+          <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+          <span class="rating-val">5.0</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVENT -->
+  <section class="event-section" id="event">
+    <div style="max-width:640px;margin:0 auto;padding:0 24px">
+      <div class="section-tag">Rangkaian Acara</div>
+      <h2 class="section-heading">Waktu &amp; <em>Lokasi</em></h2>
+      <p class="section-sub">Kehadiran dan doa restu Anda adalah kehormatan terbesar bagi kami.</p>
+    </div>
+    <div class="event-cards" style="max-width:600px;margin:40px auto 0;padding:0 24px">
+      <div class="event-card">
+        <div class="event-status">
+          <div class="event-status-dot"></div>
+          Akad Nikah
+        </div>
+        <div class="event-type">Akad<br>Nikah</div>
+        <div class="event-row">
+          <div class="event-row-icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
+          <div class="event-row-text"><strong>Graha Yadika</strong><br>Jl. Palem Ganda Asri, Tangerang</div>
+        </div>
+        <div class="event-row">
+          <div class="event-row-icon"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg></div>
+          <div class="event-row-text"><strong>08.00 – 10.00 WIB</strong><br>Minggu, 24 Mei 2026</div>
+        </div>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="event-maps-btn">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Buka Google Maps
+        </a>
+      </div>
+      <div class="event-card">
+        <div class="event-status">
+          <div class="event-status-dot"></div>
+          Resepsi
+        </div>
+        <div class="event-type">Resepsi<br>Pernikahan</div>
+        <div class="event-row">
+          <div class="event-row-icon"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>
+          <div class="event-row-text"><strong>Graha Yadika</strong><br>Jl. Palem Ganda Asri, Tangerang</div>
+        </div>
+        <div class="event-row">
+          <div class="event-row-icon"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg></div>
+          <div class="event-row-text"><strong>11.00 – 13.00 WIB</strong><br>Minggu, 24 Mei 2026</div>
+        </div>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="event-maps-btn">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Buka Google Maps
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section class="timeline-section">
+    <div style="max-width:640px;margin:0 auto;padding:0 24px">
+      <div class="section-tag">Kisah Kami</div>
+      <h2 class="section-heading">Perjalanan <em>Cinta</em></h2>
+    </div>
+    <div class="timeline">
+      <div class="tl-spine"></div>
+      <div class="tl-item">
+        <div class="tl-dot"><svg viewBox="0 0 24 24"><path d="M12 22s-8-5.5-8-11A8 8 0 0 1 20 11c0 5.5-8 11-8 11z"/></svg></div>
+        <div class="tl-tag">Phase 01</div>
+        <div class="tl-when">Juni 2025</div>
+        <div class="tl-title">Awal Pertemuan</div>
+        <p class="tl-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
+        <div class="tl-tag">Phase 02</div>
+        <div class="tl-when">November 2025</div>
+        <div class="tl-title">Lamaran</div>
+        <p class="tl-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam langkah awal menuju masa depan bersama.</p>
+      </div>
+      <div class="tl-item">
+        <div class="tl-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>
+        <div class="tl-tag">Phase 03</div>
+        <div class="tl-when">Mei 2026</div>
+        <div class="tl-title">Pernikahan</div>
+        <p class="tl-desc">Kini, kami melangkah lebih jauh. Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO SECTION -->
+  <section class="video-section" id="video">
+    <div style="max-width:640px;margin:0 auto;padding:0 24px">
+      <div class="section-tag">Cinematic Film</div>
+      <h2 class="section-heading">Prewedding <em>Video</em></h2>
+    </div>
+    <div class="video-frame-wrap">
+      <div class="video-outer" id="videoOuter" onclick="toggleVideo()">
+        <video id="mainVideo" preload="metadata" playsinline src="" poster=""></video>
+
+        <div class="video-hint" id="videoHint">
+          <div class="hint-box">
+            <svg viewBox="0 0 24 24" stroke-width="1.5" stroke="rgba(255,255,255,.5)" fill="none"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.82v6.36a1 1 0 0 1-1.447.89L15 14M3 8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+          </div>
+          <div class="hint-txt">Isi src video dengan URL<br>prewedding kamu</div>
+        </div>
+
+        <div class="video-overlay" id="videoOverlay">
+          <div class="play-btn-wrap">
+            <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          </div>
+          <div class="video-play-label">Play Video</div>
+        </div>
+      </div>
+
+      <div class="video-caption">
+        <div class="video-cap-left">
+          <div class="cap-label">Prewedding Film</div>
+          <div class="cap-title">Rania &amp; Dimas · 2026</div>
+        </div>
+        <div class="video-cap-right">Jakarta · MMXXVI</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="gallery-section">
+    <div class="gallery-header">
+      <div>
+        <div class="section-tag">Galeri Foto</div>
+        <h2 class="section-heading" style="font-size:clamp(24px,6vw,40px);margin:0">Momen <em>Bersama</em></h2>
+      </div>
+      <div class="gallery-live"><div class="gallery-live-dot"></div> Live</div>
+    </div>
+    <div class="gallery-wrap" id="galleryWrap"
+         onmouseenter="pauseGallery()" onmouseleave="resumeGallery()"
+         ontouchstart="pauseGallery()" ontouchend="resumeGallery()">
+      <div class="gallery-fade-l"></div>
+      <div class="gallery-fade-r"></div>
+      <div class="gallery-track" id="galleryTrack"></div>
+    </div>
+    <div class="gallery-dots" id="galleryDots"></div>
+  </section>
+
+  <!-- GIFT -->
+  <section class="gift-section" id="gift">
+    <div style="max-width:640px;margin:0 auto;padding:0 24px">
+      <div class="section-tag">Amplop Digital</div>
+      <h2 class="section-heading">Hadiah <em>Kasih</em></h2>
+      <p class="section-sub">Doa restu sudah sangat cukup, namun jika memberi adalah tanda kasih sayang, kami menerimanya dengan sepenuh hati.</p>
+    </div>
+    <div style="max-width:540px;margin:32px auto 0;padding:0 24px">
+      <div class="grabpay-badge">
+        <div class="grabpay-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93V18h-2v1.93C7.06 19.44 4.56 16.94 4.07 14H6v-2H4.07C4.56 9.06 7.06 6.56 10 6.07V8h2V6.07c2.94.49 5.44 2.99 5.93 5.93H16v2h1.93c-.49 2.94-2.99 5.44-5.93 5.93z"/></svg>
+        </div>
+        <div class="grabpay-text">
+          <div class="gp-label">Digital Envelope</div>
+          <div class="gp-name">Transfer langsung ke rekening</div>
+        </div>
+      </div>
+      <div class="gift-cards">
+        <div class="gift-card">
+          <div class="gift-bank-logo">BCA</div>
+          <div class="gift-bank-name">Bank Central Asia</div>
+          <div class="gift-account-name">Dimas Arka Pratama</div>
+          <div class="gift-number">8210 3705 61</div>
+          <button class="copy-btn" onclick="copyText('8210370561',this)">
+            <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            Salin Nomor
+          </button>
+        </div>
+        <div class="gift-card">
+          <div class="gift-bank-logo">BNI</div>
+          <div class="gift-bank-name">Bank Negara Indonesia</div>
+          <div class="gift-account-name">Rania Aulia Putri</div>
+          <div class="gift-number">1192 9784 03</div>
+          <button class="copy-btn" onclick="copyText('1192978403',this)">
+            <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            Salin Nomor
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RSVP -->
+  <section class="rsvp-section" id="rsvp">
+    <div style="max-width:640px;margin:0 auto;padding:0 24px">
+      <div class="section-tag">Konfirmasi</div>
+      <h2 class="section-heading">RSVP <em>Kehadiran</em></h2>
+    </div>
+    <div class="rsvp-stats" style="max-width:480px;margin:32px auto 40px;padding:0 24px">
+      <div class="rsvp-stat"><div class="stat-num" id="statTotal">0</div><div class="stat-label">Total</div></div>
+      <div class="rsvp-stat"><div class="stat-num" id="statHadir">0</div><div class="stat-label">Hadir</div></div>
+      <div class="rsvp-stat"><div class="stat-num" id="statTidak">0</div><div class="stat-label">Berhalangan</div></div>
+    </div>
+    <div class="rsvp-card" style="max-width:520px;margin:0 auto;padding:32px 28px">
+      <div class="form-row">
+        <label class="form-label">Nama Lengkap</label>
+        <input type="text" class="form-input" id="rsvpName" placeholder="Tulis nama Anda…">
+      </div>
+      <div class="form-row">
+        <label class="form-label">Status Kehadiran</label>
+        <select class="form-input form-select" id="rsvpStatus">
+          <option value="" disabled selected>Pilih status…</option>
+          <option value="hadir">Insya Allah Hadir</option>
+          <option value="tidak">Tidak Dapat Hadir</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Jumlah Tamu</label>
+        <div class="guests-row">
+          <button class="guest-btn active" onclick="selectGuests(1,this)">1</button>
+          <button class="guest-btn" onclick="selectGuests(2,this)">2</button>
+          <button class="guest-btn" onclick="selectGuests(3,this)">3</button>
+          <button class="guest-btn" onclick="selectGuests(4,this)">4+</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Pesan &amp; Doa</label>
+        <textarea class="form-input" id="rsvpMsg" placeholder="Tulis doa dan harapan terbaik Anda…"></textarea>
+      </div>
+      <button class="rsvp-submit" onclick="submitRSVP()">
+        <svg viewBox="0 0 24 24"><path d="M2 21l21-9L2 3v7l15 2-15 2v7z"/></svg>
+        <span>Kirim Konfirmasi</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- WISHES -->
+  <section class="wishes-section">
+    <div style="max-width:640px;margin:0 auto;padding:0 24px">
+      <div class="section-tag">Ucapan &amp; Doa</div>
+      <h2 class="section-heading">Pesan <em>Sahabat</em></h2>
+    </div>
+    <div class="wishes-list" id="wishesList">
+      <div class="wish-card visible">
+        <div class="wish-head">
+          <div class="wish-avatar">AH</div>
+          <div>
+            <div class="wish-name">Ahmad Hakim</div>
+            <div class="wish-status">Hadir · 2 Tamu</div>
+          </div>
+        </div>
+        <p class="wish-text">Semoga pernikahan kalian menjadi awal dari hidup yang penuh berkah dan cinta yang abadi. Barakallah. 🤍</p>
+      </div>
+      <div class="wish-card visible">
+        <div class="wish-head">
+          <div class="wish-avatar">SR</div>
+          <div>
+            <div class="wish-name">Sari Rahayu</div>
+            <div class="wish-status">Hadir · 1 Tamu</div>
+          </div>
+        </div>
+        <p class="wish-text">Selamat menempuh hidup baru! Semoga kalian menjadi pasangan yang sakinah, mawaddah, warahmah. 💚</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">
+        <svg viewBox="0 0 24 24"><path d="M12 22s-8-5.5-8-11A8 8 0 0 1 20 11c0 5.5-8 11-8 11z"/></svg>
+      </div>
+      <div class="footer-names">
+        RANIA<em>&amp;</em>DIMAS
+      </div>
+      <div class="footer-date">24 · 05 · 2026 · Jakarta</div>
+      <div class="footer-divider"></div>
+      <p class="footer-text">Merupakan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir memberikan doa restu.</p>
+      <div class="footer-credit">Made with 💚 · Wedding Invitation</div>
+    </div>
+  </footer>
+
+</div><!-- /main -->
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav" id="bottomNav">
+  <a href="#home" class="nav-item active">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
+  </a>
+  <a href="#couple" class="nav-item">
+    <svg viewBox="0 0 24 24"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><path d="M21 21v-2a4 4 0 0 0-3-3.87"/></svg>
+    Pasangan
+  </a>
+  <a href="#event" class="nav-item">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    Acara
+  </a>
+  <a href="#video" class="nav-item">
+    <svg viewBox="0 0 24 24"><path d="M15 10l4.553-2.069A1 1 0 0 1 21 8.82v6.36a1 1 0 0 1-1.447.89L15 14M3 8a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8z"/></svg>
+    Video
+  </a>
+  <a href="#rsvp" class="nav-item">
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    RSVP
+  </a>
+</nav>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <img class="lb-img" id="lightboxImg" src="" alt="">
+  <button class="lb-close" onclick="closeLightbox()">✕</button>
+  <button class="lb-prev" onclick="lightboxPrev()">‹</button>
+  <button class="lb-next" onclick="lightboxNext()">›</button>
+  <div class="lb-counter" id="lightboxCounter"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-icon"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/></svg></div>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+/* ─── GUEST NAME ─── */
+const params = new URLSearchParams(location.search);
+document.getElementById('guestName').textContent =
+  params.get('to') || params.get('name') || 'Tamu Undangan';
+
+/* ─── OPEN ─── */
+function openInvitation() {
+  document.getElementById('opening').classList.add('out');
+  setTimeout(() => { document.getElementById('opening').style.display = 'none'; }, 800);
+  const main = document.getElementById('main');
+  main.classList.add('show');
+  setTimeout(() => {
+    document.getElementById('bottomNav').classList.add('show');
+    document.getElementById('appBar').classList.add('show');
+  }, 500);
+  startCountdown();
+  initGallery();
+  initScrollAnim();
+  initNavHighlight();
+  initScrollBehavior();
+  initHeroBgVideo();
+  initMainVideo();
+}
+
+/* ─── APP BAR SCROLL ─── */
+function initScrollBehavior() {
+  window.addEventListener('scroll', () => {
+    document.getElementById('appBar').classList.toggle('scrolled', window.scrollY > 40);
+  });
+}
+
+/* ─── HERO BG VIDEO ─── */
+function initHeroBgVideo() {
+  const vid = document.getElementById('heroBgVideo');
+  if (vid && vid.src && vid.src !== window.location.href) {
+    vid.style.display = 'block';
+  }
+}
+
+/* ─── MAIN VIDEO ─── */
+function initMainVideo() {
+  const vid  = document.getElementById('mainVideo');
+  const hint = document.getElementById('videoHint');
+  if (!vid.src || vid.src === window.location.href) {
+    hint.classList.remove('hidden');
+  } else {
+    hint.classList.add('hidden');
+  }
+}
+function toggleVideo() {
+  const outer   = document.getElementById('videoOuter');
+  const vid     = document.getElementById('mainVideo');
+  const overlay = document.getElementById('videoOverlay');
+  const hint    = document.getElementById('videoHint');
+  if (!vid.src || vid.src === window.location.href) return;
+  hint.classList.add('hidden');
+  if (vid.paused) {
+    vid.play(); outer.classList.add('playing');
+    overlay.querySelector('.video-play-label').textContent = 'Pause';
+  } else {
+    vid.pause(); outer.classList.remove('playing');
+    overlay.querySelector('.video-play-label').textContent = 'Play Video';
+  }
+  vid.addEventListener('ended', () => {
+    outer.classList.remove('playing');
+    overlay.querySelector('.video-play-label').textContent = 'Play Video';
+  }, { once: true });
+}
+
+/* ─── GALLERY ─── */
+const IMGS = [
+  'https://images.unsplash.com/photo-1519741497674-611481863552?w=400&q=80',
+  'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=400&q=80',
+  'https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=400&q=80',
+  'https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=400&q=80',
+  'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=400&q=80',
+  'https://images.unsplash.com/photo-1537633552985-df8429e8048b?w=400&q=80',
+];
+const LB_IMGS = [...IMGS];
+let gPaused = false, gOffset = 0, gOrig = IMGS.length, activeDot = 0, lbIdx = 0;
+const ITEM_W = () => window.innerWidth <= 520 ? 156 : 216;
+
+function initGallery() {
+  const track = document.getElementById('galleryTrack');
+  const dots  = document.getElementById('galleryDots');
+  for (let p = 0; p < 3; p++) {
+    IMGS.forEach((src, i) => {
+      const el = document.createElement('div');
+      el.className = 'gallery-item';
+      el.innerHTML = `<img src="${src}" alt="" loading="lazy" onerror="this.src='https://placehold.co/200x260/00B14F/white?text=✦'">`;
+      if (p === 1) el.onclick = () => openLightbox(i);
+      track.appendChild(el);
+    });
+  }
+  IMGS.forEach((_, i) => {
+    const d = document.createElement('div');
+    d.className = 'g-dot' + (i === 0 ? ' active' : '');
+    d.onclick = () => jumpGallery(i);
+    dots.appendChild(d);
+  });
+  gOffset = gOrig * ITEM_W();
+  startGallery();
+}
+function startGallery() {
+  const track = document.getElementById('galleryTrack');
+  const loop = () => {
+    if (!gPaused) {
+      gOffset += 0.5;
+      const totalW = gOrig * ITEM_W();
+      if (gOffset >= totalW * 2) gOffset -= totalW;
+      if (gOffset < totalW) gOffset += totalW;
+      track.style.transform = `translateX(-${gOffset}px)`;
+      const dot = ((Math.floor((gOffset - gOrig * ITEM_W()) / ITEM_W()) % gOrig) + gOrig) % gOrig;
+      if (dot !== activeDot) {
+        activeDot = dot;
+        document.querySelectorAll('.g-dot').forEach((d, i) => d.classList.toggle('active', i === activeDot));
+      }
+    }
+    requestAnimationFrame(loop);
+  };
+  requestAnimationFrame(loop);
+}
+function pauseGallery()  { gPaused = true; }
+function resumeGallery() { gPaused = false; }
+function jumpGallery(idx) { gOffset = gOrig * ITEM_W() + idx * ITEM_W(); }
+
+/* ─── LIGHTBOX ─── */
+function openLightbox(i) { lbIdx = i; updateLb(); document.getElementById('lightbox').classList.add('open'); document.body.style.overflow = 'hidden'; pauseGallery(); }
+function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow = ''; resumeGallery(); }
+function lightboxPrev() { lbIdx = (lbIdx - 1 + LB_IMGS.length) % LB_IMGS.length; updateLb(); }
+function lightboxNext() { lbIdx = (lbIdx + 1) % LB_IMGS.length; updateLb(); }
+function updateLb() {
+  document.getElementById('lightboxImg').src = LB_IMGS[lbIdx];
+  document.getElementById('lightboxCounter').textContent = `${lbIdx + 1} / ${LB_IMGS.length}`;
+}
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'Escape') closeLightbox();
+  if (e.key === 'ArrowLeft') lightboxPrev();
+  if (e.key === 'ArrowRight') lightboxNext();
+});
+
+/* ─── COUNTDOWN ─── */
+function startCountdown() {
+  const target = new Date('2026-05-24T08:00:00');
+  const tick = () => {
+    const d = target - Date.now();
+    if (d <= 0) return;
+    document.getElementById('cdDays').textContent    = String(Math.floor(d / 86400000)).padStart(2,'0');
+    document.getElementById('cdHours').textContent   = String(Math.floor((d % 86400000) / 3600000)).padStart(2,'0');
+    document.getElementById('cdMinutes').textContent = String(Math.floor((d % 3600000) / 60000)).padStart(2,'0');
+    document.getElementById('cdSeconds').textContent = String(Math.floor((d % 60000) / 1000)).padStart(2,'0');
+  };
+  tick(); setInterval(tick, 1000);
+}
+
+/* ─── SCROLL ANIM ─── */
+function initScrollAnim() {
+  const obs = new IntersectionObserver(e => e.forEach(x => { if (x.isIntersecting) x.target.classList.add('visible'); }), { threshold: .15 });
+  document.querySelectorAll('.tl-item, .wish-card').forEach(el => obs.observe(el));
+}
+
+/* ─── NAV HIGHLIGHT ─── */
+function initNavHighlight() {
+  const obs = new IntersectionObserver(e => {
+    e.forEach(x => {
+      if (x.isIntersecting) {
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        const a = document.querySelector(`.nav-item[href="#${x.target.id}"]`);
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -40% 0px' });
+  ['home','couple','event','video','gift','rsvp'].forEach(id => { const el = document.getElementById(id); if (el) obs.observe(el); });
+}
+
+/* ─── RSVP ─── */
+let sTotal = 0, sHadir = 0, sTidak = 0, gCount = 1;
+function selectGuests(n, btn) {
+  gCount = n;
+  document.querySelectorAll('.guest-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function submitRSVP() {
+  const name   = document.getElementById('rsvpName').value.trim();
+  const status = document.getElementById('rsvpStatus').value;
+  const msg    = document.getElementById('rsvpMsg').value.trim();
+  if (!name || !status) { showToast('Mohon isi nama dan status kehadiran'); return; }
+  sTotal++; if (status === 'hadir') sHadir++; else sTidak++;
+  document.getElementById('statTotal').textContent = sTotal;
+  document.getElementById('statHadir').textContent = sHadir;
+  document.getElementById('statTidak').textContent = sTidak;
+  const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0,2);
+  const statusText = status === 'hadir' ? `Hadir · ${gCount} Tamu` : 'Tidak Dapat Hadir';
+  const card = document.createElement('div');
+  card.className = 'wish-card';
+  card.innerHTML = `
+    <div class="wish-head">
+      <div class="wish-avatar">${initials}</div>
+      <div><div class="wish-name">${name}</div><div class="wish-status">${statusText}</div></div>
+    </div>
+    <p class="wish-text">${msg || 'Semoga pernikahan ini dipenuhi berkah dan kebahagiaan abadi. 💚'}</p>
+  `;
+  document.getElementById('wishesList').prepend(card);
+  setTimeout(() => card.classList.add('visible'), 50);
+  document.getElementById('rsvpName').value = '';
+  document.getElementById('rsvpStatus').value = '';
+  document.getElementById('rsvpMsg').value = '';
+  document.querySelectorAll('.guest-btn').forEach((b,i) => b.classList.toggle('active', i === 0));
+  gCount = 1;
+  showToast('Konfirmasi berhasil dikirim!');
+  setTimeout(() => document.querySelector('.wishes-section').scrollIntoView({ behavior:'smooth', block:'start' }), 500);
+}
+
+/* ─── COPY ─── */
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    btn.classList.add('copied');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> Berhasil Disalin';
+    showToast('Nomor rekening tersalin!');
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = '<svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> Salin Nomor';
+    }, 2500);
+  }).catch(() => showToast('Salin manual: ' + text));
+}
+
+/* ─── TOAST ─── */
+let tt;
+function showToast(msg) {
+  document.getElementById('toastMsg').textContent = msg;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  clearTimeout(tt);
+  tt = setTimeout(() => t.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>

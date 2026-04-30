@@ -1,0 +1,2282 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nazma & Gunturr — A Wedding Story</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,200;0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,200;1,8..60,300;1,8..60,400;1,8..60,600&family=DM+Sans:ital,wght@0,200;0,300;0,400;0,500;1,300;1,400&family=DM+Mono:wght@300;400&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #FAFAFA;
+            --white: #FFFFFF;
+            --ink: #242424;
+            --ink-2: #3D3D3D;
+            --ink-3: #757575;
+            --ink-4: #B3B3B3;
+            --border: #E6E6E6;
+            --green: #1A8917;
+            --green-lt: #E6F4E5;
+            --tag-bg: #F2F2F2;
+            --serif: 'Source Serif 4', Georgia, serif;
+            --sans: 'DM Sans', system-ui, sans-serif;
+            --mono: 'DM Mono', monospace;
+            --col: 680px;
+            --col-wide: 1020px;
+        }
+
+        /* ── RESET ── */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--ink);
+            font-family: var(--serif);
+            overflow-x: hidden;
+            cursor: none
+        }
+
+        /* ── CUSTOM CURSOR ── */
+        .cursor {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            background: var(--ink);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99999;
+            transform: translate(-50%, -50%);
+            transition: width .25s, height .25s, background .25s, border-radius .25s
+        }
+
+        .cursor-ring {
+            position: fixed;
+            width: 28px;
+            height: 28px;
+            border: 1.5px solid rgba(36, 36, 36, .35);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 99998;
+            transform: translate(-50%, -50%);
+            transition: all .2s ease
+        }
+
+        body.link-hover .cursor {
+            width: 40px;
+            height: 40px;
+            background: rgba(26, 137, 23, .12);
+            border-radius: 50%
+        }
+
+        body.link-hover .cursor-ring {
+            opacity: 0
+        }
+
+        /* ── OPENING / SPLASH ── */
+        #opening {
+            position: fixed;
+            inset: 0;
+            background: var(--white);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            padding: 40px 20px;
+            text-align: center;
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        #opening.hide {
+            opacity: 0;
+            transform: translateY(-16px);
+            pointer-events: none
+        }
+
+        .splash-logo {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 48px
+        }
+
+        .splash-logo-m {
+            width: 28px;
+            height: 28px;
+            background: var(--ink);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: var(--serif);
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: -.5px
+        }
+
+        .splash-logo-text {
+            font-family: var(--serif);
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -.5px;
+            color: var(--ink)
+        }
+
+        .splash-tag {
+            font-family: var(--sans);
+            font-size: 11px;
+            letter-spacing: .08em;
+            color: var(--ink-3);
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            font-weight: 400
+        }
+
+        .splash-title {
+            font-family: var(--serif);
+            font-size: clamp(36px, 8vw, 64px);
+            font-weight: 700;
+            letter-spacing: -.03em;
+            line-height: 1.05;
+            color: var(--ink);
+            margin-bottom: 8px
+        }
+
+        .splash-title em {
+            font-style: italic;
+            font-weight: 300
+        }
+
+        .splash-deck {
+            font-family: var(--serif);
+            font-size: clamp(17px, 3vw, 22px);
+            font-weight: 300;
+            color: var(--ink-3);
+            line-height: 1.5;
+            max-width: 520px;
+            margin: 0 auto 36px;
+            font-style: italic
+        }
+
+        .splash-divider {
+            width: 60px;
+            height: 1px;
+            background: var(--border);
+            margin: 0 auto 36px
+        }
+
+        .splash-dear {
+            font-family: var(--sans);
+            font-size: 13px;
+            color: var(--ink-3);
+            margin-bottom: 4px;
+            font-weight: 300
+        }
+
+        .splash-dear-name {
+            font-family: var(--serif);
+            font-size: clamp(20px, 4vw, 26px);
+            font-weight: 600;
+            color: var(--ink);
+            margin-bottom: 36px;
+            font-style: italic
+        }
+
+        .splash-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            font-family: var(--sans);
+            font-size: 13px;
+            color: var(--ink-3)
+        }
+
+        .splash-meta-dot {
+            width: 4px;
+            height: 4px;
+            background: var(--ink-4);
+            border-radius: 50%
+        }
+
+        .splash-author-ava {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--ink);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 9px;
+            font-family: var(--sans);
+            font-weight: 500
+        }
+
+        .open-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--green);
+            color: #fff;
+            border: none;
+            padding: 13px 32px;
+            border-radius: 999px;
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 500;
+            letter-spacing: .01em;
+            cursor: none;
+            transition: all .25s;
+        }
+
+        .open-btn:hover {
+            background: #136b10;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(26, 137, 23, .25)
+        }
+
+        .splash-est {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink-4);
+            margin-top: 20px;
+            letter-spacing: .05em
+        }
+
+        /* ── MAIN ── */
+        #main {
+            opacity: 0;
+            transition: opacity .8s ease .3s
+        }
+
+        #main.show {
+            opacity: 1
+        }
+
+        /* ── MEDIUM TOPBAR ── */
+        .topbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(250, 250, 250, .95);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            z-index: 100;
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transform: translateY(-100%);
+            transition: transform .5s ease 1.2s;
+        }
+
+        .topbar.show {
+            transform: translateY(0)
+        }
+
+        .topbar-logo {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none
+        }
+
+        .topbar-logo-m {
+            width: 24px;
+            height: 24px;
+            background: var(--ink);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-family: var(--serif);
+            font-size: 12px;
+            font-weight: 700
+        }
+
+        .topbar-logo-text {
+            font-family: var(--serif);
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -.5px;
+            color: var(--ink)
+        }
+
+        .topbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .topbar-nav a {
+            font-family: var(--sans);
+            font-size: 13px;
+            color: var(--ink-3);
+            text-decoration: none;
+            padding: 7px 14px;
+            border-radius: 999px;
+            cursor: none;
+            transition: all .2s;
+            font-weight: 400
+        }
+
+        .topbar-nav a:hover,
+        .topbar-nav a.active {
+            color: var(--ink);
+            background: var(--tag-bg)
+        }
+
+        .topbar-cta {
+            background: var(--ink);
+            color: #fff;
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-family: var(--sans);
+            font-size: 13px;
+            cursor: none;
+            transition: all .2s;
+            font-weight: 400;
+            text-decoration: none;
+            border: none
+        }
+
+        .topbar-cta:hover {
+            background: #333
+        }
+
+        /* ── READING PROGRESS ── */
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 2px;
+            background: var(--ink);
+            z-index: 9999;
+            width: 0%;
+            transition: width .1s linear
+        }
+
+        /* ── HERO — ARTICLE HEADER ── */
+        .article-header {
+            max-width: var(--col);
+            margin: 0 auto;
+            padding: 100px 20px 56px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .article-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--sans);
+            font-size: 12px;
+            color: var(--green);
+            font-weight: 500;
+            letter-spacing: .02em;
+            margin-bottom: 20px;
+            cursor: none
+        }
+
+        .article-tag:hover {
+            text-decoration: underline
+        }
+
+        .article-h1 {
+            font-family: var(--serif);
+            font-size: clamp(28px, 5.5vw, 46px);
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -.03em;
+            color: var(--ink);
+            margin-bottom: 16px
+        }
+
+        .article-deck {
+            font-family: var(--serif);
+            font-size: clamp(17px, 2.5vw, 22px);
+            font-weight: 300;
+            color: var(--ink-3);
+            line-height: 1.55;
+            font-style: italic;
+            margin-bottom: 28px
+        }
+
+        .article-byline {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px
+        }
+
+        .byline-ava {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #242424, #555);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-family: var(--serif);
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0
+        }
+
+        .byline-info {
+            flex: 1
+        }
+
+        .byline-name {
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--ink);
+            line-height: 1.3
+        }
+
+        .byline-meta {
+            font-family: var(--sans);
+            font-size: 13px;
+            color: var(--ink-3);
+            font-weight: 300
+        }
+
+        .byline-follow {
+            border: 1px solid var(--ink);
+            border-radius: 999px;
+            padding: 5px 16px;
+            font-family: var(--sans);
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--ink);
+            cursor: none;
+            background: transparent;
+            transition: all .2s;
+            white-space: nowrap
+        }
+
+        .byline-follow:hover {
+            background: var(--ink);
+            color: #fff
+        }
+
+        .article-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 16px;
+            border-top: 1px solid var(--border)
+        }
+
+        .actions-left,
+        .actions-right {
+            display: flex;
+            align-items: center;
+            gap: 20px
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-family: var(--sans);
+            font-size: 13px;
+            color: var(--ink-3);
+            background: none;
+            border: none;
+            cursor: none;
+            padding: 4px 0;
+            transition: color .2s;
+            font-weight: 300
+        }
+
+        .action-btn:hover {
+            color: var(--ink)
+        }
+
+        .action-btn svg {
+            width: 18px;
+            height: 18px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 1.5;
+            flex-shrink: 0
+        }
+
+        .action-btn.liked {
+            color: var(--green)
+        }
+
+        .read-time-badge {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink-4);
+            letter-spacing: .05em
+        }
+
+        /* ── ARTICLE BODY ── */
+        .article-body {
+            max-width: var(--col);
+            margin: 0 auto;
+            padding: 48px 20px
+        }
+
+        /* Drop cap */
+        .article-body .drop-cap::first-letter {
+            font-family: var(--serif);
+            font-size: 5.2em;
+            font-weight: 700;
+            float: left;
+            line-height: .75;
+            margin: 0 12px 0 0;
+            padding: 4px 0;
+            color: var(--ink);
+            letter-spacing: -.03em;
+        }
+
+        .article-body p {
+            font-family: var(--serif);
+            font-size: clamp(17px, 2.5vw, 20px);
+            line-height: 1.75;
+            color: var(--ink-2);
+            margin-bottom: 28px;
+            font-weight: 300;
+            letter-spacing: .01em
+        }
+
+        .article-body h2 {
+            font-family: var(--serif);
+            font-size: clamp(22px, 3.5vw, 30px);
+            font-weight: 700;
+            letter-spacing: -.03em;
+            color: var(--ink);
+            margin: 52px 0 20px;
+            line-height: 1.2
+        }
+
+        .article-body h3 {
+            font-family: var(--serif);
+            font-size: clamp(18px, 2.5vw, 22px);
+            font-weight: 600;
+            letter-spacing: -.02em;
+            color: var(--ink);
+            margin: 36px 0 14px;
+            line-height: 1.3;
+            font-style: italic
+        }
+
+        /* Pullquote */
+        .pullquote {
+            margin: 48px -24px;
+            padding: 36px 40px;
+            border-left: 3px solid var(--ink);
+            background: transparent
+        }
+
+        @media(max-width:700px) {
+            .pullquote {
+                margin: 40px 0;
+                padding: 28px 24px
+            }
+        }
+
+        .pullquote p {
+            font-family: var(--serif);
+            font-size: clamp(22px, 4vw, 32px);
+            font-weight: 300;
+            font-style: italic;
+            line-height: 1.45;
+            color: var(--ink);
+            margin: 0 0 12px
+        }
+
+        .pullquote cite {
+            font-family: var(--sans);
+            font-size: 12px;
+            color: var(--ink-3);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            font-style: normal;
+            font-weight: 400
+        }
+
+        /* Highlight */
+        .highlight {
+            background: linear-gradient(180deg, transparent 65%, rgba(26, 137, 23, .18) 65%)
+        }
+
+        /* Inline note */
+        .footnote {
+            font-family: var(--sans);
+            font-size: 13px;
+            color: var(--ink-3);
+            border-left: 2px solid var(--border);
+            padding: 2px 0 2px 16px;
+            margin: 0 0 28px;
+            font-weight: 300;
+            font-style: italic
+        }
+
+        /* ── COUNTDOWN — MEDIUM CARD STYLE ── */
+        .countdown-card {
+            margin: 48px auto;
+            max-width: var(--col);
+            padding: 0 20px;
+        }
+
+        .countdown-inner {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 40px 36px;
+        }
+
+        .countdown-label {
+            font-family: var(--sans);
+            font-size: 11px;
+            letter-spacing: .1em;
+            text-transform: uppercase;
+            color: var(--ink-3);
+            font-weight: 400;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px
+        }
+
+        .countdown-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border)
+        }
+
+        .countdown-grid {
+            display: flex;
+            gap: 0
+        }
+
+        .countdown-item {
+            flex: 1;
+            text-align: center;
+            padding: 12px 8px;
+            border-right: 1px solid var(--border)
+        }
+
+        .countdown-item:last-child {
+            border-right: none
+        }
+
+        .countdown-num {
+            font-family: var(--serif);
+            font-size: clamp(36px, 7vw, 56px);
+            font-weight: 700;
+            letter-spacing: -.04em;
+            line-height: 1;
+            color: var(--ink);
+            margin-bottom: 6px
+        }
+
+        .countdown-unit {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--ink-4)
+        }
+
+        /* ── IMAGE BLOCKS ── */
+        .img-block {
+            margin: 48px -40px
+        }
+
+        @media(max-width:760px) {
+            .img-block {
+                margin: 40px -20px
+            }
+        }
+
+        .img-placeholder {
+            width: 100%;
+            height: 320px;
+            background: linear-gradient(160deg, var(--tag-bg), var(--border));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 8px;
+            border-radius: 2px;
+        }
+
+        .img-placeholder span {
+            font-size: 48px
+        }
+
+        .img-placeholder small {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink-4);
+            letter-spacing: .1em;
+            text-transform: uppercase
+        }
+
+        .img-caption {
+            font-family: var(--sans);
+            font-size: 13px;
+            color: var(--ink-4);
+            text-align: center;
+            margin-top: 10px;
+            padding: 0 20px;
+            font-weight: 300;
+            font-style: italic
+        }
+
+        /* Inline img-pair */
+        .img-pair {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 40px -40px
+        }
+
+        @media(max-width:760px) {
+            .img-pair {
+                margin: 32px -20px;
+                grid-template-columns: 1fr
+            }
+        }
+
+        .img-pair .img-placeholder {
+            height: 240px
+        }
+
+        /* ── STORY CHAPTERS ── */
+        .chapter-marker {
+            text-align: center;
+            margin: 56px 0 40px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--ink-4);
+        }
+
+        .chapter-marker::before,
+        .chapter-marker::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border)
+        }
+
+        /* ── DETAIL CARDS — ARTICLE EMBED ── */
+        .embed-card {
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 40px 0;
+            transition: box-shadow .25s;
+        }
+
+        .embed-card:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .08)
+        }
+
+        .embed-card-header {
+            background: var(--white);
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 12px
+        }
+
+        .embed-card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0
+        }
+
+        .embed-card-title {
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--ink);
+            margin-bottom: 1px
+        }
+
+        .embed-card-sub {
+            font-family: var(--sans);
+            font-size: 12px;
+            color: var(--ink-3);
+            font-weight: 300
+        }
+
+        .embed-card-body {
+            padding: 24px;
+            background: var(--bg)
+        }
+
+        .embed-detail {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 12px
+        }
+
+        .embed-detail:last-child {
+            margin-bottom: 0
+        }
+
+        .embed-detail-icon {
+            font-size: 14px;
+            margin-top: 2px;
+            flex-shrink: 0;
+            width: 20px;
+            text-align: center
+        }
+
+        .embed-detail-text {
+            font-family: var(--sans);
+            font-size: 14px;
+            color: var(--ink-2);
+            line-height: 1.5;
+            font-weight: 300
+        }
+
+        .embed-card-footer {
+            padding: 14px 24px;
+            border-top: 1px solid var(--border);
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: space-between
+        }
+
+        .embed-card-footer a {
+            font-family: var(--sans);
+            font-size: 13px;
+            color: var(--green);
+            text-decoration: none;
+            font-weight: 400;
+            cursor: none
+        }
+
+        .embed-card-footer a:hover {
+            text-decoration: underline
+        }
+
+        .embed-card-footer span {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink-4);
+            letter-spacing: .05em
+        }
+
+        /* ── COUPLE PROFILES ── */
+        .profile-section {
+            margin: 48px 0
+        }
+
+        .profile-card {
+            display: flex;
+            gap: 20px;
+            padding: 24px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            margin-bottom: 12px;
+            transition: box-shadow .2s
+        }
+
+        .profile-card:hover {
+            box-shadow: 0 2px 12px rgba(0, 0, 0, .07)
+        }
+
+        .profile-ava {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px
+        }
+
+        .profile-body {
+            flex: 1
+        }
+
+        .profile-role {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--green);
+            margin-bottom: 3px;
+            font-weight: 400
+        }
+
+        .profile-name {
+            font-family: var(--serif);
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -.02em;
+            color: var(--ink);
+            margin-bottom: 4px
+        }
+
+        .profile-parents {
+            font-family: var(--sans);
+            font-size: 13px;
+            color: var(--ink-3);
+            font-weight: 300;
+            line-height: 1.6
+        }
+
+        .profile-follow-btn {
+            align-self: center;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 6px 16px;
+            font-family: var(--sans);
+            font-size: 12px;
+            color: var(--ink-2);
+            cursor: none;
+            background: var(--white);
+            transition: all .2s;
+            white-space: nowrap;
+            font-weight: 400
+        }
+
+        .profile-follow-btn:hover {
+            border-color: var(--ink);
+            color: var(--ink)
+        }
+
+        /* ── GIFT — CODE BLOCK STYLE ── */
+        .code-block {
+            background: var(--ink);
+            color: #E8E8E8;
+            border-radius: 4px;
+            padding: 28px 32px;
+            margin: 40px 0;
+            font-family: var(--mono);
+            font-size: 14px;
+            line-height: 1.6;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .code-block::before {
+            content: attr(data-label);
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--ink-4);
+            letter-spacing: .1em;
+            text-transform: uppercase
+        }
+
+        .code-key {
+            color: #B8D4B8
+        }
+
+        .code-val {
+            color: #FFD580
+        }
+
+        .code-str {
+            color: #9CD9F0
+        }
+
+        .code-copy {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            background: rgba(255, 255, 255, .08);
+            border: 1px solid rgba(255, 255, 255, .15);
+            color: rgba(255, 255, 255, .6);
+            border-radius: 4px;
+            padding: 6px 14px;
+            font-family: var(--mono);
+            font-size: 11px;
+            cursor: none;
+            transition: all .2s;
+            letter-spacing: .05em
+        }
+
+        .code-copy:hover {
+            background: rgba(255, 255, 255, .16);
+            color: #fff
+        }
+
+        .code-copy.copied {
+            color: #A3D9A3;
+            border-color: rgba(163, 217, 163, .4)
+        }
+
+        /* ── RSVP FORM — MEDIUM RESPONSE STYLE ── */
+        .rsvp-section {
+            max-width: var(--col);
+            margin: 0 auto;
+            padding: 0 20px 80px
+        }
+
+        .response-header {
+            font-family: var(--serif);
+            font-size: clamp(20px, 3.5vw, 28px);
+            font-weight: 700;
+            letter-spacing: -.03em;
+            color: var(--ink);
+            margin-bottom: 6px
+        }
+
+        .response-sub {
+            font-family: var(--sans);
+            font-size: 14px;
+            color: var(--ink-3);
+            margin-bottom: 28px;
+            font-weight: 300
+        }
+
+        .response-stats {
+            display: flex;
+            gap: 24px;
+            margin-bottom: 36px;
+            flex-wrap: wrap
+        }
+
+        .response-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--sans);
+            font-size: 13px;
+            color: var(--ink-3);
+            font-weight: 300
+        }
+
+        .response-stat strong {
+            font-family: var(--serif);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--ink);
+            letter-spacing: -.02em;
+            font-style: normal
+        }
+
+        .form-row {
+            margin-bottom: 20px
+        }
+
+        .form-label {
+            font-family: var(--sans);
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--ink);
+            margin-bottom: 6px;
+            display: block;
+            letter-spacing: .01em
+        }
+
+        .form-input {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 12px 16px;
+            font-family: var(--serif);
+            font-size: 16px;
+            color: var(--ink);
+            background: var(--white);
+            outline: none;
+            transition: border-color .2s;
+            font-style: italic
+        }
+
+        .form-input:focus {
+            border-color: var(--ink)
+        }
+
+        .form-input::placeholder {
+            color: var(--ink-4);
+            font-style: italic
+        }
+
+        textarea.form-input {
+            min-height: 100px;
+            resize: vertical;
+            font-style: italic
+        }
+
+        select.form-input {
+            appearance: none;
+            cursor: none;
+            font-style: normal;
+            font-family: var(--sans)
+        }
+
+        .guests-row {
+            display: flex;
+            gap: 8px
+        }
+
+        .guest-btn {
+            flex: 1;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 12px;
+            font-family: var(--sans);
+            font-size: 15px;
+            color: var(--ink-3);
+            background: var(--white);
+            cursor: none;
+            transition: all .2s
+        }
+
+        .guest-btn.active {
+            border-color: var(--ink);
+            color: var(--ink);
+            background: var(--tag-bg)
+        }
+
+        .submit-btn {
+            background: var(--green);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            padding: 14px 32px;
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: none;
+            transition: all .25s;
+            letter-spacing: .01em;
+            margin-top: 8px
+        }
+
+        .submit-btn:hover {
+            background: #136b10;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(26, 137, 23, .25)
+        }
+
+        /* ── RESPONSES (COMMENTS/WISHES) ── */
+        .responses-section {
+            max-width: var(--col);
+            margin: 0 auto;
+            padding: 0 20px 80px
+        }
+
+        .responses-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 28px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .responses-title {
+            font-family: var(--serif);
+            font-size: clamp(18px, 3vw, 24px);
+            font-weight: 700;
+            letter-spacing: -.02em
+        }
+
+        .responses-count {
+            font-family: var(--sans);
+            font-size: 13px;
+            color: var(--ink-3);
+            font-weight: 300
+        }
+
+        .response-item {
+            padding: 24px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            gap: 14px;
+            opacity: 0;
+            transform: translateY(14px);
+            transition: .5s ease
+        }
+
+        .response-item.visible {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .response-ava {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--sans);
+            font-size: 13px;
+            font-weight: 600;
+            color: #fff;
+            flex-shrink: 0
+        }
+
+        .response-body {
+            flex: 1;
+            min-width: 0
+        }
+
+        .response-name {
+            font-family: var(--sans);
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--ink);
+            margin-bottom: 2px
+        }
+
+        .response-meta {
+            font-family: var(--sans);
+            font-size: 12px;
+            color: var(--ink-4);
+            margin-bottom: 10px;
+            font-weight: 300
+        }
+
+        .response-text {
+            font-family: var(--serif);
+            font-size: 16px;
+            color: var(--ink-2);
+            line-height: 1.65;
+            font-weight: 300
+        }
+
+        .response-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 10px
+        }
+
+        .response-action {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-family: var(--sans);
+            font-size: 12px;
+            color: var(--ink-4);
+            cursor: none;
+            transition: color .2s;
+            background: none;
+            border: none;
+            font-weight: 300
+        }
+
+        .response-action:hover {
+            color: var(--ink-3)
+        }
+
+        .response-action.liked {
+            color: var(--green)
+        }
+
+        /* ── GALLERY — EDITORIAL GRID ── */
+        .gallery-section-wrap {
+            max-width: var(--col-wide);
+            margin: 0 auto;
+            padding: 0 20px 64px
+        }
+
+        .gallery-editorial {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: 220px;
+            gap: 6px
+        }
+
+        @media(max-width:640px) {
+            .gallery-editorial {
+                grid-template-columns: repeat(2, 1fr);
+                grid-auto-rows: 170px
+            }
+        }
+
+        .gallery-cell {
+            background: var(--tag-bg);
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            cursor: none;
+            transition: filter .3s
+        }
+
+        .gallery-cell:hover {
+            filter: brightness(.9)
+        }
+
+        .gallery-cell:nth-child(1) {
+            grid-column: span 2;
+            grid-row: span 2
+        }
+
+        .gallery-cell:nth-child(5) {
+            grid-column: span 2
+        }
+
+        .gallery-cell-emoji {
+            font-size: clamp(28px, 6vw, 52px);
+            transition: transform .4s
+        }
+
+        .gallery-cell:hover .gallery-cell-emoji {
+            transform: scale(1.1)
+        }
+
+        .gallery-cell-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 50%, rgba(0, 0, 0, .45));
+            opacity: 0;
+            transition: opacity .3s
+        }
+
+        .gallery-cell:hover .gallery-cell-overlay {
+            opacity: 1
+        }
+
+        .gallery-cell-label {
+            position: absolute;
+            bottom: 12px;
+            left: 14px;
+            font-family: var(--sans);
+            font-size: 11px;
+            color: rgba(255, 255, 255, .85);
+            letter-spacing: .08em;
+            text-transform: uppercase;
+            opacity: 0;
+            transition: opacity .3s;
+            font-weight: 400
+        }
+
+        .gallery-cell:hover .gallery-cell-label {
+            opacity: 1
+        }
+
+        /* Bg colors for cells */
+        .gallery-cell:nth-child(1) {
+            background: linear-gradient(135deg, #E8E0D8, #D4C8BC)
+        }
+
+        .gallery-cell:nth-child(2) {
+            background: linear-gradient(135deg, #E0E8E0, #C8D8C8)
+        }
+
+        .gallery-cell:nth-child(3) {
+            background: linear-gradient(135deg, #E8E4DC, #D8D0C4)
+        }
+
+        .gallery-cell:nth-child(4) {
+            background: linear-gradient(135deg, #DDE4E8, #C8D4DC)
+        }
+
+        .gallery-cell:nth-child(5) {
+            background: linear-gradient(135deg, #E4DCE8, #D0C4D8)
+        }
+
+        .gallery-cell:nth-child(6) {
+            background: linear-gradient(135deg, #E8DDD8, #D4C4BC)
+        }
+
+        /* ── TIMELINE — NUMBERED SECTIONS ── */
+        .story-section {
+            margin: 0 0 48px;
+            padding: 40px;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            position: relative;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: .7s ease
+        }
+
+        .story-section.visible {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .story-num {
+            position: absolute;
+            top: -16px;
+            left: 40px;
+            background: var(--ink);
+            color: #fff;
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: .1em;
+            padding: 4px 14px;
+            border-radius: 2px
+        }
+
+        .story-chapter {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: var(--green);
+            margin-bottom: 6px
+        }
+
+        .story-date {
+            font-family: var(--sans);
+            font-size: 12px;
+            color: var(--ink-4);
+            margin-bottom: 10px;
+            font-weight: 300
+        }
+
+        .story-title {
+            font-family: var(--serif);
+            font-size: clamp(20px, 3.5vw, 26px);
+            font-weight: 700;
+            letter-spacing: -.03em;
+            color: var(--ink);
+            margin-bottom: 10px
+        }
+
+        .story-text {
+            font-family: var(--serif);
+            font-size: 16px;
+            color: var(--ink-3);
+            line-height: 1.75;
+            font-weight: 300
+        }
+
+        /* ── FOOTER ── */
+        .article-footer {
+            border-top: 1px solid var(--border);
+            padding: 48px 20px 60px;
+            max-width: var(--col);
+            margin: 0 auto;
+            text-align: center
+        }
+
+        .footer-names {
+            font-family: var(--serif);
+            font-size: clamp(24px, 5vw, 38px);
+            font-weight: 700;
+            letter-spacing: -.04em;
+            color: var(--ink);
+            margin-bottom: 8px
+        }
+
+        .footer-names em {
+            font-style: italic;
+            font-weight: 300;
+            color: var(--ink-3)
+        }
+
+        .footer-tagline {
+            font-family: var(--serif);
+            font-size: 16px;
+            font-style: italic;
+            color: var(--ink-4);
+            margin-bottom: 20px;
+            font-weight: 300
+        }
+
+        .footer-tags {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 32px
+        }
+
+        .footer-tag {
+            font-family: var(--sans);
+            font-size: 12px;
+            color: var(--ink-3);
+            background: var(--tag-bg);
+            border-radius: 999px;
+            padding: 6px 14px;
+            cursor: none;
+            transition: all .2s;
+            font-weight: 400
+        }
+
+        .footer-tag:hover {
+            background: var(--border);
+            color: var(--ink)
+        }
+
+        .footer-brand {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--ink-4);
+            letter-spacing: .08em
+        }
+
+        /* ── CLAP BTN ── */
+        .clap-section {
+            max-width: var(--col);
+            margin: 0 auto;
+            padding: 32px 20px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border)
+        }
+
+        .clap-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border);
+            background: var(--white);
+            cursor: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            transition: all .2s;
+            position: relative;
+            flex-shrink: 0
+        }
+
+        .clap-btn:hover {
+            border-color: var(--ink);
+            transform: scale(1.05)
+        }
+
+        .clap-btn.clapped {
+            border-color: var(--green);
+            background: var(--green-lt);
+            animation: clap-pop .3s ease
+        }
+
+        @keyframes clap-pop {
+            0% {
+                transform: scale(1)
+            }
+
+            50% {
+                transform: scale(1.2)
+            }
+
+            100% {
+                transform: scale(1)
+            }
+        }
+
+        .clap-count {
+            font-family: var(--sans);
+            font-size: 13px;
+            color: var(--ink-3);
+            font-weight: 300
+        }
+
+        .clap-text {
+            font-family: var(--serif);
+            font-size: 14px;
+            color: var(--ink-3);
+            font-style: italic;
+            font-weight: 300
+        }
+
+        /* ── SCROLL REVEAL ── */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: .7s ease
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(12px);
+            background: var(--ink);
+            color: #fff;
+            font-family: var(--sans);
+            font-size: 13px;
+            padding: 12px 24px;
+            border-radius: 999px;
+            z-index: 9999;
+            opacity: 0;
+            transition: all .3s;
+            pointer-events: none;
+            white-space: nowrap;
+            font-weight: 400
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0)
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+    <div class="progress-bar" id="progressBar"></div>
+
+    <!-- ══════════════════════════
+     OPENING
+══════════════════════════ -->
+    <div id="opening">
+        <div class="splash-logo">
+            <div class="splash-logo-m">M</div>
+            <span class="splash-logo-text">Wedding</span>
+        </div>
+
+        <p class="splash-tag">A Love Story · Published on Medium</p>
+        <h1 class="splash-title">
+            Nazma <em>&amp;</em> Guntur<br>
+            <em>Are Getting Married</em>
+        </h1>
+        <p class="splash-deck">A long-form story about two people, one bowling alley, and a lifetime ahead.</p>
+        <div class="splash-divider"></div>
+
+        <div class="splash-dear">
+            <p class="splash-dear">Kepada yang terhormat,</p>
+            <p class="splash-dear-name">Tamu Undangan</p>
+        </div>
+
+        <div class="splash-meta">
+            <div class="splash-author-ava">A&amp;Z</div>
+            <span>Nazma &amp; Guntur</span>
+            <div class="splash-meta-dot"></div>
+            <span>8 min read</span>
+            <div class="splash-meta-dot"></div>
+            <span>24 Mei 2026</span>
+        </div>
+
+        <button class="open-btn" onclick="openInvitation()">
+            Buka Undangan →
+        </button>
+        <p class="splash-est">EST. JUNE 2025 · TANGERANG</p>
+    </div>
+
+    <!-- ══════════════════════════
+     MAIN
+══════════════════════════ -->
+    <div id="main">
+
+        <!-- TOPBAR -->
+        <header class="topbar" id="topbar">
+            <a class="topbar-logo" href="#home">
+                <div class="topbar-logo-m">M</div>
+                <span class="topbar-logo-text">Wedding</span>
+            </a>
+            <nav class="topbar-nav">
+                <a href="#story" id="nav-story">Story</a>
+                <a href="#event" id="nav-event">Acara</a>
+                <a href="#gallery-sec" id="nav-gallery">Gallery</a>
+                <a href="#rsvp-sec" id="nav-rsvp">RSVP</a>
+            </nav>
+            <a href="#rsvp-sec" class="topbar-cta">Konfirmasi →</a>
+        </header>
+
+        <!-- ARTICLE HEADER -->
+        <div class="article-header" id="home">
+            <div class="article-tag">💚 Wedding Story</div>
+            <h1 class="article-h1">Dua Jiwa, Satu Janji: Kisah Nazma &amp; Guntur Menuju Pelaminan</h1>
+            <p class="article-deck">Dari bowling, sushi, dan es krim — sebuah perjalanan cinta yang berakhir di altar
+                dan baru saja dimulai di kehidupan.</p>
+            <div class="article-byline">
+                <div class="byline-ava">A&amp;Z</div>
+                <div class="byline-info">
+                    <div class="byline-name">Nazma Putri &amp; Guntur Putra</div>
+                    <div class="byline-meta">Minggu, 24 Mei 2026 · 8 min read</div>
+                </div>
+                <button class="byline-follow" id="followBtn" onclick="toggleFollow(this)">Follow</button>
+            </div>
+            <div class="article-actions">
+                <div class="actions-left">
+                    <button class="action-btn" id="likeBtn" onclick="toggleLike(this)">
+                        <svg viewBox="0 0 24 24">
+                            <path
+                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
+                        </svg>
+                        <span id="likeCount">248</span>
+                    </button>
+                    <button class="action-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                        </svg>
+                        <span>42</span>
+                    </button>
+                </div>
+                <div class="actions-right">
+                    <span class="read-time-badge">8 MIN READ</span>
+                    <button class="action-btn" onclick="shareStory()">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="18" cy="5" r="3" />
+                            <circle cx="6" cy="12" r="3" />
+                            <circle cx="18" cy="19" r="3" />
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
+                        </svg>
+                    </button>
+                    <button class="action-btn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ARTICLE BODY -->
+        <div class="article-body" id="story">
+
+            <p class="drop-cap">Ada momen-momen kecil dalam hidup yang tampak biasa, namun diam-diam mengubah segalanya.
+                Sebuah ajakan bermain bowling. Meja sushi di pojok restoran. Dua sendok es krim dalam satu sore. Pada
+                Juni 2025, tanpa rencana, tanpa naskah — Nazma dan Guntur menemukan satu sama lain.</p>
+
+            <p>Ini bukan kisah tentang cinta pada pandangan pertama. Ini tentang bagaimana dua orang perlahan menyadari
+                bahwa percakapan bersama terasa mudah, tawa bersama terasa ringan, dan waktu bersama selalu terasa
+                terlalu singkat.</p>
+
+            <div class="pullquote">
+                <p>"Saya tidak pernah merencanakan untuk jatuh cinta hari itu. Tapi nyatanya, di antara suara dentuman
+                    bowling dan tawa yang tak tertahan, saya mulai memilih untuk selalu kembali."</p>
+                <cite>— Nazma Putri</cite>
+            </div>
+
+            <p>Bulan-bulan berikutnya adalah tentang <span class="highlight">menemukan ritme satu sama lain</span>.
+                Percakapan yang berlanjut hingga dini hari. Rencana-rencana kecil yang secara konsisten terwujud. Dan
+                pelan-pelan, tanpa terasa, harapan menjadi kepastian.</p>
+
+            <p class="footnote">Keluarga kedua pihak menjadi saksi dan pendukung terbesar dalam setiap langkah
+                perjalanan ini.</p>
+
+            <h2 id="story">Perkenalan Dua Keluarga</h2>
+
+            <p>November 2025 menjadi babak baru. Di hadapan dua keluarga yang hangat dan penuh doa, Guntur resmi melamar
+                Nazma. Sebuah momen yang sederhana namun kaya makna — karena dalam kebudayaan kita, restu keluarga
+                adalah fondasi dari segalanya.</p>
+
+            <div class="img-block reveal">
+                <div class="img-placeholder"><span>💍</span><small>Momen Lamaran</small></div>
+                <p class="img-caption">November 2025 — Sebuah janji di hadapan keluarga tercinta.</p>
+            </div>
+
+            <!-- COUPLE PROFILES -->
+            <div class="profile-section reveal">
+                <div class="profile-card">
+                    <div class="profile-ava" style="background:linear-gradient(135deg,#E8E0D8,#C8B8B0)">👰</div>
+                    <div class="profile-body">
+                        <p class="profile-role">The Bride</p>
+                        <div class="profile-name">Nazma Putri</div>
+                        <p class="profile-parents">Putri dari Bp. Suparman &amp; Ibu Sri Wahyuni</p>
+                    </div>
+                    <button class="profile-follow-btn">Follow</button>
+                </div>
+                <div class="profile-card">
+                    <div class="profile-ava" style="background:linear-gradient(135deg,#D8E0E8,#B0B8C8)">🤵</div>
+                    <div class="profile-body">
+                        <p class="profile-role">The Groom</p>
+                        <div class="profile-name">Guntur Putra</div>
+                        <p class="profile-parents">Putra dari Bp. Sutrisno &amp; Ibu Hartini</p>
+                    </div>
+                    <button class="profile-follow-btn">Follow</button>
+                </div>
+            </div>
+
+            <div class="pullquote">
+                <p>"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu
+                    sendiri, agar kamu cenderung dan merasa tenteram kepadanya."</p>
+                <cite>— QS. Ar-Rum : 21</cite>
+            </div>
+
+            <h2 id="event">Detail Acara</h2>
+            <p>Kami dengan penuh sukacita mengundang Anda untuk menjadi bagian dari hari paling istimewa dalam
+                perjalanan kami. Berikut detail lengkap rangkaian acara:</p>
+
+            <!-- EVENT CARDS -->
+            <div class="embed-card reveal">
+                <div class="embed-card-header">
+                    <div class="embed-card-icon" style="background:#F2F2F2">🕌</div>
+                    <div>
+                        <div class="embed-card-title">Akad Nikah</div>
+                        <div class="embed-card-sub">Minggu, 24 Mei 2026</div>
+                    </div>
+                </div>
+                <div class="embed-card-body">
+                    <div class="embed-detail">
+                        <div class="embed-detail-icon">🕗</div>
+                        <div class="embed-detail-text">08.00 – 10.00 WIB</div>
+                    </div>
+                    <div class="embed-detail">
+                        <div class="embed-detail-icon">📍</div>
+                        <div class="embed-detail-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug,
+                            Tangerang</div>
+                    </div>
+                    <div class="embed-detail">
+                        <div class="embed-detail-icon">👔</div>
+                        <div class="embed-detail-text">Dress code: Formal / Semi-formal</div>
+                    </div>
+                </div>
+                <div class="embed-card-footer">
+                    <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank">Buka di Google Maps →</a>
+                    <span>08:00 WIB</span>
+                </div>
+            </div>
+
+            <div class="embed-card reveal">
+                <div class="embed-card-header">
+                    <div class="embed-card-icon" style="background:#F2F2F2">🎊</div>
+                    <div>
+                        <div class="embed-card-title">Resepsi Pernikahan</div>
+                        <div class="embed-card-sub">Minggu, 24 Mei 2026</div>
+                    </div>
+                </div>
+                <div class="embed-card-body">
+                    <div class="embed-detail">
+                        <div class="embed-detail-icon">🕚</div>
+                        <div class="embed-detail-text">11.00 – 13.00 WIB</div>
+                    </div>
+                    <div class="embed-detail">
+                        <div class="embed-detail-icon">📍</div>
+                        <div class="embed-detail-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug,
+                            Tangerang</div>
+                    </div>
+                    <div class="embed-detail">
+                        <div class="embed-detail-icon">🍽️</div>
+                        <div class="embed-detail-text">Makan siang dan hiburan disediakan</div>
+                    </div>
+                </div>
+                <div class="embed-card-footer">
+                    <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank">Buka di Google Maps →</a>
+                    <span>11:00 WIB</span>
+                </div>
+            </div>
+
+            <h3>Countdown ke Hari Bahagia</h3>
+        </div>
+
+        <!-- COUNTDOWN -->
+        <div class="countdown-card reveal">
+            <div class="countdown-inner">
+                <div class="countdown-label">Live Countdown · 24.05.2026</div>
+                <div class="countdown-grid">
+                    <div class="countdown-item">
+                        <div class="countdown-num" id="cdDays">00</div>
+                        <div class="countdown-unit">Hari</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-num" id="cdHours">00</div>
+                        <div class="countdown-unit">Jam</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-num" id="cdMinutes">00</div>
+                        <div class="countdown-unit">Menit</div>
+                    </div>
+                    <div class="countdown-item">
+                        <div class="countdown-num" id="cdSeconds">00</div>
+                        <div class="countdown-unit">Detik</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTINUE BODY -->
+        <div class="article-body">
+
+            <h2>Perjalanan Kami — Chapter by Chapter</h2>
+
+            <div class="story-section">
+                <div class="story-num">01</div>
+                <p class="story-chapter">Chapter I</p>
+                <p class="story-date">Juni 2025</p>
+                <h3 class="story-title">Awal Pertemuan</h3>
+                <p class="story-text">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir
+                    di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami yang indah. Tidak ada
+                    yang tahu hari itu akan menjadi awal dari segalanya.</p>
+            </div>
+
+            <div class="story-section">
+                <div class="story-num">02</div>
+                <p class="story-chapter">Chapter II</p>
+                <p class="story-date">November 2025</p>
+                <h3 class="story-title">Lamaran</h3>
+                <p class="story-text">Seiring waktu, rasa itu tumbuh menjadi keyakinan yang dalam. Di hadapan keluarga
+                    tercinta, kami mengikat janji dalam sebuah langkah awal yang penuh makna menuju masa depan bersama.
+                </p>
+            </div>
+
+            <div class="story-section">
+                <div class="story-num">03</div>
+                <p class="story-chapter">Chapter III — Final</p>
+                <p class="story-date">24 Mei 2026</p>
+                <h3 class="story-title">Pernikahan</h3>
+                <p class="story-text">Kini, kami memilih untuk melangkah lebih jauh bersama. Dalam ikatan suci
+                    pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya — dan Anda
+                    adalah bagian dari momen itu.</p>
+            </div>
+
+            <h2 id="gallery-sec">Galeri Foto</h2>
+            <p>Foto-foto yang mengabadikan momen terbaik dari perjalanan kami bersama.</p>
+        </div>
+
+        <!-- GALLERY -->
+        <div class="gallery-section-wrap reveal">
+            <div class="gallery-editorial" id="galleryGrid">
+                <div class="gallery-cell">
+                    <div class="gallery-cell-emoji">💑</div>
+                    <div class="gallery-cell-overlay"></div>
+                    <div class="gallery-cell-label">Together</div>
+                </div>
+                <div class="gallery-cell">
+                    <div class="gallery-cell-emoji">🌸</div>
+                    <div class="gallery-cell-overlay"></div>
+                    <div class="gallery-cell-label">Blossom</div>
+                </div>
+                <div class="gallery-cell">
+                    <div class="gallery-cell-emoji">💍</div>
+                    <div class="gallery-cell-overlay"></div>
+                    <div class="gallery-cell-label">The Ring</div>
+                </div>
+                <div class="gallery-cell">
+                    <div class="gallery-cell-emoji">🕊️</div>
+                    <div class="gallery-cell-overlay"></div>
+                    <div class="gallery-cell-label">Serenity</div>
+                </div>
+                <div class="gallery-cell">
+                    <div class="gallery-cell-emoji">🌹 &nbsp; 💐 &nbsp; ✨</div>
+                    <div class="gallery-cell-overlay"></div>
+                    <div class="gallery-cell-label">Moments</div>
+                </div>
+                <div class="gallery-cell">
+                    <div class="gallery-cell-emoji">🥂</div>
+                    <div class="gallery-cell-overlay"></div>
+                    <div class="gallery-cell-label">Cheers</div>
+                </div>
+            </div>
+            <p class="img-caption" style="margin-top:12px">Foto-foto ini akan segera diperbarui menjelang hari H.</p>
+        </div>
+
+        <!-- GIFT -->
+        <div class="article-body">
+            <h2>Amplop Digital</h2>
+            <p>Doa restu Bapak/Ibu/Saudara/i sudah sangat berarti bagi kami. Namun jika berkenan memberikan tanda kasih,
+                berikut informasi rekening kami:</p>
+
+            <div class="code-block" data-label="BCA" id="bcaBlock">
+                <div><span class="code-key">bank</span> : <span class="code-str">"Bank Central Asia (BCA)"</span></div>
+                <div><span class="code-key">atas_nama</span>: <span class="code-str">"Guntur Putra"</span></div>
+                <div><span class="code-key">nomor</span> : <span class="code-val">"8210 3705 61"</span></div>
+                <button class="code-copy" onclick="copyCode('8210370561',this)">copy</button>
+            </div>
+
+            <div class="code-block" data-label="BNI" id="bniBlock">
+                <div><span class="code-key">bank</span> : <span class="code-str">"Bank Negara Indonesia (BNI)"</span>
+                </div>
+                <div><span class="code-key">atas_nama</span>: <span class="code-str">"Nazma Putri"</span></div>
+                <div><span class="code-key">nomor</span> : <span class="code-val">"1192 9784 03"</span></div>
+                <button class="code-copy" onclick="copyCode('1192978403',this)">copy</button>
+            </div>
+        </div>
+
+        <!-- CLAP -->
+        <div class="clap-section reveal">
+            <button class="clap-btn" id="clapBtn" onclick="doClap()">👏</button>
+            <div>
+                <div class="clap-count" id="clapCount">248 tepuk tangan</div>
+                <div class="clap-text">Klik untuk memberikan dukungan kepada pasangan ini.</div>
+            </div>
+        </div>
+
+        <!-- RSVP -->
+        <div class="article-body">
+            <h2 id="rsvp-sec">Konfirmasi Kehadiran</h2>
+            <p>Kami sangat berharap Anda dapat hadir dan berbagi kebahagiaan bersama kami. Mohon konfirmasi kehadiran
+                Anda melalui formulir di bawah ini.</p>
+        </div>
+
+        <div class="rsvp-section">
+            <div class="response-header">Tinggalkan Respons Anda</div>
+            <div class="response-sub">Konfirmasi kehadiran dan tulis ucapan untuk kedua mempelai.</div>
+
+            <div class="response-stats">
+                <div class="response-stat"><strong id="statHadir">0</strong>&nbsp;Hadir</div>
+                <div class="response-stat"><strong id="statTamu">0</strong>&nbsp;Tamu</div>
+                <div class="response-stat"><strong id="statWish">2</strong>&nbsp;Ucapan</div>
+            </div>
+
+            <div class="form-row">
+                <label class="form-label">Nama Lengkap</label>
+                <input type="text" class="form-input" id="rsvpName" placeholder="Tulis nama Anda...">
+            </div>
+            <div class="form-row">
+                <label class="form-label">Status Kehadiran</label>
+                <select class="form-input" id="rsvpStatus">
+                    <option value="" disabled selected>Pilih status kehadiran...</option>
+                    <option value="hadir">✓ Insya Allah Hadir</option>
+                    <option value="tidak">Tidak Dapat Hadir</option>
+                </select>
+            </div>
+            <div class="form-row">
+                <label class="form-label">Jumlah Tamu</label>
+                <div class="guests-row">
+                    <button class="guest-btn active" onclick="selectGuests(1,this)">1</button>
+                    <button class="guest-btn" onclick="selectGuests(2,this)">2</button>
+                    <button class="guest-btn" onclick="selectGuests(3,this)">3</button>
+                    <button class="guest-btn" onclick="selectGuests(4,this)">4+</button>
+                </div>
+            </div>
+            <div class="form-row">
+                <label class="form-label">Ucapan &amp; Doa</label>
+                <textarea class="form-input" id="rsvpMsg"
+                    placeholder="Tulis ucapan tulus Anda untuk kedua mempelai..."></textarea>
+            </div>
+            <button class="submit-btn" onclick="submitRSVP()">Kirim Respons →</button>
+        </div>
+
+        <!-- RESPONSES/WISHES -->
+        <div class="responses-section">
+            <div class="responses-header">
+                <span class="responses-title">Ucapan &amp; Doa</span>
+                <span class="responses-count" id="responseCount">2 respons</span>
+            </div>
+            <div id="wishesList">
+                <div class="response-item visible">
+                    <div class="response-ava" style="background:#2E7D32">SK</div>
+                    <div class="response-body">
+                        <div class="response-name">Siti Khadijah</div>
+                        <div class="response-meta">✓ Hadir · 2 tamu · baru saja</div>
+                        <div class="response-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah,
+                            mawaddah, warahmah. Bahagia selalu ya! 💕</div>
+                        <div class="response-actions">
+                            <button class="response-action" onclick="likeResponse(this)">👏 <span>12</span></button>
+                            <button class="response-action">Balas</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="response-item visible">
+                    <div class="response-ava" style="background:#1565C0">BR</div>
+                    <div class="response-body">
+                        <div class="response-name">Budi Raharjo</div>
+                        <div class="response-meta">✓ Hadir · 1 tamu · 2 jam lalu</div>
+                        <div class="response-text">Alhamdulillah akhirnya! Selamat untuk kalian berdua. Semoga langkah
+                            ini membawa kebahagiaan yang tak terhingga dan keberkahan seumur hidup. 🤍</div>
+                        <div class="response-actions">
+                            <button class="response-action" onclick="likeResponse(this)">👏 <span>8</span></button>
+                            <button class="response-action">Balas</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ARTICLE FOOTER -->
+        <div class="article-footer">
+            <div class="footer-names">Nazma <em>&amp;</em> Guntur</div>
+            <p class="footer-tagline">"And they lived, loved, and grew together — forever."</p>
+            <p style="font-family:var(--sans);font-size:12px;color:var(--ink-4);margin-bottom:20px;font-weight:300">24
+                Mei 2026 · Tangerang</p>
+            <div class="footer-tags">
+                <span class="footer-tag">Wedding</span>
+                <span class="footer-tag">Love Story</span>
+                <span class="footer-tag">24 Mei 2026</span>
+                <span class="footer-tag">Tangerang</span>
+                <span class="footer-tag">Pernikahan</span>
+            </div>
+            <p class="footer-brand">PUBLISHED ON WEDDING MEDIUM · EST. 2026</p>
+        </div>
+
+    </div><!-- /main -->
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        /* ── CURSOR ── */
+        const cursor = document.getElementById('cursor'), ring = document.getElementById('cursorRing');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+        document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cursor.style.left = mx + 'px'; cursor.style.top = my + 'px' });
+        (function animRing() { rx += (mx - rx) * .15; ry += (my - ry) * .15; ring.style.left = rx + 'px'; ring.style.top = ry + 'px'; requestAnimationFrame(animRing) })();
+        document.querySelectorAll('a,button,.gallery-cell,.embed-card,.profile-card,.story-section').forEach(el => {
+            el.addEventListener('mouseenter', () => document.body.classList.add('link-hover'));
+            el.addEventListener('mouseleave', () => document.body.classList.remove('link-hover'));
+        });
+
+        /* ── OPEN ── */
+        function openInvitation() {
+            document.getElementById('opening').classList.add('hide');
+            document.getElementById('main').classList.add('show');
+            setTimeout(() => { document.getElementById('topbar').classList.add('show') }, 1200);
+            startCountdown();
+            initReveal();
+            initProgress();
+        }
+
+        /* ── COUNTDOWN ── */
+        function startCountdown() {
+            const target = new Date('2026-05-24T08:00:00');
+            function tick() {
+                const d = target - new Date();
+                if (d <= 0) { ['cdDays', 'cdHours', 'cdMinutes', 'cdSeconds'].forEach(id => document.getElementById(id).textContent = '00'); return }
+                document.getElementById('cdDays').textContent = String(Math.floor(d / 86400000)).padStart(2, '0');
+                document.getElementById('cdHours').textContent = String(Math.floor((d % 86400000) / 3600000)).padStart(2, '0');
+                document.getElementById('cdMinutes').textContent = String(Math.floor((d % 3600000) / 60000)).padStart(2, '0');
+                document.getElementById('cdSeconds').textContent = String(Math.floor((d % 60000) / 1000)).padStart(2, '0');
+            }
+            tick(); setInterval(tick, 1000);
+        }
+
+        /* ── PROGRESS BAR ── */
+        function initProgress() {
+            window.addEventListener('scroll', () => {
+                const el = document.documentElement;
+                const pct = (el.scrollTop || document.body.scrollTop) / (el.scrollHeight - el.clientHeight) * 100;
+                document.getElementById('progressBar').style.width = pct + '%';
+            });
+        }
+
+        /* ── SCROLL REVEAL ── */
+        function initReveal() {
+            const obs = new IntersectionObserver(entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible') }), { threshold: .1 });
+            document.querySelectorAll('.reveal,.story-section,.response-item').forEach(el => obs.observe(el));
+        }
+
+        /* ── LIKE ── */
+        let liked = false;
+        function toggleLike(btn) {
+            liked = !liked;
+            const count = document.getElementById('likeCount');
+            const cur = parseInt(count.textContent);
+            count.textContent = liked ? cur + 1 : cur - 1;
+            btn.classList.toggle('liked', liked);
+            if (liked) showToast('❤️ Ditambahkan ke favorit!');
+        }
+
+        /* ── FOLLOW ── */
+        let following = false;
+        function toggleFollow(btn) {
+            following = !following;
+            btn.textContent = following ? 'Following' : 'Follow';
+            btn.style.background = following ? 'var(--ink)' : 'transparent';
+            btn.style.color = following ? '#fff' : 'var(--ink)';
+            showToast(following ? '✓ Mengikuti Nazma & Gunturr!' : 'Berhenti mengikuti.');
+        }
+
+        /* ── CLAP ── */
+        let clapCount = 248, clapped = false;
+        function doClap() {
+            clapCount++; clapped = true;
+            document.getElementById('clapCount').textContent = clapCount + ' tepuk tangan';
+            document.getElementById('clapBtn').classList.add('clapped');
+            showToast('👏 Terima kasih atas dukungannya!');
+        }
+
+        /* ── SHARE ── */
+        function shareStory() {
+            if (navigator.share) { navigator.share({ title: 'Nazma & Gunturr — Wedding Story', url: window.location.href }) }
+            else { navigator.clipboard.writeText(window.location.href).then(() => showToast('🔗 Link tersalin!')) }
+        }
+
+        /* ── RESPONSE LIKE ── */
+        function likeResponse(btn) {
+            const span = btn.querySelector('span');
+            const n = parseInt(span.textContent);
+            span.textContent = n + 1;
+            btn.classList.add('liked');
+        }
+
+        /* ── COPY CODE ── */
+        function copyCode(text, btn) {
+            navigator.clipboard.writeText(text).then(() => {
+                btn.classList.add('copied'); btn.textContent = 'copied!';
+                showToast('✓ Nomor rekening tersalin!');
+                setTimeout(() => { btn.classList.remove('copied'); btn.textContent = 'copy' }, 2500);
+            }).catch(() => showToast('Salin manual: ' + text));
+        }
+
+        /* ── RSVP ── */
+        let guestCount = 1, totalHadir = 0, totalTamu = 0, totalWish = 2;
+        function selectGuests(n, btn) { guestCount = n; document.querySelectorAll('.guest-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active') }
+
+        function submitRSVP() {
+            const name = document.getElementById('rsvpName').value.trim();
+            const status = document.getElementById('rsvpStatus').value;
+            const msg = document.getElementById('rsvpMsg').value.trim();
+            if (!name || !status) { showToast('Mohon isi nama dan status kehadiran.'); return }
+            const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+            const colors = ['#2E7D32', '#1565C0', '#6A1B9A', '#BF360C', '#00695C', '#4527A0'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const statusTxt = status === 'hadir' ? `✓ Hadir · ${guestCount} tamu · baru saja` : 'Tidak dapat hadir · baru saja';
+            const finalMsg = msg || 'Selamat dan semoga bahagia selalu! Doa kami menyertai kalian.';
+            const item = document.createElement('div');
+            item.className = 'response-item';
+            item.innerHTML = `<div class="response-ava" style="background:${color}">${initials}</div><div class="response-body"><div class="response-name">${name}</div><div class="response-meta">${statusTxt}</div><div class="response-text">${finalMsg}</div><div class="response-actions"><button class="response-action" onclick="likeResponse(this)">👏 <span>0</span></button><button class="response-action">Balas</button></div></div>`;
+            document.getElementById('wishesList').prepend(item);
+            setTimeout(() => item.classList.add('visible'), 50);
+            if (status === 'hadir') { totalHadir++; totalTamu += guestCount }
+            totalWish++;
+            document.getElementById('statHadir').textContent = totalHadir;
+            document.getElementById('statTamu').textContent = totalTamu;
+            document.getElementById('statWish').textContent = totalWish;
+            document.getElementById('responseCount').textContent = totalWish + ' respons';
+            document.getElementById('rsvpName').value = '';
+            document.getElementById('rsvpStatus').value = '';
+            document.getElementById('rsvpMsg').value = '';
+            showToast('✓ Respons berhasil dikirim! Terima kasih.');
+            setTimeout(() => window.scrollTo({ top: document.getElementById('wishesList').offsetTop - 80, behavior: 'smooth' }), 500);
+        }
+
+        /* ── TOAST ── */
+        let toastT;
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            clearTimeout(toastT);
+            toastT = setTimeout(() => t.classList.remove('show'), 3000);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,2705 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zoom Wedding — Nazma & Gunturr</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Manrope:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ════════════════════════════════════════
+   ROOT — Zoom Design System
+════════════════════════════════════════ */
+        :root {
+            --z-bg: #1c1c1c;
+            --z-surface: #242424;
+            --z-card: #2d2d2d;
+            --z-panel: #1a1a1a;
+            --z-border: rgba(255, 255, 255, .1);
+            --z-blue: #2d8cff;
+            --z-blue-dark: #1a6fd4;
+            --z-blue-glow: rgba(45, 140, 255, .25);
+            --z-green: #30d158;
+            --z-red: #f00;
+            --z-orange: #ff9500;
+            --z-white: #ffffff;
+            --z-gray1: #e5e5e5;
+            --z-gray2: #a0a0a0;
+            --z-gray3: #666666;
+            --z-gray4: #3a3a3a;
+            --z-name-bg: rgba(0, 0, 0, .55);
+            --font-d: 'Cormorant Garamond', Georgia, serif;
+            --font-u: 'Manrope', sans-serif;
+            --r: 8px;
+            --r-lg: 12px;
+            --trans: all .22s ease;
+            --shadow: 0 4px 16px rgba(0, 0, 0, .5);
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--z-bg);
+            color: var(--z-white);
+            font-family: var(--font-u);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            user-select: none;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ════════════════════════════════════════
+   WAITING ROOM / OPENING
+════════════════════════════════════════ */
+        #waitingRoom {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: radial-gradient(ellipse at 30% 40%, #0a2a5e 0%, #0d1525 50%, #050505 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 24px;
+            transition: opacity .8s ease, transform .8s ease;
+        }
+
+        #waitingRoom.hide {
+            opacity: 0;
+            transform: scale(1.03);
+            pointer-events: none;
+        }
+
+        /* animated rings */
+        .wr-rings {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .wr-ring {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(45, 140, 255, .15);
+            animation: ring-pulse 4s ease-in-out infinite;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes ring-pulse {
+
+            0%,
+            100% {
+                opacity: .2;
+                transform: translate(-50%, -50%) scale(1);
+            }
+
+            50% {
+                opacity: .5;
+                transform: translate(-50%, -50%) scale(1.04);
+            }
+        }
+
+        .wr-zoom-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 32px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .wr-logo-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 14px;
+            background: var(--z-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(45, 140, 255, .45);
+        }
+
+        .wr-logo-icon svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+        }
+
+        .wr-logo-text {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--z-white);
+            letter-spacing: -.02em;
+        }
+
+        .wr-meeting-id {
+            font-size: 11px;
+            color: var(--z-gray2);
+            letter-spacing: .35em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .wr-title {
+            font-family: var(--font-d);
+            font-size: clamp(28px, 8vw, 56px);
+            font-style: italic;
+            color: var(--z-white);
+            line-height: 1.1;
+            margin-bottom: 6px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .wr-sub {
+            font-size: 13px;
+            color: var(--z-gray2);
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .wr-camera-preview {
+            width: clamp(220px, 55vw, 340px);
+            aspect-ratio: 4/3;
+            background: var(--z-card);
+            border-radius: var(--r-lg);
+            border: 2px solid var(--z-border);
+            margin-bottom: 24px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .wr-camera-preview video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: .7;
+        }
+
+        .wr-camera-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+        }
+
+        .wr-cam-label {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--z-name-bg);
+            backdrop-filter: blur(8px);
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 20px;
+            white-space: nowrap;
+        }
+
+        .wr-cam-controls {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 6px;
+        }
+
+        .wr-cam-ctrl {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, .55);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--trans);
+        }
+
+        .wr-cam-ctrl:hover {
+            background: rgba(255, 255, 255, .15);
+        }
+
+        .wr-guest-box {
+            background: rgba(255, 255, 255, .06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, .1);
+            border-radius: var(--r-lg);
+            padding: 16px 28px;
+            margin-bottom: 28px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .wr-guest-label {
+            font-size: 11px;
+            color: var(--z-gray2);
+            margin-bottom: 4px;
+        }
+
+        .wr-guest-name {
+            font-family: var(--font-d);
+            font-size: clamp(16px, 4vw, 22px);
+            font-style: italic;
+        }
+
+        .join-btn {
+            background: var(--z-blue);
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            padding: 14px 52px;
+            border-radius: var(--r-lg);
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(45, 140, 255, .4);
+            transition: var(--trans);
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .join-btn:hover {
+            background: var(--z-blue-dark);
+            transform: scale(1.03);
+        }
+
+        .join-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+        }
+
+        /* ════════════════════════════════════════
+   MAIN ZOOM UI
+════════════════════════════════════════ */
+        #zoomUI {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            background: var(--z-bg);
+            opacity: 0;
+            transition: opacity .7s ease .1s;
+            pointer-events: none;
+        }
+
+        #zoomUI.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        /* TOP BAR */
+        .zoom-topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            height: 48px;
+            flex-shrink: 0;
+            background: var(--z-panel);
+            border-bottom: 1px solid var(--z-border);
+            z-index: 10;
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .meeting-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meeting-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--z-white);
+            line-height: 1.1;
+        }
+
+        .meeting-time {
+            font-size: 11px;
+            color: var(--z-green);
+            font-weight: 600;
+        }
+
+        .encrypt-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(48, 209, 88, .1);
+            border: 1px solid rgba(48, 209, 88, .2);
+            border-radius: 20px;
+            padding: 3px 10px;
+            font-size: 10px;
+            color: var(--z-green);
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .topbar-btn {
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid var(--z-border);
+            border-radius: var(--r);
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--z-gray1);
+            cursor: pointer;
+            transition: var(--trans);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .topbar-btn:hover {
+            background: rgba(255, 255, 255, .12);
+        }
+
+        .topbar-btn.red {
+            background: rgba(240, 0, 0, .15);
+            border-color: rgba(240, 0, 0, .3);
+            color: #ff4d4d;
+        }
+
+        .topbar-btn.red:hover {
+            background: rgba(240, 0, 0, .25);
+        }
+
+        .record-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #ff4d4d;
+            animation: rec-blink 1.2s ease-in-out infinite;
+        }
+
+        @keyframes rec-blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .2
+            }
+        }
+
+        /* BODY — gallery + sidebar */
+        .zoom-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* VIEW AREA */
+        .view-area {
+            flex: 1;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--trans);
+        }
+
+        .view-area.with-panel {
+            margin-right: 0;
+        }
+
+        /* GALLERY GRID */
+        .gallery-view {
+            flex: 1;
+            display: grid;
+            gap: 6px;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(2, 1fr);
+        }
+
+        @media(max-width:760px) {
+            .gallery-view {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width:500px) {
+            .gallery-view {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* PARTICIPANT TILE */
+        .p-tile {
+            border-radius: var(--r-lg);
+            overflow: hidden;
+            position: relative;
+            background: var(--z-card);
+            cursor: pointer;
+            transition: var(--trans);
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 120px;
+        }
+
+        .p-tile:hover {
+            border-color: rgba(255, 255, 255, .2);
+        }
+
+        .p-tile.speaking {
+            border-color: var(--z-green);
+            box-shadow: 0 0 0 2px var(--z-green);
+        }
+
+        .p-tile.pinned {
+            border-color: var(--z-blue);
+        }
+
+        .p-tile.self {
+            border-color: rgba(45, 140, 255, .4);
+        }
+
+        .p-tile video,
+        .p-tile img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            position: absolute;
+            inset: 0;
+        }
+
+        .p-tile-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, .6) 100%);
+            pointer-events: none;
+        }
+
+        /* avatar fallback */
+        .p-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 800;
+            color: white;
+            position: relative;
+            z-index: 1;
+            flex-shrink: 0;
+        }
+
+        /* name label */
+        .p-name-bar {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background: var(--z-name-bg);
+            backdrop-filter: blur(8px);
+            border-radius: 4px;
+            padding: 3px 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--z-white);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            max-width: calc(100% - 16px);
+            z-index: 2;
+        }
+
+        .p-name-bar .mic-off {
+            font-size: 11px;
+            opacity: .8;
+        }
+
+        .p-name-bar .host-badge {
+            background: rgba(45, 140, 255, .35);
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: .05em;
+            padding: 1px 5px;
+            border-radius: 3px;
+            color: #7dbfff;
+        }
+
+        /* speaking indicator */
+        .speaking-ring {
+            position: absolute;
+            inset: -2px;
+            border-radius: calc(var(--r-lg)+2px);
+            border: 2px solid var(--z-green);
+            opacity: 0;
+            transition: opacity .2s;
+            pointer-events: none;
+            z-index: 3;
+            animation: speak-pulse .8s ease-in-out infinite;
+        }
+
+        .p-tile.speaking .speaking-ring {
+            opacity: 1;
+        }
+
+        @keyframes speak-pulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 2px rgba(48, 209, 88, .3)
+            }
+
+            50% {
+                box-shadow: 0 0 0 6px rgba(48, 209, 88, .1)
+            }
+        }
+
+        /* reactions overlay */
+        .p-reaction {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 26px;
+            z-index: 4;
+            animation: react-pop .4s ease-out, react-float 2s ease-in-out 0.4s forwards;
+        }
+
+        @keyframes react-pop {
+            from {
+                transform: scale(0)
+            }
+
+            to {
+                transform: scale(1)
+            }
+        }
+
+        @keyframes react-float {
+            0% {
+                transform: scale(1);
+                opacity: 1
+            }
+
+            100% {
+                transform: translateY(-40px) scale(.8);
+                opacity: 0
+            }
+        }
+
+        /* SPOTLIGHT / PINNED tile — featured */
+        .gallery-view .p-tile:first-child {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        @media(max-width:760px) {
+            .gallery-view .p-tile:first-child {
+                grid-column: span 1;
+                grid-row: span 1;
+            }
+        }
+
+        /* SECTION PANEL — slides overlay */
+        .section-overlay {
+            position: absolute;
+            inset: 0;
+            z-index: 20;
+            background: rgba(0, 0, 0, .92);
+            backdrop-filter: blur(8px);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            overflow-y: auto;
+            padding: 24px 16px 100px;
+            transition: opacity .3s;
+        }
+
+        .section-overlay.open {
+            display: flex;
+        }
+
+        .section-close {
+            position: fixed;
+            top: 56px;
+            right: 16px;
+            background: rgba(255, 255, 255, .1);
+            border: 1px solid var(--z-border);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            cursor: pointer;
+            z-index: 30;
+            transition: var(--trans);
+        }
+
+        .section-close:hover {
+            background: rgba(255, 255, 255, .2);
+        }
+
+        /* content panels inside overlay */
+        .content-panel {
+            width: 100%;
+            max-width: 760px;
+        }
+
+        .panel-section {
+            margin-bottom: 40px;
+        }
+
+        .panel-eyebrow {
+            font-size: 10px;
+            letter-spacing: .45em;
+            text-transform: uppercase;
+            color: var(--z-blue);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .panel-title {
+            font-family: var(--font-d);
+            font-size: clamp(26px, 5vw, 40px);
+            font-style: italic;
+            margin-bottom: 16px;
+            line-height: 1.15;
+        }
+
+        .panel-text {
+            font-size: 14px;
+            color: var(--z-gray2);
+            line-height: 1.75;
+            max-width: 560px;
+        }
+
+        /* couple cards inside panel */
+        .panel-couple {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        @media(max-width:500px) {
+            .panel-couple {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .p-couple-card {
+            background: var(--z-card);
+            border-radius: var(--r-lg);
+            overflow: hidden;
+            border: 1px solid var(--z-border);
+            transition: var(--trans);
+        }
+
+        .p-couple-card:hover {
+            border-color: rgba(45, 140, 255, .3);
+        }
+
+        .p-couple-card img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .p-couple-body {
+            padding: 14px 16px;
+        }
+
+        .p-couple-role {
+            font-size: 10px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--z-blue);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .p-couple-name {
+            font-family: var(--font-d);
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .p-couple-parents {
+            font-size: 12px;
+            color: var(--z-gray2);
+            line-height: 1.6;
+        }
+
+        /* event cards */
+        .panel-events {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        @media(max-width:500px) {
+            .panel-events {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .p-event-card {
+            background: var(--z-card);
+            border-radius: var(--r-lg);
+            padding: 20px 18px;
+            border: 1px solid var(--z-border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .p-event-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--z-blue), #74b9ff);
+        }
+
+        .p-event-badge {
+            display: inline-block;
+            background: rgba(45, 140, 255, .12);
+            color: var(--z-blue);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            padding: 3px 10px;
+            border-radius: 20px;
+            margin-bottom: 12px;
+        }
+
+        .p-event-name {
+            font-family: var(--font-d);
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .p-event-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            margin-bottom: 7px;
+        }
+
+        .p-event-icon {
+            font-size: 14px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .p-event-text {
+            font-size: 12px;
+            color: var(--z-gray2);
+            line-height: 1.55;
+        }
+
+        .p-event-map {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 12px;
+            border: 1px solid rgba(45, 140, 255, .3);
+            color: var(--z-blue);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 20px;
+            transition: var(--trans);
+        }
+
+        .p-event-map:hover {
+            background: rgba(45, 140, 255, .1);
+        }
+
+        /* gallery inside panel */
+        .panel-gallery {
+            columns: 2;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        @media(min-width:600px) {
+            .panel-gallery {
+                columns: 3;
+            }
+        }
+
+        .panel-gallery-item {
+            break-inside: avoid;
+            border-radius: var(--r);
+            overflow: hidden;
+            margin-bottom: 8px;
+            cursor: pointer;
+            position: relative;
+            display: block;
+        }
+
+        .panel-gallery-item img {
+            width: 100%;
+            display: block;
+            transition: var(--trans);
+            filter: brightness(.9);
+        }
+
+        .panel-gallery-item:hover img {
+            transform: scale(1.03);
+            filter: brightness(1.05);
+        }
+
+        /* timeline inside panel */
+        .panel-timeline {
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .panel-timeline::before {
+            content: '';
+            position: absolute;
+            left: 18px;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: linear-gradient(to bottom, var(--z-blue), rgba(45, 140, 255, .05));
+        }
+
+        .ptl-item {
+            display: flex;
+            gap: 22px;
+            margin-bottom: 40px;
+            opacity: 0;
+            transform: translateX(-14px);
+            transition: opacity .5s, transform .5s;
+        }
+
+        .ptl-item.vis {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .ptl-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            background: var(--z-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 800;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 16px rgba(45, 140, 255, .4);
+        }
+
+        .ptl-body {
+            padding-top: 6px;
+        }
+
+        .ptl-track {
+            font-size: 10px;
+            letter-spacing: .25em;
+            text-transform: uppercase;
+            color: var(--z-blue);
+            margin-bottom: 2px;
+            font-weight: 700;
+        }
+
+        .ptl-month {
+            font-size: 11px;
+            color: var(--z-gray3);
+            margin-bottom: 5px;
+        }
+
+        .ptl-title {
+            font-family: var(--font-d);
+            font-size: 20px;
+            margin-bottom: 6px;
+        }
+
+        .ptl-desc {
+            font-size: 13px;
+            color: var(--z-gray2);
+            line-height: 1.7;
+        }
+
+        /* verse */
+        .panel-verse {
+            background: rgba(45, 140, 255, .06);
+            border-left: 3px solid var(--z-blue);
+            border-radius: 0 var(--r) var(--r) 0;
+            padding: 20px 20px;
+            margin: 20px 0;
+        }
+
+        .panel-verse-text {
+            font-family: var(--font-d);
+            font-size: 15px;
+            font-style: italic;
+            line-height: 1.75;
+            color: var(--z-gray1);
+            margin-bottom: 8px;
+        }
+
+        .panel-verse-ref {
+            font-size: 11px;
+            color: var(--z-gray3);
+            font-weight: 700;
+        }
+
+        /* gift */
+        .panel-gift {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        @media(max-width:500px) {
+            .panel-gift {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .p-gift-card {
+            background: var(--z-card);
+            border: 1px solid var(--z-border);
+            border-radius: var(--r-lg);
+            padding: 20px 16px;
+            text-align: center;
+        }
+
+        .p-gift-bank {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--z-white);
+            margin: 6px 0 2px;
+        }
+
+        .p-gift-holder {
+            font-size: 11px;
+            color: var(--z-gray3);
+            margin-bottom: 10px;
+        }
+
+        .p-gift-num {
+            font-family: monospace;
+            font-size: 16px;
+            letter-spacing: .08em;
+            margin-bottom: 12px;
+            padding: 8px;
+            background: rgba(255, 255, 255, .06);
+            border-radius: var(--r);
+        }
+
+        .p-gift-copy {
+            background: var(--z-blue);
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 8px 18px;
+            border-radius: 20px;
+            transition: var(--trans);
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .p-gift-copy:hover {
+            background: var(--z-blue-dark);
+        }
+
+        .p-gift-copy.copied {
+            background: var(--z-green);
+        }
+
+        /* RSVP inside panel */
+        .p-rsvp-form {
+            max-width: 480px;
+            margin: 20px 0 0;
+        }
+
+        .p-form-group {
+            margin-bottom: 14px;
+        }
+
+        .p-form-label {
+            display: block;
+            font-size: 10px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--z-gray3);
+            margin-bottom: 6px;
+            font-weight: 700;
+        }
+
+        .p-form-input {
+            width: 100%;
+            padding: 12px 14px;
+            background: var(--z-card);
+            border: 1.5px solid var(--z-border);
+            border-radius: var(--r);
+            color: var(--z-white);
+            font-family: var(--font-u);
+            font-size: 14px;
+            outline: none;
+            transition: var(--trans);
+        }
+
+        .p-form-input:focus {
+            border-color: var(--z-blue);
+        }
+
+        .p-form-input::placeholder {
+            color: var(--z-gray3);
+        }
+
+        textarea.p-form-input {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .p-rsvp-btns {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+
+        .p-rsvp-btn {
+            flex: 1;
+            background: var(--z-card);
+            border: 1.5px solid var(--z-border);
+            border-radius: var(--r);
+            padding: 14px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--trans);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--z-gray2);
+        }
+
+        .p-rsvp-btn:hover {
+            border-color: rgba(45, 140, 255, .4);
+        }
+
+        .p-rsvp-btn.sel {
+            border-color: var(--z-blue);
+            color: var(--z-blue);
+            background: rgba(45, 140, 255, .08);
+        }
+
+        .p-rsvp-btn-emoji {
+            font-size: 24px;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .p-guest-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .p-guest-btn {
+            flex: 1;
+            background: var(--z-card);
+            border: 1.5px solid var(--z-border);
+            border-radius: var(--r);
+            padding: 11px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--z-gray2);
+            cursor: pointer;
+            transition: var(--trans);
+        }
+
+        .p-guest-btn.active {
+            border-color: var(--z-blue);
+            color: var(--z-blue);
+            background: rgba(45, 140, 255, .08);
+        }
+
+        .p-rsvp-submit {
+            width: 100%;
+            background: var(--z-blue);
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            padding: 14px;
+            border-radius: var(--r-lg);
+            margin-top: 6px;
+            border: none;
+            cursor: pointer;
+            transition: var(--trans);
+        }
+
+        .p-rsvp-submit:hover {
+            background: var(--z-blue-dark);
+        }
+
+        /* RSVP stats */
+        .p-rsvp-stats {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .p-rsvp-stat {
+            background: var(--z-card);
+            border: 1px solid var(--z-border);
+            border-radius: var(--r);
+            padding: 14px 18px;
+            text-align: center;
+        }
+
+        .p-rsvp-stat-num {
+            font-family: var(--font-d);
+            font-size: 32px;
+            color: var(--z-blue);
+            line-height: 1;
+        }
+
+        .p-rsvp-stat-label {
+            font-size: 10px;
+            color: var(--z-gray3);
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            margin-top: 3px;
+        }
+
+        /* wishes */
+        .p-wishes {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .p-wish {
+            background: var(--z-card);
+            border: 1px solid var(--z-border);
+            border-radius: var(--r-lg);
+            padding: 14px 16px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity .4s, transform .4s;
+        }
+
+        .p-wish.vis {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .p-wish-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .p-wish-ava {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--z-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .p-wish-name {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .p-wish-status {
+            font-size: 10px;
+            color: var(--z-green);
+        }
+
+        .p-wish-text {
+            font-size: 13px;
+            color: var(--z-gray2);
+            line-height: 1.6;
+        }
+
+        /* ════════════════════════════════════════
+   CHAT SIDEBAR
+════════════════════════════════════════ */
+        .chat-sidebar {
+            width: 0;
+            flex-shrink: 0;
+            overflow: hidden;
+            background: var(--z-panel);
+            border-left: 1px solid var(--z-border);
+            display: flex;
+            flex-direction: column;
+            transition: width .3s ease;
+        }
+
+        .chat-sidebar.open {
+            width: 280px;
+        }
+
+        .chat-header {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--z-border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .chat-title {
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .chat-close {
+            font-size: 18px;
+            cursor: pointer;
+            opacity: .6;
+            transition: var(--trans);
+            padding: 4px;
+        }
+
+        .chat-close:hover {
+            opacity: 1;
+        }
+
+        .chat-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--z-border);
+            flex-shrink: 0;
+        }
+
+        .chat-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px 6px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--z-gray2);
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: var(--trans);
+        }
+
+        .chat-tab.active {
+            color: var(--z-blue);
+            border-bottom-color: var(--z-blue);
+        }
+
+        .chat-msgs {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--z-gray4) transparent;
+        }
+
+        .chat-msg {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .chat-msg-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chat-msg-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: var(--z-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            font-weight: 800;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .chat-msg-name {
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .chat-msg-time {
+            font-size: 10px;
+            color: var(--z-gray3);
+            margin-left: auto;
+        }
+
+        .chat-msg-bubble {
+            background: var(--z-card);
+            border-radius: 0 var(--r) var(--r) var(--r);
+            padding: 8px 12px;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-left: 30px;
+            color: var(--z-gray1);
+        }
+
+        .chat-msg.self .chat-msg-bubble {
+            background: rgba(45, 140, 255, .18);
+            border-radius: var(--r) 0 var(--r) var(--r);
+            margin-left: 0;
+            margin-right: 0;
+        }
+
+        .chat-input-wrap {
+            padding: 10px 12px;
+            border-top: 1px solid var(--z-border);
+            flex-shrink: 0;
+        }
+
+        .chat-input-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: var(--z-card);
+            border: 1px solid var(--z-border);
+            border-radius: 20px;
+            padding: 9px 14px;
+            font-family: var(--font-u);
+            font-size: 13px;
+            color: var(--z-white);
+            outline: none;
+            transition: var(--trans);
+        }
+
+        .chat-input:focus {
+            border-color: var(--z-blue);
+        }
+
+        .chat-input::placeholder {
+            color: var(--z-gray3);
+        }
+
+        .chat-send-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--z-blue);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            transition: var(--trans);
+        }
+
+        .chat-send-btn:hover {
+            background: var(--z-blue-dark);
+        }
+
+        /* PARTICIPANTS sidebar */
+        .participants-sidebar {
+            width: 0;
+            flex-shrink: 0;
+            overflow: hidden;
+            background: var(--z-panel);
+            border-left: 1px solid var(--z-border);
+            display: flex;
+            flex-direction: column;
+            transition: width .3s ease;
+        }
+
+        .participants-sidebar.open {
+            width: 240px;
+        }
+
+        .p-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .p-list-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-radius: var(--r);
+            transition: var(--trans);
+            cursor: pointer;
+        }
+
+        .p-list-item:hover {
+            background: var(--z-card);
+        }
+
+        .p-list-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 800;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .p-list-name {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 600;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .p-list-icons {
+            display: flex;
+            gap: 4px;
+            font-size: 13px;
+            opacity: .7;
+        }
+
+        .speaking-bar {
+            width: 3px;
+            height: 20px;
+            background: var(--z-green);
+            border-radius: 2px;
+            animation: speak-bar .6s ease-in-out infinite alternate;
+        }
+
+        @keyframes speak-bar {
+            from {
+                height: 4px
+            }
+
+            to {
+                height: 20px
+            }
+        }
+
+        /* ════════════════════════════════════════
+   TOOLBAR (bottom)
+════════════════════════════════════════ */
+        .zoom-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            height: 64px;
+            flex-shrink: 0;
+            background: var(--z-panel);
+            border-top: 1px solid var(--z-border);
+            position: relative;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .toolbar-section {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .toolbar-sep {
+            width: 1px;
+            height: 32px;
+            background: var(--z-border);
+            margin: 0 4px;
+        }
+
+        .tool-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            padding: 6px 10px;
+            border-radius: var(--r);
+            cursor: pointer;
+            transition: var(--trans);
+            min-width: 52px;
+            border: none;
+            background: none;
+            color: var(--z-white);
+            position: relative;
+        }
+
+        .tool-btn:hover {
+            background: var(--z-card);
+        }
+
+        .tool-btn.active {
+            background: rgba(45, 140, 255, .15);
+        }
+
+        .tool-btn.danger {}
+
+        .tool-btn.danger:hover {
+            background: rgba(240, 0, 0, .1);
+        }
+
+        .tool-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: var(--r);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: var(--z-card);
+            transition: var(--trans);
+        }
+
+        .tool-btn:hover .tool-icon {
+            background: var(--z-gray4);
+        }
+
+        .tool-btn.muted .tool-icon {
+            background: rgba(240, 0, 0, .2);
+        }
+
+        .tool-btn.muted .tool-icon::after {
+            content: '🚫';
+            position: absolute;
+            font-size: 9px;
+            bottom: -2px;
+            right: -2px;
+        }
+
+        .tool-label {
+            font-size: 10px;
+            color: var(--z-gray2);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .tool-badge {
+            position: absolute;
+            top: 4px;
+            right: 8px;
+            background: var(--z-red);
+            color: white;
+            font-size: 9px;
+            font-weight: 800;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* caret on toolbar buttons */
+        .tool-caret {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            font-size: 8px;
+            color: var(--z-gray3);
+        }
+
+        /* End Meeting btn */
+        .end-btn {
+            background: var(--z-red);
+            color: white;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 8px 18px;
+            border-radius: var(--r-lg);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: var(--trans);
+        }
+
+        .end-btn:hover {
+            background: #cc0000;
+        }
+
+        /* Toolbar leave on far right */
+        .zoom-toolbar .end-wrap {
+            margin-left: auto;
+        }
+
+        /* ════════════════════════════════════════
+   REACTIONS POPUP
+════════════════════════════════════════ */
+        .reactions-popup {
+            position: absolute;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--z-card);
+            border: 1px solid var(--z-border);
+            border-radius: var(--r-lg);
+            padding: 10px 14px;
+            display: none;
+            gap: 8px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .6);
+            z-index: 50;
+        }
+
+        .reactions-popup.open {
+            display: flex;
+        }
+
+        .r-emoji {
+            font-size: 26px;
+            cursor: pointer;
+            padding: 4px;
+            border-radius: var(--r);
+            transition: var(--trans);
+        }
+
+        .r-emoji:hover {
+            transform: scale(1.3);
+            background: rgba(255, 255, 255, .08);
+        }
+
+        /* LIGHTBOX */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            z-index: 9998;
+            background: rgba(0, 0, 0, .95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox.open {
+            display: flex;
+        }
+
+        .lb-img {
+            max-width: 92vw;
+            max-height: 88vh;
+            border-radius: var(--r-lg);
+            object-fit: contain;
+        }
+
+        .lb-x {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .1);
+            color: white;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            transition: var(--trans);
+        }
+
+        .lb-x:hover {
+            background: rgba(255, 255, 255, .2);
+        }
+
+        .lb-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, .08);
+            color: white;
+            width: 44px;
+            height: 64px;
+            border-radius: var(--r);
+            font-size: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: none;
+            transition: var(--trans);
+        }
+
+        .lb-nav:hover {
+            background: rgba(255, 255, 255, .15);
+        }
+
+        .lb-prev {
+            left: 12px;
+        }
+
+        .lb-next {
+            right: 12px;
+        }
+
+        .lb-count {
+            position: absolute;
+            bottom: 14px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: rgba(255, 255, 255, .5);
+        }
+
+        /* VIDEO MODAL */
+        .v-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9998;
+            background: rgba(0, 0, 0, .95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .v-modal.open {
+            display: flex;
+        }
+
+        .v-modal video {
+            max-width: 90vw;
+            max-height: 86vh;
+            border-radius: var(--r-lg);
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 76px;
+            left: 50%;
+            transform: translateX(-50%) translateY(12px);
+            background: rgba(40, 40, 40, .95);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--z-border);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: 600;
+            opacity: 0;
+            transition: all .3s;
+            white-space: nowrap;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* COUNTDOWN in panel */
+        .panel-cd {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+
+        .panel-cd-cell {
+            background: var(--z-card);
+            border: 1px solid var(--z-border);
+            border-radius: var(--r);
+            padding: 14px 12px;
+            text-align: center;
+            min-width: 72px;
+        }
+
+        .panel-cd-num {
+            font-family: var(--font-d);
+            font-size: 36px;
+            color: var(--z-blue);
+            line-height: 1;
+        }
+
+        .panel-cd-unit {
+            font-size: 9px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--z-gray3);
+            margin-top: 3px;
+        }
+
+        /* Scrollbar for chat */
+        .chat-msgs::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .chat-msgs::-webkit-scrollbar-thumb {
+            background: var(--z-gray4);
+            border-radius: 2px;
+        }
+
+        /* mobile adjustments */
+        @media(max-width:640px) {
+            .chat-sidebar.open {
+                width: 100%;
+                position: absolute;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                z-index: 40;
+            }
+
+            .participants-sidebar.open {
+                width: 100%;
+                position: absolute;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                z-index: 40;
+            }
+
+            .tool-label {
+                display: none;
+            }
+
+            .tool-btn {
+                min-width: 40px;
+                padding: 4px;
+            }
+
+            .tool-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+
+            .end-btn span {
+                display: none;
+            }
+
+            .zoom-toolbar {
+                gap: 2px;
+            }
+
+            .section-overlay {
+                padding: 16px 10px 100px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ════ WAITING ROOM ════ -->
+    <div id="waitingRoom">
+        <div class="wr-rings">
+            <div class="wr-ring" style="width:300px;height:300px;animation-delay:0s"></div>
+            <div class="wr-ring" style="width:500px;height:500px;animation-delay:.6s;border-color:rgba(45,140,255,.08)">
+            </div>
+            <div class="wr-ring"
+                style="width:700px;height:700px;animation-delay:1.2s;border-color:rgba(45,140,255,.05)"></div>
+        </div>
+
+        <div class="wr-zoom-logo">
+            <div class="wr-logo-icon">
+                <svg viewBox="0 0 32 32">
+                    <path
+                        d="M16 2C8.268 2 2 8.268 2 16s6.268 14 14 14 14-6.268 14-14S23.732 2 16 2zm7.5 20.2l-5.4-3.6V22H9V10h9.1v3.4l5.4-3.6v12.4z" />
+                </svg>
+            </div>
+            <span class="wr-logo-text">Zoom</span>
+        </div>
+
+        <p class="wr-meeting-id">Meeting ID: 826 4531 9072 · Passcode: 💍</p>
+        <h1 class="wr-title">Wedding of<br>Nazma & Gunturr</h1>
+        <p class="wr-sub">24 Mei 2026 · Tangerang · Forever Anthem</p>
+
+        <div class="wr-camera-preview">
+            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=400&fit=crop&q=80"
+                alt="preview">
+            <div class="wr-cam-label">📹 Kamera Anda — Siap bergabung?</div>
+            <div class="wr-cam-controls">
+                <div class="wr-cam-ctrl" onclick="toggleWrMic(this)" id="wrMicBtn">🎤</div>
+                <div class="wr-cam-ctrl" onclick="toggleWrCam(this)" id="wrCamBtn">📷</div>
+            </div>
+        </div>
+
+        <div class="wr-guest-box">
+            <p class="wr-guest-label">Bergabung sebagai</p>
+            <p class="wr-guest-name">Ade Guntur Fitridullah & Partner</p>
+        </div>
+
+        <button class="join-btn" onclick="joinMeeting()">
+            <svg viewBox="0 0 24 24">
+                <path
+                    d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" />
+            </svg>
+            Bergabung Sekarang
+        </button>
+    </div>
+
+    <!-- ════ ZOOM UI ════ -->
+    <div id="zoomUI">
+
+        <!-- TOP BAR -->
+        <div class="zoom-topbar">
+            <div class="topbar-left">
+                <div class="meeting-info">
+                    <span class="meeting-name">💍 Wedding Nazma & Gunturr</span>
+                    <span class="meeting-time" id="meetingTimer">00:00:00</span>
+                </div>
+                <div class="encrypt-badge">🔒 End-to-end encrypted</div>
+            </div>
+            <div class="topbar-right">
+                <button class="topbar-btn" onclick="openSection('rsvp')">✉️ RSVP</button>
+                <button class="topbar-btn" onclick="openSection('gift')">🎁 Gift</button>
+                <button class="topbar-btn red">
+                    <span class="record-dot"></span> REC
+                </button>
+            </div>
+        </div>
+
+        <!-- BODY -->
+        <div class="zoom-body">
+
+            <!-- VIEW AREA -->
+            <div class="view-area" id="viewArea">
+
+                <!-- GALLERY GRID -->
+                <div class="gallery-view" id="galleryView"></div>
+
+                <!-- SECTION OVERLAY -->
+                <div class="section-overlay" id="sectionOverlay">
+                    <button class="section-close" onclick="closeSection()">✕</button>
+                    <div class="content-panel" id="contentPanel">
+                        <!-- content injected by JS -->
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- PARTICIPANTS SIDEBAR -->
+            <div class="participants-sidebar" id="participantsSidebar">
+                <div class="chat-header">
+                    <span class="chat-title">👥 Peserta (12)</span>
+                    <span class="chat-close" onclick="toggleParticipants()">✕</span>
+                </div>
+                <div class="p-list" id="participantsList"></div>
+            </div>
+
+            <!-- CHAT SIDEBAR -->
+            <div class="chat-sidebar" id="chatSidebar">
+                <div class="chat-header">
+                    <span class="chat-title">💬 In-Meeting Chat</span>
+                    <span class="chat-close" onclick="toggleChat()">✕</span>
+                </div>
+                <div class="chat-tabs">
+                    <div class="chat-tab active">Semua</div>
+                    <div class="chat-tab">Host</div>
+                </div>
+                <div class="chat-msgs" id="chatMsgs"></div>
+                <div class="chat-input-wrap">
+                    <div class="chat-input-row">
+                        <input type="text" class="chat-input" id="chatInput" placeholder="Kirim pesan..."
+                            onkeydown="if(event.key==='Enter')sendChat()">
+                        <button class="chat-send-btn" onclick="sendChat()">➤</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- REACTIONS POPUP -->
+        <div class="reactions-popup" id="reactionsPopup">
+            <span class="r-emoji" onclick="sendReaction('👏')">👏</span>
+            <span class="r-emoji" onclick="sendReaction('❤️')">❤️</span>
+            <span class="r-emoji" onclick="sendReaction('😂')">😂</span>
+            <span class="r-emoji" onclick="sendReaction('😮')">😮</span>
+            <span class="r-emoji" onclick="sendReaction('🎉')">🎉</span>
+            <span class="r-emoji" onclick="sendReaction('💍')">💍</span>
+            <span class="r-emoji" onclick="sendReaction('🌹')">🌹</span>
+        </div>
+
+        <!-- TOOLBAR -->
+        <div class="zoom-toolbar">
+            <div class="toolbar-section">
+                <button class="tool-btn" id="micBtn" onclick="toggleMic()">
+                    <div class="tool-icon" id="micIcon">🎤</div>
+                    <span class="tool-label">Mic</span>
+                    <span class="tool-caret">▲</span>
+                </button>
+                <button class="tool-btn" id="camBtn" onclick="toggleCam()">
+                    <div class="tool-icon" id="camIcon">📹</div>
+                    <span class="tool-label">Kamera</span>
+                    <span class="tool-caret">▲</span>
+                </button>
+            </div>
+
+            <div class="toolbar-sep"></div>
+
+            <div class="toolbar-section">
+                <button class="tool-btn" onclick="openSection('couple')">
+                    <div class="tool-icon">💑</div>
+                    <span class="tool-label">Couple</span>
+                </button>
+                <button class="tool-btn" onclick="openSection('event')">
+                    <div class="tool-icon">📅</div>
+                    <span class="tool-label">Event</span>
+                </button>
+                <button class="tool-btn" onclick="openSection('gallery')">
+                    <div class="tool-icon">🖼️</div>
+                    <span class="tool-label">Galeri</span>
+                </button>
+                <button class="tool-btn" onclick="openSection('story')">
+                    <div class="tool-icon">🎬</div>
+                    <span class="tool-label">Story</span>
+                </button>
+            </div>
+
+            <div class="toolbar-sep"></div>
+
+            <div class="toolbar-section">
+                <button class="tool-btn" onclick="toggleReactions()" id="reactBtn">
+                    <div class="tool-icon">😊</div>
+                    <span class="tool-label">Reaksi</span>
+                </button>
+                <button class="tool-btn" onclick="toggleChat()">
+                    <div class="tool-icon">💬</div>
+                    <span class="tool-label">Chat</span>
+                    <span class="tool-badge" id="chatBadge" style="display:none">3</span>
+                </button>
+                <button class="tool-btn" onclick="toggleParticipants()">
+                    <div class="tool-icon">👥</div>
+                    <span class="tool-label">Peserta</span>
+                </button>
+                <button class="tool-btn" onclick="openSection('gift')">
+                    <div class="tool-icon">🎁</div>
+                    <span class="tool-label">Gift</span>
+                </button>
+                <button class="tool-btn" onclick="openSection('rsvp')">
+                    <div class="tool-icon">✉️</div>
+                    <span class="tool-label">RSVP</span>
+                </button>
+            </div>
+
+            <div class="toolbar-sep"></div>
+
+            <button class="end-btn" onclick="showToast('Terima kasih telah bergabung! 💍')">
+                📴 <span>Tinggalkan</span>
+            </button>
+        </div>
+
+    </div><!-- /zoomUI -->
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox">
+        <button class="lb-x" onclick="closeLB()">✕</button>
+        <button class="lb-nav lb-prev" onclick="lbMove(-1)">‹</button>
+        <img class="lb-img" id="lbImg" src="" alt="">
+        <button class="lb-nav lb-next" onclick="lbMove(1)">›</button>
+        <div class="lb-count" id="lbCount"></div>
+    </div>
+
+    <!-- VIDEO MODAL -->
+    <div class="v-modal" id="vModal">
+        <button class="lb-x" onclick="closeVM()" style="position:absolute;top:16px;right:16px">✕</button>
+        <video id="vmVid" controls style="max-width:90vw;max-height:86vh;border-radius:12px">
+            <source id="vmSrc" src="" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        /* ════ DATA ════ */
+        const GALLERY_IMGS = [
+            "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=700&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&h=700&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&h=700&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&h=700&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=800&h=700&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=800&h=700&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=800&h=700&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=700&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&h=700&fit=crop&q=80",
+        ];
+
+        const PARTICIPANTS = [
+            { name: "Nazma Putri", role: "Host · Mempelai WNazma", color: "#2d8cff", mic: true, cam: true, speaking: true, img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=300&fit=crop&q=80" },
+            { name: "Gunturrian Ahadika", role: "Host · Mempelai Pria", color: "#5ac8fa", mic: true, cam: true, speaking: false, img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&q=80" },
+            { name: "Ade Guntur", role: "Tamu", color: "#30d158", mic: false, cam: true, speaking: false, img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop&q=80" },
+            { name: "Ayu Rahmawati", role: "Tamu", color: "#ff6b6b", mic: false, cam: false, speaking: false, img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=300&h=300&fit=crop&q=80" },
+            { name: "Reza Firmansyah", role: "Tamu", color: "#ff9500", mic: true, cam: false, speaking: false, img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=300&h=300&fit=crop&q=80" },
+            { name: "Sinta Dewi", role: "Tamu", color: "#c084fc", mic: false, cam: true, speaking: false, img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&q=80" },
+        ];
+
+        const CHAT_INIT = [
+            { name: "Nazma", color: "#2d8cff", msg: "Selamat datang di pernikahan kami! 💍 Terima kasih sudah hadir! ❤️", time: "10:02", self: false },
+            { name: "Guntur", color: "#5ac8fa", msg: "Kami sangat bahagia bisa merayakan momen ini bersama kalian semua! 🥹", time: "10:03", self: false },
+            { name: "Ayu", color: "#ff6b6b", msg: "Selamat ya Nazma & Gunturr!! 🎉🎊 Semoga bahagia selalu!", time: "10:04", self: false },
+            { name: "Reza", color: "#ff9500", msg: "MasyaAllah, cantik banget Nazma! 😍 Semoga langgeng!", time: "10:05", self: false },
+            { name: "Sinta", color: "#c084fc", msg: "Sakinah mawaddah wa rahmah ya! 🌿🤍 Aamiin!", time: "10:06", self: false },
+        ];
+
+        const VIDEOS = [
+            { src: "https://www.w3schools.com/html/mov_bbb.mp4", label: "Awal Pertemuan 💑" },
+            { src: "https://www.w3schools.com/html/movie.mp4", label: "Lamaran 💍" },
+            { src: "https://www.w3schools.com/html/mov_bbb.mp4", label: "Prewedding ✨" },
+            { src: "https://www.w3schools.com/html/movie.mp4", label: "Wedding Day 🎊" },
+        ];
+
+        /* ════ STATE ════ */
+        let micOn = true, camOn = true, chatOpen = false, partOpen = false;
+        let rsvpStatus = '', guestCt = 1, lbIdx = 0;
+        let meetingSecs = 0, countdownTimer;
+
+        /* ════ JOIN ════ */
+        function joinMeeting() {
+            document.getElementById('waitingRoom').classList.add('hide');
+            const ui = document.getElementById('zoomUI');
+            ui.classList.add('show');
+            setTimeout(() => {
+                buildGalleryView();
+                buildParticipantsList();
+                buildChatInit();
+                startMeetingTimer();
+                startCountdownTimer();
+                simulateSpeaking();
+                simulateChat();
+            }, 400);
+        }
+
+        /* ════ MEETING TIMER ════ */
+        function startMeetingTimer() {
+            setInterval(() => {
+                meetingSecs++;
+                const h = Math.floor(meetingSecs / 3600), m = Math.floor((meetingSecs % 3600) / 60), s = meetingSecs % 60;
+                document.getElementById('meetingTimer').textContent =
+                    String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+            }, 1000);
+        }
+
+        /* ════ COUNTDOWN ════ */
+        function startCountdownTimer() {
+            const target = new Date('2026-05-24T08:00:00');
+            countdownTimer = setInterval(() => {
+                const d = target - new Date(); if (d <= 0) { clearInterval(countdownTimer); return; }
+                const el = document.getElementById('panelCd');
+                if (!el) return;
+                ['D', 'H', 'M', 'S'].forEach((u, i) => {
+                    const vals = [Math.floor(d / 86400000), Math.floor((d % 86400000) / 3600000), Math.floor((d % 3600000) / 60000), Math.floor((d % 60000) / 1000)];
+                    const c = el.querySelector(`[data-u="${u}"]`);
+                    if (c) c.textContent = String(vals[i]).padStart(2, '0');
+                });
+            }, 1000);
+        }
+
+        /* ════ GALLERY VIEW (tiles) ════ */
+        function buildGalleryView() {
+            const wrap = document.getElementById('galleryView');
+            wrap.innerHTML = '';
+            PARTICIPANTS.forEach((p, i) => {
+                const tile = document.createElement('div');
+                tile.className = 'p-tile' + (i === 0 ? ' speaking' : '') + (i === 2 ? ' self' : '');
+                tile.id = 'tile-' + i;
+                if (p.img) {
+                    const img = document.createElement('img');
+                    img.src = p.img; img.alt = p.name; img.loading = 'lazy';
+                    tile.appendChild(img);
+                    const ov = document.createElement('div'); ov.className = 'p-tile-overlay'; tile.appendChild(ov);
+                } else {
+                    const av = document.createElement('div');
+                    av.className = 'p-avatar'; av.style.background = p.color;
+                    av.textContent = p.name[0]; tile.appendChild(av);
+                }
+                const ring = document.createElement('div'); ring.className = 'speaking-ring'; tile.appendChild(ring);
+                const bar = document.createElement('div'); bar.className = 'p-name-bar';
+                bar.innerHTML = `${!p.mic ? '<span class="mic-off">🔇</span>' : ''}<span>${i === 2 ? 'Anda' : p.name}</span>${i < 2 ? '<span class="host-badge">HOST</span>' : ''}`;
+                tile.appendChild(bar);
+                tile.addEventListener('click', () => pinTile(i));
+                wrap.appendChild(tile);
+            });
+        }
+
+        function pinTile(i) {
+            document.querySelectorAll('.p-tile').forEach(t => t.classList.remove('pinned'));
+            document.getElementById('tile-' + i)?.classList.add('pinned');
+        }
+
+        /* ════ SIMULATE SPEAKING ════ */
+        function simulateSpeaking() {
+            let cur = 0;
+            setInterval(() => {
+                document.querySelectorAll('.p-tile').forEach(t => t.classList.remove('speaking'));
+                const next = Math.floor(Math.random() * PARTICIPANTS.length);
+                document.getElementById('tile-' + next)?.classList.add('speaking');
+            }, 3200);
+        }
+
+        /* ════ PARTICIPANTS LIST ════ */
+        function buildParticipantsList() {
+            const wrap = document.getElementById('participantsList');
+            PARTICIPANTS.forEach((p, i) => {
+                const item = document.createElement('div'); item.className = 'p-list-item';
+                item.innerHTML = `
+      <div class="p-list-avatar" style="background:${p.color}">${p.name[0]}</div>
+      <div class="p-list-name">${i === 2 ? 'Anda (' + p.name + ')' : p.name}</div>
+      <div class="p-list-icons">${p.mic ? '🎤' : '🔇'}${p.cam ? '📹' : '📷'}</div>
+    `;
+                wrap.appendChild(item);
+            });
+        }
+
+        /* ════ CHAT ════ */
+        function buildChatInit() {
+            CHAT_INIT.forEach(m => addChatMsg(m.name, m.color, m.msg, m.time, m.self));
+            const badge = document.getElementById('chatBadge');
+            badge.style.display = 'flex'; badge.textContent = CHAT_INIT.length;
+        }
+        function addChatMsg(name, color, msg, time, self = false) {
+            const wrap = document.getElementById('chatMsgs');
+            const div = document.createElement('div'); div.className = 'chat-msg' + (self ? ' self' : '');
+            div.innerHTML = `
+    <div class="chat-msg-header">
+      <div class="chat-msg-avatar" style="background:${color}">${name[0]}</div>
+      <span class="chat-msg-name">${self ? 'Anda' : name}</span>
+      <span class="chat-msg-time">${time || now()}</span>
+    </div>
+    <div class="chat-msg-bubble">${msg}</div>
+  `;
+            wrap.appendChild(div);
+            wrap.scrollTop = wrap.scrollHeight;
+        }
+        function now() { const d = new Date(); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
+        function sendChat() {
+            const inp = document.getElementById('chatInput');
+            const msg = inp.value.trim(); if (!msg) return;
+            addChatMsg('Anda', '#30d158', msg, now(), true);
+            inp.value = '';
+            if (!chatOpen) toggleChat();
+        }
+        function simulateChat() {
+            const msgs = [
+                { name: 'Ayu', color: '#ff6b6b', msg: 'Video prewedding-nya bagus banget! 😍' },
+                { name: 'Reza', color: '#ff9500', msg: 'Akad nikahnya jam berapa ya? 🕗' },
+                { name: 'Sinta', color: '#c084fc', msg: 'Congrats!! Semoga langgeng sampai tua ❤️' },
+                { name: 'Nazma', color: '#2d8cff', msg: 'Makasih semuanya udah hadir! 🥹💍' },
+            ];
+            let idx = 0;
+            setInterval(() => {
+                if (idx < msgs.length) { const m = msgs[idx++]; addChatMsg(m.name, m.color, m.msg, now()); }
+            }, 8000);
+        }
+
+        /* ════ TOOLBAR ACTIONS ════ */
+        function toggleMic() {
+            micOn = !micOn;
+            const btn = document.getElementById('micBtn');
+            const icon = document.getElementById('micIcon');
+            icon.textContent = micOn ? '🎤' : '🔇';
+            btn.classList.toggle('muted', !micOn);
+            showToast(micOn ? 'Mikrofon aktif 🎤' : 'Mikrofon dimatikan 🔇');
+        }
+        function toggleCam() {
+            camOn = !camOn;
+            const icon = document.getElementById('camIcon');
+            icon.textContent = camOn ? '📹' : '🚫';
+            showToast(camOn ? 'Kamera aktif 📹' : 'Kamera dimatikan 📵');
+        }
+        function toggleChat() {
+            chatOpen = !chatOpen;
+            document.getElementById('chatSidebar').classList.toggle('open', chatOpen);
+            if (partOpen && chatOpen) { partOpen = false; document.getElementById('participantsSidebar').classList.remove('open'); }
+            if (chatOpen) { document.getElementById('chatBadge').style.display = 'none'; }
+        }
+        function toggleParticipants() {
+            partOpen = !partOpen;
+            document.getElementById('participantsSidebar').classList.toggle('open', partOpen);
+            if (chatOpen && partOpen) { chatOpen = false; document.getElementById('chatSidebar').classList.remove('open'); }
+        }
+        function toggleReactions() {
+            const p = document.getElementById('reactionsPopup');
+            p.classList.toggle('open');
+        }
+        function sendReaction(emoji) {
+            document.getElementById('reactionsPopup').classList.remove('open');
+            // spawn on random tile
+            const tiles = document.querySelectorAll('.p-tile');
+            const tile = tiles[Math.floor(Math.random() * tiles.length)];
+            const r = document.createElement('div'); r.className = 'p-reaction'; r.textContent = emoji;
+            tile.appendChild(r);
+            setTimeout(() => r.remove(), 2500);
+            // also in chat
+            addChatMsg('Anda', '#30d158', 'Bereaksi: ' + emoji, now(), true);
+            if (!chatOpen) toggleChat();
+        }
+
+        /* ════ WAITING ROOM CONTROLS ════ */
+        function toggleWrMic(btn) { btn.textContent = btn.textContent === '🎤' ? '🔇' : '🎤'; }
+        function toggleWrCam(btn) { btn.textContent = btn.textContent === '📷' ? '🚫' : '📷'; }
+
+        /* ════ SECTION PANELS ════ */
+        let currentSection = '';
+        function openSection(sec) {
+            currentSection = sec;
+            const overlay = document.getElementById('sectionOverlay');
+            const panel = document.getElementById('contentPanel');
+            overlay.classList.add('open');
+            panel.innerHTML = renderSection(sec);
+            // init timelines & countdowns
+            setTimeout(() => {
+                document.querySelectorAll('.ptl-item').forEach((el, i) => {
+                    setTimeout(() => el.classList.add('vis'), i * 150);
+                });
+                document.querySelectorAll('.p-wish').forEach((el, i) => {
+                    setTimeout(() => el.classList.add('vis'), i * 100);
+                });
+                if (sec === 'event' || sec === 'home') startCountdownTimer();
+            }, 50);
+        }
+        function closeSection() {
+            document.getElementById('sectionOverlay').classList.remove('open');
+        }
+
+        function renderSection(sec) {
+            if (sec === 'couple') return renderCouple();
+            if (sec === 'event') return renderEvent();
+            if (sec === 'gallery') return renderGallery();
+            if (sec === 'story') return renderStory();
+            if (sec === 'gift') return renderGift();
+            if (sec === 'rsvp') return renderRsvp();
+            return '';
+        }
+
+        function renderCouple() {
+            return `
+<div class="content-panel">
+  <div class="panel-section">
+    <p class="panel-eyebrow">Featured Artists</p>
+    <h2 class="panel-title">Pasangan Kami</h2>
+    <div class="panel-verse">
+      <div class="panel-verse-text">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya."</div>
+      <div class="panel-verse-ref">— Surah Ar-Rum : 21</div>
+    </div>
+    <div class="panel-couple">
+      <div class="p-couple-card">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=280&fit=crop&q=80" alt="Nazma">
+        <div class="p-couple-body">
+          <div class="p-couple-role">Mempelai WNazma</div>
+          <div class="p-couple-name">Nazma Putri, S.Kom</div>
+          <div class="p-couple-parents">Putri Pertama dari<br><strong style="color:#e5e5e5">Bpk. Taryono & Ibu Wiwit Jayanti</strong></div>
+        </div>
+      </div>
+      <div class="p-couple-card">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=280&fit=crop&q=80" alt="Guntur">
+        <div class="p-couple-body">
+          <div class="p-couple-role">Mempelai Pria</div>
+          <div class="p-couple-name">Guntur Putra, S.Kom</div>
+          <div class="p-couple-parents">Putra Kedua dari<br><strong style="color:#e5e5e5">Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="panel-section">
+    <p class="panel-eyebrow">Our Tracklist</p>
+    <h2 class="panel-title">Love Story</h2>
+    <div class="panel-timeline">
+      <div class="ptl-item"><div class="ptl-dot">1</div><div class="ptl-body"><div class="ptl-track">Track 1</div><div class="ptl-month">Juni 2025</div><div class="ptl-title">Awal Pertemuan</div><div class="ptl-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</div></div></div>
+      <div class="ptl-item"><div class="ptl-dot">2</div><div class="ptl-body"><div class="ptl-track">Track 2</div><div class="ptl-month">November 2025</div><div class="ptl-title">Lamaran</div><div class="ptl-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div></div></div>
+      <div class="ptl-item"><div class="ptl-dot">3</div><div class="ptl-body"><div class="ptl-track">Track 3</div><div class="ptl-month">Mei 2026</div><div class="ptl-title">Pernikahan</div><div class="ptl-desc">Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.</div></div></div>
+    </div>
+  </div>
+</div>`;
+        }
+
+        function renderEvent() {
+            return `
+<div class="content-panel">
+  <div class="panel-section">
+    <p class="panel-eyebrow">On Stage</p>
+    <h2 class="panel-title">Waktu & Tempat</h2>
+    <div style="margin-bottom:8px">
+      <p class="panel-eyebrow" style="margin-bottom:8px">⏳ Hitung Mundur Hari H</p>
+      <div class="panel-cd" id="panelCd">
+        <div class="panel-cd-cell"><div class="panel-cd-num" data-u="D">--</div><div class="panel-cd-unit">Hari</div></div>
+        <div class="panel-cd-cell"><div class="panel-cd-num" data-u="H">--</div><div class="panel-cd-unit">Jam</div></div>
+        <div class="panel-cd-cell"><div class="panel-cd-num" data-u="M">--</div><div class="panel-cd-unit">Menit</div></div>
+        <div class="panel-cd-cell"><div class="panel-cd-num" data-u="S">--</div><div class="panel-cd-unit">Detik</div></div>
+      </div>
+    </div>
+    <div class="panel-events">
+      <div class="p-event-card">
+        <span class="p-event-badge">Akad Nikah</span>
+        <div class="p-event-name">Minggu,<br>24 Mei 2026</div>
+        <div class="p-event-row"><span class="p-event-icon">🕗</span><span class="p-event-text">08.00 WIB</span></div>
+        <div class="p-event-row"><span class="p-event-icon">📍</span><span class="p-event-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="p-event-map">📍 Google Maps</a>
+      </div>
+      <div class="p-event-card">
+        <span class="p-event-badge">Resepsi</span>
+        <div class="p-event-name">Minggu,<br>24 Mei 2026</div>
+        <div class="p-event-row"><span class="p-event-icon">🕙</span><span class="p-event-text">11.00–13.00 WIB</span></div>
+        <div class="p-event-row"><span class="p-event-icon">📍</span><span class="p-event-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="p-event-map">📍 Google Maps</a>
+      </div>
+    </div>
+  </div>
+</div>`;
+        }
+
+        function renderGallery() {
+            return `
+<div class="content-panel">
+  <div class="panel-section">
+    <p class="panel-eyebrow">Our Love Mix</p>
+    <h2 class="panel-title">Galeri Foto</h2>
+    <div class="panel-gallery">
+      ${GALLERY_IMGS.map((src, i) => `<div class="panel-gallery-item" onclick="openLB(${i})"><img src="${src}" loading="lazy" alt="Photo ${i + 1}"></div>`).join('')}
+    </div>
+  </div>
+</div>`;
+        }
+
+        function renderStory() {
+            return `
+<div class="content-panel">
+  <div class="panel-section">
+    <p class="panel-eyebrow">Cinematic Reel</p>
+    <h2 class="panel-title">Video Stories</h2>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-top:16px">
+      ${VIDEOS.map(v => `
+        <div onclick="openVM('${v.src}')" style="border-radius:12px;overflow:hidden;position:relative;cursor:pointer;background:#2d2d2d;aspect-ratio:16/9">
+          <video muted autoplay loop playsinline style="width:100%;height:100%;object-fit:cover;opacity:.7">
+            <source src="${v.src}" type="video/mp4">
+          </video>
+          <div style="position:absolute;inset:0;background:linear-gradient(to bottom,transparent,rgba(0,0,0,.6));display:flex;align-items:flex-end;padding:10px">
+            <span style="color:white;font-size:13px;font-weight:700">${v.label}</span>
+          </div>
+          <div style="position:absolute;top:10px;right:10px;width:32px;height:32px;border-radius:50%;background:rgba(45,140,255,.8);display:flex;align-items:center;justify-content:center;color:white;font-size:13px">▶</div>
+        </div>
+      `).join('')}
+    </div>
+  </div>
+</div>`;
+        }
+
+        function renderGift() {
+            return `
+<div class="content-panel">
+  <div class="panel-section">
+    <p class="panel-eyebrow">Digital Gift</p>
+    <h2 class="panel-title">Amplop Digital</h2>
+    <p style="font-size:14px;color:#a0a0a0;line-height:1.75;margin-bottom:4px">Doa restu sudah sangat cukup, namun jika memberi merupakan tanda kasih, kami dengan senang hati menerimanya. 🙏</p>
+    <div class="panel-gift">
+      <div class="p-gift-card">
+        <div style="font-size:28px">🏦</div>
+        <div class="p-gift-bank">BCA</div>
+        <div class="p-gift-holder">Guntur Putra</div>
+        <div class="p-gift-num">8210 3705 61</div>
+        <button class="p-gift-copy" onclick="copyGift('8210370561',this)">📋 Salin</button>
+      </div>
+      <div class="p-gift-card">
+        <div style="font-size:28px">🏦</div>
+        <div class="p-gift-bank">BNI</div>
+        <div class="p-gift-holder">Nazma Putri</div>
+        <div class="p-gift-num">1192 9784 03</div>
+        <button class="p-gift-copy" onclick="copyGift('1192978403',this)">📋 Salin</button>
+      </div>
+    </div>
+  </div>
+</div>`;
+        }
+
+        function renderRsvp() {
+            return `
+<div class="content-panel">
+  <div class="panel-section">
+    <p class="panel-eyebrow">Get on the Guest List</p>
+    <h2 class="panel-title">RSVP</h2>
+    <div class="p-rsvp-stats">
+      <div class="p-rsvp-stat"><div class="p-rsvp-stat-num" id="stR">7</div><div class="p-rsvp-stat-label">Respons</div></div>
+      <div class="p-rsvp-stat"><div class="p-rsvp-stat-num" id="stH">7</div><div class="p-rsvp-stat-label">Hadir</div></div>
+      <div class="p-rsvp-stat"><div class="p-rsvp-stat-num" id="stT">13</div><div class="p-rsvp-stat-label">Total Tamu</div></div>
+    </div>
+    <div class="p-rsvp-form">
+      <div class="p-rsvp-btns">
+        <div class="p-rsvp-btn" id="optH" onclick="selRsvp('hadir')"><span class="p-rsvp-btn-emoji">✅</span>Hadir</div>
+        <div class="p-rsvp-btn" id="optT" onclick="selRsvp('tidak')"><span class="p-rsvp-btn-emoji">😔</span>Tidak Hadir</div>
+      </div>
+      <div class="p-form-group">
+        <label class="p-form-label">Nama Lengkap</label>
+        <input type="text" class="p-form-input" id="rName" placeholder="Masukkan nama Anda">
+      </div>
+      <div class="p-form-group">
+        <label class="p-form-label">Jumlah Tamu</label>
+        <div class="p-guest-row">
+          <button class="p-guest-btn active" id="gB1" onclick="selGuest(1)">👤 1 Tamu</button>
+          <button class="p-guest-btn" id="gB2" onclick="selGuest(2)">👥 2 Tamu</button>
+        </div>
+      </div>
+      <div class="p-form-group">
+        <label class="p-form-label">Ucapan & Doa</label>
+        <textarea class="p-form-input" id="rMsg" placeholder="Tuliskan ucapan untuk Nazma & Gunturr..."></textarea>
+      </div>
+      <button class="p-rsvp-submit" onclick="submitRSVP()">✅ Konfirmasi Kehadiran</button>
+    </div>
+  </div>
+  <div class="panel-section">
+    <p class="panel-eyebrow">Listener Reviews</p>
+    <h2 class="panel-title">Ucapan & Doa</h2>
+    <div class="p-wishes" id="wishesList">
+      <div class="p-wish vis"><div class="p-wish-header"><div class="p-wish-ava" style="background:#30d158">A</div><div><div class="p-wish-name">Ayu Rahmawati</div><div class="p-wish-status">✓ Hadir · 2 tamu</div></div></div><div class="p-wish-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu! 🌿</div></div>
+      <div class="p-wish vis" style="transition-delay:.1s"><div class="p-wish-header"><div class="p-wish-ava" style="background:#4a9eff">R</div><div><div class="p-wish-name">Reza Firmansyah</div><div class="p-wish-status">✓ Hadir · 1 tamu</div></div></div><div class="p-wish-text">Alhamdulillah! Semoga pernikahannya membawa keberkahan dan kebahagiaan yang tidak pernah habis. Aamiin! 🤲</div></div>
+      <div class="p-wish vis" style="transition-delay:.2s"><div class="p-wish-header"><div class="p-wish-ava" style="background:#ff6b6b">S</div><div><div class="p-wish-name">Sinta Dewi</div><div class="p-wish-status">✓ Hadir · 2 tamu</div></div></div><div class="p-wish-text">Wishing you both a lifetime of love and laughter. Semoga langkah kalian selalu diberkahi Allah SWT 💚</div></div>
+    </div>
+  </div>
+</div>`;
+        }
+
+        /* ════ RSVP LOGIC ════ */
+        function selRsvp(s) {
+            rsvpStatus = s;
+            const oH = document.getElementById('optH'), oT = document.getElementById('optT');
+            if (oH) oH.classList.toggle('sel', s === 'hadir');
+            if (oT) oT.classList.toggle('sel', s === 'tidak');
+        }
+        function selGuest(n) {
+            guestCt = n;
+            ['gB1', 'gB2'].forEach((id, i) => { const el = document.getElementById(id); if (el) el.classList.toggle('active', i + 1 === n); });
+        }
+        function submitRSVP() {
+            const name = document.getElementById('rName')?.value.trim();
+            const msg = document.getElementById('rMsg')?.value.trim();
+            if (!name) { showToast('Mohon isi nama lengkap Anda'); return; }
+            if (!rsvpStatus) { showToast('Pilih status kehadiran'); return; }
+            const colors = ['#2d8cff', '#30d158', '#ff6b6b', '#ff9500', '#c084fc'];
+            const col = colors[Math.floor(Math.random() * colors.length)];
+            const init = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+            const stTxt = rsvpStatus === 'hadir' ? `✓ Hadir · ${guestCt} tamu` : '✗ Tidak Hadir';
+            const item = document.createElement('div'); item.className = 'p-wish';
+            item.innerHTML = `<div class="p-wish-header"><div class="p-wish-ava" style="background:${col}">${init}</div><div><div class="p-wish-name">${name}</div><div class="p-wish-status">${stTxt}</div></div></div><div class="p-wish-text">${msg || 'Selamat dan semoga bahagia selalu! ❤️'}</div>`;
+            const list = document.getElementById('wishesList');
+            list?.prepend(item);
+            setTimeout(() => item.classList.add('vis'), 50);
+            const rEl = document.getElementById('stR'); if (rEl) rEl.textContent = parseInt(rEl.textContent) + 1;
+            if (rsvpStatus === 'hadir') {
+                const hEl = document.getElementById('stH'); if (hEl) hEl.textContent = parseInt(hEl.textContent) + 1;
+                const tEl = document.getElementById('stT'); if (tEl) tEl.textContent = parseInt(tEl.textContent) + guestCt;
+            }
+            if (document.getElementById('rName')) document.getElementById('rName').value = '';
+            if (document.getElementById('rMsg')) document.getElementById('rMsg').value = '';
+            showToast('🎉 Terima kasih! Konfirmasi berhasil!');
+            addChatMsg('System', '#2d8cff', `${name} telah mengkonfirmasi kehadiran (${stTxt}) 🎉`, now());
+        }
+
+        /* ════ GIFT COPY ════ */
+        function copyGift(text, btn) {
+            navigator.clipboard.writeText(text).then(() => {
+                btn.classList.add('copied'); btn.textContent = '✅ Tersalin!';
+                showToast('Nomor rekening disalin!');
+                setTimeout(() => { btn.classList.remove('copied'); btn.textContent = '📋 Salin'; }, 2500);
+            }).catch(() => showToast('Salin manual: ' + text));
+        }
+
+        /* ════ LIGHTBOX ════ */
+        function openLB(i) { lbIdx = i; updLB(); document.getElementById('lightbox').classList.add('open'); }
+        function closeLB() { document.getElementById('lightbox').classList.remove('open'); }
+        function lbMove(d) { lbIdx = (lbIdx + d + GALLERY_IMGS.length) % GALLERY_IMGS.length; updLB(); }
+        function updLB() { document.getElementById('lbImg').src = GALLERY_IMGS[lbIdx]; document.getElementById('lbCount').textContent = `${lbIdx + 1} / ${GALLERY_IMGS.length}`; }
+        document.addEventListener('keydown', e => {
+            if (document.getElementById('lightbox').classList.contains('open')) { if (e.key === 'Escape') closeLB(); if (e.key === 'ArrowLeft') lbMove(-1); if (e.key === 'ArrowRight') lbMove(1); }
+            if (document.getElementById('vModal').classList.contains('open') && e.key === 'Escape') closeVM();
+        });
+
+        /* ════ VIDEO MODAL ════ */
+        function openVM(src) { document.getElementById('vmSrc').src = src; document.getElementById('vmVid').load(); document.getElementById('vmVid').play().catch(() => { }); document.getElementById('vModal').classList.add('open'); }
+        function closeVM() { document.getElementById('vmVid').pause(); document.getElementById('vModal').classList.remove('open'); }
+
+        /* ════ CLOSE REACTIONS on outside click ════ */
+        document.addEventListener('click', e => {
+            const rp = document.getElementById('reactionsPopup');
+            if (!rp.contains(e.target) && !document.getElementById('reactBtn').contains(e.target)) {
+                rp.classList.remove('open');
+            }
+        });
+
+        /* ════ TOAST ════ */
+        let tTimer;
+        function showToast(msg) {
+            const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
+            clearTimeout(tTimer); tTimer = setTimeout(() => t.classList.remove('show'), 2800);
+        }
+    </script>
+</body>
+
+</html>

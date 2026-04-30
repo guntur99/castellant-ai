@@ -1,0 +1,2891 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undangan Nikah — Koridor Cinta Nazma & Gunturr</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700;900&family=Space+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --tj-red: #D01B2A;
+            --tj-red2: #E8202F;
+            --tj-red3: #FF3344;
+            --tj-white: #FFFFFF;
+            --tj-gray1: #F5F5F5;
+            --tj-gray2: #E8E8E8;
+            --tj-gray3: #CCCCCC;
+            --tj-gray4: #999999;
+            --tj-dark: #1A1A1A;
+            --tj-dark2: #2C2C2C;
+            --tj-dark3: #3D3D3D;
+            --tj-yellow: #FFD600;
+            --tj-blue: #0066CC;
+            --tj-green: #00A651;
+
+            --bebas: 'Bebas Neue', sans-serif;
+            --inter: 'Inter', sans-serif;
+            --mono: 'Space Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        html {
+            scroll-behavior: smooth
+        }
+
+        body {
+            background: var(--tj-gray1);
+            color: var(--tj-dark);
+            font-family: var(--inter);
+            overflow-x: hidden;
+        }
+
+        /* ═══════════════════════════════
+   OPENING — TIKET BRT
+═══════════════════════════════ */
+        #opening {
+            position: fixed;
+            inset: 0;
+            z-index: 9990;
+            background: var(--tj-dark);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            transition: opacity 1s ease, transform 1s ease;
+            overflow: hidden;
+        }
+
+        #opening.hide {
+            opacity: 0;
+            transform: translateY(-20px);
+            pointer-events: none
+        }
+
+        /* Moving dotted line bg */
+        .op-bg-line {
+            position: absolute;
+            height: 2px;
+            left: 0;
+            right: 0;
+            background: repeating-linear-gradient(90deg,
+                    transparent 0, transparent 8px,
+                    rgba(255, 255, 255, .05) 8px, rgba(255, 255, 255, .05) 16px);
+            animation: moveLine 2s linear infinite;
+        }
+
+        @keyframes moveLine {
+            from {
+                background-position: 0 0
+            }
+
+            to {
+                background-position: 32px 0
+            }
+        }
+
+        /* Tiket wrapper */
+        .tiket {
+            width: min(420px, 92vw);
+            background: var(--tj-white);
+            border-radius: 4px;
+            overflow: visible;
+            position: relative;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, .5);
+            opacity: 0;
+            animation: tiketDrop .8s cubic-bezier(.34, 1.56, .64, 1) .3s forwards;
+        }
+
+        @keyframes tiketDrop {
+            from {
+                opacity: 0;
+                transform: translateY(-40px) rotate(-2deg)
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg)
+            }
+        }
+
+        /* Header merah tiket */
+        .tiket-head {
+            background: var(--tj-red);
+            padding: 20px 24px 16px;
+            position: relative;
+        }
+
+        .tiket-logo-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .tiket-logo-box {
+            background: #fff;
+            border-radius: 3px;
+            padding: 4px 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tiket-logo-txt {
+            font-family: var(--bebas);
+            font-size: 18px;
+            letter-spacing: .05em;
+            color: var(--tj-red);
+            line-height: 1;
+        }
+
+        .tiket-logo-sub {
+            font-size: 9px;
+            letter-spacing: .25em;
+            color: rgba(255, 255, 255, .6);
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .tiket-type {
+            font-family: var(--bebas);
+            font-size: clamp(28px, 7vw, 38px);
+            color: #fff;
+            letter-spacing: .04em;
+            line-height: 1;
+        }
+
+        .tiket-type span {
+            color: var(--tj-yellow)
+        }
+
+        /* Perforated divider */
+        .tiket-perf {
+            display: flex;
+            align-items: center;
+            position: relative;
+            margin: 0;
+        }
+
+        .tiket-perf-line {
+            flex: 1;
+            height: 1px;
+            border-top: 2px dashed var(--tj-gray2);
+        }
+
+        .tiket-hole {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--tj-dark);
+            flex-shrink: 0;
+        }
+
+        .tiket-hole.left {
+            margin-left: -10px
+        }
+
+        .tiket-hole.right {
+            margin-right: -10px
+        }
+
+        /* Tiket body */
+        .tiket-body {
+            padding: 20px 24px 24px;
+        }
+
+        .tiket-row {
+            display: flex;
+            gap: 0;
+            margin-bottom: 16px;
+        }
+
+        .tiket-field {
+            flex: 1;
+        }
+
+        .tiket-field-label {
+            font-size: 9px;
+            letter-spacing: .3em;
+            text-transform: uppercase;
+            color: var(--tj-gray4);
+            font-weight: 500;
+            margin-bottom: 4px;
+        }
+
+        .tiket-field-value {
+            font-family: var(--bebas);
+            font-size: clamp(14px, 3.5vw, 18px);
+            color: var(--tj-dark);
+            letter-spacing: .03em;
+            line-height: 1.2;
+        }
+
+        .tiket-field-value.big {
+            font-size: clamp(22px, 5vw, 28px);
+            color: var(--tj-red);
+        }
+
+        /* Barcode */
+        .tiket-barcode {
+            background: var(--tj-dark);
+            padding: 10px 12px 8px;
+            border-radius: 2px;
+            margin-bottom: 12px;
+        }
+
+        .barcode-bars {
+            display: flex;
+            align-items: stretch;
+            gap: 1.5px;
+            height: 36px;
+            margin-bottom: 6px;
+        }
+
+        .b-bar {
+            background: #fff;
+            border-radius: 1px;
+            flex-shrink: 0;
+        }
+
+        .barcode-num {
+            font-family: var(--mono);
+            font-size: 9px;
+            color: rgba(255, 255, 255, .4);
+            letter-spacing: .2em;
+            text-align: center;
+        }
+
+        /* Dear box */
+        .tiket-dear {
+            background: var(--tj-gray1);
+            padding: 12px 14px;
+            border-left: 3px solid var(--tj-red);
+            margin-bottom: 18px;
+        }
+
+        .tiket-dear-label {
+            font-size: 9px;
+            letter-spacing: .3em;
+            color: var(--tj-gray4);
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .tiket-dear-name {
+            font-family: var(--bebas);
+            font-size: clamp(16px, 4vw, 20px);
+            color: var(--tj-dark);
+            letter-spacing: .04em;
+        }
+
+        .tiket-btn {
+            width: 100%;
+            background: var(--tj-red);
+            border: none;
+            color: #fff;
+            font-family: var(--bebas);
+            font-size: 18px;
+            letter-spacing: .1em;
+            padding: 14px;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: background .15s, transform .1s;
+            box-shadow: 0 4px 12px rgba(208, 27, 42, .4);
+        }
+
+        .tiket-btn:active {
+            transform: scale(.98)
+        }
+
+        .tiket-btn:hover {
+            background: var(--tj-red2)
+        }
+
+        /* Stamp VALID */
+        .tiket-stamp {
+            position: absolute;
+            top: 60px;
+            right: 20px;
+            width: 64px;
+            height: 64px;
+            border: 3px solid var(--tj-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(18deg);
+            opacity: 0;
+            animation: stampIn .4s ease 1.1s forwards;
+        }
+
+        @keyframes stampIn {
+            from {
+                opacity: 0;
+                transform: rotate(18deg) scale(1.5)
+            }
+
+            to {
+                opacity: 1;
+                transform: rotate(18deg) scale(1)
+            }
+        }
+
+        .tiket-stamp-txt {
+            font-family: var(--bebas);
+            font-size: 10px;
+            letter-spacing: .1em;
+            color: var(--tj-green);
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        /* ═══════════════════════════════
+   MAIN
+═══════════════════════════════ */
+        #main {
+            opacity: 0;
+            transition: opacity .8s ease
+        }
+
+        #main.show {
+            opacity: 1
+        }
+
+        /* ═══════════════════════════════
+   HERO — HALTE / BUS DISPLAY
+═══════════════════════════════ */
+        .hero {
+            min-height: 100svh;
+            background: var(--tj-dark);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Animated bus route line at top */
+        .hero-route-bar {
+            height: 6px;
+            background: var(--tj-red);
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .hero-route-bar::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .4), transparent);
+            animation: routeShine 2s linear infinite;
+        }
+
+        @keyframes routeShine {
+            from {
+                transform: translateX(-100%)
+            }
+
+            to {
+                transform: translateX(200%)
+            }
+        }
+
+        /* Main display area */
+        .hero-display {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: calc(100svh - 6px);
+        }
+
+        @media(max-width:700px) {
+            .hero-display {
+                grid-template-columns: 1fr
+            }
+        }
+
+        /* LEFT: Papan jadwal halte */
+        .hero-left {
+            background: var(--tj-dark);
+            padding: 48px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            border-right: 1px solid rgba(255, 255, 255, .06);
+            position: relative;
+        }
+
+        @media(max-width:700px) {
+            .hero-left {
+                padding: 48px 24px 32px;
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, .06)
+            }
+        }
+
+        /* Scrolling LED text */
+        .led-ticker {
+            background: #000;
+            border: 1px solid rgba(255, 60, 0, .3);
+            padding: 8px 16px;
+            margin-bottom: 32px;
+            overflow: hidden;
+            position: relative;
+            height: 36px;
+            display: flex;
+            align-items: center;
+        }
+
+        .led-text {
+            font-family: var(--mono);
+            font-size: 13px;
+            color: #FF6600;
+            letter-spacing: .15em;
+            white-space: nowrap;
+            animation: ledScroll 14s linear infinite;
+            text-shadow: 0 0 8px #FF6600;
+        }
+
+        @keyframes ledScroll {
+            0% {
+                transform: translateX(100%)
+            }
+
+            100% {
+                transform: translateX(-100%)
+            }
+        }
+
+        .hero-koridor {
+            font-family: var(--bebas);
+            font-size: 12px;
+            letter-spacing: .5em;
+            color: var(--tj-red);
+            margin-bottom: 8px;
+        }
+
+        .hero-title {
+            font-family: var(--bebas);
+            font-size: clamp(52px, 9vw, 88px);
+            color: #fff;
+            line-height: .95;
+            letter-spacing: .02em;
+            margin-bottom: 4px;
+        }
+
+        .hero-title .red {
+            color: var(--tj-red)
+        }
+
+        .hero-connector {
+            font-family: var(--inter);
+            font-size: 11px;
+            letter-spacing: .4em;
+            text-transform: uppercase;
+            color: var(--tj-gray4);
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hero-connector::before,
+        .hero-connector::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, .08)
+        }
+
+        .hero-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .hero-chip {
+            background: rgba(255, 255, 255, .06);
+            border: 1px solid rgba(255, 255, 255, .1);
+            color: rgba(255, 255, 255, .7);
+            font-size: 11px;
+            letter-spacing: .15em;
+            padding: 6px 14px;
+            font-weight: 500;
+            font-family: var(--inter);
+        }
+
+        .hero-chip.red {
+            background: rgba(208, 27, 42, .2);
+            border-color: rgba(208, 27, 42, .4);
+            color: var(--tj-red3)
+        }
+
+        /* Scroll hint */
+        .hero-scroll {
+            position: absolute;
+            bottom: 32px;
+            left: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 10px;
+            letter-spacing: .3em;
+            color: rgba(255, 255, 255, .2);
+            text-transform: uppercase;
+        }
+
+        @media(max-width:700px) {
+            .hero-scroll {
+                left: 24px;
+                bottom: 24px
+            }
+        }
+
+        .hero-scroll-line {
+            width: 32px;
+            height: 1px;
+            background: rgba(255, 255, 255, .15)
+        }
+
+        /* RIGHT: Bus illustration area */
+        .hero-right {
+            background: var(--tj-dark2);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 32px;
+        }
+
+        @media(max-width:700px) {
+            .hero-right {
+                min-height: 40svh;
+                padding: 32px 24px
+            }
+        }
+
+        /* Bus SVG */
+        .bus-wrap {
+            width: 100%;
+            max-width: 380px;
+            animation: busFloat 5s ease-in-out infinite;
+        }
+
+        @keyframes busFloat {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-10px)
+            }
+        }
+
+        /* Destination board */
+        .dest-board {
+            width: 100%;
+            max-width: 380px;
+            background: #000;
+            border: 2px solid rgba(255, 255, 255, .1);
+            padding: 14px 20px;
+            margin-top: 16px;
+            position: relative;
+        }
+
+        .dest-route {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: rgba(255, 255, 255, .3);
+            letter-spacing: .2em;
+            margin-bottom: 8px;
+        }
+
+        .dest-stations {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            overflow: hidden;
+        }
+
+        .dest-station {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .dest-sta-name {
+            font-family: var(--bebas);
+            font-size: clamp(13px, 3vw, 18px);
+            letter-spacing: .05em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dest-sta-name.active {
+            color: var(--tj-yellow);
+            text-shadow: 0 0 12px rgba(255, 214, 0, .4)
+        }
+
+        .dest-sta-name.done {
+            color: rgba(255, 255, 255, .25)
+        }
+
+        .dest-sta-name.next {
+            color: rgba(255, 255, 255, .65)
+        }
+
+        .dest-arrow {
+            flex-shrink: 0;
+            padding: 0 8px;
+            color: rgba(255, 255, 255, .2);
+            font-size: 14px;
+        }
+
+        .dest-eta {
+            position: absolute;
+            top: 14px;
+            right: 16px;
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--tj-green);
+            text-shadow: 0 0 8px var(--tj-green);
+        }
+
+        /* ═══════════════════════════════
+   RUNNING TEXT TICKER
+═══════════════════════════════ */
+        .ticker-bar {
+            background: var(--tj-red);
+            overflow: hidden;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            border-top: 2px solid rgba(0, 0, 0, .15);
+        }
+
+        .ticker-label {
+            background: var(--tj-dark);
+            color: #fff;
+            font-family: var(--bebas);
+            font-size: 14px;
+            letter-spacing: .1em;
+            padding: 0 20px;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .ticker-content {
+            font-family: var(--bebas);
+            font-size: 15px;
+            letter-spacing: .1em;
+            color: #fff;
+            white-space: nowrap;
+            animation: tickerScroll 22s linear infinite;
+        }
+
+        @keyframes tickerScroll {
+            0% {
+                transform: translateX(100vw)
+            }
+
+            100% {
+                transform: translateX(-200%)
+            }
+        }
+
+        /* ═══════════════════════════════
+   RUTE MAP — KORIDOR CINTA
+═══════════════════════════════ */
+        .rute-section {
+            background: var(--tj-white);
+            padding: 80px 24px;
+            overflow: hidden;
+        }
+
+        .rute-header {
+            max-width: 800px;
+            margin: 0 auto 56px;
+        }
+
+        .rute-eyebrow {
+            font-family: var(--inter);
+            font-size: 10px;
+            letter-spacing: .4em;
+            text-transform: uppercase;
+            color: var(--tj-red);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .rute-eyebrow::before {
+            content: '';
+            width: 20px;
+            height: 2px;
+            background: var(--tj-red)
+        }
+
+        .rute-heading {
+            font-family: var(--bebas);
+            font-size: clamp(36px, 6vw, 56px);
+            color: var(--tj-dark);
+            letter-spacing: .04em;
+            line-height: 1;
+        }
+
+        /* Rute line visual */
+        .rute-map {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* Horizontal line */
+        .rute-line {
+            position: absolute;
+            top: 28px;
+            left: 40px;
+            right: 40px;
+            height: 4px;
+            background: var(--tj-gray2);
+            z-index: 0;
+        }
+
+        .rute-line-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background: var(--tj-red);
+            width: 0%;
+            transition: width 1.5s ease .3s;
+        }
+
+        .rute-line-fill.animate {
+            width: 100%
+        }
+
+        .rute-stops {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            position: relative;
+            z-index: 1;
+        }
+
+        .rute-stop {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 100px;
+            opacity: 0;
+            transform: translateY(12px);
+            transition: opacity .6s ease, transform .6s ease;
+        }
+
+        .rute-stop.visible {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .stop-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--tj-gray3);
+            border: 3px solid var(--tj-white);
+            box-shadow: 0 0 0 2px var(--tj-gray3);
+            margin-bottom: 12px;
+            transition: background .5s, box-shadow .5s;
+        }
+
+        .stop-dot.done {
+            background: var(--tj-red);
+            box-shadow: 0 0 0 2px var(--tj-red)
+        }
+
+        .stop-dot.current {
+            background: var(--tj-red);
+            box-shadow: 0 0 0 2px var(--tj-red), 0 0 0 5px rgba(208, 27, 42, .2);
+            animation: stopPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes stopPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 2px var(--tj-red), 0 0 0 5px rgba(208, 27, 42, .2)
+            }
+
+            50% {
+                box-shadow: 0 0 0 2px var(--tj-red), 0 0 0 8px rgba(208, 27, 42, .1)
+            }
+        }
+
+        .stop-number {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--tj-gray4);
+            margin-bottom: 4px;
+            font-weight: 700;
+            letter-spacing: .1em;
+        }
+
+        .stop-name {
+            font-family: var(--bebas);
+            font-size: clamp(14px, 2.5vw, 17px);
+            color: var(--tj-dark);
+            text-align: center;
+            letter-spacing: .04em;
+            line-height: 1.2;
+        }
+
+        .stop-name.current {
+            color: var(--tj-red)
+        }
+
+        .stop-year {
+            font-size: 10px;
+            color: var(--tj-gray4);
+            font-weight: 500;
+            margin-top: 4px;
+            letter-spacing: .05em;
+        }
+
+        /* ═══════════════════════════════
+   COUNTDOWN — LED DISPLAY
+═══════════════════════════════ */
+        .cd-section {
+            background: var(--tj-dark);
+            padding: 72px 24px;
+            text-align: center;
+        }
+
+        .cd-header {
+            font-family: var(--bebas);
+            font-size: clamp(18px, 4vw, 26px);
+            color: rgba(255, 255, 255, .4);
+            letter-spacing: .15em;
+            margin-bottom: 40px;
+        }
+
+        .cd-header span {
+            color: var(--tj-red)
+        }
+
+        .cd-grid {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .cd-unit {
+            background: #000;
+            border: 1px solid rgba(255, 255, 255, .06);
+            padding: 24px 20px 16px;
+            min-width: 96px;
+            position: relative;
+        }
+
+        /* LED scanline */
+        .cd-unit::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: repeating-linear-gradient(0deg,
+                    rgba(255, 255, 255, .015) 0px,
+                    rgba(255, 255, 255, .015) 1px,
+                    transparent 1px, transparent 3px);
+            pointer-events: none;
+        }
+
+        .cd-n {
+            font-family: var(--mono);
+            font-size: clamp(44px, 9vw, 64px);
+            color: var(--tj-red);
+            line-height: 1;
+            margin-bottom: 8px;
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(208, 27, 42, .5);
+        }
+
+        .cd-l {
+            font-size: 9px;
+            letter-spacing: .3em;
+            color: rgba(255, 255, 255, .25);
+            text-transform: uppercase;
+        }
+
+        .cd-colon {
+            font-family: var(--mono);
+            font-size: 48px;
+            color: rgba(208, 27, 42, .4);
+            align-self: center;
+            padding-bottom: 14px;
+            animation: blink .8s step-end infinite;
+        }
+
+        @keyframes blink {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: 0
+            }
+        }
+
+        @media(max-width:480px) {
+            .cd-colon {
+                display: none
+            }
+        }
+
+        /* ═══════════════════════════════
+   COUPLE — KARTU PENUMPANG
+═══════════════════════════════ */
+        .couple-section {
+            background: var(--tj-gray1);
+            padding: 80px 24px;
+            border-top: 4px solid var(--tj-gray2);
+        }
+
+        .couple-head {
+            text-align: center;
+            margin-bottom: 52px;
+        }
+
+        .couple-eyebrow {
+            font-size: 10px;
+            letter-spacing: .4em;
+            text-transform: uppercase;
+            color: var(--tj-red);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .couple-heading {
+            font-family: var(--bebas);
+            font-size: clamp(32px, 5vw, 48px);
+            color: var(--tj-dark);
+            letter-spacing: .04em;
+        }
+
+        .kartu-grid {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 24px;
+            align-items: center;
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        @media(max-width:620px) {
+            .kartu-grid {
+                grid-template-columns: 1fr;
+                max-width: 340px
+            }
+        }
+
+        .kartu-penumpang {
+            background: var(--tj-white);
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, .08);
+            border: 1px solid var(--tj-gray2);
+            transition: transform .3s, box-shadow .3s;
+        }
+
+        .kartu-penumpang:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, .12)
+        }
+
+        .kp-header {
+            background: var(--tj-red);
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .kp-header-logo {
+            font-family: var(--bebas);
+            font-size: 14px;
+            color: #fff;
+            letter-spacing: .05em;
+        }
+
+        .kp-header-type {
+            font-size: 9px;
+            letter-spacing: .2em;
+            color: rgba(255, 255, 255, .65);
+            text-transform: uppercase;
+        }
+
+        .kp-body {
+            padding: 20px 16px;
+            display: flex;
+            gap: 14px;
+            align-items: flex-start;
+        }
+
+        .kp-foto {
+            width: 72px;
+            height: 72px;
+            border-radius: 3px;
+            overflow: hidden;
+            border: 2px solid var(--tj-gray2);
+            flex-shrink: 0;
+        }
+
+        .kp-foto img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover
+        }
+
+        .kp-info {}
+
+        .kp-role {
+            font-size: 9px;
+            letter-spacing: .3em;
+            text-transform: uppercase;
+            color: var(--tj-red);
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .kp-name {
+            font-family: var(--bebas);
+            font-size: clamp(16px, 3vw, 20px);
+            color: var(--tj-dark);
+            letter-spacing: .04em;
+            margin-bottom: 4px;
+            line-height: 1.1;
+        }
+
+        .kp-parents {
+            font-size: 11px;
+            color: var(--tj-gray4);
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .kp-footer {
+            background: var(--tj-gray1);
+            padding: 8px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid var(--tj-gray2);
+        }
+
+        .kp-card-num {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--tj-gray4);
+            letter-spacing: .15em;
+        }
+
+        .kp-valid {
+            font-size: 9px;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: var(--tj-green);
+            font-weight: 600;
+        }
+
+        .kartu-vs {
+            font-family: var(--bebas);
+            font-size: clamp(44px, 8vw, 72px);
+            color: var(--tj-gray2);
+            text-align: center;
+            user-select: none;
+            line-height: 1;
+        }
+
+        @media(max-width:620px) {
+            .kartu-vs {
+                font-size: 56px
+            }
+        }
+
+        /* ═══════════════════════════════
+   EVENT — HALTE JADWAL
+═══════════════════════════════ */
+        .event-section {
+            background: var(--tj-dark);
+            padding: 80px 24px;
+        }
+
+        .ev-header {
+            max-width: 760px;
+            margin: 0 auto 48px;
+        }
+
+        .ev-eyebrow {
+            font-size: 10px;
+            letter-spacing: .4em;
+            text-transform: uppercase;
+            color: var(--tj-red);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .ev-eyebrow::before {
+            content: '';
+            width: 20px;
+            height: 2px;
+            background: var(--tj-red)
+        }
+
+        .ev-heading {
+            font-family: var(--bebas);
+            font-size: clamp(36px, 6vw, 52px);
+            color: #fff;
+            letter-spacing: .04em;
+        }
+
+        .ev-heading span {
+            color: var(--tj-red)
+        }
+
+        .jadwal-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        @media(max-width:560px) {
+            .jadwal-cards {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .jadwal-card {
+            background: var(--tj-dark2);
+            border: 1px solid rgba(255, 255, 255, .06);
+            border-top: 3px solid var(--tj-red);
+            padding: 28px 24px;
+            transition: border-top-color .2s, transform .2s;
+        }
+
+        .jadwal-card:hover {
+            border-top-color: var(--tj-yellow);
+            transform: translateY(-4px)
+        }
+
+        .jc-koridor {
+            display: inline-block;
+            background: var(--tj-red);
+            color: #fff;
+            font-family: var(--bebas);
+            font-size: 12px;
+            letter-spacing: .1em;
+            padding: 3px 12px;
+            border-radius: 2px;
+            margin-bottom: 16px;
+        }
+
+        .jc-title {
+            font-family: var(--bebas);
+            font-size: clamp(26px, 5vw, 36px);
+            color: #fff;
+            letter-spacing: .04em;
+            line-height: 1.05;
+            margin-bottom: 24px;
+        }
+
+        .jc-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .jc-ico {
+            color: var(--tj-red);
+            flex-shrink: 0;
+            margin-top: 1px
+        }
+
+        .jc-txt {
+            font-size: 13px;
+            color: rgba(255, 255, 255, .55);
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        .jc-txt strong {
+            color: rgba(255, 255, 255, .8);
+            font-weight: 500
+        }
+
+        .jc-maps {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 16px;
+            color: var(--tj-red3);
+            font-size: 11px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            font-weight: 600;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(208, 27, 42, .3);
+            padding-bottom: 3px;
+            transition: color .2s, border-color .2s;
+        }
+
+        .jc-maps:hover {
+            color: var(--tj-yellow);
+            border-color: rgba(255, 214, 0, .4)
+        }
+
+        /* ═══════════════════════════════
+   GALLERY — PAPAN FOTO HALTE
+═══════════════════════════════ */
+        .gallery-section {
+            background: var(--tj-gray1);
+            padding: 80px 16px;
+        }
+
+        .gallery-head {
+            max-width: 960px;
+            margin: 0 auto 32px;
+            padding: 0 8px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .gallery-heading {
+            font-family: var(--bebas);
+            font-size: clamp(30px, 5vw, 44px);
+            color: var(--tj-dark);
+            letter-spacing: .04em;
+        }
+
+        .gallery-sub {
+            font-size: 12px;
+            color: var(--tj-gray4);
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        /* Grid of photos with red frame */
+        .foto-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3px;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+
+        @media(max-width:720px) {
+            .foto-grid {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+
+        .foto-item {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 3/4;
+            cursor: pointer;
+            background: var(--tj-gray2);
+        }
+
+        .foto-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: saturate(.75) contrast(1.05);
+            transition: filter .4s, transform .5s;
+        }
+
+        .foto-item:hover img {
+            filter: saturate(1) contrast(1.1);
+            transform: scale(1.06)
+        }
+
+        .foto-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(0deg, rgba(26, 26, 26, .7) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity .3s;
+        }
+
+        .foto-item:hover .foto-overlay {
+            opacity: 1
+        }
+
+        .foto-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 14px 12px 12px;
+            font-family: var(--bebas);
+            font-size: 14px;
+            color: #fff;
+            letter-spacing: .04em;
+            transform: translateY(6px);
+            opacity: 0;
+            transition: transform .3s, opacity .3s;
+        }
+
+        .foto-item:hover .foto-caption {
+            transform: translateY(0);
+            opacity: 1
+        }
+
+        /* Halte number badge */
+        .foto-num {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: var(--tj-red);
+            color: #fff;
+            font-family: var(--mono);
+            font-size: 9px;
+            font-weight: 700;
+            padding: 3px 7px;
+            letter-spacing: .1em;
+        }
+
+        /* Special large items */
+        .foto-item:nth-child(1) {
+            grid-row: span 2
+        }
+
+        .foto-item:nth-child(6) {
+            grid-row: span 2
+        }
+
+        /* ═══════════════════════════════
+   GIFT — E-MONEY CARD STYLE
+═══════════════════════════════ */
+        .gift-section {
+            background: var(--tj-white);
+            padding: 80px 24px;
+            border-top: 4px solid var(--tj-gray2);
+            text-align: center;
+        }
+
+        .gift-eyebrow {
+            font-size: 10px;
+            letter-spacing: .4em;
+            text-transform: uppercase;
+            color: var(--tj-red);
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .gift-heading {
+            font-family: var(--bebas);
+            font-size: clamp(32px, 5vw, 48px);
+            color: var(--tj-dark);
+            letter-spacing: .04em;
+            margin-bottom: 8px;
+        }
+
+        .gift-sub {
+            font-size: 14px;
+            color: var(--tj-gray4);
+            max-width: 480px;
+            margin: 0 auto 40px;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        .emoney-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            max-width: 560px;
+            margin: 0 auto;
+        }
+
+        @media(max-width:480px) {
+            .emoney-cards {
+                grid-template-columns: 1fr
+            }
+        }
+
+        .emoney {
+            background: var(--tj-dark);
+            border-radius: 8px;
+            padding: 28px 24px;
+            position: relative;
+            overflow: hidden;
+            transition: transform .2s;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, .15);
+        }
+
+        .emoney:hover {
+            transform: translateY(-4px)
+        }
+
+        /* Card chip pattern */
+        .emoney::before {
+            content: '';
+            position: absolute;
+            top: -60px;
+            right: -60px;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .03);
+        }
+
+        .emoney::after {
+            content: '';
+            position: absolute;
+            bottom: -40px;
+            left: -40px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .02);
+        }
+
+        /* Chip */
+        .emoney-chip {
+            width: 36px;
+            height: 28px;
+            background: linear-gradient(135deg, #D4AF37, #B8860B);
+            border-radius: 4px;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: inset 0 1px 2px rgba(255, 255, 255, .3);
+        }
+
+        .emoney-chip::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 6px;
+            right: 6px;
+            height: 1px;
+            background: rgba(0, 0, 0, .2);
+            box-shadow: 0 4px 0 rgba(0, 0, 0, .1), 0 -4px 0 rgba(0, 0, 0, .1);
+        }
+
+        .emoney-bank {
+            font-family: var(--bebas);
+            font-size: 32px;
+            color: var(--tj-red3);
+            letter-spacing: .05em;
+            margin-bottom: 4px;
+            position: relative;
+        }
+
+        .emoney-holder {
+            font-size: 11px;
+            color: rgba(255, 255, 255, .35);
+            margin-bottom: 16px;
+            font-weight: 400;
+            letter-spacing: .05em;
+            position: relative;
+        }
+
+        .emoney-number {
+            font-family: var(--mono);
+            font-size: 16px;
+            color: #fff;
+            letter-spacing: .15em;
+            margin-bottom: 20px;
+            background: rgba(255, 255, 255, .06);
+            padding: 8px 12px;
+            border-radius: 3px;
+            position: relative;
+        }
+
+        .emoney-copy {
+            background: var(--tj-red);
+            border: none;
+            color: #fff;
+            font-family: var(--inter);
+            font-size: 11px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            font-weight: 600;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: background .15s;
+            position: relative;
+        }
+
+        .emoney-copy:hover {
+            background: var(--tj-red2)
+        }
+
+        .emoney-copy.copied {
+            background: var(--tj-green)
+        }
+
+        /* ═══════════════════════════════
+   RSVP — FORM MESIN TIKET
+═══════════════════════════════ */
+        .rsvp-section {
+            background: var(--tj-gray1);
+            padding: 80px 24px;
+            border-top: 4px solid var(--tj-gray2);
+            position: relative;
+        }
+
+        .rsvp-inner {
+            max-width: 560px;
+            margin: 0 auto
+        }
+
+        .rsvp-eyebrow {
+            font-size: 10px;
+            letter-spacing: .4em;
+            text-transform: uppercase;
+            color: var(--tj-red);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .rsvp-eyebrow::before {
+            content: '';
+            width: 20px;
+            height: 2px;
+            background: var(--tj-red)
+        }
+
+        .rsvp-heading {
+            font-family: var(--bebas);
+            font-size: clamp(36px, 6vw, 52px);
+            color: var(--tj-dark);
+            letter-spacing: .04em;
+            margin-bottom: 40px;
+        }
+
+        .rsvp-stats {
+            display: flex;
+            gap: 0;
+            background: #fff;
+            border: 1px solid var(--tj-gray2);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .04);
+            margin-bottom: 40px;
+        }
+
+        .rs {
+            flex: 1;
+            padding: 20px 16px;
+            text-align: center;
+            position: relative
+        }
+
+        .rs+.rs::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 20%;
+            bottom: 20%;
+            width: 1px;
+            background: var(--tj-gray2)
+        }
+
+        .rs-n {
+            font-family: var(--bebas);
+            font-size: 40px;
+            color: var(--tj-red);
+            line-height: 1;
+            margin-bottom: 4px;
+            letter-spacing: .04em;
+        }
+
+        .rs-l {
+            font-size: 9px;
+            letter-spacing: .25em;
+            text-transform: uppercase;
+            color: var(--tj-gray4);
+            font-weight: 500
+        }
+
+        .fg {
+            margin-bottom: 20px
+        }
+
+        .fl {
+            display: block;
+            font-size: 10px;
+            letter-spacing: .3em;
+            text-transform: uppercase;
+            color: var(--tj-dark3);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .fi {
+            width: 100%;
+            background: #fff;
+            border: 1px solid var(--tj-gray2);
+            border-bottom: 2px solid var(--tj-gray3);
+            padding: 13px 16px;
+            color: var(--tj-dark);
+            font-family: var(--inter);
+            font-size: 15px;
+            outline: none;
+            border-radius: 0;
+            transition: border-bottom-color .2s;
+            -webkit-appearance: none;
+        }
+
+        .fi:focus {
+            border-bottom-color: var(--tj-red)
+        }
+
+        .fi::placeholder {
+            color: var(--tj-gray3)
+        }
+
+        textarea.fi {
+            min-height: 100px;
+            resize: vertical
+        }
+
+        .fs {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23D01B2A' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 42px;
+            cursor: pointer;
+        }
+
+        option {
+            font-family: sans-serif
+        }
+
+        .guest-row {
+            display: flex;
+            gap: 8px
+        }
+
+        .gst-btn {
+            flex: 1;
+            background: #fff;
+            border: 1px solid var(--tj-gray2);
+            border-bottom: 2px solid var(--tj-gray3);
+            padding: 13px;
+            color: var(--tj-dark3);
+            font-family: var(--inter);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all .15s;
+        }
+
+        .gst-btn.active {
+            background: var(--tj-red);
+            border-color: var(--tj-red);
+            border-bottom-color: var(--tj-red);
+            color: #fff;
+        }
+
+        .rsvp-submit {
+            width: 100%;
+            background: var(--tj-red);
+            border: none;
+            color: #fff;
+            font-family: var(--bebas);
+            font-size: 18px;
+            letter-spacing: .12em;
+            padding: 18px;
+            cursor: pointer;
+            margin-top: 12px;
+            box-shadow: 0 4px 16px rgba(208, 27, 42, .35);
+            transition: background .15s, transform .1s;
+        }
+
+        .rsvp-submit:active {
+            transform: scale(.98)
+        }
+
+        .rsvp-submit:hover {
+            background: var(--tj-red2)
+        }
+
+        /* ═══════════════════════════════
+   WISHES
+═══════════════════════════════ */
+        .wishes-section {
+            background: var(--tj-white);
+            padding: 72px 24px;
+            border-top: 4px solid var(--tj-gray2);
+        }
+
+        .wishes-inner {
+            max-width: 640px;
+            margin: 0 auto
+        }
+
+        .wishes-heading {
+            font-family: var(--bebas);
+            font-size: clamp(28px, 5vw, 40px);
+            color: var(--tj-dark);
+            letter-spacing: .04em;
+            margin-bottom: 32px;
+        }
+
+        .wishes-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px
+        }
+
+        .wish-card {
+            background: var(--tj-gray1);
+            border: 1px solid var(--tj-gray2);
+            border-left: 3px solid var(--tj-red);
+            padding: 18px 20px;
+            opacity: 0;
+            transform: translateX(-12px);
+            transition: opacity .5s, transform .5s;
+        }
+
+        .wish-card.visible {
+            opacity: 1;
+            transform: translateX(0)
+        }
+
+        .wh {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px
+        }
+
+        .wa {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--tj-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--bebas);
+            font-size: 14px;
+            color: #fff;
+            flex-shrink: 0;
+            letter-spacing: .04em;
+        }
+
+        .wn {
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--tj-dark)
+        }
+
+        .ws {
+            font-size: 10px;
+            letter-spacing: .15em;
+            color: var(--tj-green);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-top: 2px
+        }
+
+        .wt {
+            font-size: 14px;
+            color: var(--tj-dark3);
+            line-height: 1.7;
+            font-weight: 400
+        }
+
+        /* ═══════════════════════════════
+   FOOTER
+═══════════════════════════════ */
+        .footer {
+            background: var(--tj-dark);
+            padding: 80px 24px 48px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Route map watermark */
+        .footer-wm {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--bebas);
+            font-size: clamp(80px, 18vw, 160px);
+            color: rgba(255, 255, 255, .02);
+            white-space: nowrap;
+            pointer-events: none;
+            letter-spacing: .04em;
+            user-select: none;
+            line-height: 1;
+        }
+
+        .footer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--tj-red);
+            padding: 8px 20px;
+            margin-bottom: 28px;
+        }
+
+        .fb-logo {
+            font-family: var(--bebas);
+            font-size: 16px;
+            color: #fff;
+            letter-spacing: .05em
+        }
+
+        .fb-sep {
+            color: rgba(255, 255, 255, .3)
+        }
+
+        .fb-route {
+            font-size: 10px;
+            letter-spacing: .3em;
+            color: rgba(255, 255, 255, .65);
+            text-transform: uppercase
+        }
+
+        .footer-title {
+            font-family: var(--bebas);
+            font-size: clamp(48px, 11vw, 88px);
+            color: #fff;
+            letter-spacing: .04em;
+            line-height: 1;
+            margin-bottom: 12px;
+        }
+
+        .footer-title .red {
+            color: var(--tj-red)
+        }
+
+        .footer-sub {
+            font-size: 13px;
+            color: rgba(255, 255, 255, .3);
+            max-width: 420px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+            font-weight: 400;
+            letter-spacing: .02em;
+        }
+
+        .footer-route-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            margin-bottom: 32px;
+            overflow: hidden;
+        }
+
+        .frl-station {
+            font-family: var(--mono);
+            font-size: 10px;
+            letter-spacing: .1em;
+            color: rgba(255, 255, 255, .2);
+            padding: 0 16px;
+            text-transform: uppercase;
+        }
+
+        .frl-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--tj-red);
+            flex-shrink: 0;
+        }
+
+        .frl-line {
+            width: 40px;
+            height: 1px;
+            background: rgba(208, 27, 42, .3);
+            flex-shrink: 0
+        }
+
+        .footer-brand {
+            font-size: 10px;
+            letter-spacing: .25em;
+            color: rgba(255, 255, 255, .12);
+            text-transform: uppercase;
+        }
+
+        .footer-brand a {
+            color: var(--tj-red3);
+            text-decoration: none
+        }
+
+        /* ═══════════════════════════════
+   BOTTOM NAV
+═══════════════════════════════ */
+        .bot-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(26, 26, 26, .95);
+            backdrop-filter: blur(20px);
+            border-top: 2px solid var(--tj-red);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 max(10px, env(safe-area-inset-bottom));
+            z-index: 500;
+            transform: translateY(100%);
+            transition: transform .6s cubic-bezier(.16, 1, .3, 1) 1s;
+        }
+
+        .bot-nav.show {
+            transform: translateY(0)
+        }
+
+        .nav-a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: rgba(255, 255, 255, .3);
+            text-decoration: none;
+            cursor: pointer;
+            font-size: 8px;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            font-weight: 500;
+            padding: 4px 14px;
+            transition: color .2s;
+        }
+
+        .nav-a svg {
+            width: 18px;
+            height: 18px
+        }
+
+        .nav-a:hover,
+        .nav-a.active {
+            color: var(--tj-red3)
+        }
+
+        /* ═══════════════════════════════
+   LIGHTBOX + TOAST
+═══════════════════════════════ */
+        .lbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .96);
+            z-index: 9000;
+            display: none;
+            align-items: center;
+            justify-content: center
+        }
+
+        .lbox.open {
+            display: flex
+        }
+
+        .lbox-img {
+            max-width: 88vw;
+            max-height: 86vh;
+            object-fit: contain
+        }
+
+        .lbox-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            background: var(--tj-red);
+            border: none;
+            color: #fff;
+            font-size: 18px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-family: var(--bebas);
+            letter-spacing: .05em
+        }
+
+        .lbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(208, 27, 42, .15);
+            border: 1px solid rgba(208, 27, 42, .3);
+            color: #fff;
+            font-size: 28px;
+            width: 48px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background .2s
+        }
+
+        .lbox-nav:hover {
+            background: rgba(208, 27, 42, .4)
+        }
+
+        .lbox-prev {
+            left: 12px
+        }
+
+        .lbox-next {
+            right: 12px
+        }
+
+        .lbox-ctr {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: var(--mono);
+            font-size: 11px;
+            letter-spacing: .2em;
+            color: rgba(255, 255, 255, .3)
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(14px);
+            background: var(--tj-dark);
+            border: 1px solid var(--tj-red);
+            border-left: 3px solid var(--tj-red);
+            color: #fff;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: .1em;
+            padding: 12px 24px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s, transform .3s;
+            z-index: 9999;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0)
+        }
+
+        /* ═══ REVEAL ═══ */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity .8s ease, transform .8s ease
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0)
+        }
+
+        .rd1 {
+            transition-delay: .12s
+        }
+
+        .rd2 {
+            transition-delay: .24s
+        }
+
+        .rd3 {
+            transition-delay: .36s
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ════ OPENING — TIKET ════ -->
+    <div id="opening">
+        <!-- Moving lines bg -->
+        <div class="op-bg-line" style="top:15%"></div>
+        <div class="op-bg-line" style="top:35%;animation-delay:.5s;opacity:.5"></div>
+        <div class="op-bg-line" style="top:65%;animation-delay:1s;opacity:.3"></div>
+        <div class="op-bg-line" style="top:85%;animation-delay:.3s;opacity:.4"></div>
+
+        <div class="tiket">
+            <!-- Stamp valid -->
+            <div class="tiket-stamp">
+                <div class="tiket-stamp-txt">VALID<br>INVITE</div>
+            </div>
+
+            <!-- Header -->
+            <div class="tiket-head">
+                <div class="tiket-logo-row">
+                    <div class="tiket-logo-box">
+                        <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
+                            <rect width="40" height="40" rx="4" fill="#D01B2A" />
+                            <text x="20" y="27" font-family="Arial" font-size="18" font-weight="900" fill="white"
+                                text-anchor="middle">TJ</text>
+                        </svg>
+                        <span class="tiket-logo-txt">TransJakarta</span>
+                    </div>
+                    <span class="tiket-logo-sub">Wedding Edition</span>
+                </div>
+                <div class="tiket-type">TIKET UNDANGAN<br><span>KORIDOR CINTA</span></div>
+            </div>
+
+            <!-- Perforated -->
+            <div class="tiket-perf">
+                <div class="tiket-hole left"></div>
+                <div class="tiket-perf-line"></div>
+                <div class="tiket-hole right"></div>
+            </div>
+
+            <!-- Body -->
+            <div class="tiket-body">
+                <div class="tiket-row">
+                    <div class="tiket-field">
+                        <div class="tiket-field-label">Dari</div>
+                        <div class="tiket-field-value big">Nazma</div>
+                    </div>
+                    <div style="align-self:flex-end;padding:0 8px;font-size:20px;color:var(--tj-gray3);font-weight:300">
+                        →</div>
+                    <div class="tiket-field">
+                        <div class="tiket-field-label">Menuju</div>
+                        <div class="tiket-field-value big">Guntur</div>
+                    </div>
+                </div>
+                <div class="tiket-row" style="flex-wrap:wrap;gap:12px">
+                    <div class="tiket-field">
+                        <div class="tiket-field-label">Tanggal</div>
+                        <div class="tiket-field-value">24 MEI 2026</div>
+                    </div>
+                    <div class="tiket-field">
+                        <div class="tiket-field-label">Koridor</div>
+                        <div class="tiket-field-value">CINTA-01</div>
+                    </div>
+                </div>
+
+                <!-- Barcode -->
+                <div class="tiket-barcode">
+                    <div class="barcode-bars" id="barcodeEl"></div>
+                    <div class="barcode-num">240520260001 — WED-TJ</div>
+                </div>
+
+                <div class="tiket-dear">
+                    <div class="tiket-dear-label">Kepada Yth.</div>
+                    <div class="tiket-dear-name">Ade Guntur Fitridullah & Partner</div>
+                </div>
+
+                <button class="tiket-btn" onclick="naik()">
+                    ▶ NAIK — BUKA UNDANGAN
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════ MAIN ════ -->
+    <div id="main">
+
+        <!-- HERO -->
+        <section class="hero" id="home">
+            <div class="hero-route-bar"></div>
+            <div class="hero-display">
+
+                <!-- LEFT -->
+                <div class="hero-left">
+                    <div class="led-ticker">
+                        <div class="led-text">⬤ &nbsp; KORIDOR CINTA-01 &nbsp; ▸ &nbsp; HALTE AKAD 08:00 &nbsp; ▸ &nbsp;
+                            HALTE RESEPSI 11:00 &nbsp; ⬤ &nbsp; 24 MEI 2026 &nbsp; ▸ &nbsp; GRAHA YADIKA &nbsp; ▸ &nbsp;
+                            TANGERANG &nbsp; ⬤</div>
+                    </div>
+
+                    <p class="hero-koridor">Koridor Cinta — 01</p>
+                    <h1 class="hero-title">
+                        <span class="red">Nazma</span><br>
+                        & Guntur
+                    </h1>
+                    <div class="hero-connector">Wedding Day</div>
+
+                    <div class="hero-meta">
+                        <div class="hero-chip red">24 MEI 2026</div>
+                        <div class="hero-chip">📍 Tangerang</div>
+                        <div class="hero-chip">🕗 08.00 WIB</div>
+                        <div class="hero-chip">Kapasitas: Semua Tamu</div>
+                    </div>
+
+                    <div class="hero-scroll">
+                        <div class="hero-scroll-line"></div>
+                        Scroll
+                    </div>
+                </div>
+
+                <!-- RIGHT — Bus + display -->
+                <div class="hero-right">
+                    <!-- BUS SVG -->
+                    <div class="bus-wrap">
+                        <svg viewBox="0 0 380 180" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Bus body -->
+                            <rect x="10" y="20" width="340" height="130" rx="12" fill="#D01B2A" />
+                            <!-- White stripe -->
+                            <rect x="10" y="72" width="340" height="26" fill="white" opacity=".15" />
+                            <!-- Windows row 1 -->
+                            <rect x="28" y="32" width="48" height="34" rx="4" fill="rgba(200,230,255,.85)" />
+                            <rect x="86" y="32" width="48" height="34" rx="4" fill="rgba(200,230,255,.85)" />
+                            <rect x="144" y="32" width="48" height="34" rx="4" fill="rgba(200,230,255,.85)" />
+                            <rect x="202" y="32" width="48" height="34" rx="4" fill="rgba(200,230,255,.85)" />
+                            <rect x="260" y="32" width="48" height="34" rx="4" fill="rgba(200,230,255,.85)" />
+                            <!-- Door -->
+                            <rect x="308" y="75" width="28" height="60" rx="4" fill="rgba(0,0,0,.3)" />
+                            <line x1="322" y1="75" x2="322" y2="135" stroke="rgba(255,255,255,.4)" stroke-width="1" />
+                            <!-- Logo text on bus -->
+                            <text x="155" y="68" font-family="Arial" font-weight="900" font-size="18" fill="white"
+                                text-anchor="middle" letter-spacing="2">TransJakarta</text>
+                            <!-- Destination board on front -->
+                            <rect x="28" y="70" width="88" height="28" rx="2" fill="#000" opacity=".6" />
+                            <text x="72" y="87" font-family="Arial" font-size="9" fill="#FF6600" text-anchor="middle"
+                                letter-spacing="1">HALTE CINTA</text>
+                            <!-- Bottom chassis -->
+                            <rect x="10" y="140" width="340" height="10" rx="0" fill="#A01020" />
+                            <!-- Wheels -->
+                            <circle cx="70" cy="158" r="20" fill="#1A1A1A" />
+                            <circle cx="70" cy="158" r="13" fill="#333" />
+                            <circle cx="70" cy="158" r="5" fill="#555" />
+                            <circle cx="290" cy="158" r="20" fill="#1A1A1A" />
+                            <circle cx="290" cy="158" r="13" fill="#333" />
+                            <circle cx="290" cy="158" r="5" fill="#555" />
+                            <!-- Headlights -->
+                            <rect x="345" y="38" width="14" height="10" rx="2" fill="#FFD600" />
+                            <rect x="345" y="110" width="14" height="8" rx="1" fill="#FF4444" opacity=".8" />
+                            <!-- Windshield -->
+                            <rect x="10" y="30" width="14" height="60" rx="2" fill="rgba(200,230,255,.4)" />
+                            <!-- Exhaust -->
+                            <rect x="18" y="148" width="8" height="20" rx="2" fill="#666" />
+                            <!-- Road lines animated -->
+                            <rect x="0" y="172" width="380" height="8" fill="#2C2C2C" />
+                            <rect x="40" y="174" width="50" height="4" fill="#555" />
+                            <rect x="130" y="174" width="50" height="4" fill="#555" />
+                            <rect x="220" y="174" width="50" height="4" fill="#555" />
+                            <rect x="310" y="174" width="50" height="4" fill="#555" />
+                        </svg>
+                    </div>
+
+                    <!-- Destination display board -->
+                    <div class="dest-board">
+                        <div class="dest-route">RUTE: KORIDOR CINTA-01</div>
+                        <div class="dest-stations">
+                            <div class="dest-station">
+                                <span class="dest-sta-name done">TAARUF</span>
+                            </div>
+                            <span class="dest-arrow">›</span>
+                            <div class="dest-station">
+                                <span class="dest-sta-name done">PDKT</span>
+                            </div>
+                            <span class="dest-arrow">›</span>
+                            <div class="dest-station">
+                                <span class="dest-sta-name active">AKAD</span>
+                            </div>
+                            <span class="dest-arrow">›</span>
+                            <div class="dest-station">
+                                <span class="dest-sta-name next">RESEPSI</span>
+                            </div>
+                        </div>
+                        <div class="dest-eta">ETA: 24 MEI 2026</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TICKER BAR -->
+        <div class="ticker-bar">
+            <div class="ticker-label">INFO HALTE</div>
+            <div class="ticker-content">
+                &nbsp;&nbsp;&nbsp; ★ SELAMAT DATANG DI UNDANGAN PERNIKAHAN Nazma & GunturR &nbsp;&nbsp;
+                ▸ AKAD NIKAH: 24 MEI 2026 · 08:00 WIB · GRAHA YADIKA, TANGERANG &nbsp;&nbsp;
+                ▸ RESEPSI: 24 MEI 2026 · 11:00–13:00 WIB · LOKASI YANG SAMA &nbsp;&nbsp;
+                ▸ MOHON KONFIRMASI KEHADIRAN ANDA &nbsp;&nbsp; ★ &nbsp;&nbsp;&nbsp;
+            </div>
+        </div>
+
+        <!-- RUTE MAP — KORIDOR CINTA -->
+        <section class="rute-section">
+            <div class="rute-header reveal">
+                <p class="rute-eyebrow">Koridor Cinta-01</p>
+                <h2 class="rute-heading">PETA PERJALANAN<br>CINTA KAMI</h2>
+            </div>
+            <div class="rute-map">
+                <div class="rute-line">
+                    <div class="rute-line-fill" id="ruteFill"></div>
+                </div>
+                <div class="rute-stops">
+                    <div class="rute-stop">
+                        <div class="stop-dot done"></div>
+                        <div class="stop-number">HALT.01</div>
+                        <div class="stop-name done">TAARUF</div>
+                        <div class="stop-year">Juni 2025</div>
+                    </div>
+                    <div class="rute-stop">
+                        <div class="stop-dot done"></div>
+                        <div class="stop-number">HALT.02</div>
+                        <div class="stop-name done">DEKAT</div>
+                        <div class="stop-year">Agt 2025</div>
+                    </div>
+                    <div class="rute-stop">
+                        <div class="stop-dot done"></div>
+                        <div class="stop-number">HALT.03</div>
+                        <div class="stop-name done">LAMARAN</div>
+                        <div class="stop-year">Nov 2025</div>
+                    </div>
+                    <div class="rute-stop">
+                        <div class="stop-dot current"></div>
+                        <div class="stop-number">HALT.04</div>
+                        <div class="stop-name current">AKAD</div>
+                        <div class="stop-year">Mei 2026</div>
+                    </div>
+                    <div class="rute-stop">
+                        <div class="stop-dot"></div>
+                        <div class="stop-number">HALT.05</div>
+                        <div class="stop-name">RESEPSI</div>
+                        <div class="stop-year">Mei 2026</div>
+                    </div>
+                    <div class="rute-stop">
+                        <div class="stop-dot"></div>
+                        <div class="stop-number">HALT.06</div>
+                        <div class="stop-name">SELAMANYA</div>
+                        <div class="stop-year">∞</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COUNTDOWN -->
+        <div class="cd-section">
+            <p class="cd-header reveal">KEBERANGKATAN <span>KORIDOR CINTA-01</span> DALAM</p>
+            <div class="cd-grid">
+                <div class="cd-unit reveal rd1">
+                    <div class="cd-n" id="cdD">00</div>
+                    <div class="cd-l">Hari</div>
+                </div>
+                <div class="cd-colon reveal rd1">:</div>
+                <div class="cd-unit reveal rd2">
+                    <div class="cd-n" id="cdH">00</div>
+                    <div class="cd-l">Jam</div>
+                </div>
+                <div class="cd-colon reveal rd2">:</div>
+                <div class="cd-unit reveal rd3">
+                    <div class="cd-n" id="cdM">00</div>
+                    <div class="cd-l">Menit</div>
+                </div>
+                <div class="cd-colon reveal rd3">:</div>
+                <div class="cd-unit reveal" style="transition-delay:.48s">
+                    <div class="cd-n" id="cdS">00</div>
+                    <div class="cd-l">Detik</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COUPLE -->
+        <section id="couple" class="couple-section">
+            <div class="couple-head reveal">
+                <p class="couple-eyebrow">Penumpang Utama</p>
+                <h2 class="couple-heading">KARTU PENUMPANG</h2>
+            </div>
+            <div class="kartu-grid">
+                <div class="kartu-penumpang reveal">
+                    <div class="kp-header">
+                        <span class="kp-header-logo">TransJakarta</span>
+                        <span class="kp-header-type">Mempelai WNazma</span>
+                    </div>
+                    <div class="kp-body">
+                        <div class="kp-foto">
+                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80"
+                                alt="Nazma">
+                        </div>
+                        <div class="kp-info">
+                            <p class="kp-role">Penumpang 01</p>
+                            <h3 class="kp-name">Nazma Putri,<br>S.Kom</h3>
+                            <p class="kp-parents">Putri Pertama<br>Bpk. Taryono &<br>Ibu Wiwit Jayanti</p>
+                        </div>
+                    </div>
+                    <div class="kp-footer">
+                        <span class="kp-card-num">TJ-2026-001-W</span>
+                        <span class="kp-valid">✓ VALID</span>
+                    </div>
+                </div>
+
+                <div class="kartu-vs">&</div>
+
+                <div class="kartu-penumpang reveal rd2">
+                    <div class="kp-header">
+                        <span class="kp-header-logo">TransJakarta</span>
+                        <span class="kp-header-type">Mempelai Pria</span>
+                    </div>
+                    <div class="kp-body">
+                        <div class="kp-foto">
+                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80"
+                                alt="Guntur">
+                        </div>
+                        <div class="kp-info">
+                            <p class="kp-role">Penumpang 02</p>
+                            <h3 class="kp-name">Guntur Putra,<br>S.Kom</h3>
+                            <p class="kp-parents">Putra Kedua<br>Bpk. Wan Sabran, M.MAR &<br>Ibu Titik Sundari, M.Si</p>
+                        </div>
+                    </div>
+                    <div class="kp-footer">
+                        <span class="kp-card-num">TJ-2026-002-P</span>
+                        <span class="kp-valid">✓ VALID</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EVENTS -->
+        <section id="event" class="event-section">
+            <div class="ev-header reveal">
+                <p class="ev-eyebrow">Jadwal Keberangkatan</p>
+                <h2 class="ev-heading">HALTE <span>&</span> JADWAL</h2>
+            </div>
+            <div class="jadwal-cards">
+                <div class="jadwal-card reveal rd1">
+                    <div class="jc-koridor">KORIDOR-01 / AKAD</div>
+                    <h3 class="jc-title">MINGGU<br>24 MEI 2026</h3>
+                    <div class="jc-row">
+                        <svg class="jc-ico" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 17.5v-2h-1v2C8.41 19.25 5.75 16.59 5.5 13.5h2v-1h-2C5.75 9.41 8.41 6.75 11.5 6.5v2h1v-2c3.09.25 5.75 2.91 6 6h-2v1h2c-.25 3.09-2.91 5.75-6 6z" />
+                        </svg>
+                        <span class="jc-txt"><strong>08.00 WIB</strong> — Selesai</span>
+                    </div>
+                    <div class="jc-row">
+                        <svg class="jc-ico" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                        </svg>
+                        <span class="jc-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug,
+                            Tangerang</span>
+                    </div>
+                    <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="jc-maps">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                        </svg>
+                        Lihat di Maps
+                    </a>
+                </div>
+                <div class="jadwal-card reveal rd2">
+                    <div class="jc-koridor">KORIDOR-01 / RESEPSI</div>
+                    <h3 class="jc-title">MINGGU<br>24 MEI 2026</h3>
+                    <div class="jc-row">
+                        <svg class="jc-ico" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 17.5v-2h-1v2C8.41 19.25 5.75 16.59 5.5 13.5h2v-1h-2C5.75 9.41 8.41 6.75 11.5 6.5v2h1v-2c3.09.25 5.75 2.91 6 6h-2v1h2c-.25 3.09-2.91 5.75-6 6z" />
+                        </svg>
+                        <span class="jc-txt"><strong>11.00 – 13.00 WIB</strong></span>
+                    </div>
+                    <div class="jc-row">
+                        <svg class="jc-ico" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                        </svg>
+                        <span class="jc-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug,
+                            Tangerang</span>
+                    </div>
+                    <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="jc-maps">
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                        </svg>
+                        Lihat di Maps
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- GALLERY -->
+        <section class="gallery-section">
+            <div class="gallery-head reveal">
+                <div>
+                    <p
+                        style="font-size:10px;letter-spacing:.4em;text-transform:uppercase;color:var(--tj-red);font-weight:600;margin-bottom:8px">
+                        Papan Foto Halte</p>
+                    <h2 class="gallery-heading">GALERI FOTO</h2>
+                </div>
+                <p class="gallery-sub">Klik untuk memperbesar</p>
+            </div>
+            <div class="foto-grid" id="fotoGrid"></div>
+        </section>
+
+        <!-- GIFT -->
+        <section id="gift" class="gift-section">
+            <div class="reveal">
+                <p class="gift-eyebrow">E-Money Digital</p>
+                <h2 class="gift-heading">AMPLOP DIGITAL</h2>
+                <p class="gift-sub">Doa dan kehadiran Anda sudah lebih dari cukup. Namun jika berkenan, kami menerima
+                    dengan tangan terbuka.</p>
+            </div>
+            <div class="emoney-cards">
+                <div class="emoney reveal rd1">
+                    <div class="emoney-chip"></div>
+                    <div class="emoney-bank">BCA</div>
+                    <div class="emoney-holder">Guntur Putra</div>
+                    <div class="emoney-number">8210 3705 61</div>
+                    <button class="emoney-copy" onclick="copyNum('8210370561',this)">SALIN NOMOR</button>
+                </div>
+                <div class="emoney reveal rd2">
+                    <div class="emoney-chip"></div>
+                    <div class="emoney-bank">BNI</div>
+                    <div class="emoney-holder">Nazma Putri</div>
+                    <div class="emoney-number">1192 9784 03</div>
+                    <button class="emoney-copy" onclick="copyNum('1192978403',this)">SALIN NOMOR</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- RSVP -->
+        <section id="rsvp" class="rsvp-section">
+            <div class="rsvp-inner">
+                <p class="rsvp-eyebrow reveal">Mesin Konfirmasi</p>
+                <h2 class="rsvp-heading reveal">KONFIRMASI<br>KEHADIRAN</h2>
+                <div class="rsvp-stats reveal">
+                    <div class="rs">
+                        <div class="rs-n">7</div>
+                        <div class="rs-l">Respons</div>
+                    </div>
+                    <div class="rs">
+                        <div class="rs-n">7</div>
+                        <div class="rs-l">Hadir</div>
+                    </div>
+                    <div class="rs">
+                        <div class="rs-n">13</div>
+                        <div class="rs-l">Total</div>
+                    </div>
+                </div>
+                <div class="fg"><label class="fl">Nama Lengkap</label><input class="fi" id="rName" type="text"
+                        placeholder="Nama Anda..."></div>
+                <div class="fg"><label class="fl">Konfirmasi Kehadiran</label>
+                    <select class="fi fs" id="rStatus">
+                        <option value="">Pilih status...</option>
+                        <option value="hadir">Hadir</option>
+                        <option value="tidak">Tidak Hadir</option>
+                    </select>
+                </div>
+                <div class="fg"><label class="fl">Jumlah Tamu</label>
+                    <div class="guest-row">
+                        <button class="gst-btn active" onclick="setGuest(1,this)">1 Orang</button>
+                        <button class="gst-btn" onclick="setGuest(2,this)">2 Orang</button>
+                    </div>
+                </div>
+                <div class="fg"><label class="fl">Ucapan & Doa</label><textarea class="fi" id="rMsg"
+                        placeholder="Tulis ucapan..."></textarea></div>
+                <button class="rsvp-submit" onclick="submitRSVP()">▶ KONFIRMASI KEHADIRAN</button>
+            </div>
+        </section>
+
+        <!-- WISHES -->
+        <section class="wishes-section">
+            <div class="wishes-inner">
+                <h2 class="wishes-heading reveal">PESAN & DOA TAMU</h2>
+                <div class="wishes-list" id="wishesList">
+                    <div class="wish-card visible">
+                        <div class="wh">
+                            <div class="wa">AY</div>
+                            <div>
+                                <div class="wn">Ayu Rahmawati</div>
+                                <div class="ws">✓ Hadir · 2 tamu</div>
+                            </div>
+                        </div>
+                        <p class="wt">Selamat menempuh hidup baru! Semoga sakinah, mawaddah, wa rahmah. Bahagia selalu
+                            Nazma & Gunturr!</p>
+                    </div>
+                    <div class="wish-card visible">
+                        <div class="wh">
+                            <div class="wa" style="background:var(--tj-blue)">RZ</div>
+                            <div>
+                                <div class="wn">Reza Firmansyah</div>
+                                <div class="ws">✓ Hadir · 1 tamu</div>
+                            </div>
+                        </div>
+                        <p class="wt">Alhamdulillah! Semoga pernikahannya membawa keberkahan tiada henti. Aamiin ya
+                            Rabbal Alamin.</p>
+                    </div>
+                    <div class="wish-card visible">
+                        <div class="wh">
+                            <div class="wa" style="background:var(--tj-green)">ST</div>
+                            <div>
+                                <div class="wn">Sinta Dewi</div>
+                                <div class="ws">✓ Hadir · 2 tamu</div>
+                            </div>
+                        </div>
+                        <p class="wt">Wishing you both a lifetime of love! Semoga selalu diberkahi Allah SWT. 💚</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-wm">TRANSJAKARTA</div>
+            <div class="footer-badge">
+                <span class="fb-logo">TransJakarta</span>
+                <span class="fb-sep">|</span>
+                <span class="fb-route">Koridor Cinta-01</span>
+            </div>
+            <div class="footer-title">Nazma<br><span class="red">&</span> Guntur</div>
+            <p class="footer-sub">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i
+                berkenan hadir dan memberikan do'a restu kepada kami.</p>
+            <div class="footer-route-line">
+                <div class="frl-station">TAARUF</div>
+                <div class="frl-line"></div>
+                <div class="frl-dot"></div>
+                <div class="frl-line"></div>
+                <div class="frl-station">LAMARAN</div>
+                <div class="frl-line"></div>
+                <div class="frl-dot"></div>
+                <div class="frl-line"></div>
+                <div class="frl-station">AKAD</div>
+                <div class="frl-line"></div>
+                <div class="frl-dot"></div>
+                <div class="frl-line"></div>
+                <div class="frl-station">SELAMANYA</div>
+            </div>
+            <p class="footer-brand">Digital Invitation by <a href="#">BridesSpace</a></p>
+        </footer>
+
+    </div>
+
+    <!-- NAV -->
+    <nav class="bot-nav" id="botNav">
+        <a href="#home" class="nav-a active"><svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+            </svg>Home</a>
+        <a href="#couple" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+            </svg>Couple</a>
+        <a href="#event" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z" />
+            </svg>Event</a>
+        <a href="#gift" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M20 6h-2.18c.07-.23.18-.46.18-.71C18 3.47 16.53 2 14.71 2c-.87 0-1.65.36-2.22.93L12 3.4l-.49-.47C10.94 2.36 10.16 2 9.29 2 7.47 2 6 3.47 6 5.29c0 .25.11.48.18.71H4c-1.11 0-2 .89-2 2v13c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5.29-2c.47 0 .79.32.79.79S15.18 5.58 14.71 5.58h-1.53l.75-.75c.2-.2.49-.33.78-.33zM9.29 4c.29 0 .58.13.78.33l.75.75H9.29C8.82 5.08 8.5 4.76 8.5 4.29S8.82 4 9.29 4zM11 19H4v-6h7v6zm0-8H4V8h7v3zm9 8h-7v-6h7v6zm0-8h-7V8h7v3z" />
+            </svg>Gift</a>
+        <a href="#rsvp" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor">
+                <path
+                    d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z" />
+            </svg>RSVP</a>
+    </nav>
+
+    <div class="lbox" id="lbox">
+        <button class="lbox-close" onclick="closeLbox()">✕</button>
+        <button class="lbox-nav lbox-prev" onclick="lboxPrev()">‹</button>
+        <img class="lbox-img" id="lboxImg" src="" alt="">
+        <button class="lbox-nav lbox-next" onclick="lboxNext()">›</button>
+        <div class="lbox-ctr" id="lboxCtr"></div>
+    </div>
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const IMGS = [
+            { src: "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&fit=crop&q=80", cap: "Awal Kisah" },
+            { src: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&fit=crop&q=80", cap: "Bersama" },
+            { src: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&fit=crop&q=80", cap: "Kebahagiaan" },
+            { src: "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&fit=crop&q=80", cap: "Cinta Abadi" },
+            { src: "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=600&fit=crop&q=80", cap: "Detail" },
+            { src: "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=600&fit=crop&q=80", cap: "Momen Indah" },
+            { src: "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=600&fit=crop&q=80", cap: "Kenangan" },
+            { src: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&fit=crop&q=80", cap: "Hari Istimewa" },
+        ];
+        let lboxIdx = 0, guestN = 1;
+
+        /* ── BARCODE ── */
+        function buildBarcode() {
+            const el = document.getElementById('barcodeEl');
+            if (!el) return;
+            const pattern = [3, 1, 2, 1, 3, 2, 1, 1, 2, 3, 1, 2, 1, 2, 3, 1, 1, 2, 1, 3, 2, 1, 2, 1, 3, 1, 2, 3, 1, 1, 2, 1, 3, 2, 1, 1, 3, 2, 1, 2];
+            pattern.forEach(w => {
+                const b = document.createElement('div');
+                b.className = 'b-bar';
+                b.style.width = w + 'px';
+                el.appendChild(b);
+            });
+        }
+
+        /* ── NAIK (BUKA) ── */
+        function naik() {
+            document.getElementById('opening').classList.add('hide');
+            setTimeout(() => {
+                document.getElementById('main').classList.add('show');
+                document.getElementById('botNav').classList.add('show');
+                buildFotoGrid();
+                startCountdown();
+                initReveal();
+                initNav();
+                // animate route line
+                setTimeout(() => {
+                    document.getElementById('ruteFill').classList.add('animate');
+                    document.querySelectorAll('.rute-stop').forEach((s, i) => {
+                        setTimeout(() => s.classList.add('visible'), i * 200);
+                    });
+                }, 800);
+            }, 400);
+        }
+
+        /* ── FOTO GRID ── */
+        function buildFotoGrid() {
+            const g = document.getElementById('fotoGrid');
+            if (!g) return;
+            IMGS.forEach((img, i) => {
+                const item = document.createElement('div');
+                item.className = 'foto-item';
+                item.innerHTML = `
+      <img src="${img.src}" alt="${img.cap}" loading="lazy">
+      <div class="foto-overlay"></div>
+      <div class="foto-caption">${img.cap}</div>
+      <div class="foto-num">0${i + 1}</div>
+    `;
+                item.addEventListener('click', () => openLbox(i));
+                g.appendChild(item);
+            });
+        }
+
+        /* ── LIGHTBOX ── */
+        function openLbox(i) { lboxIdx = i; updateLbox(); document.getElementById('lbox').classList.add('open'); document.body.style.overflow = 'hidden'; }
+        function closeLbox() { document.getElementById('lbox').classList.remove('open'); document.body.style.overflow = ''; }
+        function lboxPrev() { lboxIdx = (lboxIdx - 1 + IMGS.length) % IMGS.length; updateLbox(); }
+        function lboxNext() { lboxIdx = (lboxIdx + 1) % IMGS.length; updateLbox(); }
+        function updateLbox() {
+            document.getElementById('lboxImg').src = IMGS[lboxIdx].src;
+            document.getElementById('lboxCtr').textContent = `${lboxIdx + 1} / ${IMGS.length}`;
+        }
+        document.addEventListener('keydown', e => {
+            if (!document.getElementById('lbox').classList.contains('open')) return;
+            if (e.key === 'Escape') closeLbox();
+            if (e.key === 'ArrowLeft') lboxPrev();
+            if (e.key === 'ArrowRight') lboxNext();
+        });
+
+        /* ── COUNTDOWN ── */
+        function startCountdown() {
+            const T = new Date('2026-05-24T08:00:00');
+            function tick() {
+                const d = T - new Date();
+                if (d <= 0) return;
+                document.getElementById('cdD').textContent = String(Math.floor(d / 86400000)).padStart(2, '0');
+                document.getElementById('cdH').textContent = String(Math.floor((d % 86400000) / 3600000)).padStart(2, '0');
+                document.getElementById('cdM').textContent = String(Math.floor((d % 3600000) / 60000)).padStart(2, '0');
+                document.getElementById('cdS').textContent = String(Math.floor((d % 60000) / 1000)).padStart(2, '0');
+            }
+            tick(); setInterval(tick, 1000);
+        }
+
+        /* ── REVEAL ── */
+        function initReveal() {
+            const obs = new IntersectionObserver(entries => {
+                entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+            }, { threshold: .1 });
+            document.querySelectorAll('.reveal,.wish-card').forEach(el => obs.observe(el));
+        }
+
+        /* ── NAV ── */
+        function initNav() {
+            const obs = new IntersectionObserver(entries => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        document.querySelectorAll('.nav-a').forEach(n => n.classList.remove('active'));
+                        const a = document.querySelector(`.nav-a[href="#${e.target.id}"]`);
+                        if (a) a.classList.add('active');
+                    }
+                });
+            }, { rootMargin: '-40% 0px -40% 0px' });
+            ['home', 'couple', 'event', 'gift', 'rsvp'].forEach(id => { const el = document.getElementById(id); if (el) obs.observe(el); });
+        }
+
+        /* ── RSVP ── */
+        function setGuest(n, btn) {
+            guestN = n;
+            document.querySelectorAll('.gst-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+        function submitRSVP() {
+            const nm = document.getElementById('rName').value.trim();
+            const st = document.getElementById('rStatus').value;
+            const msg = document.getElementById('rMsg').value.trim();
+            if (!nm || !st) { showToast('Isi nama & konfirmasi dulu'); return; }
+            const init = nm.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+            const cols = ['var(--tj-red)', 'var(--tj-blue)', 'var(--tj-green)', '#8B5A2B', '#6A0DAD'];
+            const col = cols[Math.floor(Math.random() * cols.length)];
+            const stTxt = st === 'hadir' ? `✓ Hadir · ${guestN} tamu` : '✗ Tidak Hadir';
+            const card = document.createElement('div');
+            card.className = 'wish-card';
+            card.innerHTML = `<div class="wh"><div class="wa" style="background:${col}">${init}</div><div><div class="wn">${nm}</div><div class="ws">${stTxt}</div></div></div><p class="wt">${msg || 'Selamat dan bahagia selalu!'}</p>`;
+            document.getElementById('wishesList').prepend(card);
+            setTimeout(() => card.classList.add('visible'), 50);
+            document.getElementById('rName').value = '';
+            document.getElementById('rStatus').value = '';
+            document.getElementById('rMsg').value = '';
+            showToast('Konfirmasi berhasil! Terima kasih ✓');
+            setTimeout(() => document.querySelector('.wishes-section').scrollIntoView({ behavior: 'smooth', block: 'start' }), 500);
+        }
+
+        /* ── COPY ── */
+        function copyNum(txt, btn) {
+            navigator.clipboard.writeText(txt).then(() => {
+                btn.classList.add('copied'); btn.textContent = '✓ TERSALIN';
+                showToast('Nomor rekening tersalin!');
+                setTimeout(() => { btn.classList.remove('copied'); btn.textContent = 'SALIN NOMOR'; }, 2500);
+            }).catch(() => showToast('Salin: ' + txt));
+        }
+
+        /* ── TOAST ── */
+        let tt;
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg; t.classList.add('show');
+            clearTimeout(tt); tt = setTimeout(() => t.classList.remove('show'), 2800);
+        }
+
+        /* ── INIT ── */
+        buildBarcode();
+    </script>
+</body>
+
+</html>

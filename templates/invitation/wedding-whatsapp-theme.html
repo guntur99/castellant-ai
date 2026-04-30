@@ -1,0 +1,2382 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>WhatsApp — Nazma & Gunturr</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700&family=Dancing+Script:wght@600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        /* ─────────────────────────────────────────────
+   TOKENS
+───────────────────────────────────────────── */
+        :root {
+            --wa-green: #25D366;
+            --wa-green-dark: #128C7E;
+            --wa-green-teal: #075E54;
+            --wa-green-light: #DCF8C6;
+            --wa-green-msg: #D9FDD3;
+            --wa-bg: #111B21;
+            --wa-panel: #202C33;
+            --wa-panel2: #2A3942;
+            --wa-bubble-in: #202C33;
+            --wa-bubble-out: #005C4B;
+            --wa-header: #202C33;
+            --wa-input: #2A3942;
+            --wa-white: #FFFFFF;
+            --wa-gray1: #E9EDEF;
+            --wa-gray2: #8696A0;
+            --wa-gray3: #536471;
+            --wa-gray4: #3B4A54;
+            --wa-tick: #53BDEB;
+            --wa-wallpaper: #0B141A;
+            --wa-pattern: rgba(255, 255, 255, 0.03);
+            --font: 'Nunito', 'Segoe UI', sans-serif;
+            --font-script: 'Dancing Script', cursive;
+            --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* ─────────────────────────────────────────────
+   BASE
+───────────────────────────────────────────── */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background: var(--wa-bg);
+            font-family: var(--font);
+            color: var(--wa-white);
+            overflow: hidden;
+            height: 100svh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ─────────────────────────────────────────────
+   PHONE SHELL  (desktop view)
+───────────────────────────────────────────── */
+        .phone-shell {
+            width: min(420px, 100vw);
+            height: min(860px, 100svh);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background: var(--wa-wallpaper);
+        }
+
+        /* Wallpaper pattern */
+        .phone-shell::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M30 0C13.43 0 0 13.43 0 30s13.43 30 30 30 30-13.43 30-30S46.57 0 30 0zm0 54C16.75 54 6 43.25 6 30S16.75 6 30 6s24 10.75 24 24-10.75 24-24 24z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        /* ─────────────────────────────────────────────
+   SPLASH — WhatsApp loading
+───────────────────────────────────────────── */
+        #splash {
+            position: absolute;
+            inset: 0;
+            z-index: 9999;
+            background: #075E54;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            transition: opacity .6s var(--ease), transform .6s var(--ease);
+        }
+
+        #splash.out {
+            opacity: 0;
+            transform: scale(.97);
+            pointer-events: none;
+        }
+
+        .splash-wa-logo {
+            width: 88px;
+            height: 88px;
+            animation: splash-bounce .6s var(--spring) .2s both;
+        }
+
+        @keyframes splash-bounce {
+            from {
+                transform: scale(.5);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .splash-wa-logo svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .splash-bottom {
+            position: absolute;
+            bottom: max(40px, env(safe-area-inset-bottom, 40px));
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .splash-from {
+            font-size: 13px;
+            color: rgba(255, 255, 255, .6);
+            letter-spacing: .04em;
+        }
+
+        .splash-meta {
+            font-size: 11px;
+            color: rgba(255, 255, 255, .4);
+            letter-spacing: .06em;
+            text-transform: uppercase;
+        }
+
+        .splash-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .splash-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, .4);
+            animation: dot-pulse 1.4s ease-in-out infinite;
+        }
+
+        .splash-dot:nth-child(2) {
+            animation-delay: .2s
+        }
+
+        .splash-dot:nth-child(3) {
+            animation-delay: .4s
+        }
+
+        @keyframes dot-pulse {
+
+            0%,
+            80%,
+            100% {
+                transform: scale(1);
+                opacity: .4
+            }
+
+            40% {
+                transform: scale(1.3);
+                opacity: 1
+            }
+        }
+
+        /* ─────────────────────────────────────────────
+   CHAT HEADER
+───────────────────────────────────────────── */
+        .chat-header {
+            position: relative;
+            z-index: 10;
+            background: var(--wa-header);
+            padding: max(env(safe-area-inset-top, 0px), 12px) 12px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, .04);
+            flex-shrink: 0;
+        }
+
+        .ch-back {
+            color: var(--wa-gray2);
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 4px;
+            border: none;
+            background: none;
+        }
+
+        .ch-back svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .ch-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .ch-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .ch-online-dot {
+            position: absolute;
+            bottom: 1px;
+            right: 1px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--wa-green);
+            border: 2px solid var(--wa-header);
+        }
+
+        .ch-info {
+            flex: 1;
+            min-width: 0;
+            cursor: pointer;
+        }
+
+        .ch-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--wa-gray1);
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ch-status {
+            font-size: 12px;
+            color: var(--wa-green);
+            margin-top: 1px;
+        }
+
+        .ch-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .ch-action-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: none;
+            color: var(--wa-gray2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background .15s;
+        }
+
+        .ch-action-btn:hover {
+            background: rgba(255, 255, 255, .06);
+        }
+
+        .ch-action-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* ─────────────────────────────────────────────
+   CHAT AREA — scroll pane
+───────────────────────────────────────────── */
+        .chat-area {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 8px 10px;
+            position: relative;
+            z-index: 1;
+            scroll-behavior: smooth;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .chat-area::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .chat-area::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .chat-area::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, .08);
+            border-radius: 2px;
+        }
+
+        /* Date divider */
+        .date-divider {
+            text-align: center;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .date-divider span {
+            background: rgba(17, 27, 33, .8);
+            backdrop-filter: blur(8px);
+            border-radius: 8px;
+            padding: 5px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--wa-gray2);
+        }
+
+        /* ─────────────────────────────────────────────
+   BUBBLES
+───────────────────────────────────────────── */
+        .bubble-row {
+            display: flex;
+            align-items: flex-end;
+            gap: 6px;
+            max-width: 88%;
+            opacity: 0;
+            transform: translateY(12px);
+            animation: bubble-in .4s var(--ease) var(--delay, .05s) forwards;
+        }
+
+        @keyframes bubble-in {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .bubble-row.out {
+            margin-left: auto;
+            flex-direction: row-reverse;
+        }
+
+        .bubble-row.in {
+            margin-right: auto;
+        }
+
+        .bubble-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            overflow: hidden;
+            flex-shrink: 0;
+            align-self: flex-end;
+        }
+
+        .bubble-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .bubble {
+            border-radius: 12px;
+            padding: 8px 12px 6px;
+            position: relative;
+            max-width: 100%;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, .3);
+        }
+
+        .bubble.in {
+            background: var(--wa-bubble-in);
+            border-radius: 0 12px 12px 12px;
+        }
+
+        .bubble.out {
+            background: var(--wa-bubble-out);
+            border-radius: 12px 0 12px 12px;
+        }
+
+        .bubble.system {
+            background: rgba(17, 27, 33, .8);
+            backdrop-filter: blur(12px);
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, .06);
+            margin: 4px auto;
+            max-width: 76%;
+            padding: 10px 16px 8px;
+        }
+
+        /* Bubble tail */
+        .bubble.in::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -8px;
+            border: 8px solid transparent;
+            border-right-color: var(--wa-bubble-in);
+            border-top-color: var(--wa-bubble-in);
+        }
+
+        .bubble.out::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -8px;
+            border: 8px solid transparent;
+            border-left-color: var(--wa-bubble-out);
+            border-top-color: var(--wa-bubble-out);
+        }
+
+        .bubble-text {
+            font-size: 14.5px;
+            line-height: 1.5;
+            color: var(--wa-gray1);
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+
+        .bubble-text em {
+            font-style: italic;
+        }
+
+        .bubble-text strong {
+            font-weight: 700;
+        }
+
+        .bubble-text .wa-link {
+            color: #53BDEB;
+            text-decoration: none;
+        }
+
+        .bubble-meta {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 4px;
+            margin-top: 3px;
+        }
+
+        .bubble-time {
+            font-size: 11px;
+            color: var(--wa-gray2);
+        }
+
+        .bubble-ticks svg {
+            width: 16px;
+            height: 10px;
+        }
+
+        .bubble-ticks.read svg path {
+            fill: var(--wa-tick);
+        }
+
+        /* ─────────────────────────────────────────────
+   SPECIAL BUBBLE TYPES
+───────────────────────────────────────────── */
+
+        /* Photo bubble */
+        .photo-bubble {
+            padding: 4px 4px 0;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .photo-bubble img {
+            width: 100%;
+            max-width: 260px;
+            border-radius: 9px;
+            display: block;
+            aspect-ratio: 4/3;
+            object-fit: cover;
+            transition: filter .2s;
+        }
+
+        .photo-bubble:hover img {
+            filter: brightness(.85);
+        }
+
+        .photo-bubble .bubble-meta {
+            padding: 4px 8px 6px;
+        }
+
+        /* Voice note bubble */
+        .voice-bubble {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 200px;
+            padding: 10px 12px 6px;
+        }
+
+        .voice-play {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--wa-green);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background .15s, transform .1s;
+        }
+
+        .voice-play:hover {
+            background: #1fba55;
+        }
+
+        .voice-play:active {
+            transform: scale(.92);
+        }
+
+        .voice-play svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+        }
+
+        .voice-waveform {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 28px;
+        }
+
+        .wf-bar {
+            width: 3px;
+            border-radius: 2px;
+            background: var(--wa-green);
+            opacity: .5;
+            flex-shrink: 0;
+            transition: opacity .2s;
+        }
+
+        .wf-bar.played {
+            opacity: 1;
+        }
+
+        .voice-duration {
+            font-size: 12px;
+            color: var(--wa-gray2);
+            white-space: nowrap;
+        }
+
+        /* Sticker bubble */
+        .sticker-bubble {
+            background: transparent !important;
+            box-shadow: none !important;
+            padding: 4px !important;
+        }
+
+        .sticker-bubble::before {
+            display: none !important;
+        }
+
+        .sticker-emoji {
+            font-size: 64px;
+            line-height: 1;
+            display: block;
+        }
+
+        /* Card / Invitation bubble */
+        .invite-bubble {
+            background: var(--wa-bubble-out);
+            border-radius: 0 12px 12px 12px;
+            overflow: hidden;
+            max-width: 280px;
+            cursor: pointer;
+        }
+
+        .invite-bubble.out {
+            border-radius: 12px 0 12px 12px;
+        }
+
+        .ib-image {
+            width: 100%;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+        }
+
+        .ib-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .ib-body {
+            padding: 12px 14px 8px;
+        }
+
+        .ib-label {
+            font-size: 10px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--wa-green);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .ib-title {
+            font-family: var(--font-script);
+            font-size: 20px;
+            color: var(--wa-gray1);
+            margin-bottom: 4px;
+        }
+
+        .ib-desc {
+            font-size: 12px;
+            color: var(--wa-gray2);
+            line-height: 1.5;
+        }
+
+        .ib-open-btn {
+            display: block;
+            text-align: center;
+            padding: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--wa-green);
+            cursor: pointer;
+            border-top: 1px solid rgba(255, 255, 255, .06);
+            margin-top: 8px;
+            transition: background .15s;
+        }
+
+        .ib-open-btn:hover {
+            background: rgba(255, 255, 255, .04);
+        }
+
+        /* Reply bubble */
+        .reply-quote {
+            border-left: 3px solid var(--wa-green);
+            background: rgba(0, 0, 0, .2);
+            border-radius: 0 4px 4px 0;
+            padding: 6px 10px;
+            margin-bottom: 6px;
+        }
+
+        .rq-sender {
+            font-size: 12px;
+            color: var(--wa-green);
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .rq-text {
+            font-size: 12px;
+            color: var(--wa-gray2);
+            line-height: 1.4;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        /* Poll bubble */
+        .poll-bubble {
+            min-width: 220px;
+        }
+
+        .poll-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .poll-option {
+            border: 1px solid rgba(255, 255, 255, .12);
+            border-radius: 8px;
+            padding: 10px 14px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background .15s, border-color .15s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .poll-option::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            background: rgba(37, 211, 102, .15);
+            width: var(--pct, 0%);
+            transition: width .6s var(--ease);
+        }
+
+        .poll-option.voted {
+            border-color: rgba(37, 211, 102, .4);
+        }
+
+        .poll-option:hover {
+            background: rgba(255, 255, 255, .04);
+        }
+
+        .poll-opt-text {
+            font-size: 14px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .poll-opt-pct {
+            font-size: 12px;
+            color: var(--wa-green);
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        .poll-votes {
+            font-size: 11px;
+            color: var(--wa-gray2);
+            margin-top: 4px;
+        }
+
+        /* Location bubble */
+        .location-bubble {
+            padding: 0;
+            overflow: hidden;
+            max-width: 260px;
+        }
+
+        .loc-map {
+            width: 100%;
+            aspect-ratio: 16/9;
+            overflow: hidden;
+            background: linear-gradient(135deg, #1a2a1a, #0d1a0d);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .loc-map-bg {
+            position: absolute;
+            inset: 0;
+            background: url('https://images.unsplash.com/photo-1568667256549-094345857637?w=400&q=70') center/cover;
+            opacity: .4;
+        }
+
+        .loc-pin {
+            font-size: 32px;
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, .5));
+        }
+
+        .loc-info {
+            padding: 10px 14px 8px;
+        }
+
+        .loc-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .loc-addr {
+            font-size: 12px;
+            color: var(--wa-gray2);
+            line-height: 1.4;
+        }
+
+        /* Contact card bubble */
+        .contact-bubble {
+            min-width: 200px;
+        }
+
+        .cb-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, .08);
+        }
+
+        .cb-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .cb-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .cb-name {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .cb-sub {
+            font-size: 12px;
+            color: var(--wa-gray2);
+        }
+
+        .cb-btn {
+            width: 100%;
+            text-align: center;
+            padding: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--wa-green);
+            cursor: pointer;
+            transition: background .15s;
+            border-radius: 6px;
+        }
+
+        .cb-btn:hover {
+            background: rgba(255, 255, 255, .04);
+        }
+
+        /* Countdown bubble */
+        .countdown-bubble {
+            text-align: center;
+            min-width: 220px;
+        }
+
+        .cb-label {
+            font-size: 11px;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: var(--wa-green);
+            margin-bottom: 8px;
+        }
+
+        .cb-nums {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .cb-box {
+            background: rgba(0, 0, 0, .3);
+            border-radius: 8px;
+            padding: 8px 10px;
+            min-width: 52px;
+        }
+
+        .cb-num {
+            font-family: var(--font-script);
+            font-size: 28px;
+            color: var(--wa-green);
+            line-height: 1;
+        }
+
+        .cb-unit {
+            font-size: 9px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--wa-gray2);
+            margin-top: 3px;
+        }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .typing-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--wa-gray2);
+            animation: typing-bounce 1.4s ease-in-out infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: .2s
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: .4s
+        }
+
+        @keyframes typing-bounce {
+
+            0%,
+            60%,
+            100% {
+                transform: translateY(0)
+            }
+
+            30% {
+                transform: translateY(-6px)
+            }
+        }
+
+        /* ─────────────────────────────────────────────
+   CHAT INPUT BAR
+───────────────────────────────────────────── */
+        .chat-input-bar {
+            position: relative;
+            z-index: 10;
+            background: var(--wa-bg);
+            padding: 8px 10px max(8px, env(safe-area-inset-bottom, 8px));
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            border-top: 1px solid rgba(255, 255, 255, .04);
+            flex-shrink: 0;
+        }
+
+        .input-box {
+            flex: 1;
+            background: var(--wa-input);
+            border-radius: 24px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            min-height: 44px;
+        }
+
+        .input-emoji {
+            color: var(--wa-gray2);
+            font-size: 20px;
+            cursor: pointer;
+            transition: transform .15s;
+            flex-shrink: 0;
+        }
+
+        .input-emoji:hover {
+            transform: scale(1.15);
+        }
+
+        .input-field {
+            flex: 1;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--wa-gray1);
+            font-family: var(--font);
+            font-size: 15px;
+            resize: none;
+            min-height: 22px;
+            max-height: 120px;
+            overflow-y: auto;
+            line-height: 1.4;
+            caret-color: var(--wa-green);
+        }
+
+        .input-field::placeholder {
+            color: var(--wa-gray3);
+        }
+
+        .input-attach {
+            color: var(--wa-gray2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .input-attach svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .send-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--wa-green);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: background .15s, transform .1s var(--spring);
+        }
+
+        .send-btn:hover {
+            background: #1fba55;
+        }
+
+        .send-btn:active {
+            transform: scale(.88);
+        }
+
+        .send-btn svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        /* Attach menu */
+        .attach-menu {
+            position: absolute;
+            bottom: calc(100% + 8px);
+            left: 10px;
+            background: var(--wa-panel);
+            border-radius: 16px;
+            padding: 8px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, .4);
+            opacity: 0;
+            transform: translateY(12px) scale(.95);
+            transition: opacity .25s var(--ease), transform .25s var(--spring);
+            pointer-events: none;
+            border: 1px solid rgba(255, 255, 255, .06);
+        }
+
+        .attach-menu.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: all;
+        }
+
+        .am-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 12px 10px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background .15s;
+            text-align: center;
+        }
+
+        .am-item:hover {
+            background: rgba(255, 255, 255, .06);
+        }
+
+        .am-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .am-label {
+            font-size: 11px;
+            color: var(--wa-gray2);
+            white-space: nowrap;
+        }
+
+        /* ─────────────────────────────────────────────
+   STORY BAR (Status)
+───────────────────────────────────────────── */
+        .story-bar-wrap {
+            position: absolute;
+            inset: 0;
+            z-index: 200;
+            background: var(--wa-bg);
+            display: flex;
+            flex-direction: column;
+            transform: translateX(100%);
+            transition: transform .3s var(--ease);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .story-bar-wrap.open {
+            transform: translateX(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .status-header {
+            background: var(--wa-header);
+            padding: 16px 16px 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .sh-back {
+            background: none;
+            border: none;
+            color: var(--wa-gray2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .sh-back svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .sh-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--wa-gray1);
+        }
+
+        .status-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        .status-list::-webkit-scrollbar {
+            display: none;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 16px;
+            cursor: pointer;
+            transition: background .15s;
+        }
+
+        .status-item:hover {
+            background: rgba(255, 255, 255, .04);
+        }
+
+        .status-avatar-ring {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            padding: 2.5px;
+            position: relative;
+        }
+
+        .status-avatar-ring.unseen {
+            background: conic-gradient(var(--wa-green) 0deg, var(--wa-green) 180deg, var(--wa-gray4) 180deg);
+        }
+
+        .status-avatar-ring.seen {
+            background: var(--wa-gray4);
+        }
+
+        .status-avatar-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid var(--wa-bg);
+        }
+
+        .status-avatar-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .status-info {
+            flex: 1;
+        }
+
+        .status-name {
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--wa-gray1);
+        }
+
+        .status-time {
+            font-size: 12px;
+            color: var(--wa-gray2);
+            margin-top: 2px;
+        }
+
+        .status-preview {
+            font-size: 13px;
+            color: var(--wa-gray2);
+            margin-top: 2px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        /* ─────────────────────────────────────────────
+   STORY VIEWER
+───────────────────────────────────────────── */
+        .story-viewer {
+            position: absolute;
+            inset: 0;
+            z-index: 300;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform .35s var(--ease);
+        }
+
+        .story-viewer.open {
+            transform: translateY(0);
+        }
+
+        .sv-progress {
+            display: flex;
+            gap: 4px;
+            padding: 12px 12px 8px;
+        }
+
+        .sv-prog-bar {
+            flex: 1;
+            height: 3px;
+            background: rgba(255, 255, 255, .3);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .sv-prog-fill {
+            height: 100%;
+            background: rgba(255, 255, 255, .85);
+            width: 0%;
+        }
+
+        .sv-prog-fill.done {
+            width: 100%;
+        }
+
+        .sv-prog-fill.active {
+            animation: sv-prog 4s linear forwards;
+        }
+
+        @keyframes sv-prog {
+            from {
+                width: 0%
+            }
+
+            to {
+                width: 100%
+            }
+        }
+
+        .sv-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 12px 8px;
+        }
+
+        .sv-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .sv-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .sv-info {
+            flex: 1;
+        }
+
+        .sv-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .sv-time {
+            font-size: 12px;
+            color: rgba(255, 255, 255, .6);
+        }
+
+        .sv-close {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, .7);
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .sv-close svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .sv-content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sv-slide {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity .3s;
+        }
+
+        .sv-slide.on {
+            opacity: 1;
+        }
+
+        .sv-slide img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .sv-slide .sv-text {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(0deg, rgba(0, 0, 0, .85), transparent);
+            padding: 40px 20px 20px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: white;
+        }
+
+        .sv-nav-left {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 40%;
+            cursor: pointer;
+        }
+
+        .sv-nav-right {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 40%;
+            cursor: pointer;
+        }
+
+        /* ─────────────────────────────────────────────
+   RSVP MODAL
+───────────────────────────────────────────── */
+        .rsvp-modal {
+            position: absolute;
+            inset: 0;
+            z-index: 400;
+            background: rgba(0, 0, 0, .5);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: flex-end;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s;
+        }
+
+        .rsvp-modal.open {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .rsvp-sheet {
+            width: 100%;
+            background: var(--wa-panel);
+            border-radius: 20px 20px 0 0;
+            padding: 12px 16px max(24px, env(safe-area-inset-bottom, 24px));
+            transform: translateY(100%);
+            transition: transform .4s var(--spring);
+            max-height: 88svh;
+            overflow-y: auto;
+        }
+
+        .rsvp-modal.open .rsvp-sheet {
+            transform: translateY(0);
+        }
+
+        .rs-handle {
+            width: 40px;
+            height: 4px;
+            background: var(--wa-gray4);
+            border-radius: 2px;
+            margin: 0 auto 16px;
+        }
+
+        .rs-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--wa-gray1);
+            margin-bottom: 4px;
+        }
+
+        .rs-sub {
+            font-size: 13px;
+            color: var(--wa-gray2);
+            margin-bottom: 20px;
+        }
+
+        .rs-field {
+            margin-bottom: 14px;
+        }
+
+        .rs-label {
+            font-size: 12px;
+            color: var(--wa-gray2);
+            margin-bottom: 6px;
+            letter-spacing: .04em;
+        }
+
+        .rs-input {
+            width: 100%;
+            background: var(--wa-input);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: var(--wa-gray1);
+            font-family: var(--font);
+            font-size: 15px;
+            outline: none;
+            caret-color: var(--wa-green);
+        }
+
+        .rs-input::placeholder {
+            color: var(--wa-gray3);
+        }
+
+        .rs-input:focus {
+            box-shadow: 0 0 0 2px rgba(37, 211, 102, .3);
+        }
+
+        textarea.rs-input {
+            min-height: 80px;
+            resize: vertical;
+        }
+
+        .rs-select {
+            appearance: none;
+            cursor: pointer;
+        }
+
+        .rs-options {
+            display: flex;
+            gap: 8px;
+        }
+
+        .rs-opt-btn {
+            flex: 1;
+            background: var(--wa-input);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 12px;
+            color: var(--wa-gray2);
+            font-family: var(--font);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all .15s;
+            text-align: center;
+        }
+
+        .rs-opt-btn.on {
+            background: rgba(37, 211, 102, .15);
+            border-color: var(--wa-green);
+            color: var(--wa-green);
+        }
+
+        .rs-send-btn {
+            width: 100%;
+            background: var(--wa-green);
+            border: none;
+            border-radius: 12px;
+            padding: 14px;
+            color: white;
+            font-family: var(--font);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: background .15s, transform .1s;
+        }
+
+        .rs-send-btn:hover {
+            background: #1fba55;
+        }
+
+        .rs-send-btn:active {
+            transform: scale(.98);
+        }
+
+        /* ─────────────────────────────────────────────
+   LIGHTBOX
+───────────────────────────────────────────── */
+        .lightbox {
+            position: absolute;
+            inset: 0;
+            z-index: 500;
+            background: rgba(0, 0, 0, .96);
+            display: none;
+            flex-direction: column;
+        }
+
+        .lightbox.open {
+            display: flex;
+        }
+
+        .lb-header-wa {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .lb-back {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .lb-back svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .lb-sender {
+            flex: 1;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .lb-time-wa {
+            font-size: 12px;
+            color: rgba(255, 255, 255, .5);
+        }
+
+        .lb-main-wa {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+        }
+
+        .lb-img-wa {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .lb-footer-wa {
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .lb-action {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: rgba(255, 255, 255, .6);
+            cursor: pointer;
+            font-size: 11px;
+        }
+
+        .lb-action svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .lb-action:hover {
+            color: white;
+        }
+
+        /* ─────────────────────────────────────────────
+   SCROLL FLOATING
+───────────────────────────────────────────── */
+        .scroll-down-btn {
+            position: absolute;
+            bottom: 70px;
+            right: 14px;
+            z-index: 50;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--wa-panel2);
+            border: 1px solid rgba(255, 255, 255, .08);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: opacity .3s;
+        }
+
+        .scroll-down-btn svg {
+            width: 18px;
+            height: 18px;
+            color: var(--wa-gray2);
+        }
+
+        .unread-badge {
+            position: absolute;
+            top: -6px;
+            right: -4px;
+            background: var(--wa-green);
+            color: #000;
+            border-radius: 12px;
+            padding: 1px 6px;
+            font-size: 11px;
+            font-weight: 700;
+            font-family: var(--font);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="phone-shell" id="phoneShell">
+
+        <!-- ══ SPLASH ══ -->
+        <div id="splash">
+            <svg class="splash-wa-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="50" fill="#25D366" />
+                <path
+                    d="M50 15C30.67 15 15 30.67 15 50c0 6.11 1.63 11.85 4.48 16.82L15 85l18.62-4.38A34.86 34.86 0 0050 85c19.33 0 35-15.67 35-35S69.33 15 50 15zm17.54 47.62c-.74 2.08-4.32 3.97-5.95 4.22-.49.07-1.1.11-1.76.11-1.79 0-4.64-.46-10.67-2.94-7.28-3.01-12.34-10.28-12.72-10.76-.38-.48-3.12-4.16-3.12-7.93 0-3.77 1.97-5.62 2.67-6.39.74-.8 1.61-.99 2.14-.99.53 0 1.06.01 1.52.02.49.02 1.14-.18 1.78 1.36.67 1.58 2.27 5.35 2.47 5.74.2.38.33.83.07 1.34-.27.51-.4.83-.79 1.28-.38.45-.8.99-.77 1.48.04.49.44 1.13.93 1.82 2.08 2.98 4.07 4.07 6.74 5.32.6.28 1.06.23 1.45-.14.38-.38 1.64-1.91 2.08-2.57.44-.66.88-.55 1.48-.33.6.22 3.8 1.79 4.45 2.12.64.33 1.07.49 1.23.77.16.27.16 1.57-.58 3.65z"
+                    fill="white" />
+            </svg>
+            <div class="splash-bottom">
+                <div class="splash-dots">
+                    <div class="splash-dot"></div>
+                    <div class="splash-dot"></div>
+                    <div class="splash-dot"></div>
+                </div>
+                <div class="splash-from">from</div>
+                <div class="splash-meta">Meta</div>
+            </div>
+        </div>
+
+        <!-- ══ CHAT HEADER ══ -->
+        <div class="chat-header" id="chatHeader" style="display:none">
+            <button class="ch-back" onclick="goBack()">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+                </svg>
+            </button>
+            <div class="ch-avatar" onclick="openStoryViewer(0)">
+                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=100&h=100&fit=crop&q=80"
+                    alt="">
+                <div class="ch-online-dot"></div>
+            </div>
+            <div class="ch-info" onclick="openStoryViewer(0)">
+                <div class="ch-name">Nazma & Gunturr 💍</div>
+                <div class="ch-status">online</div>
+            </div>
+            <div class="ch-actions">
+                <button class="ch-action-btn" onclick="toast('📹 Video call...')">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z" />
+                    </svg>
+                </button>
+                <button class="ch-action-btn" onclick="toast('📞 Calling...')">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                    </svg>
+                </button>
+                <button class="ch-action-btn" onclick="toast('⋮ Options')">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- ══ CHAT AREA ══ -->
+        <div class="chat-area" id="chatArea" style="display:none">
+            <!-- Messages injected by JS -->
+        </div>
+
+        <!-- ══ CHAT INPUT ══ -->
+        <div class="chat-input-bar" id="chatInputBar" style="display:none">
+            <div class="input-box">
+                <span class="input-emoji" onclick="toggleAttach()">😊</span>
+                <textarea class="input-field" placeholder="Pesan" id="msgInput" rows="1" onkeydown="handleKey(event)"
+                    oninput="autoResize(this)"></textarea>
+                <div class="input-attach" onclick="toggleAttach()">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z" />
+                    </svg>
+                </div>
+            </div>
+            <button class="send-btn" onclick="sendMsg()">
+                <svg viewBox="0 0 24 24" fill="white">
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                </svg>
+            </button>
+
+            <!-- Attach menu -->
+            <div class="attach-menu" id="attachMenu">
+                <div class="am-item" onclick="insertBubble('gallery')">
+                    <div class="am-icon" style="background:#BF59CF">🖼️</div>
+                    <span class="am-label">Galeri</span>
+                </div>
+                <div class="am-item" onclick="insertBubble('document')">
+                    <div class="am-icon" style="background:#3F8AE0">📄</div>
+                    <span class="am-label">Dokumen</span>
+                </div>
+                <div class="am-item" onclick="insertBubble('camera')">
+                    <div class="am-icon" style="background:#E8365D">📷</div>
+                    <span class="am-label">Kamera</span>
+                </div>
+                <div class="am-item" onclick="openRSVP()">
+                    <div class="am-icon" style="background:#F5821A">📅</div>
+                    <span class="am-label">RSVP</span>
+                </div>
+                <div class="am-item" onclick="insertBubble('location')">
+                    <div class="am-icon" style="background:#25D366">📍</div>
+                    <span class="am-label">Lokasi</span>
+                </div>
+                <div class="am-item" onclick="insertBubble('contact')">
+                    <div class="am-icon" style="background:#0ABDE3">👤</div>
+                    <span class="am-label">Kontak</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ══ SCROLL DOWN ══ -->
+        <div class="scroll-down-btn" id="scrollDownBtn" style="display:none" onclick="scrollToBottom()">
+            <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z" />
+            </svg>
+        </div>
+
+        <!-- ══ RSVP MODAL ══ -->
+        <div class="rsvp-modal" id="rsvpModal" onclick="closeRSVP(event)">
+            <div class="rsvp-sheet">
+                <div class="rs-handle"></div>
+                <div class="rs-title">Konfirmasi Kehadiran 💌</div>
+                <div class="rs-sub">Nazma & Gunturr ingin tahu apakah Anda bisa hadir!</div>
+                <div class="rs-field">
+                    <div class="rs-label">Nama Lengkap</div>
+                    <input type="text" class="rs-input" placeholder="Masukkan nama Anda" id="rsName">
+                </div>
+                <div class="rs-field">
+                    <div class="rs-label">Kehadiran</div>
+                    <div class="rs-options">
+                        <button class="rs-opt-btn on" onclick="selRSVP('hadir',this)">✅ Hadir</button>
+                        <button class="rs-opt-btn" onclick="selRSVP('tidak',this)">❌ Tidak Hadir</button>
+                    </div>
+                </div>
+                <div class="rs-field">
+                    <div class="rs-label">Jumlah Orang</div>
+                    <div class="rs-options">
+                        <button class="rs-opt-btn on" onclick="selGuest(1,this)">1 orang</button>
+                        <button class="rs-opt-btn" onclick="selGuest(2,this)">2 orang</button>
+                    </div>
+                </div>
+                <div class="rs-field">
+                    <div class="rs-label">Ucapan & Pesan</div>
+                    <textarea class="rs-input" placeholder="Tuliskan ucapan untuk Nazma & Gunturr..."
+                        id="rsMsg"></textarea>
+                </div>
+                <button class="rs-send-btn" onclick="submitRSVP()">
+                    Kirim via WhatsApp 📨
+                </button>
+            </div>
+        </div>
+
+        <!-- ══ LIGHTBOX ══ -->
+        <div class="lightbox" id="lb">
+            <div class="lb-header-wa">
+                <button class="lb-back" onclick="closeLB()"><svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+                    </svg></button>
+                <span class="lb-sender" id="lbSender">Nazma & Gunturr</span>
+                <span class="lb-time-wa" id="lbTime"></span>
+            </div>
+            <div class="lb-main-wa"><img class="lb-img-wa" id="lbImg" src="" alt=""></div>
+            <div class="lb-footer-wa">
+                <div class="lb-action" onclick="toast('⬇️ Menyimpan...')"><svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+                    </svg>Simpan</div>
+                <div class="lb-action" onclick="toast('↩️ Membalas...')"><svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z" />
+                    </svg>Balas</div>
+                <div class="lb-action" onclick="toast('⭐ Dibintangi!')"><svg viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>Bintangi</div>
+                <div class="lb-action" onclick="toast('↗️ Meneruskan...')"><svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z" />
+                    </svg>Teruskan</div>
+            </div>
+        </div>
+
+        <!-- ══ STORY VIEWER ══ -->
+        <div class="story-viewer" id="storyViewer">
+            <div class="sv-progress" id="svProgress"></div>
+            <div class="sv-header">
+                <div class="sv-avatar"><img
+                        src="https://images.unsplash.com/photo-1519741497674-611481863552?w=80&h=80&fit=crop&q=80"
+                        alt=""></div>
+                <div class="sv-info">
+                    <div class="sv-name">Nazma & Gunturr 💍</div>
+                    <div class="sv-time" id="svTime">Baru saja</div>
+                </div>
+                <button class="sv-close" onclick="closeStoryViewer()"><svg viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                    </svg></button>
+            </div>
+            <div class="sv-content" id="svContent"></div>
+            <div class="sv-nav-left" onclick="svPrev()"></div>
+            <div class="sv-nav-right" onclick="svNext()"></div>
+        </div>
+
+    </div><!-- /phone-shell -->
+
+    <!-- TOAST (outside shell for centering) -->
+    <div style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:9999;pointer-events:none"
+        id="toastWrap">
+        <div id="toastEl"
+            style="background:rgba(37,37,37,.95);color:white;padding:11px 20px;border-radius:24px;font-family:'Nunito',sans-serif;font-size:14px;opacity:0;transition:opacity .3s,transform .3s;transform:translateY(8px);white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.4)">
+        </div>
+    </div>
+
+    <script>
+        /* ══════════════════════════════════════════
+           DATA
+        ══════════════════════════════════════════ */
+        const GALLERY_IMGS = [
+            { src: "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=450&fit=crop&q=80", time: "09:41" },
+            { src: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&h=450&fit=crop&q=80", time: "09:42" },
+            { src: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=450&fit=crop&q=80", time: "09:43" },
+            { src: "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&h=450&fit=crop&q=80", time: "09:44" },
+            { src: "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=600&h=450&fit=crop&q=80", time: "09:45" },
+            { src: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=450&fit=crop&q=80", time: "09:46" },
+        ];
+
+        const STORIES = [
+            { img: "https://images.unsplash.com/photo-1519741497674-611481863552?w=420&h=740&fit=crop&q=85", text: "24 Mei 2026 — Hari yang paling kami nantikan 💍" },
+            { img: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=420&h=740&fit=crop&q=85", text: "Graha Yadika, Tangerang — Akad 08.00 · Resepsi 11.00 WIB 📍" },
+            { img: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=420&h=740&fit=crop&q=85", text: "Jangan lupa konfirmasi kehadiran ya! 💌 Balas chat ini untuk RSVP" },
+        ];
+
+        /* ══ STATE ══ */
+        let rsvpStatus = 'hadir', guestCount = 1;
+        let svIdx = 0, svTimer = null;
+        let msgDelay = 0;
+        let currentLbImg = '', showingAttach = false;
+        let audioCtx = null, audioPlaying = false;
+
+        /* ══ TICK FUNC for staggered chat messages ══ */
+        function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        /* ══════════════════════════════════════════
+           SPLASH → OPEN
+        ══════════════════════════════════════════ */
+        async function init() {
+            await delay(2200);
+            document.getElementById('splash').classList.add('out');
+            await delay(300);
+            document.getElementById('chatHeader').style.display = 'flex';
+            document.getElementById('chatArea').style.display = 'flex';
+            document.getElementById('chatArea').style.flexDirection = 'column';
+            document.getElementById('chatArea').style.gap = '2px';
+            document.getElementById('chatInputBar').style.display = 'flex';
+
+            await delay(100);
+            await renderChat();
+        }
+        init();
+
+        /* ══════════════════════════════════════════
+           RENDER CHAT — sequential bubble injection
+        ══════════════════════════════════════════ */
+        async function renderChat() {
+            const area = document.getElementById('chatArea');
+
+            const messages = [
+                // DATE
+                { type: 'date', text: 'Minggu, 24 Mei 2026' },
+                // System
+                { type: 'system', text: '🔒 Pesan dan panggilan dienkripsi end-to-end.' },
+                // Invitation card
+                { type: 'invite', dir: 'in', time: '09:30', delay: 400 },
+                // Text from them
+                {
+                    type: 'text', dir: 'in', time: '09:31', delay: 700,
+                    text: 'Assalamu\'alaikum Kak Ade 👋\n\nIzinkan kami menyampaikan kabar bahagia ini langsung lewat WhatsApp ya... 😊'
+                },
+                // Photo sticker
+                { type: 'sticker', dir: 'in', time: '09:31', delay: 500, emoji: '💍' },
+                // Text
+                {
+                    type: 'text', dir: 'in', time: '09:32', delay: 600,
+                    text: 'Kami, *Nazma* dan *Guntur*, dengan penuh rasa syukur mengundang Kakak untuk hadir di hari pernikahan kami 🤍'
+                },
+                // Reply with quote
+                {
+                    type: 'reply', dir: 'in', time: '09:32', delay: 700,
+                    quote: { sender: 'Ade Guntur', text: 'Kapan nih acaranya?? 🎉' },
+                    text: 'Insyaallah _*Minggu, 24 Mei 2026*_ ya Kak! Catat di kalender dulu 📅'
+                },
+                // Countdown
+                { type: 'countdown', dir: 'in', time: '09:33', delay: 600 },
+                // Voice note
+                { type: 'voice', dir: 'in', time: '09:34', delay: 800, duration: '0:24' },
+                // Location
+                { type: 'location', dir: 'in', time: '09:35', delay: 600 },
+                // Gallery photo 1
+                { type: 'photo', dir: 'in', time: '09:36', delay: 700, imgIdx: 0 },
+                { type: 'photo', dir: 'in', time: '09:36', delay: 300, imgIdx: 1 },
+                { type: 'photo', dir: 'in', time: '09:36', delay: 300, imgIdx: 2 },
+                // Text
+                {
+                    type: 'text', dir: 'in', time: '09:37', delay: 700,
+                    text: 'Ini beberapa foto prewedding kami 📸✨ Selebihnya bisa lihat di status ya Kak!'
+                },
+                // Poll
+                { type: 'poll', dir: 'in', time: '09:38', delay: 700 },
+                // Text outgoing
+                {
+                    type: 'text', dir: 'out', time: '09:40', delay: 1200,
+                    text: 'Waalaikumsalam! Selamat ya Nazma & Gunturr! 🎊🎊\nInsyaAllah hadir!'
+                },
+                { type: 'sticker', dir: 'out', time: '09:40', delay: 400, emoji: '🥳' },
+                // Contact card
+                { type: 'contact', dir: 'in', time: '09:41', delay: 800 },
+                // Final text
+                {
+                    type: 'text', dir: 'in', time: '09:41', delay: 600,
+                    text: 'Alhamdulillah 🤲 Sampai jumpa di hari bahagia kami ya Kak!\n\n_Mohon doanya agar acara berjalan lancar_ 🌸'
+                },
+                { type: 'sticker', dir: 'in', time: '09:41', delay: 300, emoji: '❤️' },
+                // Typing
+                { type: 'typing', delay: 800 },
+            ];
+
+            for (const msg of messages) {
+                await delay(msg.delay || 300);
+                const el = buildBubble(msg);
+                if (el) {
+                    area.appendChild(el);
+                    scrollToBottom();
+                    // Remove typing after adding real message (except typing itself)
+                    const prevTyping = area.querySelector('.typing-row');
+                    if (prevTyping && msg.type !== 'typing') prevTyping.remove();
+                }
+            }
+        }
+
+        function buildBubble(msg) {
+            const wrap = document.createElement('div');
+            const d = msgDelay++ * 0;
+
+            if (msg.type === 'date') {
+                wrap.className = 'date-divider';
+                wrap.innerHTML = `<span>${msg.text}</span>`;
+                return wrap;
+            }
+
+            if (msg.type === 'system') {
+                const b = document.createElement('div');
+                b.className = 'bubble system';
+                b.style.cssText = `--delay:${d}ms;animation:bubble-in .4s var(--ease) ${d}ms forwards;opacity:0`;
+                b.innerHTML = `<div class="bubble-text" style="font-size:12px;color:var(--wa-gray2)">${msg.text}</div>`;
+                return b;
+            }
+
+            if (msg.type === 'typing') {
+                wrap.className = 'bubble-row in typing-row';
+                wrap.style.cssText = `--delay:${d}ms;animation:bubble-in .4s var(--ease) ${d}ms forwards;opacity:0`;
+                wrap.innerHTML = `
+      <div class="bubble-avatar"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=60&h=60&fit=crop&q=80" alt=""></div>
+      <div class="bubble in">
+        <div class="typing-indicator">
+          <div class="typing-dots">
+            <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+          </div>
+        </div>
+      </div>`;
+                return wrap;
+            }
+
+            wrap.className = `bubble-row ${msg.dir}`;
+            wrap.style.cssText = `--delay:${d}ms;animation:bubble-in .4s var(--ease) ${d}ms forwards;opacity:0`;
+
+            let avatarHTML = msg.dir === 'in'
+                ? `<div class="bubble-avatar"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=60&h=60&fit=crop&q=80" alt=""></div>`
+                : '';
+
+            const meta = `<div class="bubble-meta"><span class="bubble-time">${msg.time || '09:41'}</span>${msg.dir === 'out' ? `<span class="bubble-ticks read"><svg viewBox="0 0 18 10" fill="currentColor"><path d="M17.394.601a.503.503 0 0 0-.7-.047l-8.3 7.01L5.28 4.35a.5.5 0 0 0-.656.755l3.5 3.04a.498.498 0 0 0 .652.003l8.57-7.23a.5.5 0 0 0 .048-.317zm-5.3.003a.503.503 0 0 0-.7-.047L4.1 7.567.98 4.35a.5.5 0 0 0-.656.755l3.5 3.04a.498.498 0 0 0 .652.003L12.046.921a.5.5 0 0 0 .047-.317z"/></svg></span>` : ''}</div>`;
+
+            if (msg.type === 'text') {
+                const formatted = msg.text
+                    .replace(/\*(.*?)\*/g, '<strong>$1</strong>')
+                    .replace(/_(.*?)_/g, '<em>$1</em>')
+                    .replace(/\n/g, '<br>');
+                wrap.innerHTML = `${avatarHTML}<div class="bubble ${msg.dir}"><div class="bubble-text">${formatted}</div>${meta}</div>`;
+            }
+
+            else if (msg.type === 'sticker') {
+                wrap.innerHTML = `${avatarHTML}<div class="bubble ${msg.dir} sticker-bubble"><span class="sticker-emoji">${msg.emoji}</span>${meta}</div>`;
+            }
+
+            else if (msg.type === 'invite') {
+                wrap.innerHTML = `${avatarHTML}
+    <div class="invite-bubble ${msg.dir}" onclick="openRSVP()">
+      <div class="ib-image"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=225&fit=crop&q=80" alt=""></div>
+      <div class="ib-body">
+        <div class="ib-label">💌 Undangan Pernikahan</div>
+        <div class="ib-title">Nazma & Gunturr</div>
+        <div class="ib-desc">Minggu, 24 Mei 2026 · Graha Yadika, Tangerang</div>
+      </div>
+      <div class="ib-open-btn">Buka Undangan →</div>
+    </div>`;
+                wrap.querySelector('.invite-bubble').insertAdjacentHTML('beforeend', meta.replace('class="bubble-meta"', 'class="bubble-meta" style="padding:0 14px 10px"'));
+            }
+
+            else if (msg.type === 'photo') {
+                const imgData = GALLERY_IMGS[msg.imgIdx];
+                wrap.innerHTML = `${avatarHTML}
+    <div class="bubble ${msg.dir} photo-bubble" onclick="openLB(${msg.imgIdx})">
+      <img src="${imgData.src}" alt="Foto ${msg.imgIdx + 1}" loading="lazy">
+      ${meta}
+    </div>`;
+            }
+
+            else if (msg.type === 'voice') {
+                const wfBars = Array.from({ length: 28 }, (_, i) => {
+                    const h = Math.random() * 70 + 15;
+                    return `<div class="wf-bar" style="height:${h}%" data-idx="${i}"></div>`;
+                }).join('');
+                wrap.innerHTML = `${avatarHTML}
+    <div class="bubble ${msg.dir} voice-bubble">
+      <button class="voice-play" onclick="playVoiceNote(this)">
+        <svg id="vpPlay" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="vpPause" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+      </button>
+      <div class="voice-waveform">${wfBars}</div>
+      <span class="voice-duration">${msg.duration}</span>
+      ${meta}
+    </div>`;
+            }
+
+            else if (msg.type === 'location') {
+                wrap.innerHTML = `${avatarHTML}
+    <div class="bubble ${msg.dir} location-bubble" onclick="window.open('https://maps.app.goo.gl/mxac1yXcYLrYQmvA6','_blank')">
+      <div class="loc-map">
+        <div class="loc-map-bg"></div>
+        <div class="loc-pin">📍</div>
+      </div>
+      <div class="loc-info">
+        <div class="loc-name">Graha Yadika</div>
+        <div class="loc-addr">Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div>
+      </div>
+      ${meta}
+    </div>`;
+            }
+
+            else if (msg.type === 'reply') {
+                wrap.innerHTML = `${avatarHTML}
+    <div class="bubble ${msg.dir}">
+      <div class="reply-quote">
+        <div class="rq-sender">${msg.quote.sender}</div>
+        <div class="rq-text">${msg.quote.text}</div>
+      </div>
+      <div class="bubble-text">${msg.text.replace(/\*(.*?)\*/g, '<strong>$1</strong>').replace(/_(.*?)_/g, '<em>$1</em>').replace(/\n/g, '<br>')}</div>
+      ${meta}
+    </div>`;
+            }
+
+            else if (msg.type === 'countdown') {
+                wrap.innerHTML = `${avatarHTML}
+    <div class="bubble ${msg.dir} countdown-bubble">
+      <div class="cb-label">⏳ Hitung Mundur Pernikahan</div>
+      <div class="cb-nums">
+        <div class="cb-box"><div class="cb-num" id="cdD2">--</div><div class="cb-unit">Hari</div></div>
+        <div class="cb-box"><div class="cb-num" id="cdH2">--</div><div class="cb-unit">Jam</div></div>
+        <div class="cb-box"><div class="cb-num" id="cdM2">--</div><div class="cb-unit">Menit</div></div>
+        <div class="cb-box"><div class="cb-num" id="cdS2">--</div><div class="cb-unit">Detik</div></div>
+      </div>
+      ${meta}
+    </div>`;
+                startCountdown();
+            }
+
+            else if (msg.type === 'poll') {
+                wrap.innerHTML = `${avatarHTML}
+    <div class="bubble ${msg.dir} poll-bubble">
+      <div class="poll-title">📊 Akan hadir di mana?</div>
+      <div class="poll-option" onclick="votePoll(this,42)" style="--pct:42%">
+        <span class="poll-opt-text">Akad Nikah</span>
+        <span class="poll-opt-pct">42%</span>
+      </div>
+      <div class="poll-option" onclick="votePoll(this,35)" style="--pct:35%">
+        <span class="poll-opt-text">Resepsi</span>
+        <span class="poll-opt-pct">35%</span>
+      </div>
+      <div class="poll-option" onclick="votePoll(this,23)" style="--pct:23%">
+        <span class="poll-opt-text">Keduanya</span>
+        <span class="poll-opt-pct">23%</span>
+      </div>
+      <div class="poll-votes">17 suara · Berakhir sebelum 24 Mei</div>
+      ${meta}
+    </div>`;
+            }
+
+            else if (msg.type === 'contact') {
+                wrap.innerHTML = `${avatarHTML}
+    <div class="bubble ${msg.dir} contact-bubble">
+      <div class="cb-header">
+        <div class="cb-avatar"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=80&h=80&fit=crop&q=80" alt=""></div>
+        <div><div class="cb-name">Nazma & Gunturr 💍</div><div class="cb-sub">Mempelai</div></div>
+      </div>
+      <div class="cb-btn" onclick="openRSVP()">Kirim RSVP 💌</div>
+      ${meta}
+    </div>`;
+            }
+
+            return wrap;
+        }
+
+        /* ══ COUNTDOWN ══ */
+        function startCountdown() {
+            const t = new Date('2026-05-24T08:00:00');
+            function tick() {
+                const d = t - new Date();
+                if (d <= 0) { ['cdD2', 'cdH2', 'cdM2', 'cdS2'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '00'; }); return; }
+                ['cdD2', 'cdH2', 'cdM2', 'cdS2'].forEach((id, i) => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    const vals = [Math.floor(d / 86400000), Math.floor((d % 86400000) / 3600000), Math.floor((d % 3600000) / 60000), Math.floor((d % 60000) / 1000)];
+                    el.textContent = String(vals[i]).padStart(2, '0');
+                });
+            }
+            tick(); setInterval(tick, 1000);
+        }
+
+        /* ══ VOICE NOTE ══ */
+        let vnPlaying = false, vnTimer = null, vnProgress = 0;
+        function playVoiceNote(btn) {
+            vnPlaying = !vnPlaying;
+            const pi = btn.querySelector('#vpPlay'), pa = btn.querySelector('#vpPause');
+            const bars = btn.closest('.voice-bubble').querySelectorAll('.wf-bar');
+            if (vnPlaying) {
+                pi.style.display = 'none'; pa.style.display = 'block';
+                vnProgress = 0;
+                vnTimer = setInterval(() => {
+                    vnProgress++;
+                    const idx = Math.floor((vnProgress / 100) * bars.length);
+                    bars.forEach((b, i) => b.classList.toggle('played', i < idx));
+                    if (vnProgress >= 100) {
+                        clearInterval(vnTimer); vnPlaying = false;
+                        pi.style.display = 'block'; pa.style.display = 'none';
+                        bars.forEach(b => b.classList.remove('played'));
+                    }
+                }, 240);
+            } else {
+                clearInterval(vnTimer);
+                pi.style.display = 'block'; pa.style.display = 'none';
+            }
+        }
+
+        /* ══ POLL ══ */
+        function votePoll(el, pct) {
+            const siblings = el.parentElement.querySelectorAll('.poll-option');
+            siblings.forEach(s => s.classList.remove('voted'));
+            el.classList.add('voted');
+            toast('🗳️ Suara diterima!');
+        }
+
+        /* ══ SCROLL ══ */
+        function scrollToBottom() {
+            const area = document.getElementById('chatArea');
+            area.scrollTop = area.scrollHeight;
+        }
+
+        /* ══ SEND MESSAGE ══ */
+        function handleKey(e) {
+            if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMsg(); }
+        }
+        function autoResize(el) {
+            el.style.height = 'auto';
+            el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+        }
+        function sendMsg() {
+            const input = document.getElementById('msgInput');
+            const text = input.value.trim();
+            if (!text) return;
+            const area = document.getElementById('chatArea');
+            const prevTyping = area.querySelector('.typing-row');
+            if (prevTyping) prevTyping.remove();
+
+            const wrap = buildBubble({ type: 'text', dir: 'out', time: nowTime(), text, delay: 0 });
+            area.appendChild(wrap);
+            scrollToBottom();
+            input.value = ''; input.style.height = 'auto';
+
+            // Auto reply
+            setTimeout(() => {
+                const reply = buildBubble({
+                    type: 'text', dir: 'in', time: nowTime(), delay: 0,
+                    text: 'Terima kasih pesannya! 😊 Jangan lupa konfirmasi kehadiran ya Kak 💌'
+                });
+                area.appendChild(reply);
+                scrollToBottom();
+            }, 1200);
+        }
+        function nowTime() {
+            const n = new Date();
+            return n.getHours() + ':' + String(n.getMinutes()).padStart(2, '0');
+        }
+
+        /* ══ ATTACH MENU ══ */
+        function toggleAttach() {
+            showingAttach = !showingAttach;
+            document.getElementById('attachMenu').classList.toggle('show', showingAttach);
+        }
+        function insertBubble(type) {
+            toggleAttach();
+            if (type === 'location') {
+                const area = document.getElementById('chatArea');
+                const el = buildBubble({ type: 'location', dir: 'out', time: nowTime(), delay: 0 });
+                area.appendChild(el); scrollToBottom();
+            } else if (type === 'contact') {
+                const area = document.getElementById('chatArea');
+                const el = buildBubble({ type: 'contact', dir: 'out', time: nowTime(), delay: 0 });
+                area.appendChild(el); scrollToBottom();
+            } else {
+                toast('📎 Fitur ' + type + ' siap digunakan');
+            }
+        }
+
+        /* ══ RSVP ══ */
+        function openRSVP() { document.getElementById('rsvpModal').classList.add('open'); }
+        function closeRSVP(e) { if (e.target === document.getElementById('rsvpModal')) document.getElementById('rsvpModal').classList.remove('open'); }
+        function selRSVP(val, btn) { rsvpStatus = val; document.querySelectorAll('.rs-opt-btn').forEach((b, i) => { if (i < 2) b.classList.toggle('on', b === btn); }); }
+        function selGuest(n, btn) { guestCount = n; document.querySelectorAll('.rs-opt-btn').forEach((b, i) => { if (i >= 2) b.classList.toggle('on', b === btn); }); }
+        function submitRSVP() {
+            const name = document.getElementById('rsName').value.trim();
+            const msg = document.getElementById('rsMsg').value.trim();
+            if (!name) { toast('Mohon isi nama terlebih dahulu'); return; }
+            document.getElementById('rsvpModal').classList.remove('open');
+
+            const stxt = rsvpStatus === 'hadir' ? `✅ Hadir · ${guestCount} orang` : '❌ Tidak Hadir';
+            const text = `*${name}*\n${stxt}${msg ? '\n\n"' + msg + '"' : ''}`;
+            const area = document.getElementById('chatArea');
+            const el = buildBubble({ type: 'text', dir: 'out', time: nowTime(), delay: 0, text });
+            area.appendChild(el); scrollToBottom();
+
+            setTimeout(() => {
+                const reply = buildBubble({
+                    type: 'text', dir: 'in', time: nowTime(), delay: 0,
+                    text: `Alhamdulillah! Terima kasih sudah konfirmasi ya *${name}* 🤍\nSampai jumpa di hari bahagia kami! 🎉`
+                });
+                area.appendChild(reply); scrollToBottom();
+                const stk = buildBubble({ type: 'sticker', dir: 'in', time: nowTime(), delay: 0, emoji: '🎊' });
+                setTimeout(() => { area.appendChild(stk); scrollToBottom(); }, 800);
+            }, 1000);
+
+            document.getElementById('rsName').value = '';
+            document.getElementById('rsMsg').value = '';
+            toast('💌 Konfirmasi terkirim!');
+        }
+
+        /* ══ LIGHTBOX ══ */
+        function openLB(idx) {
+            const img = GALLERY_IMGS[idx];
+            document.getElementById('lbImg').src = img.src;
+            document.getElementById('lbTime').textContent = img.time;
+            document.getElementById('lb').classList.add('open');
+        }
+        function closeLB() { document.getElementById('lb').classList.remove('open'); }
+
+        /* ══ STORY VIEWER ══ */
+        function openStoryViewer(startIdx) {
+            svIdx = startIdx;
+            const viewer = document.getElementById('storyViewer');
+            viewer.classList.add('open');
+            buildStories();
+            goToStory(svIdx);
+        }
+        function closeStoryViewer() {
+            document.getElementById('storyViewer').classList.remove('open');
+            clearTimeout(svTimer);
+        }
+        function buildStories() {
+            const prog = document.getElementById('svProgress');
+            prog.innerHTML = STORIES.map((_, i) => `<div class="sv-prog-bar"><div class="sv-prog-fill" id="svp${i}"></div></div>`).join('');
+            const content = document.getElementById('svContent');
+            content.innerHTML = STORIES.map((s, i) => `
+    <div class="sv-slide ${i === 0 ? 'on' : ''}" id="svs${i}">
+      <img src="${s.img}" alt="">
+      <div class="sv-text">${s.text}</div>
+    </div>`).join('');
+        }
+        function goToStory(idx) {
+            STORIES.forEach((_, i) => {
+                document.getElementById('svs' + i).classList.toggle('on', i === idx);
+                const fill = document.getElementById('svp' + i);
+                fill.style.animation = 'none';
+                fill.className = 'sv-prog-fill' + (i < idx ? ' done' : '');
+            });
+            clearTimeout(svTimer);
+            if (idx < STORIES.length) {
+                const fill = document.getElementById('svp' + idx);
+                fill.className = 'sv-prog-fill active';
+                svTimer = setTimeout(() => svNext(), 4200);
+            }
+        }
+        function svNext() { svIdx = svIdx + 1 >= STORIES.length ? 0 : svIdx + 1; goToStory(svIdx); }
+        function svPrev() { svIdx = svIdx - 1 < 0 ? STORIES.length - 1 : svIdx - 1; goToStory(svIdx); }
+
+        /* ══ BACK ══ */
+        function goBack() { toast('← Kembali ke daftar chat'); }
+
+        /* ══ TOAST ══ */
+        let _tt;
+        function toast(msg) {
+            const el = document.getElementById('toastEl');
+            el.textContent = msg; el.style.opacity = '1'; el.style.transform = 'translateY(0)';
+            clearTimeout(_tt);
+            _tt = setTimeout(() => { el.style.opacity = '0'; el.style.transform = 'translateY(8px)'; }, 2500);
+        }
+    </script>
+</body>
+
+</html>
