@@ -99,7 +99,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
     vec![
         TemplateMetadata {
             id: "trendvibe".to_string(),
-            title: "VibeCheck".to_string(),
+            title: "Toktik".to_string(),
             desc: "POV: Wedding kamu masuk fyp. Desain vertikal yang dinamis buat kamu yang selalu up-to-date sama tren kekinian.".to_string(),
             price: 50000,
             preview_img: "/static/img/trendvibe_preview.png".to_string(),
@@ -108,7 +108,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "loveanthem".to_string(),
-            title: "LuvTrack".to_string(),
+            title: "Spitapy".to_string(),
             desc: "Spotify-inspired interface buat nge-track perjalanan cinta kalian. Definisi 'Our Song' yang dijadiin undangan digital premium.".to_string(),
             price: 50000,
             preview_img: "/static/img/loveanthem_preview.png".to_string(),
@@ -117,7 +117,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "cinemarry".to_string(),
-            title: "BingeMatch".to_string(),
+            title: "Nitflax".to_string(),
             desc: "Kisah cinta kalian adalah Netflix Original Series terbaik tahun ini. Visual sinematik yang bikin tamu gak sabar buat klik play.".to_string(),
             price: 50000,
             preview_img: "/static/img/cinemarry_preview.png".to_string(),
@@ -126,7 +126,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "shopee-live-wedding".to_string(),
-            title: "CheckoutLove".to_string(),
+            title: "Shoopi".to_string(),
             desc: "Lagi live nih! Undangan interaktif ala Shopee Live buat kamu yang mau tampil beda, ceria, dan penuh energi flash sale kebahagiaan.".to_string(),
             price: 50000,
             preview_img: "/static/img/shopee-live-wedding_preview.png".to_string(),
@@ -135,7 +135,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "tiktok-live-wedding".to_string(),
-            title: "LiveVows".to_string(),
+            title: "Toktik Live".to_string(),
             desc: "Sensasi viral TikTok Live di hari pernikahanmu. Tamu bisa tap-tap layar dan kasih gift cinta secara digital di undanganmu.".to_string(),
             price: 50000,
             preview_img: "/static/img/tiktok-live-wedding_preview.png".to_string(),
@@ -144,7 +144,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "we-uber".to_string(),
-            title: "SwiftDate".to_string(),
+            title: "Ubar".to_string(),
             desc: "Perjalanan cinta yang clean dan efisien ala Uber interface. Minimalis, modern, dan pastinya gak bakal bikin tamu nyasar.".to_string(),
             price: 50000,
             preview_img: "/static/img/we-uber_preview.png".to_string(),
@@ -153,7 +153,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "wedding-disney".to_string(),
-            title: "EverAfter".to_string(),
+            title: "Disni".to_string(),
             desc: "Main character energy! Wujudkan dongeng impian kamu dengan sentuhan magis yang bikin momen pernikahan kerasa kaya di kerajaan.".to_string(),
             price: 50000,
             preview_img: "/static/img/wedding-disney_preview.png".to_string(),
@@ -162,7 +162,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "wedding-facebook".to_string(),
-            title: "Timeline".to_string(),
+            title: "Pesbuk".to_string(),
             desc: "Bernostalgia dengan interface sosial media yang personal. Bagikan status 'Married' kamu dengan cara yang paling akrab.".to_string(),
             price: 50000,
             preview_img: "/static/img/wedding-facebook_preview.png".to_string(),
@@ -171,7 +171,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "wedding-iphone-theme".to_string(),
-            title: "iVows".to_string(),
+            title: "iPon".to_string(),
             desc: "Luxury tech vibes. Antarmuka iOS yang clean dan premium buat kamu yang pengen undangan terlihat high-end dan eksklusif.".to_string(),
             price: 50000,
             preview_img: "/static/img/wedding-iphone-theme_preview.png".to_string(),
@@ -180,7 +180,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "wedding-netflix-v2".to_string(),
-            title: "Netflix&Marry".to_string(),
+            title: "Nitflax 2.0".to_string(),
             desc: "Version 2.0 dari seri sinematik kita. Lebih tajam, lebih deep, dan pastinya lebih bikin tamu ketagihan buat scroll sampai habis.".to_string(),
             price: 50000,
             preview_img: "/static/img/wedding-netflix-v2_preview.png".to_string(),
@@ -189,7 +189,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "wedding-prime".to_string(),
-            title: "PrimeMatch".to_string(),
+            title: "Primi".to_string(),
             desc: "Fast delivery of happiness! Estetika premium Amazon Prime yang menjanjikan pengalaman undangan yang sleek dan anti-ribet.".to_string(),
             price: 50000,
             preview_img: "/static/img/wedding-prime_preview.png".to_string(),
@@ -198,7 +198,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "wedding-wrath-v2".to_string(),
-            title: "MythicLuv".to_string(),
+            title: "Wreth".to_string(),
             desc: "God mode on! Desain dramatis dan megah buat kalian yang pengen momen pernikahannya kerasa kaya epic fantasy legend.".to_string(),
             price: 50000,
             preview_img: "/static/img/wedding-wrath-v2_preview.png".to_string(),
@@ -207,7 +207,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "cairide".to_string(),
-            title: "RideOrDie".to_string(),
+            title: "GoJack".to_string(),
             desc: "Otw pelaminan! Antarmuka dinamis aplikasi transportasi yang bikin perjalanan cinta kalian kerasa seru dan penuh petualangan.".to_string(),
             price: 50000,
             preview_img: "/static/img/cairide_preview.png".to_string(),
@@ -216,7 +216,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "pinterlove".to_string(),
-            title: "Aesthetic".to_string(),
+            title: "Pinteres".to_string(),
             desc: "Pinterest-perfect wedding. Tata letak masonry yang memukau buat kamu yang memuja estetika visual di setiap detailnya.".to_string(),
             price: 50000,
             preview_img: "/static/img/pinterlove_preview.png".to_string(),
@@ -225,7 +225,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "wedding-applemusic".to_string(),
-            title: "MelodyBox".to_string(),
+            title: "Apel Musik".to_string(),
             desc: "Love in stereo. Estetika Apple Music yang minimalis, fokus ke album art foto kalian dan lirik cerita cinta yang mengalir syahdu.".to_string(),
             price: 50000,
             preview_img: "/static/img/wedding-applemusic_preview.png".to_string(),
@@ -234,7 +234,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "we-capcut".to_string(),
-            title: "CutToVows".to_string(),
+            title: "Kepket".to_string(),
             desc: "Trust the process! Desain dinamis ala timeline video editor buat kamu yang ngeliat perjalanan cinta sebagai mahakarya kreatif.".to_string(),
             price: 50000,
             preview_img: "/static/img/we-capcut_preview.png".to_string(),
@@ -243,7 +243,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "bereal-wedding".to_string(),
-            title: "NoFilter".to_string(),
+            title: "BiRil".to_string(),
             desc: "Real moments only. Undangan autentik bergaya BeReal dengan dual kamera, buat kamu yang suka tampil apa adanya dan jujur.".to_string(),
             price: 50000,
             preview_img: "/static/img/bereal-wedding_preview.png".to_string(),
@@ -252,7 +252,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "instagram-live-wedding".to_string(),
-            title: "InstaVows".to_string(),
+            title: "Instagrem".to_string(),
             desc: "Rayakan momen spesialmu ala Instagram Live. Interaktif, kekinian, dan bikin tamu merasa benar-benar hadir di sana.".to_string(),
             price: 50000,
             preview_img: "/static/img/instagram-live-wedding_preview.png".to_string(),
@@ -261,7 +261,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "qris-wedding".to_string(),
-            title: "QRIS Love".to_string(),
+            title: "Kris Love".to_string(),
             desc: "Scan untuk kebahagiaan! Undangan unik dengan tema sistem pembayaran digital yang pastinya bikin tamu senyum-senyum sendiri.".to_string(),
             price: 50000,
             preview_img: "/static/img/qris-wedding_preview.png".to_string(),
@@ -270,7 +270,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "wedding-grab".to_string(),
-            title: "GrabMyHeart".to_string(),
+            title: "Greb".to_string(),
             desc: "Otw pelaminan dengan gaya! Antarmuka Grab yang familiar untuk memudahkan tamu menemukan lokasi dan detail pernikahanmu.".to_string(),
             price: 50000,
             preview_img: "/static/img/wedding-grab_preview.png".to_string(),
@@ -279,7 +279,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "figma-wedding".to_string(),
-            title: "FigmaLove".to_string(),
+            title: "Pegma".to_string(),
             desc: "Dibuat dengan presisi pixel-perfect. Untuk pasangan desainer atau tech-enthusiast yang menghargai setiap detail elemen desain.".to_string(),
             price: 50000,
             preview_img: "/static/img/figma-wedding_preview.png".to_string(),
@@ -288,7 +288,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "we-discord".to_string(),
-            title: "Discord Wedding".to_string(),
+            title: "Diskort".to_string(),
             desc: "Join the server! Undangan bertema Discord untuk komunitas gamer atau tech-enthusiast yang ingin merayakan cinta dalam mode 'Online'.".to_string(),
             price: 50000,
             preview_img: "/static/img/we-discord_preview.png".to_string(),
@@ -297,7 +297,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "we-webtoon".to_string(),
-            title: "Webtoon Story".to_string(),
+            title: "Wibton".to_string(),
             desc: "Baca kisah cinta kalian episode demi episode. Format vertikal ala komik digital yang unik dan menarik untuk diikuti.".to_string(),
             price: 50000,
             preview_img: "/static/img/we-webtoon_preview.png".to_string(),
@@ -306,7 +306,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "wedding-whatsapp-theme".to_string(),
-            title: "WA Chat Wedding".to_string(),
+            title: "Watsap".to_string(),
             desc: "Dari chat jadi akad. Interface WhatsApp yang sangat akrab untuk membagikan kabar bahagia kalian secara personal.".to_string(),
             price: 50000,
             preview_img: "/static/img/wedding-whatsapp-theme_preview.png".to_string(),
@@ -315,7 +315,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "we-mixue".to_string(),
-            title: "Mixue Love".to_string(),
+            title: "Miksu".to_string(),
             desc: "Manisnya cinta ala Mixue! Undangan ceria dengan maskot Snowman yang bikin suasana pernikahan jadi makin 'fresh' dan 'sweet'.".to_string(),
             price: 50000,
             preview_img: "/static/img/we-mixue_preview.png".to_string(),
@@ -324,7 +324,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "we-playstation".to_string(),
-            title: "Level Up Love".to_string(),
+            title: "Plesetesi".to_string(),
             desc: "Achievement Unlocked: Married! Tema PlayStation untuk pasangan gamers yang siap memulai petualangan baru di level kehidupan selanjutnya.".to_string(),
             price: 50000,
             preview_img: "/static/img/we-playstation_preview.png".to_string(),
@@ -333,7 +333,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "we-threads-app".to_string(),
-            title: "Threads Vows".to_string(),
+            title: "Treds".to_string(),
             desc: "Utas cinta yang tak terputus. Desain minimalis ala Threads untuk kamu yang ingin membagikan momen sakral dalam format teks yang intim.".to_string(),
             price: 50000,
             preview_img: "/static/img/we-threads-app_preview.png".to_string(),
@@ -342,7 +342,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "wedding-alfamart".to_string(),
-            title: "NikahGift".to_string(),
+            title: "Alpamart".to_string(),
             desc: "Belanja kebahagiaan di sini! Undangan unik bertema aplikasi minimarket favorit Indonesia, lengkap dengan poin cinta tanpa batas.".to_string(),
             price: 50000,
             preview_img: "/static/img/wedding-alfamart_preview.png".to_string(),
@@ -351,7 +351,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "wedding-kai".to_string(),
-            title: "Train To Forever".to_string(),
+            title: "KAI Akss".to_string(),
             desc: "Tiket menuju kebahagiaan. Antarmuka KAI Access yang familiar untuk mengantar tamu ke stasiun pelaminan kalian tepat waktu.".to_string(),
             price: 50000,
             preview_img: "/static/img/wedding-kai_preview.png".to_string(),
@@ -360,7 +360,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "wedding-medium".to_string(),
-            title: "The Story Article".to_string(),
+            title: "Medyum".to_string(),
             desc: "Tuliskan narasi cinta kalian dalam format artikel Medium yang elegan. Untuk pasangan yang punya banyak cerita indah untuk dibagikan.".to_string(),
             price: 50000,
             preview_img: "/static/img/wedding-medium_preview.png".to_string(),
@@ -369,7 +369,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
         },
         TemplateMetadata {
             id: "wedding-transjakarta".to_string(),
-            title: "Route To Marriage".to_string(),
+            title: "TransJak".to_string(),
             desc: "Pemberhentian terakhir: Pelaminan! Tema TransJakarta yang ikonik untuk memandu tamu menyusuri rute kebahagiaan kalian.".to_string(),
             price: 50000,
             preview_img: "/static/img/wedding-transjakarta_preview.png".to_string(),
