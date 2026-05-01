@@ -842,6 +842,7 @@ where
 pub struct HomeTemplate {
     #[allow(dead_code)]
     pub user: Option<User>,
+    #[allow(dead_code)]
     pub invitations: Vec<InvitationRow>,
     pub templates: Vec<TemplateMetadata>,
     #[allow(dead_code)]
@@ -1040,7 +1041,9 @@ pub struct FigmaWeddingTemplate {
 #[derive(Template)]
 #[template(path = "invitation/we-vscode.html")]
 pub struct WeVSCodeTemplate {
+    #[allow(dead_code)]
     pub invitation: Invitation,
+    #[allow(dead_code)]
     pub is_dev: bool,
 }
 
@@ -1065,35 +1068,45 @@ pub struct WeWebtoonTemplate {
 #[derive(Template)]
 #[template(path = "invitation/we-manga.html")]
 pub struct WeMangaTemplate {
+    #[allow(dead_code)]
     pub invitation: Invitation,
+    #[allow(dead_code)]
     pub is_dev: bool,
 }
 
 #[derive(Template)]
 #[template(path = "invitation/we-nintendo-switch.html")]
 pub struct WeNintendoSwitchTemplate {
+    #[allow(dead_code)]
     pub invitation: Invitation,
+    #[allow(dead_code)]
     pub is_dev: bool,
 }
 
 #[derive(Template)]
 #[template(path = "invitation/wedding-kai-v2.html")]
 pub struct WeddingKaiV2Template {
+    #[allow(dead_code)]
     pub invitation: Invitation,
+    #[allow(dead_code)]
     pub is_dev: bool,
 }
 
 #[derive(Template)]
 #[template(path = "invitation/wedding-minecraft.html")]
 pub struct WeddingMinecraftTemplate {
+    #[allow(dead_code)]
     pub invitation: Invitation,
+    #[allow(dead_code)]
     pub is_dev: bool,
 }
 
 #[derive(Template)]
 #[template(path = "invitation/wedding-zoom-v2.html")]
 pub struct WeddingZoomV2Template {
+    #[allow(dead_code)]
     pub invitation: Invitation,
+    #[allow(dead_code)]
     pub is_dev: bool,
 }
 
