@@ -1,0 +1,1421 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wedding Manga — Anita & Zarda</title>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Noto+Serif+JP:wght@300;400;600;700&family=Zen+Kurenaido&family=Yuji+Syuku&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper:   #f5f0e8;
+  --paper2:  #ede8de;
+  --ink:     #1a1410;
+  --ink2:    #2d2820;
+  --gray1:   #888070;
+  --gray2:   #c8c0b0;
+  --gray3:   #e0d8cc;
+  --red:     #cc2222;
+  --gold:    #c8a84b;
+  --white:   #fdfaf4;
+  --shadow:  4px 4px 0 rgba(26,20,16,.18);
+  --fsm: 'Shippori Mincho', 'Noto Serif JP', serif;
+  --fnj: 'Noto Serif JP', serif;
+  --fzk: 'Zen Kurenaido', cursive;
+  --fys: 'Yuji Syuku', serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:var(--fnj);
+  overflow-x:hidden;
+  cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='4' fill='%231a1410'/%3E%3C/svg%3E") 10 10, crosshair;
+}
+
+/* ── SCREENTONE TEXTURES ── */
+.tone-dots{
+  background-image: radial-gradient(circle, var(--ink2) 0.9px, transparent 0.9px);
+  background-size: 5px 5px;
+  opacity: 0.07;
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+}
+.tone-lines{
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(26,20,16,.05) 4px, rgba(26,20,16,.05) 5px);
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+}
+.tone-cross{
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 6px, rgba(26,20,16,.04) 6px, rgba(26,20,16,.04) 7px),
+    repeating-linear-gradient(90deg, transparent, transparent 6px, rgba(26,20,16,.04) 6px, rgba(26,20,16,.04) 7px);
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+}
+/* Diagonal tone */
+.tone-diag{
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 3px, rgba(26,20,16,.04) 3px, rgba(26,20,16,.04) 4px);
+  position: absolute; inset: 0; pointer-events: none; z-index: 0;
+}
+/* Paper grain */
+body::before{
+  content:''; position:fixed; inset:0; z-index:9999; pointer-events:none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='.025'/%3E%3C/svg%3E");
+  opacity:.7; mix-blend-mode:multiply;
+}
+/* Ink border frame */
+body::after{
+  content:''; position:fixed; inset:8px; z-index:9998; pointer-events:none;
+  border:1px solid rgba(26,20,16,.06);
+}
+
+/* ── BRUSH STROKE TEXT ── */
+.brush{
+  font-family: var(--fys);
+  background: linear-gradient(135deg, var(--ink) 0%, var(--ink2) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  filter: drop-shadow(1px 1px 0 rgba(26,20,16,.3));
+}
+
+/* ── PANEL BORDER ── */
+.panel{
+  border: 2px solid var(--ink);
+  position: relative; overflow: hidden;
+  background: var(--white);
+}
+.panel::before{
+  content:''; position:absolute; inset:3px;
+  border: 1px solid rgba(26,20,16,.12);
+  pointer-events:none; z-index:10;
+}
+
+/* ── INK SPLATTER SVG DECO ── */
+.ink-deco{position:absolute;pointer-events:none;opacity:.08}
+
+/* ══════════════════════════
+   OPENING — like manga cover
+══════════════════════════ */
+#opening{
+  position:fixed; inset:0; z-index:9000;
+  background:var(--paper);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:32px 24px; text-align:center;
+  transition:opacity .8s ease, transform .8s ease;
+  overflow:hidden;
+}
+#opening.hide{opacity:0;transform:scale(1.04) translateY(-8px);pointer-events:none}
+
+/* Radial speed lines from centre */
+#opening::before{
+  content:''; position:absolute; inset:0; z-index:0;
+  background: repeating-conic-gradient(from 0deg at 50% 50%,
+    transparent 0deg, transparent 3.5deg,
+    rgba(26,20,16,.03) 3.5deg, rgba(26,20,16,.03) 4deg);
+}
+#opening::after{
+  content:''; position:absolute; inset:0; z-index:0;
+  background: radial-gradient(ellipse 80% 60% at 50% 50%, transparent 30%, rgba(26,20,16,.06) 100%);
+}
+
+.op-border{
+  position:absolute; inset:16px; z-index:1; pointer-events:none;
+  border:2px solid var(--ink);
+}
+.op-border::before{
+  content:''; position:absolute; inset:5px;
+  border:1px solid rgba(26,20,16,.3);
+}
+/* Corner ornaments */
+.op-corner{position:absolute;width:32px;height:32px;z-index:2;pointer-events:none}
+.op-corner svg{width:100%;height:100%}
+.oc-tl{top:8px;left:8px}
+.oc-tr{top:8px;right:8px;transform:scaleX(-1)}
+.oc-bl{bottom:8px;left:8px;transform:scaleY(-1)}
+.oc-br{bottom:8px;right:8px;transform:scale(-1)}
+
+.op-inner{position:relative;z-index:3}
+
+/* Volume badge */
+.op-volume{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--fsm);font-size:11px;letter-spacing:.25em;color:var(--gray1);
+  margin-bottom:16px;text-transform:uppercase;
+}
+.op-volume::before,.op-volume::after{content:'';flex:1;height:1px;background:var(--gray2);width:30px}
+
+/* Manga title plate */
+.op-title-plate{
+  position:relative;margin:0 auto 6px;display:inline-block;
+  padding:4px 0;
+}
+/* Vertical title text */
+.op-title-ja{
+  font-family:var(--fys);font-size:clamp(13px,3.5vw,18px);
+  letter-spacing:.25em;color:var(--gray1);margin-bottom:4px;display:block;
+}
+.op-title-main{
+  font-family:var(--fys);font-size:clamp(40px,11vw,68px);
+  color:var(--ink);line-height:1;letter-spacing:.04em;
+  text-shadow:2px 2px 0 rgba(26,20,16,.12);
+  display:block;margin-bottom:4px;
+}
+.op-title-sub{
+  font-family:var(--fsm);font-size:clamp(11px,2.5vw,14px);
+  letter-spacing:.3em;color:var(--gray1);text-transform:uppercase;
+  display:block;margin-bottom:20px;
+}
+/* Red seal stamp */
+.op-seal{
+  position:absolute;top:-10px;right:-20px;
+  width:52px;height:52px;background:var(--red);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  border:2px solid var(--ink);
+  font-family:var(--fsm);font-size:8px;color:var(--white);font-weight:700;
+  letter-spacing:.05em;text-align:center;line-height:1.3;
+  transform:rotate(15deg);
+  box-shadow:2px 2px 0 rgba(26,20,16,.2);
+}
+
+/* Horizontal rule with ornament */
+.op-rule{
+  display:flex;align-items:center;gap:10px;margin:12px auto 18px;max-width:260px;
+}
+.op-rule-line{flex:1;height:1px;background:var(--ink);opacity:.4}
+.op-rule-diamond{width:7px;height:7px;background:var(--ink);transform:rotate(45deg);flex-shrink:0}
+
+/* Dear section */
+.op-dear{
+  border:1px solid var(--ink);background:var(--white);
+  padding:12px 24px;margin:0 auto 20px;display:inline-block;
+  position:relative;
+}
+.op-dear::before{content:'';position:absolute;inset:3px;border:1px solid rgba(26,20,16,.15)}
+.op-dear-lbl{font-family:var(--fsm);font-size:9px;letter-spacing:.25em;color:var(--gray1);text-transform:uppercase;margin-bottom:4px}
+.op-dear-name{font-family:var(--fys);font-size:18px;color:var(--ink)}
+
+/* Open button */
+.op-btn{
+  font-family:var(--fsm);font-size:13px;letter-spacing:.2em;text-transform:uppercase;
+  background:var(--ink);color:var(--paper);border:none;
+  padding:14px 52px;cursor:pointer;position:relative;overflow:hidden;
+  transition:transform .15s,box-shadow .15s;
+  box-shadow:3px 3px 0 rgba(26,20,16,.25);
+}
+.op-btn::before{content:'';position:absolute;inset:0;border:1px solid rgba(255,255,255,.12)}
+.op-btn:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 rgba(26,20,16,.2)}
+.op-btn:active{transform:translate(1px,1px);box-shadow:2px 2px 0 rgba(26,20,16,.2)}
+
+/* Page number */
+.op-pagenum{position:absolute;bottom:24px;right:28px;font-family:var(--fsm);font-size:11px;color:var(--gray1);letter-spacing:.1em}
+
+/* ══════════════════════════
+   MAIN
+══════════════════════════ */
+#main{opacity:0;transition:opacity .7s ease .2s}
+#main.show{opacity:1}
+
+/* ══════════════════════════
+   PAGE HEADER — manga chapter title
+══════════════════════════ */
+.chapter-head{
+  background:var(--ink);color:var(--paper);
+  padding:10px 20px;display:flex;align-items:center;gap:14px;
+  border-bottom:3px solid var(--ink);position:relative;overflow:hidden;
+}
+.chapter-head::before{content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(255,255,255,.02) 40px,rgba(255,255,255,.02) 41px)}
+.ch-number{font-family:var(--fys);font-size:32px;color:rgba(255,255,255,.15);letter-spacing:.06em;line-height:1;flex-shrink:0}
+.ch-divider{width:1px;height:32px;background:rgba(255,255,255,.15);flex-shrink:0}
+.ch-name{font-family:var(--fsm);font-size:12px;letter-spacing:.3em;color:rgba(255,255,255,.65);text-transform:uppercase}
+.ch-line{flex:1;height:1px;background:rgba(255,255,255,.1)}
+.ch-page{font-family:var(--fsm);font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.1em}
+
+/* ══════════════════════════
+   HERO — MANGA SPLASH PAGE
+══════════════════════════ */
+#home{background:var(--paper);position:relative}
+
+/* Manga top navigation bar */
+.manga-topbar{
+  background:var(--white);border-bottom:2px solid var(--ink);
+  padding:10px 18px;display:flex;align-items:center;justify-content:space-between;
+  position:relative;z-index:10;
+}
+.mtb-logo{display:flex;align-items:center;gap:10px}
+.mtb-logo-mark{
+  width:30px;height:30px;background:var(--ink);color:var(--paper);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fys);font-size:14px;border:1px solid var(--ink);
+}
+.mtb-title{font-family:var(--fsm);font-size:11px;letter-spacing:.2em;color:var(--gray1)}
+.mtb-right{display:flex;align-items:center;gap:10px}
+.mtb-vol{font-family:var(--fsm);font-size:10px;color:var(--gray1);letter-spacing:.15em}
+.mtb-stamp{
+  background:var(--red);color:var(--white);font-family:var(--fsm);font-size:9px;
+  letter-spacing:.1em;padding:2px 8px;transform:rotate(-1.5deg);display:inline-block;
+}
+
+/* MAIN SPLASH PANEL */
+.splash-panel{
+  position:relative;overflow:hidden;
+  background:var(--paper);
+  border-bottom:2px solid var(--ink);
+}
+.sp-ratio{padding-top:min(120vw,700px)}
+.sp-photo{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:center top;
+  filter:grayscale(100%) contrast(1.15) brightness(.95);
+  mix-blend-mode:multiply;
+}
+/* Manga ink wash background */
+.sp-bg{position:absolute;inset:0;background:var(--paper);z-index:0}
+.sp-photo-wrap{position:absolute;inset:0;z-index:1}
+/* Screentone on photo */
+.sp-tone{
+  position:absolute;inset:0;z-index:2;pointer-events:none;mix-blend-mode:multiply;
+  background-image:radial-gradient(circle,rgba(26,20,16,.18) 1px,transparent 1px);
+  background-size:3.5px 3.5px;
+}
+/* Dark vignette */
+.sp-vignette{
+  position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:radial-gradient(ellipse 90% 80% at 50% 50%, transparent 40%, rgba(26,20,16,.45) 100%);
+}
+/* Gradient bottom fade */
+.sp-fade{
+  position:absolute;bottom:0;left:0;right:0;height:60%;z-index:4;pointer-events:none;
+  background:linear-gradient(0deg,var(--paper) 0%,rgba(245,240,232,.6) 60%,transparent 100%);
+}
+/* Speed lines effect behind subject */
+.sp-speed{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:repeating-conic-gradient(from 0deg at 50% 38%,transparent 0deg,transparent 2deg,rgba(26,20,16,.025) 2deg,rgba(26,20,16,.025) 2.5deg);
+}
+/* Title overlay on splash */
+.sp-overlay{position:absolute;bottom:0;left:0;right:0;z-index:6;padding:0 18px 20px}
+
+/* Japanese vertical title */
+.sp-title-en{
+  font-family:var(--fys);font-size:clamp(38px,12vw,72px);
+  color:var(--ink);line-height:.95;letter-spacing:.04em;
+  text-shadow:3px 3px 0 rgba(26,20,16,.08);
+  margin-bottom:6px;
+}
+.sp-subtitle{
+  font-family:var(--fsm);font-size:11px;letter-spacing:.3em;color:var(--gray1);
+  text-transform:uppercase;margin-bottom:12px;
+}
+/* Red chapter banner */
+.sp-chapter-banner{
+  background:var(--red);color:var(--white);
+  font-family:var(--fsm);font-size:10px;letter-spacing:.2em;
+  padding:4px 14px;display:inline-block;margin-bottom:12px;
+  text-transform:uppercase;
+}
+/* Handwritten date */
+.sp-date{
+  font-family:var(--fzk);font-size:clamp(18px,5vw,26px);color:var(--ink);
+  letter-spacing:.08em;opacity:.8;
+}
+
+/* PANEL ROW below main splash */
+.panel-row{
+  display:grid;grid-template-columns:5fr 4fr;gap:0;
+  border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);
+}
+.pr-left,.pr-right{position:relative;overflow:hidden;background:var(--white)}
+.pr-left{border-right:2px solid var(--ink)}
+.pr-photo{width:100%;height:100%;object-fit:cover;filter:grayscale(100%) contrast(1.1);mix-blend-mode:multiply;min-height:110px}
+.pr-tone{position:absolute;inset:0;z-index:1;pointer-events:none;mix-blend-mode:multiply;
+  background-image:radial-gradient(circle,rgba(26,20,16,.15) 1px,transparent 1px);background-size:3px 3px}
+.pr-caption{position:absolute;bottom:0;left:0;right:0;z-index:3;
+  background:linear-gradient(0deg,rgba(245,240,232,.95) 0%,transparent 100%);
+  padding:10px 12px 8px;
+}
+.pr-cap-text{font-family:var(--fsm);font-size:10px;letter-spacing:.12em;color:var(--gray1)}
+.pr-right{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 14px;gap:10px;background:var(--paper)}
+.pr-right .tone-dots{opacity:.05}
+.pr-right-date{font-family:var(--fys);font-size:clamp(20px,6vw,30px);color:var(--ink);text-align:center;line-height:1.2}
+.pr-right-loc{font-family:var(--fsm);font-size:10px;color:var(--gray1);letter-spacing:.15em;text-transform:uppercase;text-align:center}
+.pr-right-seal{
+  width:48px;height:48px;background:var(--red);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fsm);font-size:8px;color:var(--white);font-weight:700;
+  letter-spacing:.05em;text-align:center;line-height:1.3;
+  border:1.5px solid var(--ink);transform:rotate(-8deg);
+}
+
+/* Player bar */
+.player-wrap{
+  background:var(--white);border-top:2px solid var(--ink);
+  padding:12px 16px;
+}
+.t-pills{display:flex;gap:6px;margin-bottom:8px}
+.t-pill{
+  background:transparent;border:1px solid rgba(26,20,16,.3);
+  font-family:var(--fsm);font-size:9px;letter-spacing:.12em;
+  padding:4px 12px;cursor:pointer;transition:all .15s;color:var(--gray1);
+}
+.t-pill.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.player-bar{display:flex;align-items:center;gap:10px}
+.pl-btn{
+  width:38px;height:38px;background:var(--ink);color:var(--paper);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:transform .12s,box-shadow .12s;box-shadow:var(--shadow);
+}
+.pl-btn:hover{transform:translate(-1px,-1px);box-shadow:5px 5px 0 rgba(26,20,16,.2)}
+.pl-btn:active{transform:translate(1px,1px);box-shadow:2px 2px 0 rgba(26,20,16,.2)}
+.pl-btn svg{width:14px;height:14px;fill:currentColor}
+.pl-info{flex:1;min-width:0}
+.pl-title{font-family:var(--fsm);font-size:12px;letter-spacing:.08em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl-artist{font-family:var(--fnj);font-size:9px;color:var(--gray1);margin-top:2px}
+.pl-prog-wrap{flex:2;min-width:0}
+.pl-times{display:flex;justify-content:space-between;font-family:var(--fsm);font-size:9px;color:var(--gray1);margin-bottom:4px}
+.pl-track{height:4px;background:var(--gray3);cursor:pointer;position:relative;border:1px solid rgba(26,20,16,.2)}
+.pl-fill{height:100%;background:var(--ink);width:0%;transition:width .5s linear}
+/* EQ */
+.eq{display:inline-flex;align-items:flex-end;gap:2px;height:12px;vertical-align:middle;margin-left:5px}
+.eq-b{width:3px;background:var(--ink);animation:eqA var(--s,.5s) ease-in-out infinite alternate}
+.eq-b:nth-child(2){--s:.75s;animation-delay:.1s}
+.eq-b:nth-child(3){--s:.55s;animation-delay:.2s}
+@keyframes eqA{from{height:2px}to{height:12px}}
+.eq.paused .eq-b{animation-play-state:paused;height:2px}
+
+/* ══════════════════════════
+   COUNTDOWN
+══════════════════════════ */
+.countdown-section{
+  background:var(--paper);position:relative;overflow:hidden;
+  padding:0;border-top:2px solid var(--ink);
+}
+/* Manga page with 2 panels */
+.cd-panels{display:grid;grid-template-columns:3fr 4fr;border-bottom:2px solid var(--ink)}
+.cd-left{
+  border-right:2px solid var(--ink);position:relative;overflow:hidden;
+  background:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:32px 16px;gap:8px;
+}
+.cd-left .tone-dots{opacity:.15;background-image:radial-gradient(circle,rgba(255,255,255,.2) 0.8px,transparent 0.8px)}
+.cd-left-title{font-family:var(--fys);font-size:clamp(28px,7vw,44px);color:var(--paper);line-height:1;text-align:center;position:relative;z-index:1}
+.cd-left-sub{font-family:var(--fsm);font-size:9px;letter-spacing:.3em;color:rgba(245,240,232,.5);text-transform:uppercase;text-align:center;position:relative;z-index:1}
+/* Vertical text deco */
+.cd-left-ja{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  font-family:var(--fys);font-size:10px;color:rgba(245,240,232,.15);
+  writing-mode:vertical-rl;text-orientation:mixed;letter-spacing:.2em;line-height:1;
+}
+.cd-right{padding:28px 16px;display:flex;flex-direction:column;justify-content:center;gap:8px;position:relative;overflow:hidden}
+.cd-right .tone-cross{opacity:.05}
+.cd-row{display:flex;align-items:baseline;justify-content:space-between;border-bottom:1px solid var(--gray3);padding-bottom:8px}
+.cd-row:last-child{border-bottom:none;padding-bottom:0}
+.cd-unit{font-family:var(--fsm);font-size:9px;letter-spacing:.2em;color:var(--gray1);text-transform:uppercase}
+.cd-num{font-family:var(--fys);font-size:clamp(32px,8vw,52px);color:var(--ink);line-height:1}
+.cd-num-ja{font-family:var(--fsm);font-size:8px;color:var(--gray2);letter-spacing:.1em}
+
+/* ══════════════════════════
+   VERSE PANEL
+══════════════════════════ */
+.verse-section{
+  background:var(--white);border-top:2px solid var(--ink);border-bottom:2px solid var(--ink);
+  position:relative;overflow:hidden;
+}
+.verse-inner{
+  padding:48px 28px;text-align:center;position:relative;z-index:1;max-width:600px;margin:0 auto;
+}
+/* Decorative flourish */
+.verse-deco{
+  font-family:var(--fys);font-size:clamp(60px,16vw,100px);
+  color:rgba(26,20,16,.04);line-height:1;
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  white-space:nowrap;pointer-events:none;
+}
+.verse-ornament{
+  display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:20px;
+}
+.verse-orn-line{width:40px;height:1px;background:var(--gray2)}
+.verse-orn-mark{font-family:var(--fys);font-size:18px;color:var(--gray2)}
+.verse-text{
+  font-family:var(--fnj);font-size:clamp(14px,3.5vw,18px);font-weight:300;
+  line-height:2;color:var(--ink2);letter-spacing:.06em;
+  font-style:italic;margin-bottom:16px;
+}
+.verse-ref{font-family:var(--fsm);font-size:10px;letter-spacing:.3em;color:var(--gray1);text-transform:uppercase}
+
+/* ══════════════════════════
+   COUPLE — SHOUJO CHARACTER SPREAD
+══════════════════════════ */
+.couple-section{background:var(--paper);position:relative;border-top:2px solid var(--ink)}
+.couple-header{padding:28px 20px 20px;text-align:center;border-bottom:2px solid var(--ink);position:relative}
+.couple-header-ja{font-family:var(--fys);font-size:10px;letter-spacing:.3em;color:var(--gray1);text-transform:uppercase;margin-bottom:4px}
+.couple-header-title{font-family:var(--fys);font-size:clamp(24px,6vw,38px);color:var(--ink);letter-spacing:.06em}
+/* horizontal red line under title */
+.couple-header::after{content:'';display:block;width:40px;height:2px;background:var(--red);margin:10px auto 0}
+
+/* DUAL CHARACTER PANELS */
+.char-panels{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.char-p{border-right:2px solid var(--ink);position:relative;background:var(--white)}
+.char-p:last-child{border-right:none}
+/* Photo */
+.cp-photo{position:relative;overflow:hidden;border-bottom:2px solid var(--ink)}
+.cp-ratio{padding-top:135%}
+.cp-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;
+  filter:grayscale(100%) contrast(1.12) brightness(.96);mix-blend-mode:multiply}
+.cp-tone{position:absolute;inset:0;z-index:1;pointer-events:none;mix-blend-mode:multiply;
+  background-image:radial-gradient(circle,rgba(26,20,16,.14) 1px,transparent 1px);background-size:3px 3px}
+.cp-vignette{position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:radial-gradient(ellipse 80% 70% at 50% 30%,transparent 40%,rgba(26,20,16,.3) 100%)}
+.cp-fade-bottom{position:absolute;bottom:0;left:0;right:0;height:40%;z-index:3;pointer-events:none;
+  background:linear-gradient(0deg,var(--white) 0%,transparent 100%)}
+.cp-name-overlay{position:absolute;bottom:0;left:0;right:0;z-index:4;padding:8px 12px}
+.cp-tag{font-family:var(--fsm);font-size:8px;letter-spacing:.2em;color:var(--gray1);text-transform:uppercase;margin-bottom:2px}
+.cp-name{font-family:var(--fys);font-size:clamp(16px,4.5vw,24px);color:var(--ink);line-height:1.2}
+/* Red accent left border */
+.char-p:first-child .cp-photo::before{content:'';position:absolute;top:0;left:0;bottom:0;width:3px;background:var(--red);z-index:10}
+/* Info below photo */
+.cp-info{padding:14px 12px;position:relative;overflow:hidden}
+.cp-info .tone-diag{opacity:.04}
+.cp-role{font-family:var(--fsm);font-size:8px;letter-spacing:.2em;color:var(--red);text-transform:uppercase;margin-bottom:4px;position:relative;z-index:1}
+.cp-full-name{font-family:var(--fsm);font-size:12px;font-weight:700;color:var(--ink);margin-bottom:6px;line-height:1.4;position:relative;z-index:1}
+.cp-parents{font-family:var(--fnj);font-size:10px;font-weight:300;color:var(--gray1);line-height:1.7;position:relative;z-index:1}
+.cp-parents strong{color:var(--ink2);font-weight:600}
+/* Ornamental separator */
+.char-separator{
+  background:var(--ink);height:44px;display:flex;align-items:center;justify-content:center;
+  border-top:2px solid var(--ink);gap:12px;
+  font-family:var(--fys);font-size:20px;color:rgba(255,255,255,.3);letter-spacing:.3em;
+}
+.char-sep-center{font-family:var(--fys);font-size:22px;color:var(--paper);opacity:.8}
+
+/* ══════════════════════════
+   EVENT — ESTABLISHING PANELS
+══════════════════════════ */
+.event-section{background:var(--paper);border-top:2px solid var(--ink)}
+.event-header{padding:28px 20px 20px;border-bottom:2px solid var(--ink);text-align:center}
+.ev-panels{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:2px solid var(--ink)}
+@media(max-width:500px){.ev-panels{grid-template-columns:1fr}}
+.ev-panel{background:var(--white);border-right:2px solid var(--ink);position:relative}
+.ev-panel:last-child{border-right:none}
+/* BG photo in event */
+.ev-photo{width:100%;height:130px;object-fit:cover;display:block;
+  filter:grayscale(100%) contrast(1.1);mix-blend-mode:multiply;border-bottom:2px solid var(--ink)}
+.ev-photo-tone{position:absolute;top:0;left:0;right:0;height:130px;mix-blend-mode:multiply;z-index:1;pointer-events:none;
+  background-image:radial-gradient(circle,rgba(26,20,16,.15) 1px,transparent 1px);background-size:3.5px 3.5px}
+.ev-body{padding:14px 14px 16px;position:relative;overflow:hidden}
+.ev-body .tone-lines{opacity:.04}
+/* Type badge — like manga panel caption */
+.ev-caption{
+  display:inline-block;border:1px solid var(--ink);
+  font-family:var(--fsm);font-size:9px;letter-spacing:.15em;padding:2px 10px;
+  color:var(--ink);text-transform:uppercase;margin-bottom:10px;position:relative;z-index:1;
+}
+.ev-caption.red{background:var(--red);color:var(--white);border-color:var(--red)}
+.ev-date{font-family:var(--fys);font-size:clamp(17px,4.5vw,24px);line-height:1.3;margin-bottom:8px;position:relative;z-index:1}
+.ev-detail{display:flex;gap:7px;margin-bottom:6px;align-items:flex-start;position:relative;z-index:1}
+.ev-ico{width:12px;height:12px;fill:currentColor;flex-shrink:0;opacity:.4;margin-top:1px}
+.ev-txt{font-family:var(--fnj);font-size:10px;font-weight:300;color:var(--gray1);line-height:1.6}
+.ev-maps{display:inline-flex;align-items:center;gap:5px;margin-top:10px;
+  font-family:var(--fsm);font-size:9px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink);text-decoration:none;border:1px solid var(--ink);
+  padding:6px 14px;box-shadow:2px 2px 0 rgba(26,20,16,.15);transition:transform .12s,box-shadow .12s;
+  position:relative;z-index:1}
+.ev-maps:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 rgba(26,20,16,.15)}
+
+/* ══════════════════════════
+   STORY — MANGA PAGE LAYOUT
+══════════════════════════ */
+.story-section{background:var(--white);border-top:2px solid var(--ink)}
+.story-header{padding:28px 20px 20px;border-bottom:2px solid var(--ink)}
+/* Each story entry = manga page */
+.manga-page{border-bottom:2px solid var(--ink);display:grid;grid-template-columns:auto 1fr;
+  opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.manga-page.visible{opacity:1;transform:translateY(0)}
+/* Page number gutter */
+.mp-gutter{
+  width:44px;background:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
+  padding:12px 6px;gap:4px;border-right:2px solid var(--ink);flex-shrink:0;
+}
+.mp-num{font-family:var(--fys);font-size:20px;color:rgba(255,255,255,.6);line-height:1;writing-mode:vertical-rl}
+.mp-dot{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.15);margin-top:auto}
+/* Main panel content */
+.mp-content{display:grid;grid-template-columns:120px 1fr;border:none}
+@media(max-width:480px){.mp-content{grid-template-columns:90px 1fr}}
+.mp-photo{position:relative;overflow:hidden;border-right:2px solid var(--ink)}
+.mp-photo img{width:100%;height:100%;object-fit:cover;filter:grayscale(100%) contrast(1.12) brightness(.95);mix-blend-mode:multiply;min-height:160px}
+@media(max-width:480px){.mp-photo img{min-height:130px}}
+.mp-photo-tone{position:absolute;inset:0;mix-blend-mode:multiply;z-index:1;
+  background-image:radial-gradient(circle,rgba(26,20,16,.15) 1px,transparent 1px);background-size:3px 3px;pointer-events:none}
+/* Speech bubble inside panel */
+.mp-bubble{
+  position:absolute;top:8px;right:-1px;z-index:5;
+  background:var(--white);border:1.5px solid var(--ink);
+  padding:4px 8px;font-family:var(--fsm);font-size:8px;letter-spacing:.08em;color:var(--ink);
+  max-width:80px;line-height:1.4;text-align:center;
+}
+.mp-bubble::after{content:'';position:absolute;bottom:-8px;right:8px;
+  border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid var(--ink)}
+.mp-bubble::before{content:'';position:absolute;bottom:-5px;right:9px;
+  border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid var(--white);z-index:1}
+/* Text content */
+.mp-text{padding:16px 14px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.mp-text .tone-dots{opacity:.04}
+.mp-clip{font-family:var(--fsm);font-size:8px;letter-spacing:.2em;color:var(--gray2);text-transform:uppercase;margin-bottom:4px;position:relative;z-index:1}
+.mp-date{font-family:var(--fsm);font-size:9px;color:var(--gray1);letter-spacing:.1em;margin-bottom:6px;position:relative;z-index:1}
+.mp-title{font-family:var(--fys);font-size:clamp(18px,5vw,26px);color:var(--ink);line-height:1.2;margin-bottom:8px;position:relative;z-index:1}
+.mp-desc{font-family:var(--fnj);font-size:11px;font-weight:300;color:var(--gray1);line-height:1.85;position:relative;z-index:1}
+
+/* ══════════════════════════
+   GALLERY — PHOTO PANELS
+══════════════════════════ */
+.gallery-section{background:var(--paper);border-top:2px solid var(--ink)}
+.gallery-header{padding:28px 20px 20px;border-bottom:2px solid var(--ink);display:flex;justify-content:space-between;align-items:flex-end}
+.gal-hint{font-family:var(--fsm);font-size:9px;color:var(--gray1);letter-spacing:.12em}
+.gal-runner{overflow:hidden;position:relative;border-bottom:2px solid var(--ink)}
+.gal-runner:last-child{border-bottom:none}
+.gal-runner::before,.gal-runner::after{content:'';position:absolute;top:0;bottom:0;width:50px;z-index:10;pointer-events:none}
+.gal-runner::before{left:0;background:linear-gradient(90deg,var(--paper),transparent)}
+.gal-runner::after{right:0;background:linear-gradient(270deg,var(--paper),transparent)}
+.gal-track{display:flex;gap:0;width:max-content;will-change:transform;border-bottom:none}
+.g-item{flex-shrink:0;overflow:hidden;position:relative;cursor:pointer;border-right:2px solid var(--ink)}
+.g-item:last-child{border-right:none}
+.g-item.sz1{width:clamp(140px,30vw,210px);height:clamp(175px,38vw,265px)}
+.g-item.sz2{width:clamp(115px,25vw,180px);height:clamp(145px,32vw,225px)}
+.g-item img{width:100%;height:100%;object-fit:cover;display:block;filter:grayscale(100%) contrast(1.1);mix-blend-mode:multiply;transition:filter .4s}
+.g-item:hover img{filter:grayscale(70%) contrast(1.05)}
+.g-tone{position:absolute;inset:0;mix-blend-mode:multiply;z-index:1;
+  background-image:radial-gradient(circle,rgba(26,20,16,.13) 1px,transparent 1px);background-size:3.5px 3.5px;pointer-events:none}
+.g-num{position:absolute;bottom:6px;left:7px;z-index:3;font-family:var(--fsm);font-size:9px;color:var(--gray2);letter-spacing:.06em}
+/* hover reveal — red overlay */
+.g-item::after{content:'';position:absolute;inset:0;z-index:2;background:var(--red);opacity:0;transition:opacity .3s;mix-blend-mode:multiply}
+.g-item:hover::after{opacity:.06}
+
+/* ══════════════════════════
+   GIFT
+══════════════════════════ */
+.gift-section{background:var(--white);border-top:2px solid var(--ink);padding:48px 20px}
+.gift-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:480px;margin:24px auto 0}
+@media(max-width:460px){.gift-grid{grid-template-columns:1fr}}
+.gift-card{
+  background:var(--paper);border:2px solid var(--ink);position:relative;
+  padding:20px 16px;overflow:hidden;transition:transform .12s,box-shadow .12s;
+  box-shadow:var(--shadow);
+}
+.gift-card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 rgba(26,20,16,.15)}
+.gift-card .tone-dots{opacity:.05}
+/* Red accent top */
+.gift-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--red)}
+.g-chip{font-family:var(--fsm);font-size:8px;letter-spacing:.2em;color:var(--gray1);text-transform:uppercase;display:block;margin-bottom:8px;position:relative;z-index:1}
+.g-bank{font-family:var(--fys);font-size:28px;color:var(--ink);margin-bottom:4px;position:relative;z-index:1}
+.g-holder{font-family:var(--fnj);font-size:10px;font-weight:300;color:var(--gray1);margin-bottom:10px;position:relative;z-index:1}
+.g-num{font-family:var(--fsm);font-size:14px;font-weight:600;letter-spacing:.1em;margin-bottom:12px;color:var(--ink);position:relative;z-index:1}
+.copy-btn{display:inline-flex;align-items:center;gap:5px;background:var(--ink);color:var(--paper);border:none;font-family:var(--fsm);font-size:10px;letter-spacing:.1em;padding:8px 16px;cursor:pointer;box-shadow:var(--shadow-sm);transition:transform .12s,box-shadow .12s;text-transform:uppercase;position:relative;z-index:1}
+.copy-btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 rgba(26,20,16,.18)}
+.copy-btn.copied{background:var(--red)}
+/* shadow-sm */
+:root{--shadow-sm:2px 2px 0 rgba(26,20,16,.15)}
+
+/* ══════════════════════════
+   RSVP
+══════════════════════════ */
+.rsvp-section{background:var(--paper);border-top:2px solid var(--ink);padding:48px 20px}
+.rsvp-stats{display:flex;gap:10px;justify-content:center;margin-bottom:32px;flex-wrap:wrap}
+.rs-box{background:var(--white);border:2px solid var(--ink);box-shadow:var(--shadow-sm);padding:14px 18px;text-align:center;min-width:82px}
+.rs-n{font-family:var(--fys);font-size:34px;color:var(--ink);line-height:1}
+.rs-l{font-family:var(--fsm);font-size:8px;color:var(--gray1);letter-spacing:.15em;text-transform:uppercase;margin-top:4px}
+.rsvp-form{max-width:440px;margin:0 auto}
+.f-grp{margin-bottom:16px}
+.f-lbl{font-family:var(--fsm);font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gray1);margin-bottom:6px;display:block}
+.f-inp{width:100%;background:var(--white);border:2px solid var(--ink);padding:11px 13px;color:var(--ink);font-family:var(--fnj);font-size:13px;font-weight:300;outline:none;transition:box-shadow .15s;border-radius:0;box-shadow:none}
+.f-inp:focus{box-shadow:3px 3px 0 rgba(26,20,16,.12)}
+.f-inp::placeholder{color:var(--gray2)}
+select.f-inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%231a1410' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;cursor:pointer}
+textarea.f-inp{min-height:86px;resize:vertical}
+.gs-row{display:flex;gap:7px}
+.gs-btn{flex:1;background:var(--white);border:2px solid var(--ink);padding:11px;color:var(--gray1);font-family:var(--fsm);font-size:11px;letter-spacing:.1em;cursor:pointer;transition:all .12s}
+.gs-btn.active{background:var(--ink);color:var(--paper);box-shadow:var(--shadow-sm)}
+.rsvp-btn{width:100%;background:var(--ink);border:none;padding:14px;color:var(--paper);font-family:var(--fsm);font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;cursor:pointer;margin-top:6px;box-shadow:var(--shadow);transition:transform .12s,box-shadow .12s}
+.rsvp-btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 rgba(26,20,16,.15)}
+.rsvp-btn:active{transform:translate(1px,1px);box-shadow:2px 2px 0 rgba(26,20,16,.12)}
+
+/* ══════════════════════════
+   WISHES
+══════════════════════════ */
+.wishes-section{background:var(--white);border-top:2px solid var(--ink);padding:48px 20px}
+.wish-list{max-width:540px;margin:24px auto 0;display:flex;flex-direction:column;gap:12px}
+.w-card{background:var(--paper);border:2px solid var(--ink);box-shadow:var(--shadow-sm);padding:16px;opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s}
+.w-card.visible{opacity:1;transform:translateY(0)}
+.w-hd{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px}
+.w-av{width:32px;height:32px;background:var(--ink);color:var(--paper);display:flex;align-items:center;justify-content:center;font-family:var(--fsm);font-size:12px;font-weight:700;flex-shrink:0;border:1.5px solid var(--ink)}
+.w-nm{font-family:var(--fsm);font-size:12px;font-weight:700;color:var(--ink)}
+.w-st{font-family:var(--fsm);font-size:9px;color:var(--red);letter-spacing:.08em;margin-top:1px}
+/* Manga panel-style message box */
+.w-msg{
+  background:var(--white);border:1.5px solid var(--ink);border-radius:8px 8px 8px 0;
+  padding:10px 13px;margin-top:6px;position:relative;
+  font-family:var(--fnj);font-size:12px;font-weight:300;color:var(--ink2);line-height:1.8;
+}
+.w-msg::before{content:'';position:absolute;bottom:-10px;left:10px;
+  border-left:8px solid transparent;border-right:0 solid transparent;border-top:10px solid var(--ink)}
+.w-msg::after{content:'';position:absolute;bottom:-7px;left:11px;
+  border-left:6px solid transparent;border-right:0 solid transparent;border-top:8px solid var(--white);z-index:1}
+
+/* ══════════════════════════
+   FOOTER — MANGA BACK COVER
+══════════════════════════ */
+.footer-section{
+  background:var(--ink);border-top:2px solid var(--ink);
+  position:relative;overflow:hidden;padding:56px 20px 48px;text-align:center;
+}
+.footer-section .tone-dots{opacity:.12;background-image:radial-gradient(circle,rgba(255,255,255,.15) 0.8px,transparent 0.8px)}
+/* Speed lines from center */
+.footer-section::before{content:'';position:absolute;inset:0;z-index:0;
+  background:repeating-conic-gradient(from 0deg at 50% 50%,transparent 0deg,transparent 3deg,rgba(255,255,255,.015) 3deg,rgba(255,255,255,.015) 3.5deg)}
+.ft-inner{position:relative;z-index:1}
+/* Back cover plate */
+.ft-plate{
+  border:2px solid rgba(255,255,255,.2);
+  padding:28px 32px;max-width:400px;margin:0 auto 24px;display:inline-block;
+  position:relative;
+}
+.ft-plate::before{content:'';position:absolute;inset:5px;border:1px solid rgba(255,255,255,.08)}
+.ft-vol{font-family:var(--fsm);font-size:10px;letter-spacing:.3em;color:rgba(255,255,255,.35);text-transform:uppercase;margin-bottom:10px}
+.ft-names{font-family:var(--fys);font-size:clamp(32px,9vw,56px);color:var(--paper);line-height:1;letter-spacing:.04em}
+.ft-sub{font-family:var(--fsm);font-size:10px;letter-spacing:.2em;color:rgba(255,255,255,.35);text-transform:uppercase;margin-top:6px}
+.ft-msg{font-family:var(--fnj);font-size:12px;font-weight:300;color:rgba(255,255,255,.5);line-height:1.9;max-width:380px;margin:0 auto 20px}
+.ft-sig{font-family:var(--fys);font-size:17px;color:rgba(255,255,255,.55);margin-bottom:28px}
+/* ISBN-style barcode deco */
+.ft-barcode{display:flex;align-items:flex-end;justify-content:center;gap:1px;margin-bottom:20px;opacity:.3}
+.ft-bar{background:var(--paper);width:2px}
+.ft-brand{font-family:var(--fsm);font-size:9px;color:rgba(255,255,255,.22);letter-spacing:.12em}
+.ft-brand a{color:rgba(200,168,75,.7);text-decoration:none}
+/* Fin mark */
+.ft-fin{font-family:var(--fys);font-size:14px;letter-spacing:.3em;color:rgba(255,255,255,.2);margin-bottom:12px}
+
+/* ══════════════════════════
+   SECTION HEADERS SHARED
+══════════════════════════ */
+.s-ja{font-family:var(--fsm);font-size:9px;letter-spacing:.3em;color:var(--red);text-transform:uppercase;display:block;margin-bottom:4px}
+.s-h{font-family:var(--fys);font-size:clamp(24px,6vw,38px);color:var(--ink);letter-spacing:.06em}
+/* Rule under heading */
+.s-rule{display:flex;align-items:center;gap:8px;margin-top:8px}
+.s-rule-line{height:1px;background:var(--gray2);flex:1}
+.s-rule-dot{width:5px;height:5px;background:var(--ink);transform:rotate(45deg);flex-shrink:0}
+
+/* ══════════════════════════
+   BOTTOM NAV
+══════════════════════════ */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:var(--ink);border-top:2px solid var(--ink);display:flex;justify-content:space-around;padding:10px 0 max(10px,env(safe-area-inset-bottom));z-index:100;transform:translateY(100%);transition:transform .5s ease 1s}
+.bnav.show{transform:translateY(0)}
+.n-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:rgba(245,240,232,.35);text-decoration:none;transition:color .15s;font-family:var(--fsm);font-size:8px;letter-spacing:.08em;padding:4px 10px;text-transform:uppercase}
+.n-item:hover,.n-item.active{color:var(--paper)}
+.n-item.active{color:var(--gold)}
+.n-item svg{width:17px;height:17px;fill:currentColor}
+
+/* ══════════════════════════
+   LIGHTBOX
+══════════════════════════ */
+.lb{position:fixed;inset:0;background:rgba(26,20,16,.96);z-index:9998;display:none;align-items:center;justify-content:center}
+.lb.open{display:flex}
+.lb-img{max-width:92vw;max-height:88vh;border:2px solid rgba(245,240,232,.2);object-fit:contain;filter:grayscale(100%) contrast(1.08)}
+.lb-x{position:absolute;top:16px;right:16px;background:var(--paper);border:2px solid var(--ink);color:var(--ink);cursor:pointer;width:36px;height:36px;display:flex;align-items:center;justify-content:center;font-family:var(--fsm);font-size:14px;transition:all .12s}
+.lb-x:hover{background:var(--ink);color:var(--paper)}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:var(--paper);border:2px solid var(--ink);color:var(--ink);cursor:pointer;width:36px;height:50px;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .15s;font-family:var(--fsm)}
+.lb-nav:hover{background:var(--ink);color:var(--paper)}
+.lb-p{left:12px}.lb-n{right:12px}
+.lb-c{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-family:var(--fsm);font-size:10px;color:rgba(245,240,232,.4);letter-spacing:.15em}
+
+/* ══════════════════════════
+   TOAST
+══════════════════════════ */
+.toast{position:fixed;bottom:86px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--paper);border:2px solid var(--ink);color:var(--ink);padding:8px 20px;font-family:var(--fsm);font-size:10px;letter-spacing:.12em;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;z-index:9999;box-shadow:var(--shadow)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ══ OPENING — MANGA COVER ══ -->
+<div id="opening">
+  <div class="tone-dots"></div>
+  <div class="op-border"></div>
+
+  <!-- Corner ornaments -->
+  <div class="op-corner oc-tl">
+    <svg viewBox="0 0 32 32" fill="none"><path d="M2 2 L2 14 M2 2 L14 2 M8 8 L8 28 M8 8 L28 8" stroke="#1a1410" stroke-width="1.5" opacity=".5"/></svg>
+  </div>
+  <div class="op-corner oc-tr">
+    <svg viewBox="0 0 32 32" fill="none"><path d="M2 2 L2 14 M2 2 L14 2 M8 8 L8 28 M8 8 L28 8" stroke="#1a1410" stroke-width="1.5" opacity=".5"/></svg>
+  </div>
+  <div class="op-corner oc-bl">
+    <svg viewBox="0 0 32 32" fill="none"><path d="M2 2 L2 14 M2 2 L14 2 M8 8 L8 28 M8 8 L28 8" stroke="#1a1410" stroke-width="1.5" opacity=".5"/></svg>
+  </div>
+  <div class="op-corner oc-br">
+    <svg viewBox="0 0 32 32" fill="none"><path d="M2 2 L2 14 M2 2 L14 2 M8 8 L8 28 M8 8 L28 8" stroke="#1a1410" stroke-width="1.5" opacity=".5"/></svg>
+  </div>
+
+  <div class="op-inner">
+    <div class="op-volume">
+      <span></span> Vol. 01 · Final Chapter <span></span>
+    </div>
+
+    <div class="op-title-plate" style="position:relative">
+      <span class="op-title-ja">ウェディング マンガ</span>
+      <span class="op-title-main">Anita<br>& Zarda</span>
+      <span class="op-title-sub">The Wedding Story</span>
+      <div class="op-seal">最終<br>話</div>
+    </div>
+
+    <div class="op-rule">
+      <div class="op-rule-line"></div>
+      <div class="op-rule-diamond"></div>
+      <div class="op-rule-line"></div>
+    </div>
+
+    <div class="op-dear">
+      <p class="op-dear-lbl">Kepada yang terhormat</p>
+      <p class="op-dear-name">Ade Guntur Fitridullah & Partner</p>
+    </div>
+
+    <button class="op-btn" onclick="openInvitation()">読む — Baca Sekarang</button>
+  </div>
+
+  <div class="op-pagenum">p.001</div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div id="main">
+
+<!-- CHAPTER 1: SPLASH PAGE -->
+<div class="chapter-head">
+  <span class="ch-number">第一話</span>
+  <div class="ch-divider"></div>
+  <span class="ch-name">The Beginning</span>
+  <div class="ch-line"></div>
+  <span class="ch-page">p.002</span>
+</div>
+<section id="home">
+  <div class="manga-topbar">
+    <div class="mtb-logo">
+      <div class="mtb-logo-mark">愛</div>
+      <span class="mtb-title">Wedding Manga · Vol.01</span>
+    </div>
+    <div class="mtb-right">
+      <span class="mtb-vol">第一話</span>
+      <span class="mtb-stamp">FINAL EP.</span>
+    </div>
+  </div>
+
+  <!-- Big splash panel -->
+  <div class="splash-panel">
+    <div class="sp-ratio"></div>
+    <div class="sp-bg"></div>
+    <div class="sp-speed"></div>
+    <div class="sp-photo-wrap">
+      <img class="sp-photo" src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1000&h=900&fit=crop&q=85" alt="Wedding">
+      <div class="sp-tone"></div>
+      <div class="sp-vignette"></div>
+    </div>
+    <div class="sp-fade"></div>
+    <div class="sp-overlay">
+      <span class="sp-chapter-banner">最終話 · Final Chapter</span>
+      <h1 class="sp-title-en">Anita<br>&amp; Zarda</h1>
+      <p class="sp-subtitle">The Wedding Story · 2026</p>
+      <p class="sp-date">二〇二六年 五月 二十四日</p>
+    </div>
+  </div>
+
+  <!-- Sub panels row -->
+  <div class="panel-row">
+    <div class="pr-left">
+      <img class="pr-photo" src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&h=220&fit=crop&q=80" alt="">
+      <div class="pr-tone" style="position:absolute;inset:0"></div>
+      <div class="pr-caption"><span class="pr-cap-text">PANEL 002 · Establishing Shot</span></div>
+    </div>
+    <div class="pr-right" style="position:relative;overflow:hidden">
+      <div class="tone-dots"></div>
+      <div class="pr-right-date">24 Mei<br>2026</div>
+      <div class="pr-right-loc">Tangerang · Indonesia</div>
+      <div class="pr-right-seal">婚礼<br>式</div>
+    </div>
+  </div>
+
+  <!-- Track pills + Player -->
+  <div style="background:var(--white);border-top:2px solid var(--ink);padding:10px 16px 6px">
+    <div class="t-pills">
+      <div class="t-pill active" onclick="sw(0,this)">Track 01</div>
+      <div class="t-pill" onclick="sw(1,this)">Track 02</div>
+      <div class="t-pill" onclick="sw(2,this)">Track 03</div>
+    </div>
+  </div>
+  <div class="player-wrap">
+    <div class="player-bar">
+      <button class="pl-btn" id="playBtn" onclick="togglePlay()">
+        <svg id="pIco" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="pauseIco" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+      </button>
+      <div class="pl-info">
+        <div class="pl-title" id="pTitle">Wedding Day <span class="eq paused" id="eqB"><span class="eq-b"></span><span class="eq-b"></span><span class="eq-b"></span></span></div>
+        <div class="pl-artist" id="pArtist">Anita & Zarda · Wedding OST</div>
+      </div>
+      <div class="pl-prog-wrap">
+        <div class="pl-times"><span id="curT">0:00</span><span id="totT">3:24</span></div>
+        <div class="pl-track" id="pTrack"><div class="pl-fill" id="pFill"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER 2: COUNTDOWN -->
+<div class="chapter-head">
+  <span class="ch-number">第二話</span>
+  <div class="ch-divider"></div>
+  <span class="ch-name">Countdown</span>
+  <div class="ch-line"></div>
+  <span class="ch-page">p.010</span>
+</div>
+<div class="countdown-section">
+  <div class="cd-panels">
+    <div class="cd-left">
+      <div class="tone-dots"></div>
+      <div class="cd-left-title">残り<br>時間</div>
+      <div class="cd-left-sub">Time Remaining</div>
+      <div class="cd-left-ja">ウェディングまで</div>
+    </div>
+    <div class="cd-right">
+      <div class="tone-cross"></div>
+      <div class="cd-row"><span class="cd-unit">日 · Days</span><div style="display:flex;align-items:baseline;gap:4px"><span class="cd-num" id="cdD">00</span><span class="cd-num-ja">日</span></div></div>
+      <div class="cd-row"><span class="cd-unit">時 · Hours</span><div style="display:flex;align-items:baseline;gap:4px"><span class="cd-num" id="cdH">00</span><span class="cd-num-ja">時間</span></div></div>
+      <div class="cd-row"><span class="cd-unit">分 · Minutes</span><div style="display:flex;align-items:baseline;gap:4px"><span class="cd-num" id="cdM">00</span><span class="cd-num-ja">分</span></div></div>
+      <div class="cd-row"><span class="cd-unit">秒 · Seconds</span><div style="display:flex;align-items:baseline;gap:4px"><span class="cd-num" id="cdS">00</span><span class="cd-num-ja">秒</span></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAPTER 3: VERSE -->
+<div class="chapter-head">
+  <span class="ch-number">第三話</span>
+  <div class="ch-divider"></div>
+  <span class="ch-name">Ayat Suci</span>
+  <div class="ch-line"></div>
+  <span class="ch-page">p.018</span>
+</div>
+<div class="verse-section">
+  <div class="tone-lines"></div>
+  <div class="verse-inner">
+    <div class="verse-deco">愛</div>
+    <div class="verse-ornament">
+      <div class="verse-orn-line"></div>
+      <span class="verse-orn-mark">◆</span>
+      <div class="verse-orn-line"></div>
+    </div>
+    <p class="verse-text">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya..."</p>
+    <span class="verse-ref">— Surah Ar-Rum : 21 —</span>
+  </div>
+</div>
+
+<!-- CHAPTER 4: COUPLE -->
+<div class="chapter-head">
+  <span class="ch-number">第四話</span>
+  <div class="ch-divider"></div>
+  <span class="ch-name">Character Profile</span>
+  <div class="ch-line"></div>
+  <span class="ch-page">p.024</span>
+</div>
+<section class="couple-section" id="couple">
+  <div class="couple-header">
+    <span class="couple-header-ja">登場人物紹介</span>
+    <h2 class="couple-header-title">Pasangan Kami</h2>
+  </div>
+  <div class="char-panels">
+    <div class="char-p">
+      <div class="cp-photo">
+        <div class="cp-ratio"></div>
+        <img class="cp-img" style="position:absolute;inset:0" src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500&h=680&fit=crop&q=80" alt="Anita" loading="lazy">
+        <div class="cp-tone"></div>
+        <div class="cp-vignette"></div>
+        <div class="cp-fade-bottom"></div>
+        <div class="cp-name-overlay">
+          <div class="cp-tag">Heroine · 主人公</div>
+          <div class="cp-name">Anita</div>
+        </div>
+      </div>
+      <div class="cp-info">
+        <div class="tone-diag"></div>
+        <div class="cp-role">Mempelai Wanita</div>
+        <div class="cp-full-name">Anita Pangestuti, S.Kom</div>
+        <div class="cp-parents">Putri Pertama dari<br><strong>Bpk. Taryono &<br>Ibu Wiwit Jayanti</strong></div>
+      </div>
+    </div>
+    <div class="char-p">
+      <div class="cp-photo">
+        <div class="cp-ratio"></div>
+        <img class="cp-img" style="position:absolute;inset:0" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&h=680&fit=crop&q=80" alt="Zarda" loading="lazy">
+        <div class="cp-tone"></div>
+        <div class="cp-vignette"></div>
+        <div class="cp-fade-bottom"></div>
+        <div class="cp-name-overlay">
+          <div class="cp-tag">Hero · 主人公</div>
+          <div class="cp-name">Zarda</div>
+        </div>
+      </div>
+      <div class="cp-info">
+        <div class="tone-diag"></div>
+        <div class="cp-role">Mempelai Pria</div>
+        <div class="cp-full-name">Zardarian Ahadika N, S.Kom</div>
+        <div class="cp-parents">Putra Kedua dari<br><strong>Bpk. Wan Sabran, M.MAR &<br>Ibu Titik Sundari, M.Si</strong></div>
+      </div>
+    </div>
+  </div>
+  <div class="char-separator">
+    <span>―</span>
+    <span class="char-sep-center">愛</span>
+    <span>―</span>
+  </div>
+</section>
+
+<!-- CHAPTER 5: EVENT -->
+<div class="chapter-head">
+  <span class="ch-number">第五話</span>
+  <div class="ch-divider"></div>
+  <span class="ch-name">Scene Location</span>
+  <div class="ch-line"></div>
+  <span class="ch-page">p.038</span>
+</div>
+<section class="event-section" id="event">
+  <div class="event-header">
+    <span class="s-ja">場所 · Lokasi</span>
+    <h2 class="s-h">Waktu &amp; Tempat</h2>
+    <div class="s-rule"><div class="s-rule-line"></div><div class="s-rule-dot"></div><div class="s-rule-line"></div></div>
+  </div>
+  <div class="ev-panels">
+    <div class="ev-panel">
+      <img class="ev-photo" src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=500&h=130&fit=crop&q=80" alt="" loading="lazy">
+      <div class="ev-photo-tone"></div>
+      <div class="ev-body">
+        <div class="tone-lines"></div>
+        <span class="ev-caption red">Akad Nikah</span>
+        <div class="ev-date">Minggu,<br>24 Mei 2026</div>
+        <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg><span class="ev-txt">08.00 WIB</span></div>
+        <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span class="ev-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-maps">地図 · Maps</a>
+      </div>
+    </div>
+    <div class="ev-panel">
+      <img class="ev-photo" src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=500&h=130&fit=crop&q=80" alt="" loading="lazy">
+      <div class="ev-photo-tone"></div>
+      <div class="ev-body">
+        <div class="tone-lines"></div>
+        <span class="ev-caption red">Resepsi</span>
+        <div class="ev-date">Minggu,<br>24 Mei 2026</div>
+        <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg><span class="ev-txt">11.00 – 13.00 WIB</span></div>
+        <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span class="ev-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-maps">地図 · Maps</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER 6: STORY -->
+<div class="chapter-head">
+  <span class="ch-number">第六話</span>
+  <div class="ch-divider"></div>
+  <span class="ch-name">Love Story Arc</span>
+  <div class="ch-line"></div>
+  <span class="ch-page">p.046</span>
+</div>
+<section class="story-section">
+  <div class="story-header">
+    <span class="s-ja">回想 · Flashback</span>
+    <h2 class="s-h">Love Story</h2>
+    <div class="s-rule"><div class="s-rule-line"></div><div class="s-rule-dot"></div><div class="s-rule-line"></div></div>
+  </div>
+
+  <div class="manga-page">
+    <div class="mp-gutter"><span class="mp-num">01</span><div class="mp-dot"></div></div>
+    <div class="mp-content">
+      <div class="mp-photo" style="position:relative">
+        <img src="https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=300&h=220&fit=crop&q=80" alt="" loading="lazy">
+        <div class="mp-photo-tone"></div>
+        <div class="mp-bubble">Juni 2025</div>
+      </div>
+      <div class="mp-text">
+        <div class="tone-dots"></div>
+        <div class="mp-clip">Track 001</div>
+        <div class="mp-date">Juni 2025</div>
+        <div class="mp-title">Awal Pertemuan</div>
+        <div class="mp-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="manga-page">
+    <div class="mp-gutter"><span class="mp-num">02</span><div class="mp-dot"></div></div>
+    <div class="mp-content">
+      <div class="mp-photo" style="position:relative">
+        <img src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=300&h=220&fit=crop&q=80" alt="" loading="lazy">
+        <div class="mp-photo-tone"></div>
+        <div class="mp-bubble">Nov 2025</div>
+      </div>
+      <div class="mp-text">
+        <div class="tone-dots"></div>
+        <div class="mp-clip">Track 002</div>
+        <div class="mp-date">November 2025</div>
+        <div class="mp-title">Lamaran</div>
+        <div class="mp-desc">Rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="manga-page">
+    <div class="mp-gutter"><span class="mp-num">03</span><div class="mp-dot"></div></div>
+    <div class="mp-content">
+      <div class="mp-photo" style="position:relative">
+        <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=300&h=220&fit=crop&q=80" alt="" loading="lazy">
+        <div class="mp-photo-tone"></div>
+        <div class="mp-bubble">Mei 2026</div>
+      </div>
+      <div class="mp-text">
+        <div class="tone-dots"></div>
+        <div class="mp-clip">Track 003</div>
+        <div class="mp-date">Mei 2026</div>
+        <div class="mp-title">Pernikahan</div>
+        <div class="mp-desc">Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER 7: GALLERY -->
+<div class="chapter-head">
+  <span class="ch-number">第七話</span>
+  <div class="ch-divider"></div>
+  <span class="ch-name">Photo Gallery</span>
+  <div class="ch-line"></div>
+  <span class="ch-page">p.060</span>
+</div>
+<section class="gallery-section">
+  <div class="gallery-header">
+    <div>
+      <span class="s-ja">写真集 · Galeri</span>
+      <h2 class="s-h" style="font-size:clamp(20px,5vw,30px)">Galeri Foto</h2>
+    </div>
+    <span class="gal-hint">drag · swipe</span>
+  </div>
+  <div class="gal-runner" id="gr1"><div class="gal-track" id="gt1"></div></div>
+  <div class="gal-runner" id="gr2" style="border-top:2px solid var(--ink)"><div class="gal-track" id="gt2"></div></div>
+</section>
+
+<!-- CHAPTER 8: GIFT -->
+<div class="chapter-head">
+  <span class="ch-number">第八話</span>
+  <div class="ch-divider"></div>
+  <span class="ch-name">Digital Gift</span>
+  <div class="ch-line"></div>
+  <span class="ch-page">p.072</span>
+</div>
+<section class="gift-section" id="gift">
+  <div style="text-align:center;max-width:560px;margin:0 auto">
+    <span class="s-ja" style="text-align:center;display:block">贈り物 · Amplop Digital</span>
+    <h2 class="s-h" style="text-align:center;margin-bottom:8px">Amplop Digital</h2>
+    <div class="s-rule" style="justify-content:center"><div class="s-rule-line" style="max-width:60px"></div><div class="s-rule-dot"></div><div class="s-rule-line" style="max-width:60px"></div></div>
+    <p style="font-family:var(--fnj);font-size:12px;font-weight:300;color:var(--gray1);line-height:1.9;margin-top:14px">Doa restu sudah sangat cukup, namun jika memberi merupakan tanda kasih, kami dengan senang hati menerimanya.</p>
+  </div>
+  <div class="gift-grid">
+    <div class="gift-card">
+      <div class="tone-dots"></div>
+      <span class="g-chip">Bank · BCA</span>
+      <div class="g-bank">BCA</div>
+      <div class="g-holder">Zardarian Ahadika N</div>
+      <div class="g-num">8210 3705 61</div>
+      <button class="copy-btn" onclick="cp('8210370561',this)">コピー · Salin</button>
+    </div>
+    <div class="gift-card">
+      <div class="tone-dots"></div>
+      <span class="g-chip">Bank · BNI</span>
+      <div class="g-bank">BNI</div>
+      <div class="g-holder">Anita Pangestuti</div>
+      <div class="g-num">1192 9784 03</div>
+      <button class="copy-btn" onclick="cp('1192978403',this)">コピー · Salin</button>
+    </div>
+  </div>
+</section>
+
+<!-- CHAPTER 9: RSVP -->
+<div class="chapter-head">
+  <span class="ch-number">第九話</span>
+  <div class="ch-divider"></div>
+  <span class="ch-name">RSVP</span>
+  <div class="ch-line"></div>
+  <span class="ch-page">p.080</span>
+</div>
+<section class="rsvp-section" id="rsvp">
+  <div style="text-align:center;max-width:560px;margin:0 auto 28px">
+    <span class="s-ja" style="text-align:center;display:block">出席確認 · Konfirmasi</span>
+    <h2 class="s-h" style="text-align:center">RSVP</h2>
+    <div class="s-rule" style="justify-content:center"><div class="s-rule-line" style="max-width:60px"></div><div class="s-rule-dot"></div><div class="s-rule-line" style="max-width:60px"></div></div>
+  </div>
+  <div class="rsvp-stats">
+    <div class="rs-box"><div class="rs-n">7</div><div class="rs-l">Respons</div></div>
+    <div class="rs-box"><div class="rs-n">7</div><div class="rs-l">Hadir</div></div>
+    <div class="rs-box"><div class="rs-n">13</div><div class="rs-l">Total Tamu</div></div>
+  </div>
+  <div class="rsvp-form">
+    <div class="f-grp"><label class="f-lbl">名前 · Nama Lengkap</label><input type="text" class="f-inp" placeholder="Masukkan nama Anda" id="rN"></div>
+    <div class="f-grp"><label class="f-lbl">出席 · Konfirmasi Kehadiran</label>
+      <select class="f-inp" id="rS"><option value="">Pilih status kehadiran</option><option value="hadir">Hadir ✓</option><option value="tidak">Tidak Hadir ✗</option></select>
+    </div>
+    <div class="f-grp"><label class="f-lbl">人数 · Jumlah Tamu</label>
+      <div class="gs-row"><button class="gs-btn active" onclick="sg(1,this)">1 Orang</button><button class="gs-btn" onclick="sg(2,this)">2 Orang</button></div>
+    </div>
+    <div class="f-grp"><label class="f-lbl">メッセージ · Ucapan & Pesan</label><textarea class="f-inp" placeholder="Tuliskan ucapan untuk Anita & Zarda..." id="rM"></textarea></div>
+    <button class="rsvp-btn" onclick="submitR()">送信 · Konfirmasi Kehadiran</button>
+  </div>
+</section>
+
+<!-- CHAPTER 10: WISHES -->
+<div class="chapter-head">
+  <span class="ch-number">第十話</span>
+  <div class="ch-divider"></div>
+  <span class="ch-name">Messages</span>
+  <div class="ch-line"></div>
+  <span class="ch-page">p.088</span>
+</div>
+<section class="wishes-section">
+  <div style="max-width:680px;margin:0 auto">
+    <span class="s-ja">コメント · Ucapan</span>
+    <h2 class="s-h">Ucapan &amp; Doa</h2>
+    <div class="s-rule"><div class="s-rule-line"></div><div class="s-rule-dot"></div><div class="s-rule-line"></div></div>
+  </div>
+  <div class="wish-list" id="wList">
+    <div class="w-card visible">
+      <div class="w-hd"><div class="w-av">A</div><div><div class="w-nm">Ayu Rahmawati</div><div class="w-st">✓ HADIR · 2 TAMU</div></div></div>
+      <div class="w-msg">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu!</div>
+    </div>
+    <div class="w-card visible">
+      <div class="w-hd"><div class="w-av" style="background:var(--gray1)">R</div><div><div class="w-nm">Reza Firmansyah</div><div class="w-st">✓ HADIR · 1 TAMU</div></div></div>
+      <div class="w-msg">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan kebahagiaan yang tidak pernah habis. Aamiin!</div>
+    </div>
+    <div class="w-card visible">
+      <div class="w-hd"><div class="w-av" style="background:var(--ink2)">S</div><div><div class="w-nm">Sinta Dewi</div><div class="w-st">✓ HADIR · 2 TAMU</div></div></div>
+      <div class="w-msg">Wishing you both a lifetime of love and laughter. Semoga selalu diberkahi Allah SWT.</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER — BACK COVER -->
+<div class="chapter-head">
+  <span class="ch-number">終</span>
+  <div class="ch-divider"></div>
+  <span class="ch-name">Fin · 完</span>
+  <div class="ch-line"></div>
+  <span class="ch-page">p.096</span>
+</div>
+<footer class="footer-section">
+  <div class="tone-dots"></div>
+  <div class="ft-inner">
+    <div class="ft-fin">― 完 ―</div>
+    <div class="ft-plate">
+      <div class="ft-vol">Vol.01 · Final Chapter</div>
+      <div class="ft-names">Anita<br>&amp; Zarda</div>
+      <div class="ft-sub">The Wedding Story · 2026</div>
+    </div>
+    <p class="ft-msg">Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu kepada kami.</p>
+    <p class="ft-sig">kami yang berbahagia — Anita &amp; Zarda</p>
+    <!-- Barcode deco -->
+    <div class="ft-barcode" id="ftBarcode"></div>
+    <p class="ft-brand">Digital Invitation by <a href="#">BridesSpace</a> · Manga Theme</p>
+  </div>
+</footer>
+
+</div><!-- /main -->
+
+<!-- NAV -->
+<nav class="bnav" id="bnav">
+  <a href="#home" class="n-item active"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home</a>
+  <a href="#couple" class="n-item"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Couple</a>
+  <a href="#event" class="n-item"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>Event</a>
+  <a href="#gift" class="n-item"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.23.18-.46.18-.71C18 3.47 16.53 2 14.71 2c-.87 0-1.65.36-2.22.93L12 3.4l-.49-.47C10.94 2.36 10.16 2 9.29 2 7.47 2 6 3.47 6 5.29c0 .25.11.48.18.71H4c-1.11 0-2 .89-2 2v13c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5.29-2c.47 0 .79.32.79.79S15.18 5.58 14.71 5.58h-1.53l.75-.75c.2-.2.49-.33.78-.33zM9.29 4c.29 0 .58.13.78.33l.75.75H9.29C8.82 5.08 8.5 4.76 8.5 4.29S8.82 4 9.29 4zM11 19H4v-6h7v6zm0-8H4V8h7v3zm9 8h-7v-6h7v6zm0-8h-7V8h7v3z"/></svg>Gift</a>
+  <a href="#rsvp" class="n-item"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>RSVP</a>
+</nav>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lb">
+  <button class="lb-x" onclick="closeLb()">✕</button>
+  <button class="lb-nav lb-p" onclick="lbPrev()">‹</button>
+  <img class="lb-img" id="lbI" src="" alt="">
+  <button class="lb-nav lb-n" onclick="lbNext()">›</button>
+  <div class="lb-c" id="lbC"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const TRACKS=[
+  {title:"Wedding Day",artist:"Anita & Zarda · Wedding OST",dur:"3:24",secs:204},
+  {title:"First Look",artist:"Anita & Zarda · Wedding OST",dur:"2:58",secs:178},
+  {title:"Lamaran",artist:"Anita & Zarda · Wedding OST",dur:"4:12",secs:252},
+];
+const IMGS=[
+  "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=650&fit=crop&q=80",
+];
+
+let tIdx=0,isPlaying=false,prog=0,pTimer=null,lbIdx=0,gCnt=1;
+
+/* Barcode deco */
+(function(){
+  const bc=document.getElementById('ftBarcode');
+  if(!bc)return;
+  const widths=[2,1,3,1,2,1,1,2,3,1,2,1,1,3,1,2,1,2,1,3,2,1,1,2,1,3,1,1,2,1,3,1,2,1,1,2,3,1,2,1];
+  widths.forEach((w,i)=>{
+    const b=document.createElement('div');
+    b.className='ft-bar';
+    b.style.cssText=`width:${w}px;height:${20+Math.random()*8}px`;
+    bc.appendChild(b);
+  });
+})();
+
+function openInvitation(){
+  document.getElementById('opening').classList.add('hide');
+  setTimeout(()=>document.getElementById('main').classList.add('show'),100);
+  document.getElementById('bnav').classList.add('show');
+  setTimeout(init,400);
+}
+function init(){countdown();buildGallery();scrollAnims();navHL()}
+
+/* Player */
+function togglePlay(){isPlaying?pause():play()}
+function play(){setPlay(true)}
+function pause(){clearInterval(pTimer);setPlay(false)}
+function setPlay(p){
+  isPlaying=p;
+  document.getElementById('pIco').style.display=p?'none':'block';
+  document.getElementById('pauseIco').style.display=p?'block':'none';
+  const eq=document.getElementById('eqB');if(eq)eq.classList.toggle('paused',!p);
+  if(p){const t=TRACKS[tIdx];pTimer=setInterval(()=>{prog=Math.min(prog+(100/t.secs),100);updProg();if(prog>=100)nextTrack()},1000)}
+}
+function updProg(){
+  document.getElementById('pFill').style.width=prog+'%';
+  const t=TRACKS[tIdx],e=Math.round((prog/100)*t.secs);
+  document.getElementById('curT').textContent=Math.floor(e/60)+':'+String(e%60).padStart(2,'0');
+}
+function sw(idx,btn){
+  document.querySelectorAll('.t-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');tIdx=idx;clearInterval(pTimer);prog=0;
+  const t=TRACKS[idx];
+  document.getElementById('pTitle').innerHTML=`${t.title} <span class="eq ${isPlaying?'':'paused'}" id="eqB"><span class="eq-b"></span><span class="eq-b"></span><span class="eq-b"></span></span>`;
+  document.getElementById('pArtist').textContent=t.artist;
+  document.getElementById('totT').textContent=t.dur;
+  updProg();
+  if(isPlaying){pTimer=setInterval(()=>{prog=Math.min(prog+(100/t.secs),100);updProg();if(prog>=100)nextTrack()},1000)}
+}
+function nextTrack(){const n=(tIdx+1)%TRACKS.length;const pill=document.querySelectorAll('.t-pill')[n];if(pill)sw(n,pill)}
+document.addEventListener('click',e=>{const tr=document.getElementById('pTrack');if(tr&&tr.contains(e.target)){const r=tr.getBoundingClientRect();prog=Math.max(0,Math.min(100,((e.clientX-r.left)/r.width)*100));updProg()}});
+
+/* Countdown */
+function countdown(){
+  const t=new Date('2026-05-24T08:00:00');
+  function tick(){
+    const d=t-new Date();
+    if(d<=0){['cdD','cdH','cdM','cdS'].forEach(id=>document.getElementById(id).textContent='00');return}
+    document.getElementById('cdD').textContent=String(Math.floor(d/86400000)).padStart(2,'0');
+    document.getElementById('cdH').textContent=String(Math.floor((d%86400000)/3600000)).padStart(2,'0');
+    document.getElementById('cdM').textContent=String(Math.floor((d%3600000)/60000)).padStart(2,'0');
+    document.getElementById('cdS').textContent=String(Math.floor((d%60000)/1000)).padStart(2,'0');
+  }
+  tick();setInterval(tick,1000);
+}
+
+/* Gallery */
+function buildGallery(){
+  buildRow('gt1','gr1',IMGS,.5,'sz1');
+  buildRow('gt2','gr2',[...IMGS].reverse(),-.4,'sz2');
+}
+function buildRow(tId,wId,imgs,spd,cls){
+  const track=document.getElementById(tId),wrap=document.getElementById(wId);
+  const all=[...imgs,...imgs,...imgs];
+  all.forEach((src,i)=>{
+    const ri=i%imgs.length;
+    const el=document.createElement('div');el.className=`g-item ${cls}`;
+    el.innerHTML=`<img src="${src}" alt="G${ri+1}" loading="lazy"><div class="g-tone"></div><span class="g-num">${String(ri+1).padStart(2,'0')}</span>`;
+    el.addEventListener('click',()=>openLb(ri));
+    track.appendChild(el);
+  });
+  requestAnimationFrame(()=>{
+    const item=track.querySelector('.g-item');if(!item)return;
+    const iw=item.offsetWidth+2,total=imgs.length*iw;
+    let off=total,paused=false,drag=false,dS=0,sS=0;
+    function tick(){
+      if(!paused){off+=spd;if(spd>0){if(off>=total*2)off-=total;if(off<total)off+=total}else{if(off<=0)off+=total;if(off>total)off-=total}}
+      track.style.transform=`translateX(-${off}px)`;requestAnimationFrame(tick);
+    }
+    track.style.transform=`translateX(-${off}px)`;requestAnimationFrame(tick);
+    wrap.addEventListener('mousedown',e=>{drag=true;dS=e.clientX;sS=off;paused=true});
+    window.addEventListener('mousemove',e=>{if(!drag)return;off=sS-(e.clientX-dS)});
+    window.addEventListener('mouseup',()=>{drag=false;paused=false});
+    wrap.addEventListener('touchstart',e=>{dS=e.touches[0].clientX;sS=off;paused=true},{passive:true});
+    wrap.addEventListener('touchmove',e=>{off=sS-(e.touches[0].clientX-dS)},{passive:true});
+    wrap.addEventListener('touchend',()=>{paused=false});
+    wrap.addEventListener('mouseenter',()=>{if(!drag)paused=true});
+    wrap.addEventListener('mouseleave',()=>{drag=false;paused=false});
+  });
+}
+
+/* Lightbox */
+function openLb(idx){lbIdx=idx;updLb();document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden'}
+function closeLb(){document.getElementById('lb').classList.remove('open');document.body.style.overflow=''}
+function lbPrev(){lbIdx=(lbIdx-1+IMGS.length)%IMGS.length;updLb()}
+function lbNext(){lbIdx=(lbIdx+1)%IMGS.length;updLb()}
+function updLb(){document.getElementById('lbI').src=IMGS[lbIdx];document.getElementById('lbC').textContent=`${lbIdx+1} / ${IMGS.length}`}
+document.addEventListener('keydown',e=>{if(!document.getElementById('lb').classList.contains('open'))return;if(e.key==='Escape')closeLb();if(e.key==='ArrowLeft')lbPrev();if(e.key==='ArrowRight')lbNext()});
+
+/* Scroll anims */
+function scrollAnims(){
+  const obs=new IntersectionObserver(en=>en.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.08});
+  document.querySelectorAll('.manga-page,.w-card').forEach(el=>obs.observe(el));
+}
+
+/* Nav */
+function navHL(){
+  const obs=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.n-item').forEach(n=>n.classList.remove('active'));const a=document.querySelector(`.n-item[href="#${e.target.id}"]`);if(a)a.classList.add('active')}})},{rootMargin:'-40% 0px -40% 0px'});
+  ['home','couple','event','gift','rsvp'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el)});
+}
+
+/* RSVP */
+function sg(n,btn){gCnt=n;document.querySelectorAll('.gs-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+function submitR(){
+  const name=document.getElementById('rN').value.trim(),status=document.getElementById('rS').value,msg=document.getElementById('rM').value.trim();
+  if(!name||!status){showT('Mohon isi nama dan status kehadiran');return}
+  const init=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const bgs=[getComputedStyle(document.documentElement).getPropertyValue('--ink').trim(),'#555','#333','#777','#222'];
+  const bg=bgs[Math.floor(Math.random()*bgs.length)];
+  const stxt=status==='hadir'?`✓ HADIR · ${gCnt} TAMU`:'✗ TIDAK HADIR';
+  const card=document.createElement('div');card.className='w-card';
+  card.innerHTML=`<div class="w-hd"><div class="w-av" style="background:${bg}">${init}</div><div><div class="w-nm">${name}</div><div class="w-st">${stxt}</div></div></div><div class="w-msg">${msg||'Selamat dan semoga bahagia selalu.'}</div>`;
+  document.getElementById('wList').prepend(card);
+  setTimeout(()=>card.classList.add('visible'),50);
+  document.getElementById('rN').value='';document.getElementById('rS').value='';document.getElementById('rM').value='';
+  showT('Terima kasih · ありがとう');
+  setTimeout(()=>document.querySelector('.wishes-section').scrollIntoView({behavior:'smooth',block:'start'}),300);
+}
+
+/* Copy */
+function cp(txt,btn){
+  navigator.clipboard.writeText(txt).then(()=>{
+    btn.classList.add('copied');btn.textContent='✓ Tersalin';
+    showT('Nomor rekening tersalin ✓');
+    setTimeout(()=>{btn.classList.remove('copied');btn.textContent='コピー · Salin'},2500);
+  }).catch(()=>showT('Salin manual: '+txt));
+}
+
+/* Toast */
+let tT;
+function showT(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2800)}
+</script>
+</body>
+</html>
