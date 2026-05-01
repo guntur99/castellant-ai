@@ -3,14 +3,15 @@ use axum::{
     http::StatusCode,
     Form,
     extract::{State, Path, Query, Multipart},
+    Json,
 };
 use askama::Template;
-use crate::models::{Invitation, Person, EventDetails, Quote, GiftAccount, RsvpForm, InvitationRow, Song, User};
+use crate::models::{Invitation, Person, EventDetails, Quote, GiftAccount, RsvpForm, InvitationRow, Song, User, AiSession};
 use crate::AppState;
 use serde_json::{from_value, json};
 use sqlx::Row;
 use oauth2::{AuthorizationCode, TokenResponse, CsrfToken, Scope};
-use axum_extra::extract::cookie::{Cookie, PrivateCookieJar};
+use axum_extra::extract::cookie::{Cookie, PrivateCookieJar, CookieJar};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
 use std::collections::HashMap;
@@ -70,6 +71,18 @@ pub struct PreviewRequest {
     pub reception_maps: String,
     pub quote_text: String,
     pub quote_source: String,
+}
+
+#[derive(Deserialize)]
+pub struct AiGenerateRequest {
+    pub prompt: String,
+    pub session_id: Option<Uuid>,
+    pub context: Option<String>,
+}
+
+#[derive(Serialize)]
+pub struct AiGenerateResponse {
+    pub text: String,
 }
 
 #[derive(Serialize, Clone)]
@@ -1478,5 +1491,262 @@ pub async fn preview(
         "wedding-medium" => HtmlTemplate(WeddingMediumTemplate { invitation, is_dev: state.is_dev }).into_response(),
         "wedding-transjakarta" => HtmlTemplate(WeddingTransJakartaTemplate { invitation, is_dev: state.is_dev }).into_response(),
         _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+    }
+}
+pub async fn ai_generate_text(
+    State(state): State<AppState>,
+    Json(payload): Json<AiGenerateRequest>,
+) -> impl IntoResponse {
+    let api_key = &state.sumopod_api_key;
+    let base_url = &state.sumopod_base_url;
+    let model = &state.sumopod_model;
+
+    if api_key.is_empty() {
+        return (StatusCode::INTERNAL_SERVER_ERROR, "AI API Key not configured").into_response();
+    }
+
+    let messages = json!([
+        {
+            "role": "system",
+            "content": "You are a professional wedding invitation copywriter. Your task is to generate romantic, elegant, and creative text for digital invitations. Keep it concise and suitable for the Indonesian market unless requested otherwise. Use a warm and sophisticated tone."
+        },
+        {
+            "role": "user",
+            "content": payload.prompt
+        }
+    ]);
+
+    let body = json!({
+        "model": model,
+        "messages": messages,
+        "temperature": 0.7
+    });
+
+    let res = state.http_client
+        .post(base_url)
+        .header("Authorization", format!("Bearer {}", api_key))
+        .json(&body)
+        .send()
+        .await;
+
+    match res {
+        Ok(resp) => {
+            let json: serde_json::Value = resp.json().await.unwrap_or_default();
+            let text = json["choices"][0]["message"]["content"]
+                .as_str()
+                .unwrap_or("Failed to generate content")
+                .to_string();
+            
+            Json(AiGenerateResponse { text }).into_response()
+        }
+        Err(e) => {
+            (StatusCode::INTERNAL_SERVER_ERROR, format!("AI request failed: {}", e)).into_response()
+        }
+    }
+}
+
+pub async fn ai_guest_chat(
+    State(state): State<AppState>,
+    Json(payload): Json<AiGenerateRequest>,
+) -> impl IntoResponse {
+    let api_key = &state.sumopod_api_key;
+    let base_url = &state.sumopod_base_url;
+    let model = &state.sumopod_model;
+
+    if api_key.is_empty() {
+        return (StatusCode::INTERNAL_SERVER_ERROR, "AI API Key not configured").into_response();
+    }
+
+    let invitation_context = payload.context.unwrap_or_else(|| "No wedding details provided.".to_string());
+
+    let messages = json!([
+        {
+            "role": "system",
+            "content": format!(
+                "You are a helpful Wedding Concierge. Use the following wedding details to answer guest questions. 
+                Be polite, warm, and helpful. If you don't know the answer, politely ask them to contact the couple directly.
+                
+                WEDDING DETAILS:
+                {}", 
+                invitation_context
+            )
+        },
+        {
+            "role": "user",
+            "content": payload.prompt
+        }
+    ]);
+
+    let body = json!({
+        "model": model,
+        "messages": messages,
+        "temperature": 0.5
+    });
+
+    let res = state.http_client
+        .post(base_url)
+        .header("Authorization", format!("Bearer {}", api_key))
+        .json(&body)
+        .send()
+        .await;
+
+    match res {
+        Ok(resp) => {
+            let json: serde_json::Value = resp.json().await.unwrap_or_default();
+            let text = json["choices"][0]["message"]["content"]
+                .as_str()
+                .unwrap_or("I'm sorry, I couldn't process your request.")
+                .to_string();
+            
+            Json(AiGenerateResponse { text }).into_response()
+        }
+        Err(e) => {
+            (StatusCode::INTERNAL_SERVER_ERROR, format!("AI request failed: {}", e)).into_response()
+        }
+    }
+}
+
+pub async fn ai_parse_form(
+    jar: CookieJar,
+    State(state): State<AppState>,
+    axum::Json(payload): axum::Json<AiGenerateRequest>,
+) -> impl IntoResponse {
+    let api_key = std::env::var("SUMOPOD_API_KEY").unwrap_or_default();
+    let base_url = std::env::var("SUMOPOD_BASE_URL").unwrap_or_default();
+    let model = std::env::var("SUMOPOD_MODEL").unwrap_or_default();
+
+    let auth_user_id = jar.get("session").and_then(|c| Uuid::parse_str(c.value()).ok());
+
+    // 1. Get or Create Session
+    let mut session_id = payload.session_id.unwrap_or_else(Uuid::new_v4);
+    let mut history: Vec<serde_json::Value> = vec![];
+    let mut current_form = serde_json::json!({});
+
+    // Try finding session by ID or by User ID
+    let session_res: Result<Option<AiSession>, sqlx::Error> = if let Some(uid) = auth_user_id {
+        // If logged in, look for session by user_id first
+        sqlx::query_as::<_, AiSession>("SELECT * FROM ai_sessions WHERE user_id = $1 ORDER BY updated_at DESC LIMIT 1")
+            .bind(uid)
+            .fetch_optional(&state.db)
+            .await
+    } else {
+        // If guest, look by session_id
+        sqlx::query_as::<_, AiSession>("SELECT * FROM ai_sessions WHERE id = $1")
+            .bind(session_id)
+            .fetch_optional(&state.db)
+            .await
+    };
+
+    match session_res {
+        Ok(Some(session)) => {
+            session_id = session.id;
+            history = session.chat_history.as_array().cloned().unwrap_or_default();
+            current_form = session.form_state;
+            
+            // If user just logged in, link the session
+            if auth_user_id.is_some() && session.user_id.is_none() {
+                let _ = sqlx::query("UPDATE ai_sessions SET user_id = $1 WHERE id = $2")
+                    .bind(auth_user_id)
+                    .bind(session_id)
+                    .execute(&state.db)
+                    .await;
+            }
+        }
+        _ => {
+            // Create new session in DB
+            let _ = sqlx::query("INSERT INTO ai_sessions (id, user_id) VALUES ($1, $2)")
+                .bind(session_id)
+                .bind(auth_user_id)
+                .execute(&state.db)
+                .await;
+        }
+    }
+
+    // 2. Prepare Messages for AI (same logic)
+    let mut messages = vec![
+        serde_json::json!({
+            "role": "system",
+            "content": format!("You are a proactive wedding assistant. 
+            1. Extract these fields: couple_name_short, bride_name, bride_full_name, bride_father, bride_mother, groom_name, groom_full_name, groom_father, groom_mother, ceremony_date, ceremony_time, ceremony_venue, ceremony_address, reception_date, reception_time, reception_venue, reception_address, quote_text, quote_source.
+            2. Current Form State: {}. Use this to know what's already filled.
+            3. Return a JSON object with:
+               - 'data': The extracted fields (merged with current state).
+               - 'missing': A list of ALL fields that are still empty.
+               - 'reply': A conversational reply in Indonesian. 
+                 - ONLY ask for 2-4 missing fields per turn.
+                 - Prioritize critical fields (Names, Date, Venue).
+                 - Use a friendly 'korek info' tone.
+                 - ALWAYS remind them about media (Gallery/Video) when text fields are nearly complete.
+            4. Use YYYY-MM-DD for dates.
+            5. ONLY return the JSON object.", current_form.to_string())
+        })
+    ];
+
+    for h in &history { messages.push(h.clone()); }
+
+    let user_msg = serde_json::json!({ "role": "user", "content": payload.prompt });
+    messages.push(user_msg.clone());
+    history.push(user_msg);
+
+    let body = serde_json::json!({
+        "model": model,
+        "messages": messages,
+        "temperature": 0.2,
+        "response_format": { "type": "json_object" }
+    });
+
+    let res: Result<reqwest::Response, reqwest::Error> = state.http_client
+        .post(base_url)
+        .header("Authorization", format!("Bearer {}", api_key))
+        .json(&body)
+        .send()
+        .await;
+
+    match res {
+        Ok(resp) => {
+            let json: serde_json::Value = resp.json::<serde_json::Value>().await.unwrap_or_default();
+            let ai_text = json["choices"][0]["message"]["content"]
+                .as_str()
+                .unwrap_or("{}")
+                .to_string();
+            
+            let parsed_ai: serde_json::Value = serde_json::from_str(&ai_text).unwrap_or_default();
+            let ai_reply = parsed_ai["reply"].as_str().unwrap_or("Done!").to_string();
+            
+            history.push(serde_json::json!({ "role": "assistant", "content": ai_reply }));
+            
+            let _ = sqlx::query("UPDATE ai_sessions SET chat_history = $1, form_state = $2, updated_at = NOW() WHERE id = $3")
+                .bind(serde_json::to_value(&history).unwrap_or_default())
+                .bind(&parsed_ai["data"])
+                .bind(session_id)
+                .execute(&state.db)
+                .await;
+
+            let response_text = serde_json::json!({
+                "session_id": session_id,
+                "text": ai_text
+            }).to_string();
+
+            axum::Json(AiGenerateResponse { text: response_text }).into_response()
+        }
+        Err(e) => {
+            (StatusCode::INTERNAL_SERVER_ERROR, format!("AI request failed: {}", e)).into_response()
+        }
+    }
+}
+
+pub async fn get_ai_session(
+    State(state): State<AppState>,
+    axum::extract::Path(id): axum::extract::Path<Uuid>,
+) -> impl IntoResponse {
+    let session: Result<Option<AiSession>, sqlx::Error> = sqlx::query_as::<_, AiSession>("SELECT * FROM ai_sessions WHERE id = $1")
+        .bind(id)
+        .fetch_optional(&state.db)
+        .await;
+
+    match session {
+        Ok(Some(s)) => axum::Json(s).into_response(),
+        Ok(None) => (StatusCode::NOT_FOUND, "Session not found").into_response(),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("DB error: {}", e)).into_response(),
     }
 }

@@ -12,6 +12,13 @@
         </p>
     </div>
 
+    <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;" class="animate__animated animate__fadeInUp">
+        <button type="button" class="btn-ai-consult" onclick="openAiConsult()">
+            <span class="wand-icon">✨</span>
+            <span>Consult with AI Artisan</span>
+        </button>
+    </div>
+
     <!-- Category Filters -->
     <div style="display: flex; justify-content: center; gap: 1rem; margin-bottom: 3rem; flex-wrap: wrap;" class="animate__animated animate__fadeInUp">
         <button type="button" class="filter-chip {% if active_category == "all" %}active{% endif %}" onclick="filterTemplates('all')">All Designs</button>
@@ -238,6 +245,130 @@
         .filter-zone { gap: 0.8rem; }
         .filter-chip { padding: 0.6rem 1.2rem; font-size: 0.75rem; }
     }
+
+    .btn-ai-consult {
+        background: linear-gradient(135deg, #2A1E14 0%, #4A3728 100%);
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 100px;
+        font-family: var(--font-serif);
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        box-shadow: 0 10px 25px rgba(42, 30, 20, 0.2);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .btn-ai-consult:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 15px 35px rgba(42, 30, 20, 0.3);
+    }
+
+    .ai-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.8);
+        backdrop-filter: blur(10px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        padding: 20px;
+    }
+
+    .ai-modal.show { display: flex; }
+
+    .ai-modal-content {
+        background: white;
+        width: 100%;
+        max-width: 600px;
+        border-radius: 40px;
+        overflow: hidden;
+        position: relative;
+        box-shadow: 0 30px 100px rgba(0,0,0,0.5);
+    }
+
+    .ai-chat-header {
+        background: #fdf6f0;
+        padding: 30px;
+        text-align: center;
+        border-bottom: 1px solid #f0e0d0;
+    }
+
+    .ai-chat-body {
+        padding: 30px;
+        height: 400px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .chat-msg {
+        padding: 15px 20px;
+        border-radius: 20px;
+        max-width: 85%;
+        font-size: 0.95rem;
+        line-height: 1.6;
+    }
+
+    .chat-ai {
+        background: #f5f5f5;
+        align-self: flex-start;
+        border-bottom-left-radius: 5px;
+    }
+
+    .chat-user {
+        background: #8E6E53;
+        color: white;
+        align-self: flex-end;
+        border-bottom-right-radius: 5px;
+    }
+
+    .ai-chat-footer {
+        padding: 20px 30px;
+        background: #fafafa;
+        border-top: 1px solid #eee;
+        display: flex;
+        gap: 10px;
+    }
+
+    .ai-input {
+        flex: 1;
+        border: 1px solid #ddd;
+        padding: 12px 20px;
+        border-radius: 50px;
+        outline: none;
+        font-family: inherit;
+    }
+
+    .btn-ai-send {
+        background: #8E6E53;
+        color: white;
+        border: none;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .ai-recommendation-card {
+        background: #fff;
+        border: 2px solid #8E6E53;
+        padding: 15px;
+        border-radius: 20px;
+        margin-top: 10px;
+        display: flex;
+        gap: 15px;
+        align-items: center;
+    }
 </style>
 
 <script>
@@ -260,6 +391,114 @@
         url.searchParams.set('category', category);
         url.searchParams.set('page', '1'); // Reset to page 1 on filter
         window.location.href = url.toString();
+    }
+
+    // AI Recommender JS
+    function openAiConsult() {
+        const modal = document.getElementById('ai-recommender-modal');
+        if (!modal) {
+            const m = document.createElement('div');
+            m.id = 'ai-recommender-modal';
+            m.className = 'ai-modal';
+            m.innerHTML = `
+                <div class="ai-modal-content animate__animated animate__zoomIn">
+                    <div class="ai-chat-header">
+                        <h3 class="serif" style="margin:0; color:#4A3728;">AI Artisan Consultant</h3>
+                        <p style="font-size:0.75rem; color:#999; margin:5px 0 0;">Tell me your wedding vibes, and I'll find your perfect estate.</p>
+                        <button onclick="closeAiConsult()" style="position:absolute; top:20px; right:20px; background:none; border:none; font-size:1.5rem; cursor:pointer; opacity:0.3;">&times;</button>
+                    </div>
+                    <div class="ai-chat-body" id="ai-chat-history">
+                        <div class="chat-msg chat-ai">Welcome! I am the Castellant AI Artisan. How would you describe your dream wedding? (e.g., "We love movies and want something cinematic" or "We want something modern like Instagram")</div>
+                    </div>
+                    <div class="ai-chat-footer">
+                        <input type="text" class="ai-input" id="ai-chat-input" placeholder="Type your vibes here..." onkeypress="if(event.key==='Enter') sendAiMessage()">
+                        <button class="btn-ai-send" onclick="sendAiMessage()">🚀</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(m);
+        }
+        document.getElementById('ai-recommender-modal').classList.add('show');
+    }
+
+    function closeAiConsult() {
+        document.getElementById('ai-recommender-modal').classList.remove('show');
+    }
+
+    async function sendAiMessage() {
+        const input = document.getElementById('ai-chat-input');
+        const history = document.getElementById('ai-chat-history');
+        const vibe = input.value.trim();
+        if (!vibe) return;
+
+        // User message
+        const uMsg = document.createElement('div');
+        uMsg.className = 'chat-msg chat-user';
+        uMsg.innerText = vibe;
+        history.appendChild(uMsg);
+        input.value = '';
+        history.scrollTop = history.scrollHeight;
+
+        // AI Thinking
+        const aiMsg = document.createElement('div');
+        aiMsg.className = 'chat-msg chat-ai';
+        aiMsg.innerText = "... Thinking ...";
+        history.appendChild(aiMsg);
+        history.scrollTop = history.scrollHeight;
+
+        try {
+            const response = await fetch('/api/ai/generate-text', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    prompt: `User is looking for a wedding invitation template. They described their vibe as: "${vibe}". 
+                    Based on these available templates:
+                    - Toktik (TikTok style, dynamic, social)
+                    - Spitapy (Spotify style, music lovers)
+                    - Nitflax (Netflix style, cinematic, series)
+                    - GoJack (Gojek style, ride-hailing app, unique)
+                    - Pinteres (Pinterest style, aesthetic, pins)
+                    - Shoopi (Shopee style, e-commerce, vibrant)
+                    - iPon (iPhone style, sleek, techy)
+                    - BiRil (BeReal style, authentic)
+                    - Kepket (Capcut style, video editor)
+                    
+                    Recommend 1 best template. Explain WHY briefly in 1-2 sentences. 
+                    FORMAT YOUR RESPONSE EXACTLY LIKE THIS:
+                    RECOMMENDATION: [Template Name]
+                    REASON: [Short Reason]
+                    TEMPLATE_ID: [template-id (e.g. trendvibe, loveanthem, cinemarry, pinterlove, etc)]`
+                })
+            });
+
+            const data = await response.json();
+            const lines = data.text.split('\n');
+            let tName = "", tReason = "", tId = "";
+            
+            lines.forEach(l => {
+                if (l.includes('RECOMMENDATION:')) tName = l.replace('RECOMMENDATION:', '').trim();
+                if (l.includes('REASON:')) tReason = l.replace('REASON:', '').trim();
+                if (l.includes('TEMPLATE_ID:')) tId = l.replace('TEMPLATE_ID:', '').trim();
+            });
+
+            if (tId) {
+                aiMsg.innerHTML = `
+                    <div>${tReason}</div>
+                    <div class="ai-recommendation-card">
+                        <div style="flex:1">
+                            <div style="font-weight:700; color:#8E6E53;">${tName}</div>
+                            <div style="font-size:0.75rem; color:#999;">Recommended Estate</div>
+                        </div>
+                        <a href="/create?template=${tId}" class="btn-luxe-primary" style="padding: 8px 15px; font-size: 0.8rem;">Select Now</a>
+                    </div>
+                `;
+            } else {
+                aiMsg.innerText = data.text;
+            }
+            history.scrollTop = history.scrollHeight;
+        } catch (err) {
+            aiMsg.innerText = "I'm sorry, I'm having trouble connecting to the artisan guild. Please try again.";
+        }
     }
 </script>
 {% endblock %}

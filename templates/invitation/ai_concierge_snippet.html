@@ -1,0 +1,166 @@
+<style>
+    /* ── AI CONCIERGE BUBBLE ── */
+    .ai-bubble {
+        position: fixed;
+        bottom: var(--ai-bubble-bottom, 30px);
+        right: var(--ai-bubble-right, 30px);
+        width: 60px;
+        height: 60px;
+        background: var(--ai-bubble-bg, #2A1E14);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        z-index: 9999;
+        transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 2px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .ai-bubble:hover {
+        transform: scale(1.1) rotate(10deg);
+    }
+
+    .ai-bubble svg { width: 28px; height: 28px; }
+
+    .ai-chat-modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.85);
+        backdrop-filter: blur(12px);
+        z-index: 10000;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+
+    .ai-chat-modal.open { display: flex; }
+
+    .ai-chat-content {
+        background: #1a1a1a;
+        width: 100%;
+        max-width: 450px;
+        height: 600px;
+        border-radius: 24px;
+        border: 1px solid #333;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        box-shadow: 0 30px 100px rgba(0,0,0,0.8);
+        font-family: sans-serif;
+    }
+
+    .ai-chat-header {
+        padding: 20px 24px;
+        background: #222;
+        border-bottom: 1px solid #333;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        color: white;
+    }
+
+    .ai-chat-body {
+        flex: 1;
+        padding: 24px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        scrollbar-width: thin;
+        scrollbar-color: #333 transparent;
+    }
+
+    .ai-chat-body::-webkit-scrollbar { width: 6px; }
+    .ai-chat-body::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
+
+    .msg { padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5; max-width: 85%; }
+    .msg-ai { background: #333; color: #eee; align-self: flex-start; border-bottom-left-radius: 4px; }
+    .msg-user { background: var(--ai-chat-primary, #8E6E53); color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
+
+    .ai-chat-footer { padding: 16px 24px; background: #222; border-top: 1px solid #333; display: flex; gap: 10px; }
+    .ai-chat-input { flex: 1; background: #111; border: 1px solid #444; color: white; padding: 10px 16px; border-radius: 30px; outline: none; font-size: 14px; }
+    .ai-chat-send { background: var(--ai-chat-primary, #8E6E53); border: none; color: white; width: 38px; height: 38px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+</style>
+
+<!-- AI GUEST ASSISTANT UI -->
+<div class="ai-bubble" onclick="toggleAiChat()">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 1.54.36 2.98.97 4.29L1 23l6.71-1.97C9.02 21.64 10.46 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.47 0-2.84-.36-4.03-1l-.28-.15-3.86 1.14 1.14-3.86-.15-.28C4.36 14.84 4 13.47 4 12c0-4.41 3.59-8 8-8s8 3.59 8 8-3.59 8-8 8z"/></svg>
+</div>
+
+<div class="ai-chat-modal" id="aiChatModal">
+    <div class="ai-chat-content animate__animated animate__slideInUp">
+        <div class="ai-chat-header">
+            <div style="display:flex; align-items:center; gap:12px">
+                <div style="width:10px; height:10px; background:#46d369; border-radius:50%"></div>
+                <span style="font-weight:700; font-size:14px; letter-spacing:1px">WEDDING CONCIERGE</span>
+            </div>
+            <button onclick="toggleAiChat()" style="background:none; border:none; color:#666; font-size:24px; cursor:pointer">&times;</button>
+        </div>
+        <div class="ai-chat-body" id="aiChatHistory">
+            <div class="msg msg-ai">Hi! I'm your AI Concierge for {{ invitation.bride.name }} & {{ invitation.groom.name }}'s wedding. Ask me anything about the venue, time, or dress code!</div>
+        </div>
+        <div class="ai-chat-footer">
+            <input type="text" class="ai-chat-input" id="aiChatInput" placeholder="Ask a question..." onkeypress="if(event.key==='Enter') sendAiGuestMessage()">
+            <button class="ai-chat-send" onclick="sendAiGuestMessage()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<script id="invitation-context" type="application/json">
+    {{ invitation.to_json_context()|safe }}
+</script>
+
+<script>
+    let isChatOpen = false;
+    const invitationContext = document.getElementById('invitation-context').textContent;
+
+    function toggleAiChat() {
+        isChatOpen = !isChatOpen;
+        document.getElementById('aiChatModal').classList.toggle('open', isChatOpen);
+    }
+
+    async function sendAiGuestMessage() {
+        const input = document.getElementById('aiChatInput');
+        const history = document.getElementById('aiChatHistory');
+        const q = input.value.trim();
+        if (!q) return;
+
+        // User Message
+        const uMsg = document.createElement('div');
+        uMsg.className = 'msg msg-user';
+        uMsg.innerText = q;
+        history.appendChild(uMsg);
+        input.value = '';
+        history.scrollTop = history.scrollHeight;
+
+        // AI Thinking
+        const aiMsg = document.createElement('div');
+        aiMsg.className = 'msg msg-ai';
+        aiMsg.innerText = "... Thinking ...";
+        history.appendChild(aiMsg);
+        history.scrollTop = history.scrollHeight;
+
+        try {
+            const response = await fetch('/api/ai/guest-chat', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    prompt: q,
+                    context: invitationContext
+                })
+            });
+
+            const data = await response.json();
+            aiMsg.innerText = data.text;
+            history.scrollTop = history.scrollHeight;
+        } catch (err) {
+            aiMsg.innerText = "I'm sorry, I'm having trouble connecting to the concierge desk. Please try again.";
+        }
+    }
+</script>

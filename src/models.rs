@@ -47,6 +47,12 @@ pub struct Invitation {
     pub song_url: String,
 }
 
+impl Invitation {
+    pub fn to_json_context(&self) -> String {
+        serde_json::to_string(self).unwrap_or_default()
+    }
+}
+
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Person {
     pub name: String,
@@ -94,4 +100,13 @@ pub struct RsvpForm {
     pub attendance: String,
     pub guests: u8,
     pub message: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, FromRow)]
+pub struct AiSession {
+    pub id: Uuid,
+    pub user_id: Option<Uuid>,
+    pub chat_history: serde_json::Value,
+    pub form_state: serde_json::Value,
+    pub updated_at: DateTime<Utc>,
 }

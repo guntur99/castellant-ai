@@ -24,6 +24,9 @@ pub struct AppState {
     pub is_dev: bool,
     pub mayar_api_key: String,
     pub mayar_base_url: String,
+    pub sumopod_api_key: String,
+    pub sumopod_base_url: String,
+    pub sumopod_model: String,
 }
 
 impl FromRef<AppState> for Key {
@@ -77,6 +80,10 @@ async fn main() {
     let mayar_api_key = env::var("MAYAR_API_KEY").unwrap_or_default();
     let mayar_base_url = env::var("MAYAR_BASE_URL").unwrap_or_else(|_| "https://api.mayar.club/hl/v1/invoice/create".to_string());
 
+    let sumopod_api_key = env::var("SUMOPOD_API_KEY").unwrap_or_default();
+    let sumopod_base_url = env::var("SUMOPOD_BASE_URL").unwrap_or_else(|_| "https://ai.sumopod.com/v1/chat/completions".to_string());
+    let sumopod_model = env::var("SUMOPOD_MODEL").unwrap_or_else(|_| "gemini/gemini-2.5-flash-lite".to_string());
+
     let state = AppState {
         db: db_pool,
         redis: redis_pool,
@@ -86,6 +93,9 @@ async fn main() {
         is_dev,
         mayar_api_key,
         mayar_base_url,
+        sumopod_api_key,
+        sumopod_base_url,
+        sumopod_model,
     };
 
     // build our application with a route
@@ -101,6 +111,10 @@ async fn main() {
         .route("/templates", get(handlers::templates_list))
         .route("/api/invitation", post(handlers::create_invitation))
         .route("/api/preview", post(handlers::preview))
+        .route("/api/ai/generate-text", post(handlers::ai_generate_text))
+        .route("/api/ai/guest-chat", post(handlers::ai_guest_chat))
+        .route("/api/ai/parse-form", post(handlers::ai_parse_form))
+        .route("/api/ai/session/{id}", get(handlers::get_ai_session))
         .route("/sitemap.xml", get(handlers::sitemap))
         .route("/robots.txt", get(|| async { 
             tokio::fs::read_to_string("static/robots.txt").await.unwrap_or_else(|_| "".to_string()) 
