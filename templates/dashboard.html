@@ -1,0 +1,220 @@
+{% extends "site_base.html" %}
+
+{% block title %}Dashboard | Castellant{% endblock %}
+
+{% block site_content %}
+<div class="dashboard-page animate__animated animate__fadeIn">
+    <div class="container">
+        <header class="page-header">
+            <div class="header-content">
+                <h1 class="serif">My Dashboard</h1>
+                <p class="text-muted">Manage your premium invitations and view your recent activity.</p>
+            </div>
+            <div class="header-actions">
+                <a href="/create" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Create New Invitation
+                </a>
+            </div>
+        </header>
+
+        {% if invitations.is_empty() %}
+        <div class="empty-state glass">
+            <div class="empty-icon">✨</div>
+            <h3>No Invitations Yet</h3>
+            <p>You haven't created any digital invitations. Start your first masterpiece now!</p>
+            <a href="/create" class="btn btn-outline mt-4">Create Now</a>
+        </div>
+        {% else %}
+        <div class="invitations-grid">
+            {% for inv in invitations %}
+            <div class="invitation-card glass">
+                <div class="card-header">
+                    <div class="template-badge">{{ inv.template_name }}</div>
+                </div>
+                <div class="card-body">
+                    <h3 class="serif">{{ inv.couple_name_short }}</h3>
+                    <p class="slug-text">/invitation/{{ inv.slug }}</p>
+                    <p class="event-date"><i class="far fa-calendar-alt"></i> {{ inv.event_date }}</p>
+                </div>
+                <div class="card-footer">
+                    <a href="/invitation/{{ inv.slug }}" class="btn-action" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> View
+                    </a>
+                    <a href="/invitation/{{ inv.slug }}/manage" class="btn-action primary">
+                        <i class="fas fa-edit"></i> Manage
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+.dashboard-page {
+    padding: 120px 0 80px;
+    min-height: 80vh;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 4rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.invitations-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+.invitation-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.card-header {
+    margin-bottom: 1.5rem;
+}
+
+.template-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    background: var(--color-accent-rose);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    border-radius: 50px;
+    letter-spacing: 1px;
+}
+
+.card-body {
+    flex-grow: 1;
+}
+
+.slug-text {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin: 4px 0 12px;
+}
+
+.event-date {
+    font-size: 0.85rem;
+    color: var(--color-text-primary);
+    font-weight: 600;
+}
+
+.card-footer {
+    display: flex;
+    gap: 10px;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+.btn-action {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px;
+    border-radius: 12px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    background: rgba(0,0,0,0.03);
+    color: var(--color-text-primary);
+}
+
+.btn-action:hover {
+    background: rgba(0,0,0,0.06);
+}
+
+.btn-action.primary {
+    background: var(--color-accent-red);
+    color: white;
+}
+
+.btn-action.primary:hover {
+    background: #a62323;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(212, 48, 48, 0.2);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 100px 40px;
+    border-radius: 40px;
+}
+
+.empty-icon {
+    font-size: 4rem;
+    margin-bottom: 2rem;
+}
+
+.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+    border-radius: 30px;
+    padding: 2rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: var(--color-accent-red);
+    color: white;
+    border: none;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(212, 48, 48, 0.25);
+}
+
+.btn-outline {
+    border: 1px solid rgba(0,0,0,0.1);
+    color: var(--color-text-primary);
+    background: transparent;
+}
+
+.btn-outline:hover {
+    background: rgba(0,0,0,0.03);
+}
+
+@media (max-width: 768px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+    .header-actions {
+        width: 100%;
+    }
+    .btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
+{% endblock %}

@@ -127,6 +127,41 @@
     .btn-luxury:hover::after {
         transform: translateX(10px);
     }
+    .user-profile-trigger {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        padding: 4px 12px 4px 4px;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+        background: rgba(0,0,0,0.03);
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+    .user-profile-trigger:hover {
+        background: rgba(0,0,0,0.06);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    .user-profile-trigger .user-avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid white;
+    }
+    .user-profile-trigger .user-name {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+    }
+    #user-dropdown {
+        min-width: 200px;
+    }
+    #user-dropdown i {
+        width: 20px;
+        margin-right: 8px;
+        opacity: 0.7;
+    }
 </style>
 <script>
     const translations = {
@@ -758,12 +793,22 @@
 
         <div class="user-control" style="display: flex; align-items: center;">
             {% if let Some(u) = user %}
-            <div class="user-profile">
-                <div class="user-info desktop-only">
-                    <span class="user-name">{{ u.name.as_deref().unwrap_or("User") }}</span>
-                    <a href="/auth/logout" class="user-logout" data-i18n="nav.logout">Logout</a>
+            <div class="dropdown">
+                <div class="user-profile-trigger" id="user-menu-btn" onclick="toggleDropdown('user-dropdown')">
+                    <img src="{{ u.avatar_url.as_deref().unwrap_or("") }}" alt="Avatar" class="user-avatar">
+                    <span class="user-name desktop-only">{{ u.name.as_deref().unwrap_or("User") }}</span>
                 </div>
-                <img src="{{ u.avatar_url.as_deref().unwrap_or("") }}" alt="Avatar" class="user-avatar">
+                <div class="dropdown-content" id="user-dropdown">
+                    <div style="padding: 12px 14px; border-bottom: 1px solid #eee; margin-bottom: 4px;">
+                        <div style="font-size: 0.7rem; color: #999; text-transform: uppercase; letter-spacing: 1px;">Signed in as</div>
+                        <div style="font-size: 0.85rem; font-weight: 700; color: var(--color-text-primary); overflow: hidden; text-overflow: ellipsis;">{{ u.email }}</div>
+                    </div>
+                    <a href="/dashboard"><i class="fas fa-th-large"></i> Dashboard</a>
+                    <a href="/profile"><i class="fas fa-user-circle"></i> Profile</a>
+                    <a href="/settings"><i class="fas fa-sliders-h"></i> Settings</a>
+                    <hr style="margin: 4px 8px; border: 0; border-top: 1px solid #eee;">
+                    <a href="/auth/logout" data-i18n="nav.logout" style="color: #ff4757;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </div>
             </div>
             {% else %}
             {% if is_dev %}

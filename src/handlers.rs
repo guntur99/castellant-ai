@@ -647,7 +647,7 @@ pub async fn create_invitation(
         amount,
         description: format!("Digital Invitation - {} Plan ({})", plan_name.to_uppercase(), fields.get("couple_name_short").unwrap()),
         mobile: "08123456789".to_string(), // Fallback mobile
-        redirect_url: format!("{}/invitation/{}", std::env::var("APP_BASE_URL").unwrap_or_else(|_| "http://localhost:3000".to_string()), slug),
+        redirect_url: format!("{}/invitation/{}/manage", std::env::var("APP_BASE_URL").unwrap_or_else(|_| "http://localhost:3000".to_string()), slug),
     };
 
     let mayar_res = state.http_client
@@ -1169,6 +1169,138 @@ pub struct WeddingTransJakartaTemplate {
     pub is_dev: bool,
 }
 
+#[derive(Template)]
+#[template(path = "invitation/manage.html")]
+pub struct ManageInvitationTemplate {
+    pub invitation: Invitation,
+    pub all_templates: Vec<TemplateMetadata>,
+    pub is_dev: bool,
+    pub user: Option<User>,
+}
+
+#[derive(Template)]
+#[template(path = "dashboard.html")]
+pub struct DashboardTemplate {
+    pub invitations: Vec<Invitation>,
+    pub user: Option<User>,
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "profile.html")]
+pub struct ProfileTemplate {
+    pub user: Option<User>,
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "settings.html")]
+pub struct SettingsTemplate {
+    pub user: Option<User>,
+    pub is_dev: bool,
+}
+
+pub async fn dashboard(
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user_id = if let Some(cookie) = jar.get("user_id") {
+        Uuid::parse_str(cookie.value()).ok()
+    } else {
+        None
+    };
+
+    if let Some(uid) = user_id {
+        let user = sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
+            .bind(uid)
+            .fetch_optional(&state.db)
+            .await
+            .unwrap_or(None);
+
+        let invitations = sqlx::query_as::<_, InvitationRow>("SELECT * FROM invitations WHERE user_id = $1 ORDER BY created_at DESC")
+            .bind(uid)
+            .fetch_all(&state.db)
+            .await
+            .unwrap_or_default()
+            .into_iter()
+            .map(|r| Invitation {
+                slug: r.slug,
+                template_name: r.template_name,
+                couple_name_short: r.couple_name_short,
+                bride: from_value(r.bride_data).unwrap_or_default(),
+                groom: from_value(r.groom_data).unwrap_or_default(),
+                event_date: r.event_date,
+                ceremony: from_value(r.ceremony_data).unwrap_or_default(),
+                reception: from_value(r.reception_data).unwrap_or_default(),
+                quote: from_value(r.quote_data).unwrap_or_default(),
+                gallery_images: Vec::new(),
+                gift_accounts: Vec::new(),
+                song_url: String::new(),
+            })
+            .collect();
+
+        HtmlTemplate(DashboardTemplate {
+            invitations,
+            user,
+            is_dev: state.is_dev,
+        }).into_response()
+    } else {
+        Redirect::to("/auth/google").into_response()
+    }
+}
+
+pub async fn profile(
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user_id = if let Some(cookie) = jar.get("user_id") {
+        Uuid::parse_str(cookie.value()).ok()
+    } else {
+        None
+    };
+
+    if let Some(uid) = user_id {
+        let user = sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
+            .bind(uid)
+            .fetch_optional(&state.db)
+            .await
+            .unwrap_or(None);
+
+        HtmlTemplate(ProfileTemplate {
+            user,
+            is_dev: state.is_dev,
+        }).into_response()
+    } else {
+        Redirect::to("/auth/google").into_response()
+    }
+}
+
+pub async fn settings(
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user_id = if let Some(cookie) = jar.get("user_id") {
+        Uuid::parse_str(cookie.value()).ok()
+    } else {
+        None
+    };
+
+    if let Some(uid) = user_id {
+        let user = sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
+            .bind(uid)
+            .fetch_optional(&state.db)
+            .await
+            .unwrap_or(None);
+
+        HtmlTemplate(SettingsTemplate {
+            user,
+            is_dev: state.is_dev,
+        }).into_response()
+    } else {
+        Redirect::to("/auth/google").into_response()
+    }
+}
+
 pub async fn home(
     State(state): State<AppState>,
     jar: PrivateCookieJar,
@@ -1249,7 +1381,8 @@ pub async fn invitation_detail(
                 .collect();
 
             let invitation = Invitation {
-                slug: row.slug,
+                slug: row.slug.clone(),
+                template_name: row.template_name.clone(),
                 couple_name_short: row.couple_name_short,
                 bride: from_value(row.bride_data).unwrap(),
                 groom: from_value(row.groom_data).unwrap(),
@@ -1348,6 +1481,7 @@ pub async fn invitation_detail(
 
                 let invitation = Invitation {
                     slug: slug.clone(),
+                    template_name: template_name.to_string(),
                     couple_name_short: couple_name.to_string(),
                     bride: Person {
                         name: "Nazma".to_string(),
@@ -1443,6 +1577,166 @@ pub async fn invitation_detail(
     }
 }
 
+pub async fn manage_invitation(
+    Path(slug): Path<String>,
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let mut user_id = None;
+    if let Some(cookie) = jar.get("user_id") {
+        if let Ok(uid) = Uuid::parse_str(cookie.value()) {
+            user_id = Some(uid);
+        }
+    }
+
+    if user_id.is_none() {
+        return Redirect::to("/").into_response();
+    }
+
+    let row = sqlx::query_as::<_, InvitationRow>(
+        "SELECT * FROM invitations WHERE slug = $1 AND user_id = $2"
+    )
+    .bind(&slug)
+    .bind(user_id.unwrap())
+    .fetch_optional(&state.db)
+    .await
+    .unwrap();
+
+    match row {
+        Some(row) => {
+            let invitation = Invitation {
+                slug: row.slug,
+                template_name: row.template_name,
+                couple_name_short: row.couple_name_short,
+                bride: from_value(row.bride_data).unwrap_or_default(),
+                groom: from_value(row.groom_data).unwrap_or_default(),
+                event_date: row.event_date,
+                ceremony: from_value(row.ceremony_data).unwrap_or_default(),
+                reception: from_value(row.reception_data).unwrap_or_default(),
+                quote: from_value(row.quote_data).unwrap_or_default(),
+                gallery_images: Vec::new(),
+                gift_accounts: Vec::new(),
+                song_url: String::new(),
+            };
+
+            let user = if let Some(cookie) = jar.get("user_id") {
+                if let Ok(uid) = Uuid::parse_str(cookie.value()) {
+                    sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
+                        .bind(uid)
+                        .fetch_optional(&state.db)
+                        .await
+                        .unwrap_or(None)
+                } else { None }
+            } else { None };
+
+            let all_templates = get_all_templates();
+            HtmlTemplate(ManageInvitationTemplate { 
+                invitation, 
+                all_templates, 
+                is_dev: state.is_dev,
+                user,
+            }).into_response()
+        },
+        None => (StatusCode::NOT_FOUND, "Invitation not found or unauthorized").into_response(),
+    }
+}
+
+pub async fn update_invitation(
+    Path(slug): Path<String>,
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+    Form(fields): Form<HashMap<String, String>>,
+) -> impl IntoResponse {
+    let mut user_id = None;
+    if let Some(cookie) = jar.get("user_id") {
+        if let Ok(uid) = Uuid::parse_str(cookie.value()) {
+            user_id = Some(uid);
+        }
+    }
+
+    if user_id.is_none() {
+        return (StatusCode::UNAUTHORIZED, "Please login first").into_response();
+    }
+
+    let row = sqlx::query_as::<_, InvitationRow>(
+        "SELECT * FROM invitations WHERE slug = $1 AND user_id = $2"
+    )
+    .bind(&slug)
+    .bind(user_id.unwrap())
+    .fetch_optional(&state.db)
+    .await
+    .unwrap();
+
+    if row.is_none() {
+        return (StatusCode::NOT_FOUND, "Invitation not found").into_response();
+    }
+
+    let mut row = row.unwrap();
+    
+    if let Some(val) = fields.get("couple_name_short") {
+        row.couple_name_short = val.clone();
+    }
+    if let Some(val) = fields.get("event_date") {
+        row.event_date = val.clone();
+    }
+    
+    // Update JSON Data
+    let mut bride: Person = from_value(row.bride_data).unwrap();
+    if let Some(val) = fields.get("bride_name") { bride.name = val.clone(); }
+    if let Some(val) = fields.get("bride_full_name") { bride.full_name = val.clone(); }
+
+    let mut groom: Person = from_value(row.groom_data).unwrap();
+    if let Some(val) = fields.get("groom_name") { groom.name = val.clone(); }
+    if let Some(val) = fields.get("groom_full_name") { groom.full_name = val.clone(); }
+
+    sqlx::query(
+        "UPDATE invitations SET couple_name_short = $1, event_date = $2, bride_data = $3, groom_data = $4 WHERE id = $5"
+    )
+    .bind(&row.couple_name_short)
+    .bind(&row.event_date)
+    .bind(json!(bride))
+    .bind(json!(groom))
+    .bind(row.id)
+    .execute(&state.db)
+    .await
+    .unwrap();
+
+    Redirect::to(&format!("/invitation/{}/manage", slug)).into_response()
+}
+
+pub async fn update_theme(
+    Path(slug): Path<String>,
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+    Form(fields): Form<HashMap<String, String>>,
+) -> impl IntoResponse {
+    let mut user_id = None;
+    if let Some(cookie) = jar.get("user_id") {
+        if let Ok(uid) = Uuid::parse_str(cookie.value()) {
+            user_id = Some(uid);
+        }
+    }
+
+    if user_id.is_none() {
+        return (StatusCode::UNAUTHORIZED, "Please login first").into_response();
+    }
+
+    let template_name = fields.get("template_name").cloned().unwrap_or_default();
+    
+    sqlx::query(
+        "UPDATE invitations SET template_name = $1 WHERE slug = $2 AND user_id = $3"
+    )
+    .bind(template_name)
+    .bind(&slug)
+    .bind(user_id.unwrap())
+    .execute(&state.db)
+    .await
+    .unwrap();
+
+    // Trigger full page reload for HTMX
+    [("HX-Refresh", "true")].into_response()
+}
+
 pub async fn rsvp(
     State(state): State<AppState>,
     Form(payload): Form<RsvpForm>
@@ -1524,6 +1818,7 @@ pub async fn preview(
 ) -> impl IntoResponse {
     let invitation = Invitation {
         slug: "preview".to_string(),
+        template_name: payload.template_name.clone(),
         couple_name_short: payload.couple_name_short,
         bride: Person {
             name: payload.bride_name,

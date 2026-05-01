@@ -32,9 +32,10 @@ pub struct InvitationRow {
 }
 
 // Template Views (what the frontend sees)
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct Invitation {
     pub slug: String,
+    pub template_name: String,
     pub couple_name_short: String,
     pub bride: Person,
     pub groom: Person,
@@ -53,7 +54,7 @@ impl Invitation {
     }
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct Person {
     pub name: String,
     pub full_name: String,
@@ -62,7 +63,7 @@ pub struct Person {
     pub image_url: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct EventDetails {
     pub date: String,
     pub time: String,
@@ -71,13 +72,13 @@ pub struct EventDetails {
     pub maps_url: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone)]
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct Quote {
     pub text: String,
     pub source: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, Clone, FromRow)]
+#[derive(Debug, Serialize, Deserialize, Clone, FromRow, Default)]
 pub struct GiftAccount {
     pub bank_name: String,
     pub account_number: String,

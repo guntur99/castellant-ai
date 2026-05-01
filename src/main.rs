@@ -101,6 +101,9 @@ async fn main() {
     // build our application with a route
     let app = Router::new()
         .route("/", get(handlers::home))
+        .route("/dashboard", get(handlers::dashboard))
+        .route("/profile", get(handlers::profile))
+        .route("/settings", get(handlers::settings))
         .route("/invitation/{slug}", get(handlers::invitation_detail))
         .route("/api/rsvp", post(handlers::rsvp))
         .route("/auth/google", get(handlers::google_login))
@@ -115,6 +118,8 @@ async fn main() {
         .route("/api/ai/guest-chat", post(handlers::ai_guest_chat))
         .route("/api/ai/parse-form", post(handlers::ai_parse_form))
         .route("/api/ai/session/{id}", get(handlers::get_ai_session))
+        .route("/invitation/{slug}/manage", get(handlers::manage_invitation).post(handlers::update_invitation))
+        .route("/invitation/{slug}/update-theme", post(handlers::update_theme))
         .route("/sitemap.xml", get(handlers::sitemap))
         .route("/robots.txt", get(|| async { 
             tokio::fs::read_to_string("static/robots.txt").await.unwrap_or_else(|_| "".to_string()) 

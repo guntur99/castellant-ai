@@ -1,0 +1,311 @@
+{% extends "site_base.html" %}
+
+{% block title %}Manage Invitation - {{ invitation.couple_name_short }} | Castellant{% endblock %}
+
+{% block site_content %}
+<div class="manage-dashboard animate__animated animate__fadeIn">
+    <div class="container">
+        <header class="dashboard-header">
+            <div class="header-content">
+                <h1 class="serif">Manage Your Invitation</h1>
+                <p class="text-muted">Customize your digital invitation and choose your preferred theme.</p>
+            </div>
+            <div class="header-actions">
+                <a href="/invitation/{{ invitation.slug }}" class="btn btn-outline" target="_blank">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                    View Live
+                </a>
+            </div>
+        </header>
+
+        <div class="dashboard-grid">
+            <!-- Sidebar: Theme Selection -->
+            <aside class="dashboard-sidebar">
+                <div class="card glass">
+                    <h3 class="serif mb-4">Choose Theme</h3>
+                    <div class="theme-selector-grid">
+                        {% for template in all_templates %}
+                        <div class="theme-option {% if template.id == invitation.template_name %}active{% endif %}" 
+                             hx-post="/invitation/{{ invitation.slug }}/update-theme" 
+                             hx-vals='{"template_name": "{{ template.id }}"}'
+                             hx-target="body"
+                             hx-swap="none">
+                            <div class="theme-preview">
+                                <img src="{{ template.preview_img }}" alt="{{ template.title }}">
+                                <div class="theme-overlay">
+                                    <span class="btn-select">Select</span>
+                                </div>
+                            </div>
+                            <div class="theme-info">
+                                <span class="theme-title">{{ template.title }}</span>
+                                <span class="theme-badge">{{ template.plan }}</span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Main Content: Edit Details -->
+            <main class="dashboard-main">
+                <div class="card glass">
+                    <h3 class="serif mb-4">Invitation Details</h3>
+                    <form action="/invitation/{{ invitation.slug }}/manage" method="POST" class="manage-form">
+                        <div class="form-section">
+                            <h4 class="section-title">General Info</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="couple_name_short">Couple Name (Short)</label>
+                                    <input type="text" id="couple_name_short" name="couple_name_short" value="{{ invitation.couple_name_short }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="event_date">Event Date</label>
+                                    <input type="text" id="event_date" name="event_date" value="{{ invitation.event_date }}" placeholder="e.g. 12 Desember 2026" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h4 class="section-title">The Bride</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="bride_name">Nickname</label>
+                                    <input type="text" id="bride_name" name="bride_name" value="{{ invitation.bride.name }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="bride_full_name">Full Name</label>
+                                    <input type="text" id="bride_full_name" name="bride_full_name" value="{{ invitation.bride.full_name }}" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <h4 class="section-title">The Groom</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="groom_name">Nickname</label>
+                                    <input type="text" id="groom_name" name="groom_name" value="{{ invitation.groom.name }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="groom_full_name">Full Name</label>
+                                    <input type="text" id="groom_full_name" name="groom_full_name" value="{{ invitation.groom.full_name }}" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </div>
+                    </form>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
+
+<style>
+.manage-dashboard {
+    padding: 120px 0 60px;
+    background: var(--color-bg-primary);
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    gap: 2rem;
+}
+
+@media (max-width: 992px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.dashboard-sidebar .card {
+    position: sticky;
+    top: 100px;
+}
+
+.theme-selector-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    max-height: 600px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.theme-option {
+    cursor: pointer;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.theme-option:hover {
+    transform: translateY(-4px);
+}
+
+.theme-option.active {
+    border-color: var(--color-accent-red);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.theme-preview {
+    position: relative;
+    aspect-ratio: 9/16;
+}
+
+.theme-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.theme-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.theme-option:hover .theme-overlay {
+    opacity: 1;
+}
+
+.btn-select {
+    background: white;
+    color: black;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.theme-info {
+    padding: 8px;
+    background: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.theme-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.theme-badge {
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    background: #f0f0f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.form-section {
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--color-accent-rose);
+    display: inline-block;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+@media (max-width: 576px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--color-text-muted);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background: rgba(255,255,255,0.8);
+    font-family: inherit;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--color-accent-rose);
+    box-shadow: 0 0 0 4px rgba(255, 127, 127, 0.1);
+}
+
+.form-actions {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+.btn-primary {
+    background: var(--color-accent-red);
+    color: white;
+    border: none;
+    padding: 1rem 3rem;
+    border-radius: 100px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 20px rgba(255, 71, 87, 0.2);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(255, 71, 87, 0.3);
+}
+
+.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+    border-radius: 40px;
+    padding: 3rem;
+}
+</style>
+{% endblock %}
