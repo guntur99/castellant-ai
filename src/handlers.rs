@@ -117,7 +117,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/trendvibe_preview.png".to_string(),
             category: "social".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "loveanthem".to_string(),
@@ -126,7 +126,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/loveanthem_preview.png".to_string(),
             category: "entertainment".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "cinemarry".to_string(),
@@ -135,7 +135,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/cinemarry_preview.png".to_string(),
             category: "entertainment".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "shopee-live-wedding".to_string(),
@@ -144,7 +144,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/shopee-live-wedding_preview.png".to_string(),
             category: "e-commerce".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "tiktok-live-wedding".to_string(),
@@ -153,7 +153,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/tiktok-live-wedding_preview.png".to_string(),
             category: "entertainment".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "we-uber".to_string(),
@@ -162,7 +162,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/we-uber_preview.png".to_string(),
             category: "on-demand".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "wedding-disney".to_string(),
@@ -171,7 +171,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/wedding-disney_preview.png".to_string(),
             category: "entertainment".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "wedding-facebook".to_string(),
@@ -180,7 +180,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/wedding-facebook_preview.png".to_string(),
             category: "social".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "wedding-iphone-theme".to_string(),
@@ -189,7 +189,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/wedding-iphone-theme_preview.png".to_string(),
             category: "productivity".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "wedding-netflix-v2".to_string(),
@@ -198,7 +198,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/wedding-netflix-v2_preview.png".to_string(),
             category: "entertainment".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "wedding-prime".to_string(),
@@ -207,7 +207,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/wedding-prime_preview.png".to_string(),
             category: "e-commerce".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "wedding-wrath-v2".to_string(),
@@ -216,7 +216,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/wedding-wrath-v2_preview.png".to_string(),
             category: "entertainment".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "cairide".to_string(),
@@ -225,7 +225,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/cairide_preview.png".to_string(),
             category: "on-demand".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "pinterlove".to_string(),
@@ -234,7 +234,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/pinterlove_preview.png".to_string(),
             category: "social".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "wedding-applemusic".to_string(),
@@ -243,7 +243,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/wedding-applemusic_preview.png".to_string(),
             category: "entertainment".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "we-capcut".to_string(),
@@ -252,7 +252,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/we-capcut_preview.png".to_string(),
             category: "productivity".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "bereal-wedding".to_string(),
@@ -261,7 +261,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/bereal-wedding_preview.png".to_string(),
             category: "social".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "instagram-live-wedding".to_string(),
@@ -270,7 +270,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/instagram-live-wedding_preview.png".to_string(),
             category: "social".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "qris-wedding".to_string(),
@@ -279,7 +279,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/qris-wedding_preview.png".to_string(),
             category: "e-commerce".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "wedding-grab".to_string(),
@@ -288,7 +288,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/wedding-grab_preview.png".to_string(),
             category: "on-demand".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "figma-wedding".to_string(),
@@ -297,7 +297,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/figma-wedding_preview.png".to_string(),
             category: "productivity".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "we-manga".to_string(),
@@ -306,7 +306,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/we-manga_preview.png".to_string(),
             category: "entertainment".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "we-nintendo-switch".to_string(),
@@ -315,7 +315,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/we-nintendo-switch_preview.png".to_string(),
             category: "entertainment".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "wedding-kai-v2".to_string(),
@@ -324,7 +324,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/wedding-kai-v2_preview.png".to_string(),
             category: "on-demand".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "wedding-minecraft".to_string(),
@@ -333,7 +333,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/wedding-minecraft_preview.png".to_string(),
             category: "entertainment".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "wedding-zoom-v2".to_string(),
@@ -342,7 +342,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/wedding-zoom-v2_preview.png".to_string(),
             category: "productivity".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "we-vscode".to_string(),
@@ -351,7 +351,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/we-vscode_preview.png".to_string(),
             category: "productivity".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "we-discord".to_string(),
@@ -360,7 +360,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/we-discord_preview.png".to_string(),
             category: "social".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "we-webtoon".to_string(),
@@ -369,7 +369,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/we-webtoon_preview.png".to_string(),
             category: "entertainment".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "wedding-whatsapp-theme".to_string(),
@@ -378,7 +378,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/wedding-whatsapp-theme_preview.png".to_string(),
             category: "social".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "we-mixue".to_string(),
@@ -387,7 +387,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/we-mixue_preview.png".to_string(),
             category: "social".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "we-playstation".to_string(),
@@ -396,7 +396,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/we-playstation_preview.png".to_string(),
             category: "entertainment".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "we-threads-app".to_string(),
@@ -405,7 +405,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/we-threads-app_preview.png".to_string(),
             category: "social".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "wedding-alfamart".to_string(),
@@ -414,7 +414,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/wedding-alfamart_preview.png".to_string(),
             category: "e-commerce".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "wedding-kai".to_string(),
@@ -423,7 +423,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/wedding-kai_preview.png".to_string(),
             category: "on-demand".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "wedding-medium".to_string(),
@@ -432,7 +432,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/wedding-medium_preview.png".to_string(),
             category: "entertainment".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
             id: "wedding-transjakarta".to_string(),
@@ -441,7 +441,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             price: 50000,
             preview_img: "/static/img/wedding-transjakarta_preview.png".to_string(),
             category: "on-demand".to_string(),
-            plan: "premium".to_string(),
+            plan: "NOBLE".to_string(),
         },
     ]
 }
@@ -631,10 +631,10 @@ pub async fn create_invitation(
         "source": fields.get("quote_source").cloned().unwrap_or_else(|| "Ali Imran: 190".to_string())
     });
 
-    let plan_name = fields.get("plan_name").cloned().unwrap_or_else(|| "BASIC".to_string());
+    let plan_name = fields.get("plan_name").cloned().unwrap_or_else(|| "NOBLE".to_string());
     let amount = match plan_name.as_str() {
-        "PRO" => 100000,
-        "ULTIMATE" => 300000,
+        "ROYAL" => 100000,
+        "DYNASTY" => 300000,
         _ => 50000,
     };
 
@@ -1255,7 +1255,7 @@ pub async fn dashboard(
                 gallery_images: Vec::new(),
                 gift_accounts: Vec::new(),
                 song_url: String::new(),
-                plan_name: r.plan_name.unwrap_or_else(|| "BASIC".to_string()),
+                plan_name: r.plan_name.unwrap_or_else(|| "NOBLE".to_string()),
             })
             .collect();
 
@@ -1455,7 +1455,7 @@ pub async fn invitation_detail(
                 gallery_images,
                 gift_accounts,
                 song_url,
-                plan_name: row.plan_name.unwrap_or_else(|| "BASIC".to_string()),
+                plan_name: row.plan_name.unwrap_or_else(|| "NOBLE".to_string()),
             };
 
             match template_name.as_str() {
@@ -1592,7 +1592,7 @@ pub async fn invitation_detail(
                         },
                     ],
                     song_url,
-                    plan_name: "BASIC".to_string(),
+                    plan_name: "NOBLE".to_string(),
                 };
                 
                 match template_name {
@@ -1681,7 +1681,7 @@ pub async fn manage_invitation(
                 gallery_images: Vec::new(),
                 gift_accounts: Vec::new(),
                 song_url: String::new(),
-                plan_name: row.plan_name.unwrap_or_else(|| "BASIC".to_string()),
+                plan_name: row.plan_name.unwrap_or_else(|| "NOBLE".to_string()),
             };
 
             let user = if let Some(cookie) = jar.get("user_id") {
@@ -2012,7 +2012,7 @@ pub async fn preview(
             },
         ],
         song_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3".to_string(),
-        plan_name: "BASIC".to_string(),
+        plan_name: "NOBLE".to_string(),
     };
 
     match payload.template_name.as_str() {
@@ -2415,7 +2415,7 @@ pub async fn add_group(
     .await
     .unwrap();
 
-    let plan_name = plan_name.unwrap_or_else(|| "BASIC".to_string());
+    let plan_name = plan_name.unwrap_or_else(|| "NOBLE".to_string());
 
     // Check if group already exists (for updates)
     let existing = sqlx::query!("SELECT id FROM invitation_groups WHERE invitation_id = $1 AND name = $2", invitation_id, payload.name)
@@ -2432,9 +2432,9 @@ pub async fn add_group(
             .unwrap();
 
         let limit = match plan_name.as_str() {
-            "PRO" => 7,
-            "ULTIMATE" => 999,
-            _ => 3, // BASIC or default
+            "ROYAL" => 7,
+            "DYNASTY" => 999,
+            _ => 3, // NOBLE
         };
 
         if count >= limit as i64 {

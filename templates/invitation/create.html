@@ -477,7 +477,7 @@
                             
                             <div class="plan-selector-grid">
                                 <label class="plan-card">
-                                    <input type="radio" name="plan_name" value="BASIC" checked onchange="updateSelectedPlan('BASIC', 50000)">
+                                    <input type="radio" name="plan_name" value="NOBLE" checked onchange="updateSelectedPlan('NOBLE', 50000)">
                                     <div class="plan-card-content">
                                         <div class="plan-badge">Most Popular</div>
                                         <h4 class="serif">NOBLE</h4>
@@ -491,7 +491,7 @@
                                 </label>
 
                                 <label class="plan-card">
-                                    <input type="radio" name="plan_name" value="PRO" onchange="updateSelectedPlan('PRO', 100000)">
+                                    <input type="radio" name="plan_name" value="ROYAL" onchange="updateSelectedPlan('ROYAL', 100000)">
                                     <div class="plan-card-content">
                                         <h4 class="serif">ROYAL</h4>
                                         <div class="plan-price">Rp 100k</div>
@@ -504,7 +504,7 @@
                                 </label>
 
                                 <label class="plan-card">
-                                    <input type="radio" name="plan_name" value="ULTIMATE" onchange="updateSelectedPlan('ULTIMATE', 300000)">
+                                    <input type="radio" name="plan_name" value="DYNASTY" onchange="updateSelectedPlan('DYNASTY', 300000)">
                                     <div class="plan-card-content">
                                         <h4 class="serif">DYNASTY</h4>
                                         <div class="plan-price">Rp 300k</div>
@@ -1777,7 +1777,7 @@
 <script>
     let isSlugManuallyEdited = false;
     let currentCategory = 'all';
-    let templateLimit = 3; // Default for BASIC
+    let templateLimit = 3; // Default for NOBLE
 
     function nextStep(step) {
         console.log("Navigating to step:", step);
@@ -1914,17 +1914,17 @@
         const planDisplay = document.querySelector('.plan-selection-name');
         if (planDisplay) {
             const planNames = {
-                'BASIC': 'Noble',
-                'PRO': 'Royal',
-                'ULTIMATE': 'Dynasty'
+                'NOBLE': 'Noble',
+                'ROYAL': 'Royal',
+                'DYNASTY': 'Dynasty'
             };
             planDisplay.textContent = (planNames[name] || name) + " Collection";
         }
 
         // Update template limit
-        if (name === 'BASIC') templateLimit = 3;
-        else if (name === 'PRO') templateLimit = 7;
-        else if (name === 'ULTIMATE') templateLimit = 999;
+        if (name === 'NOBLE') templateLimit = 3;
+        else if (name === 'ROYAL') templateLimit = 7;
+        else if (name === 'DYNASTY') templateLimit = 999;
 
         validateTemplateSelection(); // Re-validate with new limit
     }
@@ -1941,11 +1941,11 @@
         if (countBadge) countBadge.innerText = selected.length;
         if (limitStatus) {
             const planNames = {
-                'BASIC': 'NOBLE',
-                'PRO': 'ROYAL',
-                'ULTIMATE': 'DYNASTY'
+                'NOBLE': 'NOBLE',
+                'ROYAL': 'ROYAL',
+                'DYNASTY': 'DYNASTY'
             };
-            const currentPlan = document.querySelector('input[name="plan_name"]:checked')?.value || 'BASIC';
+            const currentPlan = document.querySelector('input[name="plan_name"]:checked')?.value || 'NOBLE';
             const planNameDisplay = planNames[currentPlan] || currentPlan;
             limitStatus.innerText = `${selected.length} / ${templateLimit === 999 ? '∞' : templateLimit} ${planNameDisplay} SELECTED`;
         }
@@ -2123,18 +2123,18 @@
         // Plan logic
         const selectedPlanElement = document.querySelector('input[name="plan_name"]:checked');
         
-        let planDisplay = "Basic Collection";
+        let planDisplay = "Noble Collection";
         let priceDisplay = "Rp 50.000";
         let basePrice = "50000";
 
         if (selectedPlanElement) {
             const planVal = selectedPlanElement.value;
-            if (planVal === 'PRO') {
-                planDisplay = "Pro Collection";
+            if (planVal === 'ROYAL') {
+                planDisplay = "Royal Collection";
                 priceDisplay = "Rp 100.000";
                 basePrice = "100000";
-            } else if (planVal === 'ULTIMATE') {
-                planDisplay = "Ultimate Collection";
+            } else if (planVal === 'DYNASTY') {
+                planDisplay = "Dynasty Collection";
                 priceDisplay = "Rp 300.000";
                 basePrice = "300000";
             }
@@ -2294,6 +2294,17 @@
             if (tpl) {
                 const radio = document.querySelector(`input[name="template_name"][value="${tpl}"]`);
                 if (radio) radio.checked = true;
+            }
+
+            // Auto-select plan
+            const plan = urlParams.get('plan');
+            if (plan) {
+                const radio = document.querySelector(`input[name="plan_name"][value="${plan}"]`);
+                if (radio) {
+                    radio.checked = true;
+                    const priceMap = { 'NOBLE': 50000, 'ROYAL': 100000, 'DYNASTY': 300000 };
+                    updateSelectedPlan(plan, priceMap[plan] || 50000);
+                }
             }
 
             validateTemplateSelection();
