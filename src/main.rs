@@ -125,6 +125,8 @@ async fn main() {
         .route("/invitation/{slug}/guests/{guest_id}/update-template", post(handlers::update_guest_template))
         .route("/invitation/{slug}/groups", post(handlers::add_group))
         .route("/invitation/{slug}/groups/{group_id}/delete", post(handlers::delete_group))
+        .route("/api/payment/create-upgrade/{slug}", post(handlers::create_upgrade_payment))
+        .route("/api/payment/webhook", post(handlers::mayar_webhook))
         .route("/sitemap.xml", get(handlers::sitemap))
         .route("/robots.txt", get(|| async { 
             tokio::fs::read_to_string("static/robots.txt").await.unwrap_or_else(|_| "".to_string()) 

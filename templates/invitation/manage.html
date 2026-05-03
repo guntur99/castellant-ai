@@ -1652,25 +1652,41 @@
         });
     }
 
-    function processUpgrade(plan) {
+    async function processUpgrade(plan) {
+        const slug = "{{ invitation.slug }}";
+        
         Swal.fire({
             title: '<span class="serif">Memproses Upgrade...</span>',
-            text: `Anda akan dialihkan ke halaman pembayaran untuk paket ${plan}.`,
+            text: `Menyiapkan halaman pembayaran untuk paket ${plan}.`,
             icon: 'info',
-            timer: 2000,
+            allowOutsideClick: false,
             showConfirmButton: false,
-            background: '#fff',
-            borderRadius: '30px'
-        }).then(() => {
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        try {
+            const response = await fetch(`/api/payment/create-upgrade/${slug}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ target_plan: plan })
+            });
+
+            const data = await response.json();
+            if (data.status === 'success' && data.link) {
+                window.location.href = data.link;
+            } else {
+                throw new Error('Gagal membuat invoice');
+            }
+        } catch (error) {
             Swal.fire({
-                title: '<span class="serif">Coming Soon</span>',
-                text: 'Fitur pembayaran akan segera hadir! Hubungi admin untuk upgrade manual.',
-                icon: 'success',
-                background: '#fff',
-                borderRadius: '30px',
+                title: 'Error',
+                text: 'Terjadi kesalahan saat memproses pembayaran. Silakan coba lagi nanti.',
+                icon: 'error',
                 confirmButtonColor: '#8E6E53'
             });
-        });
+        }
     }
 </script>
 

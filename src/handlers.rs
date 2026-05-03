@@ -24,6 +24,8 @@ struct MayarInvoiceRequest {
     description: String,
     mobile: String,
     redirect_url: String,
+    #[serde(rename = "extraData")]
+    extra_data: HashMap<String, String>,
 }
 
 #[derive(Deserialize)]
@@ -80,9 +82,10 @@ pub struct AiGenerateRequest {
     pub context: Option<String>,
 }
 
-#[derive(Serialize)]
+#[derive(Serialize, Deserialize)]
 pub struct AiGenerateResponse {
     pub text: String,
+    pub session_id: Option<Uuid>,
 }
 
 #[derive(Serialize, Clone)]
@@ -644,6 +647,10 @@ pub async fn create_invitation(
         .await
         .unwrap();
 
+    let mut extra_data = HashMap::new();
+    extra_data.insert("invitation_slug".to_string(), slug.clone());
+    extra_data.insert("target_plan".to_string(), plan_name.clone());
+
     // Call Mayar API
     let mayar_req = MayarInvoiceRequest {
         name: user_row.name.clone().unwrap_or_else(|| "Customer".to_string()),
@@ -652,6 +659,7 @@ pub async fn create_invitation(
         description: format!("Digital Invitation - {} Plan ({})", plan_name.to_uppercase(), fields.get("couple_name_short").unwrap()),
         mobile: "08123456789".to_string(), // Fallback mobile
         redirect_url: format!("{}/invitation/{}/manage", std::env::var("APP_BASE_URL").unwrap_or_else(|_| "http://localhost:3000".to_string()), slug),
+        extra_data,
     };
 
     let mayar_res = state.http_client
@@ -2099,7 +2107,7 @@ pub async fn ai_generate_text(
                 .unwrap_or("Failed to generate content")
                 .to_string();
             
-            Json(AiGenerateResponse { text }).into_response()
+            Json(AiGenerateResponse { text, session_id: None }).into_response()
         }
         Err(e) => {
             (StatusCode::INTERNAL_SERVER_ERROR, format!("AI request failed: {}", e)).into_response()
@@ -2128,6 +2136,11 @@ pub async fn ai_guest_chat(
                 "You are a helpful Wedding Concierge. Use the following wedding details to answer guest questions. 
                 Be polite, warm, and helpful. If you don't know the answer, politely ask them to contact the couple directly.
                 
+                STRICT BOUNDARIES: 
+                - You ONLY answer questions about this specific wedding. 
+                - DO NOT answer general questions, political questions, or technical questions.
+                - If the question is not about this wedding, politely redirect the guest.
+
                 WEDDING DETAILS:
                 {}", 
                 invitation_context
@@ -2160,7 +2173,7 @@ pub async fn ai_guest_chat(
                 .unwrap_or("I'm sorry, I couldn't process your request.")
                 .to_string();
             
-            Json(AiGenerateResponse { text }).into_response()
+            Json(AiGenerateResponse { text, session_id: None }).into_response()
         }
         Err(e) => {
             (StatusCode::INTERNAL_SERVER_ERROR, format!("AI request failed: {}", e)).into_response()
@@ -2231,7 +2244,11 @@ pub async fn ai_parse_form(
             "content": format!("You are a proactive wedding assistant. 
             1. Extract these fields: couple_name_short, bride_name, bride_full_name, bride_father, bride_mother, groom_name, groom_full_name, groom_father, groom_mother, ceremony_date, ceremony_time, ceremony_venue, ceremony_address, reception_date, reception_time, reception_venue, reception_address, quote_text, quote_source.
             2. Current Form State: {}. Use this to know what's already filled.
-            3. Return a JSON object with:
+            3. STRICT BOUNDARIES: 
+               - You are ONLY a Wedding Invitation Assistant for Castellant.
+               - DO NOT answer questions about politics, general knowledge, math, coding, or anything unrelated to this wedding form or Castellant services.
+               - If the user goes off-topic, politely redirect them back to completing their wedding invitation.
+            4. Return a JSON object with:
                - 'data': The extracted fields (merged with current state).
                - 'missing': A list of ALL fields that are still empty.
                - 'reply': A conversational reply in Indonesian. 
@@ -2239,8 +2256,9 @@ pub async fn ai_parse_form(
                  - Prioritize critical fields (Names, Date, Venue).
                  - Use a friendly 'korek info' tone.
                  - ALWAYS remind them about media (Gallery/Video) when text fields are nearly complete.
-            4. Use YYYY-MM-DD for dates.
-            5. ONLY return the JSON object.", current_form.to_string())
+            5. Use YYYY-MM-DD for dates.
+            6. If the user asks for random, dummy, or placeholder data (e.g., 'isi random', 'data dummy'), fill ALL empty fields with realistic dummy wedding data.
+            7. ONLY return the JSON object.", current_form.to_string())
         })
     ];
 
@@ -2267,12 +2285,24 @@ pub async fn ai_parse_form(
     match res {
         Ok(resp) => {
             let json: serde_json::Value = resp.json::<serde_json::Value>().await.unwrap_or_default();
-            let ai_text = json["choices"][0]["message"]["content"]
+            let mut ai_text = json["choices"][0]["message"]["content"]
                 .as_str()
                 .unwrap_or("{}")
                 .to_string();
             
-            let parsed_ai: serde_json::Value = serde_json::from_str(&ai_text).unwrap_or_default();
+            // Sanitize: Remove markdown code blocks if present
+            if ai_text.starts_with("```json") {
+                ai_text = ai_text.trim_start_matches("```json").trim_end_matches("```").trim().to_string();
+            } else if ai_text.starts_with("```") {
+                ai_text = ai_text.trim_start_matches("```").trim_end_matches("```").trim().to_string();
+            }
+
+            let parsed_ai: serde_json::Value = serde_json::from_str(&ai_text).unwrap_or_else(|_| serde_json::json!({
+                "reply": "Maaf, saya mengalami kendala teknis saat memproses data. Bisa diulang?",
+                "data": {},
+                "missing": []
+            }));
+            
             let ai_reply = parsed_ai["reply"].as_str().unwrap_or("Done!").to_string();
             
             history.push(serde_json::json!({ "role": "assistant", "content": ai_reply }));
@@ -2284,12 +2314,10 @@ pub async fn ai_parse_form(
                 .execute(&state.db)
                 .await;
 
-            let response_text = serde_json::json!({
-                "session_id": session_id,
-                "text": ai_text
-            }).to_string();
-
-            axum::Json(AiGenerateResponse { text: response_text }).into_response()
+            Json(AiGenerateResponse { 
+                text: ai_text,
+                session_id: Some(session_id)
+            }).into_response()
         }
         Err(e) => {
             (StatusCode::INTERNAL_SERVER_ERROR, format!("AI request failed: {}", e)).into_response()
@@ -2456,10 +2484,140 @@ pub async fn add_group(
     Redirect::to(&format!("/invitation/{}/manage#groups", slug)).into_response()
 }
 
+
 pub async fn delete_group(
     Path((slug, group_id)): Path<(String, Uuid)>,
     State(state): State<AppState>,
 ) -> impl IntoResponse {
     sqlx::query("DELETE FROM invitation_groups WHERE id = $1").bind(group_id).execute(&state.db).await.unwrap();
     Redirect::to(&format!("/invitation/{}/manage#groups", slug)).into_response()
+}
+
+pub async fn create_upgrade_payment(
+    Path(slug): Path<String>,
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+    Json(payload): Json<CreateUpgradePaymentRequest>,
+) -> impl IntoResponse {
+    let user_id = if let Some(cookie) = jar.get("user_id") {
+        Uuid::parse_str(cookie.value()).ok()
+    } else { None };
+
+    if user_id.is_none() { return (StatusCode::UNAUTHORIZED, "Login required").into_response(); }
+
+    let invitation: InvitationRow = sqlx::query_as("SELECT * FROM invitations WHERE slug = $1 AND user_id = $2")
+        .bind(&slug)
+        .bind(user_id.unwrap())
+        .fetch_one(&state.db)
+        .await
+        .unwrap();
+
+    let amount = match payload.target_plan.as_str() {
+        "ROYAL" => 100000,
+        "DYNASTY" => 300000,
+        _ => 50000,
+    };
+
+    let user_row = sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
+        .bind(user_id.unwrap())
+        .fetch_one(&state.db)
+        .await
+        .unwrap();
+
+    let mut extra_data = HashMap::new();
+    extra_data.insert("invitation_slug".to_string(), slug.clone());
+    extra_data.insert("target_plan".to_string(), payload.target_plan.clone());
+
+    let mayar_req = MayarInvoiceRequest {
+        name: user_row.name.unwrap_or_else(|| "Customer".to_string()),
+        email: user_row.email,
+        amount,
+        description: format!("Upgrade to {} Plan - {}", payload.target_plan, invitation.couple_name_short),
+        mobile: "08123456789".to_string(),
+        redirect_url: format!("{}/invitation/{}/manage", std::env::var("APP_BASE_URL").unwrap_or_else(|_| "http://localhost:3000".to_string()), slug),
+        extra_data,
+    };
+
+    let mayar_res = state.http_client
+        .post(&state.mayar_base_url)
+        .header("Authorization", format!("Bearer {}", state.mayar_api_key))
+        .json(&mayar_req)
+        .send()
+        .await
+        .unwrap()
+        .json::<MayarInvoiceResponse>()
+        .await
+        .unwrap();
+
+    if let Some(data) = mayar_res.data {
+        sqlx::query("UPDATE invitations SET payment_link = $1, payment_invoice_id = $2 WHERE id = $3")
+            .bind(&data.link)
+            .bind(&data.id)
+            .bind(invitation.id)
+            .execute(&state.db)
+            .await
+            .unwrap();
+        
+        Json(json!({ "status": "success", "link": data.link })).into_response()
+    } else {
+        (StatusCode::INTERNAL_SERVER_ERROR, "Failed to create invoice").into_response()
+    }
+}
+
+#[derive(Deserialize)]
+pub struct CreateUpgradePaymentRequest {
+    pub target_plan: String,
+}
+
+#[derive(Deserialize)]
+pub struct MayarWebhookPayload {
+    pub event: String,
+    pub data: MayarWebhookData,
+}
+
+#[derive(Deserialize)]
+pub struct MayarWebhookData {
+    #[allow(dead_code)]
+    pub id: String,
+    #[allow(dead_code)]
+    pub status: serde_json::Value,
+    #[allow(dead_code)]
+    pub amount: i32,
+    #[serde(rename = "extraData")]
+    pub extra_data: HashMap<String, String>,
+}
+
+pub async fn mayar_webhook(
+    State(state): State<AppState>,
+    headers: axum::http::HeaderMap,
+    Json(payload): Json<MayarWebhookPayload>,
+) -> impl IntoResponse {
+    // Verify Webhook Token
+    let token = headers.get("Authorization")
+        .or_else(|| headers.get("X-Mayar-Token"))
+        .and_then(|h| h.to_str().ok());
+    
+    let expected_token = std::env::var("MAYAR_WEBHOOK_SECRET").unwrap_or_default();
+    
+    if token != Some(&expected_token) && token != Some(&format!("Bearer {}", expected_token)) {
+        tracing::warn!("Unauthorized webhook attempt");
+        return StatusCode::UNAUTHORIZED;
+    }
+
+    if payload.event == "payment.received" {
+        if let Some(slug) = payload.data.extra_data.get("invitation_slug") {
+            if let Some(plan) = payload.data.extra_data.get("target_plan") {
+                sqlx::query("UPDATE invitations SET plan_name = $1, payment_link = NULL, payment_invoice_id = NULL WHERE slug = $2")
+                    .bind(plan)
+                    .bind(slug)
+                    .execute(&state.db)
+                    .await
+                    .unwrap();
+                
+                tracing::info!("Payment success for {}: Plan upgraded to {}", slug, plan);
+            }
+        }
+    }
+
+    StatusCode::OK
 }
