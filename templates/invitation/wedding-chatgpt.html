@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anita & Zarda — ChatGPT Wedding</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500;600&family=Playfair+Display:ital,wght@1,400;1,600&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #212121;
+  --sidebar:   #171717;
+  --surface:   #2F2F2F;
+  --surface2:  #3C3C3C;
+  --border:    rgba(255,255,255,.1);
+  --border2:   rgba(255,255,255,.06);
+  --text:      #ECECEC;
+  --muted:     #8E8EA0;
+  --dim:       #5A5A6E;
+  --gpt-green: #10A37F;
+  --gpt-light: #19C37D;
+  --user-bg:   #2F2F2F;
+  --gpt-bg:    #212121;
+  --sans:      'Sora', system-ui, sans-serif;
+  --serif:     'Playfair Display', Georgia, serif;
+  --mono:      'JetBrains Mono', monospace;
+}
+
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box }
+html { scroll-behavior:smooth }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  overflow: hidden;
+  height: 100dvh;
+  max-height: 100dvh;
+  display: flex;
+  cursor: none;
+}
+@supports not (height: 100dvh) {
+  body { height: 100vh; max-height: 100vh; }
+}
+
+/* ── CURSOR ── */
+.cursor {
+  position: fixed; pointer-events:none; z-index:99999;
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--gpt-green);
+  transform: translate(-50%,-50%);
+  transition: width .2s, height .2s, opacity .2s;
+  top: -40px; left: -40px;
+  mix-blend-mode: screen;
+}
+.cursor-ring {
+  position: fixed; pointer-events:none; z-index:99998;
+  width: 32px; height: 32px; border-radius: 50%;
+  border: 1.5px solid rgba(16,163,127,.4);
+  transform: translate(-50%,-50%);
+  transition: all .18s ease;
+  top: -40px; left: -40px;
+}
+body.hov .cursor { width:18px; height:18px }
+body.hov .cursor-ring { width:50px; height:50px; border-color:rgba(16,163,127,.6) }
+
+/* ══════════════════════════════════════
+   OPENING — ChatGPT Start Screen
+══════════════════════════════════════ */
+#opening {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--bg);
+  display: flex; flex-direction:column; align-items:center; justify-content:flex-start;
+  padding: 40px 24px 32px;
+  overflow-y: auto;
+  transition: opacity .8s ease, transform .7s ease;
+  scrollbar-width: none;
+}
+#opening::-webkit-scrollbar { display:none }
+#opening.hide { opacity:0; transform:scale(1.02); pointer-events:none }
+
+/* Center content vertically only when there's enough space */
+.op-center-wrap {
+  display: flex; flex-direction:column; align-items:center;
+  width:100%; min-height:100%;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.op-logo {
+  display: flex; align-items:center; gap:14px; margin-bottom:28px;
+  animation: logo-drop .6s cubic-bezier(.34,1.56,.64,1) .3s both;
+}
+@keyframes logo-drop { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+.op-logo-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  background: var(--gpt-green);
+  display: flex; align-items:center; justify-content:center;
+  position: relative; overflow: hidden;
+  flex-shrink: 0;
+}
+.op-logo-icon svg { width:26px; height:26px; fill:#fff }
+.op-logo-text { font-size: 20px; font-weight: 600; color: var(--text); letter-spacing: -.02em }
+.op-logo-text span { color: var(--gpt-green) }
+
+.op-headline {
+  font-family: var(--serif); font-style:italic;
+  font-size: clamp(26px,6vw,48px); text-align:center; line-height:1.1;
+  color: var(--text); margin-bottom: 8px;
+  animation: fade-up .7s ease .5s both;
+}
+.op-headline em { color:var(--gpt-green); font-style:italic }
+.op-sub {
+  font-size:14px; color:var(--muted); text-align:center; margin-bottom:28px; font-weight:300;
+  animation: fade-up .7s ease .6s both;
+}
+@keyframes fade-up { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+/* Model selector */
+.op-model-row {
+  display:flex; align-items:center; gap:8px; margin-bottom:24px;
+  animation: fade-up .7s ease .7s both;
+  flex-wrap: wrap; justify-content:center;
+}
+.op-model-badge {
+  background: var(--surface); border:1px solid var(--border);
+  border-radius:8px; padding:7px 14px;
+  display:flex; align-items:center; gap:8px;
+  font-size:12px; color:var(--text); font-weight:400; cursor:none;
+  transition: border-color .2s;
+}
+.op-model-badge:hover { border-color:rgba(16,163,127,.5) }
+.op-model-dot { width:7px; height:7px; border-radius:50%; background:var(--gpt-green); flex-shrink:0 }
+.op-model-arrow { color:var(--muted); font-size:10px }
+
+/* Starter prompts */
+.op-starters {
+  display: grid; grid-template-columns:1fr 1fr; gap:8px;
+  max-width: 560px; width:100%; margin-bottom:24px;
+  animation: fade-up .7s ease .8s both;
+}
+@media(max-width:480px){ .op-starters{grid-template-columns:1fr;gap:6px} }
+.op-starter {
+  background: var(--surface); border:1px solid var(--border);
+  border-radius:10px; padding:12px 14px; cursor:none;
+  transition:all .2s; text-align:left;
+}
+.op-starter:hover { border-color:rgba(16,163,127,.5); background:rgba(16,163,127,.05) }
+.op-starter-icon { font-size:16px; margin-bottom:4px; display:block }
+.op-starter-title { font-size:13px; font-weight:500; color:var(--text); margin-bottom:1px }
+.op-starter-sub { font-size:11px; color:var(--muted); font-weight:300 }
+
+/* Input bar */
+.op-input-wrap {
+  width:100%; max-width:600px;
+  animation: fade-up .7s ease .9s both;
+}
+.op-input-box {
+  background: var(--surface); border:1px solid var(--border);
+  border-radius:14px; padding:14px 52px 14px 16px;
+  display:flex; align-items:flex-end; gap:10px; position:relative;
+  box-shadow: 0 4px 24px rgba(0,0,0,.3);
+  transition: border-color .2s;
+}
+.op-input-box:hover { border-color:rgba(16,163,127,.4) }
+.op-input-text { flex:1; font-size:14px; color:var(--muted); font-family:var(--sans); font-weight:300; min-width:0; overflow:hidden; white-space:nowrap; text-overflow:ellipsis; }
+.op-input-cursor { display:inline-block; width:1.5px; height:17px; background:var(--gpt-green); vertical-align:middle; margin-left:1px; animation:blink 1.1s step-end infinite }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+.op-send-btn {
+  position:absolute; right:10px; bottom:10px;
+  width:34px; height:34px; border-radius:8px;
+  background:var(--gpt-green); border:none; cursor:none;
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; font-size:15px;
+  transition:all .2s; box-shadow:0 4px 16px rgba(16,163,127,.3);
+}
+.op-send-btn:hover { background:var(--gpt-light); transform:scale(1.05) }
+.op-send-btn.loading { animation:spin-btn 1s linear infinite }
+@keyframes spin-btn { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+.op-dear {
+  margin-top:20px; text-align:center;
+  animation: fade-up .7s ease 1s both;
+}
+.op-dear-label { font-size:11px; color:var(--dim); letter-spacing:.2em; font-family:var(--mono); margin-bottom:4px }
+.op-dear-name { font-family:var(--serif); font-style:italic; font-size:20px; color:var(--gpt-green) }
+
+/* ══════════════════════════════════════
+   MAIN — ChatGPT Interface
+══════════════════════════════════════ */
+#main { display:flex; width:100%; height:100dvh; max-height:100dvh; opacity:0; transition:opacity .5s ease .2s; overflow:hidden; }
+#main.show { opacity:1 }
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: 260px; flex-shrink:0;
+  background: var(--sidebar);
+  border-right: 1px solid var(--border2);
+  display: flex; flex-direction:column;
+  padding: 12px;
+  transform: translateX(-100%);
+  transition: transform .5s cubic-bezier(.34,1.56,.64,1) 1s;
+  position: relative; z-index:10;
+  height: 100%;
+}
+.sidebar.show { transform:translateX(0) }
+@media(max-width:768px){
+  .sidebar { position:fixed; top:0; bottom:0; left:0; z-index:200; transform:translateX(-100%); height:100dvh; }
+  .sidebar.show { transform:translateX(-100%) }
+  .sidebar.mobile-open { transform:translateX(0) }
+}
+
+.sb-header { display:flex; align-items:center; justify-content:space-between; padding:8px 4px; margin-bottom:16px }
+.sb-logo { display:flex; align-items:center; gap:10px; cursor:none }
+.sb-logo-icon { width:28px; height:28px; border-radius:8px; background:var(--gpt-green); display:flex; align-items:center; justify-content:center }
+.sb-logo-icon svg { width:16px; height:16px; fill:#fff }
+.sb-logo-text { font-size:15px; font-weight:600; color:var(--text) }
+.sb-new-btn { width:32px; height:32px; border-radius:8px; border:none; background:rgba(255,255,255,.06); color:var(--muted); cursor:none; display:flex; align-items:center; justify-content:center; font-size:16px; transition:all .2s }
+.sb-new-btn:hover { background:rgba(255,255,255,.1); color:var(--text) }
+
+.sb-search { background:rgba(255,255,255,.06); border:1px solid var(--border2); border-radius:8px; padding:8px 12px; display:flex; align-items:center; gap:8px; margin-bottom:16px; cursor:none }
+.sb-search-icon { color:var(--muted); font-size:14px; flex-shrink:0 }
+.sb-search-text { font-size:13px; color:var(--muted); font-weight:300 }
+
+.sb-section-label { font-family:var(--mono); font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:var(--dim); padding:4px 8px; margin-bottom:4px }
+
+.sb-conv {
+  padding:8px 10px; border-radius:8px; cursor:none; transition:background .15s;
+  display:flex; align-items:center; gap:10px; margin-bottom:2px;
+}
+.sb-conv:hover { background:rgba(255,255,255,.06) }
+.sb-conv.active { background:rgba(16,163,127,.12); border:1px solid rgba(16,163,127,.2) }
+.sb-conv-icon { font-size:14px; flex-shrink:0 }
+.sb-conv-text { font-size:13px; color:var(--muted); flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:300 }
+.sb-conv.active .sb-conv-text { color:var(--text) }
+
+.sb-footer { margin-top:auto; border-top:1px solid var(--border2); padding-top:12px }
+.sb-user { display:flex; align-items:center; gap:10px; padding:8px; border-radius:8px; cursor:none; transition:background .15s }
+.sb-user:hover { background:rgba(255,255,255,.06) }
+.sb-user-ava { width:32px; height:32px; border-radius:50%; background:var(--gpt-green); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:600; color:#fff; flex-shrink:0 }
+.sb-user-name { font-size:13px; font-weight:500; color:var(--text) }
+.sb-user-plan { font-size:11px; color:var(--gpt-green); font-weight:300 }
+
+/* ── CHAT AREA ── */
+.chat-area {
+  flex: 1; display:flex; flex-direction:column;
+  overflow: hidden; position:relative;
+  min-width: 0;
+  height: 100%;
+}
+
+/* Topbar */
+.chat-topbar {
+  display:flex; align-items:center; gap:12px; padding:12px 20px;
+  border-bottom:1px solid var(--border2);
+  background: var(--bg); flex-shrink:0; position:relative; z-index:5;
+}
+.topbar-menu { display:none; width:32px; height:32px; border-radius:8px; border:none; background:transparent; color:var(--muted); cursor:none; font-size:18px; align-items:center; justify-content:center; transition:all .2s }
+@media(max-width:768px){ .topbar-menu{display:flex} }
+.topbar-menu:hover { background:rgba(255,255,255,.06); color:var(--text) }
+.chat-model-selector {
+  display:flex; align-items:center; gap:6px; cursor:none;
+  background:transparent; border:none; color:var(--text); font-family:var(--sans);
+  font-size:14px; font-weight:500; padding:6px 10px; border-radius:8px;
+  transition:background .2s;
+}
+.chat-model-selector:hover { background:rgba(255,255,255,.06) }
+.chat-model-selector svg { width:14px; height:14px; fill:var(--muted) }
+.model-badge { background:rgba(16,163,127,.15); border:1px solid rgba(16,163,127,.3); color:var(--gpt-green); border-radius:6px; padding:2px 8px; font-size:11px; font-family:var(--mono); letter-spacing:.05em }
+
+.topbar-right { margin-left:auto; display:flex; align-items:center; gap:8px }
+/* Music mini */
+.music-mini {
+  display:flex; align-items:center; gap:8px; cursor:none;
+  background:rgba(16,163,127,.1); border:1px solid rgba(16,163,127,.2);
+  border-radius:20px; padding:5px 12px; transition:all .2s;
+}
+.music-mini:hover { background:rgba(16,163,127,.18) }
+.mm-vinyl { width:20px; height:20px; border-radius:50%; position:relative; flex-shrink:0; animation:spin 4s linear infinite paused }
+.mm-vinyl.spinning { animation-play-state:running }
+.mm-vinyl::after { content:''; position:absolute; width:6px; height:6px; background:var(--bg); border-radius:50%; top:50%; left:50%; transform:translate(-50%,-50%) }
+.mm-title { font-size:11px; color:var(--gpt-green); font-weight:500; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap }
+.mm-play { width:20px; height:20px; border-radius:50%; border:none; background:var(--gpt-green); color:#fff; font-size:9px; cursor:none; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:transform .2s }
+.mm-play:hover { transform:scale(1.1) }
+@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+/* Share btn */
+.topbar-share { background:rgba(255,255,255,.06); border:1px solid var(--border); border-radius:8px; padding:6px 14px; font-size:13px; color:var(--text); cursor:none; font-family:var(--sans); transition:all .2s; display:flex; align-items:center; gap:6px }
+.topbar-share:hover { background:rgba(255,255,255,.1) }
+
+/* ── MESSAGES ── */
+.chat-messages {
+  flex:1; overflow-y:auto; scroll-behavior:smooth;
+  scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.1) transparent;
+}
+.chat-messages::-webkit-scrollbar { width:4px }
+.chat-messages::-webkit-scrollbar-track { background:transparent }
+.chat-messages::-webkit-scrollbar-thumb { background:rgba(255,255,255,.1); border-radius:2px }
+
+/* Message row */
+.msg-row { padding:20px 0; display:flex; justify-content:center }
+.msg-inner { width:100%; max-width:720px; padding:0 24px; display:flex; gap:16px; align-items:flex-start }
+.msg-row.user .msg-inner { flex-direction:row-reverse }
+
+/* Avatars */
+.msg-ava { width:32px; height:32px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:600; margin-top:2px; color:#fff }
+.gpt-ava { background:var(--gpt-green); }
+.gpt-ava svg { width:18px; height:18px; fill:#fff }
+.user-ava { background:linear-gradient(135deg,#7C3AED,#4F46E5); font-size:12px }
+
+/* Bubble */
+.msg-bubble { flex:1; min-width:0; overflow:hidden }
+.msg-row.user .msg-bubble { display:flex; justify-content:flex-end }
+.user-bubble {
+  background: var(--surface); border:1px solid var(--border2);
+  border-radius:18px 18px 4px 18px; padding:12px 18px;
+  font-size:15px; color:var(--text); max-width:80%; font-weight:300; line-height:1.6;
+  animation: bubble-in .3s ease; word-break:break-word;
+}
+@keyframes bubble-in { from{opacity:0;transform:translateY(8px) scale(.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+.gpt-bubble { font-size:15px; color:var(--text); line-height:1.75; font-weight:300; animation:bubble-in .3s ease; word-break:break-word; overflow-wrap:break-word; }
+
+/* Markdown-style GPT content */
+.gpt-bubble h2 { font-family:var(--serif); font-style:italic; font-size:clamp(20px,3.5vw,26px); color:var(--text); margin:24px 0 12px; font-weight:400 }
+.gpt-bubble h3 { font-size:15px; font-weight:600; color:var(--text); margin:16px 0 8px; letter-spacing:.01em }
+.gpt-bubble p { margin-bottom:14px; color:#CECECE }
+.gpt-bubble strong { color:var(--text); font-weight:600 }
+.gpt-bubble em { color:var(--gpt-green); font-style:normal; font-weight:500 }
+.gpt-bubble ul { margin:8px 0 14px 18px }
+.gpt-bubble li { margin-bottom:6px; color:#CECECE }
+.gpt-bubble hr { border:none; border-top:1px solid var(--border); margin:20px 0 }
+.gpt-bubble blockquote { border-left:3px solid var(--gpt-green); padding:10px 16px; margin:16px 0; color:var(--muted); font-style:italic; background:rgba(16,163,127,.05); border-radius:0 8px 8px 0 }
+.gpt-bubble code { background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:2px 8px; font-family:var(--mono); font-size:13px; color:var(--gpt-green) }
+.gpt-bubble pre { background:var(--surface2); border:1px solid var(--border); border-radius:12px; padding:16px; margin:16px 0; overflow-x:auto }
+.gpt-bubble pre code { background:none; border:none; padding:0; font-size:13px; color:#AADFB4 }
+
+/* Typing indicator */
+.typing-indicator { display:flex; align-items:center; gap:4px; padding:4px 0 }
+.typing-dot { width:7px; height:7px; border-radius:50%; background:var(--muted); animation:typing .8s ease-in-out infinite }
+.typing-dot:nth-child(2) { animation-delay:.15s }
+.typing-dot:nth-child(3) { animation-delay:.3s }
+@keyframes typing { 0%,80%,100%{transform:translateY(0);opacity:.5} 40%{transform:translateY(-6px);opacity:1} }
+
+/* Message actions */
+.msg-actions { display:flex; gap:4px; margin-top:10px; opacity:0; transition:opacity .2s }
+.gpt-bubble:hover .msg-actions, .msg-row:hover .msg-actions { opacity:1 }
+.msg-action { background:transparent; border:none; color:var(--muted); cursor:none; padding:5px 8px; border-radius:6px; font-size:13px; font-family:var(--sans); transition:all .15s; display:flex; align-items:center; gap:4px }
+.msg-action:hover { background:rgba(255,255,255,.06); color:var(--text) }
+.msg-action.liked { color:var(--gpt-green) }
+
+/* Source badge */
+.source-badge { display:inline-flex; align-items:center; gap:5px; background:rgba(16,163,127,.1); border:1px solid rgba(16,163,127,.2); border-radius:20px; padding:4px 12px; font-size:11px; color:var(--gpt-green); font-family:var(--mono); margin:4px 4px 0 0; letter-spacing:.05em; cursor:none; transition:background .15s; }
+.source-badge:hover { background:rgba(16,163,127,.2); }
+
+/* Inline card widgets */
+.gpt-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; overflow:hidden; margin:14px 0 }
+.gpt-card-header { padding:12px 16px; border-bottom:1px solid var(--border2); display:flex; align-items:center; gap:10px; font-size:13px; font-weight:500 }
+.gpt-card-icon { font-size:16px }
+.gpt-card-body { padding:16px }
+
+/* Event detail row */
+.ev-row { display:flex; align-items:flex-start; gap:10px; margin-bottom:10px }
+.ev-icon { width:28px; height:28px; border-radius:8px; background:rgba(16,163,127,.1); border:1px solid rgba(16,163,127,.2); display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0 }
+.ev-text { font-size:14px; color:#CECECE; line-height:1.5; font-weight:300 }
+.ev-map-btn { display:inline-flex; align-items:center; gap:6px; margin-top:12px; background:var(--gpt-green); color:#fff; border:none; border-radius:8px; padding:9px 18px; font-size:13px; font-family:var(--sans); cursor:none; transition:all .2s; text-decoration:none; font-weight:500 }
+.ev-map-btn:hover { background:var(--gpt-light); transform:translateY(-1px) }
+
+/* Countdown inline */
+.cd-inline { display:flex; gap:0; border:1px solid var(--border); border-radius:12px; overflow:hidden; margin:14px 0 }
+.cd-cell { flex:1; text-align:center; padding:16px 8px; border-right:1px solid var(--border2) }
+.cd-cell:last-child { border-right:none }
+.cd-n { font-family:var(--mono); font-size:clamp(22px,4vw,32px); font-weight:700; color:var(--gpt-green); line-height:1; margin-bottom:4px }
+.cd-u { font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--dim) }
+
+/* Gallery grid inline */
+.gpt-gallery { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin:14px 0; border-radius:12px; overflow:hidden; max-width:100% }
+.gpt-gallery-cell { aspect-ratio:1; overflow:hidden; cursor:none; position:relative; background:var(--surface2) }
+.gpt-gallery-cell:nth-child(1) { grid-column:span 2; aspect-ratio:auto; min-height:180px }
+.gpt-gallery-cell img { width:100%; height:100%; object-fit:cover; transition:transform .4s,filter .3s; display:block }
+.gpt-gallery-cell:hover img { transform:scale(1.06); filter:brightness(.8) }
+.gpt-gallery-overlay { position:absolute; inset:0; background:rgba(0,0,0,.4); opacity:0; transition:opacity .3s; display:flex; align-items:center; justify-content:center }
+.gpt-gallery-cell:hover .gpt-gallery-overlay { opacity:1 }
+.gpt-gallery-zoom { color:#fff; font-size:20px }
+.gpt-gallery-more { position:absolute; inset:0; background:rgba(0,0,0,.7); display:flex; align-items:center; justify-content:center; font-size:18px; font-weight:600; color:#fff }
+
+/* Video embed inline */
+.gpt-video { border-radius:12px; overflow:hidden; margin:14px 0; position:relative; background:#000 }
+video.inline-vid { width:100%; display:block; max-height:300px; object-fit:cover }
+.vid-play-overlay { position:absolute; inset:0; background:rgba(0,0,0,.35); display:flex; align-items:center; justify-content:center; cursor:none; transition:opacity .25s }
+.vid-play-overlay.gone { opacity:0; pointer-events:none }
+.vid-play-circle { width:60px; height:60px; border-radius:50%; background:rgba(255,255,255,.92); display:flex; align-items:center; justify-content:center; font-size:22px; transition:transform .2s }
+.vid-play-circle:hover { transform:scale(1.08) }
+.vid-bar { background:rgba(0,0,0,.8); padding:8px 14px; display:flex; align-items:center; gap:10px }
+.vb-btn { width:28px; height:28px; border-radius:6px; border:none; background:rgba(255,255,255,.08); color:var(--text); font-size:12px; cursor:none; display:flex; align-items:center; justify-content:center; transition:background .15s; flex-shrink:0 }
+.vb-btn:hover { background:rgba(255,255,255,.15) }
+.vb-prog { flex:1; height:3px; background:rgba(255,255,255,.15); border-radius:2px; cursor:pointer; position:relative }
+.vb-fill { height:100%; background:var(--gpt-green); border-radius:2px; width:0%; transition:width .5s linear }
+.vb-time { font-family:var(--mono); font-size:10px; color:var(--muted); flex-shrink:0 }
+
+/* Music Player card */
+.music-card { background:var(--surface); border:1px solid var(--border); border-radius:16px; overflow:hidden; margin:14px 0 }
+.mc-top { padding:20px 20px 0 }
+.mc-vinyl-row { display:flex; gap:16px; align-items:center; margin-bottom:16px }
+.mc-vinyl { width:64px; height:64px; border-radius:50%; flex-shrink:0; position:relative; animation:spin 5s linear infinite paused; box-shadow:0 6px 24px rgba(0,0,0,.4) }
+.mc-vinyl.spinning { animation-play-state:running }
+.mc-vinyl::after { content:''; position:absolute; width:16px; height:16px; background:var(--surface); border-radius:50%; top:50%; left:50%; transform:translate(-50%,-50%); z-index:2 }
+.mc-info { flex:1; min-width:0 }
+.mc-track { font-size:15px; font-weight:500; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-bottom:3px }
+.mc-artist { font-size:13px; color:var(--muted); font-weight:300 }
+.mc-badge { display:inline-flex; align-items:center; gap:5px; background:rgba(16,163,127,.1); border:1px solid rgba(16,163,127,.2); border-radius:20px; padding:3px 10px; font-size:10px; color:var(--gpt-green); font-family:var(--mono); margin-top:6px; letter-spacing:.08em }
+.mc-eq { display:flex; align-items:flex-end; gap:1.5px; height:11px }
+.mc-eq-bar { width:2px; background:var(--gpt-green); border-radius:1px; animation:eq .5s ease-in-out infinite alternate paused }
+.mc-eq-bar:nth-child(2){animation-delay:.15s} .mc-eq-bar:nth-child(3){animation-delay:.3s} .mc-eq-bar:nth-child(4){animation-delay:.1s}
+.mc-eq.on .mc-eq-bar { animation-play-state:running }
+@keyframes eq { from{height:2px} to{height:11px} }
+.mc-prog { height:3px; background:rgba(255,255,255,.08); border-radius:2px; cursor:pointer; margin:0 0 6px; position:relative }
+.mc-prog-fill { height:100%; background:var(--gpt-green); border-radius:2px; width:0%; transition:width .5s linear }
+.mc-times { display:flex; justify-content:space-between; font-family:var(--mono); font-size:10px; color:var(--dim); margin-bottom:14px }
+.mc-controls { display:flex; align-items:center; justify-content:center; gap:8px; padding-bottom:16px }
+.mc-ctrl { width:36px; height:36px; border-radius:10px; border:1px solid var(--border); background:rgba(255,255,255,.04); color:var(--muted); font-size:15px; cursor:none; display:flex; align-items:center; justify-content:center; transition:all .2s }
+.mc-ctrl:hover { background:rgba(255,255,255,.08); color:var(--text) }
+.mc-ctrl.main { width:46px; height:46px; background:var(--gpt-green); color:#fff; border:none; border-radius:12px; font-size:18px; box-shadow:0 4px 16px rgba(16,163,127,.35) }
+.mc-ctrl.main:hover { background:var(--gpt-light); transform:scale(1.04) }
+.mc-ctrl.on-ctrl { color:var(--gpt-green); border-color:rgba(16,163,127,.4) }
+.mc-tracklist { border-top:1px solid var(--border2) }
+.mc-track-item { display:flex; align-items:center; gap:12px; padding:10px 20px; cursor:none; transition:background .15s }
+.mc-track-item:hover { background:rgba(255,255,255,.03) }
+.mc-track-item.active { background:rgba(16,163,127,.08) }
+.mc-track-num { font-family:var(--mono); font-size:11px; color:var(--dim); width:14px; text-align:center; flex-shrink:0 }
+.mc-track-item.active .mc-track-num { color:var(--gpt-green) }
+.mc-track-thumb { width:36px; height:36px; border-radius:8px; flex-shrink:0; position:relative; overflow:hidden }
+.mc-track-thumb::after { content:''; position:absolute; width:10px; height:10px; background:var(--surface); border-radius:50%; top:50%; left:50%; transform:translate(-50%,-50%) }
+.mc-track-title { font-size:13px; color:var(--text); flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
+.mc-track-item.active .mc-track-title { color:var(--gpt-green) }
+.mc-track-dur { font-family:var(--mono); font-size:11px; color:var(--dim); flex-shrink:0 }
+
+/* Gift code block */
+.gift-code { background:var(--sidebar); border:1px solid var(--border); border-radius:12px; padding:16px 18px; margin:10px 0; font-family:var(--mono); font-size:13px; position:relative }
+.gift-code-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px }
+.gift-code-lang { font-size:11px; color:var(--dim); letter-spacing:.08em }
+.gift-copy-btn { background:rgba(255,255,255,.06); border:1px solid var(--border); border-radius:6px; padding:4px 12px; font-size:11px; color:var(--muted); cursor:none; font-family:var(--mono); transition:all .15s }
+.gift-copy-btn:hover { background:rgba(16,163,127,.1); border-color:rgba(16,163,127,.3); color:var(--gpt-green) }
+.gift-copy-btn.copied { color:var(--gpt-green); border-color:rgba(16,163,127,.4) }
+.gift-code-key { color:#7EC8E3 }
+.gift-code-val { color:#AADFB4 }
+.gift-code-str { color:#F8C555 }
+
+/* RSVP form inline */
+.rsvp-inline { background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:20px; margin:14px 0 }
+.rsvp-stats-row { display:flex; gap:0; background:var(--sidebar); border:1px solid var(--border2); border-radius:10px; overflow:hidden; margin-bottom:16px }
+.ri-stat { flex:1; padding:12px 8px; text-align:center; border-right:1px solid var(--border2) }
+.ri-stat:last-child { border-right:none }
+.ri-stat-num { font-family:var(--mono); font-size:24px; font-weight:700; color:var(--gpt-green); line-height:1; margin-bottom:3px }
+.ri-stat-label { font-size:9px; letter-spacing:.2em; text-transform:uppercase; color:var(--dim) }
+.ri-group { margin-bottom:12px }
+.ri-label { font-family:var(--mono); font-size:10px; letter-spacing:.15em; text-transform:uppercase; color:var(--muted); margin-bottom:6px; display:block }
+.ri-input { width:100%; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px 14px; color:var(--text); font-family:var(--sans); font-size:14px; outline:none; transition:border-color .2s; font-weight:300 }
+.ri-input:focus { border-color:rgba(16,163,127,.6); box-shadow:0 0 0 2px rgba(16,163,127,.1) }
+.ri-input::placeholder { color:var(--dim) }
+textarea.ri-input { min-height:80px; resize:vertical }
+select.ri-input { appearance:none; cursor:none }
+.ri-guests { display:flex; gap:6px }
+.ri-guest-btn { flex:1; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px; color:var(--muted); font-size:14px; cursor:none; transition:all .2s; font-family:var(--sans) }
+.ri-guest-btn.active { border-color:rgba(16,163,127,.6); color:var(--gpt-green); background:rgba(16,163,127,.08) }
+.ri-submit { width:100%; background:var(--gpt-green); color:#fff; border:none; border-radius:8px; padding:12px; font-size:14px; font-weight:500; cursor:none; font-family:var(--sans); transition:all .25s; margin-top:6px }
+.ri-submit:hover { background:var(--gpt-light); transform:translateY(-1px) }
+
+/* Responses */
+.response-list { margin-top:14px }
+.resp-item { background:var(--surface); border:1px solid var(--border2); border-radius:12px; padding:14px; margin-bottom:8px; display:flex; gap:12px; opacity:0; transform:translateY(8px); transition:.4s ease }
+.resp-item.in { opacity:1; transform:translateY(0) }
+.resp-ava { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:600; color:#fff; flex-shrink:0 }
+.resp-body { flex:1 }
+.resp-name { font-size:13px; font-weight:500; color:var(--text); margin-bottom:2px }
+.resp-status { font-size:11px; color:var(--gpt-green); margin-bottom:6px; font-family:var(--mono) }
+.resp-text { font-size:13px; color:var(--muted); line-height:1.6; font-weight:300 }
+.resp-clap { display:inline-flex; align-items:center; gap:4px; margin-top:6px; font-size:12px; color:var(--dim); background:none; border:none; cursor:none; font-family:var(--sans); padding:3px 6px; border-radius:6px; transition:all .15s }
+.resp-clap:hover { background:rgba(255,255,255,.05); color:var(--muted) }
+.resp-clap.liked { color:var(--gpt-green) }
+
+/* ── INPUT AREA ── */
+.chat-input-area {
+  padding:16px 24px; background:var(--bg); border-top:1px solid var(--border2); flex-shrink:0;
+}
+.input-wrap {
+  max-width:720px; margin:0 auto; position:relative;
+  background:var(--surface); border:1px solid var(--border);
+  border-radius:16px; display:flex; align-items:flex-end; gap:8px;
+  padding:12px 14px; transition:border-color .2s;
+}
+.input-wrap:focus-within { border-color:rgba(16,163,127,.5) }
+.input-attach { width:32px; height:32px; border-radius:8px; border:none; background:rgba(255,255,255,.06); color:var(--muted); font-size:16px; cursor:none; display:flex; align-items:center; justify-content:center; transition:all .15s; flex-shrink:0 }
+.input-attach:hover { background:rgba(255,255,255,.1); color:var(--text) }
+.input-field { flex:1; background:transparent; border:none; outline:none; color:var(--text); font-family:var(--sans); font-size:15px; resize:none; font-weight:300; line-height:1.5; max-height:180px; min-height:24px }
+.input-field::placeholder { color:var(--dim) }
+.input-send { width:34px; height:34px; border-radius:8px; border:none; background:var(--gpt-green); color:#fff; cursor:none; font-size:16px; display:flex; align-items:center; justify-content:center; transition:all .2s; flex-shrink:0 }
+.input-send:hover { background:var(--gpt-light); transform:scale(1.05) }
+.input-send:disabled { background:rgba(255,255,255,.08); color:var(--dim); transform:none }
+.input-hint { font-size:11px; color:var(--dim); text-align:center; margin-top:8px; font-weight:300 }
+
+/* Lightbox */
+.lightbox { position:fixed; inset:0; background:rgba(0,0,0,.96); z-index:99999; display:none; align-items:center; justify-content:center; flex-direction:column }
+.lightbox.open { display:flex }
+.lb-close { position:fixed; top:16px; right:16px; width:40px; height:40px; border-radius:10px; border:1px solid var(--border); background:rgba(255,255,255,.06); color:var(--text); font-size:18px; cursor:none; display:flex; align-items:center; justify-content:center; transition:all .2s; z-index:10 }
+.lb-close:hover { background:rgba(16,163,127,.2) }
+.lb-img { max-width:90vw; max-height:76vh; object-fit:contain; border-radius:10px; display:block }
+.lb-caption { font-family:var(--mono); font-size:11px; color:var(--muted); margin-top:14px; letter-spacing:.1em; text-align:center }
+.lb-nav { display:flex; gap:10px; margin-top:14px }
+.lb-btn { background:rgba(255,255,255,.06); border:1px solid var(--border); color:var(--text); padding:9px 24px; border-radius:8px; cursor:none; font-family:var(--sans); font-size:13px; transition:all .2s }
+.lb-btn:hover { background:rgba(16,163,127,.12); border-color:rgba(16,163,127,.4) }
+.lb-count { font-family:var(--mono); font-size:10px; color:var(--dim); margin-top:10px; letter-spacing:.2em }
+
+/* Toast */
+.toast { position:fixed; bottom:90px; left:50%; transform:translateX(-50%) translateY(10px); background:var(--surface); border:1px solid rgba(16,163,127,.3); color:var(--text); font-size:13px; padding:11px 22px; border-radius:10px; z-index:9999; opacity:0; transition:all .25s; pointer-events:none; white-space:nowrap; font-family:var(--sans); box-shadow:0 8px 28px rgba(0,0,0,.4) }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0) }
+
+/* Scrollbar styling for sidebar list */
+.sb-list { overflow-y:auto; flex:1; scrollbar-width:none }
+.sb-list::-webkit-scrollbar { display:none }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ══════════════════════════════════════
+     OPENING
+══════════════════════════════════════ -->
+<div id="opening">
+  <div class="op-center-wrap">
+  <div class="op-logo">
+    <div class="op-logo-icon">
+      <svg viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="20.5" cy="20.5" r="18" fill="white" opacity="0.15"/><path d="M20.5 8 C14 8 9 13 9 19.5 C9 23 10.5 26.2 13 28.4 L13 33 L17.5 30.5 C18.4 30.8 19.4 31 20.5 31 C27 31 32 26 32 19.5 C32 13 27 8 20.5 8 Z" fill="white"/><circle cx="15" cy="20" r="2" fill="#10A37F"/><circle cx="20.5" cy="20" r="2" fill="#10A37F"/><circle cx="26" cy="20" r="2" fill="#10A37F"/></svg>
+    </div>
+    <span class="op-logo-text">Chat<span>GPT</span></span>
+  </div>
+
+  <h1 class="op-headline">Anita <em>&amp;</em> Zarda<br>Are Getting Married</h1>
+  <p class="op-sub">Sebuah undangan pernikahan yang dikemas dalam percakapan AI.</p>
+
+  <div class="op-model-row">
+    <div class="op-model-badge">
+      <div class="op-model-dot"></div>
+      GPT-Wedding-4o
+      <span class="op-model-arrow">▾</span>
+    </div>
+    <div class="op-model-badge" style="color:var(--muted)">
+      Powered by Love ✦
+    </div>
+  </div>
+
+  <div class="op-starters">
+    <div class="op-starter" onclick="openChat()">
+      <span class="op-starter-icon">💍</span>
+      <div class="op-starter-title">Ceritakan kisah cinta kalian</div>
+      <div class="op-starter-sub">Dari bowling hingga pelaminan</div>
+    </div>
+    <div class="op-starter" onclick="openChat()">
+      <span class="op-starter-icon">📅</span>
+      <div class="op-starter-title">Detail acara pernikahan</div>
+      <div class="op-starter-sub">Waktu, tempat, dan dresscode</div>
+    </div>
+    <div class="op-starter" onclick="openChat()">
+      <span class="op-starter-icon">✅</span>
+      <div class="op-starter-title">Konfirmasi kehadiran (RSVP)</div>
+      <div class="op-starter-sub">Pastikan tempat duduk kamu</div>
+    </div>
+    <div class="op-starter" onclick="openChat()">
+      <span class="op-starter-icon">🎁</span>
+      <div class="op-starter-title">Kirim amplop digital</div>
+      <div class="op-starter-sub">Nomor rekening & cara transfer</div>
+    </div>
+  </div>
+
+  <div class="op-input-wrap">
+    <div class="op-input-box" onclick="openChat()">
+      <span style="font-size:18px;color:var(--muted);flex-shrink:0">✦</span>
+      <div class="op-input-text" id="opTyped">&nbsp;<span class="op-input-cursor"></span></div>
+      <button class="op-send-btn" onclick="openChat()">↑</button>
+    </div>
+  </div>
+
+  <div class="op-dear">
+    <div class="op-dear-label">// kepada yth</div>
+    <div class="op-dear-name">Tamu Undangan</div>
+  </div>
+  </div><!-- /op-center-wrap -->
+</div>
+
+<!-- ══════════════════════════════════════
+     MAIN — ChatGPT Interface
+══════════════════════════════════════ -->
+<div id="main">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-header">
+      <div class="sb-logo">
+        <div class="sb-logo-icon">
+          <svg viewBox="0 0 41 41" fill="none"><circle cx="20.5" cy="20.5" r="18" fill="white" opacity="0.2"/><path d="M20.5 10 C15 10 11 14.5 11 19.5 C11 22.5 12.3 25.2 14.5 27L14.5 31 L18.5 29 C19.1 29.2 19.8 29.3 20.5 29.3 C26 29.3 30 25 30 19.5 C30 14 26 10 20.5 10Z" fill="white"/><circle cx="16" cy="20" r="1.8" fill="#171717"/><circle cx="20.5" cy="20" r="1.8" fill="#171717"/><circle cx="25" cy="20" r="1.8" fill="#171717"/></svg>
+        </div>
+        <span class="sb-logo-text">ChatGPT</span>
+      </div>
+      <button class="sb-new-btn">✏</button>
+    </div>
+
+    <div class="sb-search">
+      <span class="sb-search-icon">🔍</span>
+      <span class="sb-search-text">Cari percakapan</span>
+    </div>
+
+    <div class="sb-list">
+      <div class="sb-section-label">Hari ini</div>
+      <div class="sb-conv active"><span class="sb-conv-icon">💍</span><span class="sb-conv-text">Undangan Anita & Zarda</span></div>
+      <div class="sb-conv"><span class="sb-conv-icon">📸</span><span class="sb-conv-text">Pre-wedding photoshoot ideas</span></div>
+      <div class="sb-conv"><span class="sb-conv-icon">🎵</span><span class="sb-conv-text">Wedding playlist recommendations</span></div>
+
+      <div class="sb-section-label" style="margin-top:16px">Kemarin</div>
+      <div class="sb-conv"><span class="sb-conv-icon">📍</span><span class="sb-conv-text">Graha Yadika venue details</span></div>
+      <div class="sb-conv"><span class="sb-conv-icon">🌹</span><span class="sb-conv-text">Floral arrangement ideas</span></div>
+      <div class="sb-conv"><span class="sb-conv-icon">🍽</span><span class="sb-conv-text">Catering menu planning</span></div>
+
+      <div class="sb-section-label" style="margin-top:16px">7 Hari Lalu</div>
+      <div class="sb-conv"><span class="sb-conv-icon">💌</span><span class="sb-conv-text">Design invitation card</span></div>
+      <div class="sb-conv"><span class="sb-conv-icon">👗</span><span class="sb-conv-text">Bridal dress inspirations</span></div>
+      <div class="sb-conv"><span class="sb-conv-icon">✈</span><span class="sb-conv-text">Honeymoon destination ideas</span></div>
+    </div>
+
+    <div class="sb-footer">
+      <div class="sb-user">
+        <div class="sb-user-ava">T</div>
+        <div>
+          <div class="sb-user-name">Tamu Undangan</div>
+          <div class="sb-user-plan">ChatGPT Plus ✦</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- CHAT -->
+  <div class="chat-area">
+
+    <!-- Topbar -->
+    <div class="chat-topbar">
+      <button class="topbar-menu" onclick="toggleSidebar()">☰</button>
+      <button class="chat-model-selector">
+        GPT-Wedding-4o
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg>
+      </button>
+      <span class="model-badge">WEDDING</span>
+      <div class="topbar-right">
+        <div class="music-mini" onclick="toggleMusic()">
+          <div class="mm-vinyl" id="mmVinyl" style="background:conic-gradient(#10A37F,#1a7a5e,#10A37F,#0d8a6a,#10A37F)"></div>
+          <span class="mm-title" id="mmTitle">A Thousand Years</span>
+          <button class="mm-play" id="mmPlay">▶</button>
+        </div>
+        <button class="topbar-share" onclick="showToast('🔗 Link tersalin!')">↗ Bagikan</button>
+      </div>
+    </div>
+
+    <!-- Messages -->
+    <div class="chat-messages" id="chatMessages">
+      <!-- Messages injected by JS -->
+    </div>
+
+    <!-- Input -->
+    <div class="chat-input-area">
+      <div class="input-wrap">
+        <button class="input-attach">📎</button>
+        <textarea class="input-field" id="inputField" placeholder="Tanya apa saja tentang undangan..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
+        <button class="input-send" id="sendBtn" onclick="sendUserMsg()">↑</button>
+      </div>
+      <div class="input-hint">ChatGPT bisa membuat kesalahan. Selalu verifikasi informasi penting. · Anita &amp; Zarda Wedding 2026</div>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLBOut(event)">
+  <button class="lb-close" onclick="closeLB()">✕</button>
+  <img class="lb-img" id="lbImg" src="" alt="">
+  <div class="lb-caption" id="lbCap"></div>
+  <div class="lb-nav">
+    <button class="lb-btn" onclick="lbPrev()">← Prev</button>
+    <button class="lb-btn" onclick="lbNext()">Next →</button>
+  </div>
+  <div class="lb-count" id="lbCount"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<audio id="audio" preload="none"></audio>
+
+<script>
+/* ── DATA ── */
+const TRACKS=[
+  {title:'A Thousand Years',artist:'Christina Perri',src:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',grad:'conic-gradient(#10A37F,#0d7a5e,#10A37F)',dur:'4:45'},
+  {title:'Perfect',artist:'Ed Sheeran',src:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',grad:'conic-gradient(#1a7a5e,#10A37F,#0d6b52)',dur:'4:23'},
+  {title:"Can't Help Falling in Love",artist:'Elvis Presley',src:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',grad:'conic-gradient(#0d8a6a,#10A37F,#1a7a5e)',dur:'3:00'},
+  {title:'All of Me',artist:'John Legend',src:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',grad:'conic-gradient(#10A37F,#0d6b52,#19C37D)',dur:'4:29'},
+];
+const GALLERY=[
+  {url:'https://images.unsplash.com/photo-1519741497674-611481863552?w=900&auto=format&fit=crop&q=70',label:'The Couple'},
+  {url:'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&auto=format&fit=crop&q=70',label:'Wedding Rings'},
+  {url:'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&auto=format&fit=crop&q=70',label:'Bouquet'},
+  {url:'https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=600&auto=format&fit=crop&q=70',label:'Together'},
+  {url:'https://images.unsplash.com/photo-1583939411023-14783179e581?w=600&auto=format&fit=crop&q=70',label:'The Kiss'},
+  {url:'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&auto=format&fit=crop&q=70',label:'Celebration'},
+];
+
+/* ── CURSOR ── */
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function ar(){rx+=(mx-rx)*.15;ry+=(my-ry)*.15;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(ar)})();
+document.querySelectorAll('a,button,select,input,textarea,.op-starter,.sb-conv').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+});
+
+/* ── TYPEWRITER (opening) ── */
+const prompts=['Tunjukkan undangan pernikahan Anita & Zarda 💍','Ceritakan kisah cinta mereka ❤️','Detail akad & resepsi 24 Mei 2026','Bantuan RSVP dan amplop digital 🎁'];
+let pi=0,ci=0,typing=true;
+function typeOp(){
+  const el=document.getElementById('opTyped');const p=prompts[pi];
+  if(typing){
+    if(ci<p.length){el.innerHTML=p.slice(0,++ci)+'<span class="op-input-cursor"></span>';setTimeout(typeOp,60)}
+    else{typing=false;setTimeout(typeOp,2200)}
+  }else{
+    if(ci>0){el.innerHTML=p.slice(0,--ci)+'<span class="op-input-cursor"></span>';setTimeout(typeOp,25)}
+    else{typing=true;pi=(pi+1)%prompts.length;setTimeout(typeOp,400)}
+  }
+}
+setTimeout(typeOp,900);
+
+/* ── OPEN ── */
+function openChat(){
+  document.getElementById('opening').classList.add('hide');
+  document.getElementById('main').classList.add('show');
+  setTimeout(()=>{document.getElementById('sidebar').classList.add('show');startConversation()},300);
+}
+
+/* ── SIDEBAR TOGGLE (mobile) ── */
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('mobile-open')}
+
+/* ── CONVERSATION ENGINE ── */
+let rsvpGuestCount=1,totalHadir=0,totalTamu=0,totalWish=2;
+const chatEl=document.getElementById('chatMessages');
+
+function startConversation(){
+  setTimeout(()=>addGPTMsg(buildWelcome()),800);
+}
+
+/* ── MESSAGE BUILDERS ── */
+function buildWelcome(){
+  return `
+<p>Selamat datang! 👋 Saya <strong>GPT-Wedding-4o</strong>, asisten khusus untuk undangan pernikahan <em>Anita &amp; Zarda</em>.</p>
+<p>Saya siap membantu Anda menemukan semua informasi tentang hari istimewa mereka. Apa yang ingin Anda ketahui?</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+  <div class="source-badge" onclick="scrollToSection('story')">📖 Kisah Cinta</div>
+  <div class="source-badge" onclick="scrollToSection('event')">📅 Detail Acara</div>
+  <div class="source-badge" onclick="scrollToSection('gallery')">📸 Gallery</div>
+  <div class="source-badge" onclick="scrollToSection('music')">🎵 Musik</div>
+  <div class="source-badge" onclick="scrollToSection('rsvp')">✅ RSVP</div>
+  <div class="source-badge" onclick="scrollToSection('gift')">🎁 Gift</div>
+</div>`;
+}
+
+function buildStory(){
+  return `
+<h2>💍 Kisah Cinta Anita &amp; Zarda</h2>
+<blockquote>"Ada momen kecil yang tampak biasa, namun diam-diam mengubah segalanya."</blockquote>
+<h3>🎳 Awal Pertemuan — Juni 2025</h3>
+<p>Di hari pertama bertemu, tawa tercipta di antara lemparan <strong>bowling</strong>, cerita mengalir di sela santapan <strong>sushi</strong>, dan manisnya <strong>es krim</strong> menjadi saksi awal kisah mereka yang indah.</p>
+<h3>💌 Lamaran — November 2025</h3>
+<p>Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga tercinta, Zarda resmi melamar Anita dalam momen penuh haru dan kebahagiaan.</p>
+<h3>🕊️ Pernikahan — 24 Mei 2026</h3>
+<p>Kini keduanya siap melangkah lebih jauh. Dalam ikatan suci pernikahan, mereka berjanji saling menjaga, mencintai, dan tumbuh bersama selamanya.</p>
+<hr>
+<p style="font-size:13px;color:var(--muted);font-style:italic">📖 Sumber: anita-zarda-wedding.com · Diperbarui 24 Mei 2026</p>`;
+}
+
+function buildEvent(){
+  return `
+<h2>📅 Detail Acara</h2>
+<p>Berikut informasi lengkap rangkaian acara pernikahan <em>Anita &amp; Zarda</em>:</p>
+<div class="gpt-card">
+  <div class="gpt-card-header"><span class="gpt-card-icon">🕌</span> Akad Nikah</div>
+  <div class="gpt-card-body">
+    <div class="ev-row"><div class="ev-icon">📅</div><div class="ev-text"><strong>Minggu, 24 Mei 2026</strong></div></div>
+    <div class="ev-row"><div class="ev-icon">⏰</div><div class="ev-text">08.00 – 10.00 WIB</div></div>
+    <div class="ev-row"><div class="ev-icon">📍</div><div class="ev-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div></div>
+    <div class="ev-row"><div class="ev-icon">👔</div><div class="ev-text">Formal / Semi-formal</div></div>
+    <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-map-btn">🗺 Buka Google Maps</a>
+  </div>
+</div>
+<div class="gpt-card" style="margin-top:10px">
+  <div class="gpt-card-header"><span class="gpt-card-icon">🎊</span> Resepsi Pernikahan</div>
+  <div class="gpt-card-body">
+    <div class="ev-row"><div class="ev-icon">📅</div><div class="ev-text"><strong>Minggu, 24 Mei 2026</strong></div></div>
+    <div class="ev-row"><div class="ev-icon">⏰</div><div class="ev-text">11.00 – 13.00 WIB</div></div>
+    <div class="ev-row"><div class="ev-icon">📍</div><div class="ev-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div></div>
+    <div class="ev-row"><div class="ev-icon">🍽</div><div class="ev-text">Makan siang disediakan</div></div>
+    <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-map-btn">🗺 Buka Google Maps</a>
+  </div>
+</div>
+<h3 style="margin-top:20px">⏱ Hitung Mundur</h3>
+<div class="cd-inline">
+  <div class="cd-cell"><div class="cd-n" id="cdD">00</div><div class="cd-u">Hari</div></div>
+  <div class="cd-cell"><div class="cd-n" id="cdH">00</div><div class="cd-u">Jam</div></div>
+  <div class="cd-cell"><div class="cd-n" id="cdM">00</div><div class="cd-u">Menit</div></div>
+  <div class="cd-cell"><div class="cd-n" id="cdS">00</div><div class="cd-u">Detik</div></div>
+</div>`;
+}
+
+function buildGalleryMsg(){
+  const cells=GALLERY.map((g,i)=>{
+    const span=i===0?'grid-column:span 2;':'';
+    return `<div class="gpt-gallery-cell" style="${span}" onclick="openLB(${i})">
+      <img src="${g.url}" alt="${g.label}" loading="lazy">
+      <div class="gpt-gallery-overlay"><span class="gpt-gallery-zoom">⊕</span></div>
+    </div>`;
+  }).join('');
+  return `
+<h2>📸 Gallery Foto</h2>
+<p>Berikut koleksi foto perjalanan cinta <em>Anita &amp; Zarda</em>. Klik untuk melihat lebih detail:</p>
+<div class="gpt-gallery">${cells}</div>
+<p style="font-size:12px;color:var(--muted);margin-top:8px">📷 Klik foto untuk membuka lightbox · Gunakan ← → untuk navigasi</p>`;
+}
+
+function buildVideoMsg(){
+  return `
+<h2>🎬 Pre-Wedding Video</h2>
+<p>Video pre-wedding <em>Anita &amp; Zarda</em> — momen-momen indah sebelum hari pernikahan:</p>
+<div class="gpt-video">
+  <video id="inlineVid" playsinline preload="metadata" poster="https://images.unsplash.com/photo-1519741497674-611481863552?w=900&auto=format&fit=crop&q=60">
+    <source src="https://assets.mixkit.co/videos/preview/mixkit-couple-holding-hands-during-sunset-42795-large.mp4" type="video/mp4">
+  </video>
+  <div class="vid-play-overlay" id="vpo" onclick="toggleInlineVid()">
+    <div class="vid-play-circle">▶</div>
+  </div>
+  <div class="vid-bar">
+    <button class="vb-btn" id="vbBtn" onclick="toggleInlineVid()">▶</button>
+    <div class="vb-prog" id="vbProg" onclick="seekInlineVid(event)"><div class="vb-fill" id="vbFill"></div></div>
+    <span class="vb-time" id="vbTime">0:00 / 0:00</span>
+    <button class="vb-btn" id="vbMute" onclick="muteInlineVid()">🔊</button>
+  </div>
+</div>`;
+}
+
+function buildMusicMsg(){
+  const tracks=TRACKS.map((t,i)=>`
+    <div class="mc-track-item${i===0?' active':''}" id="mct${i}" onclick="loadTrack(${i},true)">
+      <span class="mc-track-num">${i===0?'♦':i+1}</span>
+      <div class="mc-track-thumb" style="background:${t.grad}"></div>
+      <span class="mc-track-title">${t.title} · ${t.artist}</span>
+      <span class="mc-track-dur">${t.dur}</span>
+    </div>`).join('');
+  return `
+<h2>🎵 Wedding Playlist</h2>
+<p>Lagu-lagu pilihan untuk menemani hari istimewa <em>Anita &amp; Zarda</em>:</p>
+<div class="music-card">
+  <div class="mc-top">
+    <div class="mc-vinyl-row">
+      <div class="mc-vinyl" id="mcVinyl" style="background:${TRACKS[0].grad}"></div>
+      <div class="mc-info">
+        <div class="mc-track" id="mcTrack">A Thousand Years</div>
+        <div class="mc-artist" id="mcArtist">Christina Perri</div>
+        <div class="mc-badge"><div class="mc-eq" id="mcEq"><div class="mc-eq-bar"></div><div class="mc-eq-bar"></div><div class="mc-eq-bar"></div><div class="mc-eq-bar"></div></div>&nbsp;Now Playing</div>
+      </div>
+    </div>
+    <div class="mc-prog" id="mcProg" onclick="seekAudio(event)"><div class="mc-prog-fill" id="mcFill"></div></div>
+    <div class="mc-times"><span id="mcCur">0:00</span><span id="mcDur">0:00</span></div>
+    <div class="mc-controls">
+      <button class="mc-ctrl" onclick="prevTrack()">⏮</button>
+      <button class="mc-ctrl" id="shuffleBtn" onclick="shuffleTrack()">🔀</button>
+      <button class="mc-ctrl main" id="mainPlayBtn" onclick="toggleMusic()">▶</button>
+      <button class="mc-ctrl" onclick="nextTrack()">⏭</button>
+      <button class="mc-ctrl" id="repeatBtn" onclick="toggleRepeat()">🔁</button>
+    </div>
+  </div>
+  <div class="mc-tracklist">${tracks}</div>
+</div>`;
+}
+
+function buildGiftMsg(){
+  return `
+<h2>🎁 Amplop Digital</h2>
+<p>Doa restu Anda sudah sangat berarti. Jika berkenan mengirimkan tanda kasih, berikut informasi rekening:</p>
+<div class="gift-code">
+  <div class="gift-code-header">
+    <span class="gift-code-lang">BCA</span>
+    <button class="gift-copy-btn" onclick="copyCode('8210370561',this)">Copy</button>
+  </div>
+  <div><span class="gift-code-key">bank</span>     = <span class="gift-code-str">"Bank Central Asia (BCA)"</span></div>
+  <div><span class="gift-code-key">atas_nama</span> = <span class="gift-code-str">"Zardarian Ahadika N"</span></div>
+  <div><span class="gift-code-key">nomor</span>    = <span class="gift-code-val">"8210 3705 61"</span></div>
+</div>
+<div class="gift-code">
+  <div class="gift-code-header">
+    <span class="gift-code-lang">BNI</span>
+    <button class="gift-copy-btn" onclick="copyCode('1192978403',this)">Copy</button>
+  </div>
+  <div><span class="gift-code-key">bank</span>     = <span class="gift-code-str">"Bank Negara Indonesia (BNI)"</span></div>
+  <div><span class="gift-code-key">atas_nama</span> = <span class="gift-code-str">"Anita Pangestuti"</span></div>
+  <div><span class="gift-code-key">nomor</span>    = <span class="gift-code-val">"1192 9784 03"</span></div>
+</div>
+<p style="font-size:13px;color:var(--muted)">💡 Klik tombol <code>Copy</code> untuk menyalin nomor rekening.</p>`;
+}
+
+function buildRSVPMsg(){
+  return `
+<h2>✅ RSVP — Konfirmasi Kehadiran</h2>
+<p>Mohon konfirmasi kehadiran Anda agar kami dapat mempersiapkan segalanya dengan baik:</p>
+<div class="rsvp-inline" id="rsvpWidget">
+  <div class="rsvp-stats-row">
+    <div class="ri-stat"><div class="ri-stat-num" id="stH">0</div><div class="ri-stat-label">Hadir</div></div>
+    <div class="ri-stat"><div class="ri-stat-num" id="stT">0</div><div class="ri-stat-label">Tamu</div></div>
+    <div class="ri-stat"><div class="ri-stat-num" id="stW">2</div><div class="ri-stat-label">Ucapan</div></div>
+  </div>
+  <div class="ri-group"><label class="ri-label">Nama Lengkap</label><input type="text" class="ri-input" id="rName" placeholder="Tulis nama Anda..."></div>
+  <div class="ri-group"><label class="ri-label">Status Kehadiran</label>
+    <select class="ri-input" id="rStatus">
+      <option value="" disabled selected>Pilih status...</option>
+      <option value="hadir">✅ Insya Allah Hadir</option>
+      <option value="tidak">❌ Tidak Dapat Hadir</option>
+    </select>
+  </div>
+  <div class="ri-group"><label class="ri-label">Jumlah Tamu</label>
+    <div class="ri-guests">
+      <button class="ri-guest-btn active" onclick="selGuest(1,this)">1</button>
+      <button class="ri-guest-btn" onclick="selGuest(2,this)">2</button>
+      <button class="ri-guest-btn" onclick="selGuest(3,this)">3</button>
+      <button class="ri-guest-btn" onclick="selGuest(4,this)">4+</button>
+    </div>
+  </div>
+  <div class="ri-group"><label class="ri-label">Ucapan & Doa</label><textarea class="ri-input" id="rMsg" placeholder="Tulis ucapan tulus Anda..."></textarea></div>
+  <button class="ri-submit" onclick="submitRSVP()">↑ Kirim Konfirmasi</button>
+</div>
+<div class="response-list" id="respList">
+  <div class="resp-item in">
+    <div class="resp-ava" style="background:linear-gradient(135deg,#10A37F,#0d6b52)">SK</div>
+    <div class="resp-body"><div class="resp-name">Siti Khadijah</div><div class="resp-status">✓ Hadir · 2 tamu</div><div class="resp-text">Selamat menempuh hidup baru! Semoga sakinah, mawaddah, warahmah. 💕</div><button class="resp-clap" onclick="clapResp(this)">👏 <span>12</span></button></div>
+  </div>
+  <div class="resp-item in">
+    <div class="resp-ava" style="background:linear-gradient(135deg,#1a5276,#2471A3)">BR</div>
+    <div class="resp-body"><div class="resp-name">Budi Raharjo</div><div class="resp-status">✓ Hadir · 1 tamu</div><div class="resp-text">Alhamdulillah akhirnya! Bahagia selalu untuk kalian berdua. 🤍</div><button class="resp-clap" onclick="clapResp(this)">👏 <span>8</span></button></div>
+  </div>
+</div>`;
+}
+
+/* ── ADD MESSAGE FUNCTIONS ── */
+function addUserMsg(text){
+  const row=document.createElement('div');
+  row.className='msg-row user';
+  row.innerHTML=`<div class="msg-inner"><div class="msg-ava user-ava">T</div><div class="msg-bubble"><div class="user-bubble">${text}</div></div></div>`;
+  chatEl.appendChild(row);
+  scrollBottom();
+}
+
+function addTypingIndicator(){
+  const row=document.createElement('div');
+  row.className='msg-row';row.id='typing-row';
+  row.innerHTML=`<div class="msg-inner"><div class="msg-ava gpt-ava" style="font-size:16px;background:var(--gpt-green)">✦</div><div class="msg-bubble"><div class="gpt-bubble"><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div></div></div></div>`;
+  chatEl.appendChild(row);scrollBottom();
+  return row;
+}
+
+function addGPTMsg(html,delay=0){
+  return new Promise(res=>{
+    const ti=addTypingIndicator();
+    const typingTime=Math.min(Math.max(html.length*0.8,800),2200);
+    setTimeout(()=>{
+      ti.remove();
+      const row=document.createElement('div');
+      row.className='msg-row';
+      row.innerHTML=`<div class="msg-inner"><div class="msg-ava gpt-ava" style="font-size:16px;background:var(--gpt-green)">✦</div><div class="msg-bubble"><div class="gpt-bubble">${html}<div class="msg-actions"><button class="msg-action" onclick="this.classList.toggle('liked')">👍</button><button class="msg-action" onclick="this.classList.toggle('liked')">👎</button><button class="msg-action" onclick="showToast('📋 Teks tersalin!')">📋</button><button class="msg-action">🔄</button></div></div></div></div>`;
+      chatEl.appendChild(row);
+      scrollBottom();
+      // init countdown if present
+      if(html.includes('cdD')) startCountdown();
+      // init inline video if present
+      if(html.includes('inlineVid')) initInlineVid();
+      res();
+    },typingTime);
+  });
+}
+
+function scrollBottom(){chatEl.scrollTo({top:chatEl.scrollHeight,behavior:'smooth'})}
+
+/* ── USER INPUT ── */
+function scrollToSection(id){
+  const sectionMap={
+    story:()=>addGPTMsg(buildStory()),
+    event:()=>addUserThenGPT('Tampilkan detail acara pernikahan',buildEvent),
+    gallery:()=>addUserThenGPT('Tampilkan gallery foto',buildGalleryMsg),
+    video:()=>addUserThenGPT('Tampilkan video pre-wedding',buildVideoMsg),
+    music:()=>addUserThenGPT('Tampilkan playlist musik',buildMusicMsg),
+    rsvp:()=>addUserThenGPT('Saya ingin RSVP',buildRSVPMsg),
+    gift:()=>addUserThenGPT('Tampilkan info amplop digital',buildGiftMsg),
+  };
+  if(sectionMap[id]) sectionMap[id]();
+  else addUserThenGPT('Ceritakan kisah cinta Anita & Zarda',()=>buildStory());
+}
+
+function addUserThenGPT(userText,gptFn){
+  addUserMsg(userText);
+  setTimeout(()=>addGPTMsg(gptFn()),400);
+}
+
+const QUERY_MAP=[
+  {k:['kisah','cerita','story','cinta'],fn:()=>buildStory()},
+  {k:['acara','event','akad','resepsi','detail','jadwal','kapan','lokasi','dimana','tempat'],fn:()=>buildEvent()},
+  {k:['gallery','foto','gambar','photo'],fn:()=>buildGalleryMsg()},
+  {k:['video','film','prewedding','pre-wedding'],fn:()=>buildVideoMsg()},
+  {k:['musik','lagu','playlist','music'],fn:()=>buildMusicMsg()},
+  {k:['rsvp','hadir','konfirmasi','kehadiran'],fn:()=>buildRSVPMsg()},
+  {k:['amplop','gift','rekening','transfer','hadiah','bca','bni'],fn:()=>buildGiftMsg()},
+];
+
+function getGPTReply(userMsg){
+  const q=userMsg.toLowerCase();
+  for(const item of QUERY_MAP){
+    if(item.k.some(k=>q.includes(k))) return item.fn();
+  }
+  return `<p>Terima kasih atas pertanyaan Anda! 😊</p>
+<p>Untuk informasi lengkap tentang pernikahan <em>Anita &amp; Zarda</em>, Anda bisa menanyakan:</p>
+<ul>
+  <li><strong>Kisah cinta</strong> — perjalanan dari pertemuan hingga pelaminan</li>
+  <li><strong>Detail acara</strong> — waktu, tempat, dresscode</li>
+  <li><strong>Gallery foto</strong> — momen-momen indah bersama</li>
+  <li><strong>Video</strong> — pre-wedding cinematic</li>
+  <li><strong>Musik</strong> — wedding playlist</li>
+  <li><strong>RSVP</strong> — konfirmasi kehadiran</li>
+  <li><strong>Amplop digital</strong> — info rekening</li>
+</ul>`;
+}
+
+function sendUserMsg(){
+  const field=document.getElementById('inputField');
+  const text=field.value.trim();
+  if(!text) return;
+  addUserMsg(text);
+  field.value='';autoResize(field);
+  const reply=getGPTReply(text);
+  setTimeout(()=>addGPTMsg(reply),400);
+}
+
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendUserMsg()}}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,180)+'px'}
+
+/* ── COUNTDOWN ── */
+let cdInterval=null;
+function startCountdown(){
+  if(cdInterval) return; // prevent duplicates
+  const T=new Date('2026-05-24T08:00:00');
+  function tick(){
+    const d=T-new Date();
+    if(d<=0) return;
+    ['cdD','cdH','cdM','cdS'].forEach((id,i)=>{
+      const vals=[Math.floor(d/86400000),Math.floor((d%86400000)/3600000),Math.floor((d%3600000)/60000),Math.floor((d%60000)/1000)];
+      const el=document.getElementById(id);
+      if(el) el.textContent=String(vals[i]).padStart(2,'0');
+    });
+  }
+  tick();
+  cdInterval=setInterval(tick,1000);
+}
+
+/* ── INLINE VIDEO ── */
+let inVidOn=false;
+function initInlineVid(){
+  const vid=document.getElementById('inlineVid');
+  if(!vid) return;
+  vid.addEventListener('timeupdate',()=>{
+    if(!vid.duration)return;
+    const p=vid.currentTime/vid.duration*100;
+    const f=document.getElementById('vbFill'),t=document.getElementById('vbTime');
+    if(f)f.style.width=p+'%';
+    if(t)t.textContent=`${fmt(vid.currentTime)} / ${fmt(vid.duration)}`;
+  });
+  vid.addEventListener('ended',()=>{inVidOn=false;const o=document.getElementById('vpo');if(o)o.classList.remove('gone');const b=document.getElementById('vbBtn');if(b)b.textContent='▶'});
+}
+function toggleInlineVid(){
+  const vid=document.getElementById('inlineVid');if(!vid)return;
+  inVidOn=!inVidOn;
+  if(inVidOn){vid.play();document.getElementById('vpo').classList.add('gone');document.getElementById('vbBtn').textContent='⏸'}
+  else{vid.pause();document.getElementById('vpo').classList.remove('gone');document.getElementById('vbBtn').textContent='▶'}
+}
+function seekInlineVid(e){const vid=document.getElementById('inlineVid');if(!vid)return;const r=document.getElementById('vbProg').getBoundingClientRect();vid.currentTime=((e.clientX-r.left)/r.width)*vid.duration}
+function muteInlineVid(){const vid=document.getElementById('inlineVid');if(!vid)return;vid.muted=!vid.muted;document.getElementById('vbMute').textContent=vid.muted?'🔇':'🔊'}
+
+/* ── LIGHTBOX ── */
+let lbIdx=0;
+function openLB(i){lbIdx=i;updateLB();document.getElementById('lightbox').classList.add('open');document.body.style.overflow='hidden'}
+function updateLB(){document.getElementById('lbImg').src=GALLERY[lbIdx].url.replace('w=600','w=1200').replace('w=900','w=1200');document.getElementById('lbCap').textContent=GALLERY[lbIdx].label+' — Anita & Zarda';document.getElementById('lbCount').textContent=`${lbIdx+1} / ${GALLERY.length}`}
+function closeLB(){document.getElementById('lightbox').classList.remove('open');document.body.style.overflow=''}
+function closeLBOut(e){if(e.target===document.getElementById('lightbox'))closeLB()}
+function lbPrev(){lbIdx=(lbIdx-1+GALLERY.length)%GALLERY.length;updateLB()}
+function lbNext(){lbIdx=(lbIdx+1)%GALLERY.length;updateLB()}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lightbox').classList.contains('open'))return;
+  if(e.key==='Escape')closeLB();if(e.key==='ArrowLeft')lbPrev();if(e.key==='ArrowRight')lbNext();
+});
+
+/* ── MUSIC ── */
+const audio=document.getElementById('audio');
+let curT=0,playing=false,repeat=false;
+function loadTrack(idx,play=false){
+  curT=idx;const t=TRACKS[idx];audio.src=t.src;
+  ['mcTrack','mmTitle'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t.title});
+  ['mcArtist'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t.artist});
+  ['mcVinyl','mmVinyl'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.background=t.grad});
+  document.querySelectorAll('.mc-track-item').forEach((el,i)=>{el.classList.toggle('active',i===idx);el.querySelector('.mc-track-num').textContent=i===idx?'♦':i+1});
+  if(play)playAudio();
+}
+function playAudio(){audio.play().then(()=>{playing=true;setPlay(true)}).catch(()=>{playing=false;setPlay(false)})}
+function pauseAudio(){audio.pause();playing=false;setPlay(false)}
+function setPlay(on){
+  ['mainPlayBtn','mmPlay'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=on?'⏸':'▶'});
+  ['mcVinyl','mmVinyl'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('spinning',on)});
+  const eq=document.getElementById('mcEq');if(eq)eq.classList.toggle('on',on);
+}
+function toggleMusic(){if(!audio.src||audio.src===window.location.href){loadTrack(0,true);return}playing?pauseAudio():playAudio()}
+function nextTrack(){loadTrack((curT+1)%TRACKS.length,playing||true)}
+function prevTrack(){loadTrack((curT-1+TRACKS.length)%TRACKS.length,playing||true)}
+function shuffleTrack(){loadTrack(Math.floor(Math.random()*TRACKS.length),playing||true);showToast('🔀 Shuffle aktif')}
+function toggleRepeat(){repeat=!repeat;const b=document.getElementById('repeatBtn');if(b)b.classList.toggle('on-ctrl',repeat);showToast(repeat?'🔁 Repeat aktif':'🔁 Repeat nonaktif')}
+audio.addEventListener('timeupdate',()=>{
+  if(!audio.duration)return;
+  const p=audio.currentTime/audio.duration*100;
+  const f=document.getElementById('mcFill'),c=document.getElementById('mcCur'),d=document.getElementById('mcDur');
+  if(f)f.style.width=p+'%';if(c)c.textContent=fmt(audio.currentTime);if(d)d.textContent=fmt(audio.duration);
+});
+audio.addEventListener('ended',()=>repeat?(audio.currentTime=0,audio.play()):nextTrack());
+function seekAudio(e){const r=document.getElementById('mcProg');if(!r)return;const rect=r.getBoundingClientRect();audio.currentTime=((e.clientX-rect.left)/rect.width)*audio.duration}
+function fmt(s){if(isNaN(s))return'0:00';return`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`}
+
+/* ── RSVP ── */
+function selGuest(n,btn){rsvpGuestCount=n;document.querySelectorAll('.ri-guest-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+function submitRSVP(){
+  const name=document.getElementById('rName')?.value.trim();
+  const status=document.getElementById('rStatus')?.value;
+  const msg=document.getElementById('rMsg')?.value.trim();
+  if(!name||!status){showToast('⚠️ Mohon isi nama dan status kehadiran');return}
+  const initials=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const grads=['linear-gradient(135deg,#10A37F,#0d6b52)','linear-gradient(135deg,#1a5276,#2471A3)','linear-gradient(135deg,#6C3483,#9B59B6)','linear-gradient(135deg,#922B21,#E74C3C)'];
+  const bg=grads[Math.floor(Math.random()*grads.length)];
+  const stTxt=status==='hadir'?`✓ Hadir · ${rsvpGuestCount} tamu`:'✗ Tidak dapat hadir';
+  const finalMsg=msg||'Selamat dan semoga bahagia selalu! 💚';
+  const item=document.createElement('div');item.className='resp-item';
+  item.innerHTML=`<div class="resp-ava" style="background:${bg}">${initials}</div><div class="resp-body"><div class="resp-name">${name}</div><div class="resp-status">${stTxt}</div><div class="resp-text">${finalMsg}</div><button class="resp-clap" onclick="clapResp(this)">👏 <span>0</span></button></div>`;
+  const list=document.getElementById('respList');if(list){list.prepend(item);setTimeout(()=>item.classList.add('in'),50)}
+  if(status==='hadir'){totalHadir++;totalTamu+=rsvpGuestCount}
+  totalWish++;
+  ['stH','stT','stW'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=[totalHadir,totalTamu,totalWish][i]});
+  document.getElementById('rName').value='';document.getElementById('rStatus').value='';document.getElementById('rMsg').value='';
+  showToast('✅ Konfirmasi berhasil dikirim! Terima kasih.');
+  // Follow-up GPT message
+  setTimeout(()=>{
+    addGPTMsg(`<p>✅ <strong>${name}</strong> — Konfirmasi kehadiran berhasil diterima!</p><p>Terima kasih${status==='hadir'?` sudah memastikan hadir bersama ${rsvpGuestCount} tamu. Kami sangat menantikan kehadiran Anda!`:'.'} 🙏</p><p style="font-size:13px;color:var(--muted)">Untuk pertanyaan lain, jangan ragu untuk bertanya.</p>`);
+  },600);
+}
+function clapResp(btn){const s=btn.querySelector('span');s.textContent=parseInt(s.textContent)+1;btn.classList.add('liked')}
+
+/* ── COPY ── */
+function copyCode(text,btn){
+  navigator.clipboard.writeText(text).then(()=>{btn.classList.add('copied');btn.textContent='Copied!';showToast('✓ Nomor rekening tersalin!');setTimeout(()=>{btn.classList.remove('copied');btn.textContent='Copy'},2500)}).catch(()=>showToast('Salin: '+text));
+}
+
+/* ── TOAST ── */
+let toastT;
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3000)}
+</script>
+</body>
+</html>

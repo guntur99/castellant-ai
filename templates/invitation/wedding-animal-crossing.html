@@ -1,0 +1,1697 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>🌿 Pulau Cinta — Undangan Anita & Zarda</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+
+/* ══════════════════════════════════
+   ANIMAL CROSSING TOKENS
+══════════════════════════════════ */
+:root {
+  /* Sky & nature palette */
+  --ac-sky:        #A8D8EA;
+  --ac-sky2:       #C9E8F5;
+  --ac-sky3:       #E8F5FD;
+  --ac-grass:      #7BC67A;
+  --ac-grass2:     #5DAD5C;
+  --ac-grass3:     #A8D87A;
+  --ac-sand:       #F5E6B0;
+  --ac-sand2:      #EDD98A;
+  --ac-earth:      #C8A06E;
+  --ac-earth2:     #A87D50;
+  --ac-water:      #5BB8D4;
+  --ac-water2:     #3A9CB8;
+  /* UI colors */
+  --ac-cream:      #FFF9E8;
+  --ac-cream2:     #FFF0C8;
+  --ac-yellow:     #FFD93D;
+  --ac-yellow2:    #FFBE00;
+  --ac-orange:     #FF9A3C;
+  --ac-pink:       #FF8FAB;
+  --ac-pink2:      #FFB3C6;
+  --ac-mint:       #A8E6CF;
+  --ac-mint2:      #6CD4B0;
+  --ac-lavender:   #C9B8E8;
+  --ac-peach:      #FFD0A0;
+  --ac-brown:      #8B5E3C;
+  --ac-brown2:     #6B4226;
+  --ac-dark:       #3D2B1F;
+  --ac-white:      #FFFFFF;
+  --ac-nook-blue:  #4A90D9;
+  --ac-nook-dark:  #2C5F8A;
+  /* Shadow system */
+  --shadow-sm:     0 2px 8px rgba(0,0,0,0.12);
+  --shadow-md:     0 4px 16px rgba(0,0,0,0.14);
+  --shadow-lg:     0 8px 32px rgba(0,0,0,0.18);
+  --shadow-card:   0 6px 0 rgba(0,0,0,0.12), 0 8px 20px rgba(0,0,0,0.12);
+  /* Fonts */
+  --font-head:     'Fredoka One', 'Nunito', sans-serif;
+  --font-body:     'Nunito', sans-serif;
+  /* Radii — everything is very round in AC */
+  --r-xs: 8px; --r-sm: 12px; --r-md: 18px; --r-lg: 24px; --r-xl: 32px; --r-pill: 999px;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;scroll-padding-top:60px}
+body{
+  background: var(--ac-sky);
+  font-family: var(--font-body);
+  color: var(--ac-dark);
+  overflow-x: hidden;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='10' fill='%23FFD93D' stroke='%23C8A06E' stroke-width='2'/%3E%3Ccircle cx='9' cy='10' r='1.5' fill='%233D2B1F'/%3E%3Ccircle cx='15' cy='10' r='1.5' fill='%233D2B1F'/%3E%3Cpath d='M9 14 Q12 17 15 14' stroke='%233D2B1F' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") 12 12, auto;
+}
+
+/* ══ SCROLLBAR ══ */
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:var(--ac-sky2)}
+::-webkit-scrollbar-thumb{background:var(--ac-grass);border-radius:var(--r-pill);border:2px solid var(--ac-sky2)}
+
+/* ══════════════════════════════════
+   LOADING / TITLE SCREEN
+══════════════════════════════════ */
+#loading {
+  position:fixed;inset:0;z-index:9999;
+  background:linear-gradient(180deg, #2C5F8A 0%, #4A90D9 35%, #7BC67A 35%, #5DAD5C 55%, #C8A06E 55%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity .8s ease, transform .8s ease;
+}
+#loading.out{opacity:0;transform:scale(1.03);pointer-events:none}
+
+/* Stars in sky */
+.load-star{position:absolute;background:var(--ac-white);border-radius:50%;animation:ls-twinkle var(--d,2s) ease-in-out var(--del,0s) infinite}
+@keyframes ls-twinkle{0%,100%{opacity:.3;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
+
+/* Sun */
+.load-sun{
+  position:absolute;top:6%;left:50%;transform:translateX(-50%);
+  width:80px;height:80px;border-radius:50%;
+  background:radial-gradient(circle,#FFE066,#FFD93D);
+  box-shadow:0 0 0 12px rgba(255,217,61,.25), 0 0 0 24px rgba(255,217,61,.12);
+  animation:sun-rise 1s ease .5s both;
+}
+@keyframes sun-rise{from{top:15%;opacity:0}to{top:6%;opacity:1}}
+
+/* Clouds */
+.load-cloud{
+  position:absolute;background:rgba(255,255,255,.9);border-radius:var(--r-pill);
+  animation:cloud-drift var(--d,12s) ease-in-out var(--del,0s) infinite alternate;
+}
+@keyframes cloud-drift{from{transform:translateX(-10px)}to{transform:translateX(10px)}}
+.load-cloud::before,.load-cloud::after{
+  content:'';position:absolute;background:inherit;border-radius:50%;
+}
+
+/* Ground elements */
+.load-tree{
+  position:absolute;bottom:calc(45% - 4px);
+  display:flex;flex-direction:column;align-items:center;
+  animation:pop-in .5s var(--spring) var(--del,.5s) both;
+}
+@keyframes pop-in{from{transform:scale(0) translateY(20px)}to{transform:scale(1) translateY(0)}}
+.tree-top{
+  width:var(--w,50px);height:var(--h,60px);border-radius:50%;
+  background:radial-gradient(circle at 40% 40%,var(--ac-grass3),var(--ac-grass));
+  box-shadow:0 4px 0 rgba(0,0,0,.1);
+  display:flex;align-items:center;justify-content:center;font-size:var(--ef,20px);
+}
+.tree-trunk{width:12px;height:16px;background:var(--ac-earth);border-radius:0 0 4px 4px}
+
+/* Title card */
+.load-title-card {
+  background:var(--ac-cream);
+  border-radius:var(--r-xl);
+  padding:28px 36px;
+  text-align:center;
+  box-shadow:var(--shadow-card);
+  border:3px solid var(--ac-cream2);
+  max-width:min(360px,85vw);
+  position:relative;z-index:2;
+  animation:card-pop .6s var(--spring) .8s both;
+}
+@keyframes card-pop{from{transform:scale(.5) translateY(40px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+.ac-leaf-deco{position:absolute;font-size:32px}
+.leaf-tl{top:-16px;left:-8px;transform:rotate(-30deg)}
+.leaf-tr{top:-16px;right:-8px;transform:rotate(30deg) scaleX(-1)}
+
+.load-island-name{
+  font-family:var(--font-head);font-size:13px;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--ac-grass2);margin-bottom:6px;
+}
+.load-main-title{
+  font-family:var(--font-head);font-size:clamp(28px,8vw,42px);
+  color:var(--ac-brown);line-height:1.1;margin-bottom:4px;
+  text-shadow:0 3px 0 rgba(0,0,0,.08);
+}
+.load-subtitle{font-size:14px;color:var(--ac-brown);opacity:.6;margin-bottom:20px}
+.load-dear{
+  background:var(--ac-sky2);border-radius:var(--r-md);padding:10px 16px;
+  margin-bottom:20px;border:2px solid rgba(74,144,217,.2);
+}
+.dear-from{font-size:11px;color:var(--ac-nook-blue);font-weight:700;letter-spacing:.08em;margin-bottom:3px}
+.dear-name{font-family:var(--font-head);font-size:clamp(15px,4vw,19px);color:var(--ac-dark)}
+
+.ac-btn {
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--ac-yellow);color:var(--ac-brown2);
+  font-family:var(--font-head);font-size:16px;
+  padding:12px 28px;border-radius:var(--r-pill);border:none;cursor:pointer;
+  box-shadow:0 5px 0 var(--ac-yellow2), var(--shadow-sm);
+  transition:transform .1s, box-shadow .1s;
+  text-decoration:none;
+}
+.ac-btn:hover{transform:translateY(-2px);box-shadow:0 7px 0 var(--ac-yellow2), var(--shadow-md)}
+.ac-btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--ac-yellow2)}
+.ac-btn.green{background:var(--ac-grass);color:white;box-shadow:0 5px 0 var(--ac-grass2)}
+.ac-btn.green:hover{box-shadow:0 7px 0 var(--ac-grass2),var(--shadow-md)}
+.ac-btn.green:active{box-shadow:0 2px 0 var(--ac-grass2)}
+.ac-btn.blue{background:var(--ac-nook-blue);color:white;box-shadow:0 5px 0 var(--ac-nook-dark)}
+.ac-btn.blue:hover{box-shadow:0 7px 0 var(--ac-nook-dark),var(--shadow-md)}
+.ac-btn.blue:active{box-shadow:0 2px 0 var(--ac-nook-dark)}
+.ac-btn.pink{background:var(--ac-pink);color:white;box-shadow:0 5px 0 #e0607a}
+.ac-btn.pink:hover{box-shadow:0 7px 0 #e0607a,var(--shadow-md)}
+.ac-btn svg{width:18px;height:18px}
+
+/* Spring  */
+.spring{animation-timing-function:cubic-bezier(0.34,1.56,0.64,1)}
+:root{--spring:cubic-bezier(0.34,1.56,0.64,1)}
+
+/* ══════════════════════════════════
+   APP WRAPPER
+══════════════════════════════════ */
+#app{opacity:0;transition:opacity .7s ease .2s}
+#app.show{opacity:1}
+
+/* ══════════════════════════════════
+   ISLAND TOP BAR (AC menu bar)
+══════════════════════════════════ */
+.ac-topbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(168,216,234,.92);backdrop-filter:blur(12px);
+  border-bottom:3px solid rgba(255,255,255,.6);
+  padding:max(env(safe-area-inset-top,0px),8px) 14px 8px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.tb-island{display:flex;align-items:center;gap:8px}
+.tb-island-icon{font-size:22px;animation:bob 2s ease-in-out infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.tb-island-name{font-family:var(--font-head);font-size:16px;color:var(--ac-brown2)}
+.tb-weather{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.6);border-radius:var(--r-pill);
+  padding:5px 12px;font-size:13px;font-weight:700;color:var(--ac-brown);
+  border:2px solid rgba(255,255,255,.8);
+}
+.tb-bells{
+  display:flex;align-items:center;gap:5px;
+  background:rgba(255,217,61,.3);border-radius:var(--r-pill);
+  padding:5px 12px;font-size:13px;font-weight:800;color:var(--ac-brown2);
+  border:2px solid rgba(255,217,61,.4);
+}
+
+/* ══════════════════════════════════
+   ISLAND HERO / PANORAMA
+══════════════════════════════════ */
+.island-hero{
+  position:relative;
+  padding-top:max(env(safe-area-inset-top,0px),52px);
+  min-height:100svh;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+}
+
+/* Sky */
+.island-sky{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,
+    #87CEEB 0%,
+    #A8D8EA 30%,
+    #C9E8F5 50%,
+    #E8F5FD 55%,
+    var(--ac-grass) 55%,
+    var(--ac-grass2) 68%,
+    var(--ac-sand) 68%,
+    var(--ac-sand2) 78%,
+    var(--ac-water) 78%,
+    var(--ac-water2) 100%
+  );
+}
+
+/* Animated clouds */
+.hero-cloud{
+  position:absolute;background:rgba(255,255,255,.85);
+  border-radius:var(--r-pill);
+  animation:cloud-move var(--d,60s) linear var(--del,0s) infinite;
+}
+@keyframes cloud-move{from{transform:translateX(-200px)}to{transform:translateX(110vw)}}
+
+/* Sun in hero */
+.hero-sun{
+  position:absolute;top:8%;right:12%;
+  width:clamp(60px,12vw,90px);height:clamp(60px,12vw,90px);
+  border-radius:50%;
+  background:radial-gradient(circle at 40% 40%,#FFE066,#FFD93D);
+  box-shadow:0 0 0 clamp(8px,2vw,16px) rgba(255,217,61,.2),0 0 0 clamp(16px,4vw,32px) rgba(255,217,61,.1);
+  animation:sun-glow 4s ease-in-out infinite;
+}
+@keyframes sun-glow{0%,100%{box-shadow:0 0 0 12px rgba(255,217,61,.2),0 0 0 24px rgba(255,217,61,.1)}50%{box-shadow:0 0 0 18px rgba(255,217,61,.25),0 0 0 36px rgba(255,217,61,.12)}}
+
+/* Floating butterflies */
+.butterfly{
+  position:absolute;font-size:clamp(14px,3vw,20px);
+  animation:butterfly-float var(--d,6s) ease-in-out var(--del,0s) infinite;
+  pointer-events:none;
+}
+@keyframes butterfly-float{
+  0%{transform:translate(0,0) rotate(-5deg)}
+  25%{transform:translate(15px,-20px) rotate(5deg)}
+  50%{transform:translate(5px,-30px) rotate(-3deg)}
+  75%{transform:translate(-10px,-15px) rotate(4deg)}
+  100%{transform:translate(0,0) rotate(-5deg)}
+}
+
+/* Villagers walking on grass */
+.villager{
+  position:absolute;font-size:clamp(18px,4vw,26px);
+  animation:villager-walk var(--d,8s) ease-in-out var(--del,0s) infinite alternate;
+}
+@keyframes villager-walk{from{transform:translateX(0) scaleX(1)}to{transform:translateX(var(--dist,60px)) scaleX(-1)}}
+
+/* Ground scenery */
+.ground-scene{
+  position:absolute;bottom:0;left:0;right:0;
+  height:45%;
+  display:flex;align-items:flex-end;justify-content:space-around;
+  padding:0 2%;pointer-events:none;
+}
+.gs-tree{
+  display:flex;flex-direction:column;align-items:center;
+  transform-origin:bottom center;
+  animation:tree-sway var(--d,4s) ease-in-out var(--del,0s) infinite alternate;
+}
+@keyframes tree-sway{from{transform:rotate(-1deg)}to{transform:rotate(1deg)}}
+.gs-tree-top{
+  background:radial-gradient(circle at 40% 35%,var(--ac-grass3),var(--ac-grass));
+  border-radius:50%;box-shadow:0 4px 0 rgba(0,0,0,.1);
+  display:flex;align-items:center;justify-content:center;
+}
+.gs-tree-trunk{background:var(--ac-earth);border-radius:0 0 4px 4px;box-shadow:0 3px 0 var(--ac-earth2)}
+
+/* Hero content card */
+.hero-content{
+  position:relative;z-index:5;
+  margin:auto;
+  padding:clamp(16px,5vw,40px) clamp(16px,5vw,40px) clamp(60px,8vh,80px);
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;
+}
+
+.island-welcome-sign{
+  background:var(--ac-cream);border-radius:var(--r-xl);
+  padding:24px 32px;
+  box-shadow:var(--shadow-card);
+  border:4px solid var(--ac-cream2);
+  position:relative;max-width:min(480px,90vw);
+  animation:welcome-bounce .6s var(--spring) .5s both;
+}
+@keyframes welcome-bounce{from{transform:scale(.7) translateY(30px);opacity:0}to{transform:scale(1) translateY(0);opacity:1}}
+
+.ws-plank-top{
+  position:absolute;top:-18px;left:50%;transform:translateX(-50%);
+  background:var(--ac-earth);border-radius:6px 6px 0 0;
+  width:60px;height:20px;
+  box-shadow:0 -2px 0 var(--ac-earth2);
+  display:flex;align-items:center;justify-content:center;
+}
+.ws-screw{width:8px;height:8px;border-radius:50%;background:var(--ac-earth2);border:1.5px solid rgba(0,0,0,.15)}
+.ws-plank-bottom{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);background:var(--ac-earth);border-radius:0 0 6px 6px;width:60px;height:20px;box-shadow:0 4px 0 var(--ac-earth2)}
+.ws-chains{
+  position:absolute;top:-24px;left:30%;right:30%;
+  display:flex;justify-content:space-between;font-size:12px;color:var(--ac-earth2);font-weight:900;
+}
+
+.ws-island-label{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ac-grass2);font-weight:800;margin-bottom:6px}
+.ws-title{font-family:var(--font-head);font-size:clamp(32px,9vw,54px);color:var(--ac-brown);margin-bottom:4px;line-height:1;text-shadow:0 3px 0 rgba(200,160,110,.3)}
+.ws-and{color:var(--ac-pink);font-size:.65em}
+.ws-date{font-size:clamp(13px,3vw,16px);color:var(--ac-brown);opacity:.65;margin-bottom:16px}
+.ws-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* ══════════════════════════════════
+   SECTION COMMON
+══════════════════════════════════ */
+.ac-section{
+  padding:clamp(32px,6vh,60px) clamp(16px,5vw,40px);
+  max-width:900px;margin:0 auto;
+}
+
+.ac-section-header{
+  text-align:center;margin-bottom:28px;
+}
+.ac-section-icon{font-size:36px;margin-bottom:8px;display:block;animation:bounce-gentle 2s ease-in-out infinite}
+@keyframes bounce-gentle{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+.ac-section-title{
+  font-family:var(--font-head);font-size:clamp(24px,5vw,38px);
+  color:var(--ac-brown);text-shadow:0 3px 0 rgba(0,0,0,.06);
+  margin-bottom:6px;
+}
+.ac-section-sub{font-size:clamp(13px,2.5vw,15px);color:var(--ac-brown);opacity:.6;font-style:italic}
+
+/* AC card */
+.ac-card{
+  background:var(--ac-cream);border-radius:var(--r-xl);
+  border:3px solid var(--ac-cream2);
+  box-shadow:var(--shadow-card);
+  overflow:hidden;position:relative;
+  transition:transform .2s var(--spring), box-shadow .2s;
+}
+.ac-card:hover{transform:translateY(-4px) scale(1.01);box-shadow:var(--shadow-lg)}
+
+/* ══════════════════════════════════
+   NPC DIALOG BOX
+══════════════════════════════════ */
+.npc-dialog{
+  background:rgba(255,255,255,.95);
+  border-radius:var(--r-xl);
+  border:4px solid var(--ac-cream2);
+  box-shadow:var(--shadow-card);
+  padding:20px 22px 16px;
+  position:relative;margin-bottom:14px;
+}
+.npc-portrait{
+  width:72px;height:72px;border-radius:var(--r-lg);
+  border:3px solid var(--ac-cream2);overflow:hidden;flex-shrink:0;
+  box-shadow:var(--shadow-sm);
+}
+.npc-portrait img{width:100%;height:100%;object-fit:cover}
+.npc-portrait-emoji{
+  width:72px;height:72px;border-radius:var(--r-lg);
+  border:3px solid var(--ac-cream2);flex-shrink:0;
+  background:var(--ac-sky2);box-shadow:var(--shadow-sm);
+  display:flex;align-items:center;justify-content:center;font-size:36px;
+}
+.npc-name{
+  font-family:var(--font-head);font-size:14px;color:var(--ac-nook-blue);
+  margin-bottom:5px;background:var(--ac-sky2);display:inline-block;
+  padding:2px 10px;border-radius:var(--r-pill);
+}
+.npc-text{
+  font-size:clamp(14px,2.5vw,16px);color:var(--ac-dark);
+  line-height:1.7;font-weight:600;
+}
+.npc-text .ac-highlight{color:var(--ac-nook-blue);font-weight:800}
+.npc-text .ac-pink{color:var(--ac-pink);font-weight:800}
+.npc-text .ac-green{color:var(--ac-grass2);font-weight:800}
+
+/* Dialog triangle */
+.npc-dialog.left::before{
+  content:'';position:absolute;bottom:-16px;left:40px;
+  border:10px solid transparent;border-top-color:var(--ac-cream2);
+}
+.npc-dialog.left::after{
+  content:'';position:absolute;bottom:-10px;left:42px;
+  border:8px solid transparent;border-top-color:rgba(255,255,255,.95);
+}
+.npc-cursor{display:inline-block;animation:cursor-blink .8s step-start infinite;color:var(--ac-nook-blue);font-weight:900}
+@keyframes cursor-blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* ══════════════════════════════════
+   BULLETIN BOARD (announcement)
+══════════════════════════════════ */
+.bulletin-board{
+  background:var(--ac-earth);border-radius:var(--r-xl);
+  padding:12px;box-shadow:var(--shadow-card);border:4px solid var(--ac-earth2);
+  position:relative;
+}
+.bb-header{
+  background:var(--ac-brown);border-radius:var(--r-lg) var(--r-lg) 0 0;
+  padding:10px 16px;text-align:center;
+}
+.bb-header-title{font-family:var(--font-head);font-size:16px;color:var(--ac-cream);letter-spacing:.05em}
+.bb-paper{
+  background:var(--ac-cream);border-radius:0 0 var(--r-md) var(--r-md);
+  padding:16px;border:2px solid var(--ac-cream2);
+}
+.bb-pin{
+  position:absolute;top:-8px;left:50%;transform:translateX(-50%);
+  width:18px;height:18px;border-radius:50%;
+  background:var(--ac-pink);border:2px solid #e0607a;
+  box-shadow:0 2px 4px rgba(0,0,0,.2);
+}
+.bb-notice{
+  font-size:clamp(13px,2.5vw,15px);color:var(--ac-dark);
+  line-height:1.7;font-weight:600;
+}
+.bb-notice b{color:var(--ac-nook-blue)}
+.bb-stamp{
+  margin-top:10px;display:flex;align-items:center;gap:8px;
+  font-size:12px;color:var(--ac-brown);font-weight:700;
+  opacity:.6;
+}
+
+/* ══════════════════════════════════
+   NOOK MILES COUNTDOWN
+══════════════════════════════════ */
+.nook-card{
+  background:linear-gradient(135deg,#1a3d6e,#2C5F8A);
+  border-radius:var(--r-xl);border:4px solid #4A90D9;
+  padding:24px;box-shadow:var(--shadow-card);
+  position:relative;overflow:hidden;text-align:center;
+}
+.nook-card::before{
+  content:'🍃';position:absolute;top:-10px;right:-10px;
+  font-size:80px;opacity:.08;transform:rotate(20deg);
+}
+.nook-logo{
+  font-family:var(--font-head);font-size:13px;letter-spacing:.1em;
+  color:rgba(255,255,255,.6);margin-bottom:6px;text-transform:uppercase;
+}
+.nook-title{font-family:var(--font-head);font-size:clamp(18px,4vw,26px);color:white;margin-bottom:20px}
+.nook-nums{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.nook-box{
+  background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.2);
+  border-radius:var(--r-lg);padding:14px 12px;min-width:68px;flex:1;max-width:100px;
+  backdrop-filter:blur(4px);
+}
+.nook-num{font-family:var(--font-head);font-size:clamp(28px,6vw,40px);color:#FFD93D;line-height:1}
+.nook-unit{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:rgba(255,255,255,.5);margin-top:4px}
+
+/* ══════════════════════════════════
+   CHARACTER RESIDENTS (couple)
+══════════════════════════════════ */
+.resident-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:580px;margin:0 auto}
+@media(max-width:420px){.resident-cards{grid-template-columns:1fr}}
+
+.resident-card{
+  background:var(--ac-cream);border-radius:var(--r-xl);
+  border:4px solid var(--ac-cream2);
+  box-shadow:var(--shadow-card);
+  overflow:hidden;text-align:center;
+  transition:transform .2s var(--spring),box-shadow .2s;
+}
+.resident-card:hover{transform:translateY(-6px) rotate(-1deg);box-shadow:var(--shadow-lg)}
+
+.rc-photo{
+  position:relative;overflow:hidden;
+  background:linear-gradient(180deg,var(--ac-sky2),var(--ac-grass3));
+}
+.rc-photo img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.rc-photo-emoji{
+  width:100%;aspect-ratio:1;
+  display:flex;align-items:center;justify-content:center;font-size:80px;
+}
+.rc-species-badge{
+  position:absolute;top:10px;left:10px;
+  background:var(--ac-yellow);color:var(--ac-brown2);
+  font-family:var(--font-head);font-size:10px;letter-spacing:.05em;
+  padding:3px 10px;border-radius:var(--r-pill);
+  border:2px solid var(--ac-yellow2);box-shadow:var(--shadow-sm);
+}
+.rc-personality{
+  position:absolute;bottom:10px;right:10px;
+  background:rgba(255,255,255,.9);border-radius:var(--r-pill);
+  padding:3px 8px;font-size:11px;font-weight:700;color:var(--ac-brown);
+  border:1.5px solid rgba(255,255,255,.8);
+}
+.rc-info{padding:14px}
+.rc-role{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--ac-nook-blue);font-weight:800;margin-bottom:4px}
+.rc-name{font-family:var(--font-head);font-size:clamp(18px,4vw,22px);color:var(--ac-brown);margin-bottom:2px}
+.rc-catchphrase{font-size:12px;color:var(--ac-brown);opacity:.5;font-style:italic;margin-bottom:10px}
+.rc-parents{font-size:12px;color:var(--ac-dark);opacity:.7;line-height:1.55}
+.rc-birthday{
+  margin:8px 0;display:inline-flex;align-items:center;gap:5px;
+  background:var(--ac-pink2);color:white;
+  font-size:11px;font-weight:700;padding:3px 10px;border-radius:var(--r-pill);
+}
+
+/* ══════════════════════════════════
+   EVENT BOARD / CEREMONY
+══════════════════════════════════ */
+.event-board{
+  background:var(--ac-yellow);border-radius:var(--r-xl);
+  border:4px solid var(--ac-yellow2);padding:8px;
+  box-shadow:var(--shadow-card);
+}
+.eb-header{
+  background:var(--ac-orange);border-radius:var(--r-lg) var(--r-lg) 0 0;
+  padding:12px 16px;text-align:center;
+}
+.eb-header-title{font-family:var(--font-head);font-size:17px;color:white;text-shadow:0 2px 0 rgba(0,0,0,.15)}
+.eb-body{background:var(--ac-cream);border-radius:0 0 var(--r-md) var(--r-md);padding:0}
+
+.eb-item{
+  padding:16px 18px;border-bottom:3px dashed var(--ac-cream2);
+  display:flex;gap:14px;align-items:flex-start;
+}
+.eb-item:last-child{border-bottom:none}
+.eb-icon-box{
+  width:52px;height:52px;border-radius:var(--r-lg);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:26px;
+  box-shadow:var(--shadow-sm);
+}
+.eb-content{}
+.eb-event-type{font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-weight:800;margin-bottom:3px}
+.eb-event-name{font-family:var(--font-head);font-size:clamp(16px,3.5vw,20px);color:var(--ac-brown);margin-bottom:6px}
+.eb-detail{font-size:13px;color:var(--ac-dark);opacity:.7;line-height:1.55;display:flex;align-items:flex-start;gap:5px;margin-bottom:3px}
+.eb-detail-icon{flex-shrink:0;font-size:13px}
+.eb-map-link{
+  display:inline-flex;align-items:center;gap:4px;
+  margin-top:8px;color:var(--ac-nook-blue);font-size:13px;font-weight:700;
+  text-decoration:none;transition:opacity .15s;
+}
+.eb-map-link:hover{opacity:.7}
+
+/* ══════════════════════════════════
+   LOVE STORY — Pinboard / Stamps
+══════════════════════════════════ */
+.pinboard{
+  background:var(--ac-peach);border-radius:var(--r-xl);
+  border:4px solid rgba(255,180,100,.4);padding:16px;
+  box-shadow:var(--shadow-card);position:relative;
+}
+.pinboard-title{
+  text-align:center;font-family:var(--font-head);font-size:20px;
+  color:var(--ac-brown);margin-bottom:16px;
+}
+
+.stamp-entry{
+  display:flex;gap:14px;margin-bottom:16px;align-items:flex-start;
+}
+.stamp-entry:last-child{margin-bottom:0}
+.stamp-seal{
+  width:64px;height:64px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;position:relative;
+  box-shadow:var(--shadow-sm);
+  border:3px solid rgba(255,255,255,.8);
+}
+.stamp-seal::after{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  border:3px dashed rgba(255,255,255,.5);
+}
+.stamp-body{flex:1;background:rgba(255,255,255,.7);border-radius:var(--r-lg);padding:12px}
+.stamp-month{font-size:10px;letter-spacing:.15em;text-transform:uppercase;font-weight:800;color:var(--ac-nook-blue);margin-bottom:3px}
+.stamp-title{font-family:var(--font-head);font-size:clamp(15px,3vw,18px);color:var(--ac-brown);margin-bottom:4px}
+.stamp-desc{font-size:13px;color:var(--ac-dark);opacity:.7;line-height:1.6}
+
+/* ══════════════════════════════════
+   PHOTO CATALOG (gallery)
+══════════════════════════════════ */
+.catalog-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:10px;
+}
+@media(max-width:500px){.catalog-grid{grid-template-columns:repeat(2,1fr);gap:8px}}
+
+.catalog-item{
+  background:var(--ac-cream);border-radius:var(--r-lg);
+  border:3px solid var(--ac-cream2);overflow:hidden;
+  box-shadow:var(--shadow-sm);cursor:pointer;
+  transition:transform .2s var(--spring),box-shadow .2s;
+  position:relative;
+}
+.catalog-item:hover{transform:scale(1.06) rotate(1deg);box-shadow:var(--shadow-md)}
+.catalog-item img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.catalog-item-footer{
+  padding:5px 8px 6px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.catalog-name{font-size:10px;font-weight:700;color:var(--ac-brown);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.catalog-star{font-size:11px;color:var(--ac-yellow2)}
+.catalog-item-overlay{
+  position:absolute;inset:0;background:rgba(255,250,232,.8);
+  display:flex;align-items:center;justify-content:center;font-size:32px;
+  opacity:0;transition:opacity .2s;border-radius:calc(var(--r-lg) - 3px);
+}
+.catalog-item:hover .catalog-item-overlay{opacity:1}
+
+/* Auto-scroll catalog row */
+.catalog-auto-row{
+  position:relative;overflow:hidden;margin-bottom:12px;
+}
+.cat-fade-l{position:absolute;left:0;top:0;bottom:0;width:40px;background:linear-gradient(90deg,var(--ac-sky3),transparent);z-index:2;pointer-events:none}
+.cat-fade-r{position:absolute;right:0;top:0;bottom:0;width:40px;background:linear-gradient(270deg,var(--ac-sky3),transparent);z-index:2;pointer-events:none}
+.cat-strip{display:flex;gap:10px;will-change:transform;padding:4px 0}
+.cat-item{
+  flex-shrink:0;width:clamp(120px,28vw,160px);
+  background:var(--ac-cream);border-radius:var(--r-lg);
+  border:3px solid var(--ac-cream2);overflow:hidden;
+  box-shadow:var(--shadow-sm);cursor:pointer;
+  transition:transform .2s var(--spring);
+}
+.cat-item:hover{transform:scale(1.05) rotate(1deg)}
+.cat-item img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}
+.cat-item-name{padding:5px 8px;font-size:10px;font-weight:700;color:var(--ac-brown);text-align:center}
+.cat-dots{display:flex;justify-content:center;gap:4px;margin-top:8px}
+.cat-dot{width:6px;height:6px;border-radius:50%;background:var(--ac-grass2);opacity:.3;transition:opacity .25s,width .25s;cursor:pointer}
+.cat-dot.on{opacity:1;width:18px;border-radius:3px}
+
+/* ══════════════════════════════════
+   GIFT SHOP (Nook Shopping)
+══════════════════════════════════ */
+.shop-card{
+  background:linear-gradient(135deg,var(--ac-cream),#fff9f0);
+  border-radius:var(--r-xl);border:4px solid var(--ac-cream2);
+  box-shadow:var(--shadow-card);overflow:hidden;
+}
+.shop-header{
+  background:linear-gradient(135deg,var(--ac-nook-blue),var(--ac-nook-dark));
+  padding:14px 18px;display:flex;align-items:center;gap:10px;
+}
+.shop-logo{font-size:24px}
+.shop-name{font-family:var(--font-head);font-size:17px;color:white}
+.shop-tagline{font-size:11px;color:rgba(255,255,255,.6);margin-top:1px}
+.shop-items{display:grid;grid-template-columns:1fr 1fr;gap:0}
+@media(max-width:400px){.shop-items{grid-template-columns:1fr}}
+
+.shop-item{
+  padding:18px;border-right:3px solid var(--ac-cream2);border-bottom:3px solid var(--ac-cream2);
+  position:relative;
+}
+.shop-item:nth-child(even){border-right:none}
+.shop-item:last-child,.shop-item:nth-last-child(2){border-bottom:none}
+.si-bank-emoji{font-size:28px;margin-bottom:8px;display:block}
+.si-bank-name{font-family:var(--font-head);font-size:22px;color:var(--ac-nook-blue);margin-bottom:2px}
+.si-holder{font-size:12px;color:var(--ac-brown);opacity:.65;margin-bottom:12px;font-style:italic}
+.si-num{
+  font-family:monospace;font-size:14px;letter-spacing:.08em;
+  background:var(--ac-sky2);border-radius:var(--r-sm);padding:6px 10px;
+  color:var(--ac-dark);margin-bottom:10px;font-weight:700;
+  border:2px solid rgba(74,144,217,.15);
+}
+.si-copy-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--ac-mint);color:var(--ac-dark);
+  font-family:var(--font-body);font-size:12px;font-weight:700;
+  padding:7px 14px;border-radius:var(--r-pill);border:none;cursor:pointer;
+  box-shadow:0 3px 0 var(--ac-mint2);transition:all .1s;
+}
+.si-copy-btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--ac-mint2)}
+.si-copy-btn.done{background:var(--ac-grass);color:white;box-shadow:0 3px 0 var(--ac-grass2)}
+
+/* ══════════════════════════════════
+   RSVP — Nook Cranny Form
+══════════════════════════════════ */
+.rsvp-form-card{
+  background:var(--ac-cream);border-radius:var(--r-xl);
+  border:4px solid var(--ac-cream2);box-shadow:var(--shadow-card);overflow:hidden;
+  max-width:560px;margin:0 auto;
+}
+.rfc-header{
+  background:linear-gradient(135deg,var(--ac-pink),#e0607a);
+  padding:16px 20px;display:flex;align-items:center;gap:10px;
+}
+.rfc-icon{font-size:28px}
+.rfc-title{font-family:var(--font-head);font-size:18px;color:white}
+.rfc-subtitle{font-size:12px;color:rgba(255,255,255,.75);margin-top:2px}
+.rfc-body{padding:20px}
+.rfc-field{margin-bottom:14px}
+.rfc-label{
+  font-family:var(--font-head);font-size:13px;color:var(--ac-nook-blue);
+  margin-bottom:6px;display:block;
+}
+.rfc-input{
+  width:100%;background:var(--ac-sky3);border:3px solid var(--ac-sky2);
+  border-radius:var(--r-md);padding:12px 14px;color:var(--ac-dark);
+  font-family:var(--font-body);font-size:15px;font-weight:600;
+  outline:none;transition:border-color .2s,box-shadow .2s;caret-color:var(--ac-nook-blue);
+}
+.rfc-input:focus{border-color:var(--ac-nook-blue);box-shadow:0 0 0 3px rgba(74,144,217,.15)}
+.rfc-input::placeholder{color:rgba(61,43,31,.35)}
+textarea.rfc-input{min-height:90px;resize:vertical}
+.rfc-select{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='%23A87D50'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px}
+
+.seg-row{display:flex;gap:8px}
+.seg-btn{
+  flex:1;background:var(--ac-sky2);border:3px solid transparent;
+  border-radius:var(--r-md);padding:10px;color:var(--ac-brown);
+  font-family:var(--font-head);font-size:14px;cursor:pointer;transition:all .15s;text-align:center;
+  box-shadow:0 3px 0 rgba(0,0,0,.08);
+}
+.seg-btn.on{background:var(--ac-yellow);border-color:var(--ac-yellow2);color:var(--ac-brown2);box-shadow:0 3px 0 var(--ac-yellow2)}
+
+.rfc-submit{padding:0 20px 20px}
+.rfc-submit-btn{
+  width:100%;background:var(--ac-grass);color:white;
+  font-family:var(--font-head);font-size:18px;
+  border:none;border-radius:var(--r-xl);padding:14px;cursor:pointer;
+  box-shadow:0 6px 0 var(--ac-grass2),var(--shadow-sm);
+  transition:transform .1s,box-shadow .1s;display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.rfc-submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 0 var(--ac-grass2),var(--shadow-md)}
+.rfc-submit-btn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--ac-grass2)}
+
+/* ══════════════════════════════════
+   WISH MAILBOX
+══════════════════════════════════ */
+.mailbox-section{padding:clamp(32px,6vh,60px) clamp(16px,5vw,40px);max-width:900px;margin:0 auto}
+.mailbox-list{display:flex;flex-direction:column;gap:10px}
+.mail-item{
+  background:var(--ac-cream);border-radius:var(--r-xl);
+  border:3px solid var(--ac-cream2);box-shadow:var(--shadow-sm);
+  padding:14px 16px;display:flex;gap:12px;
+  opacity:0;transform:translateX(-16px);
+  transition:opacity .5s ease,transform .5s ease;
+}
+.mail-item.vis{opacity:1;transform:translateX(0)}
+.mail-avatar{
+  width:48px;height:48px;border-radius:var(--r-lg);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:24px;
+  border:3px solid rgba(255,255,255,.8);box-shadow:var(--shadow-sm);
+}
+.mail-body{flex:1}
+.mail-from{font-family:var(--font-head);font-size:14px;color:var(--ac-nook-blue);margin-bottom:2px}
+.mail-status{font-size:11px;font-weight:700;color:var(--ac-grass2);margin-bottom:5px}
+.mail-text{font-size:13px;color:var(--ac-dark);opacity:.75;line-height:1.6;font-style:italic}
+.mail-stamp{
+  display:flex;align-items:center;gap:4px;margin-top:6px;
+  font-size:10px;font-weight:800;color:var(--ac-orange);letter-spacing:.05em;
+}
+
+/* ══════════════════════════════════
+   FOOTER — Island Closure Sign
+══════════════════════════════════ */
+.island-footer{
+  background:linear-gradient(180deg,var(--ac-grass),var(--ac-grass2) 30%,var(--ac-sand) 30%,var(--ac-sand2) 60%,var(--ac-water) 60%);
+  padding:60px clamp(16px,5vw,40px) max(40px,env(safe-area-inset-bottom,40px));
+  text-align:center;position:relative;overflow:hidden;
+}
+.footer-closing-sign{
+  background:var(--ac-cream);border-radius:var(--r-xl);
+  border:4px solid var(--ac-cream2);padding:28px 32px;
+  box-shadow:var(--shadow-card);display:inline-block;
+  max-width:420px;position:relative;z-index:2;
+  animation:none;
+}
+.fs-dodo{font-size:40px;margin-bottom:8px}
+.fs-title{font-family:var(--font-head);font-size:clamp(28px,7vw,42px);color:var(--ac-brown);margin-bottom:6px}
+.fs-body{font-size:clamp(13px,2.5vw,15px);color:var(--ac-brown);opacity:.7;line-height:1.7;margin-bottom:20px;font-style:italic}
+.fs-dodo-code{
+  background:var(--ac-sky2);border-radius:var(--r-lg);padding:12px 20px;
+  margin-bottom:16px;border:3px solid rgba(74,144,217,.2);
+}
+.fs-dodo-label{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--ac-nook-blue);font-weight:800;margin-bottom:4px}
+.fs-dodo-val{font-family:var(--font-head);font-size:28px;color:var(--ac-dark);letter-spacing:.1em}
+.fs-brand{font-size:12px;color:var(--ac-brown);opacity:.5}
+.fs-brand a{color:var(--ac-nook-blue);text-decoration:none}
+
+/* Footer animals waving */
+.footer-animals{
+  position:absolute;bottom:30%;left:0;right:0;z-index:1;
+  display:flex;justify-content:space-around;padding:0 5%;pointer-events:none;
+}
+.fa-animal{font-size:clamp(20px,5vw,32px);animation:wave-anim var(--d,1.5s) ease-in-out var(--del,0s) infinite alternate}
+@keyframes wave-anim{from{transform:translateY(0)}to{transform:translateY(-12px)}}
+
+/* ══════════════════════════════════
+   BOTTOM NAV (AC style)
+══════════════════════════════════ */
+.ac-bottom-nav{
+  position:fixed;bottom:0;left:0;right:0;z-index:100;
+  background:rgba(255,255,255,.9);backdrop-filter:blur(16px);
+  border-top:3px solid rgba(255,255,255,.8);
+  padding:8px 0 max(8px,env(safe-area-inset-bottom,8px));
+  display:flex;justify-content:space-around;
+  box-shadow:0 -4px 16px rgba(0,0,0,.08);
+  transform:translateY(100%);transition:transform .5s var(--spring) .5s;
+}
+.ac-bottom-nav.show{transform:translateY(0)}
+.nav-item{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  text-decoration:none;color:rgba(61,43,31,.4);
+  font-family:var(--font-head);font-size:10px;letter-spacing:.03em;
+  padding:4px 10px;border-radius:var(--r-md);transition:color .15s,background .15s;cursor:pointer;
+}
+.nav-item.on,.nav-item:hover{color:var(--ac-nook-blue);background:var(--ac-sky2)}
+.nav-item svg{width:22px;height:22px}
+.nav-item .nav-icon{font-size:20px;line-height:1}
+
+/* ══════════════════════════════════
+   LIGHTBOX
+══════════════════════════════════ */
+.ac-lb{
+  position:fixed;inset:0;z-index:9998;
+  background:rgba(61,43,31,.85);backdrop-filter:blur(16px);
+  display:none;flex-direction:column;
+}
+.ac-lb.open{display:flex}
+.ac-lb-header{
+  padding:max(env(safe-area-inset-top,12px),12px) 16px 12px;
+  display:flex;align-items:center;gap:10px;
+}
+.ac-lb-back{
+  background:var(--ac-cream);border:3px solid var(--ac-cream2);
+  border-radius:var(--r-pill);color:var(--ac-brown2);font-family:var(--font-head);
+  font-size:13px;padding:6px 16px;cursor:pointer;
+  box-shadow:0 3px 0 rgba(0,0,0,.1);display:flex;align-items:center;gap:5px;
+  transition:transform .1s;
+}
+.ac-lb-back:active{transform:translateY(2px);box-shadow:none}
+.ac-lb-back svg{width:16px;height:16px}
+.ac-lb-title{font-family:var(--font-head);font-size:15px;color:var(--ac-cream);flex:1}
+.ac-lb-ct{font-size:12px;color:rgba(255,255,255,.5);font-weight:700}
+.ac-lb-main{flex:1;display:flex;align-items:center;justify-content:center;padding:12px;position:relative}
+.ac-lb-img{max-width:100%;max-height:100%;object-fit:contain;border-radius:var(--r-xl);border:4px solid var(--ac-cream2);box-shadow:var(--shadow-lg)}
+.ac-lb-nav{
+  position:absolute;top:50%;transform:translateY(-50%);
+  background:var(--ac-cream);border:3px solid var(--ac-cream2);
+  color:var(--ac-brown2);width:44px;height:44px;border-radius:50%;
+  font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--shadow-sm);transition:transform .1s;
+}
+.ac-lb-nav:active{transform:translateY(-50%) scale(.9)}
+.ac-lb-prev{left:8px}
+.ac-lb-next{right:8px}
+.ac-lb-footer{
+  padding:10px 16px max(20px,env(safe-area-inset-bottom,20px));
+  display:flex;justify-content:center;gap:10px;
+}
+
+/* ══════════════════════════════════
+   TOAST
+══════════════════════════════════ */
+.ac-toast{
+  position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(12px);
+  background:var(--ac-cream);color:var(--ac-brown2);
+  border:3px solid var(--ac-cream2);border-radius:var(--r-xl);
+  padding:10px 20px;font-family:var(--font-head);font-size:14px;
+  opacity:0;transition:opacity .3s,transform .3s;
+  pointer-events:none;white-space:nowrap;z-index:9999;
+  box-shadow:var(--shadow-md);
+}
+.ac-toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Reveal */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.reveal.vis{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.08s}.d2{transition-delay:.16s}.d3{transition-delay:.24s}
+
+/* Section bg alternating */
+.bg-sky{background:var(--ac-sky3)}
+.bg-grass{background:linear-gradient(180deg,var(--ac-grass3) 0%,#d4f0a0 100%)}
+.bg-cream{background:var(--ac-cream2)}
+.bg-mint{background:linear-gradient(135deg,#d0f5e8,#e8fdf4)}
+.bg-peach{background:linear-gradient(135deg,#ffe8d0,#fff4ea)}
+.bg-lavender{background:linear-gradient(135deg,#ece0f8,#f5effd)}
+.bg-yellow{background:linear-gradient(135deg,#fffacc,#fff8b0)}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════
+     TITLE SCREEN
+════════════════════ -->
+<div id="loading">
+  <!-- Stars -->
+  <div id="loadStars"></div>
+  <!-- Sun -->
+  <div class="load-sun"></div>
+  <!-- Clouds -->
+  <div class="load-cloud" style="width:100px;height:28px;top:16%;left:8%;--d:14s;--del:0s"><div style="position:absolute;width:45px;height:45px;top:-20px;left:10px;background:rgba(255,255,255,.9);border-radius:50%"></div><div style="position:absolute;width:35px;height:35px;top:-15px;left:40px;background:rgba(255,255,255,.9);border-radius:50%"></div></div>
+  <div class="load-cloud" style="width:80px;height:24px;top:22%;right:10%;--d:10s;--del:2s"><div style="position:absolute;width:36px;height:36px;top:-18px;left:8px;background:rgba(255,255,255,.9);border-radius:50%"></div><div style="position:absolute;width:28px;height:28px;top:-12px;left:35px;background:rgba(255,255,255,.9);border-radius:50%"></div></div>
+  <!-- Trees on ground -->
+  <div class="load-tree" style="left:5%;--del:.6s"><div class="tree-top" style="--w:48px;--h:58px;--ef:🌳"><span>🌳</span></div><div class="tree-trunk"></div></div>
+  <div class="load-tree" style="left:12%;--del:.8s"><div class="tree-top" style="--w:36px;--h:44px;--ef:🌲"><span>🌲</span></div><div class="tree-trunk" style="width:9px;height:12px"></div></div>
+  <div class="load-tree" style="right:8%;--del:.7s"><div class="tree-top" style="--w:44px;--h:54px;--ef:🌳"><span>🌴</span></div><div class="tree-trunk"></div></div>
+  <div class="load-tree" style="right:18%;--del:.9s"><div class="tree-top" style="--w:38px;--h:46px;--ef:🌿"><span>🌸</span></div><div class="tree-trunk" style="width:9px;height:12px"></div></div>
+
+  <!-- Title card -->
+  <div class="load-title-card">
+    <span class="ac-leaf-deco leaf-tl">🍃</span>
+    <span class="ac-leaf-deco leaf-tr">🍃</span>
+    <div class="load-island-name">🌿 Pulau Cinta · Selamat Datang!</div>
+    <div class="load-main-title">Anita <span class="ws-and">&</span> Zarda</div>
+    <div class="load-subtitle">24 Mei 2026 · Graha Yadika</div>
+    <div class="load-dear">
+      <div class="dear-from">✉ Kepada Yth.</div>
+      <div class="dear-name">Ade Guntur Fitridullah & Partner</div>
+    </div>
+    <div class="ws-btns">
+      <button class="ac-btn" onclick="startIsland()">
+        🏝️ Buka Undangan!
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════
+     APP
+════════════════════ -->
+<div id="app">
+
+  <!-- TOP BAR -->
+  <div class="ac-topbar">
+    <div class="tb-island">
+      <span class="tb-island-icon">🏝️</span>
+      <span class="tb-island-name">Pulau Cinta</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <div class="tb-weather">⛅ Cerah · 28°C</div>
+      <div class="tb-bells">🔔 <span id="bellsCount">9.800</span></div>
+    </div>
+  </div>
+
+  <!-- ISLAND HERO -->
+  <section class="island-hero" id="home">
+    <div class="island-sky"></div>
+
+    <!-- Clouds -->
+    <div class="hero-cloud" style="width:120px;height:30px;top:14%;--d:55s;--del:0s;left:-150px"><div style="position:absolute;width:55px;height:55px;top:-25px;left:12px;background:rgba(255,255,255,.88);border-radius:50%"></div><div style="position:absolute;width:40px;height:40px;top:-18px;left:55px;background:rgba(255,255,255,.88);border-radius:50%"></div></div>
+    <div class="hero-cloud" style="width:90px;height:24px;top:22%;--d:70s;--del:8s;left:-120px"><div style="position:absolute;width:42px;height:42px;top:-20px;left:8px;background:rgba(255,255,255,.88);border-radius:50%"></div><div style="position:absolute;width:30px;height:30px;top:-14px;left:42px;background:rgba(255,255,255,.88);border-radius:50%"></div></div>
+
+    <!-- Sun -->
+    <div class="hero-sun"></div>
+
+    <!-- Butterflies -->
+    <div id="heroButterflies"></div>
+
+    <!-- Villagers -->
+    <div id="heroVillagers"></div>
+
+    <!-- Ground trees -->
+    <div class="ground-scene" id="groundScene"></div>
+
+    <!-- Welcome sign -->
+    <div class="hero-content">
+      <div class="island-welcome-sign">
+        <div class="ws-plank-top"><div class="ws-screw"></div></div>
+        <div class="ws-chains"><span>⛓</span><span>⛓</span></div>
+        <div class="ws-island-label">🌿 Pulau Cinta — Graha Yadika</div>
+        <div class="ws-title">Anita <span class="ws-and">&</span> Zarda</div>
+        <div class="ws-date">✨ Minggu, 24 Mei 2026</div>
+        <div class="ws-btns">
+          <button class="ac-btn green" onclick="scrollTo2('#couple')">👫 Kenalan!</button>
+          <button class="ac-btn blue" onclick="openRSVP()">📬 RSVP</button>
+        </div>
+        <div class="ws-plank-bottom"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NPC DIALOG / INTRO -->
+  <div class="bg-mint">
+    <div class="ac-section">
+      <div class="ac-section-header">
+        <span class="ac-section-icon">💌</span>
+        <h2 class="ac-section-title">Surat dari Pulau!</h2>
+        <p class="ac-section-sub">Tom Nook membawa kabar baik hari ini~</p>
+      </div>
+
+      <div class="npc-dialog left reveal">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div class="npc-portrait-emoji" style="background:linear-gradient(135deg,#d4a06e,#c8906a)">🦝</div>
+          <div style="flex:1">
+            <div class="npc-name">Tom Nook</div>
+            <div class="npc-text">
+              Hoo hoo! Selamat datang di <span class="ac-highlight">Pulau Cinta</span>, ya wee! 🌿<br>
+              Ada kabar <span class="ac-pink">luar biasa gembira</span> hari ini — warga pulau kita yang paling kita sayangi akan melangsungkan pernikahan! Ya wee!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;justify-content:center;margin:12px 0 16px">
+        <span style="font-size:22px">🦝</span>
+        <span style="font-size:22px;transform:scaleX(-1);margin-left:8px">🦦</span>
+      </div>
+
+      <div class="npc-dialog left reveal d1">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div class="npc-portrait">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita">
+          </div>
+          <div style="flex:1">
+            <div class="npc-name">Anita Pangestuti, S.Kom</div>
+            <div class="npc-text">
+              Assalamu'alaikum~ 🌸 Dengan penuh rasa syukur, aku — putri dari <span class="ac-green">Bpk. Taryono & Ibu Wiwit Jayanti</span> — mengundang kamu ke hari paling bahagia dalam hidupku!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="npc-dialog left reveal d2" style="margin-top:12px">
+        <div style="display:flex;gap:12px;align-items:flex-start">
+          <div class="npc-portrait">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda">
+          </div>
+          <div style="flex:1">
+            <div class="npc-name">Zardarian Ahadika N, S.Kom</div>
+            <div class="npc-text">
+              Yeay! Dan aku — putra dari <span class="ac-green">Bpk. Wan Sabran & Ibu Titik Sundari</span> — juga sangat berharap kamu bisa hadir ya! Pulau ini belum lengkap tanpa kamu! 🎉
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bulletin-board reveal d3" style="margin-top:20px">
+        <div class="bb-pin"></div>
+        <div class="bb-header">
+          <div class="bb-header-title">📜 Pengumuman Pulau</div>
+        </div>
+        <div class="bb-paper">
+          <div class="bb-notice">
+            "Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan <b>pasangan-pasangan</b> untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya..."<br><br>
+            — Surah Ar-Rum : 21
+          </div>
+          <div class="bb-stamp">
+            <span>🌿</span><span>Ditempel oleh Isabelle · Pulau Cinta</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOOK MILES COUNTDOWN -->
+  <div class="bg-sky">
+    <div class="ac-section">
+      <div class="ac-section-header">
+        <span class="ac-section-icon">⏰</span>
+        <h2 class="ac-section-title">Nook Miles Timer!</h2>
+        <p class="ac-section-sub">Jangan sampai lewatkan event spesial ini ya~</p>
+      </div>
+      <div class="nook-card reveal">
+        <div class="nook-logo">🍃 Nook Miles · Event Timer</div>
+        <div class="nook-title">Hari Pernikahan Anita & Zarda</div>
+        <div class="nook-nums">
+          <div class="nook-box"><div class="nook-num" id="cdD">--</div><div class="nook-unit">Hari</div></div>
+          <div class="nook-box"><div class="nook-num" id="cdH">--</div><div class="nook-unit">Jam</div></div>
+          <div class="nook-box"><div class="nook-num" id="cdM">--</div><div class="nook-unit">Menit</div></div>
+          <div class="nook-box"><div class="nook-num" id="cdS">--</div><div class="nook-unit">Detik</div></div>
+        </div>
+        <div style="margin-top:16px;text-align:center">
+          <span style="background:rgba(255,255,255,.15);border-radius:var(--r-pill);padding:6px 16px;font-size:13px;font-weight:700;color:rgba(255,255,255,.8)">
+            🏆 Reward: +9.800 Bells + Kenangan Tak Ternilai
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHARACTER CARDS / COUPLE -->
+  <div class="bg-peach" id="couple">
+    <div class="ac-section">
+      <div class="ac-section-header">
+        <span class="ac-section-icon">🏘️</span>
+        <h2 class="ac-section-title">Warga Baru Pulau!</h2>
+        <p class="ac-section-sub">Kenalan yuk sama penghuni istimewa kita~</p>
+      </div>
+      <div class="resident-cards">
+        <div class="resident-card reveal">
+          <div class="rc-photo">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&q=80" alt="Anita" loading="lazy">
+            <div class="rc-species-badge">🌸 Normal</div>
+            <div class="rc-personality">Mempelai Wanita</div>
+          </div>
+          <div class="rc-info">
+            <div class="rc-role">Resident · Dendro User</div>
+            <div class="rc-name">Anita Pangestuti</div>
+            <div class="rc-catchphrase">"Nyam nyam~"</div>
+            <div class="rc-birthday">🎂 Bday: 24 Mei 2026</div>
+            <div class="rc-parents">Putri dari<br><strong>Bpk. Taryono & Ibu Wiwit Jayanti</strong></div>
+          </div>
+        </div>
+        <div class="resident-card reveal d1">
+          <div class="rc-photo" style="background:linear-gradient(180deg,var(--ac-sky2),var(--ac-lavender))">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&q=80" alt="Zarda" loading="lazy">
+            <div class="rc-species-badge" style="background:var(--ac-lavender);color:var(--ac-brown2)">⚡ Smug</div>
+            <div class="rc-personality">Mempelai Pria</div>
+          </div>
+          <div class="rc-info">
+            <div class="rc-role">Resident · Electro User</div>
+            <div class="rc-name">Zardarian Ahadika</div>
+            <div class="rc-catchphrase">"Yesyesyes~"</div>
+            <div class="rc-birthday">🎂 Bday: 24 Mei 2026</div>
+            <div class="rc-parents">Putra dari<br><strong>Bpk. Wan Sabran & Ibu Titik Sundari</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EVENT BOARD / CEREMONY INFO -->
+  <div class="bg-yellow" id="event">
+    <div class="ac-section">
+      <div class="ac-section-header">
+        <span class="ac-section-icon">🎪</span>
+        <h2 class="ac-section-title">Island Event!</h2>
+        <p class="ac-section-sub">Dua event seru yang tidak boleh kamu lewatkan~</p>
+      </div>
+      <div class="event-board reveal">
+        <div class="eb-header">
+          <div class="eb-header-title">🗓 Jadwal Festival Pulau Cinta</div>
+        </div>
+        <div class="eb-body">
+          <div class="eb-item">
+            <div class="eb-icon-box" style="background:linear-gradient(135deg,#ffe0a0,#ffd060);font-size:28px">💍</div>
+            <div class="eb-content">
+              <div class="eb-event-type" style="color:var(--ac-orange)">⛪ Akad Nikah</div>
+              <div class="eb-event-name">Minggu, 24 Mei 2026</div>
+              <div class="eb-detail"><span class="eb-detail-icon">⏰</span><span>08.00 WIB — Tepat Waktu Ya!</span></div>
+              <div class="eb-detail"><span class="eb-detail-icon">📍</span><span>Graha Yadika, Jl. Palem Ganda Asri, Ciledug, Tangerang</span></div>
+              <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="eb-map-link">
+                🗺 Buka Peta Pulau →
+              </a>
+            </div>
+          </div>
+          <div class="eb-item">
+            <div class="eb-icon-box" style="background:linear-gradient(135deg,#ffd0e0,#ffb0c8);font-size:28px">🎉</div>
+            <div class="eb-content">
+              <div class="eb-event-type" style="color:var(--ac-pink)">🎊 Pesta Resepsi</div>
+              <div class="eb-event-name">Minggu, 24 Mei 2026</div>
+              <div class="eb-detail"><span class="eb-detail-icon">⏰</span><span>11.00 – 13.00 WIB</span></div>
+              <div class="eb-detail"><span class="eb-detail-icon">📍</span><span>Graha Yadika, Ciledug, Tangerang (Lokasi sama!)</span></div>
+              <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="eb-map-link">
+                🗺 Buka Peta Pulau →
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOVE STORY PINBOARD -->
+  <div class="bg-lavender">
+    <div class="ac-section">
+      <div class="ac-section-header">
+        <span class="ac-section-icon">📖</span>
+        <h2 class="ac-section-title">Buku Harian Pulau</h2>
+        <p class="ac-section-sub">Perjalanan cinta mereka di Pulau Cinta~</p>
+      </div>
+      <div class="pinboard reveal">
+        <div class="pinboard-title">🌟 Kisah Cinta Anita & Zarda</div>
+        <div class="stamp-entry">
+          <div class="stamp-seal" style="background:linear-gradient(135deg,var(--ac-yellow),var(--ac-orange))">💫</div>
+          <div class="stamp-body">
+            <div class="stamp-month">Juni 2025 · Chapter 1</div>
+            <div class="stamp-title">Awal Pertemuan yang Tak Terduga!</div>
+            <div class="stamp-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah dua jiwa ini! Sugoi~</div>
+          </div>
+        </div>
+        <div class="stamp-entry">
+          <div class="stamp-seal" style="background:linear-gradient(135deg,var(--ac-pink),#e0607a)">💍</div>
+          <div class="stamp-body">
+            <div class="stamp-month">November 2025 · Chapter 2</div>
+            <div class="stamp-title">The Big Moment — Lamaran!</div>
+            <div class="stamp-desc">Rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, Zarda mengucapkan kata-kata yang telah lama ia simpan dalam hati. Anita menjawab "iya"! Kawaii~~</div>
+          </div>
+        </div>
+        <div class="stamp-entry">
+          <div class="stamp-seal" style="background:linear-gradient(135deg,var(--ac-grass),var(--ac-grass2))">🕊️</div>
+          <div class="stamp-body">
+            <div class="stamp-month">Mei 2026 · Chapter 3 — LIVE!</div>
+            <div class="stamp-title">Pernikahan — Happy End! ✨</div>
+            <div class="stamp-desc">Kini saatnya finale yang ditunggu! Dalam ikatan suci, mereka berjanji untuk saling menjaga dan mencintai selamanya. Kamu diundang jadi saksi! Yay!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHOTO CATALOG / GALLERY -->
+  <div class="bg-sky">
+    <div class="ac-section" style="padding-bottom:0">
+      <div class="ac-section-header">
+        <span class="ac-section-icon">📷</span>
+        <h2 class="ac-section-title">Foto Pulau!</h2>
+        <p class="ac-section-sub">Koleksi momen berharga di Pulau Cinta~</p>
+      </div>
+    </div>
+    <!-- Auto-scroll row -->
+    <div class="catalog-auto-row" id="catalogWrap" onmouseenter="pauseCat()" onmouseleave="resumeCat()" ontouchstart="pauseCat()" ontouchend="resumeCat()">
+      <div class="cat-fade-l"></div>
+      <div class="cat-fade-r"></div>
+      <div class="cat-strip" id="catStrip" style="padding-left:clamp(16px,5vw,40px);padding-right:clamp(16px,5vw,40px)"></div>
+    </div>
+    <div class="cat-dots" id="catDots" style="padding-bottom:40px;margin:0 auto;max-width:900px;padding-left:clamp(16px,5vw,40px)"></div>
+  </div>
+
+  <!-- NOOK SHOPPING / GIFT -->
+  <div class="bg-cream" id="gift">
+    <div class="ac-section">
+      <div class="ac-section-header">
+        <span class="ac-section-icon">🛒</span>
+        <h2 class="ac-section-title">Nook Shopping!</h2>
+        <p class="ac-section-sub">Doa restu sudah sangat cukup~ tapi kalau mau, boleh banget!</p>
+      </div>
+      <div class="shop-card reveal">
+        <div class="shop-header">
+          <span class="shop-logo">🍃</span>
+          <div>
+            <div class="shop-name">Nook Shopping · Amplop Digital</div>
+            <div class="shop-tagline">Gratis ongkir ke seluruh Teyvat!</div>
+          </div>
+        </div>
+        <div class="shop-items">
+          <div class="shop-item">
+            <span class="si-bank-emoji">💙</span>
+            <div class="si-bank-name">BCA</div>
+            <div class="si-holder">a/n Zardarian Ahadika N</div>
+            <div class="si-num">8210 3705 61</div>
+            <button class="si-copy-btn" onclick="copyNum('8210370561',this)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+              Salin!
+            </button>
+          </div>
+          <div class="shop-item">
+            <span class="si-bank-emoji">🧡</span>
+            <div class="si-bank-name">BNI</div>
+            <div class="si-holder">a/n Anita Pangestuti</div>
+            <div class="si-num">1192 9784 03</div>
+            <button class="si-copy-btn" onclick="copyNum('1192978403',this)">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+              Salin!
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RSVP -->
+  <div class="bg-mint" id="rsvp">
+    <div class="ac-section">
+      <div class="ac-section-header">
+        <span class="ac-section-icon">📬</span>
+        <h2 class="ac-section-title">Kirim Surat!</h2>
+        <p class="ac-section-sub">Isabelle menunggu konfirmasimu ya~</p>
+      </div>
+      <div class="rsvp-form-card reveal">
+        <div class="rfc-header">
+          <span class="rfc-icon">📮</span>
+          <div>
+            <div class="rfc-title">Konfirmasi Kehadiran</div>
+            <div class="rfc-subtitle">Anita & Zarda · 24 Mei 2026</div>
+          </div>
+        </div>
+        <div class="rfc-body">
+          <div class="rfc-field">
+            <label class="rfc-label">🏷️ Nama Kamu</label>
+            <input type="text" class="rfc-input" placeholder="Ketik namamu ya~" id="rsName">
+          </div>
+          <div class="rfc-field">
+            <label class="rfc-label">🏡 Bisa Hadir?</label>
+            <div class="seg-row">
+              <button class="seg-btn on" onclick="selRS('hadir',this)">✅ Hadir!</button>
+              <button class="seg-btn" onclick="selRS('tidak',this)">😢 Tidak Bisa</button>
+            </div>
+          </div>
+          <div class="rfc-field">
+            <label class="rfc-label">👥 Berapa Orang?</label>
+            <div class="seg-row">
+              <button class="seg-btn on" onclick="selG(1,this)">🧍 1 Orang</button>
+              <button class="seg-btn" onclick="selG(2,this)">🧑‍🤝‍🧑 2 Orang</button>
+            </div>
+          </div>
+          <div class="rfc-field">
+            <label class="rfc-label">💌 Ucapan & Doa</label>
+            <textarea class="rfc-input" placeholder="Tulis ucapan manismu di sini~" id="rsMsg"></textarea>
+          </div>
+        </div>
+        <div class="rfc-submit">
+          <button class="rfc-submit-btn" onclick="submitRSVP()">
+            <span>📮</span>
+            Kirim Suratnya!
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAILBOX WISHES -->
+  <div class="bg-cream">
+    <div class="mailbox-section">
+      <div class="ac-section-header">
+        <span class="ac-section-icon">📫</span>
+        <h2 class="ac-section-title">Kotak Surat Pulau</h2>
+        <p class="ac-section-sub">Ucapan hangat dari seluruh warga pulau~</p>
+      </div>
+      <div class="mailbox-list" id="mailList">
+        <div class="mail-item vis">
+          <div class="mail-avatar" style="background:linear-gradient(135deg,#ffd0a0,#ffb870)">🐰</div>
+          <div class="mail-body">
+            <div class="mail-from">Ayu Rahmawati</div>
+            <div class="mail-status">✅ Hadir · 2 Orang · Friendship Level MAX</div>
+            <div class="mail-text">"Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Nyam nyam~! 🌸"</div>
+            <div class="mail-stamp">🔔 Dibaca oleh Isabelle</div>
+          </div>
+        </div>
+        <div class="mail-item vis" style="transition-delay:.1s">
+          <div class="mail-avatar" style="background:linear-gradient(135deg,#a0d0ff,#70b0ff)">🐻</div>
+          <div class="mail-body">
+            <div class="mail-from">Reza Firmansyah</div>
+            <div class="mail-status">✅ Hadir · 1 Orang · Star Resident</div>
+            <div class="mail-text">"Alhamdulillah akhirnya! Quest 'Cari Jodoh' selesai! Semoga bahagia selamanya. Yesyesyes~! 🎉"</div>
+            <div class="mail-stamp">🔔 Dibaca oleh Isabelle</div>
+          </div>
+        </div>
+        <div class="mail-item vis" style="transition-delay:.2s">
+          <div class="mail-avatar" style="background:linear-gradient(135deg,#ffa0c0,#ff7090)">🐸</div>
+          <div class="mail-body">
+            <div class="mail-from">Sinta Dewi</div>
+            <div class="mail-status">✅ Hadir · 2 Orang · Fishing Champion</div>
+            <div class="mail-text">"Wishing you a lifetime of love and laughter! Semoga pulau kalian makin indah ya! Ribbit ribbit~! 💙"</div>
+            <div class="mail-stamp">🔔 Dibaca oleh Isabelle</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="island-footer">
+    <div class="footer-animals" id="footerAnimals"></div>
+    <div class="footer-closing-sign">
+      <div class="fs-dodo">✈️</div>
+      <div class="fs-title">Anita & Zarda</div>
+      <p class="fs-body">Merupakan kebahagiaan besar bagi kami apabila kamu bisa hadir dan memberikan doa terbaikmu.<br><br><em>— Dengan cinta dari Pulau Cinta 🌿</em></p>
+      <div class="fs-dodo-code">
+        <div class="fs-dodo-label">✈ Dodo Airlines Code</div>
+        <div class="fs-dodo-val">C-1-N-T-A 💕</div>
+      </div>
+      <p class="fs-brand">Island designed by <a href="#">BridesSpace</a> · © 2026</p>
+    </div>
+  </footer>
+
+</div><!-- /app -->
+
+<!-- BOTTOM NAV -->
+<nav class="ac-bottom-nav" id="acNav">
+  <a href="#home" class="nav-item on" onclick="setNav(this)">
+    <span class="nav-icon">🏝️</span>Pulau
+  </a>
+  <a href="#couple" class="nav-item" onclick="setNav(this)">
+    <span class="nav-icon">👫</span>Warga
+  </a>
+  <a href="#event" class="nav-item" onclick="setNav(this)">
+    <span class="nav-icon">🗓️</span>Event
+  </a>
+  <a href="#gift" class="nav-item" onclick="setNav(this)">
+    <span class="nav-icon">🛒</span>Shop
+  </a>
+  <a href="#rsvp" class="nav-item" onclick="setNav(this)">
+    <span class="nav-icon">📬</span>RSVP
+  </a>
+</nav>
+
+<!-- LIGHTBOX -->
+<div class="ac-lb" id="acLb">
+  <div class="ac-lb-header">
+    <button class="ac-lb-back" onclick="closeLb()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      Kembali
+    </button>
+    <div class="ac-lb-title">📷 Foto Pulau Cinta</div>
+    <div class="ac-lb-ct" id="lbCt">1/8</div>
+  </div>
+  <div class="ac-lb-main">
+    <img class="ac-lb-img" id="lbImg" src="" alt="">
+    <button class="ac-lb-nav ac-lb-prev" onclick="lbPrev()">‹</button>
+    <button class="ac-lb-nav ac-lb-next" onclick="lbNext()">›</button>
+  </div>
+  <div class="ac-lb-footer">
+    <button class="ac-btn" onclick="toast('💾 Foto disimpan!');closeLb()">💾 Simpan</button>
+    <button class="ac-btn pink" onclick="toast('🌟 Difavoritkan!');closeLb()">🌟 Favorit</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="ac-toast" id="acToast"></div>
+
+<script>
+/* ══ DATA ══ */
+const PHOTOS = [
+  {src:"https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=750&fit=crop&q=85",name:"Anita & Zarda"},
+  {src:"https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=750&fit=crop&q=85",name:"The Proposal"},
+  {src:"https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&h=750&fit=crop&q=85",name:"Bunga Cinta"},
+  {src:"https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=500&h=750&fit=crop&q=85",name:"Golden Hour"},
+  {src:"https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=500&h=750&fit=crop&q=85",name:"Garden Day"},
+  {src:"https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=500&h=750&fit=crop&q=85",name:"Eternal Smile"},
+  {src:"https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=500&h=750&fit=crop&q=85",name:"Island Night"},
+  {src:"https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=750&fit=crop&q=85",name:"Grand Day"},
+];
+
+/* ══ STATE ══ */
+let rsStatus='hadir', gCount=1, lbIdx=0;
+let catOff=0, catPaused=false, catOrig=0, catIW=0, catDot=0;
+
+/* ══ LOADING → START ══ */
+function startIsland() {
+  document.getElementById('loading').classList.add('out');
+  const app = document.getElementById('app');
+  setTimeout(()=>{
+    app.classList.add('show');
+    document.getElementById('acNav').classList.add('show');
+  }, 100);
+  setTimeout(initApp, 400);
+}
+
+function initApp(){
+  buildScenery();
+  countdown();
+  buildCatalog();
+  initReveal();
+  initNavHL();
+  buildFooterAnimals();
+  animateBells();
+}
+
+/* ══ SCENERY ══ */
+function buildScenery(){
+  // Loading stars
+  const ls = document.getElementById('loadStars');
+  for(let i=0;i<30;i++){
+    const s=document.createElement('div');
+    s.className='load-star';
+    const sz=Math.random()*2+1;
+    s.style.cssText=`width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${Math.random()*35}%;--d:${(Math.random()*2+1.5).toFixed(1)}s;--del:${(Math.random()*3).toFixed(1)}s`;
+    ls.appendChild(s);
+  }
+
+  // Hero butterflies
+  const bf = document.getElementById('heroButterflies');
+  const bflies = ['🦋','🌸','⭐','🌺','✨'];
+  [[15,25],[70,30],[35,45],[80,50],[50,20],[20,55],[65,15]].forEach(([l,t],i)=>{
+    const el=document.createElement('div');
+    el.className='butterfly';
+    el.textContent=bflies[i%bflies.length];
+    el.style.cssText=`left:${l}%;top:${t}%;--d:${(Math.random()*4+4).toFixed(1)}s;--del:${(Math.random()*3).toFixed(1)}s`;
+    bf.appendChild(el);
+  });
+
+  // Villagers
+  const vill = document.getElementById('heroVillagers');
+  const animals = ['🐰','🐻','🐸','🦊','🐱','🐶'];
+  [[10,40],[40,35],[60,38],[85,42]].forEach(([l,t],i)=>{
+    const el=document.createElement('div');
+    el.className='villager';
+    el.textContent=animals[i%animals.length];
+    const dist=(Math.random()*60-30);
+    el.style.cssText=`left:${l}%;top:${t}%;font-size:clamp(20px,5vw,28px);--d:${(Math.random()*4+5).toFixed(1)}s;--del:${(Math.random()*2).toFixed(1)}s;--dist:${dist}px`;
+    vill.appendChild(el);
+  });
+
+  // Ground trees
+  const gs = document.getElementById('groundScene');
+  const treeTypes = [
+    {w:56,h:68,e:'🌳',del:.3},{w:40,h:50,e:'🌸',del:.5},{w:64,h:76,e:'🌴',del:.4},
+    {w:44,h:54,e:'🌲',del:.6},{w:52,h:64,e:'🌳',del:.35},{w:48,h:58,e:'🎋',del:.55},
+  ];
+  treeTypes.forEach(t=>{
+    const wrap=document.createElement('div');
+    wrap.className='gs-tree';
+    wrap.style.setProperty('--d',(Math.random()*2+3).toFixed(1)+'s');
+    wrap.style.setProperty('--del',t.del+'s');
+    wrap.innerHTML=`<div class="gs-tree-top" style="width:${t.w}px;height:${t.h}px;font-size:${t.w*0.6}px">${t.e}</div><div class="gs-tree-trunk" style="width:${t.w*0.22}px;height:${t.h*0.25}px"></div>`;
+    gs.appendChild(wrap);
+  });
+}
+
+function buildFooterAnimals(){
+  const wrap = document.getElementById('footerAnimals');
+  ['🐰','🐻','🦊','🐱','🐸','🐶','🐢','🦔'].forEach((a,i)=>{
+    const el=document.createElement('div');
+    el.className='fa-animal';
+    el.textContent=a;
+    el.style.cssText=`--d:${(Math.random()*1+1).toFixed(1)}s;--del:${(i*0.2).toFixed(1)}s`;
+    wrap.appendChild(el);
+  });
+}
+
+/* ══ BELLS COUNTER ══ */
+function animateBells(){
+  const el=document.getElementById('bellsCount');
+  let n=0;const target=9800;
+  const step=target/80;
+  const timer=setInterval(()=>{
+    n=Math.min(n+step,target);
+    el.textContent=Math.floor(n).toLocaleString();
+    if(n>=target)clearInterval(timer);
+  },30);
+}
+
+/* ══ COUNTDOWN ══ */
+function countdown(){
+  const t=new Date('2026-05-24T08:00:00');
+  function tick(){
+    const d=t-new Date();
+    if(d<=0){['cdD','cdH','cdM','cdS'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='00'});return}
+    const vals=[Math.floor(d/86400000),Math.floor((d%86400000)/3600000),Math.floor((d%3600000)/60000),Math.floor((d%60000)/1000)];
+    ['cdD','cdH','cdM','cdS'].forEach((id,i)=>{const e=document.getElementById(id);if(e)e.textContent=String(vals[i]).padStart(2,'0')});
+  }
+  tick();setInterval(tick,1000);
+}
+
+/* ══ CATALOG / GALLERY ══ */
+function buildCatalog(){
+  const strip=document.getElementById('catStrip');
+  const dots=document.getElementById('catDots');
+  catOrig=PHOTOS.length;
+  [...PHOTOS,...PHOTOS,...PHOTOS].forEach((p,i)=>{
+    const ri=i%catOrig;
+    const el=document.createElement('div');
+    el.className='cat-item';
+    el.innerHTML=`<img src="${p.src}" alt="${p.name}" loading="lazy"><div class="cat-item-name">📷 ${p.name}</div>`;
+    el.addEventListener('click',()=>openLb(ri));
+    strip.appendChild(el);
+  });
+  PHOTOS.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='cat-dot'+(i===0?' on':'');
+    d.addEventListener('click',()=>jumpCat(i));
+    dots.appendChild(d);
+  });
+  requestAnimationFrame(()=>{
+    const first=strip.querySelector('.cat-item');
+    if(!first)return;
+    catIW=first.offsetWidth+10;
+    catOff=catOrig*catIW;
+    strip.style.transform=`translateX(-${catOff}px)`;
+    runCat();
+  });
+}
+function runCat(){
+  const strip=document.getElementById('catStrip');
+  if(!strip)return;
+  const tot=catOrig*catIW;
+  function tick(){
+    if(!catPaused){
+      catOff+=0.55;
+      if(catOff>=tot*2)catOff-=tot;
+      if(catOff<tot)catOff+=tot;
+      strip.style.transform=`translateX(-${catOff}px)`;
+      const ri=Math.floor(((catOff-tot)/catIW))%catOrig;
+      const di=((ri%catOrig)+catOrig)%catOrig;
+      if(di!==catDot){
+        catDot=di;
+        document.querySelectorAll('.cat-dot').forEach((d,i)=>d.classList.toggle('on',i===catDot));
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+function pauseCat(){catPaused=true}
+function resumeCat(){catPaused=false}
+function jumpCat(i){const tot=catOrig*catIW;catOff=tot+i*catIW;document.getElementById('catStrip').style.transform=`translateX(-${catOff}px)`}
+
+/* ══ LIGHTBOX ══ */
+function openLb(i){lbIdx=i;showLb();document.getElementById('acLb').classList.add('open')}
+function closeLb(){document.getElementById('acLb').classList.remove('open')}
+function lbPrev(){lbIdx=(lbIdx-1+PHOTOS.length)%PHOTOS.length;showLb()}
+function lbNext(){lbIdx=(lbIdx+1)%PHOTOS.length;showLb()}
+function showLb(){document.getElementById('lbImg').src=PHOTOS[lbIdx].src;document.getElementById('lbCt').textContent=`${lbIdx+1}/${PHOTOS.length}`}
+document.addEventListener('keydown',e=>{if(!document.getElementById('acLb').classList.contains('open'))return;if(e.key==='Escape')closeLb();if(e.key==='ArrowLeft')lbPrev();if(e.key==='ArrowRight')lbNext()});
+
+/* ══ RSVP ══ */
+function openRSVP(){scrollTo2('#rsvp')}
+function selRS(v,btn){rsStatus=v;document.querySelectorAll('.seg-btn').forEach((b,i)=>{if(i<2)b.classList.toggle('on',b===btn)})}
+function selG(n,btn){gCount=n;document.querySelectorAll('.seg-btn').forEach((b,i)=>{if(i>=2)b.classList.toggle('on',b===btn)})}
+function submitRSVP(){
+  const name=document.getElementById('rsName').value.trim();
+  const msg=document.getElementById('rsMsg').value.trim();
+  if(!name){toast('🏷️ Ketik namamu dulu ya~');return}
+
+  const animals=['🐰','🐻','🦊','🐱','🐸','🐶','🦔','🐭'];
+  const colors=[
+    'linear-gradient(135deg,#ffd0a0,#ffb870)',
+    'linear-gradient(135deg,#a0d0ff,#70b0ff)',
+    'linear-gradient(135deg,#ffa0c0,#ff7090)',
+    'linear-gradient(135deg,#a0e8b0,#70c880)',
+    'linear-gradient(135deg,#d0a0ff,#b070ff)',
+  ];
+  const anim=animals[Math.floor(Math.random()*animals.length)];
+  const color=colors[Math.floor(Math.random()*colors.length)];
+  const stxt=rsStatus==='hadir'?`✅ Hadir · ${gCount} Orang`:'😢 Tidak Bisa Hadir';
+  const mail=document.createElement('div');
+  mail.className='mail-item';
+  mail.innerHTML=`
+    <div class="mail-avatar" style="background:${color}">${anim}</div>
+    <div class="mail-body">
+      <div class="mail-from">${name}</div>
+      <div class="mail-status">${stxt}</div>
+      <div class="mail-text">"${msg||'Selamat dan semoga bahagia selalu! Yay~! 🌸'}"</div>
+      <div class="mail-stamp">🔔 Baru saja</div>
+    </div>`;
+  document.getElementById('mailList').prepend(mail);
+  setTimeout(()=>mail.classList.add('vis'),50);
+  document.getElementById('rsName').value='';
+  document.getElementById('rsMsg').value='';
+  toast('📬 Surat terkirim ke Pulau Cinta! Makasih ya~! 🌿');
+  document.querySelector('.mailbox-section').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ══ COPY ══ */
+function copyNum(num,btn){
+  navigator.clipboard.writeText(num).then(()=>{
+    btn.classList.add('done');
+    btn.textContent='✅ Tersalin!';
+    toast('🍃 Nomor tersalin! Makasih ya~!');
+    setTimeout(()=>{btn.classList.remove('done');btn.innerHTML='<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg> Salin!';},2500);
+  }).catch(()=>toast('✏️ Salin manual: '+num));
+}
+
+/* ══ SCROLL HELPER — compensates for fixed topbar ══ */
+function scrollTo2(target){
+  const el = typeof target === 'string' ? document.querySelector(target) : target;
+  if(!el) return;
+  const offset = 58;
+  const top = el.getBoundingClientRect().top + window.scrollY - offset;
+  window.scrollTo({top, behavior:'smooth'});
+}
+
+/* ══ NAV ══ */
+function setNav(el){
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('on'));
+  el.classList.add('on');
+  const href = el.getAttribute('href');
+  if(href && href.startsWith('#')){
+    event.preventDefault();
+    setTimeout(()=>scrollTo2(href), 10);
+  }
+}
+function initNavHL(){
+  const obs=new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(e.isIntersecting){
+        document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('on'));
+        const a=document.querySelector(`.nav-item[href="#${e.target.id}"]`);
+        if(a)a.classList.add('on');
+      }
+    });
+  },{rootMargin:'-40% 0px -40% 0px'});
+  ['home','couple','event','gift','rsvp'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el)});
+}
+
+/* ══ REVEAL ══ */
+function initReveal(){
+  const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')})},{threshold:.1});
+  document.querySelectorAll('.reveal,.mail-item').forEach(el=>obs.observe(el));
+}
+
+/* ══ TOAST ══ */
+let _tt;
+function toast(msg){const el=document.getElementById('acToast');el.textContent=msg;el.classList.add('on');clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('on'),2800)}
+</script>
+</body>
+</html>

@@ -1,0 +1,1732 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anita & Zarda — Free Fire Wedding · BOOYAH!</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Teko:wght@400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ff-orange:   #FF6B00;
+  --ff-orange2:  #FF8C2A;
+  --ff-orange3:  #FFAA55;
+  --ff-yellow:   #FFD700;
+  --ff-yellow2:  #FFE566;
+  --ff-red:      #CC1500;
+  --ff-red2:     #FF2200;
+  --ff-fire1:    #FF4400;
+  --ff-fire2:    #FF8800;
+  --ff-fire3:    #FFCC00;
+  --ff-green:    #22AA44;
+  --ff-green2:   #44CC66;
+  --ff-teal:     #00BBCC;
+  --ff-blue:     #0055CC;
+  --ff-purple:   #8822CC;
+  --ff-bg:       #080A06;
+  --ff-bg2:      #0C0F09;
+  --ff-bg3:      #121810;
+  --ff-bg4:      #1A2214;
+  --ff-card:     rgba(255,107,0,.05);
+  --ff-border:   rgba(255,107,0,.22);
+  --ff-border2:  rgba(255,107,0,.45);
+  --ff-gray:     #8A9080;
+  --ff-gray2:    #555E48;
+  --ff-white:    #F2F5EC;
+
+  --bbn:  'Bebas Neue', sans-serif;
+  --tko:  'Teko', sans-serif;
+  --raj:  'Rajdhani', sans-serif;
+  --mono: 'Share Tech Mono', monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ff-bg);
+  color:var(--ff-white);
+  font-family:var(--raj);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ── CURSOR — SNIPER SCOPE ── */
+#cur{
+  width:28px;height:28px;
+  position:fixed;z-index:99999;pointer-events:none;
+  transform:translate(-50%,-50%);
+}
+#cur::before,#cur::after{content:'';position:absolute;background:var(--ff-orange)}
+#cur::before{left:50%;top:0;bottom:0;width:1px;transform:translateX(-50%)}
+#cur::after{top:50%;left:0;right:0;height:1px;transform:translateY(-50%)}
+#cur-ring{
+  position:fixed;z-index:99998;
+  width:28px;height:28px;
+  border:1px solid rgba(255,107,0,.6);
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  transition:left .07s,top .07s;
+}
+#cur-dot{
+  position:fixed;z-index:99999;
+  width:3px;height:3px;
+  background:var(--ff-orange);border-radius:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  box-shadow:0 0 5px var(--ff-orange);
+}
+
+/* ════════════════════
+   OPENING — LOBBY
+════════════════════ */
+#opening{
+  position:fixed;inset:0;z-index:9990;
+  background:var(--ff-bg);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:24px;
+  overflow:hidden;
+  transition:opacity .8s ease;
+}
+#opening.hide{opacity:0;pointer-events:none}
+
+/* Video BG */
+.op-vid{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;z-index:0;opacity:0;
+  transition:opacity 2.5s ease;
+  filter:saturate(.1) brightness(.28) contrast(1.3) sepia(.4);
+}
+.op-vid.show{opacity:1}
+/* Overlays */
+.op-ov1{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 110% 110% at 50% 50%,rgba(8,10,6,.45) 0%,rgba(8,10,6,.92) 100%)}
+.op-ov2{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(8,10,6,.8) 0%,transparent 30%,transparent 70%,rgba(8,10,6,.85) 100%)}
+.op-ov3{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 70% 40% at 50% 80%,rgba(255,107,0,.07) 0%,transparent 70%)}
+.op-scan{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:repeating-linear-gradient(0deg,transparent 0,transparent 3px,rgba(0,0,0,.06) 3px,rgba(0,0,0,.06) 4px)}
+/* Sparks / embers */
+.op-embers{position:absolute;inset:0;z-index:1;overflow:hidden;pointer-events:none}
+.ember{
+  position:absolute;
+  width:3px;height:3px;
+  border-radius:50%;
+  background:var(--ff-fire2);
+  animation:emberRise linear infinite;
+  opacity:0;
+}
+@keyframes emberRise{
+  0%{transform:translateY(0) translateX(0);opacity:0}
+  10%{opacity:1}
+  90%{opacity:.6}
+  100%{transform:translateY(-120px) translateX(var(--dx,20px));opacity:0}
+}
+/* Sound hint */
+.op-sound{
+  position:absolute;bottom:48px;right:20px;z-index:3;
+  font-family:var(--mono);font-size:9px;letter-spacing:.2em;
+  color:rgba(255,107,0,.35);
+  display:flex;align-items:center;gap:6px;
+  opacity:0;transition:opacity .4s ease 3s;
+}
+.op-sound.show{opacity:1}
+.osb-wrap{display:flex;align-items:flex-end;gap:2px;height:12px}
+.osb{width:2px;background:rgba(255,107,0,.5);border-radius:1px;
+  animation:osbA var(--d,.5s) ease-in-out infinite alternate}
+@keyframes osbA{from{height:2px}to{height:100%}}
+
+.op-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
+
+/* FF shield/logo */
+.op-shield{
+  width:88px;height:88px;margin:0 auto 18px;
+  opacity:0;animation:popUp .7s cubic-bezier(.34,1.56,.64,1) .2s forwards;
+}
+@keyframes popUp{from{opacity:0;transform:scale(.5) rotate(-8deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+
+/* Rank tag */
+.op-rank{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,107,0,.1);
+  border:1px solid var(--ff-border2);
+  padding:5px 18px;margin-bottom:14px;
+  font-family:var(--mono);font-size:9px;
+  color:var(--ff-orange2);letter-spacing:.25em;text-transform:uppercase;
+  opacity:0;animation:fadeUp .5s ease .5s forwards;
+}
+
+/* Title */
+.op-title{
+  font-family:var(--bbn);
+  font-size:clamp(56px,14vw,104px);
+  line-height:.9;letter-spacing:.03em;margin-bottom:4px;
+  opacity:0;animation:fadeUp .7s ease .7s forwards;
+}
+.op-title .fire{
+  background:linear-gradient(180deg,var(--ff-yellow2) 0%,var(--ff-orange2) 40%,var(--ff-red) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 24px rgba(255,107,0,.6));
+}
+.op-title .white{color:var(--ff-white)}
+
+.op-sub{
+  font-family:var(--mono);font-size:10px;letter-spacing:.3em;
+  color:var(--ff-gray);text-transform:uppercase;margin-bottom:28px;
+  opacity:0;animation:fadeUp .5s ease .9s forwards;
+}
+
+/* Dear box */
+.op-dear{
+  background:rgba(255,107,0,.06);border:1px solid var(--ff-border);
+  padding:16px 28px;max-width:400px;width:100%;
+  margin-bottom:28px;position:relative;
+  opacity:0;animation:fadeUp .6s ease 1.1s forwards;
+}
+.op-dear::before{content:'';position:absolute;top:4px;left:4px;width:12px;height:12px;
+  border-top:2px solid var(--ff-orange);border-left:2px solid var(--ff-orange)}
+.op-dear::after{content:'';position:absolute;bottom:4px;right:4px;width:12px;height:12px;
+  border-bottom:2px solid var(--ff-orange);border-right:2px solid var(--ff-orange)}
+.op-dear-lbl{font-family:var(--mono);font-size:8px;letter-spacing:.25em;
+  color:var(--ff-orange);text-transform:uppercase;margin-bottom:6px}
+.op-dear-nm{font-family:var(--tko);font-size:clamp(16px,4vw,21px);
+  font-weight:600;color:var(--ff-white);letter-spacing:.06em}
+
+/* BOOYAH btn */
+.op-booyah{
+  display:inline-flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,var(--ff-red),var(--ff-orange),var(--ff-orange2));
+  border:none;color:#000;
+  font-family:var(--bbn);font-size:20px;letter-spacing:.12em;
+  padding:14px 44px;cursor:none;
+  clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px),0 12px);
+  box-shadow:0 0 32px rgba(255,107,0,.5),0 4px 20px rgba(255,50,0,.3);
+  transition:box-shadow .2s,transform .1s;
+  opacity:0;animation:fadeUp .6s ease 1.4s forwards;
+}
+.op-booyah:hover{box-shadow:0 0 52px rgba(255,107,0,.7),0 6px 28px rgba(255,50,0,.4);transform:scale(1.03)}
+.op-booyah:active{transform:scale(.97)}
+.op-booyah-pulse{
+  width:12px;height:12px;border-radius:50%;background:var(--ff-yellow);
+  animation:btnPulse 1.5s ease-in-out infinite;
+}
+@keyframes btnPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,.5)}50%{box-shadow:0 0 0 6px rgba(255,215,0,0)}}
+
+/* Loading bar */
+.op-loading{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.04);z-index:3}
+.op-loading-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--ff-red),var(--ff-orange),var(--ff-yellow));
+  transition:width 2s ease 1.5s;
+  box-shadow:0 0 10px var(--ff-orange);
+}
+.op-loading-fill.go{width:100%}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ════════════════════
+   MAIN
+════════════════════ */
+#main{opacity:0;transition:opacity .8s}
+#main.show{opacity:1}
+
+/* ════════════════════
+   HERO — SURVIVAL ISLAND DROP
+════════════════════ */
+.hero{
+  min-height:100svh;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;background:var(--ff-bg2);
+}
+/* Island map texture */
+.hero-map{
+  position:absolute;inset:0;
+  background-color:var(--ff-bg2);
+  background-image:
+    radial-gradient(ellipse 50% 30% at 25% 60%,rgba(30,60,15,.7) 0%,transparent 100%),
+    radial-gradient(ellipse 35% 25% at 75% 35%,rgba(20,50,12,.6) 0%,transparent 100%),
+    radial-gradient(ellipse 20% 15% at 55% 75%,rgba(0,80,80,.3) 0%,transparent 100%),
+    linear-gradient(rgba(255,107,0,.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,107,0,.015) 1px,transparent 1px);
+  background-size:auto,auto,auto,60px 60px,60px 60px;
+}
+/* Hero video */
+.hero-vid{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:0;transition:opacity 1.5s ease;
+  filter:saturate(.15) brightness(.35) contrast(1.15) sepia(.3);z-index:1;
+}
+.hero-vid.show{opacity:1}
+.hero-ov{
+  position:absolute;inset:0;z-index:2;
+  background:
+    linear-gradient(180deg,rgba(8,10,6,.75) 0%,rgba(8,10,6,.15) 30%,rgba(8,10,6,.1) 65%,rgba(8,10,6,.9) 100%),
+    linear-gradient(90deg,rgba(8,10,6,.65) 0%,transparent 55%);
+}
+/* Fire vignette bottom */
+.hero-fire-ov{
+  position:absolute;bottom:0;left:0;right:0;height:220px;z-index:2;
+  background:linear-gradient(0deg,rgba(255,60,0,.07) 0%,transparent 100%);
+  pointer-events:none;
+}
+
+/* Parachute drop animation */
+.para-wrap{
+  position:absolute;top:-80px;z-index:8;
+  pointer-events:none;opacity:0;
+  animation:paraDrop 4s ease-out 1s forwards;
+}
+@keyframes paraDrop{
+  0%{top:-80px;opacity:0}
+  15%{opacity:1}
+  100%{top:30%;opacity:1}
+}
+.para-left{left:15%}
+.para-right{right:15%;animation-delay:1.5s}
+
+/* Safe zone ring */
+.safe-ring{
+  position:absolute;z-index:3;border-radius:50%;pointer-events:none;
+  border:1.5px solid rgba(0,187,204,.3);
+  box-shadow:inset 0 0 40px rgba(0,187,204,.03),0 0 20px rgba(0,187,204,.08);
+  animation:safeRingPulse 4s ease-in-out infinite;
+}
+@keyframes safeRingPulse{0%,100%{border-color:rgba(0,187,204,.25)}50%{border-color:rgba(0,187,204,.55)}}
+
+/* Airdrop crate */
+.crate-drop{
+  position:absolute;z-index:8;pointer-events:none;
+  animation:crateDown 2.5s ease-out 2s forwards;opacity:0;
+}
+@keyframes crateDown{
+  0%{transform:translateY(-60px);opacity:0}
+  30%{opacity:1}
+  100%{transform:translateY(0);opacity:1}
+}
+.crate-svg{display:block}
+.crate-glow{
+  position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);
+  width:50px;height:8px;
+  background:radial-gradient(ellipse,rgba(0,187,204,.5),transparent 70%);
+}
+
+/* Player ping */
+.map-ping{
+  position:absolute;z-index:7;pointer-events:none;
+}
+.ping-core{
+  width:10px;height:10px;border-radius:50%;
+  border:2px solid #000;
+  position:relative;
+}
+.ping-core::after{
+  content:'';position:absolute;inset:-4px;border-radius:50%;
+  border:1px solid;
+  animation:pingOut 2s ease-out infinite;
+}
+.ping-lbl{
+  font-family:var(--mono);font-size:8px;
+  position:absolute;top:14px;left:50%;transform:translateX(-50%);
+  white-space:nowrap;text-shadow:0 1px 4px rgba(0,0,0,.9);letter-spacing:.06em;
+}
+
+/* Hero HUD */
+.hero-hud{
+  position:relative;z-index:10;flex:1;
+  display:flex;align-items:flex-end;
+  padding:0 44px 80px;
+}
+@media(max-width:640px){.hero-hud{padding:0 20px 96px}}
+.hero-main{max-width:660px;width:100%}
+
+.hm-zone{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(204,21,0,.15);border:1px solid rgba(204,21,0,.35);
+  font-family:var(--mono);font-size:9px;
+  color:#FF5533;letter-spacing:.18em;text-transform:uppercase;
+  padding:5px 14px;margin-bottom:14px;width:fit-content;
+}
+.hm-zone-dot{width:6px;height:6px;border-radius:50%;background:#FF5533;animation:zoneBlink .7s step-end infinite}
+@keyframes zoneBlink{0%,100%{opacity:1}50%{opacity:0}}
+
+.hm-title{
+  font-family:var(--bbn);
+  font-size:clamp(52px,10vw,96px);
+  line-height:.88;letter-spacing:.03em;margin-bottom:8px;
+}
+.hm-title .fire{
+  display:block;
+  background:linear-gradient(180deg,var(--ff-yellow2) 0%,var(--ff-orange2) 45%,var(--ff-red) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 16px rgba(255,107,0,.5));
+}
+.hm-title .white{display:block;color:var(--ff-white)}
+
+.hm-meta{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0 24px}
+.hm-tag{
+  font-family:var(--mono);font-size:9px;letter-spacing:.12em;
+  padding:5px 12px;border:1px solid;
+}
+.hm-tag.orange{color:var(--ff-orange2);border-color:var(--ff-border);background:rgba(255,107,0,.07)}
+.hm-tag.teal{color:var(--ff-teal);border-color:rgba(0,187,204,.3);background:rgba(0,187,204,.06)}
+.hm-tag.gray{color:var(--ff-gray);border-color:var(--ff-gray2);background:rgba(255,255,255,.03)}
+
+.hm-actions{display:flex;gap:12px;flex-wrap:wrap}
+.ff-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--tko);font-size:16px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:12px 28px;border:none;cursor:none;
+  transition:all .15s;text-decoration:none;
+}
+.ff-btn-primary{
+  background:linear-gradient(135deg,var(--ff-red),var(--ff-orange));color:#000;
+  clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
+  box-shadow:0 4px 20px rgba(255,107,0,.35);
+}
+.ff-btn-primary:hover{box-shadow:0 6px 30px rgba(255,107,0,.55);transform:translateY(-2px)}
+.ff-btn-secondary{
+  background:rgba(255,255,255,.07);color:var(--ff-white);
+  border:1px solid rgba(255,255,255,.18);
+  clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
+}
+.ff-btn-secondary:hover{background:rgba(255,255,255,.13);transform:translateY(-2px)}
+
+/* Right side mini map */
+.hero-minimap-wrap{
+  position:absolute;top:80px;right:44px;z-index:10;
+}
+@media(max-width:700px){.hero-minimap-wrap{display:none}}
+.hero-minimap{
+  width:180px;height:180px;
+  border:2px solid rgba(255,107,0,.3);
+  background:rgba(12,15,9,.85);
+  backdrop-filter:blur(8px);
+  position:relative;overflow:hidden;
+}
+.mm-map-bg{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,107,0,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,107,0,.04) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+.mm-terrain{position:absolute;border-radius:40% 60% 55% 45%;background:rgba(30,60,12,.6)}
+.mm-water{position:absolute;background:rgba(0,80,100,.4);border-radius:50%}
+.mm-safe-ring{
+  position:absolute;border-radius:50%;
+  border:1px solid rgba(0,187,204,.4);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  width:120px;height:120px;
+}
+.mm-player{
+  position:absolute;width:7px;height:7px;border-radius:50%;
+  border:1px solid #000;transform:translate(-50%,-50%);
+}
+.mm-corner{position:absolute;width:8px;height:8px}
+.mm-corner-tl{top:2px;left:2px;border-top:1.5px solid var(--ff-orange);border-left:1.5px solid var(--ff-orange)}
+.mm-corner-br{bottom:2px;right:2px;border-bottom:1.5px solid var(--ff-orange);border-right:1.5px solid var(--ff-orange)}
+.mm-label{position:absolute;font-family:var(--mono);font-size:7px;color:rgba(255,107,0,.4)}
+
+/* Info bar */
+.hero-info-bar{
+  position:absolute;bottom:0;left:0;right:0;z-index:10;
+  background:rgba(8,10,6,.88);backdrop-filter:blur(12px);
+  border-top:1px solid var(--ff-border);
+  display:flex;overflow-x:auto;scrollbar-width:none;
+}
+.hero-info-bar::-webkit-scrollbar{display:none}
+.hib{flex-shrink:0;padding:12px 22px;border-right:1px solid rgba(255,107,0,.08);position:relative}
+.hib::before{content:'';position:absolute;left:0;top:25%;bottom:25%;width:2px;background:var(--ff-orange)}
+.hib-lbl{font-family:var(--mono);font-size:8px;color:var(--ff-orange);letter-spacing:.2em;text-transform:uppercase;margin-bottom:3px}
+.hib-val{font-family:var(--tko);font-size:17px;font-weight:700;color:var(--ff-white);letter-spacing:.04em}
+.hib-sub{font-size:10px;color:var(--ff-gray2);margin-top:1px}
+
+/* ════════════════════
+   TICKER BAND
+════════════════════ */
+.ticker-band{
+  background:linear-gradient(90deg,var(--ff-red),rgba(255,107,0,.2),var(--ff-red));
+  border-top:1px solid rgba(255,107,0,.3);
+  border-bottom:1px solid rgba(255,107,0,.3);
+  overflow:hidden;height:36px;display:flex;align-items:center;
+}
+.ticker-lbl{
+  background:var(--ff-red);color:#fff;
+  font-family:var(--bbn);font-size:14px;letter-spacing:.1em;
+  padding:0 18px;height:100%;display:flex;align-items:center;flex-shrink:0;white-space:nowrap;
+}
+.ticker-txt{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  color:rgba(255,150,80,.85);white-space:nowrap;
+  animation:tickerMove 26s linear infinite;
+}
+@keyframes tickerMove{0%{transform:translateX(100vw)}100%{transform:translateX(-200%)}}
+
+/* ════════════════════
+   COUNTDOWN — ZONE TIMER
+════════════════════ */
+.cd-section{
+  background:var(--ff-bg3);padding:72px 24px;text-align:center;
+  position:relative;overflow:hidden;
+  border-top:1px solid var(--ff-border);
+}
+.cd-section::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 120%,rgba(255,107,0,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.cd-eyebrow{
+  font-family:var(--mono);font-size:9px;letter-spacing:.35em;
+  color:var(--ff-orange2);text-transform:uppercase;margin-bottom:8px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.cd-eyebrow::before,.cd-eyebrow::after{content:'';width:20px;height:1px;background:var(--ff-orange)}
+.cd-title{
+  font-family:var(--tko);font-size:clamp(20px,4vw,28px);font-weight:600;
+  color:var(--ff-white);margin-bottom:44px;letter-spacing:.05em;text-transform:uppercase;
+}
+.cd-grid{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.cd-box{
+  background:rgba(255,107,0,.06);border:1px solid var(--ff-border);
+  padding:22px 18px 16px;min-width:96px;
+  position:relative;
+  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
+}
+.cd-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--ff-red),var(--ff-orange),var(--ff-yellow))}
+.cd-n{
+  font-family:var(--bbn);font-size:clamp(44px,9vw,62px);letter-spacing:.03em;
+  background:linear-gradient(180deg,var(--ff-yellow2) 0%,var(--ff-orange) 60%,var(--ff-red) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 12px rgba(255,107,0,.4));
+  line-height:1;margin-bottom:8px;
+}
+.cd-u{font-family:var(--mono);font-size:8px;letter-spacing:.25em;color:var(--ff-gray2);text-transform:uppercase}
+@media(max-width:480px){.cd-box{min-width:80px;padding:18px 12px 14px}}
+
+/* ════════════════════
+   CHARACTER SELECT — COUPLE
+════════════════════ */
+.char-section{
+  background:var(--ff-bg2);padding:76px 24px;
+  position:relative;overflow:hidden;
+}
+.char-section::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 100% 80% at 50% 100%,rgba(255,107,0,.04) 0%,transparent 70%);
+  pointer-events:none;
+}
+.char-grid{
+  display:grid;grid-template-columns:1fr auto 1fr;
+  gap:20px;align-items:center;max-width:840px;margin:40px auto 0;
+}
+@media(max-width:660px){.char-grid{grid-template-columns:1fr;max-width:360px}}
+
+.char-card{
+  background:var(--ff-bg3);border:1px solid var(--ff-border);
+  clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,18px 100%,0 calc(100% - 18px));
+  overflow:hidden;transition:transform .2s,border-color .2s,box-shadow .2s;
+}
+.char-card:hover{transform:translateY(-6px);border-color:var(--ff-orange2);
+  box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 0 1px rgba(255,107,0,.2)}
+
+.cc-art{height:190px;overflow:hidden;position:relative;background:var(--ff-bg4)}
+.cc-art img{
+  width:100%;height:100%;object-fit:cover;object-position:top;
+  filter:saturate(.65) brightness(.7) contrast(1.05);
+  transition:transform .5s,filter .3s;
+}
+.char-card:hover .cc-art img{transform:scale(1.06);filter:saturate(.85) brightness(.8)}
+.cc-art-grad{
+  position:absolute;inset:0;
+  background:linear-gradient(0deg,var(--ff-bg3) 0%,transparent 45%),
+             linear-gradient(135deg,rgba(255,107,0,.15),transparent 50%);
+}
+/* Character level */
+.cc-level{
+  position:absolute;top:10px;left:10px;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(6px);
+  border:1px solid var(--ff-border);
+  font-family:var(--mono);font-size:8px;color:var(--ff-orange2);
+  padding:3px 10px;letter-spacing:.12em;text-transform:uppercase;
+}
+/* Outfit badge */
+.cc-outfit{
+  position:absolute;top:10px;right:10px;
+  background:linear-gradient(135deg,var(--ff-red),var(--ff-orange));color:#000;
+  font-family:var(--bbn);font-size:12px;letter-spacing:.08em;
+  padding:3px 10px;
+}
+
+.cc-body{padding:16px 18px 20px}
+.cc-role{font-family:var(--mono);font-size:8px;letter-spacing:.22em;
+  color:var(--ff-orange2);text-transform:uppercase;margin-bottom:4px}
+.cc-name{
+  font-family:var(--tko);font-size:clamp(17px,3.5vw,22px);font-weight:700;
+  letter-spacing:.06em;color:var(--ff-white);margin-bottom:6px;line-height:1.1;
+  text-transform:uppercase;
+}
+.cc-parents{font-size:11px;color:var(--ff-gray2);font-weight:500;line-height:1.7}
+
+/* Ability row */
+.cc-abilities{
+  display:flex;gap:6px;margin-top:14px;padding-top:12px;
+  border-top:1px solid var(--ff-border);
+}
+.cc-ab{
+  width:34px;height:34px;border-radius:4px;
+  background:rgba(255,107,0,.08);border:1px solid var(--ff-border);
+  display:flex;align-items:center;justify-content:center;font-size:15px;
+  transition:background .15s;cursor:none;
+}
+.cc-ab:hover{background:rgba(255,107,0,.18)}
+.cc-ab-lbl{
+  font-family:var(--mono);font-size:7px;color:var(--ff-orange);
+  letter-spacing:.08em;text-transform:uppercase;
+  margin-left:auto;align-self:flex-end;
+}
+
+/* BOOYAH VS badge */
+.vs-booyah{
+  text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.vs-txt{
+  font-family:var(--bbn);font-size:clamp(36px,7vw,60px);
+  background:linear-gradient(180deg,var(--ff-yellow2),var(--ff-orange),var(--ff-red));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 14px rgba(255,107,0,.4));
+  letter-spacing:.06em;user-select:none;
+}
+.vs-sub{
+  font-family:var(--mono);font-size:8px;color:var(--ff-gray2);
+  letter-spacing:.2em;text-transform:uppercase;
+}
+@media(max-width:660px){.vs-txt{font-size:44px}}
+
+/* ════════════════════
+   EVENT — MISSION
+════════════════════ */
+.event-section{
+  background:var(--ff-bg);padding:76px 24px;
+  border-top:1px solid var(--ff-border);
+}
+.ev-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:16px;max-width:840px;margin:40px auto 0;
+}
+@media(max-width:560px){.ev-grid{grid-template-columns:1fr}}
+.ev-card{
+  background:var(--ff-bg3);border:1px solid var(--ff-border);
+  clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));
+  overflow:hidden;transition:transform .2s,border-color .2s;
+}
+.ev-card:hover{transform:translateY(-4px);border-color:var(--ff-orange2)}
+.ev-img{height:130px;overflow:hidden;position:relative;background:var(--ff-bg4)}
+.ev-img img{width:100%;height:100%;object-fit:cover;
+  filter:saturate(.5) brightness(.6) contrast(1.05);transition:transform .5s}
+.ev-card:hover .ev-img img{transform:scale(1.06)}
+.ev-img-ov{
+  position:absolute;inset:0;
+  background:linear-gradient(0deg,var(--ff-bg3) 0%,transparent 50%),
+             linear-gradient(135deg,rgba(255,107,0,.15),transparent 50%);
+}
+.ev-tag{
+  position:absolute;top:10px;left:10px;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(6px);
+  border:1px solid var(--ff-border);
+  font-family:var(--mono);font-size:8px;color:var(--ff-orange2);
+  padding:3px 10px;letter-spacing:.15em;text-transform:uppercase;
+}
+.ev-body{padding:18px 20px 22px}
+.ev-title{
+  font-family:var(--tko);font-size:clamp(20px,4vw,28px);font-weight:700;
+  letter-spacing:.05em;color:var(--ff-white);text-transform:uppercase;
+  margin-bottom:14px;line-height:1.1;
+}
+.ev-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px}
+.ev-ico{color:var(--ff-orange);flex-shrink:0;margin-top:2px;width:14px;height:14px}
+.ev-txt{font-size:12px;color:var(--ff-gray);font-weight:500;line-height:1.6}
+.ev-maps{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:14px;background:rgba(255,107,0,.1);
+  border:1px solid var(--ff-border2);color:var(--ff-orange2);
+  font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;
+  padding:9px 18px;text-decoration:none;cursor:none;
+  clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,7px 100%,0 calc(100% - 7px));
+  transition:background .15s;
+}
+.ev-maps:hover{background:rgba(255,107,0,.18)}
+
+/* ════════════════════
+   TIMELINE — BATTLE LOG
+════════════════════ */
+.tl-section{
+  background:var(--ff-bg2);padding:76px 24px;
+  border-top:1px solid var(--ff-border);position:relative;overflow:hidden;
+}
+.tl-section::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 40% at 0% 50%,rgba(255,107,0,.04) 0%,transparent 70%);
+  pointer-events:none;
+}
+.tl-list{max-width:660px;margin:40px auto 0;position:relative}
+.tl-list::before{
+  content:'';position:absolute;left:18px;top:0;bottom:0;width:2px;
+  background:repeating-linear-gradient(
+    180deg,var(--ff-orange) 0,var(--ff-orange) 6px,transparent 6px,transparent 12px
+  );opacity:.4;
+}
+.tl-item{
+  display:flex;gap:28px;padding-left:56px;margin-bottom:52px;position:relative;
+  opacity:0;transform:translateX(-16px);transition:opacity .7s,transform .7s;
+}
+.tl-item.visible{opacity:1;transform:translateX(0)}
+.tl-node{
+  position:absolute;left:7px;top:2px;
+  width:24px;height:24px;
+  background:linear-gradient(135deg,var(--ff-orange),var(--ff-red));
+  clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+  box-shadow:0 0 12px rgba(255,107,0,.5);
+  display:flex;align-items:center;justify-content:center;
+}
+.tl-chapter{font-family:var(--mono);font-size:8px;color:var(--ff-orange2);
+  letter-spacing:.22em;text-transform:uppercase;margin-bottom:5px}
+.tl-date{font-family:var(--raj);font-size:11px;color:var(--ff-gray2);
+  font-weight:600;margin-bottom:8px;letter-spacing:.08em}
+.tl-title{
+  font-family:var(--tko);font-size:clamp(20px,4vw,28px);font-weight:700;
+  letter-spacing:.06em;color:var(--ff-white);text-transform:uppercase;margin-bottom:8px;
+}
+.tl-desc{font-size:13px;color:var(--ff-gray);font-weight:400;line-height:1.75}
+
+/* ════════════════════
+   GALLERY — KILLCAM
+════════════════════ */
+.gal-section{
+  background:var(--ff-bg);padding:76px 0;
+  border-top:1px solid var(--ff-border);
+}
+.gal-head{
+  max-width:1040px;margin:0 auto 28px;padding:0 40px;
+  display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;
+}
+@media(max-width:640px){.gal-head{padding:0 20px}}
+.gal-sub{font-family:var(--mono);font-size:9px;color:var(--ff-gray2);letter-spacing:.2em;text-transform:uppercase}
+.gal-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:3px;
+  max-width:1040px;margin:0 auto;padding:0 40px;
+}
+@media(max-width:720px){.gal-grid{grid-template-columns:repeat(2,1fr);padding:0 20px}}
+.gal-item{position:relative;overflow:hidden;aspect-ratio:16/9;cursor:none;background:var(--ff-bg3)}
+.gal-item:nth-child(1){grid-column:span 2;grid-row:span 2;aspect-ratio:auto}
+@media(max-width:720px){.gal-item:nth-child(1){grid-column:span 2;aspect-ratio:16/9}}
+.gal-item img{
+  width:100%;height:100%;object-fit:cover;
+  filter:saturate(.72) contrast(1.06) brightness(.86);transition:transform .5s,filter .3s;
+}
+.gal-item:hover img{transform:scale(1.06);filter:saturate(1.05) contrast(1.1) brightness(.94)}
+.gal-ov{position:absolute;inset:0;background:linear-gradient(0deg,rgba(8,10,6,.8) 0%,transparent 50%);opacity:0;transition:opacity .3s}
+.gal-item:hover .gal-ov{opacity:1}
+.gal-cap{
+  position:absolute;bottom:0;left:0;right:0;padding:10px 12px;
+  font-family:var(--tko);font-size:13px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--ff-white);
+  transform:translateY(6px);opacity:0;transition:transform .3s,opacity .3s;
+}
+.gal-item:hover .gal-cap{transform:translateY(0);opacity:1}
+.gal-badge{
+  position:absolute;top:8px;left:8px;
+  background:rgba(0,0,0,.65);backdrop-filter:blur(6px);
+  border:1px solid var(--ff-border);
+  font-family:var(--mono);font-size:8px;color:var(--ff-orange2);padding:3px 8px;letter-spacing:.1em;
+}
+.gal-booyah{
+  position:absolute;top:8px;right:8px;
+  background:linear-gradient(135deg,var(--ff-red),var(--ff-orange));
+  color:#000;font-family:var(--bbn);font-size:10px;letter-spacing:.1em;
+  padding:2px 8px;display:none;
+}
+.gal-item:hover .gal-booyah{display:block}
+
+/* ════════════════════
+   GIFT — AIRDROP SUPPLY
+════════════════════ */
+.gift-section{
+  background:var(--ff-bg2);padding:76px 24px;text-align:center;
+  border-top:1px solid var(--ff-border);
+}
+.supply-cards{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:16px;max-width:580px;margin:40px auto 0;
+}
+@media(max-width:480px){.supply-cards{grid-template-columns:1fr}}
+.supply-card{
+  background:var(--ff-bg3);
+  border:1px solid var(--ff-border);
+  clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));
+  padding:28px 22px;position:relative;overflow:hidden;
+  transition:transform .2s,border-color .2s;
+}
+.supply-card:hover{transform:translateY(-4px);border-color:var(--ff-orange2)}
+.supply-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--ff-red),var(--ff-orange),transparent)}
+/* Blue beacon glow at bottom */
+.supply-card::after{
+  content:'';position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);
+  width:100px;height:40px;
+  background:radial-gradient(ellipse,rgba(0,187,204,.15),transparent 70%);
+  pointer-events:none;
+}
+/* Crate icon */
+.sc-crate{
+  width:44px;height:32px;
+  background:linear-gradient(180deg,#9A7A24,#5A3810);
+  border:1.5px solid #AA8820;
+  margin:0 auto 14px;position:relative;
+}
+.sc-crate::before{
+  content:'';position:absolute;bottom:100%;left:50%;
+  transform:translateX(-50%);
+  width:0;height:0;
+  border-left:20px solid transparent;
+  border-right:20px solid transparent;
+  border-bottom:22px solid rgba(0,187,204,.4);
+  margin-bottom:2px;
+}
+.sc-crate-glow{
+  position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);
+  width:60px;height:6px;
+  background:radial-gradient(ellipse,rgba(0,187,204,.4),transparent 70%);
+}
+.sc-bank{
+  font-family:var(--bbn);font-size:clamp(28px,6vw,36px);letter-spacing:.05em;
+  background:linear-gradient(180deg,var(--ff-yellow2),var(--ff-orange));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 8px rgba(255,107,0,.3));margin-bottom:4px;
+}
+.sc-holder{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.08em;margin-bottom:14px}
+.sc-number{
+  font-family:var(--mono);font-size:15px;letter-spacing:.15em;color:var(--ff-white);
+  background:rgba(0,0,0,.3);border:1px solid var(--ff-border);
+  padding:9px 12px;margin-bottom:14px;display:block;
+}
+.sc-copy{
+  background:rgba(255,107,0,.1);border:1px solid var(--ff-border2);
+  color:var(--ff-orange2);font-family:var(--mono);font-size:9px;
+  letter-spacing:.15em;text-transform:uppercase;
+  padding:10px 20px;cursor:none;
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+  transition:background .15s;
+}
+.sc-copy:hover{background:rgba(255,107,0,.2)}
+.sc-copy.copied{background:rgba(34,170,68,.15);border-color:rgba(34,170,68,.4);color:var(--ff-green2)}
+
+/* ════════════════════
+   RSVP
+════════════════════ */
+.rsvp-section{
+  background:var(--ff-bg);padding:76px 24px;
+  border-top:1px solid var(--ff-border);position:relative;
+}
+.rsvp-section::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,107,0,.012) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,107,0,.012) 1px,transparent 1px);
+  background-size:50px 50px;pointer-events:none;
+}
+.rsvp-inner{max-width:560px;margin:0 auto;position:relative}
+.rsvp-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:36px}
+.rs{
+  background:rgba(255,107,0,.05);border:1px solid var(--ff-border);
+  padding:16px 12px;text-align:center;
+  clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,7px 100%,0 calc(100% - 7px));
+}
+.rs-n{
+  font-family:var(--bbn);font-size:36px;
+  background:linear-gradient(180deg,var(--ff-yellow2),var(--ff-orange));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 8px rgba(255,107,0,.3));
+  line-height:1;margin-bottom:4px;letter-spacing:.04em;
+}
+.rs-l{font-family:var(--mono);font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--ff-gray2)}
+.fg{margin-bottom:18px}
+.fl{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--ff-orange2);margin-bottom:8px}
+.fi{
+  width:100%;background:rgba(255,107,0,.04);
+  border:1px solid var(--ff-border);border-bottom:2px solid var(--ff-orange);
+  padding:12px 14px;color:var(--ff-white);font-family:var(--raj);font-size:15px;
+  outline:none;-webkit-appearance:none;border-radius:0;
+  transition:border-color .2s,background .2s;
+  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%);
+}
+.fi:focus{background:rgba(255,107,0,.06);border-bottom-color:var(--ff-orange2)}
+.fi::placeholder{color:var(--ff-gray2)}
+textarea.fi{min-height:96px;resize:vertical;clip-path:none;border:1px solid var(--ff-border);border-bottom:2px solid var(--ff-orange)}
+.fs{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23FF6B00' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;
+  padding-right:38px;cursor:none;
+}
+option{font-family:sans-serif}
+.guest-row{display:flex;gap:8px}
+.gst-btn{
+  flex:1;background:rgba(255,107,0,.05);
+  border:1px solid var(--ff-border);color:var(--ff-gray);
+  font-family:var(--tko);font-size:16px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;
+  padding:12px;cursor:none;
+  clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,7px 100%,0 calc(100% - 7px));
+  transition:all .15s;
+}
+.gst-btn.active{background:rgba(255,107,0,.15);border-color:var(--ff-orange2);color:var(--ff-orange2)}
+.rsvp-btn{
+  width:100%;
+  background:linear-gradient(135deg,var(--ff-red),var(--ff-orange));color:#000;
+  font-family:var(--bbn);font-size:20px;letter-spacing:.12em;
+  padding:16px;border:none;cursor:none;margin-top:12px;
+  clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));
+  box-shadow:0 4px 20px rgba(255,107,0,.35);
+  transition:box-shadow .15s,transform .1s;
+}
+.rsvp-btn:hover{box-shadow:0 6px 32px rgba(255,107,0,.55);transform:translateY(-2px)}
+.rsvp-btn:active{transform:scale(.98)}
+
+/* ════════════════════
+   WISHES
+════════════════════ */
+.wishes-section{background:var(--ff-bg2);padding:76px 24px;border-top:1px solid var(--ff-border)}
+.wishes-inner{max-width:660px;margin:0 auto}
+.wishes-list{margin-top:32px;display:flex;flex-direction:column;gap:10px}
+.wish-card{
+  display:flex;align-items:flex-start;gap:12px;
+  background:rgba(255,107,0,.03);border:1px solid var(--ff-border);
+  border-left:3px solid var(--ff-orange);padding:14px 18px;
+  opacity:0;transform:translateX(-14px);transition:opacity .5s,transform .5s;
+}
+.wish-card.visible{opacity:1;transform:translateX(0)}
+.wa{
+  width:38px;height:38px;
+  background:linear-gradient(135deg,var(--ff-orange),var(--ff-red));color:#000;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--bbn);font-size:14px;letter-spacing:.04em;flex-shrink:0;
+  clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
+}
+.wn{font-family:var(--tko);font-size:15px;font-weight:700;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ff-white)}
+.ws{font-family:var(--mono);font-size:8px;color:var(--ff-green2);letter-spacing:.12em;
+  text-transform:uppercase;margin-top:2px}
+.wt{font-size:13px;color:var(--ff-gray);font-weight:400;line-height:1.7;margin-top:6px}
+
+/* ════════════════════
+   FOOTER — BOOYAH SCREEN
+════════════════════ */
+.footer{
+  background:var(--ff-bg);padding:100px 24px 56px;
+  text-align:center;border-top:1px solid var(--ff-border);
+  position:relative;overflow:hidden;
+}
+.footer::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(255,107,0,.07) 0%,transparent 70%);
+  pointer-events:none;
+}
+/* BOOYAH watermark */
+.footer-wm{
+  position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);
+  font-family:var(--bbn);font-size:clamp(80px,18vw,160px);
+  color:rgba(255,107,0,.025);white-space:nowrap;
+  pointer-events:none;user-select:none;line-height:1;letter-spacing:.04em;
+}
+.footer-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,107,0,.1);border:1px solid var(--ff-border2);
+  padding:6px 20px;margin-bottom:24px;
+  font-family:var(--mono);font-size:10px;
+  color:var(--ff-orange2);letter-spacing:.2em;text-transform:uppercase;
+}
+.footer-badge::before,.footer-badge::after{
+  content:'▶';font-size:8px;color:var(--ff-orange);
+}
+.footer-title{
+  font-family:var(--bbn);font-size:clamp(52px,13vw,104px);
+  line-height:.9;letter-spacing:.03em;margin-bottom:12px;
+  text-transform:uppercase;
+}
+.footer-title .fire{
+  display:block;
+  background:linear-gradient(180deg,var(--ff-yellow2) 0%,var(--ff-orange2) 45%,var(--ff-red) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 20px rgba(255,107,0,.4));
+}
+.footer-title .white{display:block;color:var(--ff-white)}
+.footer-sub{
+  font-size:clamp(13px,2vw,15px);color:var(--ff-gray2);
+  font-weight:500;max-width:440px;margin:0 auto 36px;line-height:1.8;
+}
+.footer-div{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:20px}
+.fdl{width:48px;height:1px;background:var(--ff-border)}
+.fdd{
+  width:8px;height:8px;
+  background:var(--ff-orange);
+  clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+  box-shadow:0 0 8px rgba(255,107,0,.5);
+}
+.footer-brand{font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+  color:rgba(255,255,255,.12);text-transform:uppercase}
+.footer-brand a{color:var(--ff-orange2);text-decoration:none}
+
+/* ════════════════════
+   BOTTOM NAV — HUD
+════════════════════ */
+.ff-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(8,10,6,.92);backdrop-filter:blur(20px);
+  border-top:2px solid var(--ff-border2);
+  display:flex;justify-content:space-around;
+  padding:10px 0 max(10px,env(safe-area-inset-bottom));
+  z-index:500;transform:translateY(100%);
+  transition:transform .7s cubic-bezier(.16,1,.3,1) 1s;
+}
+.ff-nav.show{transform:translateY(0)}
+.nav-a{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  color:rgba(255,107,0,.3);text-decoration:none;cursor:none;
+  font-family:var(--mono);font-size:7px;letter-spacing:.12em;text-transform:uppercase;
+  padding:4px 14px;transition:color .2s;
+}
+.nav-a svg{width:18px;height:18px}
+.nav-a:hover,.nav-a.active{color:var(--ff-orange2)}
+.nav-a.active svg{filter:drop-shadow(0 0 4px var(--ff-orange))}
+
+/* LIGHTBOX + TOAST */
+.lbox{position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:9000;display:none;align-items:center;justify-content:center}
+.lbox.open{display:flex}
+.lbox-img{max-width:88vw;max-height:86vh;object-fit:contain;border:2px solid var(--ff-border2)}
+.lbox-close{position:absolute;top:16px;right:20px;background:rgba(255,107,0,.12);border:1px solid var(--ff-border2);color:var(--ff-orange2);font-family:var(--mono);font-size:11px;letter-spacing:.1em;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:none;clip-path:polygon(0 0,calc(100% - 4px) 0,100% 4px,100% 100%,4px 100%,0 calc(100% - 4px));transition:background .15s}
+.lbox-close:hover{background:rgba(255,107,0,.22)}
+.lbox-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,107,0,.1);border:1px solid var(--ff-border);color:var(--ff-orange2);font-size:28px;width:48px;height:64px;display:flex;align-items:center;justify-content:center;cursor:none;transition:background .15s}
+.lbox-nav:hover{background:rgba(255,107,0,.2)}
+.lbox-prev{left:12px}.lbox-next{right:12px}
+.lbox-ctr{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:rgba(255,107,0,.4)}
+.toast{
+  position:fixed;bottom:80px;left:50%;
+  transform:translateX(-50%) translateY(14px);
+  background:rgba(8,10,6,.97);border:1px solid var(--ff-border2);
+  border-left:3px solid var(--ff-orange);
+  color:var(--ff-white);font-family:var(--mono);font-size:11px;
+  letter-spacing:.1em;padding:11px 22px;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:9999;
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* SECTION HEADER */
+.ff-eyebrow{
+  font-family:var(--mono);font-size:9px;letter-spacing:.35em;
+  color:var(--ff-orange2);text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;margin-bottom:10px;
+}
+.ff-eyebrow::before{content:'';width:20px;height:1px;background:var(--ff-orange)}
+.ff-heading{
+  font-family:var(--tko);font-size:clamp(26px,5vw,42px);
+  font-weight:700;letter-spacing:.05em;color:var(--ff-white);
+  text-transform:uppercase;line-height:1;
+}
+.ff-heading .fire{
+  background:linear-gradient(135deg,var(--ff-yellow2),var(--ff-orange));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .8s,transform .8s}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.rd1{transition-delay:.1s}.rd2{transition-delay:.2s}.rd3{transition-delay:.3s}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-ring"></div>
+<div id="cur-dot"></div>
+
+<!-- ════ OPENING ════ -->
+<div id="opening">
+  <video class="op-vid" id="opVid"
+    src="https://www.w3schools.com/html/mov_bbb.mp4"
+    loop muted playsinline preload="auto"
+    poster="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=1400&q=60">
+  </video>
+  <div class="op-ov1"></div><div class="op-ov2"></div><div class="op-ov3"></div><div class="op-scan"></div>
+  <div class="op-embers" id="opEmbers"></div>
+  <div class="op-sound" id="opSound">
+    <div class="osb-wrap">
+      <div class="osb" style="--d:.45s"></div>
+      <div class="osb" style="--d:.6s;animation-delay:.1s"></div>
+      <div class="osb" style="--d:.5s;animation-delay:.2s"></div>
+      <div class="osb" style="--d:.7s;animation-delay:.05s"></div>
+    </div>MUTED
+  </div>
+
+  <div class="op-content">
+    <!-- FF Shield SVG -->
+    <div class="op-shield">
+      <svg viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M44 6L78 20V48C78 64 62 78 44 84C26 78 10 64 10 48V20L44 6Z"
+          fill="rgba(255,107,0,.08)" stroke="url(#ffGrad)" stroke-width="2"/>
+        <path d="M44 14L70 25V47C70 60 58 72 44 77C30 72 18 60 18 47V25L44 14Z"
+          fill="rgba(255,107,0,.05)" stroke="rgba(255,140,0,.4)" stroke-width="1"/>
+        <!-- FF text -->
+        <text x="26" y="54" font-family="Arial" font-size="22" font-weight="900"
+          fill="url(#ffGrad)" letter-spacing="3">FF</text>
+        <path d="M32 60 L56 60" stroke="url(#ffGrad)" stroke-width="1.5"/>
+        <defs>
+          <linearGradient id="ffGrad" x1="0" y1="0" x2="88" y2="88">
+            <stop offset="0%" stop-color="#FFD700"/>
+            <stop offset="50%" stop-color="#FF6B00"/>
+            <stop offset="100%" stop-color="#CC1500"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <div class="op-rank">🔥 &nbsp;FREE FIRE WEDDING&nbsp; 🔥</div>
+    <h1 class="op-title">
+      <div class="fire">ANITA</div>
+      <div class="white">&amp; ZARDA</div>
+    </h1>
+    <p class="op-sub">Survive · Unite · Booyah · 24.05.2026</p>
+
+    <div class="op-dear">
+      <div class="op-dear-lbl">▸ Invited Player</div>
+      <div class="op-dear-nm">Ade Guntur Fitridullah &amp; Partner</div>
+    </div>
+
+    <button class="op-booyah" onclick="booyah()">
+      <div class="op-booyah-pulse"></div>
+      🔥 BUKA UNDANGAN
+    </button>
+  </div>
+
+  <div class="op-loading"><div class="op-loading-fill" id="loadFill"></div></div>
+</div>
+
+<!-- ════ MAIN ════ -->
+<div id="main">
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-map"></div>
+  <video class="hero-vid" id="heroBgVid"
+    src="https://www.w3schools.com/html/movie.mp4"
+    loop muted playsinline preload="none"
+    poster="https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&q=60">
+  </video>
+  <div class="hero-ov"></div>
+  <div class="hero-fire-ov"></div>
+
+  <!-- Parachutes -->
+  <div class="para-wrap para-left" id="paraL">
+    <svg width="40" height="60" viewBox="0 0 40 60" fill="none">
+      <path d="M20 30 L2 10 Q20 0 38 10 Z" fill="rgba(255,107,0,.5)" stroke="rgba(255,140,0,.6)" stroke-width="1"/>
+      <line x1="8" y1="14" x2="18" y2="32" stroke="rgba(255,140,0,.4)" stroke-width="1"/>
+      <line x1="20" y1="4" x2="20" y2="32" stroke="rgba(255,140,0,.4)" stroke-width="1"/>
+      <line x1="32" y1="14" x2="22" y2="32" stroke="rgba(255,140,0,.4)" stroke-width="1"/>
+      <rect x="16" y="32" width="8" height="6" rx="1" fill="#8B6914" stroke="#AA8820" stroke-width="1"/>
+    </svg>
+  </div>
+  <div class="para-wrap para-right" id="paraR">
+    <svg width="36" height="56" viewBox="0 0 36 56" fill="none">
+      <path d="M18 28 L2 10 Q18 0 34 10 Z" fill="rgba(255,107,0,.4)" stroke="rgba(255,140,0,.5)" stroke-width="1"/>
+      <line x1="6" y1="13" x2="16" y2="30" stroke="rgba(255,140,0,.4)" stroke-width="1"/>
+      <line x1="18" y1="4" x2="18" y2="30" stroke="rgba(255,140,0,.4)" stroke-width="1"/>
+      <line x1="30" y1="13" x2="20" y2="30" stroke="rgba(255,140,0,.4)" stroke-width="1"/>
+      <rect x="14" y="30" width="8" height="5" rx="1" fill="#8B6914" stroke="#AA8820" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <!-- Safe zone -->
+  <div class="safe-ring" style="width:380px;height:380px;top:50%;left:52%;transform:translate(-50%,-50%)"></div>
+
+  <!-- Airdrop -->
+  <div class="crate-drop" style="right:22%;top:38%">
+    <svg class="crate-svg" width="36" height="52" viewBox="0 0 36 52" fill="none">
+      <path d="M18 0 L2 14 Q18 2 34 14 Z" fill="rgba(0,187,204,.35)" stroke="rgba(0,187,204,.5)" stroke-width="1"/>
+      <line x1="8" y1="10" x2="16" y2="24" stroke="rgba(0,187,204,.3)" stroke-width="1"/>
+      <line x1="18" y1="4" x2="18" y2="24" stroke="rgba(0,187,204,.3)" stroke-width="1"/>
+      <line x1="28" y1="10" x2="20" y2="24" stroke="rgba(0,187,204,.3)" stroke-width="1"/>
+      <rect x="4" y="24" width="28" height="20" rx="1" fill="#9A7A24" stroke="#CCAA30" stroke-width="1.5"/>
+      <line x1="4" y1="34" x2="32" y2="34" stroke="#AA8820" stroke-width="1"/>
+      <rect x="14" y="28" width="8" height="12" fill="#7A5A10" stroke="#AA8820" stroke-width="1"/>
+    </svg>
+    <div class="crate-glow"></div>
+  </div>
+
+  <!-- Player pings -->
+  <div class="map-ping" style="left:43%;top:47%">
+    <div class="ping-core" style="background:var(--ff-orange);border-color:#000">
+      <span style="position:absolute;inset:-4px;border-radius:50%;border:1px solid var(--ff-orange);animation:pingOut 2s ease-out infinite"></span>
+    </div>
+    <div class="ping-lbl" style="color:var(--ff-orange)">ANITA</div>
+  </div>
+  <div class="map-ping" style="left:57%;top:53%">
+    <div class="ping-core" style="background:var(--ff-teal);border-color:#000">
+      <span style="position:absolute;inset:-4px;border-radius:50%;border:1px solid var(--ff-teal);animation:pingOut 2s ease-out infinite .4s"></span>
+    </div>
+    <div class="ping-lbl" style="color:var(--ff-teal)">ZARDA</div>
+  </div>
+  @keyframes pingOut{0%{transform:scale(1);opacity:.6}100%{transform:scale(2.5);opacity:0}}
+
+  <!-- Minimap -->
+  <div class="hero-minimap-wrap">
+    <div class="hero-minimap">
+      <div class="mm-map-bg"></div>
+      <div class="mm-terrain" style="width:60px;height:38px;left:12px;top:20px"></div>
+      <div class="mm-terrain" style="width:44px;height:30px;right:16px;top:50px;background:rgba(25,55,10,.5)"></div>
+      <div class="mm-water" style="width:30px;height:20px;left:60px;bottom:30px;background:rgba(0,70,90,.5)"></div>
+      <div class="mm-safe-ring" style="width:110px;height:110px"></div>
+      <div class="mm-player" style="left:43%;top:47%;background:var(--ff-orange);box-shadow:0 0 5px var(--ff-orange)"></div>
+      <div class="mm-player" style="left:57%;top:53%;background:var(--ff-teal);box-shadow:0 0 5px var(--ff-teal)"></div>
+      <div class="mm-corner mm-corner-tl"></div>
+      <div class="mm-corner mm-corner-br"></div>
+      <div class="mm-label" style="top:3px;left:3px">BERMUDA</div>
+      <div class="mm-label" style="bottom:3px;right:3px;font-size:7px">♦ ALIVE: 2</div>
+    </div>
+  </div>
+
+  <!-- HUD Content -->
+  <div class="hero-hud">
+    <div class="hero-main">
+      <div class="hm-zone"><div class="hm-zone-dot"></div>ZONE CLOSING</div>
+      <h1 class="hm-title">
+        <span class="fire">ANITA</span>
+        <span class="white">&amp; ZARDA</span>
+      </h1>
+      <div class="hm-meta">
+        <span class="hm-tag orange">🔥 24 MEI 2026</span>
+        <span class="hm-tag teal">📍 TANGERANG</span>
+        <span class="hm-tag gray">🕗 08:00 WIB</span>
+        <span class="hm-tag gray">SQUAD INVITED</span>
+      </div>
+      <div class="hm-actions">
+        <button class="ff-btn ff-btn-primary" onclick="document.getElementById('rsvp').scrollIntoView({behavior:'smooth'})">
+          🔥 RSVP — JOIN SQUAD
+        </button>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ff-btn ff-btn-secondary">
+          📍 LIHAT LOKASI
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info Bar -->
+  <div class="hero-info-bar">
+    <div class="hib"><div class="hib-lbl">Tanggal</div><div class="hib-val">24 MEI 2026</div><div class="hib-sub">Minggu · Bermuda Map</div></div>
+    <div class="hib"><div class="hib-lbl">Lokasi</div><div class="hib-val">Graha Yadika</div><div class="hib-sub">Tangerang, Banten</div></div>
+    <div class="hib"><div class="hib-lbl">Akad</div><div class="hib-val">08:00 WIB</div><div class="hib-sub">Drop Zone Alpha</div></div>
+    <div class="hib"><div class="hib-lbl">Resepsi</div><div class="hib-val">11:00–13:00</div><div class="hib-sub">Drop Zone Bravo</div></div>
+    <div class="hib"><div class="hib-lbl">Players</div><div class="hib-val">13 Alive</div><div class="hib-sub">7 confirmed</div></div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-band">
+  <div class="ticker-lbl">🔥 BOOYAH!</div>
+  <div class="ticker-txt">
+    ▸ &nbsp; UNDANGAN PERNIKAHAN ANITA &amp; ZARDA &nbsp; ◆ &nbsp;
+    AKAD: 24 MEI 2026 · 08:00 WIB · GRAHA YADIKA, TANGERANG &nbsp; ◆ &nbsp;
+    RESEPSI: 11:00–13:00 WIB &nbsp; ◆ &nbsp;
+    KONFIRMASI SEBELUM ZONE MENUTUP! &nbsp; ◆ &nbsp;
+    WINNER WINNER WEDDING DINNER — BOOYAH! 🔥 &nbsp; ▸
+  </div>
+</div>
+
+<!-- COUNTDOWN -->
+<div class="cd-section">
+  <p class="cd-eyebrow reveal">Zone Shrinking In</p>
+  <h2 class="cd-title reveal">Hitung Mundur Hari H</h2>
+  <div class="cd-grid">
+    <div class="cd-box reveal rd1"><span class="cd-n" id="cdD">00</span><span class="cd-u">Hari</span></div>
+    <div class="cd-box reveal rd2"><span class="cd-n" id="cdH">00</span><span class="cd-u">Jam</span></div>
+    <div class="cd-box reveal rd3"><span class="cd-n" id="cdM">00</span><span class="cd-u">Menit</span></div>
+    <div class="cd-box reveal" style="transition-delay:.4s"><span class="cd-n" id="cdS">00</span><span class="cd-u">Detik</span></div>
+  </div>
+</div>
+
+<!-- CHARACTER SELECT / COUPLE -->
+<section id="couple" class="char-section">
+  <div style="max-width:840px;margin:0 auto;text-align:center;margin-bottom:0" class="reveal">
+    <p class="ff-eyebrow" style="justify-content:center">Character Select</p>
+    <h2 class="ff-heading" style="text-align:center">Mempelai <span class="fire">Kami</span></h2>
+  </div>
+  <div class="char-grid">
+    <div class="char-card reveal">
+      <div class="cc-art">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=300&fit=crop&q=80" alt="Anita">
+        <div class="cc-art-grad"></div>
+        <div class="cc-level">LEVEL 24</div>
+        <div class="cc-outfit">LEGENDARY</div>
+      </div>
+      <div class="cc-body">
+        <p class="cc-role">Character · Support</p>
+        <h3 class="cc-name">Anita Pangestuti,<br>S.Kom</h3>
+        <p class="cc-parents">Putri Pertama dari<br>Bpk. Taryono &amp; Ibu Wiwit Jayanti</p>
+        <div class="cc-abilities">
+          <div class="cc-ab" title="Skill 1">💫</div>
+          <div class="cc-ab" title="Skill 2">🌸</div>
+          <div class="cc-ab" title="Skill 3">❤️</div>
+          <div class="cc-ab-lbl">MAX SKILL</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vs-booyah">
+      <div class="vs-txt">VS</div>
+      <div class="vs-sub">BOOYAH!</div>
+    </div>
+
+    <div class="char-card reveal rd2">
+      <div class="cc-art">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop&q=80" alt="Zarda">
+        <div class="cc-art-grad"></div>
+        <div class="cc-level">LEVEL 26</div>
+        <div class="cc-outfit">LEGENDARY</div>
+      </div>
+      <div class="cc-body">
+        <p class="cc-role">Character · Fighter</p>
+        <h3 class="cc-name">Zardarian Ahadika N,<br>S.Kom</h3>
+        <p class="cc-parents">Putra Kedua dari<br>Bpk. Wan Sabran, M.MAR &amp;<br>Ibu Titik Sundari, M.Si</p>
+        <div class="cc-abilities">
+          <div class="cc-ab" title="Skill 1">⚔️</div>
+          <div class="cc-ab" title="Skill 2">🛡️</div>
+          <div class="cc-ab" title="Skill 3">💪</div>
+          <div class="cc-ab-lbl">MAX SKILL</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENT -->
+<section id="event" class="event-section">
+  <div class="reveal" style="max-width:840px;margin:0 auto">
+    <p class="ff-eyebrow">Mission Objectives</p>
+    <h2 class="ff-heading">Waktu &amp; <span class="fire">Tempat</span></h2>
+  </div>
+  <div class="ev-grid">
+    <div class="ev-card reveal rd1">
+      <div class="ev-img">
+        <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=260&fit=crop&q=80" alt="">
+        <div class="ev-img-ov"></div>
+        <div class="ev-tag">🔥 AKAD NIKAH</div>
+      </div>
+      <div class="ev-body">
+        <h3 class="ev-title">Minggu,<br>24 Mei 2026</h3>
+        <div class="ev-row"><svg class="ev-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 17.5v-2h-1v2C8.41 19.25 5.75 16.59 5.5 13.5h2v-1h-2C5.75 9.41 8.41 6.75 11.5 6.5v2h1v-2c3.09.25 5.75 2.91 6 6h-2v1h2c-.25 3.09-2.91 5.75-6 6z"/></svg><span class="ev-txt">08.00 WIB — Selesai</span></div>
+        <div class="ev-row"><svg class="ev-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span class="ev-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-maps">▸ BUKA MAPS</a>
+      </div>
+    </div>
+    <div class="ev-card reveal rd2">
+      <div class="ev-img">
+        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=260&fit=crop&q=80" alt="">
+        <div class="ev-img-ov"></div>
+        <div class="ev-tag">🎉 RESEPSI</div>
+      </div>
+      <div class="ev-body">
+        <h3 class="ev-title">Minggu,<br>24 Mei 2026</h3>
+        <div class="ev-row"><svg class="ev-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 17.5v-2h-1v2C8.41 19.25 5.75 16.59 5.5 13.5h2v-1h-2C5.75 9.41 8.41 6.75 11.5 6.5v2h1v-2c3.09.25 5.75 2.91 6 6h-2v1h2c-.25 3.09-2.91 5.75-6 6z"/></svg><span class="ev-txt">11.00 — 13.00 WIB</span></div>
+        <div class="ev-row"><svg class="ev-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span class="ev-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-maps">▸ BUKA MAPS</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<div class="tl-section">
+  <div style="max-width:660px;margin:0 auto">
+    <p class="ff-eyebrow reveal">Battle Log</p>
+    <h2 class="ff-heading reveal">Kisah <span class="fire">Cinta Kami</span></h2>
+  </div>
+  <div class="tl-list">
+    <div class="tl-item">
+      <div class="tl-node">🔥</div>
+      <div>
+        <p class="tl-chapter">Chapter 01 · Bermuda</p>
+        <p class="tl-date">Juni 2025</p>
+        <h3 class="tl-title">First Drop — Awal Pertemuan</h3>
+        <p class="tl-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-node">🔥</div>
+      <div>
+        <p class="tl-chapter">Chapter 02 · Purgatory</p>
+        <p class="tl-date">November 2025</p>
+        <h3 class="tl-title">Squad Up — Lamaran</h3>
+        <p class="tl-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-node">⭐</div>
+      <div>
+        <p class="tl-chapter">Chapter 03 · Final Circle · BOOYAH!</p>
+        <p class="tl-date">Mei 2026</p>
+        <h3 class="tl-title">Winner Winner — Pernikahan</h3>
+        <p class="tl-desc">Kini kami melangkah lebih jauh. Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya. BOOYAH!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<section class="gal-section">
+  <div class="gal-head reveal">
+    <div>
+      <p class="ff-eyebrow" style="margin-bottom:8px">Killcam Replay</p>
+      <h2 class="ff-heading" style="font-size:clamp(22px,4vw,34px)">Galeri <span class="fire">Foto</span></h2>
+    </div>
+    <p class="gal-sub">Tap to Fullscreen</p>
+  </div>
+  <div class="gal-grid" id="galGrid"></div>
+</section>
+
+<!-- GIFT -->
+<section id="gift" class="gift-section">
+  <div class="reveal">
+    <p class="ff-eyebrow" style="justify-content:center">Airdrop Supply</p>
+    <h2 class="ff-heading" style="text-align:center">Amplop <span class="fire">Digital</span></h2>
+  </div>
+  <p class="reveal" style="font-family:var(--mono);font-size:9px;color:var(--ff-gray2);letter-spacing:.12em;text-align:center;margin-top:12px;line-height:2.2">
+    DOA RESTU SUDAH LEBIH DARI CUKUP.<br>
+    NAMUN JIKA BERKENAN, KAMI MENERIMA DENGAN SENANG HATI.
+  </p>
+  <div class="supply-cards">
+    <div class="supply-card reveal rd1">
+      <div class="sc-crate"><div class="sc-crate-glow"></div></div>
+      <div class="sc-bank">BCA</div>
+      <div class="sc-holder">Zardarian Ahadika N</div>
+      <div class="sc-number">8210 3705 61</div>
+      <button class="sc-copy" onclick="copyNum('8210370561',this)">▸ SALIN NOMOR</button>
+    </div>
+    <div class="supply-card reveal rd2">
+      <div class="sc-crate"><div class="sc-crate-glow"></div></div>
+      <div class="sc-bank">BNI</div>
+      <div class="sc-holder">Anita Pangestuti</div>
+      <div class="sc-number">1192 9784 03</div>
+      <button class="sc-copy" onclick="copyNum('1192978403',this)">▸ SALIN NOMOR</button>
+    </div>
+  </div>
+</section>
+
+<!-- RSVP -->
+<section id="rsvp" class="rsvp-section">
+  <div class="rsvp-inner">
+    <div class="reveal">
+      <p class="ff-eyebrow">Join Squad</p>
+      <h2 class="ff-heading" style="margin-bottom:32px">Konfirmasi <span class="fire">Kehadiran</span></h2>
+    </div>
+    <div class="rsvp-stats reveal">
+      <div class="rs"><div class="rs-n">7</div><div class="rs-l">Respons</div></div>
+      <div class="rs"><div class="rs-n">7</div><div class="rs-l">Hadir</div></div>
+      <div class="rs"><div class="rs-n">13</div><div class="rs-l">Players</div></div>
+    </div>
+    <div class="fg"><label class="fl">▸ Player Name</label><input class="fi" id="rName" type="text" placeholder="Nama Anda..."></div>
+    <div class="fg"><label class="fl">▸ Status</label>
+      <select class="fi fs" id="rStatus">
+        <option value="">Select...</option>
+        <option value="hadir">🔥 Hadir</option>
+        <option value="tidak">✗ Tidak Hadir</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">▸ Squad Size</label>
+      <div class="guest-row">
+        <button class="gst-btn active" onclick="setGuest(1,this)">Solo (1)</button>
+        <button class="gst-btn" onclick="setGuest(2,this)">Duo (2)</button>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">▸ Pesan & Doa</label><textarea class="fi" id="rMsg" placeholder="Tulis ucapan..."></textarea></div>
+    <button class="rsvp-btn" onclick="submitRSVP()">🔥 CONFIRM — BOOYAH!</button>
+  </div>
+</section>
+
+<!-- WISHES -->
+<section class="wishes-section">
+  <div class="wishes-inner">
+    <div class="reveal">
+      <p class="ff-eyebrow">Squad Chat</p>
+      <h2 class="ff-heading">Ucapan &amp; <span class="fire">Doa</span></h2>
+    </div>
+    <div class="wishes-list" id="wishesList">
+      <div class="wish-card visible">
+        <div class="wa">AY</div>
+        <div><div class="wn">Ayu Rahmawati</div><div class="ws">🔥 Hadir · 2 players</div><p class="wt">Selamat menempuh hidup baru! Semoga sakinah, mawaddah, wa rahmah. BOOYAH Anita & Zarda!</p></div>
+      </div>
+      <div class="wish-card visible">
+        <div class="wa" style="background:linear-gradient(135deg,var(--ff-teal),var(--ff-blue));color:#fff">RZ</div>
+        <div><div class="wn">Reza Firmansyah</div><div class="ws">🔥 Hadir · 1 player</div><p class="wt">Alhamdulillah! Semoga pernikahannya membawa keberkahan tiada henti. Aamiin ya Rabbal Alamin!</p></div>
+      </div>
+      <div class="wish-card visible">
+        <div class="wa" style="background:linear-gradient(135deg,var(--ff-purple),#440088);color:#fff">ST</div>
+        <div><div class="wn">Sinta Dewi</div><div class="ws">🔥 Hadir · 2 players</div><p class="wt">Wishing you both a lifetime of love! Semoga selalu diberkahi Allah SWT. BOOYAH! 🔥</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-wm">BOOYAH</div>
+  <div class="footer-badge">▸ FREE FIRE WEDDING ◆ BOOYAH! ◆</div>
+  <div class="footer-title">
+    <div class="fire">ANITA</div>
+    <div class="white">&amp; ZARDA</div>
+  </div>
+  <p class="footer-sub">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu kepada kami yang berbahagia.</p>
+  <div class="footer-div">
+    <div class="fdl"></div><div class="fdd"></div><div class="fdl"></div>
+    <div class="fdd" style="background:var(--ff-teal);box-shadow:0 0 8px rgba(0,187,204,.5)"></div>
+    <div class="fdl"></div>
+  </div>
+  <p class="footer-brand">Digital Invitation by <a href="#">BridesSpace</a></p>
+</footer>
+
+</div><!-- /main -->
+
+<!-- NAV -->
+<nav class="ff-nav" id="ffNav">
+  <a href="#home" class="nav-a active"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home</a>
+  <a href="#couple" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Squad</a>
+  <a href="#event" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>Mission</a>
+  <a href="#gift" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2.18c.07-.23.18-.46.18-.71C18 3.47 16.53 2 14.71 2c-.87 0-1.65.36-2.22.93L12 3.4l-.49-.47C10.94 2.36 10.16 2 9.29 2 7.47 2 6 3.47 6 5.29c0 .25.11.48.18.71H4c-1.11 0-2 .89-2 2v13c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/></svg>Loot</a>
+  <a href="#rsvp" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>RSVP</a>
+</nav>
+
+<div class="lbox" id="lbox">
+  <button class="lbox-close" onclick="closeLbox()">[ X ]</button>
+  <button class="lbox-nav lbox-prev" onclick="lboxPrev()">‹</button>
+  <img class="lbox-img" id="lboxImg" src="" alt="">
+  <button class="lbox-nav lbox-next" onclick="lboxNext()">›</button>
+  <div class="lbox-ctr" id="lboxCtr"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const IMGS=[
+  {src:"https://images.unsplash.com/photo-1519741497674-611481863552?w=800&fit=crop&q=80",cap:"Awal Kisah"},
+  {src:"https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&fit=crop&q=80",cap:"Bersama"},
+  {src:"https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&fit=crop&q=80",cap:"Kebahagiaan"},
+  {src:"https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&fit=crop&q=80",cap:"Cinta Abadi"},
+  {src:"https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=800&fit=crop&q=80",cap:"Detail"},
+  {src:"https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=800&fit=crop&q=80",cap:"Momen"},
+  {src:"https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=800&fit=crop&q=80",cap:"Kenangan"},
+  {src:"https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&fit=crop&q=80",cap:"Hari Istimewa"},
+];
+let lboxIdx=0,guestN=1;
+
+/* CURSOR */
+document.addEventListener('mousemove',e=>{
+  const c=document.getElementById('cur');
+  const r=document.getElementById('cur-ring');
+  const d=document.getElementById('cur-dot');
+  if(c){c.style.left=e.clientX+'px';c.style.top=e.clientY+'px';}
+  if(r){r.style.left=e.clientX+'px';r.style.top=e.clientY+'px';}
+  if(d){d.style.left=e.clientX+'px';d.style.top=e.clientY+'px';}
+});
+
+/* EMBERS */
+function spawnEmber(){
+  const el=document.getElementById('opEmbers');
+  if(!el||document.getElementById('opening').classList.contains('hide'))return;
+  const e=document.createElement('div');
+  e.className='ember';
+  const dx=(Math.random()*40-20)+'px';
+  e.style.cssText=`
+    left:${10+Math.random()*80}%;bottom:${Math.random()*40}%;
+    animation-duration:${2+Math.random()*2}s;
+    animation-delay:${Math.random()*1.5}s;
+    --dx:${dx};
+    background:hsl(${20+Math.random()*40},100%,${50+Math.random()*20}%);
+    width:${2+Math.random()*2}px;height:${2+Math.random()*2}px;
+  `;
+  el.appendChild(e);
+  setTimeout(()=>e.remove(),4000);
+}
+setInterval(spawnEmber,200);
+
+/* OPENING VIDEO */
+(function(){
+  const vid=document.getElementById('opVid');
+  const hint=document.getElementById('opSound');
+  if(!vid)return;
+  vid.addEventListener('canplay',function once(){
+    vid.removeEventListener('canplay',once);
+    vid.play().then(()=>{
+      requestAnimationFrame(()=>vid.classList.add('show'));
+      if(hint)setTimeout(()=>hint.classList.add('show'),3000);
+    }).catch(()=>{});
+  });
+  new MutationObserver(()=>{
+    if(document.getElementById('opening').classList.contains('hide'))vid.pause();
+  }).observe(document.getElementById('opening'),{attributes:true,attributeFilter:['class']});
+})();
+
+/* BOOYAH / OPEN */
+function booyah(){
+  document.getElementById('loadFill').classList.add('go');
+  setTimeout(()=>{
+    document.getElementById('opening').classList.add('hide');
+    setTimeout(()=>{
+      document.getElementById('main').classList.add('show');
+      document.getElementById('ffNav').classList.add('show');
+      buildGalGrid();
+      startCountdown();
+      initReveal();
+      initNav();
+      startHeroVid();
+      // Show parachutes
+      setTimeout(()=>{
+        document.getElementById('paraL')?.classList.add('show');
+        document.getElementById('paraR')?.classList.add('show');
+      },600);
+    },300);
+  },2000);
+}
+setTimeout(()=>document.getElementById('loadFill')?.classList.add('go'),200);
+
+/* HERO VIDEO */
+function startHeroVid(){
+  const vid=document.getElementById('heroBgVid');
+  if(!vid)return;
+  vid.muted=true;vid.load();
+  vid.play().then(()=>setTimeout(()=>vid.classList.add('show'),200)).catch(()=>{});
+}
+
+/* GALLERY */
+function buildGalGrid(){
+  const g=document.getElementById('galGrid');
+  if(!g)return;
+  IMGS.forEach((img,i)=>{
+    const item=document.createElement('div');
+    item.className='gal-item';
+    item.innerHTML=`
+      <img src="${img.src}" alt="${img.cap}" loading="lazy">
+      <div class="gal-ov"></div>
+      <div class="gal-cap">${img.cap}</div>
+      <div class="gal-badge">CAM-0${i+1}</div>
+      <div class="gal-booyah">BOOYAH!</div>
+    `;
+    item.addEventListener('click',()=>openLbox(i));
+    g.appendChild(item);
+  });
+}
+
+/* LIGHTBOX */
+function openLbox(i){lboxIdx=i;updateLbox();document.getElementById('lbox').classList.add('open');document.body.style.overflow='hidden';}
+function closeLbox(){document.getElementById('lbox').classList.remove('open');document.body.style.overflow='';}
+function lboxPrev(){lboxIdx=(lboxIdx-1+IMGS.length)%IMGS.length;updateLbox();}
+function lboxNext(){lboxIdx=(lboxIdx+1)%IMGS.length;updateLbox();}
+function updateLbox(){
+  document.getElementById('lboxImg').src=IMGS[lboxIdx].src;
+  document.getElementById('lboxCtr').textContent=`${lboxIdx+1} / ${IMGS.length}`;
+}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lbox').classList.contains('open'))return;
+  if(e.key==='Escape')closeLbox();
+  if(e.key==='ArrowLeft')lboxPrev();
+  if(e.key==='ArrowRight')lboxNext();
+});
+
+/* COUNTDOWN */
+function startCountdown(){
+  const T=new Date('2026-05-24T08:00:00');
+  function tick(){
+    const d=T-new Date();if(d<=0)return;
+    document.getElementById('cdD').textContent=String(Math.floor(d/86400000)).padStart(2,'0');
+    document.getElementById('cdH').textContent=String(Math.floor((d%86400000)/3600000)).padStart(2,'0');
+    document.getElementById('cdM').textContent=String(Math.floor((d%3600000)/60000)).padStart(2,'0');
+    document.getElementById('cdS').textContent=String(Math.floor((d%60000)/1000)).padStart(2,'0');
+  }
+  tick();setInterval(tick,1000);
+}
+
+/* REVEAL */
+function initReveal(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+  },{threshold:.1});
+  document.querySelectorAll('.reveal,.tl-item,.wish-card').forEach(el=>obs.observe(el));
+}
+
+/* NAV */
+function initNav(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        document.querySelectorAll('.nav-a').forEach(n=>n.classList.remove('active'));
+        const a=document.querySelector(`.nav-a[href="#${e.target.id}"]`);
+        if(a)a.classList.add('active');
+      }
+    });
+  },{rootMargin:'-40% 0px -40% 0px'});
+  ['home','couple','event','gift','rsvp'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el);});
+}
+
+/* RSVP */
+function setGuest(n,btn){
+  guestN=n;
+  document.querySelectorAll('.gst-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function submitRSVP(){
+  const nm=document.getElementById('rName').value.trim();
+  const st=document.getElementById('rStatus').value;
+  const msg=document.getElementById('rMsg').value.trim();
+  if(!nm||!st){showToast('▸ ISI NAMA & STATUS DULU!');return;}
+  const init=nm.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const bgs=[
+    'linear-gradient(135deg,var(--ff-orange),var(--ff-red))',
+    'linear-gradient(135deg,var(--ff-teal),var(--ff-blue))',
+    'linear-gradient(135deg,var(--ff-purple),#440088)',
+    'linear-gradient(135deg,var(--ff-green),#116622)',
+    'linear-gradient(135deg,#AA4400,#662200)',
+  ];
+  const bg=bgs[Math.floor(Math.random()*bgs.length)];
+  const col=bg.includes('orange')||bg.includes('green')?'#000':'#fff';
+  const stTxt=st==='hadir'?`🔥 Hadir · ${guestN} player${guestN>1?'s':''}`:'✗ Tidak Hadir';
+  const card=document.createElement('div');
+  card.className='wish-card';
+  card.innerHTML=`<div class="wa" style="background:${bg};color:${col}">${init}</div><div><div class="wn">${nm}</div><div class="ws">${stTxt}</div><p class="wt">${msg||'Selamat & bahagia selalu! BOOYAH! 🔥'}</p></div>`;
+  document.getElementById('wishesList').prepend(card);
+  setTimeout(()=>card.classList.add('visible'),50);
+  document.getElementById('rName').value='';document.getElementById('rStatus').value='';document.getElementById('rMsg').value='';
+  showToast('▸ BOOYAH! KONFIRMASI BERHASIL ✓');
+  setTimeout(()=>document.querySelector('.wishes-section').scrollIntoView({behavior:'smooth',block:'start'}),500);
+}
+
+/* COPY */
+function copyNum(txt,btn){
+  navigator.clipboard.writeText(txt).then(()=>{
+    btn.classList.add('copied');btn.textContent='✓ LOOTED!';
+    showToast('▸ NOMOR REKENING TERSALIN!');
+    setTimeout(()=>{btn.classList.remove('copied');btn.textContent='▸ SALIN NOMOR';},2500);
+  }).catch(()=>showToast('Salin: '+txt));
+}
+
+/* TOAST */
+let tt;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2800);
+}
+</script>
+</body>
+</html>

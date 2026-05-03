@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gmail · Undangan Pernikahan Anita & Zarda</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════
+   TOKENS
+══════════════════════════ */
+:root {
+  --g-blue:   #1A73E8;
+  --g-blue2:  #1557B0;
+  --g-red:    #EA4335;
+  --g-green:  #34A853;
+  --g-yellow: #FBBC04;
+  --g-bg:     #F6F8FC;
+  --g-white:  #FFFFFF;
+  --g-border: #E0E0E0;
+  --g-text:   #202124;
+  --g-sub:    #5F6368;
+  --g-lgray:  #9AA0A6;
+  --g-hover:  #F1F3F4;
+  --g-chip:   #E8F0FE;
+  --font-gs:  'Google Sans', 'Roboto', sans-serif;
+  --font-rb:  'Roboto', sans-serif;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--g-bg); font-family:var(--font-rb); color:var(--g-text); -webkit-font-smoothing:antialiased; }
+
+/* ══════════════════════════
+   OPENING — GMAIL SPLASH
+══════════════════════════ */
+#opening {
+  position:fixed; inset:0; z-index:999;
+  background:#fff;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:32px; text-align:center;
+  transition:opacity .5s ease, transform .5s ease;
+}
+#opening.hide { opacity:0; transform:scale(.97); pointer-events:none; }
+
+.op-gmail-logo {
+  display:flex; align-items:center; gap:10px; margin-bottom:24px;
+}
+.op-gmail-m {
+  width:56px; height:40px;
+  position:relative; display:flex; align-items:center; justify-content:center;
+}
+.op-gmail-m svg { width:56px; height:40px; }
+
+.op-gmail-text {
+  font-family:var(--font-gs); font-size:28px; font-weight:400; color:var(--g-sub);
+  letter-spacing:-.02em;
+}
+
+.op-new-badge {
+  display:inline-flex; align-items:center; gap:6px;
+  background:rgba(26,115,232,.1); border:1px solid rgba(26,115,232,.2);
+  color:var(--g-blue); font-size:12px; font-weight:500;
+  padding:5px 14px; border-radius:20px; margin-bottom:20px;
+  font-family:var(--font-gs);
+}
+.op-new-dot { width:6px; height:6px; background:var(--g-blue); border-radius:50%; animation:blink .9s infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:.2} }
+
+.op-subject {
+  font-family:var(--font-gs); font-size:clamp(18px,5vw,28px); font-weight:500;
+  color:var(--g-text); margin-bottom:8px; line-height:1.3;
+}
+.op-preview {
+  font-size:14px; color:var(--g-sub); margin-bottom:24px; line-height:1.6;
+  max-width:380px;
+}
+
+/* Fake email header */
+.op-email-header {
+  background:var(--g-bg); border:1px solid var(--g-border); border-radius:12px;
+  padding:16px 20px; margin-bottom:24px; max-width:420px; width:100%;
+  text-align:left;
+}
+.op-eh-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.op-eh-row:last-child { margin-bottom:0; }
+.op-eh-avatar {
+  width:36px; height:36px; border-radius:50%;
+  background:linear-gradient(135deg,var(--g-red),var(--g-yellow));
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-gs); font-size:14px; font-weight:700; color:#fff;
+  flex-shrink:0;
+}
+.op-eh-from { flex:1; }
+.op-eh-name { font-size:13px; font-weight:500; color:var(--g-text); }
+.op-eh-addr { font-size:11px; color:var(--g-sub); }
+.op-eh-time { font-size:11px; color:var(--g-lgray); flex-shrink:0; }
+.op-eh-label {
+  display:inline-flex; font-size:10px; font-weight:500; padding:2px 8px;
+  border-radius:3px; letter-spacing:.04em; margin-right:4px;
+}
+.op-eh-label.invite  { background:#FCE8E6; color:var(--g-red); }
+.op-eh-label.wedding { background:#E6F4EA; color:var(--g-green); }
+.op-eh-label.urgent  { background:#FEF7E0; color:#B06000; }
+.op-dear-chip {
+  display:flex; align-items:center; gap:8px;
+  background:var(--g-chip); border-radius:6px; padding:8px 12px;
+}
+.op-dear-ic { font-size:18px; flex-shrink:0; }
+.op-dear-to { font-size:11px; color:var(--g-sub); margin-bottom:2px; }
+.op-dear-name { font-size:13px; font-weight:500; color:var(--g-text); }
+
+.op-open-btn {
+  background:var(--g-blue); color:#fff; border:none;
+  padding:12px 32px; border-radius:4px;
+  font-family:var(--font-gs); font-size:14px; font-weight:500;
+  cursor:pointer; transition:background .15s, box-shadow .15s;
+  display:inline-flex; align-items:center; gap:8px;
+  box-shadow:0 1px 3px rgba(0,0,0,.2);
+}
+.op-open-btn:hover { background:var(--g-blue2); box-shadow:0 2px 6px rgba(0,0,0,.25); }
+.op-open-btn svg { width:16px; height:16px; fill:#fff; }
+
+/* ══════════════════════════
+   MAIN APP LAYOUT
+══════════════════════════ */
+#main { opacity:0; transition:opacity .5s ease .1s; min-height:100vh; }
+#main.show { opacity:1; }
+
+/* ── TOP BAR ── */
+.gmail-topbar {
+  background:#fff; border-bottom:1px solid var(--g-border);
+  position:sticky; top:0; z-index:100;
+  display:flex; align-items:center; gap:8px; padding:8px 16px;
+  box-shadow:0 1px 3px rgba(0,0,0,.08);
+}
+.gtb-logo { display:flex; align-items:center; gap:6px; margin-right:8px; }
+.gtb-logo-m { width:30px; height:22px; }
+.gtb-logo-text { font-family:var(--font-gs); font-size:20px; font-weight:400; color:var(--g-sub); }
+.gtb-search {
+  flex:1; background:var(--g-hover); border:none; border-radius:24px;
+  padding:9px 16px; font-size:14px; font-family:var(--font-rb);
+  color:var(--g-text); outline:none; transition:background .2s, box-shadow .2s;
+  display:flex; align-items:center; gap:10px; cursor:pointer;
+}
+.gtb-search-text { color:var(--g-sub); font-size:14px; flex:1; }
+.gtb-search svg { width:18px; height:18px; fill:var(--g-sub); flex-shrink:0; }
+.gtb-avatar {
+  width:34px; height:34px; border-radius:50%;
+  background:linear-gradient(135deg,var(--g-blue),#6AB4F5);
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-gs); font-size:13px; font-weight:700; color:#fff;
+  flex-shrink:0; cursor:pointer;
+}
+
+/* ── SIDEBAR (mini) ── */
+.gmail-layout {
+  display:flex; max-width:900px; margin:0 auto;
+}
+.gmail-sidebar {
+  width:220px; flex-shrink:0; padding:8px 0;
+  position:sticky; top:57px; height:calc(100vh - 57px); overflow-y:auto;
+}
+@media(max-width:640px) { .gmail-sidebar{ display:none; } }
+
+.compose-btn {
+  display:flex; align-items:center; gap:12px;
+  background:#C2E7FF; border:none; border-radius:16px;
+  padding:16px 20px; margin:8px 16px 8px; cursor:pointer;
+  font-family:var(--font-gs); font-size:14px; font-weight:500; color:var(--g-text);
+  transition:background .15s, box-shadow .15s;
+  width:calc(100% - 32px);
+  box-shadow:0 1px 3px rgba(0,0,0,.12);
+}
+.compose-btn:hover { background:#A8D8F0; box-shadow:0 2px 6px rgba(0,0,0,.15); }
+.compose-btn svg { width:24px; height:24px; fill:var(--g-text); flex-shrink:0; }
+
+.sidebar-item {
+  display:flex; align-items:center; gap:16px;
+  padding:4px 16px; border-radius:0 20px 20px 0;
+  cursor:pointer; transition:background .15s; margin-right:8px;
+  font-size:14px; color:var(--g-sub); font-weight:400;
+  text-decoration:none;
+}
+.sidebar-item:hover { background:var(--g-hover); }
+.sidebar-item.active { background:#D3E3FD; color:var(--g-text); font-weight:700; }
+.sidebar-item svg { width:20px; height:20px; fill:currentColor; flex-shrink:0; }
+.sidebar-item .count { margin-left:auto; font-size:12px; font-weight:500; }
+
+/* ── MAIN CONTENT ── */
+.gmail-main { flex:1; min-width:0; }
+
+/* ── INBOX TOOLBAR ── */
+.inbox-toolbar {
+  display:flex; align-items:center; gap:0; padding:4px 16px;
+  border-bottom:1px solid var(--g-border); background:#fff;
+  position:sticky; top:57px; z-index:90;
+}
+.itb-btn {
+  display:flex; align-items:center; justify-content:center;
+  width:40px; height:40px; border-radius:50%; border:none;
+  background:none; cursor:pointer; color:var(--g-sub);
+  transition:background .15s;
+}
+.itb-btn:hover { background:var(--g-hover); }
+.itb-btn svg { width:20px; height:20px; fill:currentColor; }
+.itb-sep { width:1px; height:24px; background:var(--g-border); margin:0 4px; }
+.itb-label { font-size:13px; color:var(--g-sub); margin-left:4px; flex:1; }
+
+/* ── CATEGORY TABS ── */
+.category-tabs {
+  display:flex; overflow-x:auto; scrollbar-width:none;
+  border-bottom:1px solid var(--g-border); background:#fff;
+}
+.category-tabs::-webkit-scrollbar { display:none; }
+.cat-tab {
+  flex-shrink:0; display:flex; align-items:center; gap:8px;
+  padding:12px 20px; font-size:13px; color:var(--g-sub);
+  border:none; background:none; cursor:pointer;
+  border-bottom:3px solid transparent; transition:color .15s;
+  font-family:var(--font-rb); white-space:nowrap;
+}
+.cat-tab:hover { background:var(--g-hover); color:var(--g-text); }
+.cat-tab.active { color:var(--g-blue); border-bottom-color:var(--g-blue); font-weight:500; }
+.cat-tab svg { width:18px; height:18px; fill:currentColor; }
+
+/* ══════════════════════════
+   EMAIL LIST / THREADS
+══════════════════════════ */
+.thread-list { background:#fff; }
+
+.thread-item {
+  display:flex; align-items:center; gap:0; padding:0;
+  border-bottom:1px solid var(--g-border);
+  cursor:pointer; transition:background .1s;
+  position:relative;
+}
+.thread-item:hover { background:#F2F6FC; box-shadow:inset 1px 0 0 var(--g-border),inset -1px 0 0 var(--g-border); }
+.thread-item.unread { background:#fff; }
+.thread-item.unread .ti-sender { font-weight:700; color:var(--g-text); }
+.thread-item.unread .ti-subject { font-weight:700; color:var(--g-text); }
+.thread-item.read .ti-sender { font-weight:400; color:var(--g-text); }
+.thread-item.read .ti-subject { font-weight:400; }
+.thread-item.active-thread { background:#D3E3FD !important; }
+
+.ti-check {
+  width:52px; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; align-self:stretch;
+}
+.ti-check-circle {
+  width:20px; height:20px; border-radius:50%;
+  border:1.5px solid var(--g-lgray); display:flex; align-items:center; justify-content:center;
+  transition:background .15s; flex-shrink:0;
+}
+.thread-item:hover .ti-check-circle { border-color:var(--g-blue); }
+
+.ti-star {
+  width:32px; display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.star-icon { width:18px; height:18px; fill:var(--g-border); transition:fill .15s; cursor:pointer; }
+.star-icon.starred { fill:var(--g-yellow); }
+.thread-item:hover .star-icon { fill:var(--g-lgray); }
+
+.ti-avatar {
+  width:40px; height:40px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-gs); font-size:15px; font-weight:500;
+  color:#fff; flex-shrink:0; margin:8px 12px 8px 4px;
+}
+
+.ti-body { flex:1; padding:10px 0; min-width:0; }
+.ti-sender { font-size:14px; margin-bottom:2px; }
+.ti-subject-row { display:flex; align-items:center; gap:6px; }
+.ti-subject { font-size:14px; margin-bottom:2px; flex:1; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.ti-label {
+  flex-shrink:0; font-size:10px; font-weight:500; padding:1px 6px;
+  border-radius:3px; letter-spacing:.04em;
+}
+.ti-preview { font-size:13px; color:var(--g-sub); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:400; }
+.ti-attachment { display:inline-flex; align-items:center; gap:3px; font-size:11px; color:var(--g-lgray); margin-left:4px; }
+.ti-attachment svg { width:12px; height:12px; fill:var(--g-lgray); }
+
+.ti-right { padding:10px 16px 10px 0; display:flex; flex-direction:column; align-items:flex-end; gap:4px; flex-shrink:0; }
+.ti-time { font-size:12px; color:var(--g-lgray); white-space:nowrap; }
+.ti-time.unread { color:var(--g-blue); font-weight:500; }
+.ti-icons { display:flex; gap:4px; opacity:0; transition:opacity .15s; }
+.thread-item:hover .ti-icons { opacity:1; }
+.ti-ic { width:20px; height:20px; fill:var(--g-sub); cursor:pointer; }
+.ti-ic:hover { fill:var(--g-text); }
+
+/* ══════════════════════════
+   EMAIL OPEN — THREAD VIEW
+══════════════════════════ */
+#emailOpen { display:none; }
+#emailOpen.show { display:block; }
+
+.email-view { background:#fff; margin:0; }
+
+/* Email toolbar */
+.ev-toolbar {
+  display:flex; align-items:center; gap:4px; padding:8px 16px;
+  border-bottom:1px solid var(--g-border);
+  position:sticky; top:57px; z-index:90; background:#fff;
+}
+.ev-back {
+  display:flex; align-items:center; gap:4px;
+  background:none; border:none; cursor:pointer;
+  font-size:14px; color:var(--g-sub); padding:6px 8px; border-radius:4px;
+  transition:background .15s; font-family:var(--font-rb);
+}
+.ev-back:hover { background:var(--g-hover); }
+.ev-back svg { width:20px; height:20px; fill:var(--g-sub); }
+.ev-spacer { flex:1; }
+.ev-btn {
+  width:40px; height:40px; border-radius:50%; border:none;
+  background:none; cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:background .15s;
+}
+.ev-btn:hover { background:var(--g-hover); }
+.ev-btn svg { width:20px; height:20px; fill:var(--g-sub); }
+
+/* Email subject line */
+.ev-subject-bar {
+  display:flex; align-items:center; gap:12px;
+  padding:16px 20px 10px;
+}
+.ev-subject-text {
+  font-family:var(--font-gs); font-size:22px; font-weight:400; color:var(--g-text); flex:1;
+}
+.ev-subject-labels { display:flex; gap:5px; flex-wrap:wrap; }
+.ev-chip {
+  font-size:11px; font-weight:500; padding:2px 8px;
+  border-radius:3px; letter-spacing:.04em;
+}
+.ev-chip.invite  { background:#FCE8E6; color:var(--g-red); }
+.ev-chip.wedding { background:#E6F4EA; color:var(--g-green); }
+.ev-chip.urgent  { background:#FEF7E0; color:#B06000; }
+.ev-chip.rsvp    { background:#E8F0FE; color:var(--g-blue); }
+
+/* Email message bubble */
+.email-message {
+  border:1px solid var(--g-border); border-radius:8px;
+  margin:8px 20px 12px; overflow:hidden;
+}
+
+.em-header {
+  padding:12px 16px; display:flex; align-items:flex-start; gap:12px;
+  cursor:pointer; transition:background .15s;
+}
+.em-header:hover { background:var(--g-hover); }
+.em-avatar {
+  width:40px; height:40px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-family:var(--font-gs); font-size:15px; font-weight:500; color:#fff;
+  flex-shrink:0;
+}
+.em-meta { flex:1; }
+.em-from { font-size:14px; font-weight:500; color:var(--g-text); }
+.em-to { font-size:12px; color:var(--g-sub); margin-top:2px; }
+.em-date { font-size:12px; color:var(--g-lgray); flex-shrink:0; }
+.em-icons { display:flex; gap:4px; flex-shrink:0; }
+.em-ic { width:20px; height:20px; fill:var(--g-sub); cursor:pointer; }
+.em-ic:hover { fill:var(--g-text); }
+
+.em-body { padding:16px 20px 0; font-size:14px; line-height:1.7; color:var(--g-text); }
+.em-greeting { font-size:15px; margin-bottom:12px; }
+
+/* Info blocks inside email */
+.em-info-block {
+  background:var(--g-hover); border-radius:8px;
+  padding:14px 16px; margin:14px 0; font-size:13px; line-height:1.6; color:var(--g-sub);
+}
+.em-info-block strong { color:var(--g-text); font-weight:500; }
+.em-info-row { display:flex; align-items:flex-start; gap:10px; margin-bottom:8px; }
+.em-info-row:last-child { margin-bottom:0; }
+.em-info-icon { font-size:14px; flex-shrink:0; margin-top:1px; }
+
+/* Countdown inside email */
+.em-countdown {
+  display:flex; gap:8px; margin:14px 0; flex-wrap:wrap;
+}
+.em-cd-box {
+  flex:1; min-width:56px; background:var(--g-blue); border-radius:8px;
+  padding:10px 6px; text-align:center; color:#fff;
+}
+.em-cd-n { font-size:22px; font-weight:700; line-height:1; font-family:var(--font-gs); }
+.em-cd-u { font-size:9px; letter-spacing:.1em; text-transform:uppercase; opacity:.75; margin-top:2px; }
+
+/* Couple cards inside email */
+.em-couple { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:14px 0; }
+@media(max-width:480px){ .em-couple{ grid-template-columns:1fr; } }
+.em-c-card {
+  background:var(--g-hover); border:1px solid var(--g-border);
+  border-radius:8px; padding:14px 12px; text-align:center;
+}
+.em-c-av { width:56px; height:56px; border-radius:50%; overflow:hidden; margin:0 auto 8px; border:2px solid var(--g-blue); }
+.em-c-av img { width:100%; height:100%; object-fit:cover; }
+.em-c-role { font-size:10px; color:var(--g-blue); font-weight:500; letter-spacing:.06em; text-transform:uppercase; margin-bottom:3px; }
+.em-c-name { font-size:13px; font-weight:500; color:var(--g-text); margin-bottom:3px; }
+.em-c-parents { font-size:11px; color:var(--g-sub); line-height:1.5; }
+
+/* Gallery inside email */
+.em-gallery { display:grid; grid-template-columns:repeat(3,1fr); gap:4px; margin:14px 0; }
+.em-g-item { aspect-ratio:1; border-radius:5px; overflow:hidden; cursor:pointer; background:var(--g-border); }
+.em-g-item img { width:100%; height:100%; object-fit:cover; transition:transform .3s, filter .3s; filter:brightness(.95); }
+.em-g-item:hover img { transform:scale(1.05); filter:brightness(1); }
+
+/* Gift inside email */
+.em-gift { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:14px 0; }
+@media(max-width:480px){ .em-gift{ grid-template-columns:1fr; } }
+.em-gift-card {
+  background:var(--g-hover); border:1px solid var(--g-border);
+  border-radius:8px; padding:12px; position:relative; overflow:hidden;
+}
+.em-gift-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; background:var(--g-blue); }
+.em-gc-bank { font-size:10px; color:var(--g-lgray); text-transform:uppercase; letter-spacing:.1em; margin-bottom:2px; }
+.em-gc-name { font-size:18px; font-weight:700; color:var(--g-text); margin-bottom:2px; }
+.em-gc-holder { font-size:11px; color:var(--g-sub); margin-bottom:8px; }
+.em-gc-num { font-size:13px; font-family:'Courier New',monospace; letter-spacing:.1em; color:var(--g-text); background:#fff; border:1px solid var(--g-border); padding:5px 8px; border-radius:4px; display:inline-block; margin-bottom:8px; }
+.copy-btn {
+  display:inline-flex; align-items:center; gap:4px;
+  background:var(--g-blue); color:#fff; border:none;
+  font-size:11px; font-weight:500; font-family:var(--font-rb);
+  padding:6px 12px; border-radius:4px; cursor:pointer; transition:background .15s;
+}
+.copy-btn:hover { background:var(--g-blue2); }
+.copy-btn.ok { background:var(--g-green); }
+
+/* Timeline inside email */
+.em-timeline { margin:14px 0; }
+.em-tl-item { display:flex; gap:14px; margin-bottom:20px; position:relative; }
+.em-tl-item:last-child { margin-bottom:0; }
+.em-tl-item::before { content:''; position:absolute; left:7px; top:20px; bottom:-20px; width:2px; background:var(--g-border); }
+.em-tl-item:last-child::before { display:none; }
+.em-tl-dot { width:16px; height:16px; border-radius:50%; border:2px solid var(--g-blue); background:#fff; flex-shrink:0; margin-top:2px; z-index:1; }
+.em-tl-dot.done { background:var(--g-blue); }
+.em-tl-body { flex:1; }
+.em-tl-when { font-size:11px; color:var(--g-lgray); margin-bottom:2px; }
+.em-tl-title { font-size:14px; font-weight:500; color:var(--g-text); margin-bottom:3px; }
+.em-tl-desc { font-size:12px; color:var(--g-sub); line-height:1.6; }
+
+/* Verse quote inside email */
+.em-verse {
+  border-left:3px solid var(--g-blue); padding:10px 16px;
+  margin:14px 0; background:var(--g-chip); border-radius:0 6px 6px 0;
+  font-size:13px; font-style:italic; color:var(--g-sub); line-height:1.7;
+}
+.em-verse-ref { font-size:11px; color:var(--g-blue); font-style:normal; font-weight:500; margin-top:6px; }
+
+/* Email signature */
+.em-signature {
+  padding:16px 0; margin-top:4px;
+  border-top:1px solid var(--g-border); font-size:13px; color:var(--g-sub);
+  line-height:1.7;
+}
+.em-sig-name { font-weight:500; color:var(--g-text); }
+
+/* Email footer row */
+.em-footer-row {
+  padding:12px 16px; display:flex; gap:8px; flex-wrap:wrap;
+  border-top:1px solid var(--g-border);
+  background:var(--g-hover);
+}
+.em-action-btn {
+  display:inline-flex; align-items:center; gap:6px;
+  background:#fff; border:1px solid var(--g-border); color:var(--g-text);
+  font-size:13px; font-weight:500; font-family:var(--font-rb);
+  padding:8px 16px; border-radius:20px; cursor:pointer;
+  transition:background .15s, box-shadow .15s;
+  box-shadow:0 1px 2px rgba(0,0,0,.06);
+}
+.em-action-btn:hover { background:var(--g-hover); box-shadow:0 2px 6px rgba(0,0,0,.1); }
+.em-action-btn.primary { background:var(--g-blue); color:#fff; border-color:var(--g-blue); }
+.em-action-btn.primary:hover { background:var(--g-blue2); }
+.em-action-btn svg { width:16px; height:16px; fill:currentColor; }
+
+/* ══════════════════════════
+   REPLY / COMPOSE BOX
+══════════════════════════ */
+.reply-box {
+  border:1px solid var(--g-border); border-radius:12px;
+  margin:8px 20px 20px; overflow:hidden;
+  box-shadow:0 2px 6px rgba(0,0,0,.06);
+}
+.rb-header {
+  display:flex; align-items:center; gap:10px; padding:12px 16px;
+  border-bottom:1px solid var(--g-border); background:var(--g-hover);
+}
+.rb-label { font-size:13px; font-weight:500; color:var(--g-text); flex:1; }
+.rb-close { background:none; border:none; cursor:pointer; font-size:18px; color:var(--g-sub); padding:4px; border-radius:50%; transition:background .15s; }
+.rb-close:hover { background:var(--g-border); }
+
+.rsvp-form-gmail { padding:16px; }
+.rfg-to { font-size:13px; color:var(--g-sub); margin-bottom:12px; }
+.rfg-to strong { color:var(--g-text); }
+
+.form-row { margin-bottom:12px; }
+.form-row-label { font-size:11px; font-weight:500; color:var(--g-sub); letter-spacing:.06em; text-transform:uppercase; margin-bottom:5px; display:block; }
+.form-input-gmail {
+  width:100%; background:#fff; border:1px solid var(--g-border);
+  border-radius:6px; padding:9px 12px; color:var(--g-text);
+  font-family:var(--font-rb); font-size:14px; outline:none;
+  transition:border-color .2s, box-shadow .2s;
+  -webkit-appearance:none; appearance:none;
+}
+.form-input-gmail:focus { border-color:var(--g-blue); box-shadow:0 0 0 2px rgba(26,115,232,.15); }
+.form-input-gmail::placeholder { color:var(--g-lgray); }
+select.form-input-gmail { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239AA0A6' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:34px; cursor:pointer; }
+select.form-input-gmail option { background:#fff; }
+textarea.form-input-gmail { min-height:80px; resize:none; }
+.guest-pills { display:flex; gap:6px; }
+.gpill { flex:1; background:#fff; border:1px solid var(--g-border); border-radius:20px; padding:8px 12px; font-size:13px; color:var(--g-sub); cursor:pointer; text-align:center; transition:all .15s; font-family:var(--font-rb); }
+.gpill.on { background:var(--g-chip); border-color:var(--g-blue); color:var(--g-blue); font-weight:500; }
+
+.rb-footer {
+  padding:10px 16px; display:flex; align-items:center; gap:8px;
+  border-top:1px solid var(--g-border);
+}
+.rb-send {
+  background:var(--g-blue); color:#fff; border:none;
+  padding:9px 24px; border-radius:4px;
+  font-family:var(--font-gs); font-size:14px; font-weight:500;
+  cursor:pointer; transition:background .15s;
+  display:flex; align-items:center; gap:8px;
+}
+.rb-send:hover { background:var(--g-blue2); }
+.rb-send svg { width:16px; height:16px; fill:#fff; }
+.rb-discard { background:none; border:none; cursor:pointer; padding:8px; border-radius:50%; transition:background .15s; }
+.rb-discard:hover { background:var(--g-hover); }
+.rb-discard svg { width:20px; height:20px; fill:var(--g-sub); display:block; }
+.rb-char { font-size:12px; color:var(--g-lgray); margin-left:auto; }
+
+/* ══════════════════════════
+   WISHES — sent replies
+══════════════════════════ */
+.sent-reply {
+  border:1px solid var(--g-border); border-radius:8px;
+  margin:8px 20px; overflow:hidden; opacity:0; transform:translateY(8px);
+  transition:opacity .4s, transform .4s;
+}
+.sent-reply.vis { opacity:1; transform:translateY(0); }
+.sr-header {
+  display:flex; align-items:center; gap:10px; padding:10px 14px;
+  background:var(--g-hover); border-bottom:1px solid var(--g-border);
+}
+.sr-avatar { width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:#fff; flex-shrink:0; }
+.sr-meta { flex:1; }
+.sr-from { font-size:13px; font-weight:500; color:var(--g-text); }
+.sr-status { font-size:11px; color:var(--g-green); font-weight:500; }
+.sr-date { font-size:11px; color:var(--g-lgray); }
+.sr-body { padding:10px 14px; font-size:13px; color:var(--g-sub); line-height:1.65; }
+
+/* ══════════════════════════
+   RSVP STATS STRIP
+══════════════════════════ */
+.rsvp-stats-strip {
+  display:flex; background:#fff; border-bottom:1px solid var(--g-border);
+}
+.rss-item { flex:1; padding:10px 8px; text-align:center; border-right:1px solid var(--g-border); }
+.rss-item:last-child { border-right:none; }
+.rss-n { font-size:20px; font-weight:700; color:var(--g-blue); font-family:var(--font-gs); line-height:1; }
+.rss-l { font-size:9px; color:var(--g-lgray); text-transform:uppercase; letter-spacing:.08em; margin-top:2px; }
+
+/* ══════════════════════════
+   TOAST & LIGHTBOX
+══════════════════════════ */
+.toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(12px); background:#323232; color:#fff; padding:10px 20px; border-radius:4px; font-size:13px; font-weight:400; opacity:0; transition:opacity .25s,transform .25s; pointer-events:none; white-space:nowrap; z-index:999; font-family:var(--font-rb); }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+.lb { position:fixed; inset:0; background:rgba(0,0,0,.96); z-index:200; display:none; align-items:center; justify-content:center; }
+.lb.open { display:flex; }
+.lb-img { max-width:94vw; max-height:88vh; border-radius:6px; object-fit:contain; }
+.lb-close { position:absolute; top:16px; right:16px; background:rgba(255,255,255,.1); border:none; color:#fff; width:38px; height:38px; border-radius:50%; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.lb-nav { position:absolute; top:50%; transform:translateY(-50%); background:rgba(255,255,255,.1); border:none; color:#fff; font-size:26px; cursor:pointer; width:42px; height:56px; border-radius:8px; display:flex; align-items:center; justify-content:center; }
+.lb-prev { left:10px; } .lb-next { right:10px; }
+.lb-ctr { position:absolute; bottom:16px; left:50%; transform:translateX(-50%); font-size:11px; color:rgba(255,255,255,.4); }
+
+/* mobile tweaks */
+@media(max-width:640px) {
+  .ti-body { padding:8px 0; }
+  .em-couple, .em-gift { grid-template-columns:1fr; }
+  .em-gallery { grid-template-columns:repeat(3,1fr); }
+}
+</style>
+</head>
+<body>
+
+<!-- ══ OPENING ══ -->
+<div id="opening">
+  <div class="op-gmail-logo">
+    <!-- Gmail M icon -->
+    <svg class="op-gmail-m" width="56" height="40" viewBox="0 0 56 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="56" height="40" rx="4" fill="#fff" stroke="#E0E0E0"/>
+      <path d="M4 8L28 26L52 8" stroke="#EA4335" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M4 8V36H18V20L28 28L38 20V36H52V8L28 26L4 8Z" fill="#EA4335"/>
+      <path d="M4 8V36H18V20L28 28L38 20V36H52V8" fill="none" stroke="#EA4335" stroke-width="0"/>
+      <!-- Simplified Gmail icon -->
+      <rect x="4" y="8" width="48" height="28" rx="2" fill="none"/>
+      <path d="M4 10L4 36H18V21L28 29L38 21V36H52V10L28 28L4 10Z" fill="#E8453C"/>
+      <path d="M4 10L28 28L52 10" stroke="white" stroke-width="1.5" fill="none"/>
+    </svg>
+    <span class="op-gmail-text">Gmail</span>
+  </div>
+
+  <div class="op-new-badge"><div class="op-new-dot"></div>1 pesan baru</div>
+  <div class="op-subject">💍 Undangan Pernikahan: Anita & Zarda</div>
+  <div class="op-preview">Anda memiliki 1 undangan pernikahan yang belum dibaca. Klik untuk membuka dan konfirmasi kehadiran Anda.</div>
+
+  <div class="op-email-header">
+    <div class="op-eh-row">
+      <div class="op-eh-avatar">A</div>
+      <div class="op-eh-from">
+        <div class="op-eh-name">Anita & Zarda Wedding</div>
+        <div class="op-eh-addr">wedding@anita-zarda.id</div>
+      </div>
+      <div class="op-eh-time">Sekarang</div>
+    </div>
+    <div class="op-eh-row">
+      <span class="op-eh-label invite">Undangan</span>
+      <span class="op-eh-label wedding">Pernikahan</span>
+      <span class="op-eh-label urgent">Harap Balas</span>
+    </div>
+    <div class="op-dear-chip">
+      <div class="op-dear-ic">📨</div>
+      <div>
+        <div class="op-dear-to">Kepada Yth.</div>
+        <div class="op-dear-name">Ade Guntur Fitridullah & Partner</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="op-open-btn" onclick="openGmail()">
+    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+    Buka Undangan
+  </button>
+</div>
+
+<!-- ══ MAIN GMAIL UI ══ -->
+<div id="main">
+
+  <!-- Top bar -->
+  <div class="gmail-topbar">
+    <div class="gtb-logo">
+      <svg class="gtb-logo-m" width="30" height="22" viewBox="0 0 30 22" fill="none">
+        <path d="M2 4L15 14L28 4V20H20V12L15 16L10 12V20H2V4Z" fill="#EA4335"/>
+        <path d="M2 4L15 14L28 4" stroke="white" stroke-width="1" fill="none"/>
+      </svg>
+      <span class="gtb-logo-text">Gmail</span>
+    </div>
+    <div class="gtb-search">
+      <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <span class="gtb-search-text">Cari email...</span>
+    </div>
+    <div class="gtb-avatar">A</div>
+  </div>
+
+  <div class="gmail-layout">
+
+    <!-- Sidebar -->
+    <div class="gmail-sidebar">
+      <button class="compose-btn" onclick="scrollToReply()">
+        <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        Compose
+      </button>
+      <a href="#" class="sidebar-item active" onclick="return false">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+        Kotak Masuk <span class="count" style="color:var(--g-blue);font-weight:700">1</span>
+      </a>
+      <a href="#" class="sidebar-item" onclick="return false">
+        <svg viewBox="0 0 24 24"><path d="M22 9V7h-2V5c0-1.1-.9-2-2-2H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-2h2v-2h-2v-2h2v-2h-2V9h2zm-4 10H4V5h14v14z"/></svg>
+        Berbintang
+      </a>
+      <a href="#" class="sidebar-item" onclick="return false">
+        <svg viewBox="0 0 24 24"><path d="M21.99 8c0-.72-.37-1.35-.94-1.7L12 1 2.95 6.3C2.38 6.65 2 7.28 2 8v10c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2l-.01-10z"/></svg>
+        Terkirim
+      </a>
+      <div style="height:1px;background:var(--g-border);margin:8px 16px"></div>
+      <a href="#" class="sidebar-item" onclick="return false">
+        <svg viewBox="0 0 24 24"><path d="M1 21L12 2 23 21H1zm11-3h2v-2h-2v2zm0-4h2v-4h-2v4z"/></svg>
+        Penting
+      </a>
+    </div>
+
+    <!-- Main column -->
+    <div class="gmail-main">
+
+      <!-- INBOX VIEW -->
+      <div id="inboxView">
+        <!-- Toolbar -->
+        <div class="inbox-toolbar">
+          <button class="itb-btn" title="Pilih semua">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
+          </button>
+          <button class="itb-btn" title="Refresh">
+            <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+          </button>
+          <div class="itb-sep"></div>
+          <span class="itb-label">Kotak Masuk</span>
+        </div>
+
+        <!-- Category tabs -->
+        <div class="category-tabs">
+          <button class="cat-tab active">
+            <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            Utama
+          </button>
+          <button class="cat-tab">
+            <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+            Sosial
+          </button>
+          <button class="cat-tab">
+            <svg viewBox="0 0 24 24"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58s1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41s-.23-1.06-.59-1.42z"/></svg>
+            Promosi
+          </button>
+        </div>
+
+        <!-- Thread list -->
+        <div class="thread-list">
+
+          <!-- UNREAD — main wedding email -->
+          <div class="thread-item unread" onclick="openThread()">
+            <div class="ti-check"><div class="ti-check-circle"></div></div>
+            <div class="ti-star">
+              <svg class="star-icon starred" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            </div>
+            <div class="ti-avatar" style="background:linear-gradient(135deg,#EA4335,#FBBC04)">A</div>
+            <div class="ti-body">
+              <div class="ti-sender">Anita & Zarda Wedding 💍</div>
+              <div class="ti-subject-row">
+                <div class="ti-subject">💍 Undangan Pernikahan: Anita & Zarda — Minggu, 24 Mei 2026</div>
+                <span class="ti-label" style="background:#FCE8E6;color:#C5221F">Undangan</span>
+              </div>
+              <div class="ti-preview">
+                Kepada Ade Guntur Fitridullah & Partner – Dengan penuh kebahagiaan, kami mengundang Anda...
+                <span class="ti-attachment"><svg viewBox="0 0 24 24"><path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"/></svg>9 foto</span>
+              </div>
+            </div>
+            <div class="ti-right">
+              <div class="ti-time unread">Hari ini</div>
+              <div class="ti-icons">
+                <svg class="ti-ic" viewBox="0 0 24 24" title="Arsipkan"><path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5z"/></svg>
+                <svg class="ti-ic" viewBox="0 0 24 24" title="Hapus"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <!-- READ — some other emails for realism -->
+          <div class="thread-item read">
+            <div class="ti-check"><div class="ti-check-circle"></div></div>
+            <div class="ti-star"><svg class="star-icon" viewBox="0 0 24 24"><path d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zm-10 6.71l-3.76 2.27 1-4.28-3.32-2.88 4.38-.38L12 6.1l1.71 4.59 4.38.38-3.32 2.88 1 4.28L12 15.95z"/></svg></div>
+            <div class="ti-avatar" style="background:#5F6368">G</div>
+            <div class="ti-body">
+              <div class="ti-sender">Google</div>
+              <div class="ti-subject-row"><div class="ti-subject">Keamanan Akun — Aktivitas masuk baru terdeteksi</div></div>
+              <div class="ti-preview">Kami mendeteksi aktivitas masuk baru di akun Anda dari Jakarta, Indonesia...</div>
+            </div>
+            <div class="ti-right"><div class="ti-time">Kemarin</div></div>
+          </div>
+
+          <div class="thread-item read">
+            <div class="ti-check"><div class="ti-check-circle"></div></div>
+            <div class="ti-star"><svg class="star-icon" viewBox="0 0 24 24"><path d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zm-10 6.71l-3.76 2.27 1-4.28-3.32-2.88 4.38-.38L12 6.1l1.71 4.59 4.38.38-3.32 2.88 1 4.28L12 15.95z"/></svg></div>
+            <div class="ti-avatar" style="background:#1A73E8">T</div>
+            <div class="ti-body">
+              <div class="ti-sender">Tokopedia</div>
+              <div class="ti-subject-row"><div class="ti-subject">Flash Sale hari ini! Diskon hingga 90% 🔥</div><span class="ti-label" style="background:#E8F0FE;color:#1A73E8">Promo</span></div>
+              <div class="ti-preview">Jangan lewatkan penawaran eksklusif hari ini. Belanja sekarang dan hemat lebih banyak...</div>
+            </div>
+            <div class="ti-right"><div class="ti-time">Sen</div></div>
+          </div>
+
+          <div class="thread-item read">
+            <div class="ti-check"><div class="ti-check-circle"></div></div>
+            <div class="ti-star"><svg class="star-icon" viewBox="0 0 24 24"><path d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zm-10 6.71l-3.76 2.27 1-4.28-3.32-2.88 4.38-.38L12 6.1l1.71 4.59 4.38.38-3.32 2.88 1 4.28L12 15.95z"/></svg></div>
+            <div class="ti-avatar" style="background:#34A853">B</div>
+            <div class="ti-body">
+              <div class="ti-sender">BCA · Notifikasi</div>
+              <div class="ti-subject-row"><div class="ti-subject">Konfirmasi Transfer Dana — Rp 2.500.000</div></div>
+              <div class="ti-preview">Transfer Anda kepada XXX berhasil diproses. Saldo tersedia: Rp XXX...</div>
+            </div>
+            <div class="ti-right"><div class="ti-time">Ming</div></div>
+          </div>
+
+        </div><!-- /thread-list -->
+
+        <!-- RSVP stats -->
+        <div class="rsvp-stats-strip">
+          <div class="rss-item"><div class="rss-n" id="stR">7</div><div class="rss-l">Respons</div></div>
+          <div class="rss-item"><div class="rss-n" id="stH">7</div><div class="rss-l">Hadir</div></div>
+          <div class="rss-item"><div class="rss-n" id="stT">13</div><div class="rss-l">Total Tamu</div></div>
+        </div>
+
+      </div><!-- /inboxView -->
+
+      <!-- EMAIL OPEN VIEW -->
+      <div id="emailOpen">
+
+        <!-- Toolbar -->
+        <div class="ev-toolbar">
+          <button class="ev-back" onclick="closeThread()">
+            <svg viewBox="0 0 24 24"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+            Kotak Masuk
+          </button>
+          <div class="ev-spacer"></div>
+          <button class="ev-btn" title="Arsipkan"><svg viewBox="0 0 24 24"><path d="M20.54 5.23l-1.39-1.68C18.88 3.21 18.47 3 18 3H6c-.47 0-.88.21-1.16.55L3.46 5.23C3.17 5.57 3 6.02 3 6.5V19c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V6.5c0-.48-.17-.93-.46-1.27zM12 17.5L6.5 12H10v-2h4v2h3.5L12 17.5z"/></svg></button>
+          <button class="ev-btn" title="Hapus"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
+          <button class="ev-btn" title="Tunda"><svg viewBox="0 0 24 24"><path d="M7.88 3.39L6.6 1.86 2 5.71l1.29 1.53 4.59-3.85zM22 5.72l-4.6-3.86-1.29 1.53 4.6 3.86L22 5.72zM12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 16c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7zm1-11h-2v3H8v2h3v3h2v-3h3v-2h-3V9z"/></svg></button>
+          <button class="ev-btn" title="Lebih banyak"><svg viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
+        </div>
+
+        <!-- Subject -->
+        <div class="ev-subject-bar">
+          <div class="ev-subject-text">💍 Undangan Pernikahan: Anita & Zarda</div>
+          <div class="ev-subject-labels">
+            <span class="ev-chip invite">Undangan</span>
+            <span class="ev-chip wedding">Pernikahan</span>
+            <span class="ev-chip urgent">Harap Balas</span>
+          </div>
+        </div>
+
+        <!-- Email message -->
+        <div class="email-message">
+          <div class="em-header">
+            <div class="em-avatar" style="background:linear-gradient(135deg,#EA4335,#FBBC04)">A</div>
+            <div class="em-meta">
+              <div class="em-from">Anita & Zarda Wedding &lt;wedding@anita-zarda.id&gt;</div>
+              <div class="em-to">kepada: Ade Guntur Fitridullah &lt;ade.guntur@gmail.com&gt; <span style="color:var(--g-blue);cursor:pointer">▾</span></div>
+            </div>
+            <div class="em-date" id="emDate">—</div>
+            <div class="em-icons">
+              <svg class="em-ic" viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-2 8h-4v4h-4v-4H6l6-6 6 6z"/></svg>
+              <svg class="em-ic" viewBox="0 0 24 24"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+            </div>
+          </div>
+
+          <div class="em-body">
+            <div class="em-greeting">Assalamu'alaikum Wr. Wb.,<br><br>Kepada <strong>Bapak/Ibu/Saudara/i Ade Guntur Fitridullah & Partner</strong>,</div>
+
+            <p style="margin-bottom:12px">Dengan penuh kebahagiaan dan rasa syukur kepada Allah SWT, kami bermaksud mengundang Anda untuk turut menyaksikan dan memberikan doa restu atas pernikahan kami:</p>
+
+            <!-- Verse -->
+            <div class="em-verse">
+              "Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya..."
+              <div class="em-verse-ref">— Surah Ar-Rum : 21</div>
+            </div>
+
+            <!-- Couple -->
+            <p style="margin-bottom:10px;font-weight:500">👫 Pasangan Pengantin:</p>
+            <div class="em-couple">
+              <div class="em-c-card">
+                <div class="em-c-av"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita"></div>
+                <div class="em-c-role">🌸 Mempelai Wanita</div>
+                <div class="em-c-name">Anita Pangestuti, S.Kom</div>
+                <div class="em-c-parents">Putri Pertama dari<br>Bpk. Taryono & Ibu Wiwit Jayanti</div>
+              </div>
+              <div class="em-c-card">
+                <div class="em-c-av"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda"></div>
+                <div class="em-c-role">🤵 Mempelai Pria</div>
+                <div class="em-c-name">Zardarian Ahadika N, S.Kom</div>
+                <div class="em-c-parents">Putra Kedua dari<br>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</div>
+              </div>
+            </div>
+
+            <!-- Event info -->
+            <p style="margin-bottom:10px;font-weight:500">📅 Detail Acara:</p>
+            <div class="em-info-block">
+              <div class="em-info-row">
+                <span class="em-info-icon">💒</span>
+                <span><strong>Akad Nikah</strong><br>Minggu, 24 Mei 2026 · 08.00 WIB s/d Selesai<br>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang<br><a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" style="color:var(--g-blue)">📍 Lihat di Google Maps</a></span>
+              </div>
+              <div class="em-info-row">
+                <span class="em-info-icon">🎊</span>
+                <span><strong>Resepsi</strong><br>Minggu, 24 Mei 2026 · 11.00 – 13.00 WIB<br>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang<br><a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" style="color:var(--g-blue)">📍 Lihat di Google Maps</a></span>
+              </div>
+            </div>
+
+            <!-- Countdown -->
+            <p style="margin-bottom:10px;font-weight:500">⏳ Hitung Mundur:</p>
+            <div class="em-countdown">
+              <div class="em-cd-box"><div class="em-cd-n" id="cdD">00</div><div class="em-cd-u">Hari</div></div>
+              <div class="em-cd-box" style="background:var(--g-green)"><div class="em-cd-n" id="cdH">00</div><div class="em-cd-u">Jam</div></div>
+              <div class="em-cd-box" style="background:var(--g-red)"><div class="em-cd-n" id="cdM">00</div><div class="em-cd-u">Menit</div></div>
+              <div class="em-cd-box" style="background:#9C27B0"><div class="em-cd-n" id="cdS">00</div><div class="em-cd-u">Detik</div></div>
+            </div>
+
+            <!-- Love story -->
+            <p style="margin-bottom:10px;font-weight:500">💛 Kilas Balik Perjalanan Cinta:</p>
+            <div class="em-timeline">
+              <div class="em-tl-item">
+                <div class="em-tl-dot done"></div>
+                <div class="em-tl-body">
+                  <div class="em-tl-when">Juni 2025</div>
+                  <div class="em-tl-title">Awal Pertemuan 🎳</div>
+                  <div class="em-tl-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</div>
+                </div>
+              </div>
+              <div class="em-tl-item">
+                <div class="em-tl-dot done"></div>
+                <div class="em-tl-body">
+                  <div class="em-tl-when">November 2025</div>
+                  <div class="em-tl-title">Lamaran 💍</div>
+                  <div class="em-tl-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div>
+                </div>
+              </div>
+              <div class="em-tl-item">
+                <div class="em-tl-dot"></div>
+                <div class="em-tl-body">
+                  <div class="em-tl-when">Mei 2026</div>
+                  <div class="em-tl-title">Pernikahan 🎉</div>
+                  <div class="em-tl-desc">Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Gallery -->
+            <p style="margin-bottom:10px;font-weight:500">📎 Lampiran Foto (9):</p>
+            <div class="em-gallery" id="emGallery"></div>
+
+            <!-- Gift -->
+            <p style="margin:14px 0 10px;font-weight:500">🎁 Amplop Digital (opsional):</p>
+            <p style="font-size:13px;color:var(--g-sub);margin-bottom:10px;line-height:1.6">Doa restu Anda sudah merupakan hadiah terbaik. Namun jika berkenan, berikut rekening kami:</p>
+            <div class="em-gift">
+              <div class="em-gift-card">
+                <div class="em-gc-bank">Bank</div>
+                <div class="em-gc-name">BCA</div>
+                <div class="em-gc-holder">Zardarian Ahadika N</div>
+                <div class="em-gc-num">8210 3705 61</div><br>
+                <button class="copy-btn" onclick="copyAcc('8210370561',this)">📋 Salin</button>
+              </div>
+              <div class="em-gift-card">
+                <div class="em-gc-bank">Bank</div>
+                <div class="em-gc-name">BNI</div>
+                <div class="em-gc-holder">Anita Pangestuti</div>
+                <div class="em-gc-num">1192 9784 03</div><br>
+                <button class="copy-btn" onclick="copyAcc('1192978403',this)">📋 Salin</button>
+              </div>
+            </div>
+
+            <div class="em-signature">
+              <p>Kami sangat berharap kehadiran dan doa restu Bapak/Ibu/Saudara/i.<br>Merupakan suatu kebahagiaan dan kehormatan bagi kami.</p>
+              <br>
+              <p>Wassalamu'alaikum Wr. Wb.,</p>
+              <br>
+              <p class="em-sig-name">Anita & Zarda</p>
+              <p style="color:var(--g-sub)">wedding@anita-zarda.id</p>
+              <p style="color:var(--g-lgray);font-size:12px;margin-top:6px">Undangan digital ini dikirim melalui BridesSpace · Jangan balas email ini secara langsung</p>
+            </div>
+          </div><!-- /em-body -->
+
+          <!-- Action buttons -->
+          <div class="em-footer-row">
+            <button class="em-action-btn primary" onclick="scrollToReply()">
+              <svg viewBox="0 0 24 24"><path d="M10 9V5l-7 7 7 7v-4.1c5 0 8.5 1.6 11 5.1-1-5-4-10-11-11z"/></svg>
+              Balas (RSVP)
+            </button>
+            <button class="em-action-btn" onclick="scrollToReply()">
+              <svg viewBox="0 0 24 24"><path d="M7 8V5l-7 7 7 7v-3l-4-4 4-4zm6 1V5l7 7-7 7v-3.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
+              Teruskan
+            </button>
+            <button class="em-action-btn">
+              <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+              Tandai Selesai
+            </button>
+          </div>
+        </div><!-- /email-message -->
+
+        <!-- Sent replies / wishes -->
+        <div style="padding:0 20px 8px">
+          <div style="font-size:12px;color:var(--g-sub);font-weight:500;padding:8px 0;display:flex;align-items:center;gap:8px">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="var(--g-lgray)"><path d="M7 8V5l-7 7 7 7v-3l-4-4 4-4zm6 1V5l7 7-7 7v-3.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>
+            <span id="replyCount">3 balasan</span>
+          </div>
+        </div>
+
+        <div id="repliesList" style="padding:0 0 8px">
+          <div class="sent-reply vis" style="margin:4px 20px">
+            <div class="sr-header">
+              <div class="sr-avatar" style="background:#EA4335">A</div>
+              <div class="sr-meta">
+                <div class="sr-from">Ayu Rahmawati</div>
+                <div class="sr-status">✓ Hadir · 2 tamu</div>
+              </div>
+              <div class="sr-date">2 hari lalu</div>
+            </div>
+            <div class="sr-body">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu Anita & Zarda! 🌿</div>
+          </div>
+          <div class="sent-reply vis" style="margin:4px 20px;transition-delay:.1s">
+            <div class="sr-header">
+              <div class="sr-avatar" style="background:#1A73E8">R</div>
+              <div class="sr-meta">
+                <div class="sr-from">Reza Firmansyah</div>
+                <div class="sr-status">✓ Hadir · 1 tamu</div>
+              </div>
+              <div class="sr-date">Kemarin</div>
+            </div>
+            <div class="sr-body">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan kebahagiaan yang tidak pernah habis. Aamiin!</div>
+          </div>
+          <div class="sent-reply vis" style="margin:4px 20px;transition-delay:.2s">
+            <div class="sr-header">
+              <div class="sr-avatar" style="background:#34A853">S</div>
+              <div class="sr-meta">
+                <div class="sr-from">Sinta Dewi</div>
+                <div class="sr-status">✓ Hadir · 2 tamu</div>
+              </div>
+              <div class="sr-date">Kemarin</div>
+            </div>
+            <div class="sr-body">Wishing you both a lifetime of love and laughter. Semoga langkah kalian selalu diberkahi Allah SWT 💚</div>
+          </div>
+        </div>
+
+        <!-- Reply compose box -->
+        <div class="reply-box" id="replyBox">
+          <div class="rb-header">
+            <span class="rb-label">📝 Balas — Konfirmasi Kehadiran (RSVP)</span>
+            <button class="rb-close" onclick="minimizeReply()">—</button>
+          </div>
+          <div class="rsvp-form-gmail">
+            <div class="rfg-to">Kepada: <strong>wedding@anita-zarda.id</strong></div>
+            <div class="form-row">
+              <label class="form-row-label">Nama Lengkap</label>
+              <input type="text" class="form-input-gmail" placeholder="Nama kamu" id="rName">
+            </div>
+            <div class="form-row">
+              <label class="form-row-label">Status Kehadiran</label>
+              <select class="form-input-gmail" id="rStat">
+                <option value="">Pilih status...</option>
+                <option value="hadir">Hadir ✅</option>
+                <option value="tidak">Tidak Hadir ❌</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label class="form-row-label">Jumlah Tamu</label>
+              <div class="guest-pills">
+                <button class="gpill on" onclick="setG(1,this)">1 Orang</button>
+                <button class="gpill" onclick="setG(2,this)">2 Orang</button>
+              </div>
+            </div>
+            <div class="form-row">
+              <label class="form-row-label">Pesan & Ucapan</label>
+              <textarea class="form-input-gmail" placeholder="Tulis ucapan untuk Anita & Zarda... 💛" id="rMsg"></textarea>
+            </div>
+          </div>
+          <div class="rb-footer">
+            <button class="rb-send" onclick="sendReply()">
+              <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+              Kirim
+            </button>
+            <button class="rb-discard" onclick="minimizeReply()" title="Discard">
+              <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+            </button>
+            <span class="rb-count" id="charCount">0 / 500</span>
+          </div>
+        </div>
+
+        <div style="height:24px"></div>
+
+      </div><!-- /emailOpen -->
+
+    </div><!-- /gmail-main -->
+  </div><!-- /gmail-layout -->
+</div><!-- /main -->
+
+<!-- Lightbox -->
+<div class="lb" id="lb">
+  <button class="lb-close" onclick="closeLb()">✕</button>
+  <button class="lb-nav lb-prev" onclick="lbGo(-1)">‹</button>
+  <img class="lb-img" id="lbImg" src="" alt="">
+  <button class="lb-nav lb-next" onclick="lbGo(1)">›</button>
+  <div class="lb-ctr" id="lbCtr"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const GALLERY = [
+  "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=600&h=600&fit=crop&q=80"
+];
+
+let guestN=1, lbIdx=0, toastTO=null, replyCount=3;
+
+/* ── OPEN GMAIL ── */
+function openGmail() {
+  document.getElementById('opening').classList.add('hide');
+  const main = document.getElementById('main');
+  setTimeout(()=>main.classList.add('show'), 120);
+  setTimeout(init, 300);
+}
+
+/* ── INIT ── */
+function init() {
+  startCountdown();
+  buildGallery();
+  setEmailDate();
+  // auto open the thread (main email is highlighted)
+  setTimeout(openThread, 600);
+}
+
+/* ── EMAIL DATE ── */
+function setEmailDate() {
+  const el = document.getElementById('emDate');
+  if (!el) return;
+  const now = new Date();
+  const opts = { day:'numeric', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit' };
+  el.textContent = now.toLocaleDateString('id-ID', opts);
+}
+
+/* ── THREAD OPEN/CLOSE ── */
+function openThread() {
+  document.getElementById('inboxView').style.display = 'none';
+  const eo = document.getElementById('emailOpen');
+  eo.classList.add('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function closeThread() {
+  document.getElementById('emailOpen').classList.remove('show');
+  document.getElementById('inboxView').style.display = '';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ── GALLERY ── */
+function buildGallery() {
+  const g = document.getElementById('emGallery');
+  if (!g) return;
+  GALLERY.forEach((src,i)=>{
+    const d = document.createElement('div');
+    d.className = 'em-g-item';
+    d.innerHTML = `<img src="${src}" alt="" loading="lazy">`;
+    d.onclick = ()=>openLb(i);
+    g.appendChild(d);
+  });
+}
+
+/* ── COUNTDOWN ── */
+function startCountdown() {
+  const tgt = new Date('2026-05-24T08:00:00');
+  const s = (id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=String(v).padStart(2,'0'); };
+  function tick() {
+    const d = tgt - new Date();
+    if(d<=0){s('cdD',0);s('cdH',0);s('cdM',0);s('cdS',0);return;}
+    s('cdD',Math.floor(d/86400000));
+    s('cdH',Math.floor((d%86400000)/3600000));
+    s('cdM',Math.floor((d%3600000)/60000));
+    s('cdS',Math.floor((d%60000)/1000));
+  }
+  tick(); setInterval(tick,1000);
+}
+
+/* ── SCROLL TO REPLY ── */
+function scrollToReply() {
+  const rb = document.getElementById('replyBox');
+  if (!rb) return;
+  rb.scrollIntoView({behavior:'smooth',block:'center'});
+  setTimeout(()=>document.getElementById('rName').focus(),500);
+}
+function minimizeReply() {
+  const rb = document.getElementById('replyBox');
+  rb.style.display = rb.style.display==='none' ? '' : 'none';
+}
+
+/* ── CHAR COUNT ── */
+document.addEventListener('DOMContentLoaded', ()=>{
+  const ta = document.getElementById('rMsg');
+  const cc = document.getElementById('charCount');
+  if(ta && cc) ta.addEventListener('input',()=>{ cc.textContent=`${ta.value.length} / 500`; });
+});
+
+/* ── SEND REPLY ── */
+function setG(n,btn){ guestN=n; document.querySelectorAll('.gpill').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); }
+
+function sendReply() {
+  const name = document.getElementById('rName').value.trim();
+  const stat = document.getElementById('rStat').value;
+  const msg  = document.getElementById('rMsg').value.trim();
+  if(!name||!stat){ showToast('Mohon isi nama dan status kehadiran'); return; }
+
+  replyCount++;
+  const ini = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const bgs = ['#EA4335','#1A73E8','#34A853','#FBBC04','#9C27B0'];
+  const bg  = bgs[Math.floor(Math.random()*bgs.length)];
+  const stTxt = stat==='hadir'?`✓ Hadir · ${guestN} tamu`:'✗ Tidak Hadir';
+
+  const card = document.createElement('div');
+  card.className = 'sent-reply';
+  card.style.margin = '4px 20px';
+  card.innerHTML = `
+    <div class="sr-header">
+      <div class="sr-avatar" style="background:${bg}">${ini}</div>
+      <div class="sr-meta">
+        <div class="sr-from">${name}</div>
+        <div class="sr-status">${stTxt}</div>
+      </div>
+      <div class="sr-date">Baru saja</div>
+    </div>
+    <div class="sr-body">${msg||'Selamat dan semoga bahagia selalu! 💛'}</div>`;
+
+  const list = document.getElementById('repliesList');
+  if(list){ list.appendChild(card); setTimeout(()=>card.classList.add('vis'),50); }
+
+  const rc = document.getElementById('replyCount');
+  if(rc) rc.textContent = `${replyCount} balasan`;
+
+  // bump stats
+  const bump = (id,n=1)=>{ const e=document.getElementById(id); if(e) e.textContent=parseInt(e.textContent)+n; };
+  bump('stR');
+  if(stat==='hadir'){ bump('stH'); bump('stT',guestN); }
+
+  // reset form
+  document.getElementById('rName').value='';
+  document.getElementById('rStat').value='';
+  document.getElementById('rMsg').value='';
+  document.getElementById('charCount').textContent='0 / 500';
+
+  showToast('Balasan terkirim ✓');
+  card.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+/* ── COPY ── */
+function copyAcc(text,btn){
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.classList.add('ok'); btn.textContent='✓ Tersalin';
+    showToast('Nomor rekening tersalin!');
+    setTimeout(()=>{ btn.classList.remove('ok'); btn.textContent='📋 Salin'; },2500);
+  }).catch(()=>showToast('Salin: '+text));
+}
+
+/* ── LIGHTBOX ── */
+function openLb(i){ lbIdx=i; updLb(); document.getElementById('lb').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeLb(){ document.getElementById('lb').classList.remove('open'); document.body.style.overflow=''; }
+function lbGo(d){ lbIdx=(lbIdx+d+GALLERY.length)%GALLERY.length; updLb(); }
+function updLb(){ document.getElementById('lbImg').src=GALLERY[lbIdx]; document.getElementById('lbCtr').textContent=`${lbIdx+1} / ${GALLERY.length}`; }
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lb').classList.contains('open')) return;
+  if(e.key==='Escape') closeLb();
+  if(e.key==='ArrowLeft') lbGo(-1);
+  if(e.key==='ArrowRight') lbGo(1);
+});
+
+/* ── TOAST ── */
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTO);
+  toastTO=setTimeout(()=>t.classList.remove('show'),2800);
+}
+</script>
+</body>
+</html>

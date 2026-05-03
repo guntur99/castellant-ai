@@ -1,0 +1,1558 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anita & Zarda — Wedding Project · Behance</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300;1,9..40,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #FFFFFF;
+  --bg2:      #F5F5F5;
+  --bg3:      #EFEFEF;
+  --text:     #1A1A1A;
+  --text2:    #4A4A4A;
+  --text3:    #909090;
+  --border:   #E0E0E0;
+  --border2:  #D0D0D0;
+  --accent:   #0057FF;
+  --accent2:  #003EBF;
+  --dark:     #131313;
+  --dark2:    #1E1E1E;
+  --dark3:    #2A2A2A;
+  --white:    #FFFFFF;
+  --font-d:   'DM Serif Display', Georgia, serif;
+  --font-b:   'DM Sans', system-ui, sans-serif;
+  --nav-h:    56px;
+  --sidebar-w:260px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:15px;scroll-behavior:smooth}
+body{
+  font-family:var(--font-b);
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── CURSOR ── */
+*, a { cursor: default; }
+a, button, .clickable { cursor: pointer; }
+
+/* ══════════════════════════
+   SPLASH / LOADING
+══════════════════════════ */
+#splash {
+  position:fixed;inset:0;
+  background:var(--dark);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  z-index:9999;
+  transition:opacity .6s ease, transform .6s ease;
+}
+#splash.out { opacity:0; transform:scale(1.03); pointer-events:none; }
+
+.splash-logo {
+  display:flex;align-items:center;gap:8px;margin-bottom:48px;
+}
+.splash-logo-mark {
+  width:40px;height:26px;
+  background:var(--accent);
+  border-radius:3px;
+  display:flex;align-items:center;justify-content:center;
+}
+.splash-logo-mark span {
+  color:#fff;font-size:13px;font-weight:700;letter-spacing:-.5px;
+  font-family:var(--font-b);
+}
+.splash-logo-text {
+  font-size:20px;font-weight:700;color:#fff;letter-spacing:-.3px;
+  font-family:var(--font-b);
+}
+
+.splash-project-card {
+  width:min(580px,90vw);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:4px;
+  overflow:hidden;
+  background:var(--dark2);
+}
+.splash-cover {
+  width:100%;height:280px;
+  background:linear-gradient(145deg,#0A0A0A 0%,#1a1a2e 40%,#16213e 70%,#0f3460 100%);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.splash-cover-grid {
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(0,87,255,.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,87,255,.06) 1px, transparent 1px);
+  background-size:40px 40px;
+}
+.splash-cover-text {
+  position:relative;z-index:1;text-align:center;
+}
+.splash-cover-title {
+  font-family:var(--font-d);
+  font-size:clamp(28px,6vw,44px);
+  color:#fff;
+  line-height:1.1;
+  margin-bottom:10px;
+  letter-spacing:-.5px;
+}
+.splash-cover-title em { font-style:italic; color:rgba(255,255,255,.7); }
+.splash-cover-sub {
+  font-size:13px;color:rgba(255,255,255,.45);
+  letter-spacing:.12em;text-transform:uppercase;font-weight:500;
+}
+.splash-meta {
+  padding:18px 22px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-top:1px solid rgba(255,255,255,.07);
+}
+.splash-owner {
+  display:flex;align-items:center;gap:10px;
+}
+.splash-av {
+  width:32px;height:32px;border-radius:50%;
+  background:var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#fff;flex-shrink:0;
+  font-family:var(--font-b);
+}
+.splash-owner-name { font-size:13px;font-weight:600;color:#fff; }
+.splash-owner-role { font-size:11px;color:rgba(255,255,255,.4);margin-top:1px; }
+.splash-appreciate-btn {
+  display:flex;align-items:center;gap:6px;
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+  color:#fff;padding:7px 16px;border-radius:3px;
+  font-family:var(--font-b);font-size:12px;font-weight:600;
+  cursor:pointer;transition:background .2s;
+}
+.splash-appreciate-btn:hover{background:rgba(255,255,255,.14)}
+
+.splash-open-btn {
+  margin-top:28px;
+  background:var(--accent);color:#fff;
+  border:none;padding:12px 36px;border-radius:3px;
+  font-family:var(--font-b);font-size:14px;font-weight:600;
+  cursor:pointer;letter-spacing:.02em;
+  transition:background .2s, transform .1s;
+}
+.splash-open-btn:hover{background:var(--accent2)}
+.splash-open-btn:active{transform:scale(.97)}
+
+/* ══════════════════════════
+   TOP NAVIGATION
+══════════════════════════ */
+.top-nav {
+  height:var(--nav-h);
+  background:var(--white);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  padding:0 20px;gap:0;
+  position:sticky;top:0;z-index:100;
+}
+.nav-logo {
+  display:flex;align-items:center;gap:8px;
+  text-decoration:none;margin-right:32px;flex-shrink:0;
+}
+.nav-logo-mark {
+  width:32px;height:20px;background:var(--accent);border-radius:2px;
+  display:flex;align-items:center;justify-content:center;
+}
+.nav-logo-mark span{color:#fff;font-size:10px;font-weight:700}
+.nav-logo-text{font-size:16px;font-weight:700;color:var(--text);letter-spacing:-.3px}
+
+.nav-links {
+  display:flex;align-items:center;gap:0;flex:1;
+  overflow-x:auto;scrollbar-width:none;
+}
+.nav-links::-webkit-scrollbar{display:none}
+.nav-link {
+  padding:0 14px;height:var(--nav-h);
+  display:flex;align-items:center;
+  font-size:13px;font-weight:500;color:var(--text3);
+  text-decoration:none;white-space:nowrap;
+  border-bottom:2px solid transparent;
+  transition:color .15s,border-color .15s;
+  cursor:pointer;background:none;border-left:none;border-right:none;border-top:none;
+  font-family:var(--font-b);
+}
+.nav-link:hover,.nav-link.active{color:var(--text);border-bottom-color:var(--text)}
+.nav-link.active{font-weight:600}
+
+.nav-right {
+  margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0;
+}
+.nav-follow-btn {
+  padding:7px 18px;border-radius:3px;border:none;
+  background:var(--accent);color:#fff;
+  font-family:var(--font-b);font-size:13px;font-weight:600;cursor:pointer;
+  transition:background .15s;
+}
+.nav-follow-btn:hover{background:var(--accent2)}
+.nav-icon-btn {
+  width:34px;height:34px;border-radius:50%;
+  background:none;border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;cursor:pointer;
+  transition:background .15s;
+}
+.nav-icon-btn:hover{background:var(--bg2)}
+.nav-avatar {
+  width:34px;height:34px;border-radius:50%;
+  background:var(--accent);display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#fff;cursor:pointer;flex-shrink:0;
+}
+
+/* ══════════════════════════
+   PROJECT HEADER
+══════════════════════════ */
+.project-hero {
+  background:var(--dark);
+  padding:0;
+  position:relative;
+  overflow:hidden;
+}
+.hero-cover {
+  width:100%;
+  height:clamp(300px,42vw,560px);
+  background:linear-gradient(145deg,#0A0A0A 0%,#1a1a2e 40%,#16213e 70%,#0f3460 100%);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.hero-grid {
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(0,87,255,.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,87,255,.05) 1px, transparent 1px);
+  background-size:60px 60px;
+  animation:gridDrift 20s linear infinite;
+}
+@keyframes gridDrift{from{background-position:0 0}to{background-position:60px 60px}}
+.hero-orbs {
+  position:absolute;inset:0;pointer-events:none;
+}
+.hero-orb {
+  position:absolute;border-radius:50%;filter:blur(80px);
+  animation:orbFloat 8s ease-in-out infinite alternate;
+}
+.hero-orb-1 {
+  width:400px;height:400px;
+  background:rgba(0,87,255,.18);
+  right:-100px;top:-100px;
+  animation-duration:8s;
+}
+.hero-orb-2 {
+  width:300px;height:300px;
+  background:rgba(0,180,255,.12);
+  left:-80px;bottom:-80px;
+  animation-duration:11s;animation-delay:-3s;
+}
+@keyframes orbFloat{from{transform:translate(0,0)}to{transform:translate(30px,20px)}}
+
+.hero-content {
+  position:relative;z-index:2;text-align:center;padding:20px;
+}
+.hero-eyebrow {
+  font-size:11px;color:rgba(255,255,255,.4);
+  letter-spacing:.2em;text-transform:uppercase;font-weight:500;
+  margin-bottom:20px;
+}
+.hero-title {
+  font-family:var(--font-d);
+  font-size:clamp(36px,7vw,80px);
+  color:#fff;
+  line-height:1.05;
+  letter-spacing:-1.5px;
+  margin-bottom:16px;
+}
+.hero-title em { font-style:italic; color:rgba(255,255,255,.6); }
+.hero-subtitle {
+  font-size:clamp(13px,2vw,16px);
+  color:rgba(255,255,255,.5);
+  letter-spacing:.06em;
+  font-weight:400;
+}
+
+/* Project meta bar */
+.project-meta-bar {
+  background:var(--dark2);
+  border-top:1px solid rgba(255,255,255,.06);
+  border-bottom:1px solid rgba(255,255,255,.06);
+  padding:14px 32px;
+  display:flex;align-items:center;gap:0;
+  overflow-x:auto;scrollbar-width:none;
+}
+.project-meta-bar::-webkit-scrollbar{display:none}
+.pmb-item {
+  display:flex;align-items:center;gap:8px;
+  padding:0 20px;border-right:1px solid rgba(255,255,255,.08);
+  flex-shrink:0;
+}
+.pmb-item:first-child{padding-left:0}
+.pmb-item:last-child{border-right:none}
+.pmb-label{font-size:10px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px;font-weight:600}
+.pmb-val{font-size:13px;color:rgba(255,255,255,.85);font-weight:600}
+
+/* Appreciation bar */
+.appreciation-bar {
+  background:var(--dark2);
+  padding:12px 32px;
+  display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.app-btn {
+  display:flex;align-items:center;gap:7px;
+  padding:8px 18px;border-radius:3px;
+  font-family:var(--font-b);font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .2s;border:none;
+}
+.app-btn-primary {
+  background:var(--accent);color:#fff;
+}
+.app-btn-primary:hover{background:var(--accent2)}
+.app-btn-primary.appreciated{background:#0A3B00;color:#4ADE80;border:1px solid #166534}
+.app-btn-ghost {
+  background:rgba(255,255,255,.08);
+  color:rgba(255,255,255,.8);
+  border:1px solid rgba(255,255,255,.12) !important;
+}
+.app-btn-ghost:hover{background:rgba(255,255,255,.14)}
+.app-count {
+  font-size:13px;color:rgba(255,255,255,.4);font-weight:500;margin-left:4px;
+}
+
+/* ══════════════════════════
+   MAIN CONTENT LAYOUT
+══════════════════════════ */
+.content-wrap {
+  max-width:1200px;margin:0 auto;
+  padding:40px 24px;
+  display:grid;
+  grid-template-columns:1fr var(--sidebar-w);
+  gap:48px;
+  align-items:start;
+}
+@media(max-width:900px){
+  .content-wrap{grid-template-columns:1fr;gap:40px}
+  .sidebar{order:2}
+  .main-col{order:1}
+}
+@media(max-width:600px){
+  .content-wrap{padding:24px 16px}
+}
+
+/* ── MAIN COLUMN ── */
+.main-col{}
+
+/* Section heading */
+.sec-heading {
+  font-family:var(--font-d);
+  font-size:clamp(22px,3vw,30px);
+  color:var(--text);
+  margin-bottom:24px;
+  letter-spacing:-.5px;
+  line-height:1.15;
+}
+.sec-heading em{font-style:italic;color:var(--text3)}
+
+/* Project description */
+.project-desc {
+  font-size:15px;line-height:1.8;color:var(--text2);
+  max-width:640px;margin-bottom:40px;
+  border-left:3px solid var(--accent);
+  padding-left:20px;
+}
+
+/* Tags */
+.tags-row {
+  display:flex;flex-wrap:wrap;gap:8px;margin-bottom:40px;
+}
+.tag {
+  font-size:12px;font-weight:500;color:var(--text3);
+  padding:5px 12px;border:1px solid var(--border);border-radius:2px;
+  cursor:pointer;transition:all .15s;text-decoration:none;
+}
+.tag:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Divider */
+.divider {
+  height:1px;background:var(--border);margin:40px 0;
+}
+
+/* ── COUPLE PROFILES ── */
+.profiles-grid {
+  display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:40px;
+}
+@media(max-width:500px){.profiles-grid{grid-template-columns:1fr}}
+.profile-card {
+  border:1px solid var(--border);border-radius:4px;overflow:hidden;
+  transition:border-color .2s,box-shadow .2s;cursor:pointer;
+}
+.profile-card:hover{border-color:var(--accent);box-shadow:0 4px 20px rgba(0,87,255,.08)}
+.profile-img-wrap{
+  width:100%;aspect-ratio:3/4;overflow:hidden;
+  background:var(--bg2);position:relative;
+}
+.profile-img-wrap img{
+  width:100%;height:100%;object-fit:cover;object-position:top;
+  transition:transform .5s ease;display:block;
+}
+.profile-card:hover .profile-img-wrap img{transform:scale(1.04)}
+.profile-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(0,0,0,.7) 0%,transparent 50%);
+  display:flex;align-items:flex-end;padding:16px;
+  opacity:0;transition:opacity .3s;
+}
+.profile-card:hover .profile-overlay{opacity:1}
+.profile-overlay-text{color:#fff;font-size:12px;font-weight:600}
+.profile-info{padding:16px}
+.profile-role{
+  font-size:10px;font-weight:700;color:var(--accent);
+  text-transform:uppercase;letter-spacing:.1em;margin-bottom:5px;
+}
+.profile-name{font-family:var(--font-d);font-size:18px;color:var(--text);margin-bottom:4px;letter-spacing:-.2px}
+.profile-parents{font-size:12px;color:var(--text3);line-height:1.6}
+
+/* ── GALLERY MASONRY ── */
+.gallery-masonry {
+  columns:2;column-gap:14px;margin-bottom:40px;
+}
+@media(max-width:500px){.gallery-masonry{columns:1}}
+.gallery-item {
+  break-inside:avoid;margin-bottom:14px;
+  border-radius:4px;overflow:hidden;cursor:pointer;
+  position:relative;display:block;
+  border:1px solid var(--border);
+  transition:transform .3s ease,box-shadow .3s ease;
+}
+.gallery-item:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.12)}
+.gallery-item img{width:100%;display:block;transition:filter .3s}
+.gallery-item:hover img{filter:brightness(.88)}
+.gallery-item-overlay {
+  position:absolute;inset:0;
+  background:rgba(0,0,0,0);
+  display:flex;align-items:flex-end;justify-content:flex-end;
+  padding:12px;
+  transition:background .3s;
+}
+.gallery-item:hover .gallery-item-overlay{background:rgba(0,0,0,.25)}
+.gallery-zoom-icon{
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(255,255,255,.9);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;opacity:0;transform:scale(.7);
+  transition:opacity .3s,transform .3s;
+}
+.gallery-item:hover .gallery-zoom-icon{opacity:1;transform:scale(1)}
+
+/* ── VERSE ── */
+.verse-block {
+  background:var(--dark);border-radius:4px;
+  padding:clamp(24px,4vw,48px);
+  margin-bottom:40px;
+  position:relative;overflow:hidden;
+}
+.verse-bg-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,87,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,87,255,.04) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;
+}
+.verse-quotemark{
+  font-family:var(--font-d);font-size:80px;
+  color:rgba(255,255,255,.08);line-height:1;
+  position:absolute;top:8px;left:24px;
+  pointer-events:none;
+}
+.verse-text{
+  font-family:var(--font-d);
+  font-size:clamp(16px,2.5vw,22px);
+  font-style:italic;
+  color:rgba(255,255,255,.85);
+  line-height:1.75;
+  position:relative;z-index:1;
+  margin-bottom:20px;
+  padding-top:16px;
+}
+.verse-ref{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:12px;font-weight:600;
+  color:var(--accent);
+  letter-spacing:.1em;text-transform:uppercase;
+  position:relative;z-index:1;
+}
+.verse-ref::before{content:'—';opacity:.5}
+
+/* ── EVENT CARDS ── */
+.events-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:40px}
+@media(max-width:500px){.events-grid{grid-template-columns:1fr}}
+.event-card{
+  border:1px solid var(--border);border-radius:4px;
+  overflow:hidden;transition:border-color .2s,box-shadow .2s;cursor:pointer;
+}
+.event-card:hover{border-color:var(--accent);box-shadow:0 4px 20px rgba(0,87,255,.08)}
+.event-card-head{
+  background:var(--dark);padding:20px 20px 16px;
+  position:relative;overflow:hidden;
+}
+.ec-head-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(0,87,255,.06) 1px,transparent 1px),linear-gradient(90deg,rgba(0,87,255,.06) 1px,transparent 1px);
+  background-size:30px 30px;
+}
+.ec-type{
+  font-size:10px;font-weight:700;color:var(--accent);
+  letter-spacing:.14em;text-transform:uppercase;
+  margin-bottom:8px;position:relative;z-index:1;
+}
+.ec-name{
+  font-family:var(--font-d);font-size:22px;
+  color:#fff;position:relative;z-index:1;letter-spacing:-.3px;
+}
+.event-card-body{padding:18px 20px}
+.ec-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.ec-row:last-child{margin-bottom:0}
+.ec-icon{
+  width:28px;height:28px;border-radius:3px;
+  background:var(--bg2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;flex-shrink:0;margin-top:1px;
+}
+.ec-info{}
+.ec-lbl{font-size:10px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px}
+.ec-val{font-size:13px;font-weight:600;color:var(--text);line-height:1.4}
+.ec-note{font-size:11px;color:var(--text3);margin-top:2px}
+.maps-link{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:14px;color:var(--accent);font-size:12px;font-weight:600;
+  text-decoration:none;border-bottom:1px solid transparent;
+  transition:border-color .15s;
+}
+.maps-link:hover{border-bottom-color:var(--accent)}
+
+/* ── TIMELINE ── */
+.timeline-wrap{margin-bottom:40px}
+.tl-item{
+  display:flex;gap:20px;padding-bottom:32px;position:relative;
+}
+.tl-item::before{
+  content:'';position:absolute;left:15px;top:32px;bottom:0;
+  width:1px;background:var(--border);
+}
+.tl-item:last-child::before{display:none}
+.tl-num{
+  width:32px;height:32px;border-radius:50%;flex-shrink:0;
+  background:var(--text);color:var(--white);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;z-index:1;border:2px solid var(--bg);
+  box-shadow:0 0 0 1px var(--border);
+}
+.tl-content{}
+.tl-chapter{font-size:10px;font-weight:700;color:var(--accent);letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+.tl-date-lbl{font-size:11px;color:var(--text3);margin-bottom:6px;font-weight:500}
+.tl-title{font-family:var(--font-d);font-size:18px;color:var(--text);margin-bottom:6px;letter-spacing:-.2px}
+.tl-desc{font-size:13px;color:var(--text2);line-height:1.7}
+
+/* ── GIFT / TRANSFER ── */
+.gift-section{margin-bottom:40px}
+.gift-note-bar{
+  background:rgba(0,87,255,.04);border:1px solid rgba(0,87,255,.15);
+  border-radius:4px;padding:14px 16px;
+  display:flex;gap:10px;align-items:flex-start;
+  margin-bottom:20px;font-size:13px;color:var(--text2);line-height:1.6;
+}
+.gift-note-icon{font-size:16px;flex-shrink:0;margin-top:1px}
+.bank-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:480px){.bank-cards-grid{grid-template-columns:1fr}}
+.bank-card-bh{
+  border-radius:10px;overflow:hidden;
+  box-shadow:0 4px 20px rgba(0,0,0,.12);
+  cursor:pointer;transition:transform .2s,box-shadow .2s;
+}
+.bank-card-bh:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,.18)}
+.bc-face{
+  padding:20px 20px 16px;
+  min-height:120px;position:relative;overflow:hidden;
+}
+.bc-face::before{
+  content:'';position:absolute;
+  width:180px;height:180px;border-radius:50%;
+  background:rgba(255,255,255,.07);
+  right:-60px;top:-60px;
+}
+.bc-chip{
+  width:28px;height:20px;border-radius:4px;
+  background:linear-gradient(135deg,#FFD700,#FFA500);
+  margin-bottom:14px;position:relative;z-index:1;
+}
+.bc-logo{
+  position:absolute;top:18px;right:18px;
+  font-size:14px;font-weight:800;color:rgba(255,255,255,.85);
+  letter-spacing:.04em;z-index:1;
+}
+.bc-number{
+  font-size:17px;font-weight:700;color:#fff;
+  letter-spacing:.12em;margin-bottom:10px;
+  position:relative;z-index:1;
+  font-variant-numeric:tabular-nums;
+}
+.bc-bottom{display:flex;align-items:flex-end;justify-content:space-between;position:relative;z-index:1}
+.bc-holder-lbl{font-size:9px;color:rgba(255,255,255,.5);font-weight:600;text-transform:uppercase;letter-spacing:.07em;margin-bottom:2px}
+.bc-holder-name{font-size:12px;font-weight:700;color:#fff}
+.bc-copy{
+  background:rgba(255,255,255,.18);
+  border:1px solid rgba(255,255,255,.25);
+  color:#fff;padding:7px 12px;border-radius:3px;
+  font-family:var(--font-b);font-size:11px;font-weight:600;cursor:pointer;
+  white-space:nowrap;display:flex;align-items:center;gap:5px;
+  transition:background .15s;
+}
+.bc-copy:hover{background:rgba(255,255,255,.28)}
+.bc-copy.copied{background:rgba(0,180,100,.4);border-color:rgba(0,200,120,.5)}
+
+/* ── RSVP ── */
+.rsvp-section{margin-bottom:40px}
+.rsvp-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px}
+@media(max-width:600px){.rsvp-grid{grid-template-columns:1fr}}
+.rsvp-form{}
+.rsvp-info{
+  background:var(--dark);border-radius:4px;padding:24px;
+  position:relative;overflow:hidden;
+}
+.ri-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(0,87,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,87,255,.04) 1px,transparent 1px);background-size:30px 30px}
+.ri-title{font-family:var(--font-d);font-size:20px;color:#fff;margin-bottom:8px;position:relative;z-index:1;letter-spacing:-.3px}
+.ri-sub{font-size:13px;color:rgba(255,255,255,.45);line-height:1.7;position:relative;z-index:1;margin-bottom:20px}
+.ri-stat{display:flex;align-items:baseline;gap:6px;margin-bottom:8px;position:relative;z-index:1}
+.ri-stat-num{font-family:var(--font-d);font-size:28px;color:#fff}
+.ri-stat-lbl{font-size:12px;color:rgba(255,255,255,.4);font-weight:500}
+
+.form-group{margin-bottom:18px}
+.form-lbl{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:7px;display:block}
+.form-ctrl{
+  width:100%;background:var(--bg);border:1px solid var(--border);
+  border-radius:3px;padding:10px 13px;
+  font-family:var(--font-b);font-size:14px;color:var(--text);
+  outline:none;transition:border-color .15s,box-shadow .15s;
+  appearance:none;
+}
+.form-ctrl:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(0,87,255,.1)}
+.form-ctrl::placeholder{color:var(--text3)}
+textarea.form-ctrl{resize:vertical;min-height:80px;line-height:1.6}
+.radio-group{display:flex;gap:8px;flex-wrap:wrap}
+.radio-opt{
+  padding:8px 16px;border:1px solid var(--border);border-radius:3px;
+  font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;
+  transition:all .15s;flex:1;text-align:center;min-width:80px;
+  background:var(--bg);
+}
+.radio-opt:hover{border-color:var(--accent);color:var(--accent)}
+.radio-opt.active-yes{border-color:var(--accent);background:rgba(0,87,255,.06);color:var(--accent);font-weight:600}
+.radio-opt.active-no{border-color:#dc2626;background:rgba(220,38,38,.04);color:#dc2626;font-weight:600}
+.guest-opts{display:flex;gap:6px}
+.guest-opt{
+  flex:1;padding:8px 4px;text-align:center;
+  border:1px solid var(--border);border-radius:3px;
+  font-size:13px;font-weight:500;color:var(--text2);cursor:pointer;
+  transition:all .15s;background:var(--bg);
+}
+.guest-opt:hover,.guest-opt.active{border-color:var(--accent);color:var(--accent);background:rgba(0,87,255,.05);font-weight:600}
+.rsvp-submit{
+  width:100%;padding:11px;background:var(--accent);color:#fff;
+  border:none;border-radius:3px;
+  font-family:var(--font-b);font-size:14px;font-weight:600;cursor:pointer;
+  transition:background .15s,transform .1s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.rsvp-submit:hover{background:var(--accent2)}
+.rsvp-submit:active{transform:scale(.98)}
+
+/* ── WISHES ── */
+.wishes-list{display:flex;flex-direction:column;gap:16px;margin-bottom:40px}
+.wish-card{
+  border:1px solid var(--border);border-radius:4px;padding:18px;
+  display:flex;gap:14px;
+  opacity:0;transform:translateY(8px);
+  transition:opacity .4s,transform .4s;
+}
+.wish-card.visible{opacity:1;transform:translateY(0)}
+.wish-av{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;flex-shrink:0;
+}
+.wish-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
+.wish-meta{font-size:11px;color:var(--text3);margin-bottom:7px;display:flex;align-items:center;gap:6px}
+.wish-status{font-size:11px;font-weight:600;padding:2px 8px;border-radius:2px}
+.wish-status.hadir{background:#DCFCE7;color:#16A34A}
+.wish-status.tidak{background:#FEE2E2;color:#DC2626}
+.wish-msg{font-size:13px;color:var(--text2);line-height:1.6}
+
+/* ── VIDEO ── */
+.video-section{margin-bottom:40px}
+.video-player{
+  border-radius:4px;overflow:hidden;
+  border:1px solid var(--border);
+  background:var(--dark);
+}
+.video-player-head{
+  padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.07);
+  display:flex;align-items:center;gap:6px;background:var(--dark2);
+}
+.vid-dot{width:10px;height:10px;border-radius:50%}
+.vid-title{flex:1;font-size:11px;color:rgba(255,255,255,.3);text-align:center;font-weight:500}
+.video-iframe-wrap{position:relative;padding-bottom:56.25%;height:0}
+.video-iframe-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+.url-change-row{padding:12px 14px;border-top:1px solid rgba(255,255,255,.07);display:flex;gap:8px;background:var(--dark2)}
+.url-in{
+  flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);
+  border-radius:3px;padding:8px 12px;
+  font-family:var(--font-b);font-size:12px;color:rgba(255,255,255,.7);
+  outline:none;transition:border-color .15s;
+}
+.url-in:focus{border-color:var(--accent)}
+.url-in::placeholder{color:rgba(255,255,255,.25)}
+.url-apply{
+  background:var(--accent);color:#fff;border:none;border-radius:3px;
+  padding:0 16px;font-family:var(--font-b);font-size:12px;font-weight:600;
+  cursor:pointer;transition:background .15s;white-space:nowrap;
+}
+.url-apply:hover{background:var(--accent2)}
+
+/* ══════════════════════════
+   SIDEBAR
+══════════════════════════ */
+.sidebar{}
+.sidebar-section{margin-bottom:32px}
+.sidebar-title{
+  font-size:11px;font-weight:700;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.1em;
+  margin-bottom:14px;padding-bottom:10px;
+  border-bottom:1px solid var(--border);
+}
+
+/* Owner card */
+.owner-card{display:flex;flex-direction:column;align-items:center;text-align:center;padding:20px 0;border:1px solid var(--border);border-radius:4px;margin-bottom:32px}
+.owner-av{
+  width:72px;height:72px;border-radius:50%;
+  background:linear-gradient(135deg,var(--dark),var(--accent));
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-d);font-size:24px;font-style:italic;color:#fff;
+  margin-bottom:12px;border:2px solid var(--border);
+}
+.owner-name{font-family:var(--font-d);font-size:18px;letter-spacing:-.2px;margin-bottom:3px}
+.owner-handle{font-size:12px;color:var(--text3);margin-bottom:14px}
+.owner-follow-btn{
+  background:var(--accent);color:#fff;border:none;border-radius:3px;
+  padding:8px 24px;font-family:var(--font-b);font-size:13px;font-weight:600;
+  cursor:pointer;transition:background .15s;
+}
+.owner-follow-btn:hover{background:var(--accent2)}
+.owner-follow-btn.following{background:var(--bg2);color:var(--text);border:1px solid var(--border)}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);border-radius:4px;overflow:hidden;margin-bottom:32px}
+.stat-cell{background:var(--bg);padding:14px;text-align:center}
+.stat-num{font-family:var(--font-d);font-size:22px;color:var(--text);letter-spacing:-.5px}
+.stat-lbl{font-size:11px;color:var(--text3);font-weight:500;margin-top:2px}
+
+/* Tools used */
+.tools-list{display:flex;flex-direction:column;gap:10px}
+.tool-item{
+  display:flex;align-items:center;gap:10px;
+  font-size:13px;font-weight:500;color:var(--text2);
+  padding:8px 12px;border:1px solid var(--border);border-radius:3px;
+  cursor:pointer;transition:border-color .15s;
+}
+.tool-item:hover{border-color:var(--accent);color:var(--text)}
+.tool-icon{font-size:16px;flex-shrink:0}
+.tool-name{flex:1}
+.tool-arrow{color:var(--text3);font-size:14px}
+
+/* Related projects */
+.related-grid{display:flex;flex-direction:column;gap:12px}
+.related-card{
+  display:flex;gap:12px;cursor:pointer;
+  padding:8px;border:1px solid transparent;border-radius:4px;
+  transition:border-color .15s;
+}
+.related-card:hover{border-color:var(--border)}
+.related-thumb{
+  width:72px;height:54px;border-radius:3px;
+  background:var(--bg2);overflow:hidden;flex-shrink:0;
+}
+.related-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.related-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;line-height:1.4}
+.related-meta{font-size:11px;color:var(--text3)}
+
+/* ══════════════════════════
+   COMMENTS
+══════════════════════════ */
+.comments-section{
+  border-top:1px solid var(--border);
+  padding-top:40px;margin-top:40px;
+  max-width:1200px;margin-left:auto;margin-right:auto;
+  padding-left:24px;padding-right:24px;padding-bottom:60px;
+}
+@media(max-width:600px){.comments-section{padding-left:16px;padding-right:16px}}
+.comments-title{font-family:var(--font-d);font-size:22px;margin-bottom:24px;letter-spacing:-.3px}
+.comment-item{display:flex;gap:14px;margin-bottom:24px}
+.comment-av{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.comment-name{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.comment-time{font-size:11px;color:var(--text3);margin-bottom:6px}
+.comment-msg{font-size:13px;color:var(--text2);line-height:1.6}
+.comment-input-row{display:flex;gap:10px;align-items:flex-start}
+.comment-in{
+  flex:1;background:var(--bg);border:1px solid var(--border);border-radius:3px;
+  padding:10px 13px;font-family:var(--font-b);font-size:14px;color:var(--text);
+  outline:none;resize:none;height:44px;transition:height .2s,border-color .15s;
+}
+.comment-in:focus{border-color:var(--accent);height:88px}
+.comment-in::placeholder{color:var(--text3)}
+.comment-submit{
+  background:var(--accent);color:#fff;border:none;border-radius:3px;
+  padding:10px 20px;font-family:var(--font-b);font-size:13px;font-weight:600;
+  cursor:pointer;transition:background .15s;white-space:nowrap;
+  height:44px;
+}
+.comment-submit:hover{background:var(--accent2)}
+
+/* ── LIGHTBOX ── */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.95);z-index:9990;display:none;align-items:center;justify-content:center}
+.lightbox.open{display:flex}
+.lightbox img{max-width:90vw;max-height:88vh;border-radius:2px;object-fit:contain}
+.lb-x{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.1);border:none;color:#fff;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.lb-x:hover{background:rgba(255,255,255,.2)}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);border:none;color:#fff;width:44px;height:64px;border-radius:3px;cursor:pointer;font-size:24px;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.lb-nav:hover{background:rgba(255,255,255,.16)}
+.lb-prev{left:14px}.lb-next{right:14px}
+.lb-counter{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-size:12px;color:rgba(255,255,255,.4);font-family:var(--font-b);letter-spacing:.06em}
+
+/* ── TOAST ── */
+.toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);
+  background:var(--dark);color:#fff;
+  padding:10px 20px;border-radius:3px;font-size:13px;font-weight:500;
+  border:1px solid rgba(255,255,255,.1);
+  white-space:nowrap;z-index:9999;pointer-events:none;
+  opacity:0;transition:opacity .25s,transform .25s;
+  box-shadow:0 4px 20px rgba(0,0,0,.4);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Scroll fade-in */
+.fade-up{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+.fade-up.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ═══ SPLASH ═══ -->
+<div id="splash">
+  <div class="splash-logo">
+    <div class="splash-logo-mark"><span>Be</span></div>
+    <div class="splash-logo-text">Behance</div>
+  </div>
+  <div class="splash-project-card">
+    <div class="splash-cover">
+      <div class="splash-cover-grid"></div>
+      <div class="splash-cover-text">
+        <div class="splash-cover-title">Anita <em>&</em> Zarda</div>
+        <div class="splash-cover-sub">Wedding Project · 2026</div>
+      </div>
+    </div>
+    <div class="splash-meta">
+      <div class="splash-owner">
+        <div class="splash-av">A&Z</div>
+        <div>
+          <div class="splash-owner-name">Anita × Zarda</div>
+          <div class="splash-owner-role">Wedding Creative Director</div>
+        </div>
+      </div>
+      <button class="splash-appreciate-btn" onclick="showToast('💙 Appreciated!')">
+        <span>👍</span> Appreciate
+      </button>
+    </div>
+  </div>
+  <button class="splash-open-btn" onclick="openProject()">View Project</button>
+</div>
+
+<!-- ═══ TOP NAV ═══ -->
+<nav class="top-nav" id="topNav" style="display:none">
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-mark"><span>Be</span></div>
+    <span class="nav-logo-text">Behance</span>
+  </a>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="scrollToSec('hero')">Project</button>
+    <button class="nav-link" onclick="scrollToSec('couple-sec')">Mempelai</button>
+    <button class="nav-link" onclick="scrollToSec('event-sec')">Acara</button>
+    <button class="nav-link" onclick="scrollToSec('story-sec')">Our Story</button>
+    <button class="nav-link" onclick="scrollToSec('gallery-sec')">Gallery</button>
+    <button class="nav-link" onclick="scrollToSec('rsvp-sec')">RSVP</button>
+    <button class="nav-link" onclick="scrollToSec('gift-sec')">Gift</button>
+  </div>
+  <div class="nav-right">
+    <button class="nav-icon-btn" onclick="showToast('🔔 Notifications')">🔔</button>
+    <button class="nav-icon-btn" onclick="showToast('📤 Share project')">📤</button>
+    <button class="nav-follow-btn" id="followBtn" onclick="toggleFollow()">Follow</button>
+    <div class="nav-avatar" onclick="showToast('👤 Profile')">A</div>
+  </div>
+</nav>
+
+<!-- ═══ PROJECT HERO ═══ -->
+<div id="hero" class="project-hero" style="display:none">
+  <div class="hero-cover">
+    <div class="hero-grid"></div>
+    <div class="hero-orbs">
+      <div class="hero-orb hero-orb-1"></div>
+      <div class="hero-orb hero-orb-2"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">Wedding Project · 2026 · Tangerang, Indonesia</div>
+      <div class="hero-title">Anita <em>&</em> Zarda</div>
+      <div class="hero-subtitle">Minggu, 24 Mei 2026 · Graha Yadika</div>
+    </div>
+  </div>
+
+  <div class="project-meta-bar">
+    <div class="pmb-item">
+      <div><div class="pmb-label">Creative Field</div><div class="pmb-val">Wedding</div></div>
+    </div>
+    <div class="pmb-item">
+      <div><div class="pmb-label">Published</div><div class="pmb-val">Mei 2026</div></div>
+    </div>
+    <div class="pmb-item">
+      <div><div class="pmb-label">Location</div><div class="pmb-val">Tangerang, ID</div></div>
+    </div>
+    <div class="pmb-item">
+      <div><div class="pmb-label">Views</div><div class="pmb-val" id="viewCount">2,847</div></div>
+    </div>
+    <div class="pmb-item">
+      <div><div class="pmb-label">Appreciations</div><div class="pmb-val" id="appCount">412</div></div>
+    </div>
+    <div class="pmb-item">
+      <div><div class="pmb-label">Saves</div><div class="pmb-val">138</div></div>
+    </div>
+  </div>
+
+  <div class="appreciation-bar">
+    <button class="app-btn app-btn-primary" id="appBtn" onclick="toggleAppreciate()">
+      <span>👍</span> <span id="appBtnText">Appreciate</span>
+    </button>
+    <button class="app-btn app-btn-ghost" onclick="showToast('📥 Project saved!')">
+      <span>🔖</span> Save
+    </button>
+    <button class="app-btn app-btn-ghost" onclick="showToast('📤 Link copied!')">
+      <span>📤</span> Share
+    </button>
+    <span class="app-count" id="appCountBar">412 appreciations</span>
+  </div>
+</div>
+
+<!-- ═══ MAIN CONTENT ═══ -->
+<main id="mainContent" style="display:none">
+<div class="content-wrap">
+
+  <!-- ── MAIN COL ── -->
+  <div class="main-col">
+
+    <!-- Description -->
+    <div id="couple-sec" class="fade-up">
+      <h2 class="sec-heading">About this <em>Project</em></h2>
+      <p class="project-desc">
+        Dengan penuh rasa syukur dan kebahagiaan, kami — Anita Pangestuti dan Zardarian Ahadika N — mengundang Anda untuk hadir dan menjadi bagian dari momen sakral pernikahan kami. Sebuah karya cinta yang telah dirancang dengan sepenuh hati.
+      </p>
+      <div class="tags-row">
+        <span class="tag">Wedding</span>
+        <span class="tag">Love Story</span>
+        <span class="tag">2026</span>
+        <span class="tag">Tangerang</span>
+        <span class="tag">Pernikahan</span>
+        <span class="tag">Photography</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Couple profiles -->
+    <div class="fade-up">
+      <h2 class="sec-heading">Meet the <em>Couple</em></h2>
+      <div class="profiles-grid">
+        <div class="profile-card">
+          <div class="profile-img-wrap">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&h=800&fit=crop&q=80" alt="Anita">
+            <div class="profile-overlay"><span class="profile-overlay-text">👰 Mempelai Wanita</span></div>
+          </div>
+          <div class="profile-info">
+            <div class="profile-role">👰 Mempelai Wanita</div>
+            <div class="profile-name">Anita Pangestuti</div>
+            <div class="profile-parents">S.Kom · Putri Pertama<br>Bpk. Taryono & Ibu Wiwit Jayanti</div>
+          </div>
+        </div>
+        <div class="profile-card">
+          <div class="profile-img-wrap">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=800&fit=crop&q=80" alt="Zarda">
+            <div class="profile-overlay"><span class="profile-overlay-text">🤵 Mempelai Pria</span></div>
+          </div>
+          <div class="profile-info">
+            <div class="profile-role" style="color:#1a1a1a">🤵 Mempelai Pria</div>
+            <div class="profile-name">Zardarian Ahadika N</div>
+            <div class="profile-parents">S.Kom · Putra Kedua<br>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Verse -->
+    <div class="verse-block fade-up">
+      <div class="verse-bg-grid"></div>
+      <div class="verse-quotemark">"</div>
+      <div class="verse-text">Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang.</div>
+      <div class="verse-ref">Surah Ar-Rum : 21</div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Events -->
+    <div id="event-sec" class="fade-up">
+      <h2 class="sec-heading">Event <em>Schedule</em></h2>
+      <div class="events-grid">
+        <div class="event-card">
+          <div class="event-card-head">
+            <div class="ec-head-grid"></div>
+            <div class="ec-type">Akad Nikah</div>
+            <div class="ec-name">Prosesi Resmi</div>
+          </div>
+          <div class="event-card-body">
+            <div class="ec-row"><div class="ec-icon">📅</div><div class="ec-info"><div class="ec-lbl">Tanggal</div><div class="ec-val">Minggu, 24 Mei 2026</div></div></div>
+            <div class="ec-row"><div class="ec-icon">🕗</div><div class="ec-info"><div class="ec-lbl">Waktu</div><div class="ec-val">08.00 WIB</div><div class="ec-note">Harap hadir 30 menit lebih awal</div></div></div>
+            <div class="ec-row"><div class="ec-icon">📍</div><div class="ec-info"><div class="ec-lbl">Lokasi</div><div class="ec-val">Graha Yadika</div><div class="ec-note">Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div></div></div>
+            <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="maps-link">📍 Open in Google Maps →</a>
+          </div>
+        </div>
+        <div class="event-card">
+          <div class="event-card-head" style="background:linear-gradient(135deg,#1a1a2e,#16213e)">
+            <div class="ec-head-grid"></div>
+            <div class="ec-type">Resepsi</div>
+            <div class="ec-name">Pesta Perayaan</div>
+          </div>
+          <div class="event-card-body">
+            <div class="ec-row"><div class="ec-icon">📅</div><div class="ec-info"><div class="ec-lbl">Tanggal</div><div class="ec-val">Minggu, 24 Mei 2026</div></div></div>
+            <div class="ec-row"><div class="ec-icon">🕗</div><div class="ec-info"><div class="ec-lbl">Waktu</div><div class="ec-val">11.00 – 13.00 WIB</div></div></div>
+            <div class="ec-row"><div class="ec-icon">📍</div><div class="ec-info"><div class="ec-lbl">Lokasi</div><div class="ec-val">Graha Yadika</div><div class="ec-note">Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div></div></div>
+            <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="maps-link">📍 Open in Google Maps →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Our Story -->
+    <div id="story-sec" class="fade-up">
+      <h2 class="sec-heading">Our <em>Story</em></h2>
+      <div class="timeline-wrap">
+        <div class="tl-item">
+          <div class="tl-num">1</div>
+          <div class="tl-content">
+            <div class="tl-chapter">Chapter 1</div>
+            <div class="tl-date-lbl">Juni 2025</div>
+            <div class="tl-title">First Meet 🎳</div>
+            <div class="tl-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-num" style="background:var(--accent)">2</div>
+          <div class="tl-content">
+            <div class="tl-chapter" style="color:var(--accent)">Chapter 2</div>
+            <div class="tl-date-lbl">November 2025</div>
+            <div class="tl-title">The Proposal 💍</div>
+            <div class="tl-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-num" style="background:#16A34A">3</div>
+          <div class="tl-content">
+            <div class="tl-chapter" style="color:#16A34A">Chapter 3 · Final</div>
+            <div class="tl-date-lbl">Mei 2026</div>
+            <div class="tl-title">Happily Ever After 🎊</div>
+            <div class="tl-desc">Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya. 🌹</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Gallery -->
+    <div id="gallery-sec" class="fade-up">
+      <h2 class="sec-heading">Photo <em>Gallery</em></h2>
+      <div class="gallery-masonry" id="galleryGrid"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Video -->
+    <div class="video-section fade-up">
+      <h2 class="sec-heading">Wedding <em>Video</em></h2>
+      <div class="video-player">
+        <div class="video-player-head">
+          <div class="vid-dot" style="background:#FF5F56"></div>
+          <div class="vid-dot" style="background:#FFBD2E"></div>
+          <div class="vid-dot" style="background:#27C93F"></div>
+          <div class="vid-title">video_undangan_anita_zarda.mp4</div>
+        </div>
+        <div class="video-iframe-wrap">
+          <iframe id="videoFrame" src="https://www.youtube.com/embed/dQw4w9WgXcQ" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+        <div class="url-change-row">
+          <input class="url-in" id="videoUrl" placeholder="Paste YouTube URL here...">
+          <button class="url-apply" onclick="applyVideo()">Apply</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Gift -->
+    <div id="gift-sec" class="gift-section fade-up">
+      <h2 class="sec-heading">Wedding <em>Gift</em></h2>
+      <div class="gift-note-bar">
+        <div class="gift-note-icon">💙</div>
+        <div>Doa restu sudah sangat cukup bagi kami. Namun jika ingin memberi sebagai tanda kasih, kami dengan senang hati menerimanya.</div>
+      </div>
+      <div class="bank-cards-grid">
+        <!-- BCA -->
+        <div class="bank-card-bh">
+          <div class="bc-face" style="background:linear-gradient(145deg,#003D9C,#0050C8,#0062F5)">
+            <div class="bc-chip"></div>
+            <div class="bc-logo">BCA</div>
+            <div class="bc-number">8210 3705 61</div>
+            <div class="bc-bottom">
+              <div><div class="bc-holder-lbl">Account holder</div><div class="bc-holder-name">Zardarian Ahadika N</div></div>
+              <button class="bc-copy" id="bcaBc" onclick="copyBank('8210370561','bcaBc')">📋 Copy</button>
+            </div>
+          </div>
+        </div>
+        <!-- BNI -->
+        <div class="bank-card-bh">
+          <div class="bc-face" style="background:linear-gradient(145deg,#CC5000,#FF6B00)">
+            <div class="bc-chip" style="background:linear-gradient(135deg,#eee,#ccc)"></div>
+            <div class="bc-logo">BNI</div>
+            <div class="bc-number">1192 9784 03</div>
+            <div class="bc-bottom">
+              <div><div class="bc-holder-lbl">Account holder</div><div class="bc-holder-name">Anita Pangestuti</div></div>
+              <button class="bc-copy" id="bniBc" onclick="copyBank('1192978403','bniBc')">📋 Copy</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- RSVP -->
+    <div id="rsvp-sec" class="rsvp-section fade-up">
+      <h2 class="sec-heading">RSVP <em>Confirmation</em></h2>
+      <div class="rsvp-grid">
+        <div class="rsvp-form">
+          <div class="form-group">
+            <label class="form-lbl">Full Name</label>
+            <input class="form-ctrl" id="rsvpName" placeholder="Your name...">
+          </div>
+          <div class="form-group">
+            <label class="form-lbl">Attendance</label>
+            <div class="radio-group">
+              <div class="radio-opt active-yes" id="rYes" onclick="setHadir('yes')">✅ Attending</div>
+              <div class="radio-opt" id="rNo" onclick="setHadir('no')">❌ Not Attending</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-lbl">Number of Guests</label>
+            <div class="guest-opts" id="guestOpts">
+              <div class="guest-opt active" onclick="setGuest(1,this)">1</div>
+              <div class="guest-opt" onclick="setGuest(2,this)">2</div>
+              <div class="guest-opt" onclick="setGuest(3,this)">3</div>
+              <div class="guest-opt" onclick="setGuest(4,this)">4+</div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-lbl">Message</label>
+            <textarea class="form-ctrl" id="rsvpMsg" placeholder="Write your wishes..."></textarea>
+          </div>
+          <button class="rsvp-submit" onclick="submitRSVP()">
+            Send RSVP →
+          </button>
+        </div>
+        <div class="rsvp-info">
+          <div class="ri-grid"></div>
+          <div class="ri-title">Join the Project</div>
+          <div class="ri-sub">Konfirmasi kehadiranmu dan jadilah bagian dari momen berharga ini. RSVP sebelum 17 Mei 2026.</div>
+          <div class="ri-stat"><span class="ri-stat-num">47</span><span class="ri-stat-lbl">confirmed guests</span></div>
+          <div class="ri-stat"><span class="ri-stat-num">12</span><span class="ri-stat-lbl">days remaining</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Wishes -->
+    <div class="fade-up">
+      <h2 class="sec-heading">Project <em>Comments</em></h2>
+      <div id="wishesList" class="wishes-list">
+        <div class="wish-card visible">
+          <div class="wish-av" style="background:#DCFCE7;color:#16A34A">RA</div>
+          <div style="flex:1">
+            <div class="wish-name">Rina Ayu</div>
+            <div class="wish-meta"><span>2 hours ago</span><span class="wish-status hadir">Attending · 2 guests</span></div>
+            <div class="wish-msg">Selamat menempuh hidup baru! Semoga menjadi keluarga sakinah, mawaddah, warahmah. 🌹</div>
+          </div>
+        </div>
+        <div class="wish-card visible" style="transition-delay:.1s">
+          <div class="wish-av" style="background:#E8F1FF;color:#0057FF">BN</div>
+          <div style="flex:1">
+            <div class="wish-name">Budi Nugraha</div>
+            <div class="wish-meta"><span>3 hours ago</span><span class="wish-status hadir">Attending · 1 guest</span></div>
+            <div class="wish-msg">Barakallahu laka wa baraka alayk! Bahagia selalu guys 🎉💕</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main-col -->
+
+  <!-- ── SIDEBAR ── -->
+  <aside class="sidebar">
+
+    <div class="owner-card fade-up">
+      <div class="owner-av">A&Z</div>
+      <div class="owner-name">Anita & Zarda</div>
+      <div class="owner-handle">@anita_zarda · Wedding 2026</div>
+      <button class="owner-follow-btn" id="sideFollowBtn" onclick="toggleFollow()">Follow</button>
+    </div>
+
+    <div class="sidebar-section fade-up">
+      <div class="sidebar-title">Project Stats</div>
+      <div class="stats-grid">
+        <div class="stat-cell"><div class="stat-num" id="statViews">2.8k</div><div class="stat-lbl">Views</div></div>
+        <div class="stat-cell"><div class="stat-num" id="statApp">412</div><div class="stat-lbl">Appreciations</div></div>
+        <div class="stat-cell"><div class="stat-num">138</div><div class="stat-lbl">Saves</div></div>
+        <div class="stat-cell"><div class="stat-num">47</div><div class="stat-lbl">RSVPs</div></div>
+      </div>
+    </div>
+
+    <div class="sidebar-section fade-up">
+      <div class="sidebar-title">Tools Used</div>
+      <div class="tools-list">
+        <div class="tool-item" onclick="showToast('❤️ Made with Love')">
+          <span class="tool-icon">❤️</span><span class="tool-name">Love & Devotion</span><span class="tool-arrow">→</span>
+        </div>
+        <div class="tool-item" onclick="scrollToSec('couple-sec')">
+          <span class="tool-icon">💍</span><span class="tool-name">Wedding Planning</span><span class="tool-arrow">→</span>
+        </div>
+        <div class="tool-item" onclick="scrollToSec('gallery-sec')">
+          <span class="tool-icon">📷</span><span class="tool-name">Photography</span><span class="tool-arrow">→</span>
+        </div>
+        <div class="tool-item" onclick="scrollToSec('event-sec')">
+          <span class="tool-icon">✨</span><span class="tool-name">Event Design</span><span class="tool-arrow">→</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-section fade-up">
+      <div class="sidebar-title">Related Projects</div>
+      <div class="related-grid">
+        <div class="related-card" onclick="scrollToSec('story-sec')">
+          <div class="related-thumb"><img src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=150&h=112&fit=crop&q=80" alt="story"></div>
+          <div><div class="related-title">Our Story</div><div class="related-meta">Timeline · 3 chapters</div></div>
+        </div>
+        <div class="related-card" onclick="scrollToSec('gallery-sec')">
+          <div class="related-thumb"><img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=150&h=112&fit=crop&q=80" alt="gallery"></div>
+          <div><div class="related-title">Pre-Wedding Gallery</div><div class="related-meta">Photography · 8 photos</div></div>
+        </div>
+        <div class="related-card" onclick="scrollToSec('rsvp-sec')">
+          <div class="related-thumb" style="background:var(--dark);display:flex;align-items:center;justify-content:center;font-size:24px">📋</div>
+          <div><div class="related-title">RSVP Form</div><div class="related-meta">Interactive · 47 responses</div></div>
+        </div>
+      </div>
+    </div>
+
+  </aside>
+
+</div><!-- /content-wrap -->
+</main>
+
+<!-- Comments -->
+<section class="comments-section" id="commentsSec" style="display:none">
+  <div class="comments-title">Comments</div>
+  <div id="commentsList">
+    <div class="comment-item">
+      <div class="comment-av" style="background:#DCFCE7;color:#16A34A">RA</div>
+      <div><div class="comment-name">Rina Ayu</div><div class="comment-time">2 hours ago</div><div class="comment-msg">Selamat ya Anita & Zarda! 🎉 Semoga menjadi keluarga yang bahagia selamanya.</div></div>
+    </div>
+    <div class="comment-item">
+      <div class="comment-av" style="background:#E8F1FF;color:#0057FF">BN</div>
+      <div><div class="comment-name">Budi Nugraha</div><div class="comment-time">3 hours ago</div><div class="comment-msg">Amazing project! Can't wait to attend. Barakallah 🤲</div></div>
+    </div>
+  </div>
+  <div class="comment-input-row" style="margin-top:20px">
+    <div class="comment-av" style="background:var(--accent);color:#fff;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">A</div>
+    <textarea class="comment-in" id="commentIn" placeholder="Add a comment..."></textarea>
+    <button class="comment-submit" onclick="submitComment()">Post</button>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-x" onclick="closeLb()">✕</button>
+  <button class="lb-nav lb-prev" onclick="lbPrev()">‹</button>
+  <img id="lbImg" src="" alt="">
+  <button class="lb-nav lb-next" onclick="lbNext()">›</button>
+  <div class="lb-counter" id="lbCnt"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── IMGS ── */
+const IMGS = [
+  'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&h=1000&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&h=600&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=800&h=1100&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&h=600&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=800&h=1000&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1521543902036-4a8e4c4e7e3b?w=800&h=600&fit=crop&q=80',
+];
+
+function buildGallery() {
+  const g = document.getElementById('galleryGrid');
+  if (g.children.length) return;
+  IMGS.forEach((src, i) => {
+    const div = document.createElement('div');
+    div.className = 'gallery-item';
+    div.onclick = () => openLb(i);
+    div.innerHTML = `<img src="${src}" alt="" loading="lazy"><div class="gallery-item-overlay"><div class="gallery-zoom-icon">⤢</div></div>`;
+    g.appendChild(div);
+  });
+}
+
+/* ── OPEN PROJECT ── */
+function openProject() {
+  const splash = document.getElementById('splash');
+  splash.classList.add('out');
+  setTimeout(() => {
+    splash.style.display = 'none';
+    document.getElementById('topNav').style.display = 'flex';
+    document.getElementById('hero').style.display = 'block';
+    document.getElementById('mainContent').style.display = 'block';
+    document.getElementById('commentsSec').style.display = 'block';
+    buildGallery();
+    initObserver();
+    // simulate view count increment
+    let v = 2847;
+    setInterval(() => {
+      v += Math.floor(Math.random() * 2);
+      const el = document.getElementById('viewCount');
+      if (el) el.textContent = v.toLocaleString();
+    }, 8000);
+  }, 600);
+}
+
+/* ── APPRECIATE ── */
+let appreciated = false, appNum = 412;
+function toggleAppreciate() {
+  appreciated = !appreciated;
+  appNum += appreciated ? 1 : -1;
+  const btn = document.getElementById('appBtn');
+  const txt = document.getElementById('appBtnText');
+  const bar = document.getElementById('appCountBar');
+  const stat = document.getElementById('statApp');
+  const pmb = document.getElementById('appCount');
+  if (appreciated) {
+    btn.classList.add('appreciated');
+    txt.textContent = 'Appreciated!';
+    showToast('👍 You appreciated this project!');
+  } else {
+    btn.classList.remove('appreciated');
+    txt.textContent = 'Appreciate';
+  }
+  bar.textContent = appNum + ' appreciations';
+  if (stat) stat.textContent = appNum;
+  if (pmb) pmb.textContent = appNum.toLocaleString();
+}
+
+/* ── FOLLOW ── */
+let following = false;
+function toggleFollow() {
+  following = !following;
+  ['followBtn','sideFollowBtn'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    if (following) {
+      btn.textContent = 'Following';
+      btn.classList.add('following');
+    } else {
+      btn.textContent = 'Follow';
+      btn.classList.remove('following');
+    }
+  });
+  showToast(following ? '✅ Following Anita & Zarda!' : 'Unfollowed');
+}
+
+/* ── SCROLL NAV ── */
+function scrollToSec(id) {
+  const el = document.getElementById(id);
+  if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+}
+
+/* ── RSVP ── */
+let hadirV = 'yes', guestN = 1;
+function setHadir(v) {
+  hadirV = v;
+  document.getElementById('rYes').className = 'radio-opt' + (v === 'yes' ? ' active-yes' : '');
+  document.getElementById('rNo').className = 'radio-opt' + (v === 'no' ? ' active-no' : '');
+}
+function setGuest(n, el) {
+  guestN = n;
+  document.querySelectorAll('.guest-opt').forEach(o => o.classList.remove('active'));
+  el.classList.add('active');
+}
+function submitRSVP() {
+  const name = document.getElementById('rsvpName').value.trim();
+  const msg = document.getElementById('rsvpMsg').value.trim();
+  if (!name) { showToast('⚠️ Please enter your name'); return; }
+  const ini = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+  const palettes = [
+    { bg: '#DCFCE7', c: '#16A34A' }, { bg: '#E8F1FF', c: '#0057FF' },
+    { bg: '#F4E0FF', c: '#9333EA' }, { bg: '#FFF7ED', c: '#C2410C' },
+    { bg: '#FEF9C3', c: '#854D0E' },
+  ];
+  const p = palettes[Math.floor(Math.random() * palettes.length)];
+  const statusText = hadirV === 'yes' ? `Attending · ${guestN} guest${guestN > 1 ? 's' : ''}` : 'Not Attending';
+  const statusCls = hadirV === 'yes' ? 'hadir' : 'tidak';
+
+  // Add to wishes
+  const wCard = document.createElement('div');
+  wCard.className = 'wish-card';
+  wCard.innerHTML = `
+    <div class="wish-av" style="background:${p.bg};color:${p.c}">${ini}</div>
+    <div style="flex:1">
+      <div class="wish-name">${name}</div>
+      <div class="wish-meta"><span>Just now</span><span class="wish-status ${statusCls}">${statusText}</span></div>
+      <div class="wish-msg">${msg || 'Selamat dan semoga bahagia selalu! 💍'}</div>
+    </div>`;
+  document.getElementById('wishesList').prepend(wCard);
+  setTimeout(() => wCard.classList.add('visible'), 50);
+
+  // Add to comments
+  const cItem = document.createElement('div');
+  cItem.className = 'comment-item';
+  cItem.style.animation = 'none';
+  cItem.innerHTML = `
+    <div class="comment-av" style="background:${p.bg};color:${p.c}">${ini}</div>
+    <div><div class="comment-name">${name}</div><div class="comment-time">Just now</div><div class="comment-msg">${msg || 'Selamat dan semoga bahagia selalu! 💍'}</div></div>`;
+  document.getElementById('commentsList').prepend(cItem);
+
+  document.getElementById('rsvpName').value = '';
+  document.getElementById('rsvpMsg').value = '';
+  showToast('✅ RSVP submitted successfully!');
+}
+
+/* ── COMMENT ── */
+function submitComment() {
+  const msg = document.getElementById('commentIn').value.trim();
+  if (!msg) return;
+  const item = document.createElement('div');
+  item.className = 'comment-item';
+  item.innerHTML = `
+    <div class="comment-av" style="background:var(--accent);color:#fff">A</div>
+    <div><div class="comment-name">You</div><div class="comment-time">Just now</div><div class="comment-msg">${msg}</div></div>`;
+  document.getElementById('commentsList').prepend(item);
+  document.getElementById('commentIn').value = '';
+  showToast('💬 Comment posted!');
+}
+
+/* ── COPY BANK ── */
+function copyBank(num, id) {
+  navigator.clipboard.writeText(num).then(() => {
+    const btn = document.getElementById(id);
+    const orig = btn.innerHTML;
+    btn.classList.add('copied');
+    btn.textContent = '✓ Copied!';
+    showToast('✅ Account number copied!');
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = orig; }, 2500);
+  }).catch(() => showToast('Copy: ' + num));
+}
+
+/* ── VIDEO ── */
+function applyVideo() {
+  let u = document.getElementById('videoUrl').value.trim();
+  const m = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]+)/);
+  if (m) u = 'https://www.youtube.com/embed/' + m[1];
+  if (u) { document.getElementById('videoFrame').src = u; showToast('🎬 Video updated!'); }
+}
+
+/* ── LIGHTBOX ── */
+let lbI = 0;
+function openLb(i) { lbI = i; updLb(); document.getElementById('lightbox').classList.add('open'); document.body.style.overflow = 'hidden'; }
+function closeLb() { document.getElementById('lightbox').classList.remove('open'); document.body.style.overflow = ''; }
+function lbPrev() { lbI = (lbI - 1 + IMGS.length) % IMGS.length; updLb(); }
+function lbNext() { lbI = (lbI + 1) % IMGS.length; updLb(); }
+function updLb() {
+  document.getElementById('lbImg').src = IMGS[lbI];
+  document.getElementById('lbCnt').textContent = (lbI + 1) + ' / ' + IMGS.length;
+}
+document.addEventListener('keydown', e => {
+  const lb = document.getElementById('lightbox');
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'Escape') closeLb();
+  if (e.key === 'ArrowLeft') lbPrev();
+  if (e.key === 'ArrowRight') lbNext();
+});
+
+/* ── TOAST ── */
+let tT;
+function showToast(m) {
+  const t = document.getElementById('toast');
+  t.textContent = m; t.classList.add('show');
+  clearTimeout(tT); tT = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+/* ── SCROLL OBSERVER ── */
+function initObserver() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  document.querySelectorAll('.fade-up, .wish-card').forEach(el => obs.observe(el));
+}
+
+/* ── ACTIVE NAV LINK ON SCROLL ── */
+window.addEventListener('scroll', () => {
+  const sections = ['couple-sec','event-sec','story-sec','gallery-sec','rsvp-sec','gift-sec'];
+  const links = document.querySelectorAll('.nav-link');
+  let current = 'hero';
+  sections.forEach(id => {
+    const el = document.getElementById(id);
+    if (el && el.getBoundingClientRect().top < 120) current = id;
+  });
+  links.forEach((l, i) => {
+    l.classList.remove('active');
+    if (i === 0 && current === 'hero') l.classList.add('active');
+    if (l.getAttribute('onclick')?.includes(current)) l.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

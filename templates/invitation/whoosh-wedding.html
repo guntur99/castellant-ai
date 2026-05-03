@@ -1,0 +1,1473 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WHOOSH Wedding Express · Anita & Zarda</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --w-red:    #E8192C;
+  --w-red2:   #C4121F;
+  --w-dark:   #0F0F0F;
+  --w-navy:   #0A1628;
+  --w-bg:     #F4F5F7;
+  --w-white:  #FFFFFF;
+  --w-silver: #D1D5DB;
+  --w-gray:   #6B7280;
+  --w-lgray:  #9CA3AF;
+  --w-border: #E5E7EB;
+  --w-green:  #10B981;
+  --w-amber:  #F59E0B;
+  --w-blue:   #2563EB;
+  --font: 'Inter', sans-serif;
+  --serif: 'Playfair Display', Georgia, serif;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body { background:var(--w-bg); font-family:var(--font); color:var(--w-dark); -webkit-font-smoothing:antialiased; overflow-x:hidden; }
+
+/* ══════════════════════════
+   OPENING
+══════════════════════════ */
+#opening {
+  position:fixed; inset:0; z-index:999;
+  background:var(--w-dark);
+  display:flex; flex-direction:column;
+  overflow:hidden;
+  transition:opacity .7s ease, transform .7s ease;
+}
+#opening.hide { opacity:0; transform:translateY(-12px); pointer-events:none; }
+
+/* Speed lines bg */
+.op-speed-bg {
+  position:absolute; inset:0; overflow:hidden; pointer-events:none;
+}
+.speed-line {
+  position:absolute; height:1px; background:linear-gradient(90deg,transparent,rgba(232,25,44,.3),transparent);
+  animation:speed-pass var(--dur,1.8s) linear infinite;
+  animation-delay:var(--del,0s);
+  left:-20%; right:-20%;
+}
+@keyframes speed-pass { from{transform:translateX(-80%) skewX(-15deg)} to{transform:translateX(80%) skewX(-15deg)} }
+
+/* Red accent bar */
+.op-red-bar {
+  height:4px; background:var(--w-red); flex-shrink:0;
+  position:relative; overflow:hidden;
+}
+.op-red-bar::after {
+  content:''; position:absolute; inset:0;
+  background:linear-gradient(90deg,var(--w-red),#ff6b7a,var(--w-red));
+  background-size:200%;
+  animation:shimmer 2s linear infinite;
+}
+@keyframes shimmer { from{background-position:200% 0} to{background-position:-200% 0} }
+
+/* Top logo bar */
+.op-topbar {
+  background:rgba(255,255,255,.04); backdrop-filter:blur(10px);
+  padding:14px 20px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,.06); flex-shrink:0;
+}
+.op-whoosh-logo {
+  display:flex; align-items:center; gap:0;
+}
+.whoosh-letter {
+  font-size:18px; font-weight:900; letter-spacing:-.02em;
+  color:var(--w-red);
+}
+.whoosh-dot { color:rgba(255,255,255,.3); font-size:10px; margin:0 4px; }
+.op-logo-sub { font-size:9px; font-weight:500; color:rgba(255,255,255,.3); letter-spacing:.12em; text-transform:uppercase; }
+.op-speed-badge {
+  background:rgba(232,25,44,.15); border:1px solid rgba(232,25,44,.3);
+  color:var(--w-red); font-size:9px; font-weight:700; letter-spacing:.1em;
+  padding:4px 10px; border-radius:20px; text-transform:uppercase;
+  display:flex; align-items:center; gap:5px;
+}
+.op-speed-badge::before { content:''; width:5px; height:5px; background:var(--w-red); border-radius:50%; animation:blink .9s infinite; }
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:.2} }
+
+/* Main departure board */
+.op-main {
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:24px 20px; position:relative; z-index:1;
+}
+
+/* Train illustration */
+.op-train-wrap {
+  width:100%; max-width:420px; margin-bottom:24px; overflow:hidden;
+  position:relative;
+}
+.op-train-svg { width:100%; opacity:.12; }
+
+/* Departure card */
+.op-depart-card {
+  width:100%; max-width:440px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08); border-radius:16px;
+  overflow:hidden; margin-bottom:16px;
+}
+.op-dc-header {
+  background:var(--w-red); padding:10px 16px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.op-dc-train { font-size:11px; font-weight:800; color:#fff; letter-spacing:.12em; text-transform:uppercase; }
+.op-dc-class { background:rgba(255,255,255,.2); color:#fff; font-size:9px; font-weight:700; padding:2px 8px; border-radius:3px; letter-spacing:.06em; }
+.op-dc-body { padding:16px; }
+.op-route-row {
+  display:flex; align-items:center; gap:0; margin-bottom:14px;
+}
+.op-stn { flex:1; }
+.op-stn.right { text-align:right; }
+.op-stn-code { font-size:24px; font-weight:900; color:#fff; letter-spacing:-.02em; }
+.op-stn-name { font-size:10px; color:rgba(255,255,255,.45); margin-top:2px; font-weight:400; letter-spacing:.02em; }
+.op-route-center {
+  flex:1; display:flex; flex-direction:column; align-items:center; gap:3px; padding:0 10px;
+}
+.op-route-line-wrap { width:100%; position:relative; height:4px; background:rgba(255,255,255,.1); border-radius:2px; }
+.op-route-train-icon {
+  position:absolute; left:0; top:-6px;
+  font-size:14px; animation:train-move 2s ease-in-out infinite alternate;
+}
+@keyframes train-move { from{left:0%} to{left:calc(100% - 16px)} }
+.op-route-dur { font-size:9px; color:rgba(255,255,255,.3); letter-spacing:.08em; text-transform:uppercase; margin-top:3px; }
+.op-info-grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:1px;
+  background:rgba(255,255,255,.06); border-radius:8px; overflow:hidden;
+}
+.op-info-cell {
+  background:rgba(255,255,255,.03); padding:10px 12px;
+}
+.op-info-l { font-size:8px; color:rgba(255,255,255,.3); letter-spacing:.1em; text-transform:uppercase; margin-bottom:3px; }
+.op-info-v { font-size:12px; font-weight:700; color:#fff; }
+.op-info-v.red { color:var(--w-red); }
+.op-info-v.green { color:var(--w-green); }
+
+/* Dear passenger */
+.op-dear {
+  width:100%; max-width:440px;
+  background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07);
+  border-radius:12px; padding:12px 16px;
+  display:flex; align-items:center; gap:12px; margin-bottom:20px;
+}
+.op-dear-seat {
+  background:var(--w-red); color:#fff; font-size:11px; font-weight:800;
+  padding:6px 10px; border-radius:6px; letter-spacing:.04em; flex-shrink:0;
+}
+.op-dear-l { font-size:9px; color:rgba(255,255,255,.35); letter-spacing:.1em; text-transform:uppercase; margin-bottom:3px; }
+.op-dear-n { font-size:14px; font-weight:600; color:#fff; }
+
+/* CTA */
+.op-cta { width:100%; max-width:440px; }
+.op-book-btn {
+  width:100%; background:var(--w-red); border:none; border-radius:12px;
+  padding:16px; font-family:var(--font); font-size:14px; font-weight:800;
+  color:#fff; letter-spacing:.04em; cursor:pointer;
+  transition:background .15s, transform .1s;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+}
+.op-book-btn:hover { background:var(--w-red2); transform:translateY(-1px); }
+.op-book-btn:active { transform:scale(.98); }
+.op-book-btn svg { width:18px; height:18px; fill:#fff; }
+.op-book-sub { text-align:center; margin-top:10px; font-size:10px; color:rgba(255,255,255,.25); letter-spacing:.06em; }
+
+/* ══════════════════════════
+   MAIN APP
+══════════════════════════ */
+#main { opacity:0; transition:opacity .5s ease .1s; }
+#main.show { opacity:1; }
+
+/* ══════════════════════════
+   APP HEADER
+══════════════════════════ */
+.app-header {
+  background:var(--w-dark); position:sticky; top:0; z-index:100;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.ah-top {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:12px 16px 10px;
+}
+.ah-logo { display:flex; align-items:center; gap:8px; }
+.ah-whoosh { font-size:20px; font-weight:900; color:var(--w-red); letter-spacing:-.03em; }
+.ah-sub { font-size:9px; color:rgba(255,255,255,.3); letter-spacing:.12em; text-transform:uppercase; font-weight:400; }
+.ah-right { display:flex; align-items:center; gap:8px; }
+.ah-speed {
+  display:flex; align-items:baseline; gap:2px;
+  background:rgba(232,25,44,.1); border:1px solid rgba(232,25,44,.2);
+  padding:4px 10px; border-radius:8px;
+}
+.ah-speed-num { font-size:16px; font-weight:800; color:var(--w-red); line-height:1; font-variant-numeric:tabular-nums; }
+.ah-speed-unit { font-size:8px; color:rgba(232,25,44,.6); font-weight:600; letter-spacing:.06em; }
+.ah-live { display:flex; align-items:center; gap:4px; font-size:9px; color:var(--w-green); font-weight:600; letter-spacing:.06em; }
+.ah-live-dot { width:5px; height:5px; background:var(--w-green); border-radius:50%; animation:blink .9s infinite; }
+
+/* Progress bar = speed line */
+.ah-progress { height:3px; background:rgba(255,255,255,.04); position:relative; overflow:hidden; }
+.ah-progress-fill {
+  position:absolute; left:-60%; top:0; bottom:0; width:60%;
+  background:linear-gradient(90deg,transparent,var(--w-red),transparent);
+  animation:progress-run 1.8s linear infinite;
+}
+@keyframes progress-run { to{left:120%} }
+
+/* ══════════════════════════
+   ROUTE PILL NAV
+══════════════════════════ */
+.route-nav {
+  background:var(--w-white); border-bottom:1px solid var(--w-border);
+  padding:0 12px; display:flex; overflow-x:auto; scrollbar-width:none;
+  position:sticky; top:73px; z-index:99;
+}
+.route-nav::-webkit-scrollbar { display:none; }
+.rn-item {
+  flex-shrink:0; padding:10px 14px;
+  font-size:11px; font-weight:600; color:var(--w-gray);
+  border:none; background:none; cursor:pointer;
+  border-bottom:2px solid transparent;
+  white-space:nowrap; transition:color .15s, border-color .15s;
+  font-family:var(--font); display:flex; align-items:center; gap:5px;
+  letter-spacing:.01em;
+}
+.rn-item:hover { color:var(--w-red); }
+.rn-item.on { color:var(--w-red); border-bottom-color:var(--w-red); font-weight:700; }
+.rn-pip { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+
+/* ══════════════════════════
+   CONTAINER
+══════════════════════════ */
+.app-body { max-width:520px; margin:0 auto; padding:14px 14px max(60px,env(safe-area-inset-bottom)); }
+
+/* ══════════════════════════
+   TICKET CARD (main hero)
+══════════════════════════ */
+.ticket-card {
+  background:var(--w-white); border-radius:16px;
+  box-shadow:0 4px 24px rgba(0,0,0,.08), 0 1px 4px rgba(0,0,0,.04);
+  overflow:hidden; margin-bottom:12px;
+}
+.tc-header {
+  background:var(--w-dark); padding:14px 18px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.tc-train-name { font-size:12px; font-weight:800; color:#fff; letter-spacing:.08em; text-transform:uppercase; }
+.tc-train-num { font-size:10px; color:rgba(255,255,255,.35); margin-top:2px; letter-spacing:.04em; font-family:'Courier New',monospace; }
+.tc-status {
+  display:flex; align-items:center; gap:5px;
+  background:rgba(16,185,129,.12); border:1px solid rgba(16,185,129,.25);
+  color:var(--w-green); font-size:9px; font-weight:700; padding:4px 10px;
+  border-radius:20px; letter-spacing:.08em; text-transform:uppercase;
+}
+.tc-status-dot { width:5px; height:5px; background:var(--w-green); border-radius:50%; animation:blink .9s infinite; }
+
+/* Route display */
+.tc-route {
+  padding:20px 18px 18px;
+  display:flex; align-items:center; gap:0;
+  border-bottom:1px solid var(--w-border);
+}
+.tc-stn { flex:1; }
+.tc-stn.right { text-align:right; }
+.tc-stn-code { font-size:32px; font-weight:900; color:var(--w-dark); letter-spacing:-.03em; line-height:1; }
+.tc-stn-code.red { color:var(--w-red); }
+.tc-stn-name { font-size:11px; color:var(--w-gray); margin-top:4px; }
+.tc-stn-time { font-size:10px; color:var(--w-lgray); margin-top:1px; font-weight:500; }
+
+.tc-route-mid {
+  flex:1; padding:0 12px; display:flex; flex-direction:column; align-items:center; gap:4px;
+}
+.tc-route-track {
+  width:100%; height:2px; background:var(--w-border); position:relative;
+}
+.tc-route-train {
+  position:absolute; top:-8px; left:0; font-size:16px;
+  animation:train-run 3s ease-in-out infinite alternate;
+}
+@keyframes train-run { from{left:0%} to{left:calc(100% - 20px)} }
+.tc-route-tag {
+  font-size:8px; font-weight:700; color:var(--w-red); letter-spacing:.1em;
+  text-transform:uppercase; background:rgba(232,25,44,.08);
+  padding:2px 8px; border-radius:4px;
+}
+.tc-route-speed { font-size:9px; color:var(--w-lgray); letter-spacing:.04em; }
+
+/* Info strip */
+.tc-info-strip {
+  display:flex; border-bottom:1px solid var(--w-border);
+}
+.tc-info-cell {
+  flex:1; padding:12px 14px; border-right:1px solid var(--w-border);
+}
+.tc-info-cell:last-child { border-right:none; }
+.tc-ic-l { font-size:8px; font-weight:600; color:var(--w-lgray); letter-spacing:.1em; text-transform:uppercase; margin-bottom:3px; }
+.tc-ic-v { font-size:13px; font-weight:700; color:var(--w-dark); }
+.tc-ic-v.red { color:var(--w-red); }
+
+/* Tear line */
+.tc-tear {
+  height:1px; margin:0 16px; border-top:1.5px dashed var(--w-border);
+  position:relative;
+}
+.tc-tear::before {
+  content:''; position:absolute; left:-26px; top:-10px;
+  width:20px; height:20px; border-radius:50%;
+  background:var(--w-bg); border:1.5px solid var(--w-border);
+}
+.tc-tear::after {
+  content:''; position:absolute; right:-26px; top:-10px;
+  width:20px; height:20px; border-radius:50%;
+  background:var(--w-bg); border:1.5px solid var(--w-border);
+}
+
+/* Barcode + passenger */
+.tc-bottom {
+  padding:16px 18px;
+  display:flex; align-items:center; gap:14px;
+}
+.tc-barcode { flex-shrink:0; display:flex; align-items:stretch; gap:1px; height:48px; }
+.bc { background:var(--w-dark); border-radius:1px; }
+.tc-passenger {}
+.tc-pass-l { font-size:8px; color:var(--w-lgray); letter-spacing:.1em; text-transform:uppercase; margin-bottom:3px; font-weight:600; }
+.tc-pass-name { font-size:13px; font-weight:700; color:var(--w-dark); }
+.tc-pass-ref { font-size:9px; color:var(--w-lgray); margin-top:2px; font-family:'Courier New',monospace; letter-spacing:.04em; }
+
+/* QR code block */
+.tc-qr {
+  margin-left:auto; flex-shrink:0;
+}
+.tc-qr-mini { width:52px; height:52px; }
+
+/* ══════════════════════════
+   SPEED METER CARD
+══════════════════════════ */
+.speed-card {
+  background:var(--w-dark); border-radius:16px;
+  padding:20px; margin-bottom:12px; position:relative; overflow:hidden;
+}
+.speed-card::before {
+  content:''; position:absolute; inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% -10%, rgba(232,25,44,.12), transparent 70%);
+  pointer-events:none;
+}
+.sc-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:16px; }
+.sc-label { font-size:9px; font-weight:700; color:rgba(255,255,255,.3); letter-spacing:.18em; text-transform:uppercase; }
+.sc-cd { text-align:right; }
+.sc-cd-label { font-size:8px; color:rgba(255,255,255,.25); letter-spacing:.1em; text-transform:uppercase; margin-bottom:2px; }
+.sc-cd-val { font-size:11px; font-weight:700; color:rgba(255,255,255,.5); font-variant-numeric:tabular-nums; letter-spacing:.03em; }
+
+/* Speedometer arc */
+.sc-meter-wrap { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+.speedometer {
+  width:140px; height:80px; position:relative; flex-shrink:0;
+}
+.sp-track {
+  position:absolute; bottom:0; left:0; right:0;
+  height:140px; border-radius:140px 140px 0 0;
+  border:3px solid rgba(255,255,255,.06);
+  border-bottom:none; overflow:hidden;
+}
+.sp-fill {
+  position:absolute; bottom:0; left:0; right:0;
+  height:140px; border-radius:140px 140px 0 0;
+  border:3px solid var(--w-red);
+  border-bottom:none;
+  clip-path:polygon(0 100%, 100% 100%, 100% 0, 0 0);
+  transform-origin:bottom center;
+  transform:rotate(-80deg);
+  transition:transform 1s ease;
+  box-shadow:0 0 12px rgba(232,25,44,.4);
+}
+.sp-needle {
+  position:absolute; bottom:0; left:50%;
+  width:2px; height:66px; background:var(--w-red);
+  transform-origin:bottom center;
+  transform:translateX(-50%) rotate(-80deg);
+  transition:transform 1s ease;
+  border-radius:2px 2px 0 0;
+}
+.sp-needle::after { content:''; position:absolute; bottom:-4px; left:-4px; width:10px; height:10px; border-radius:50%; background:var(--w-red); }
+.sp-center { position:absolute; bottom:-2px; left:50%; transform:translateX(-50%); text-align:center; }
+.sp-num { font-size:24px; font-weight:900; color:#fff; line-height:1; letter-spacing:-.02em; font-variant-numeric:tabular-nums; }
+.sp-unit { font-size:8px; color:rgba(255,255,255,.4); font-weight:600; letter-spacing:.08em; }
+
+.sc-stats { flex:1; padding-left:16px; display:flex; flex-direction:column; gap:10px; }
+.sc-stat { }
+.sc-stat-l { font-size:8px; color:rgba(255,255,255,.3); letter-spacing:.1em; text-transform:uppercase; margin-bottom:2px; }
+.sc-stat-v { font-size:14px; font-weight:800; color:#fff; }
+.sc-stat-v.red { color:var(--w-red); }
+
+/* Countdown in speed card */
+.sc-cd-row { display:flex; gap:8px; }
+.sc-cd-item { flex:1; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-radius:8px; padding:8px 6px; text-align:center; }
+.sc-cd-n { font-size:20px; font-weight:800; color:#fff; line-height:1; font-variant-numeric:tabular-nums; }
+.sc-cd-u { font-size:7px; color:rgba(255,255,255,.3); text-transform:uppercase; letter-spacing:.1em; margin-top:2px; }
+
+/* ══════════════════════════
+   ANNOUNCEMENT
+══════════════════════════ */
+.announce {
+  background:var(--w-white); border-radius:12px;
+  border-left:4px solid var(--w-red);
+  padding:14px 16px; margin-bottom:12px;
+  box-shadow:0 1px 4px rgba(0,0,0,.05);
+}
+.ann-tag { font-size:8px; font-weight:700; color:var(--w-red); letter-spacing:.14em; text-transform:uppercase; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+.ann-tag svg { width:10px; height:10px; fill:var(--w-red); }
+.ann-text { font-size:13px; color:var(--w-gray); line-height:1.7; font-style:italic; }
+
+/* ══════════════════════════
+   SECTION CARD
+══════════════════════════ */
+.sec-card {
+  background:var(--w-white); border-radius:14px;
+  box-shadow:0 2px 12px rgba(0,0,0,.06), 0 1px 3px rgba(0,0,0,.04);
+  overflow:hidden; margin-bottom:12px;
+}
+.sc-head {
+  padding:12px 16px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid var(--w-border);
+  background:#FAFAFA;
+}
+.sc-head-l { display:flex; align-items:center; gap:9px; }
+.sc-head-icon {
+  width:28px; height:28px; border-radius:7px;
+  background:var(--w-red); display:flex; align-items:center; justify-content:center;
+  font-size:13px; flex-shrink:0;
+}
+.sc-head-title { font-size:12px; font-weight:700; color:var(--w-dark); }
+.sc-head-sub { font-size:10px; color:var(--w-lgray); margin-top:1px; }
+.sc-head-badge {
+  background:var(--w-red); color:#fff; font-size:8px; font-weight:700;
+  padding:3px 8px; border-radius:4px; letter-spacing:.06em; text-transform:uppercase;
+}
+.sc-body { padding:16px; }
+
+/* ══════════════════════════
+   COUPLE
+══════════════════════════ */
+.couple-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.c-card {
+  background:var(--w-bg); border:1px solid var(--w-border);
+  border-radius:12px; overflow:hidden; text-align:center;
+}
+.c-card-seat {
+  background:var(--w-dark); padding:6px 10px;
+  font-size:9px; font-weight:700; color:rgba(255,255,255,.5);
+  letter-spacing:.1em; text-transform:uppercase;
+}
+.c-body { padding:14px 10px; }
+.c-av {
+  width:68px; height:68px; border-radius:50%; overflow:hidden;
+  margin:0 auto 10px; border:3px solid var(--w-red);
+}
+.c-av img { width:100%; height:100%; object-fit:cover; }
+.c-role { font-size:8px; font-weight:700; color:var(--w-red); letter-spacing:.1em; text-transform:uppercase; margin-bottom:3px; }
+.c-name { font-size:13px; font-weight:700; color:var(--w-dark); margin-bottom:4px; line-height:1.3; }
+.c-parents { font-size:10px; color:var(--w-gray); line-height:1.55; }
+
+/* ══════════════════════════
+   STATIONS
+══════════════════════════ */
+.stn-card {
+  background:var(--w-bg); border:1px solid var(--w-border);
+  border-radius:10px; overflow:hidden; margin-bottom:8px;
+}
+.stn-card:last-child { margin-bottom:0; }
+.stn-top {
+  background:var(--w-red); padding:8px 14px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.stn-stop { font-size:9px; font-weight:800; color:rgba(255,255,255,.8); letter-spacing:.1em; text-transform:uppercase; }
+.stn-time { font-size:12px; font-weight:800; color:#fff; letter-spacing:.02em; }
+.stn-body { padding:12px 14px; }
+.stn-name { font-size:16px; font-weight:700; color:var(--w-dark); margin-bottom:6px; }
+.stn-row { display:flex; align-items:flex-start; gap:7px; font-size:12px; color:var(--w-gray); line-height:1.5; margin-bottom:5px; }
+.stn-ic { width:13px; height:13px; fill:var(--w-red); flex-shrink:0; margin-top:1px; }
+.stn-map {
+  display:inline-flex; align-items:center; gap:5px; margin-top:6px;
+  background:var(--w-dark); color:#fff; text-decoration:none;
+  font-size:10px; font-weight:600; padding:6px 12px; border-radius:6px;
+  transition:background .15s; letter-spacing:.04em;
+}
+.stn-map:hover { background:#1a1a2e; }
+
+/* ══════════════════════════
+   ROUTE MAP (timeline)
+══════════════════════════ */
+.route-stops { position:relative; padding-left:18px; }
+.route-stops::before {
+  content:''; position:absolute; left:6px; top:6px; bottom:6px;
+  width:3px; background:linear-gradient(180deg,var(--w-red) 0%,var(--w-red) 60%,var(--w-border) 100%);
+  border-radius:2px;
+}
+.rs-item { display:flex; gap:16px; margin-bottom:28px; position:relative; }
+.rs-item:last-child { margin-bottom:0; }
+.rs-dot {
+  position:absolute; left:-17px; top:4px;
+  width:14px; height:14px; border-radius:50%;
+  border:3px solid var(--w-red); background:var(--w-white); z-index:1;
+  transition:background .3s;
+}
+.rs-dot.active { background:var(--w-red); box-shadow:0 0 0 4px rgba(232,25,44,.15); }
+.rs-body {}
+.rs-code { font-size:8px; font-weight:700; color:var(--w-red); letter-spacing:.14em; text-transform:uppercase; margin-bottom:2px; }
+.rs-when { font-size:10px; color:var(--w-lgray); margin-bottom:4px; font-variant-numeric:tabular-nums; }
+.rs-title { font-size:16px; font-weight:700; color:var(--w-dark); margin-bottom:5px; }
+.rs-desc { font-size:12px; color:var(--w-gray); line-height:1.65; }
+
+/* ══════════════════════════
+   GALLERY
+══════════════════════════ */
+.gal-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; }
+.gal-item { aspect-ratio:1; border-radius:5px; overflow:hidden; cursor:pointer; background:var(--w-border); position:relative; }
+.gal-item img { width:100%; height:100%; object-fit:cover; transition:transform .35s, filter .3s; filter:brightness(.92) saturate(.95); }
+.gal-item:hover img { transform:scale(1.07); filter:brightness(1) saturate(1.05); }
+.gal-item:hover::after { content:''; position:absolute; inset:0; background:rgba(232,25,44,.1); }
+.gal-km { position:absolute; bottom:5px; left:5px; background:rgba(0,0,0,.55); color:#fff; font-size:7px; font-weight:700; padding:2px 5px; border-radius:3px; letter-spacing:.06em; font-family:'Courier New',monospace; }
+
+/* ══════════════════════════
+   GIFT
+══════════════════════════ */
+.gift-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.gift-card {
+  background:var(--w-bg); border:1px solid var(--w-border);
+  border-radius:10px; overflow:hidden;
+}
+.gc-top { height:3px; background:var(--w-red); }
+.gc-body { padding:14px; }
+.gc-bank { font-size:8px; color:var(--w-lgray); text-transform:uppercase; letter-spacing:.12em; margin-bottom:2px; }
+.gc-name { font-size:20px; font-weight:800; color:var(--w-dark); margin-bottom:2px; }
+.gc-holder { font-size:10px; color:var(--w-gray); margin-bottom:10px; }
+.gc-num {
+  font-size:13px; font-weight:600; letter-spacing:.1em; color:var(--w-dark);
+  background:var(--w-white); border:1px solid var(--w-border);
+  padding:6px 10px; border-radius:6px;
+  display:inline-block; margin-bottom:10px; font-family:'Courier New',monospace;
+}
+.copy-btn {
+  display:inline-flex; align-items:center; gap:5px;
+  background:var(--w-red); color:#fff; border:none;
+  font-size:10px; font-weight:700; font-family:var(--font);
+  padding:7px 14px; border-radius:6px; cursor:pointer;
+  letter-spacing:.04em; transition:background .15s;
+}
+.copy-btn:hover { background:var(--w-red2); }
+.copy-btn.ok { background:var(--w-green); }
+
+/* ══════════════════════════
+   RSVP
+══════════════════════════ */
+.rsvp-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:0; border:1px solid var(--w-border); border-radius:10px; overflow:hidden; margin-bottom:16px; }
+.rs { padding:12px 8px; text-align:center; border-right:1px solid var(--w-border); }
+.rs:last-child { border-right:none; }
+.rs-n { font-size:22px; font-weight:800; color:var(--w-red); line-height:1; }
+.rs-l { font-size:8px; color:var(--w-lgray); text-transform:uppercase; letter-spacing:.08em; margin-top:2px; }
+.fg { margin-bottom:12px; }
+.fl { display:block; font-size:9px; font-weight:700; color:var(--w-gray); letter-spacing:.1em; text-transform:uppercase; margin-bottom:5px; }
+.fi {
+  width:100%; background:var(--w-bg); border:1.5px solid var(--w-border);
+  border-radius:8px; padding:11px 13px; color:var(--w-dark);
+  font-family:var(--font); font-size:13px; outline:none;
+  transition:border-color .2s, box-shadow .2s;
+  -webkit-appearance:none; appearance:none;
+}
+.fi:focus { border-color:var(--w-red); box-shadow:0 0 0 3px rgba(232,25,44,.1); }
+.fi::placeholder { color:#C4C9D4; }
+select.fi { background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 12px center; padding-right:34px; cursor:pointer; }
+select.fi option { background:#fff; }
+textarea.fi { min-height:80px; resize:none; }
+.gbtn-row { display:flex; gap:6px; }
+.gbtn { flex:1; background:var(--w-bg); border:1.5px solid var(--w-border); border-radius:8px; padding:10px; color:var(--w-gray); font-family:var(--font); font-size:13px; cursor:pointer; transition:all .15s; }
+.gbtn.on { background:rgba(232,25,44,.06); border-color:var(--w-red); color:var(--w-red); font-weight:700; }
+.rsvp-sub { width:100%; background:var(--w-red); border:none; border-radius:8px; padding:14px; color:#fff; font-family:var(--font); font-size:14px; font-weight:800; cursor:pointer; letter-spacing:.04em; margin-top:4px; transition:background .15s, transform .1s; display:flex; align-items:center; justify-content:center; gap:8px; }
+.rsvp-sub:hover { background:var(--w-red2); }
+.rsvp-sub svg { width:16px; height:16px; fill:#fff; }
+
+/* ══════════════════════════
+   WISHES
+══════════════════════════ */
+.wlist { display:flex; flex-direction:column; gap:0; }
+.wcard { display:flex; gap:12px; padding:13px 0; border-bottom:1px solid var(--w-border); opacity:0; transform:translateY(10px); transition:opacity .5s, transform .5s; }
+.wcard.vis { opacity:1; transform:translateY(0); }
+.wcard:last-child { border-bottom:none; }
+.wav { width:36px; height:36px; border-radius:8px; background:var(--w-red); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; color:#fff; flex-shrink:0; }
+.wn { font-size:13px; font-weight:700; color:var(--w-dark); }
+.ws { font-size:9px; color:var(--w-green); font-weight:600; letter-spacing:.04em; margin-top:1px; }
+.wref { font-size:8px; color:var(--w-lgray); margin-top:1px; font-family:'Courier New',monospace; letter-spacing:.04em; }
+.wtxt { font-size:12px; color:var(--w-gray); line-height:1.65; margin-top:5px; }
+
+/* ══════════════════════════
+   BOTTOM NAV
+══════════════════════════ */
+.bottom-nav {
+  position:fixed; bottom:0; left:0; right:0;
+  background:rgba(255,255,255,.97); backdrop-filter:blur(20px);
+  border-top:1px solid var(--w-border);
+  display:flex; justify-content:space-around;
+  padding:8px 0 max(8px,env(safe-area-inset-bottom));
+  z-index:100; transform:translateY(100%);
+  transition:transform .5s ease 1s;
+}
+.bottom-nav.show { transform:translateY(0); }
+.nav-i {
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  color:var(--w-lgray); background:none; border:none; cursor:pointer;
+  font-family:var(--font); font-size:8px; font-weight:600;
+  letter-spacing:.04em; text-transform:uppercase; padding:3px 10px;
+  transition:color .15s;
+}
+.nav-i svg { width:20px; height:20px; }
+.nav-i.on, .nav-i:hover { color:var(--w-red); }
+
+/* ══════════════════════════
+   LIGHTBOX & TOAST
+══════════════════════════ */
+.lb { position:fixed; inset:0; background:rgba(0,0,0,.96); z-index:200; display:none; align-items:center; justify-content:center; }
+.lb.open { display:flex; }
+.lb-img { max-width:94vw; max-height:84vh; border-radius:8px; object-fit:contain; }
+.lb-close { position:absolute; top:18px; right:16px; background:rgba(255,255,255,.1); border:none; color:#fff; width:38px; height:38px; border-radius:50%; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.lb-nav { position:absolute; top:50%; transform:translateY(-50%); background:rgba(255,255,255,.1); border:none; color:#fff; font-size:26px; cursor:pointer; width:42px; height:56px; border-radius:8px; display:flex; align-items:center; justify-content:center; }
+.lb-prev { left:10px; } .lb-next { right:10px; }
+.lb-ctr { position:absolute; bottom:18px; left:50%; transform:translateX(-50%); font-size:10px; color:rgba(255,255,255,.4); font-family:'Courier New',monospace; letter-spacing:.08em; }
+.toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(10px); background:var(--w-dark); color:#fff; padding:10px 20px; border-radius:8px; font-size:12px; font-weight:600; opacity:0; transition:opacity .25s, transform .25s; pointer-events:none; white-space:nowrap; z-index:999; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* Reveal */
+.reveal { opacity:0; transform:translateY(16px); transition:opacity .6s, transform .6s; }
+.reveal.in { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ══ OPENING ══ -->
+<div id="opening">
+  <div class="op-speed-bg" id="speedBg"></div>
+  <div class="op-red-bar"></div>
+
+  <div class="op-topbar">
+    <div class="op-whoosh-logo">
+      <span class="whoosh-letter">W</span>
+      <span class="whoosh-letter">H</span>
+      <span class="whoosh-letter">O</span>
+      <span class="whoosh-letter">O</span>
+      <span class="whoosh-letter">S</span>
+      <span class="whoosh-letter">H</span>
+      <span class="whoosh-dot">|</span>
+      <span class="op-logo-sub">Wedding Express</span>
+    </div>
+    <div class="op-speed-badge">350 km/h</div>
+  </div>
+
+  <div class="op-main">
+    <!-- SVG train illustration -->
+    <div class="op-train-wrap">
+      <svg class="op-train-svg" viewBox="0 0 420 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Speed lines -->
+        <line x1="0" y1="40" x2="80" y2="40" stroke="white" stroke-width="1" opacity=".3"/>
+        <line x1="0" y1="30" x2="60" y2="30" stroke="white" stroke-width=".5" opacity=".2"/>
+        <line x1="0" y1="50" x2="70" y2="50" stroke="white" stroke-width=".5" opacity=".2"/>
+        <line x1="0" y1="20" x2="40" y2="20" stroke="white" stroke-width=".5" opacity=".1"/>
+        <!-- Train body -->
+        <rect x="90" y="20" width="290" height="45" rx="6" fill="white" opacity=".9"/>
+        <!-- Red stripe -->
+        <rect x="90" y="20" width="290" height="8" rx="0" fill="#E8192C"/>
+        <rect x="90" y="20" width="290" height="8" rx="6" fill="#E8192C"/>
+        <!-- Nose -->
+        <path d="M380 20 L420 40 L380 65 Z" fill="white" opacity=".9"/>
+        <path d="M380 20 L420 40 L380 28 Z" fill="#E8192C"/>
+        <!-- Windows -->
+        <rect x="110" y="32" width="28" height="16" rx="3" fill="#ccc" opacity=".5"/>
+        <rect x="150" y="32" width="28" height="16" rx="3" fill="#ccc" opacity=".5"/>
+        <rect x="190" y="32" width="28" height="16" rx="3" fill="#ccc" opacity=".5"/>
+        <rect x="230" y="32" width="28" height="16" rx="3" fill="#ccc" opacity=".5"/>
+        <rect x="270" y="32" width="28" height="16" rx="3" fill="#ccc" opacity=".5"/>
+        <rect x="310" y="32" width="28" height="16" rx="3" fill="#ccc" opacity=".5"/>
+        <!-- Wheels -->
+        <circle cx="130" cy="65" r="8" fill="#555" opacity=".6"/>
+        <circle cx="200" cy="65" r="8" fill="#555" opacity=".6"/>
+        <circle cx="280" cy="65" r="8" fill="#555" opacity=".6"/>
+        <circle cx="360" cy="65" r="8" fill="#555" opacity=".6"/>
+        <!-- WHOOSH text on train -->
+        <text x="170" y="55" font-family="Inter" font-size="12" font-weight="900" fill="#E8192C" opacity=".8">WHOOSH</text>
+        <!-- Track -->
+        <line x1="0" y1="73" x2="420" y2="73" stroke="white" stroke-width="2" opacity=".1"/>
+        <line x1="0" y1="75" x2="420" y2="75" stroke="white" stroke-width="2" opacity=".06"/>
+      </svg>
+    </div>
+
+    <div class="op-depart-card">
+      <div class="op-dc-header">
+        <span class="op-dc-train">G-01 Wedding Express</span>
+        <span class="op-dc-class">Class: LOVE</span>
+      </div>
+      <div class="op-dc-body">
+        <div class="op-route-row">
+          <div class="op-stn">
+            <div class="op-stn-code">PRT</div>
+            <div class="op-stn-name">Pertemuan</div>
+          </div>
+          <div class="op-route-center">
+            <div class="op-route-line-wrap">
+              <div class="op-route-train-icon">🚄</div>
+            </div>
+            <div class="op-route-dur">Wedding Line · 3 Stops</div>
+          </div>
+          <div class="op-stn right">
+            <div class="op-stn-code">NKH</div>
+            <div class="op-stn-name">Pernikahan</div>
+          </div>
+        </div>
+        <div class="op-info-grid">
+          <div class="op-info-cell">
+            <div class="op-info-l">Tanggal</div>
+            <div class="op-info-v">24 MEI 2026</div>
+          </div>
+          <div class="op-info-cell">
+            <div class="op-info-l">Boarding</div>
+            <div class="op-info-v red">08:00 WIB</div>
+          </div>
+          <div class="op-info-cell">
+            <div class="op-info-l">Status</div>
+            <div class="op-info-v green">ON TIME ✓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="op-dear">
+      <div class="op-dear-seat">1A</div>
+      <div>
+        <div class="op-dear-l">Tiket untuk</div>
+        <div class="op-dear-n">Ade Guntur Fitridullah & Partner</div>
+      </div>
+    </div>
+
+    <div class="op-cta">
+      <button class="op-book-btn" onclick="board()">
+        <svg viewBox="0 0 24 24"><path d="M2 12C2 6.48 6.48 2 12 2s10 4.48 10 10-4.48 10-10 10S2 17.52 2 12zm10-4.5L7.5 12l4.5 4.5 1.41-1.41L10.83 12l2.67-2.67L12 7.5z"/></svg>
+        Buka Undangan
+      </button>
+      <div class="op-book-sub">Tap untuk naik kereta · Selamat berperjalanan</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MAIN APP ══ -->
+<div id="main">
+
+  <div class="app-header">
+    <div class="ah-top">
+      <div class="ah-logo">
+        <div class="ah-whoosh">WHOOSH</div>
+        <div class="ah-sub">Wedding Express</div>
+      </div>
+      <div class="ah-right">
+        <div class="ah-speed">
+          <span class="ah-speed-num" id="speedNum">0</span>
+          <span class="ah-speed-unit">km/h</span>
+        </div>
+        <div class="ah-live"><div class="ah-live-dot"></div>LIVE</div>
+      </div>
+    </div>
+    <div class="ah-progress"><div class="ah-progress-fill"></div></div>
+  </div>
+
+  <!-- Route nav -->
+  <div class="route-nav" id="routeNav">
+    <button class="rn-item on" data-id="ticket" onclick="goTo('ticket')"><div class="rn-pip" style="background:var(--w-red)"></div>Tiket</button>
+    <button class="rn-item" data-id="couple" onclick="goTo('couple')"><div class="rn-pip" style="background:var(--w-dark)"></div>Penumpang</button>
+    <button class="rn-item" data-id="event" onclick="goTo('event')"><div class="rn-pip" style="background:#1a6b3a"></div>Stasiun</button>
+    <button class="rn-item" data-id="story" onclick="goTo('story')"><div class="rn-pip" style="background:var(--w-amber)"></div>Rute</button>
+    <button class="rn-item" data-id="gallery" onclick="goTo('gallery')"><div class="rn-pip" style="background:var(--w-blue)"></div>Galeri</button>
+    <button class="rn-item" data-id="gift" onclick="goTo('gift')"><div class="rn-pip" style="background:var(--w-green)"></div>Transfer</button>
+    <button class="rn-item" data-id="rsvp" onclick="goTo('rsvp')"><div class="rn-pip" style="background:var(--w-red)"></div>RSVP</button>
+  </div>
+
+  <div class="app-body">
+
+    <!-- ── TICKET ── -->
+    <div class="ticket-card reveal" id="ticket">
+      <div class="tc-header">
+        <div>
+          <div class="tc-train-name">G-01 · WHOOSH Wedding Express</div>
+          <div class="tc-train-num">TKT-AZ-240526-001 · Class: LOVE</div>
+        </div>
+        <div class="tc-status"><div class="tc-status-dot"></div>VALID</div>
+      </div>
+
+      <div class="tc-route">
+        <div class="tc-stn">
+          <div class="tc-stn-code">PRT</div>
+          <div class="tc-stn-name">Pertemuan</div>
+          <div class="tc-stn-time">Juni 2025</div>
+        </div>
+        <div class="tc-route-mid">
+          <div class="tc-route-track"><div class="tc-route-train">🚄</div></div>
+          <div class="tc-route-tag">Wedding Line</div>
+          <div class="tc-route-speed">maks. 350 km/h</div>
+        </div>
+        <div class="tc-stn right">
+          <div class="tc-stn-code red">NKH</div>
+          <div class="tc-stn-name">Pernikahan</div>
+          <div class="tc-stn-time">Mei 2026</div>
+        </div>
+      </div>
+
+      <div class="tc-info-strip">
+        <div class="tc-info-cell">
+          <div class="tc-ic-l">Tanggal</div>
+          <div class="tc-ic-v">24 MEI 2026</div>
+        </div>
+        <div class="tc-info-cell">
+          <div class="tc-ic-l">Boarding</div>
+          <div class="tc-ic-v red">08:00 WIB</div>
+        </div>
+        <div class="tc-info-cell">
+          <div class="tc-ic-l">Seat Class</div>
+          <div class="tc-ic-v">LOVE · FREE</div>
+        </div>
+      </div>
+
+      <div class="tc-tear"></div>
+
+      <div class="tc-bottom">
+        <div class="tc-barcode" id="tcBarcode"></div>
+        <div class="tc-passenger">
+          <div class="tc-pass-l">Penumpang</div>
+          <div class="tc-pass-name">Ade Guntur Fitridullah & Partner</div>
+          <div class="tc-pass-ref">REF: AZ-240526-GHA-YADIKA</div>
+        </div>
+        <!-- Mini QR -->
+        <div class="tc-qr">
+          <svg class="tc-qr-mini" viewBox="0 0 52 52" fill="none">
+            <rect x="2" y="2" width="20" height="20" rx="3" stroke="#0F0F0F" stroke-width="2.5"/>
+            <rect x="7" y="7" width="10" height="10" fill="#0F0F0F" rx="1"/>
+            <rect x="30" y="2" width="20" height="20" rx="3" stroke="#0F0F0F" stroke-width="2.5"/>
+            <rect x="35" y="7" width="10" height="10" fill="#0F0F0F" rx="1"/>
+            <rect x="2" y="30" width="20" height="20" rx="3" stroke="#0F0F0F" stroke-width="2.5"/>
+            <rect x="7" y="35" width="10" height="10" fill="#0F0F0F" rx="1"/>
+            <rect x="30" y="30" width="5" height="5" fill="#E8192C" rx="1"/>
+            <rect x="38" y="30" width="5" height="5" fill="#0F0F0F" rx="1"/>
+            <rect x="46" y="30" width="5" height="5" fill="#0F0F0F" rx="1"/>
+            <rect x="30" y="38" width="5" height="5" fill="#0F0F0F" rx="1"/>
+            <rect x="38" y="38" width="5" height="5" fill="#E8192C" rx="1"/>
+            <rect x="46" y="46" width="5" height="5" fill="#0F0F0F" rx="1"/>
+            <rect x="30" y="46" width="5" height="5" fill="#0F0F0F" rx="1"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SPEED METER + COUNTDOWN ── -->
+    <div class="speed-card reveal" id="countdown">
+      <div class="sc-top">
+        <div>
+          <div class="sc-label">Kecepatan · Waktu Tempuh</div>
+        </div>
+        <div class="sc-cd">
+          <div class="sc-cd-label">Departure in</div>
+          <div class="sc-cd-val" id="deptIn">—</div>
+        </div>
+      </div>
+
+      <div class="sc-meter-wrap">
+        <div class="speedometer">
+          <div class="sp-track"></div>
+          <div class="sp-fill" id="spFill"></div>
+          <div class="sp-needle" id="spNeedle"></div>
+          <div class="sp-center">
+            <div class="sp-num" id="spNum">0</div>
+            <div class="sp-unit">km/h</div>
+          </div>
+        </div>
+        <div class="sc-stats">
+          <div class="sc-stat">
+            <div class="sc-stat-l">Stasiun Tujuan</div>
+            <div class="sc-stat-v" style="font-size:12px">Graha Yadika, Tangerang</div>
+          </div>
+          <div class="sc-stat">
+            <div class="sc-stat-l">Keberangkatan</div>
+            <div class="sc-stat-v red">08:00 WIB</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-size:9px;font-weight:700;color:rgba(255,255,255,.25);letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px">Countdown to Wedding Day</div>
+      <div class="sc-cd-row">
+        <div class="sc-cd-item"><div class="sc-cd-n" id="cdD">00</div><div class="sc-cd-u">Hari</div></div>
+        <div class="sc-cd-item"><div class="sc-cd-n" id="cdH">00</div><div class="sc-cd-u">Jam</div></div>
+        <div class="sc-cd-item"><div class="sc-cd-n" id="cdM">00</div><div class="sc-cd-u">Menit</div></div>
+        <div class="sc-cd-item"><div class="sc-cd-n" id="cdS">00</div><div class="sc-cd-u">Detik</div></div>
+      </div>
+    </div>
+
+    <!-- ── ANNOUNCEMENT ── -->
+    <div class="announce reveal">
+      <div class="ann-tag">
+        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        Pengumuman Kereta
+      </div>
+      <div class="ann-text">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya..." — Surah Ar-Rum : 21</div>
+    </div>
+
+    <!-- ── COUPLE ── -->
+    <div class="sec-card reveal" id="couple">
+      <div class="sc-head">
+        <div class="sc-head-l">
+          <div class="sc-head-icon">👥</div>
+          <div>
+            <div class="sc-head-title">Data Penumpang</div>
+            <div class="sc-head-sub">Mempelai · Class LOVE</div>
+          </div>
+        </div>
+        <div class="sc-head-badge">VERIFIED</div>
+      </div>
+      <div class="sc-body">
+        <div class="couple-grid">
+          <div class="c-card">
+            <div class="c-card-seat">Seat · 1A · Wanita</div>
+            <div class="c-body">
+              <div class="c-av"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita"></div>
+              <div class="c-role">🌸 Mempelai Wanita</div>
+              <div class="c-name">Anita Pangestuti, S.Kom</div>
+              <div class="c-parents">Putri Pertama dari<br><strong>Bpk. Taryono &<br>Ibu Wiwit Jayanti</strong></div>
+            </div>
+          </div>
+          <div class="c-card">
+            <div class="c-card-seat">Seat · 1B · Pria</div>
+            <div class="c-body">
+              <div class="c-av"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda"></div>
+              <div class="c-role">🤵 Mempelai Pria</div>
+              <div class="c-name">Zardarian Ahadika N, S.Kom</div>
+              <div class="c-parents">Putra Kedua dari<br><strong>Bpk. Wan Sabran, M.MAR &<br>Ibu Titik Sundari, M.Si</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STATIONS ── -->
+    <div class="sec-card reveal" id="event">
+      <div class="sc-head">
+        <div class="sc-head-l">
+          <div class="sc-head-icon">🚉</div>
+          <div>
+            <div class="sc-head-title">Stasiun Pemberhentian</div>
+            <div class="sc-head-sub">Jadwal Kedatangan · On Time</div>
+          </div>
+        </div>
+        <div class="sc-head-badge">2 STOPS</div>
+      </div>
+      <div class="sc-body">
+        <div class="stn-card">
+          <div class="stn-top">
+            <span class="stn-stop">Stop 1 · Akad Nikah</span>
+            <span class="stn-time">08:00 WIB</span>
+          </div>
+          <div class="stn-body">
+            <div class="stn-name">Minggu, 24 Mei 2026</div>
+            <div class="stn-row">
+              <svg class="stn-ic" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              <span>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span>
+            </div>
+            <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="stn-map">📍 Buka di Maps</a>
+          </div>
+        </div>
+        <div class="stn-card">
+          <div class="stn-top">
+            <span class="stn-stop">Stop 2 · Resepsi</span>
+            <span class="stn-time">11:00–13:00 WIB</span>
+          </div>
+          <div class="stn-body">
+            <div class="stn-name">Minggu, 24 Mei 2026</div>
+            <div class="stn-row">
+              <svg class="stn-ic" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              <span>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span>
+            </div>
+            <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="stn-map">📍 Buka di Maps</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ROUTE MAP / STORY ── -->
+    <div class="sec-card reveal" id="story">
+      <div class="sc-head">
+        <div class="sc-head-l">
+          <div class="sc-head-icon" style="background:var(--w-amber)">🗺️</div>
+          <div>
+            <div class="sc-head-title">Peta Rute · Love Story</div>
+            <div class="sc-head-sub">3 Stasiun · Perjalanan Cinta</div>
+          </div>
+        </div>
+        <div class="sc-head-badge" style="background:var(--w-amber)">3 STOPS</div>
+      </div>
+      <div class="sc-body">
+        <div class="route-stops">
+          <div class="rs-item">
+            <div class="rs-dot active"></div>
+            <div class="rs-body">
+              <div class="rs-code">KM-001 · PERTEMUAN</div>
+              <div class="rs-when">Juni 2025</div>
+              <div class="rs-title">Awal Pertemuan</div>
+              <div class="rs-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</div>
+            </div>
+          </div>
+          <div class="rs-item">
+            <div class="rs-dot active"></div>
+            <div class="rs-body">
+              <div class="rs-code">KM-002 · LAMARAN</div>
+              <div class="rs-when">November 2025</div>
+              <div class="rs-title">Lamaran</div>
+              <div class="rs-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div>
+            </div>
+          </div>
+          <div class="rs-item">
+            <div class="rs-dot"></div>
+            <div class="rs-body">
+              <div class="rs-code">KM-003 · PERNIKAHAN</div>
+              <div class="rs-when">Mei 2026</div>
+              <div class="rs-title">Pernikahan 🎉</div>
+              <div class="rs-desc">Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── GALLERY ── -->
+    <div class="sec-card reveal" id="gallery">
+      <div class="sc-head">
+        <div class="sc-head-l">
+          <div class="sc-head-icon" style="background:var(--w-blue)">📷</div>
+          <div>
+            <div class="sc-head-title">Dokumentasi Perjalanan</div>
+            <div class="sc-head-sub">Galeri Foto Pengantin</div>
+          </div>
+        </div>
+      </div>
+      <div class="sc-body" style="padding:10px">
+        <div class="gal-grid" id="galGrid"></div>
+      </div>
+    </div>
+
+    <!-- ── GIFT ── -->
+    <div class="sec-card reveal" id="gift">
+      <div class="sc-head">
+        <div class="sc-head-l">
+          <div class="sc-head-icon" style="background:var(--w-green)">💳</div>
+          <div>
+            <div class="sc-head-title">Rekening Tujuan</div>
+            <div class="sc-head-sub">Transfer Dana · Gratis Biaya Admin</div>
+          </div>
+        </div>
+      </div>
+      <div class="sc-body">
+        <p style="font-size:12px;color:var(--w-gray);line-height:1.65;margin-bottom:14px">Doa restu sudah sangat cukup. Namun jika berkenan berbagi rezeki, berikut rekening kami.</p>
+        <div class="gift-grid">
+          <div class="gift-card">
+            <div class="gc-top"></div>
+            <div class="gc-body">
+              <div class="gc-bank">Bank</div>
+              <div class="gc-name">BCA</div>
+              <div class="gc-holder">Zardarian Ahadika N</div>
+              <div class="gc-num">8210 3705 61</div><br>
+              <button class="copy-btn" onclick="copyAcc('8210370561',this)">Salin Nomor</button>
+            </div>
+          </div>
+          <div class="gift-card">
+            <div class="gc-top"></div>
+            <div class="gc-body">
+              <div class="gc-bank">Bank</div>
+              <div class="gc-name">BNI</div>
+              <div class="gc-holder">Anita Pangestuti</div>
+              <div class="gc-num">1192 9784 03</div><br>
+              <button class="copy-btn" onclick="copyAcc('1192978403',this)">Salin Nomor</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RSVP ── -->
+    <div class="sec-card reveal" id="rsvp">
+      <div class="sc-head">
+        <div class="sc-head-l">
+          <div class="sc-head-icon">✉️</div>
+          <div>
+            <div class="sc-head-title">Konfirmasi Tiket</div>
+            <div class="sc-head-sub">Harap isi sebelum keberangkatan</div>
+          </div>
+        </div>
+        <div class="sc-head-badge">WAJIB</div>
+      </div>
+      <div class="sc-body">
+        <div class="rsvp-stats">
+          <div class="rs"><div class="rs-n" id="stR">7</div><div class="rs-l">Respons</div></div>
+          <div class="rs"><div class="rs-n" id="stH">7</div><div class="rs-l">Hadir</div></div>
+          <div class="rs"><div class="rs-n" id="stT">13</div><div class="rs-l">Total</div></div>
+        </div>
+        <div class="fg"><label class="fl">Nama Penumpang</label><input type="text" class="fi" placeholder="Nama lengkap" id="rName"></div>
+        <div class="fg">
+          <label class="fl">Status Perjalanan</label>
+          <select class="fi" id="rStat">
+            <option value="">Pilih status...</option>
+            <option value="hadir">Hadir ✅</option>
+            <option value="tidak">Tidak Hadir ❌</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="fl">Jumlah Penumpang</label>
+          <div class="gbtn-row">
+            <button class="gbtn on" onclick="setG(1,this)">1 PAX</button>
+            <button class="gbtn" onclick="setG(2,this)">2 PAX</button>
+          </div>
+        </div>
+        <div class="fg"><label class="fl">Pesan untuk Pengantin</label><textarea class="fi" placeholder="Ucapan & doa untuk Anita & Zarda..." id="rMsg"></textarea></div>
+        <button class="rsvp-sub" onclick="doRSVP()">
+          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          Konfirmasi Tiket
+        </button>
+      </div>
+    </div>
+
+    <!-- ── WISHES ── -->
+    <div class="sec-card reveal" id="wishes">
+      <div class="sc-head">
+        <div class="sc-head-l">
+          <div class="sc-head-icon" style="background:var(--w-blue)">💬</div>
+          <div>
+            <div class="sc-head-title">Pesan Penumpang</div>
+            <div class="sc-head-sub">Ucapan & Doa dari Tamu</div>
+          </div>
+        </div>
+        <div id="wishCountBadge" class="sc-head-badge" style="background:var(--w-blue)">3 PESAN</div>
+      </div>
+      <div class="sc-body">
+        <div class="wlist" id="wList">
+          <div class="wcard vis">
+            <div class="wav">A</div>
+            <div>
+              <div class="wn">Ayu Rahmawati</div>
+              <div class="ws">BOARDED · 2 PAX</div>
+              <div class="wref">REF: AZ-AYU-240526-001</div>
+              <div class="wtxt">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah 🌿</div>
+            </div>
+          </div>
+          <div class="wcard vis" style="transition-delay:.1s">
+            <div class="wav" style="background:var(--w-dark)">R</div>
+            <div>
+              <div class="wn">Reza Firmansyah</div>
+              <div class="ws">BOARDED · 1 PAX</div>
+              <div class="wref">REF: AZ-REZA-240526-002</div>
+              <div class="wtxt">Alhamdulillah! Semoga pernikahannya membawa keberkahan dan kebahagiaan. Aamiin!</div>
+            </div>
+          </div>
+          <div class="wcard vis" style="transition-delay:.2s">
+            <div class="wav" style="background:#1a6b3a">S</div>
+            <div>
+              <div class="wn">Sinta Dewi</div>
+              <div class="ws">BOARDED · 2 PAX</div>
+              <div class="wref">REF: AZ-SINTA-240526-003</div>
+              <div class="wtxt">Wishing you both a lifetime of love. Semoga selalu diberkahi Allah SWT 💚</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center;padding:20px 0 8px">
+      <div style="font-size:22px;font-weight:900;color:var(--w-red);letter-spacing:-.02em;margin-bottom:6px">WHOOSH</div>
+      <p style="font-size:11px;color:var(--w-gray);line-height:1.7">
+        Wedding Express · G-01<br>
+        Anita &amp; Zarda · 24 Mei 2026<br>
+        Graha Yadika, Tangerang
+      </p>
+      <p style="font-size:9px;color:var(--w-lgray);margin-top:12px;letter-spacing:.08em;text-transform:uppercase">Digital Invitation by BridesSpace</p>
+      <div style="height:70px"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav" id="botNav">
+  <button class="nav-i on" data-id="ticket" onclick="goTo('ticket')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+    Tiket
+  </button>
+  <button class="nav-i" data-id="couple" onclick="goTo('couple')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    Penumpang
+  </button>
+  <button class="nav-i" data-id="event" onclick="goTo('event')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Stasiun
+  </button>
+  <button class="nav-i" data-id="gift" onclick="goTo('gift')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+    Transfer
+  </button>
+  <button class="nav-i" data-id="rsvp" onclick="goTo('rsvp')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    RSVP
+  </button>
+</nav>
+
+<!-- Lightbox -->
+<div class="lb" id="lb">
+  <button class="lb-close" onclick="closeLb()">✕</button>
+  <button class="lb-nav lb-prev" onclick="lbGo(-1)">‹</button>
+  <img class="lb-img" id="lbImg" src="" alt="">
+  <button class="lb-nav lb-next" onclick="lbGo(1)">›</button>
+  <div class="lb-ctr" id="lbCtr"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const GALLERY = [
+  "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=600&h=600&fit=crop&q=80"
+];
+
+let guestN=1, lbIdx=0, toastTO=null, wishNum=3;
+let speedTarget=0, speedCurrent=0, speedRAF=null;
+
+/* ── OPENING SPEED LINES ── */
+(function buildSpeedLines(){
+  const bg = document.getElementById('speedBg');
+  if (!bg) return;
+  for (let i=0;i<18;i++){
+    const l = document.createElement('div');
+    l.className = 'speed-line';
+    const top = 10 + Math.random()*80;
+    const dur = (.8 + Math.random()*1.6).toFixed(2)+'s';
+    const del = (Math.random()*2).toFixed(2)+'s';
+    l.style.cssText = `top:${top}%;--dur:${dur};--del:${del};animation-delay:${del}`;
+    bg.appendChild(l);
+  }
+})();
+
+/* ── BOARD ── */
+function board() {
+  document.getElementById('opening').classList.add('hide');
+  const main = document.getElementById('main');
+  setTimeout(()=>main.classList.add('show'), 120);
+  document.getElementById('botNav').classList.add('show');
+  setTimeout(init, 400);
+}
+
+/* ── INIT ── */
+function init() {
+  buildBarcode();
+  buildGallery();
+  startCountdown();
+  startSpeedometer();
+  initReveal();
+  initScrollSpy();
+}
+
+/* ── BARCODE ── */
+function buildBarcode(){
+  const wrap = document.getElementById('tcBarcode');
+  if (!wrap) return;
+  const pattern = [3,1,2,1,3,2,1,2,4,1,2,3,1,2,1,4,2,1,3,1,2,1,3,2,1,2,1,4,1,2,3];
+  let toggle = true;
+  pattern.forEach(w => {
+    const b = document.createElement('div');
+    b.className = 'bc';
+    b.style.width = (toggle ? w*2 : w) + 'px';
+    b.style.opacity = toggle ? '1' : '0';
+    wrap.appendChild(b);
+    toggle = !toggle;
+  });
+}
+
+/* ── GALLERY ── */
+function buildGallery(){
+  const g = document.getElementById('galGrid');
+  if (!g) return;
+  GALLERY.forEach((src,i)=>{
+    const d = document.createElement('div');
+    d.className = 'gal-item';
+    const km = (42 + i*18);
+    d.innerHTML = `<img src="${src}" alt="" loading="lazy"><div class="gal-km">KM ${km}</div>`;
+    d.onclick = ()=>openLb(i);
+    g.appendChild(d);
+  });
+}
+
+/* ── COUNTDOWN ── */
+function startCountdown(){
+  const tgt = new Date('2026-05-24T08:00:00');
+  const s = (id,v)=>{ const e=document.getElementById(id); if(e) e.textContent=String(v).padStart(2,'0'); };
+  function tick(){
+    const d = tgt - new Date();
+    if(d<=0){s('cdD',0);s('cdH',0);s('cdM',0);s('cdS',0);return;}
+    const days=Math.floor(d/86400000);
+    s('cdD',days);
+    s('cdH',Math.floor((d%86400000)/3600000));
+    s('cdM',Math.floor((d%3600000)/60000));
+    s('cdS',Math.floor((d%60000)/1000));
+    // dept in display
+    const di=document.getElementById('deptIn');
+    if(di) di.textContent = days+'d '+String(Math.floor((d%86400000)/3600000)).padStart(2,'0')+'h '+String(Math.floor((d%3600000)/60000)).padStart(2,'0')+'m';
+  }
+  tick(); setInterval(tick,1000);
+}
+
+/* ── SPEEDOMETER ── */
+function startSpeedometer(){
+  // animate speed from 0 to 350
+  let target = 350;
+  let current = 0;
+  function animSpeed(){
+    current += (target - current) * 0.025;
+    if (current > target - 0.5) current = target;
+    setSpeed(Math.round(current));
+    if (current < target) requestAnimationFrame(animSpeed);
+    else {
+      // small fluctuation loop
+      fluctuate();
+    }
+  }
+  requestAnimationFrame(animSpeed);
+
+  function fluctuate(){
+    target = 310 + Math.random() * 50;
+    function step(){
+      current += (target - current) * 0.015;
+      setSpeed(Math.round(current));
+      if (Math.abs(current-target)<1){ current=target; setTimeout(fluctuate,800+Math.random()*1200); }
+      else requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+}
+
+function setSpeed(v){
+  // update displays
+  const spNum=document.getElementById('spNum');
+  const speedNum=document.getElementById('speedNum');
+  const ahNum=document.querySelector('.ah-speed-num');
+  if(spNum) spNum.textContent=v;
+  if(speedNum) speedNum.textContent=v;
+  if(ahNum) ahNum.textContent=v;
+
+  // rotate needle: -80deg = 0 km/h, +80deg = 350 km/h
+  const angle = -80 + (v/350)*160;
+  const needle=document.getElementById('spNeedle');
+  const fill=document.getElementById('spFill');
+  if(needle) needle.style.transform=`translateX(-50%) rotate(${angle}deg)`;
+  if(fill)   fill.style.transform=`rotate(${-80+(v/350)*160-90}deg)`;
+}
+
+/* ── SCROLL TO ── */
+function goTo(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  const header = document.querySelector('.app-header');
+  const nav    = document.getElementById('routeNav');
+  const offset = (header?header.offsetHeight:0)+(nav?nav.offsetHeight:0)+8;
+  window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - offset, behavior:'smooth' });
+  setActiveNav(id);
+}
+function setActiveNav(id){
+  document.querySelectorAll('.rn-item').forEach(b=>b.classList.toggle('on',b.dataset.id===id));
+  document.querySelectorAll('.nav-i').forEach(b=>b.classList.toggle('on',b.dataset.id===id));
+  const tab=document.querySelector(`.rn-item[data-id="${id}"]`);
+  if(tab) tab.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+}
+
+/* ── SCROLL SPY ── */
+function initScrollSpy(){
+  const ids=['ticket','couple','event','story','gallery','gift','rsvp','wishes'];
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting) setActiveNav(e.target.id);});
+  },{rootMargin:'-30% 0px -60% 0px',threshold:0});
+  ids.forEach(id=>{ const el=document.getElementById(id); if(el) obs.observe(el); });
+}
+
+/* ── REVEAL ── */
+function initReveal(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting) e.target.classList.add('in');});
+  },{threshold:.08});
+  document.querySelectorAll('.reveal,.wcard').forEach(el=>obs.observe(el));
+}
+
+/* ── LIGHTBOX ── */
+function openLb(i){lbIdx=i;updLb();document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden';}
+function closeLb(){document.getElementById('lb').classList.remove('open');document.body.style.overflow='';}
+function lbGo(d){lbIdx=(lbIdx+d+GALLERY.length)%GALLERY.length;updLb();}
+function updLb(){
+  document.getElementById('lbImg').src=GALLERY[lbIdx];
+  document.getElementById('lbCtr').textContent=`KM ${42+lbIdx*18} · ${lbIdx+1} OF ${GALLERY.length}`;
+}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lb').classList.contains('open')) return;
+  if(e.key==='Escape') closeLb();
+  if(e.key==='ArrowLeft') lbGo(-1);
+  if(e.key==='ArrowRight') lbGo(1);
+});
+
+/* ── RSVP ── */
+function setG(n,btn){guestN=n;document.querySelectorAll('.gbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+function doRSVP(){
+  const name=document.getElementById('rName').value.trim();
+  const stat=document.getElementById('rStat').value;
+  const msg =document.getElementById('rMsg').value.trim();
+  if(!name||!stat){showToast('Mohon isi nama dan status kehadiran');return;}
+  wishNum++;
+  const ini=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const bgs=['#E8192C','#0F0F0F','#1a6b3a','#2563EB','#F59E0B'];
+  const bg=bgs[Math.floor(Math.random()*bgs.length)];
+  const stTxt=stat==='hadir'?`BOARDED · ${guestN} PAX`:'NOT BOARDED';
+  const ref=`REF: AZ-${ini}-240526-${String(wishNum).padStart(3,'0')}`;
+  const card=document.createElement('div');
+  card.className='wcard';
+  card.innerHTML=`<div class="wav" style="background:${bg}">${ini}</div><div><div class="wn">${name}</div><div class="ws">${stTxt}</div><div class="wref">${ref}</div><div class="wtxt">${msg||'Selamat dan semoga bahagia selalu! 💛'}</div></div>`;
+  const list=document.getElementById('wList');
+  if(list){list.prepend(card);setTimeout(()=>card.classList.add('vis'),50);}
+  const wb=document.getElementById('wishCountBadge');
+  if(wb) wb.textContent=`${wishNum} PESAN`;
+  const bump=(id,n=1)=>{const e=document.getElementById(id);if(e)e.textContent=parseInt(e.textContent)+n;};
+  bump('stR');
+  if(stat==='hadir'){bump('stH');bump('stT',guestN);}
+  document.getElementById('rName').value='';
+  document.getElementById('rStat').value='';
+  document.getElementById('rMsg').value='';
+  showToast('Tiket berhasil dikonfirmasi ✓');
+  setTimeout(()=>document.getElementById('wishes').scrollIntoView({behavior:'smooth',block:'start'}),600);
+}
+
+/* ── COPY ── */
+function copyAcc(text,btn){
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.classList.add('ok');btn.textContent='✓ Tersalin';
+    showToast('Nomor rekening tersalin!');
+    setTimeout(()=>{btn.classList.remove('ok');btn.textContent='Salin Nomor';},2500);
+  }).catch(()=>showToast('Salin: '+text));
+}
+
+/* ── TOAST ── */
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTO);
+  toastTO=setTimeout(()=>t.classList.remove('show'),2800);
+}
+</script>
+</body>
+</html>

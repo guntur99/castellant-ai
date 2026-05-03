@@ -1,0 +1,1517 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MRT Wedding · Anita & Zarda</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════
+   TOKENS — MRT Jakarta palette
+══════════════════════════════════════ */
+:root {
+  --mrt-red:    #E42320;
+  --mrt-red2:   #C01E1B;
+  --mrt-navy:   #003580;
+  --mrt-navy2:  #002560;
+  --mrt-bg:     #F0F2F5;
+  --mrt-white:  #FFFFFF;
+  --mrt-silver: #C8CDD6;
+  --mrt-gray:   #6B7280;
+  --mrt-dark:   #1A1D23;
+  --mrt-yellow: #F5A623;
+  --mrt-green:  #22C55E;
+  --mono:  'IBM Plex Mono', monospace;
+  --sans:  'IBM Plex Sans', sans-serif;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--mrt-bg);
+  font-family: var(--sans);
+  color: var(--mrt-dark);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ══════════════════════════════════════
+   OPENING — PLATFORM SCREEN
+══════════════════════════════════════ */
+#opening {
+  position: fixed; inset: 0; z-index: 999;
+  background: var(--mrt-navy);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  transition: opacity .6s ease, transform .6s ease;
+}
+#opening.hide { opacity:0; transform:translateY(-8px); pointer-events:none; }
+
+/* Dot matrix header */
+.op-dot-header {
+  background: var(--mrt-navy2);
+  padding: 0;
+  border-bottom: 2px solid var(--mrt-red);
+  flex-shrink: 0;
+}
+.op-dot-ticker {
+  padding: 10px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.op-dot-ticker-inner {
+  display: inline-block;
+  animation: ticker-scroll 20s linear infinite;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--mrt-yellow);
+  letter-spacing: .08em;
+}
+@keyframes ticker-scroll {
+  from { transform: translateX(100vw); }
+  to   { transform: translateX(-100%); }
+}
+
+/* Platform info board */
+.op-platform-board {
+  background: var(--mrt-dark);
+  margin: 0;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  flex-shrink: 0;
+}
+.op-pb-row {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 12px;
+}
+.op-pb-logo {
+  display: flex; align-items: center; gap: 10px;
+}
+.op-mrt-letters {
+  display: flex; gap: 1px;
+}
+.op-mrt-letter {
+  width: 28px; height: 28px; border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 14px; font-weight: 700;
+  color: #fff;
+}
+.op-mrt-letter:nth-child(1) { background: var(--mrt-red); }
+.op-mrt-letter:nth-child(2) { background: var(--mrt-navy); border:1px solid rgba(255,255,255,.2); }
+.op-mrt-letter:nth-child(3) { background: #1a6b3a; }
+.op-brand-sub {
+  font-family: var(--sans); font-size: 9px; font-weight: 400;
+  color: rgba(255,255,255,.4); letter-spacing: .12em; text-transform: uppercase;
+  line-height: 1.3;
+}
+.op-clock {
+  font-family: var(--mono); font-size: 22px; font-weight: 300;
+  color: var(--mrt-yellow); letter-spacing: .05em;
+}
+.op-platform-num {
+  font-family: var(--mono); font-size: 11px; color: rgba(255,255,255,.35);
+  letter-spacing: .1em;
+}
+
+/* Main departure board (split-flap style) */
+.op-board {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 24px 20px;
+  gap: 0;
+}
+
+.op-board-row {
+  width: 100%; max-width: 440px;
+  background: #111;
+  border: 1px solid rgba(255,255,255,.06);
+  padding: 14px 18px;
+  display: flex; align-items: center; justify-content: space-between;
+  border-bottom: none;
+}
+.op-board-row:first-child { border-radius: 8px 8px 0 0; }
+.op-board-row:last-child { border-bottom: 1px solid rgba(255,255,255,.06); border-radius: 0 0 8px 8px; }
+.op-board-row.highlight { background: var(--mrt-dark); }
+.op-board-label {
+  font-family: var(--mono); font-size: 9px; font-weight: 400;
+  color: rgba(255,255,255,.3); letter-spacing: .15em; text-transform: uppercase;
+}
+.op-board-value {
+  font-family: var(--mono); font-size: 14px; font-weight: 600;
+  color: var(--mrt-yellow); letter-spacing: .04em;
+}
+.op-board-value.white { color: #fff; }
+.op-board-value.green { color: var(--mrt-green); }
+.op-board-value.red   { color: var(--mrt-red); }
+
+.op-names-board {
+  width: 100%; max-width: 440px;
+  background: var(--mrt-red);
+  padding: 20px 18px;
+  text-align: center;
+  margin-top: 2px; border-radius: 6px;
+}
+.op-names-text {
+  font-family: var(--sans); font-size: clamp(26px,7vw,44px);
+  font-weight: 700; color: #fff; letter-spacing: -.01em;
+}
+.op-names-sub {
+  font-family: var(--mono); font-size: 10px; color: rgba(255,255,255,.6);
+  letter-spacing: .18em; text-transform: uppercase; margin-top: 4px;
+}
+
+.op-dear-board {
+  width: 100%; max-width: 440px;
+  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+  padding: 12px 18px; margin-top: 10px; border-radius: 6px;
+  display: flex; align-items: center; gap: 12px;
+}
+.op-dear-icon { font-size: 18px; flex-shrink: 0; }
+.op-dear-label {
+  font-family: var(--mono); font-size: 9px; color: rgba(255,255,255,.35);
+  letter-spacing: .12em; text-transform: uppercase; margin-bottom: 2px;
+}
+.op-dear-name {
+  font-family: var(--sans); font-size: 14px; font-weight: 500; color: #fff;
+}
+
+/* CTA */
+.op-cta {
+  padding: 20px 20px max(20px,env(safe-area-inset-bottom));
+  flex-shrink: 0;
+}
+.op-tap-btn {
+  width: 100%; background: var(--mrt-red); border: none;
+  padding: 16px; border-radius: 8px;
+  font-family: var(--mono); font-size: 13px; font-weight: 600;
+  color: #fff; letter-spacing: .08em; text-transform: uppercase;
+  cursor: pointer; transition: background .15s;
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+}
+.op-tap-btn:hover { background: var(--mrt-red2); }
+.op-tap-btn svg { width: 18px; height: 18px; fill: #fff; }
+
+/* ══════════════════════════════════════
+   MAIN APP
+══════════════════════════════════════ */
+#main { opacity:0; transition:opacity .5s ease .1s; }
+#main.show { opacity:1; }
+
+/* ══════════════════════════════════════
+   SYSTEM TOP BAR (sticky)
+══════════════════════════════════════ */
+.sys-bar {
+  background: var(--mrt-navy);
+  position: sticky; top: 0; z-index: 100;
+  border-bottom: 3px solid var(--mrt-red);
+}
+.sys-bar-top {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 16px 8px;
+}
+.sys-logo { display: flex; align-items: center; gap: 8px; }
+.sys-mrt {
+  display: flex; gap: 1px;
+}
+.sys-letter {
+  width: 20px; height: 20px; border-radius: 3px;
+  font-family: var(--mono); font-size: 10px; font-weight: 700;
+  color: #fff; display: flex; align-items: center; justify-content: center;
+}
+.sys-letter:nth-child(1) { background: var(--mrt-red); }
+.sys-letter:nth-child(2) { background: var(--mrt-navy); border:1px solid rgba(255,255,255,.2); }
+.sys-letter:nth-child(3) { background: #1a6b3a; }
+.sys-title {
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  color: rgba(255,255,255,.7); letter-spacing: .06em;
+}
+.sys-right { display: flex; align-items: center; gap: 10px; }
+.sys-clock {
+  font-family: var(--mono); font-size: 14px; font-weight: 400;
+  color: var(--mrt-yellow);
+}
+.sys-status {
+  display: flex; align-items: center; gap: 4px;
+  font-family: var(--mono); font-size: 9px; color: var(--mrt-green);
+  font-weight: 500; letter-spacing: .06em;
+}
+.sys-status-dot {
+  width: 5px; height: 5px; background: var(--mrt-green);
+  border-radius: 50%; animation: blink .9s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1}50%{opacity:.2} }
+
+/* Line ticker */
+.sys-ticker {
+  background: var(--mrt-dark);
+  padding: 6px 0;
+  overflow: hidden; white-space: nowrap;
+}
+.sys-ticker-inner {
+  display: inline-block;
+  animation: ticker-scroll 24s linear infinite;
+  font-family: var(--mono); font-size: 10px; color: rgba(255,255,255,.35);
+  letter-spacing: .06em;
+}
+
+/* ══════════════════════════════════════
+   NAV TABS (MRT Line tabs)
+══════════════════════════════════════ */
+.line-tabs {
+  background: var(--mrt-white);
+  display: flex; overflow-x: auto; scrollbar-width: none;
+  border-bottom: 1px solid var(--mrt-silver);
+  position: sticky; top: 91px; z-index: 99;
+}
+.line-tabs::-webkit-scrollbar { display: none; }
+.line-tab {
+  flex-shrink: 0; padding: 11px 16px;
+  font-family: var(--mono); font-size: 10px; font-weight: 500;
+  color: var(--mrt-gray); text-decoration: none; background: none; border: none;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap; transition: color .15s, border-color .15s;
+  letter-spacing: .06em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 6px; cursor: pointer;
+}
+.line-tab:hover { color: var(--mrt-red); }
+.line-tab.active { color: var(--mrt-red); border-bottom-color: var(--mrt-red); }
+.line-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════
+   CONTAINER
+══════════════════════════════════════ */
+.container {
+  max-width: 520px; margin: 0 auto;
+  padding: 16px 14px max(60px,env(safe-area-inset-bottom));
+}
+
+/* ══════════════════════════════════════
+   BOARDING PASS — main ticket
+══════════════════════════════════════ */
+.boarding-pass {
+  background: var(--mrt-white);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,.1), 0 1px 4px rgba(0,0,0,.06);
+  margin-bottom: 12px;
+  position: relative;
+}
+
+/* Red stripe top */
+.bp-stripe {
+  height: 6px;
+  background: linear-gradient(90deg, var(--mrt-red) 60%, var(--mrt-navy) 100%);
+}
+
+/* Header */
+.bp-header {
+  padding: 16px 20px 14px;
+  display: flex; align-items: flex-start; justify-content: space-between;
+  border-bottom: 1px solid #F0F2F5;
+}
+.bp-h-left {}
+.bp-ticket-type {
+  font-family: var(--mono); font-size: 9px; font-weight: 500;
+  color: var(--mrt-gray); letter-spacing: .15em; text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.bp-ticket-name {
+  font-family: var(--sans); font-size: 20px; font-weight: 700;
+  color: var(--mrt-dark); line-height: 1.15;
+}
+.bp-ticket-sub {
+  font-family: var(--mono); font-size: 10px; color: var(--mrt-gray);
+  margin-top: 3px; letter-spacing: .04em;
+}
+.bp-h-right { text-align: right; flex-shrink: 0; }
+.bp-valid-tag {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(34,197,94,.1); border: 1px solid rgba(34,197,94,.25);
+  color: var(--mrt-green); font-family: var(--mono); font-size: 9px;
+  font-weight: 600; padding: 4px 9px; border-radius: 20px;
+  letter-spacing: .08em; text-transform: uppercase; margin-bottom: 6px;
+}
+.valid-dot { width: 5px; height: 5px; background: var(--mrt-green); border-radius: 50%; animation: blink .9s infinite; }
+.bp-ticket-id {
+  font-family: var(--mono); font-size: 10px; color: var(--mrt-gray); letter-spacing: .05em;
+}
+
+/* Route display */
+.bp-route {
+  padding: 20px 20px 18px;
+  display: flex; align-items: center; gap: 0;
+  border-bottom: 1px solid #F0F2F5;
+}
+.bp-station { flex: 1; }
+.bp-station.dest { text-align: right; }
+.bp-stn-code {
+  font-family: var(--mono); font-size: 28px; font-weight: 700;
+  color: var(--mrt-navy); line-height: 1; letter-spacing: -.02em;
+}
+.bp-stn-code.red { color: var(--mrt-red); }
+.bp-stn-name {
+  font-family: var(--sans); font-size: 11px; color: var(--mrt-gray);
+  margin-top: 4px; font-weight: 400;
+}
+.bp-route-mid {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 4px; padding: 0 8px;
+}
+.bp-route-line {
+  width: 100%; height: 3px; background: var(--mrt-red);
+  border-radius: 2px; position: relative;
+}
+.bp-route-dots {
+  display: flex; justify-content: space-between;
+  width: 100%; padding: 0 2px;
+}
+.bp-route-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  border: 2px solid var(--mrt-red); background: #fff;
+  margin-top: -5px;
+}
+.bp-route-label {
+  font-family: var(--mono); font-size: 8px; color: var(--mrt-gray);
+  letter-spacing: .1em; text-transform: uppercase; margin-top: 4px;
+}
+.bp-route-stops {
+  font-family: var(--mono); font-size: 9px; color: var(--mrt-red);
+  font-weight: 600; letter-spacing: .04em;
+}
+
+/* Info grid */
+.bp-info-grid {
+  display: grid; grid-template-columns: repeat(3,1fr);
+  border-bottom: 1px solid #F0F2F5;
+}
+.bp-info-cell {
+  padding: 14px 16px;
+  border-right: 1px solid #F0F2F5;
+}
+.bp-info-cell:last-child { border-right: none; }
+.bp-ic-label {
+  font-family: var(--mono); font-size: 8px; font-weight: 500;
+  color: var(--mrt-gray); letter-spacing: .15em; text-transform: uppercase; margin-bottom: 4px;
+}
+.bp-ic-value {
+  font-family: var(--mono); font-size: 13px; font-weight: 600;
+  color: var(--mrt-dark); line-height: 1.2;
+}
+.bp-ic-value.red { color: var(--mrt-red); }
+
+/* Tear line */
+.bp-tear {
+  height: 1px; margin: 0 16px;
+  border-top: 1.5px dashed #C8CDD6;
+  position: relative;
+}
+.bp-tear::before {
+  content:''; position: absolute; left: -26px; top: -9px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--mrt-bg); border: 1.5px solid #C8CDD6;
+}
+.bp-tear::after {
+  content:''; position: absolute; right: -26px; top: -9px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--mrt-bg); border: 1.5px solid #C8CDD6;
+}
+
+/* Barcode section */
+.bp-barcode {
+  padding: 18px 20px 16px;
+  display: flex; align-items: center; gap: 16px;
+}
+.barcode-svg { flex-shrink: 0; }
+.barcode-lines {
+  display: flex; align-items: stretch; gap: 1px; height: 52px;
+}
+.bc-line {
+  background: var(--mrt-dark);
+  border-radius: 1px;
+}
+.bp-barcode-meta { flex: 1; }
+.bp-barcode-num {
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  color: var(--mrt-gray); letter-spacing: .06em; margin-bottom: 6px;
+}
+.bp-barcode-label {
+  font-family: var(--mono); font-size: 9px; color: #b0b7c3;
+  letter-spacing: .1em; text-transform: uppercase; margin-bottom: 3px;
+}
+.bp-barcode-sub {
+  font-family: var(--sans); font-size: 12px; font-weight: 500;
+  color: var(--mrt-dark);
+}
+
+/* ══════════════════════════════════════
+   SYSTEM INFO CARD
+══════════════════════════════════════ */
+.sys-card {
+  background: var(--mrt-white);
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0,0,0,.06);
+  overflow: hidden;
+  margin-bottom: 10px;
+}
+.sc-head {
+  background: var(--mrt-navy);
+  padding: 10px 16px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.sc-head-title {
+  font-family: var(--mono); font-size: 10px; font-weight: 600;
+  color: rgba(255,255,255,.7); letter-spacing: .12em; text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px;
+}
+.sc-head-badge {
+  background: var(--mrt-red); color: #fff;
+  font-family: var(--mono); font-size: 8px; font-weight: 700;
+  padding: 2px 7px; border-radius: 2px; letter-spacing: .06em;
+}
+.sc-head-right {
+  font-family: var(--mono); font-size: 9px; color: rgba(255,255,255,.35);
+  letter-spacing: .08em;
+}
+.sc-body { padding: 16px; }
+
+/* Station stop card */
+.station-card {
+  background: #F8F9FB; border: 1px solid #E5E9F0;
+  border-radius: 8px; overflow: hidden; margin-bottom: 8px;
+}
+.station-card:last-child { margin-bottom: 0; }
+.stn-head {
+  background: var(--mrt-red); padding: 8px 14px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.stn-type {
+  font-family: var(--mono); font-size: 9px; font-weight: 700;
+  color: rgba(255,255,255,.85); letter-spacing: .1em; text-transform: uppercase;
+}
+.stn-time {
+  font-family: var(--mono); font-size: 11px; font-weight: 700; color: #fff;
+}
+.stn-body { padding: 12px 14px; }
+.stn-name {
+  font-family: var(--sans); font-size: 17px; font-weight: 700;
+  color: var(--mrt-dark); margin-bottom: 3px;
+}
+.stn-info-row {
+  display: flex; align-items: flex-start; gap: 7px;
+  font-family: var(--sans); font-size: 12px; color: var(--mrt-gray);
+  line-height: 1.5; margin-bottom: 6px;
+}
+.stn-info-ic { width: 13px; height: 13px; fill: var(--mrt-red); flex-shrink: 0; margin-top: 1px; }
+.stn-map-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--mrt-navy); color: #fff; text-decoration: none;
+  font-family: var(--mono); font-size: 9px; font-weight: 600;
+  padding: 5px 12px; border-radius: 4px; margin-top: 4px;
+  letter-spacing: .06em; transition: background .15s;
+}
+.stn-map-btn:hover { background: var(--mrt-navy2); }
+
+/* Data row */
+.data-row {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 11px 0; border-bottom: 1px solid #F0F2F5; gap: 12px;
+}
+.data-row:last-child { border-bottom: none; }
+.dr-key {
+  font-family: var(--mono); font-size: 10px; color: var(--mrt-gray);
+  font-weight: 400; flex-shrink: 0; letter-spacing: .04em;
+}
+.dr-val {
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  color: var(--mrt-dark); text-align: right;
+}
+.dr-val.red   { color: var(--mrt-red); }
+.dr-val.green { color: var(--mrt-green); }
+.dr-val.navy  { color: var(--mrt-navy); }
+
+/* Couple cards */
+.couple-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.couple-card {
+  background: #F8F9FB; border: 1px solid #E5E9F0;
+  border-radius: 8px; overflow: hidden; text-align: center;
+}
+.cc-badge {
+  background: var(--mrt-navy); padding: 6px 10px;
+  font-family: var(--mono); font-size: 8px; font-weight: 600;
+  color: rgba(255,255,255,.7); letter-spacing: .12em; text-transform: uppercase;
+}
+.cc-body { padding: 14px 10px; }
+.cc-av {
+  width: 64px; height: 64px; border-radius: 50%; overflow: hidden;
+  margin: 0 auto 10px; border: 3px solid var(--mrt-red);
+}
+.cc-av img { width:100%; height:100%; object-fit:cover; }
+.cc-role {
+  font-family: var(--mono); font-size: 8px; font-weight: 600;
+  color: var(--mrt-red); letter-spacing: .1em; text-transform: uppercase; margin-bottom: 4px;
+}
+.cc-name {
+  font-family: var(--sans); font-size: 13px; font-weight: 700;
+  color: var(--mrt-dark); margin-bottom: 4px; line-height: 1.3;
+}
+.cc-parents {
+  font-family: var(--sans); font-size: 10px; color: var(--mrt-gray); line-height: 1.55;
+}
+
+/* Timeline — Route map style */
+.route-map { position: relative; padding-left: 20px; }
+.route-map::before {
+  content:''; position: absolute; left: 7px; top: 8px; bottom: 8px;
+  width: 3px; background: var(--mrt-red); border-radius: 2px;
+}
+.rm-item { display: flex; gap: 16px; margin-bottom: 28px; position: relative; }
+.rm-item:last-child { margin-bottom: 0; }
+.rm-dot {
+  position: absolute; left: -19px; top: 3px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--mrt-white); border: 3px solid var(--mrt-red);
+  z-index: 1;
+}
+.rm-dot.filled { background: var(--mrt-red); }
+.rm-body { flex: 1; }
+.rm-code {
+  font-family: var(--mono); font-size: 8px; font-weight: 600;
+  color: var(--mrt-red); letter-spacing: .15em; text-transform: uppercase; margin-bottom: 3px;
+}
+.rm-when {
+  font-family: var(--mono); font-size: 9px; color: var(--mrt-gray); margin-bottom: 5px; letter-spacing: .04em;
+}
+.rm-title {
+  font-family: var(--sans); font-size: 16px; font-weight: 700;
+  color: var(--mrt-dark); margin-bottom: 5px;
+}
+.rm-desc {
+  font-family: var(--sans); font-size: 12px; color: var(--mrt-gray); line-height: 1.65;
+}
+
+/* Gallery grid */
+.gal-grid {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 3px;
+}
+.gal-item {
+  aspect-ratio: 1; overflow: hidden; cursor: pointer; border-radius: 4px;
+  background: #E5E9F0; position: relative;
+}
+.gal-item img {
+  width:100%; height:100%; object-fit:cover;
+  transition:transform .35s, filter .3s;
+  filter: brightness(.9) saturate(.9);
+}
+.gal-item:hover img { transform:scale(1.07); filter:brightness(1) saturate(1); }
+.gal-label {
+  position: absolute; bottom: 5px; left: 5px;
+  background: rgba(0,0,0,.55); color: #fff;
+  font-family: var(--mono); font-size: 8px; font-weight: 600;
+  padding: 2px 5px; border-radius: 2px; letter-spacing: .05em;
+}
+
+/* Gift */
+.gift-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.gift-card {
+  background: #F8F9FB; border: 1px solid #E5E9F0;
+  border-radius: 8px; overflow: hidden;
+}
+.gc-stripe { height: 4px; background: var(--mrt-red); }
+.gc-body { padding: 14px; }
+.gc-bank {
+  font-family: var(--mono); font-size: 8px; color: var(--mrt-gray);
+  letter-spacing: .12em; text-transform: uppercase; margin-bottom: 2px;
+}
+.gc-name {
+  font-family: var(--sans); font-size: 20px; font-weight: 800;
+  color: var(--mrt-navy); margin-bottom: 2px;
+}
+.gc-holder {
+  font-family: var(--sans); font-size: 10px; color: var(--mrt-gray); margin-bottom: 10px;
+}
+.gc-num {
+  font-family: var(--mono); font-size: 13px; font-weight: 600;
+  color: var(--mrt-dark); background: #F0F2F5;
+  padding: 6px 10px; border-radius: 4px;
+  display: inline-block; margin-bottom: 10px; letter-spacing: .08em;
+}
+.copy-btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--mrt-red); color: #fff; border: none;
+  font-family: var(--mono); font-size: 9px; font-weight: 600;
+  padding: 7px 14px; border-radius: 4px; cursor: pointer;
+  letter-spacing: .06em; text-transform: uppercase;
+  transition: background .15s;
+}
+.copy-btn:hover { background: var(--mrt-red2); }
+.copy-btn.ok { background: var(--mrt-green); }
+
+/* RSVP */
+.rsvp-stats {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 0;
+  border: 1px solid #E5E9F0; border-radius: 8px; overflow: hidden;
+  margin-bottom: 16px;
+}
+.rs {
+  padding: 12px 8px; text-align: center;
+  border-right: 1px solid #E5E9F0;
+}
+.rs:last-child { border-right: none; }
+.rs-n {
+  font-family: var(--mono); font-size: 24px; font-weight: 700;
+  color: var(--mrt-red); line-height: 1;
+}
+.rs-l {
+  font-family: var(--mono); font-size: 8px; color: var(--mrt-gray);
+  text-transform: uppercase; letter-spacing: .1em; margin-top: 3px;
+}
+
+.fg { margin-bottom: 14px; }
+.fl {
+  display: block; font-family: var(--mono); font-size: 9px; font-weight: 500;
+  color: var(--mrt-gray); letter-spacing: .12em; text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.fi {
+  width: 100%; background: #F8F9FB; border: 1px solid #E5E9F0;
+  border-radius: 6px; padding: 10px 12px; color: var(--mrt-dark);
+  font-family: var(--mono); font-size: 13px; outline: none;
+  transition: border-color .2s; -webkit-appearance: none; appearance: none;
+}
+.fi:focus { border-color: var(--mrt-red); }
+.fi::placeholder { color: #b0b7c3; }
+select.fi {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 12px center;
+  padding-right: 34px; cursor: pointer;
+}
+select.fi option { background: #fff; }
+textarea.fi { min-height: 80px; resize: none; }
+.gbtn-row { display: flex; gap: 6px; }
+.gbtn {
+  flex: 1; background: #F8F9FB; border: 1px solid #E5E9F0;
+  border-radius: 6px; padding: 10px; color: var(--mrt-gray);
+  font-family: var(--mono); font-size: 12px; cursor: pointer; transition: all .15s;
+}
+.gbtn.on { background: rgba(228,35,32,.08); border-color: var(--mrt-red); color: var(--mrt-red); font-weight: 600; }
+.rsvp-submit {
+  width: 100%; background: var(--mrt-red); border: none; border-radius: 6px;
+  padding: 14px; color: #fff; font-family: var(--mono); font-size: 12px;
+  font-weight: 700; cursor: pointer; letter-spacing: .08em;
+  text-transform: uppercase; margin-top: 4px;
+  transition: background .15s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.rsvp-submit:hover { background: var(--mrt-red2); }
+.rsvp-submit svg { width: 14px; height: 14px; fill: #fff; }
+
+/* Wishes */
+.wlist { display: flex; flex-direction: column; gap: 0; }
+.wcard {
+  display: flex; gap: 12px; padding: 13px 0;
+  border-bottom: 1px solid #F0F2F5;
+  opacity: 0; transform: translateY(10px);
+  transition: opacity .5s, transform .5s;
+}
+.wcard.vis { opacity:1; transform:translateY(0); }
+.wcard:last-child { border-bottom: none; }
+.wav {
+  width: 36px; height: 36px; border-radius: 8px;
+  background: var(--mrt-red); display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono); font-size: 13px; font-weight: 700; color: #fff;
+  flex-shrink: 0;
+}
+.wn   { font-family: var(--sans); font-size: 13px; font-weight: 600; color: var(--mrt-dark); }
+.ws   { font-family: var(--mono); font-size: 9px; color: var(--mrt-green); font-weight: 500; margin-top: 1px; letter-spacing: .04em; }
+.wref { font-family: var(--mono); font-size: 9px; color: #b0b7c3; margin-top: 1px; }
+.wtxt { font-family: var(--sans); font-size: 12px; color: var(--mrt-gray); line-height: 1.65; margin-top: 5px; }
+
+/* Countdown */
+.cd-row { display: flex; gap: 0; margin-top: 14px; }
+.cd-cell {
+  flex: 1; text-align: center; padding: 12px 6px;
+  border-right: 1px solid #E5E9F0; background: #F8F9FB;
+}
+.cd-cell:first-child { border-radius: 6px 0 0 6px; }
+.cd-cell:last-child  { border-right: none; border-radius: 0 6px 6px 0; }
+.cd-n {
+  font-family: var(--mono); font-size: 26px; font-weight: 700;
+  color: var(--mrt-red); line-height: 1;
+}
+.cd-u {
+  font-family: var(--mono); font-size: 8px; color: var(--mrt-gray);
+  text-transform: uppercase; letter-spacing: .1em; margin-top: 3px;
+}
+
+/* Announcement banner */
+.announce-card {
+  background: var(--mrt-navy);
+  border-radius: 10px; overflow: hidden; margin-bottom: 10px;
+  padding: 14px 16px;
+}
+.announce-tag {
+  font-family: var(--mono); font-size: 8px; font-weight: 700;
+  color: var(--mrt-yellow); letter-spacing: .15em;
+  text-transform: uppercase; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.announce-tag::before {
+  content:''; width: 16px; height: 2px; background: var(--mrt-yellow);
+}
+.announce-text {
+  font-family: var(--sans); font-size: 13px; font-weight: 300;
+  color: rgba(255,255,255,.75); line-height: 1.65;
+  font-style: italic;
+}
+
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: rgba(255,255,255,.97); backdrop-filter: blur(16px);
+  border-top: 1px solid var(--mrt-silver);
+  display: flex; justify-content: space-around;
+  padding: 8px 0 max(8px,env(safe-area-inset-bottom));
+  z-index: 100;
+  transform: translateY(100%);
+  transition: transform .5s ease 1s;
+}
+.bottom-nav.show { transform: translateY(0); }
+.nav-i {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  color: var(--mrt-gray); text-decoration: none; background: none; border: none;
+  font-family: var(--mono); font-size: 8px; font-weight: 500;
+  letter-spacing: .06em; text-transform: uppercase; padding: 3px 10px;
+  transition: color .15s; cursor: pointer;
+}
+.nav-i svg { width: 20px; height: 20px; }
+.nav-i.on, .nav-i:hover { color: var(--mrt-red); }
+
+/* Lightbox */
+.lb { position:fixed; inset:0; background:rgba(0,0,0,.96); z-index:200; display:none; flex-direction:column; align-items:center; justify-content:center; }
+.lb.open { display:flex; }
+.lb-img { max-width:94vw; max-height:84vh; border-radius:6px; object-fit:contain; }
+.lb-close { position:absolute; top:18px; right:16px; background:rgba(255,255,255,.1); border:none; color:#fff; width:38px; height:38px; border-radius:50%; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+.lb-nav { position:absolute; top:50%; transform:translateY(-50%); background:rgba(255,255,255,.1); border:none; color:#fff; font-size:26px; cursor:pointer; width:42px; height:56px; border-radius:6px; display:flex; align-items:center; justify-content:center; }
+.lb-prev { left:10px; } .lb-next { right:10px; }
+.lb-ctr { position:absolute; bottom:18px; left:50%; transform:translateX(-50%); font-family:var(--mono); font-size:10px; color:rgba(255,255,255,.4); letter-spacing:.1em; }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 80px; left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: var(--mrt-dark); color: #fff;
+  padding: 10px 20px; border-radius: 6px;
+  font-family: var(--mono); font-size: 11px; font-weight: 500;
+  letter-spacing: .04em; opacity: 0;
+  transition: opacity .25s, transform .25s;
+  pointer-events: none; white-space: nowrap; z-index: 999;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Scroll reveal */
+.reveal { opacity:0; transform:translateY(16px); transition:opacity .6s, transform .6s; }
+.reveal.in { opacity:1; transform:translateY(0); }
+.rv2 { transition-delay:.1s; }
+.rv3 { transition-delay:.2s; }
+</style>
+</head>
+<body>
+
+<!-- ══ OPENING ══ -->
+<div id="opening">
+  <div class="op-dot-header">
+    <div class="op-dot-ticker">
+      <div class="op-dot-ticker-inner">
+        ◆ MRT WEDDING LINE · ANITA &amp; ZARDA · 24 MEI 2026 &nbsp;&nbsp;&nbsp;
+        ◆ PERHATIAN: HARAP KONFIRMASI KEHADIRAN ANDA &nbsp;&nbsp;&nbsp;
+        ◆ STASIUN TUJUAN: GRAHA YADIKA, TANGERANG &nbsp;&nbsp;&nbsp;
+        ◆ BOARDING TIME: 08.00 WIB &nbsp;&nbsp;&nbsp;
+        ◆ SELAMAT DATANG DI MRT WEDDING LINE &nbsp;&nbsp;&nbsp;
+        ◆ MRT WEDDING LINE · ANITA &amp; ZARDA · 24 MEI 2026 &nbsp;&nbsp;&nbsp;
+        ◆ PERHATIAN: HARAP KONFIRMASI KEHADIRAN ANDA &nbsp;&nbsp;&nbsp;
+      </div>
+    </div>
+  </div>
+
+  <div class="op-platform-board">
+    <div class="op-pb-row">
+      <div class="op-pb-logo">
+        <div class="op-mrt-letters">
+          <div class="op-mrt-letter">M</div>
+          <div class="op-mrt-letter">R</div>
+          <div class="op-mrt-letter">T</div>
+        </div>
+        <div class="op-brand-sub">Mass Rapid Transit<br>Wedding Line</div>
+      </div>
+      <div class="op-clock" id="opClock">--:--</div>
+    </div>
+    <div class="op-platform-num">PLATFORM 1 · UNDANGAN PERNIKAHAN</div>
+  </div>
+
+  <div class="op-board">
+    <div style="width:100%;max-width:440px">
+      <div class="op-board-row">
+        <span class="op-board-label">Keberangkatan</span>
+        <span class="op-board-value">08:00 WIB</span>
+      </div>
+      <div class="op-board-row">
+        <span class="op-board-label">Tujuan</span>
+        <span class="op-board-value white">Graha Yadika · Tangerang</span>
+      </div>
+      <div class="op-board-row highlight">
+        <span class="op-board-label">Tanggal</span>
+        <span class="op-board-value">24 MEI 2026 · MINGGU</span>
+      </div>
+      <div class="op-board-row">
+        <span class="op-board-label">Status</span>
+        <span class="op-board-value green">ON SCHEDULE ✓</span>
+      </div>
+      <div class="op-board-row">
+        <span class="op-board-label">Platform</span>
+        <span class="op-board-value red">HADIR GRATIS</span>
+      </div>
+    </div>
+
+    <div class="op-names-board">
+      <div class="op-names-text">Anita &amp; Zarda</div>
+      <div class="op-names-sub">An Intimate Wedding · Wedding Line</div>
+    </div>
+
+    <div class="op-dear-board">
+      <div class="op-dear-icon">🎫</div>
+      <div>
+        <div class="op-dear-label">Tiket Untuk</div>
+        <div class="op-dear-name">Ade Guntur Fitridullah &amp; Partner</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="op-cta">
+    <button class="op-tap-btn" onclick="boardTrain()">
+      <svg viewBox="0 0 24 24"><path d="M19 11H7.83l4.88-4.88c.39-.39.39-1.03 0-1.42-.39-.39-1.02-.39-1.41 0l-6.59 6.59c-.39.39-.39 1.02 0 1.41l6.59 6.59c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1z"/></svg>
+      TAP UNTUK MASUK · BUKA UNDANGAN
+    </button>
+  </div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div id="main">
+
+  <!-- System top bar -->
+  <div class="sys-bar">
+    <div class="sys-bar-top">
+      <div class="sys-logo">
+        <div class="sys-mrt">
+          <div class="sys-letter">M</div>
+          <div class="sys-letter">R</div>
+          <div class="sys-letter">T</div>
+        </div>
+        <span class="sys-title">Wedding Line</span>
+      </div>
+      <div class="sys-right">
+        <div class="sys-status"><div class="sys-status-dot"></div>LIVE</div>
+        <div class="sys-clock" id="sysClock">--:--:--</div>
+      </div>
+    </div>
+    <div class="sys-ticker">
+      <div class="sys-ticker-inner">
+        ◆ Selamat datang di MRT Wedding Line &nbsp;·&nbsp; Tujuan: Graha Yadika, Tangerang &nbsp;·&nbsp; Harap siapkan kehadiran Anda &nbsp;·&nbsp; Dilarang membawa kesedihan ke dalam gerbong &nbsp;·&nbsp; Prioritaskan kursi untuk lansia &nbsp;·&nbsp; Terima kasih telah menggunakan layanan kami &nbsp;&nbsp;&nbsp;
+        ◆ Selamat datang di MRT Wedding Line &nbsp;·&nbsp; Tujuan: Graha Yadika, Tangerang &nbsp;·&nbsp; Harap siapkan kehadiran Anda &nbsp;·&nbsp; Dilarang membawa kesedihan ke dalam gerbong &nbsp;·&nbsp; Prioritaskan kursi untuk lansia &nbsp;·&nbsp; Terima kasih telah menggunakan layanan kami &nbsp;&nbsp;&nbsp;
+      </div>
+    </div>
+  </div>
+
+  <!-- Line tabs -->
+  <div class="line-tabs" id="lineTabs">
+    <button onclick="scrollTo('ticket')"  class="line-tab active" data-id="ticket"><div class="line-dot" style="background:var(--mrt-red)"></div>Tiket</button>
+    <button onclick="scrollTo('couple')"  class="line-tab" data-id="couple"><div class="line-dot" style="background:var(--mrt-navy)"></div>Penumpang</button>
+    <button onclick="scrollTo('event')"   class="line-tab" data-id="event"><div class="line-dot" style="background:#1a6b3a"></div>Stasiun</button>
+    <button onclick="scrollTo('story')"   class="line-tab" data-id="story"><div class="line-dot" style="background:var(--mrt-yellow)"></div>Rute</button>
+    <button onclick="scrollTo('gallery')" class="line-tab" data-id="gallery"><div class="line-dot" style="background:var(--mrt-gray)"></div>Galeri</button>
+    <button onclick="scrollTo('gift')"    class="line-tab" data-id="gift"><div class="line-dot" style="background:var(--mrt-green)"></div>Transfer</button>
+    <button onclick="scrollTo('rsvp')"    class="line-tab" data-id="rsvp"><div class="line-dot" style="background:var(--mrt-red)"></div>RSVP</button>
+  </div>
+
+  <div class="container">
+
+    <!-- ── BOARDING PASS ── -->
+    <div class="boarding-pass reveal" id="ticket">
+      <div class="bp-stripe"></div>
+      <div class="bp-header">
+        <div class="bp-h-left">
+          <div class="bp-ticket-type">Electronic Wedding Ticket · Class: LOVE</div>
+          <div class="bp-ticket-name">Anita &amp; Zarda</div>
+          <div class="bp-ticket-sub">Wedding Day · 24 MEI 2026</div>
+        </div>
+        <div class="bp-h-right">
+          <div class="bp-valid-tag"><div class="valid-dot"></div>VALID</div>
+          <div class="bp-ticket-id">TKT·AZ·240526·001</div>
+        </div>
+      </div>
+
+      <div class="bp-route">
+        <div class="bp-station">
+          <div class="bp-stn-code">PRT</div>
+          <div class="bp-stn-name">Pertemuan<br>Juni 2025</div>
+        </div>
+        <div class="bp-route-mid">
+          <div class="bp-route-line">
+            <div class="bp-route-dots">
+              <div class="bp-route-dot"></div>
+              <div class="bp-route-dot"></div>
+              <div class="bp-route-dot"></div>
+            </div>
+          </div>
+          <div class="bp-route-label">Wedding Line</div>
+          <div class="bp-route-stops">2 Stops</div>
+        </div>
+        <div class="bp-station dest">
+          <div class="bp-stn-code red">NKH</div>
+          <div class="bp-stn-name">Pernikahan<br>Mei 2026</div>
+        </div>
+      </div>
+
+      <div class="bp-info-grid">
+        <div class="bp-info-cell">
+          <div class="bp-ic-label">Date</div>
+          <div class="bp-ic-value">24 MEI<br>2026</div>
+        </div>
+        <div class="bp-info-cell">
+          <div class="bp-ic-label">Boarding</div>
+          <div class="bp-ic-value red">08:00<br>WIB</div>
+        </div>
+        <div class="bp-info-cell">
+          <div class="bp-ic-label">Seat</div>
+          <div class="bp-ic-value">HADIR<br>GRATIS</div>
+        </div>
+      </div>
+
+      <div class="bp-tear"></div>
+
+      <div class="bp-barcode">
+        <div class="barcode-svg">
+          <div class="barcode-lines" id="barcode"></div>
+        </div>
+        <div class="bp-barcode-meta">
+          <div class="bp-barcode-num">AZ·240526·GRAHA·YADIKA</div>
+          <div class="bp-barcode-label">Penumpang</div>
+          <div class="bp-barcode-sub">Ade Guntur Fitridullah &amp; Partner</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ANNOUNCEMENT ── -->
+    <div class="announce-card reveal">
+      <div class="announce-tag">Pengumuman Layanan</div>
+      <div class="announce-text">
+        "Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya..." — Surah Ar-Rum : 21
+      </div>
+    </div>
+
+    <!-- ── COUNTDOWN ── -->
+    <div class="sys-card reveal">
+      <div class="sc-head">
+        <div class="sc-head-title">⏱ Departure Countdown</div>
+        <div class="sc-head-right">REAL-TIME</div>
+      </div>
+      <div class="sc-body" style="padding:14px 16px">
+        <div class="cd-row" id="cdRow">
+          <div class="cd-cell"><div class="cd-n" id="cdD">00</div><div class="cd-u">Hari</div></div>
+          <div class="cd-cell"><div class="cd-n" id="cdH">00</div><div class="cd-u">Jam</div></div>
+          <div class="cd-cell"><div class="cd-n" id="cdM">00</div><div class="cd-u">Menit</div></div>
+          <div class="cd-cell"><div class="cd-n" id="cdS">00</div><div class="cd-u">Detik</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── COUPLE ── -->
+    <div class="sys-card reveal" id="couple">
+      <div class="sc-head">
+        <div class="sc-head-title">👥 Data Penumpang <span class="sc-head-badge">VERIFIED</span></div>
+        <div class="sc-head-right">2 PAX</div>
+      </div>
+      <div class="sc-body">
+        <div class="couple-grid">
+          <div class="couple-card">
+            <div class="cc-badge">Mempelai Wanita</div>
+            <div class="cc-body">
+              <div class="cc-av"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita"></div>
+              <div class="cc-role">Passenger · Female</div>
+              <div class="cc-name">Anita Pangestuti, S.Kom</div>
+              <div class="cc-parents">Putri Pertama dari<br><strong>Bpk. Taryono &<br>Ibu Wiwit Jayanti</strong></div>
+            </div>
+          </div>
+          <div class="couple-card">
+            <div class="cc-badge">Mempelai Pria</div>
+            <div class="cc-body">
+              <div class="cc-av"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda"></div>
+              <div class="cc-role">Passenger · Male</div>
+              <div class="cc-name">Zardarian Ahadika N, S.Kom</div>
+              <div class="cc-parents">Putra Kedua dari<br><strong>Bpk. Wan Sabran, M.MAR &<br>Ibu Titik Sundari, M.Si</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STATIONS / EVENTS ── -->
+    <div class="sys-card reveal" id="event">
+      <div class="sc-head">
+        <div class="sc-head-title">📍 Stasiun Pemberhentian <span class="sc-head-badge">ON TIME</span></div>
+        <div class="sc-head-right">2 STOPS</div>
+      </div>
+      <div class="sc-body">
+        <div class="station-card">
+          <div class="stn-head">
+            <span class="stn-type">Stop 1 · Akad Nikah</span>
+            <span class="stn-time">08:00 WIB</span>
+          </div>
+          <div class="stn-body">
+            <div class="stn-name">Minggu, 24 Mei 2026</div>
+            <div class="stn-info-row">
+              <svg class="stn-info-ic" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              <span>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span>
+            </div>
+            <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="stn-map-btn">📍 Buka di Maps</a>
+          </div>
+        </div>
+        <div class="station-card">
+          <div class="stn-head">
+            <span class="stn-type">Stop 2 · Resepsi</span>
+            <span class="stn-time">11:00–13:00 WIB</span>
+          </div>
+          <div class="stn-body">
+            <div class="stn-name">Minggu, 24 Mei 2026</div>
+            <div class="stn-info-row">
+              <svg class="stn-info-ic" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+              <span>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span>
+            </div>
+            <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="stn-map-btn">📍 Buka di Maps</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ROUTE MAP / TIMELINE ── -->
+    <div class="sys-card reveal" id="story">
+      <div class="sc-head">
+        <div class="sc-head-title">🗺 Peta Rute · Love Story</div>
+        <div class="sc-head-right">3 STOPS</div>
+      </div>
+      <div class="sc-body">
+        <div class="route-map">
+          <div class="rm-item">
+            <div class="rm-dot filled"></div>
+            <div class="rm-body">
+              <div class="rm-code">STN-001 · PERTEMUAN</div>
+              <div class="rm-when">Juni 2025</div>
+              <div class="rm-title">Awal Pertemuan</div>
+              <div class="rm-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</div>
+            </div>
+          </div>
+          <div class="rm-item">
+            <div class="rm-dot filled"></div>
+            <div class="rm-body">
+              <div class="rm-code">STN-002 · LAMARAN</div>
+              <div class="rm-when">November 2025</div>
+              <div class="rm-title">Lamaran</div>
+              <div class="rm-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div>
+            </div>
+          </div>
+          <div class="rm-item">
+            <div class="rm-dot"></div>
+            <div class="rm-body">
+              <div class="rm-code">STN-003 · PERNIKAHAN</div>
+              <div class="rm-when">Mei 2026</div>
+              <div class="rm-title">Pernikahan 🎉</div>
+              <div class="rm-desc">Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── GALLERY ── -->
+    <div class="sys-card reveal" id="gallery">
+      <div class="sc-head">
+        <div class="sc-head-title">📷 Dokumentasi Perjalanan</div>
+        <div class="sc-head-right">9 FOTO</div>
+      </div>
+      <div class="sc-body" style="padding:10px">
+        <div class="gal-grid" id="galGrid"></div>
+      </div>
+    </div>
+
+    <!-- ── GIFT / TRANSFER ── -->
+    <div class="sys-card reveal" id="gift">
+      <div class="sc-head">
+        <div class="sc-head-title">💳 Transfer Dana <span class="sc-head-badge">GRATIS ADMIN</span></div>
+      </div>
+      <div class="sc-body">
+        <div style="font-family:var(--sans);font-size:12px;color:var(--mrt-gray);line-height:1.65;margin-bottom:14px">
+          Doa restu sudah sangat cukup. Namun jika berkenan berbagi rezeki, berikut rekening kami.
+        </div>
+        <div class="gift-cards">
+          <div class="gift-card">
+            <div class="gc-stripe"></div>
+            <div class="gc-body">
+              <div class="gc-bank">Bank</div>
+              <div class="gc-name">BCA</div>
+              <div class="gc-holder">Zardarian Ahadika N</div>
+              <div class="gc-num">8210 3705 61</div><br>
+              <button class="copy-btn" onclick="copyAcc('8210370561',this)">Salin Nomor</button>
+            </div>
+          </div>
+          <div class="gift-card">
+            <div class="gc-stripe"></div>
+            <div class="gc-body">
+              <div class="gc-bank">Bank</div>
+              <div class="gc-name">BNI</div>
+              <div class="gc-holder">Anita Pangestuti</div>
+              <div class="gc-num">1192 9784 03</div><br>
+              <button class="copy-btn" onclick="copyAcc('1192978403',this)">Salin Nomor</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RSVP ── -->
+    <div class="sys-card reveal" id="rsvp">
+      <div class="sc-head">
+        <div class="sc-head-title">✉️ Form Konfirmasi Tiket <span class="sc-head-badge">WAJIB ISI</span></div>
+      </div>
+      <div class="sc-body">
+        <div class="rsvp-stats">
+          <div class="rs"><div class="rs-n" id="stR">7</div><div class="rs-l">Respons</div></div>
+          <div class="rs"><div class="rs-n" id="stH">7</div><div class="rs-l">Hadir</div></div>
+          <div class="rs"><div class="rs-n" id="stT">13</div><div class="rs-l">Total</div></div>
+        </div>
+        <div class="fg"><label class="fl">Nama Penumpang</label><input type="text" class="fi" placeholder="Nama lengkap" id="rName"></div>
+        <div class="fg">
+          <label class="fl">Status Perjalanan</label>
+          <select class="fi" id="rStat">
+            <option value="">Pilih status...</option>
+            <option value="hadir">Hadir ✅</option>
+            <option value="tidak">Tidak Hadir ❌</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="fl">Jumlah Penumpang</label>
+          <div class="gbtn-row">
+            <button class="gbtn on" onclick="setG(1,this)">1 PAX</button>
+            <button class="gbtn" onclick="setG(2,this)">2 PAX</button>
+          </div>
+        </div>
+        <div class="fg"><label class="fl">Catatan Penumpang</label><textarea class="fi" placeholder="Ucapan &amp; doa untuk Anita &amp; Zarda..." id="rMsg"></textarea></div>
+        <button class="rsvp-submit" onclick="doRSVP()">
+          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          Konfirmasi Tiket
+        </button>
+      </div>
+    </div>
+
+    <!-- ── WISHES / LOG ── -->
+    <div class="sys-card reveal" id="wishes">
+      <div class="sc-head">
+        <div class="sc-head-title">📋 Log Penumpang</div>
+        <div class="sc-head-right" id="wishCount">3 ENTRIES</div>
+      </div>
+      <div class="sc-body">
+        <div class="wlist" id="wList">
+          <div class="wcard vis">
+            <div class="wav">A</div>
+            <div>
+              <div class="wn">Ayu Rahmawati</div>
+              <div class="ws">BOARDED · 2 PAX</div>
+              <div class="wref">REF: LOG·AYU·240526·001</div>
+              <div class="wtxt">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah 🌿</div>
+            </div>
+          </div>
+          <div class="wcard vis" style="transition-delay:.1s">
+            <div class="wav" style="background:var(--mrt-navy)">R</div>
+            <div>
+              <div class="wn">Reza Firmansyah</div>
+              <div class="ws">BOARDED · 1 PAX</div>
+              <div class="wref">REF: LOG·REZA·240526·002</div>
+              <div class="wtxt">Alhamdulillah! Semoga pernikahannya membawa keberkahan dan kebahagiaan. Aamiin!</div>
+            </div>
+          </div>
+          <div class="wcard vis" style="transition-delay:.2s">
+            <div class="wav" style="background:#1a6b3a">S</div>
+            <div>
+              <div class="wn">Sinta Dewi</div>
+              <div class="ws">BOARDED · 2 PAX</div>
+              <div class="wref">REF: LOG·SINTA·240526·003</div>
+              <div class="wtxt">Wishing you both a lifetime of love. Semoga langkah kalian selalu diberkahi Allah SWT 💚</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center;padding:24px 0 8px">
+      <div style="display:flex;align-items:center;justify-content:center;gap:2px;margin-bottom:10px">
+        <div style="width:22px;height:22px;background:var(--mrt-red);border-radius:4px 0 0 4px;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;color:#fff">M</div>
+        <div style="width:22px;height:22px;background:var(--mrt-navy);border:1px solid #eee;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;color:#fff">R</div>
+        <div style="width:22px;height:22px;background:#1a6b3a;border-radius:0 4px 4px 0;display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700;color:#fff">T</div>
+        <span style="font-family:var(--mono);font-size:10px;color:var(--mrt-gray);margin-left:8px;letter-spacing:.06em">Wedding Line · Anita &amp; Zarda</span>
+      </div>
+      <p style="font-family:var(--mono);font-size:10px;color:var(--mrt-gray);line-height:1.7">
+        Terima kasih telah menggunakan layanan<br>MRT Wedding Line. Selamat menikmati perjalanan.<br><br>
+        <strong style="color:var(--mrt-dark)">24 Mei 2026 · Graha Yadika, Tangerang</strong>
+      </p>
+      <p style="font-family:var(--mono);font-size:9px;color:#b0b7c3;margin-top:12px;letter-spacing:.08em">DIGITAL INVITATION BY BRIDESSPACE</p>
+      <div style="height:70px"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav" id="botNav">
+  <button onclick="scrollTo('ticket')" class="nav-i on" data-id="ticket">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+    Tiket
+  </button>
+  <button onclick="scrollTo('couple')" class="nav-i" data-id="couple">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    Penumpang
+  </button>
+  <button onclick="scrollTo('event')" class="nav-i" data-id="event">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Stasiun
+  </button>
+  <button onclick="scrollTo('gift')" class="nav-i" data-id="gift">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+    Transfer
+  </button>
+  <button onclick="scrollTo('rsvp')" class="nav-i" data-id="rsvp">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    RSVP
+  </button>
+</nav>
+
+<!-- Lightbox -->
+<div class="lb" id="lb">
+  <button class="lb-close" onclick="closeLb()">✕</button>
+  <button class="lb-nav lb-prev" onclick="lbGo(-1)">‹</button>
+  <img class="lb-img" id="lbImg" src="" alt="">
+  <button class="lb-nav lb-next" onclick="lbGo(1)">›</button>
+  <div class="lb-ctr" id="lbCtr"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── DATA ── */
+const GALLERY = [
+  "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=600&h=600&fit=crop&q=80"
+];
+
+let guestN = 1, lbIdx = 0, toastTO = null, wishNum = 3;
+
+/* ── BOARD ── */
+function boardTrain() {
+  document.getElementById('opening').classList.add('hide');
+  const main = document.getElementById('main');
+  setTimeout(() => main.classList.add('show'), 120);
+  document.getElementById('botNav').classList.add('show');
+  setTimeout(init, 400);
+}
+
+function init() {
+  startClocks();
+  startCountdown();
+  buildBarcode();
+  buildGallery();
+  initReveal();
+  initScrollSpy();
+}
+
+/* ── SCROLL SPY ── */
+function initScrollSpy() {
+  const ids = ['ticket','couple','event','story','gallery','gift','rsvp','wishes'];
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) setActiveNav(e.target.id);
+    });
+  }, { rootMargin: '-30% 0px -60% 0px', threshold: 0 });
+  ids.forEach(id => { const el = document.getElementById(id); if (el) obs.observe(el); });
+}
+
+/* ── CLOCKS ── */
+function startClocks() {
+  function tick() {
+    const n = new Date();
+    const hm  = String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0');
+    const hms = hm + ':' + String(n.getSeconds()).padStart(2,'0');
+    const oc = document.getElementById('opClock');
+    const sc = document.getElementById('sysClock');
+    if (oc) oc.textContent = hm;
+    if (sc) sc.textContent = hms;
+  }
+  tick(); setInterval(tick, 1000);
+}
+
+/* ── COUNTDOWN ── */
+function startCountdown() {
+  const tgt = new Date('2026-05-24T08:00:00');
+  const s = (id, v) => { const e = document.getElementById(id); if(e) e.textContent = String(v).padStart(2,'0'); };
+  function tick() {
+    const d = tgt - new Date();
+    if (d <= 0) { s('cdD',0);s('cdH',0);s('cdM',0);s('cdS',0); return; }
+    s('cdD', Math.floor(d/86400000));
+    s('cdH', Math.floor((d%86400000)/3600000));
+    s('cdM', Math.floor((d%3600000)/60000));
+    s('cdS', Math.floor((d%60000)/1000));
+  }
+  tick(); setInterval(tick, 1000);
+}
+
+/* ── BARCODE ── */
+function buildBarcode() {
+  const wrap = document.getElementById('barcode');
+  if (!wrap) return;
+  const pattern = [3,1,2,1,4,1,2,3,1,1,3,2,1,4,1,2,1,3,2,1,4,1,1,2,3,1,2,4,1,3,1,2,1,4,2];
+  pattern.forEach((w, i) => {
+    const line = document.createElement('div');
+    line.className = 'bc-line';
+    line.style.width = (i % 2 === 0 ? w * 2 : w) + 'px';
+    line.style.opacity = i % 2 === 0 ? '1' : '0';
+    line.style.background = i % 2 === 0 ? 'var(--mrt-dark)' : 'transparent';
+    wrap.appendChild(line);
+  });
+}
+
+/* ── GALLERY ── */
+function buildGallery() {
+  const g = document.getElementById('galGrid');
+  if (!g) return;
+  GALLERY.forEach((src, i) => {
+    const d = document.createElement('div');
+    d.className = 'gal-item';
+    d.innerHTML = `<img src="${src}" alt="" loading="lazy"><div class="gal-label">STN-${String(i+1).padStart(3,'0')}</div>`;
+    d.onclick = () => openLb(i);
+    g.appendChild(d);
+  });
+}
+
+/* ── REVEAL ── */
+function initReveal() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: .08 });
+  document.querySelectorAll('.reveal, .wcard').forEach(el => obs.observe(el));
+}
+
+/* ── SCROLL TO SECTION with header offset ── */
+function scrollTo(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  // calc sticky header height: sys-bar + line-tabs
+  const sysBar  = document.querySelector('.sys-bar');
+  const lineTabs = document.getElementById('lineTabs');
+  const offset = (sysBar ? sysBar.offsetHeight : 0) + (lineTabs ? lineTabs.offsetHeight : 0) + 8;
+  const top = el.getBoundingClientRect().top + window.pageYOffset - offset;
+  window.scrollTo({ top, behavior: 'smooth' });
+  // update active states immediately
+  setActiveNav(id);
+}
+
+function setActiveNav(id) {
+  document.querySelectorAll('.line-tab').forEach(b => b.classList.toggle('active', b.dataset.id === id));
+  document.querySelectorAll('.nav-i').forEach(b => b.classList.toggle('on', b.dataset.id === id));
+  // scroll the tab into view in line-tabs
+  const activeTab = document.querySelector(`.line-tab[data-id="${id}"]`);
+  if (activeTab) activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+}
+
+/* ── LIGHTBOX ── */
+function openLb(i) { lbIdx=i; updLb(); document.getElementById('lb').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeLb()  { document.getElementById('lb').classList.remove('open'); document.body.style.overflow=''; }
+function lbGo(d)    { lbIdx=(lbIdx+d+GALLERY.length)%GALLERY.length; updLb(); }
+function updLb()    {
+  document.getElementById('lbImg').src = GALLERY[lbIdx];
+  document.getElementById('lbCtr').textContent = `STN-${String(lbIdx+1).padStart(3,'0')} · ${lbIdx+1} OF ${GALLERY.length}`;
+}
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lb').classList.contains('open')) return;
+  if (e.key==='Escape') closeLb();
+  if (e.key==='ArrowLeft') lbGo(-1);
+  if (e.key==='ArrowRight') lbGo(1);
+});
+
+/* ── RSVP ── */
+function setG(n,btn) { guestN=n; document.querySelectorAll('.gbtn').forEach(b=>b.classList.remove('on')); btn.classList.add('on'); }
+function doRSVP() {
+  const name = document.getElementById('rName').value.trim();
+  const stat = document.getElementById('rStat').value;
+  const msg  = document.getElementById('rMsg').value.trim();
+  if (!name || !stat) { showToast('Mohon isi nama dan status kehadiran'); return; }
+
+  wishNum++;
+  const ini   = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const bgs   = ['var(--mrt-red)','var(--mrt-navy)','#1a6b3a','#7c4dff','#c8960c'];
+  const bg    = bgs[Math.floor(Math.random()*bgs.length)];
+  const stTxt = stat==='hadir' ? `BOARDED · ${guestN} PAX` : 'NOT BOARDED';
+  const ref   = `REF: LOG·${ini}·240526·${String(wishNum).padStart(3,'0')}`;
+
+  const card = document.createElement('div');
+  card.className = 'wcard';
+  card.innerHTML = `
+    <div class="wav" style="background:${bg}">${ini}</div>
+    <div>
+      <div class="wn">${name}</div>
+      <div class="ws">${stTxt}</div>
+      <div class="wref">${ref}</div>
+      <div class="wtxt">${msg || 'Selamat dan semoga bahagia selalu! 💛'}</div>
+    </div>`;
+  const list = document.getElementById('wList');
+  if (list) { list.prepend(card); setTimeout(()=>card.classList.add('vis'),50); }
+
+  const wc = document.getElementById('wishCount');
+  if (wc) wc.textContent = `${wishNum} ENTRIES`;
+
+  const bump = (id,n=1) => { const e=document.getElementById(id); if(e) e.textContent=parseInt(e.textContent)+n; };
+  bump('stR');
+  if (stat==='hadir') { bump('stH'); bump('stT',guestN); }
+
+  document.getElementById('rName').value = '';
+  document.getElementById('rStat').value = '';
+  document.getElementById('rMsg').value  = '';
+  showToast('Tiket berhasil dikonfirmasi ✓');
+  setTimeout(()=>document.getElementById('wishes').scrollIntoView({behavior:'smooth',block:'start'}),600);
+}
+
+/* ── COPY ── */
+function copyAcc(text,btn) {
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.classList.add('ok'); btn.textContent='✓ Tersalin';
+    showToast('Nomor rekening tersalin!');
+    setTimeout(()=>{btn.classList.remove('ok');btn.textContent='Salin Nomor';},2500);
+  }).catch(()=>showToast('Salin: '+text));
+}
+
+/* ── TOAST ── */
+function showToast(msg) {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(toastTO);
+  toastTO=setTimeout(()=>t.classList.remove('show'),2800);
+}
+</script>
+</body>
+</html>

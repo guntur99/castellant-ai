@@ -308,7 +308,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             desc: "Komik strip cinta kalian dimulai di sini! Estetika panel manga hitam putih yang dramatis dan penuh ekspresi cinta.".to_string(),
             price: 50000,
             preview_img: "/static/img/we-manga_preview.png".to_string(),
-            category: "entertainment".to_string(),
+            category: "comic".to_string(),
             plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
@@ -317,7 +317,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             desc: "Level up your wedding! Antarmuka konsol favorit sejuta umat yang interaktif, ceria, dan penuh warna kegembiraan.".to_string(),
             price: 50000,
             preview_img: "/static/img/we-nintendo-switch_preview.png".to_string(),
-            category: "entertainment".to_string(),
+            category: "game".to_string(),
             plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
@@ -335,7 +335,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             desc: "Membangun rumah tangga blok demi blok. Estetika pixel art yang ikonik buat pasangan gamer yang kreatif dan adventurous.".to_string(),
             price: 50000,
             preview_img: "/static/img/wedding-minecraft_preview.png".to_string(),
-            category: "entertainment".to_string(),
+            category: "game".to_string(),
             plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
@@ -371,7 +371,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             desc: "Baca kisah cinta kalian episode demi episode. Format vertikal ala komik digital yang unik dan menarik untuk diikuti.".to_string(),
             price: 50000,
             preview_img: "/static/img/we-webtoon_preview.png".to_string(),
-            category: "entertainment".to_string(),
+            category: "comic".to_string(),
             plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
@@ -398,7 +398,7 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             desc: "Achievement Unlocked: Married! Tema PlayStation untuk pasangan gamers yang siap memulai petualangan baru di level kehidupan selanjutnya.".to_string(),
             price: 50000,
             preview_img: "/static/img/we-playstation_preview.png".to_string(),
-            category: "entertainment".to_string(),
+            category: "game".to_string(),
             plan: "NOBLE".to_string(),
         },
         TemplateMetadata {
@@ -443,6 +443,438 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             desc: "Pemberhentian terakhir: Pelaminan! Tema TransJakarta yang ikonik untuk memandu tamu menyusuri rute kebahagiaan kalian.".to_string(),
             price: 50000,
             preview_img: "/static/img/wedding-transjakarta_preview.png".to_string(),
+            category: "on-demand".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "gmail-wedding".to_string(),
+            title: "G-Match".to_string(),
+            desc: "You've got mail! Surat cinta paling penting dalam hidupmu, dikemas dalam estetika inbox yang clean dan produktif.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/gmail-wedding_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-behance".to_string(),
+            title: "BeLoved".to_string(),
+            desc: "Showcase mahakarya cinta kalian. Desain portfolio yang artistik buat pasangan yang menghargai proses kreatif.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-behance_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-chatime".to_string(),
+            title: "TeaDate".to_string(),
+            desc: "Segarnya momen pernikahan! Tema minuman kekinian yang ceria dan penuh warna, bikin tamu merasa 'fresh' sejak pertama melihat.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-chatime_preview.png".to_string(),
+            category: "entertainment".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-dribbble".to_string(),
+            title: "Driblove".to_string(),
+            desc: "Shot on Love! Estetika komunitas desainer global yang fokus pada visual memukau and detail yang presisi.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-dribbble_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-hm".to_string(),
+            title: "H&W".to_string(),
+            desc: "Husband & Wife! Gaya minimalis brand fashion ternama yang bikin undanganmu terlihat chic dan selalu on-trend.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-hm_preview.png".to_string(),
+            category: "e-commerce".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-janjijiwa".to_string(),
+            title: "JanjiSuci".to_string(),
+            desc: "Dari kopi turun ke hati. Tema kedai kopi lokal yang hangat dan familiar, cocok buat pasangan yang dipertemukan oleh hobi nongkrong.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-janjijiwa_preview.png".to_string(),
+            category: "entertainment".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-kopikenangan".to_string(),
+            title: "KopiMasaDepan".to_string(),
+            desc: "Melupakan kenangan lama, membangun masa depan baru. Tema kopi yang ikonik untuk merayakan komitmen seumur hidup.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-kopikenangan_preview.png".to_string(),
+            category: "entertainment".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-powerpoint".to_string(),
+            title: "PowerLove".to_string(),
+            desc: "Next slide: Akad! Presentasikan kisah cinta kalian dengan cara yang paling terstruktur, informatif, dan menghibur.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-powerpoint_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-talenta".to_string(),
+            title: "Talove".to_string(),
+            desc: "Manajemen hati yang efisien. Tema aplikasi HR yang unik untuk mencatat kehadiran tamu di hari paling bersejarah kalian.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-talenta_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-animal-crossing".to_string(),
+            title: "LoveCrossing".to_string(),
+            desc: "Welcome to our island of love! Estetika cozy dan menggemaskan buat kalian yang pengen undangan yang relax dan penuh keceriaan.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-animal-crossing_preview.png".to_string(),
+            category: "game".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-claude".to_string(),
+            title: "Cloud9".to_string(),
+            desc: "Cinta yang cerdas dan intuitif. Estetika AI assistant yang modern dan canggih buat pasangan tech-savvy.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-claude_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-cod".to_string(),
+            title: "CallOfLove".to_string(),
+            desc: "Mission: Marriage! Tema game action yang intens dan penuh semangat buat pasangan gamer yang siap tempur di medan rumah tangga.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-cod_preview.png".to_string(),
+            category: "game".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-danamon".to_string(),
+            title: "Danalove".to_string(),
+            desc: "Investasi cinta jangka panjang. Tema perbankan yang solid dan terpercaya untuk mengumumkan kemitraan hidup kalian.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-danamon_preview.png".to_string(),
+            category: "entertainment".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-excel-theme".to_string(),
+            title: "LoveSheet".to_string(),
+            desc: "Data cinta yang akurat! Rumus kebahagiaan kalian sudah terhitung di sini, lengkap dengan grafik perjalanan yang terus naik.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-excel-theme_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-freefire".to_string(),
+            title: "FreeLove".to_string(),
+            desc: "Booyah Pelaminan! Rayakan kemenangan cinta kalian dengan semangat survivor yang pantang menyerah sampai garis akhir.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-freefire_preview.png".to_string(),
+            category: "game".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-github".to_string(),
+            title: "CommitLove".to_string(),
+            desc: "Initial commit: Wedding! Bagikan repositori kebahagiaan kalian dalam format kolaboratif yang paling geeky dan keren.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-github_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-jenius-v2".to_string(),
+            title: "GenieLove".to_string(),
+            desc: "Cara lebih cerdas buat nikah! Antarmuka digital banking yang progresif dan dinamis buat pasangan yang visioner.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-jenius-v2_preview.png".to_string(),
+            category: "social".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-linux".to_string(),
+            title: "LoveNux".to_string(),
+            desc: "Open source love! Kebebasan untuk mencintai dan memodifikasi masa depan bersama dalam sistem yang stabil dan tangguh.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-linux_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-word-theme".to_string(),
+            title: "LoveWord".to_string(),
+            desc: "Draft cinta yang sempurna. Tuliskan kisah kalian dalam format dokumen yang rapi, profesional, dan penuh makna.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-word-theme_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "canva-elegant-wedding".to_string(),
+            title: "CanLove".to_string(),
+            desc: "Cinta yang didesain dengan mudah dan indah. Estetika alat desain populer yang bikin semua orang bisa jadi artist cinta.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/canva-elegant-wedding_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "elegant-wedding".to_string(),
+            title: "Majesty".to_string(),
+            desc: "Kemewahan kerajaan yang tak lekang oleh waktu. Desain megah and elegan untuk momen paling sakral dalam hidup Anda.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/majesty_preview.png".to_string(),
+            category: "social".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "mrt-wedding".to_string(),
+            title: "LoveRail".to_string(),
+            desc: "Laju cepat menuju pelaminan! Tema transportasi modern yang efisien dan tepat waktu untuk momen sakral kalian.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/mrt-wedding_preview.png".to_string(),
+            category: "on-demand".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-brimo".to_string(),
+            title: "BriLove".to_string(),
+            desc: "Setulus hati melayani cinta. Tema perbankan yang inklusif dan merakyat untuk merayakan kebersamaan kalian.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-brimo_preview.png".to_string(),
+            category: "social".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-duolingo".to_string(),
+            title: "DuoLove".to_string(),
+            desc: "Belajar bahasa cinta setiap hari! Jangan lewatkan 'streak' kebahagiaan kalian dengan tema pendidikan yang fun dan adiktif.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-duolingo_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-google-calendar".to_string(),
+            title: "G-Date".to_string(),
+            desc: "Block jadwalmu buat cinta! Sinkronisasi hati yang sempurna dalam format kalender yang rapi dan terorganisir.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-google-calendar_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-livin".to_string(),
+            title: "LivinLove".to_string(),
+            desc: "Hidupkan cinta setiap hari. Tema finansial modern yang dinamis untuk mendukung gaya hidup baru kalian berdua.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-livin_preview.png".to_string(),
+            category: "social".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-manhua".to_string(),
+            title: "LoveManhua".to_string(),
+            desc: "Kisah cinta ala komik Mandarin yang megah dan penuh intrik manis. Visual yang artistik dan bercerita.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-manhua_preview.png".to_string(),
+            category: "comic".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-manhwa".to_string(),
+            title: "LoveManhwa".to_string(),
+            desc: "Gaya webtoon Korea yang stylish dan romantis. Jadikan pernikahanmu episode paling dinantikan oleh semua pembaca.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-manhwa_preview.png".to_string(),
+            category: "comic".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-momoyo".to_string(),
+            title: "MoMoLove".to_string(),
+            desc: "Manis dan segar seperti es krim favorit. Tema ceria yang bikin siapa pun yang melihat merasa bahagia seketika.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-momoyo_preview.png".to_string(),
+            category: "entertainment".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-steam-store".to_string(),
+            title: "LoveStore".to_string(),
+            desc: "Game of the Year: Your Wedding! Download kebahagiaan kalian sekarang dalam format store yang paling ikonik.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-steam-store_preview.png".to_string(),
+            category: "game".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-uniqlo".to_string(),
+            title: "UniLove".to_string(),
+            desc: "Simple made better. Estetika Lifewear yang nyaman, berkualitas, dan abadi untuk kalian yang suka gaya minimalis fungsional.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-uniqlo_preview.png".to_string(),
+            category: "e-commerce".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-zara".to_string(),
+            title: "ZaLove".to_string(),
+            desc: "High fashion wedding. Desain yang bold, elegan, dan selalu di depan dalam tren mode global.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-zara_preview.png".to_string(),
+            category: "e-commerce".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-bpjs".to_string(),
+            title: "LoveCare".to_string(),
+            desc: "Jaminan kesehatan hati. Tema layanan publik yang unik dan penuh perhatian untuk memastikan semua tamu merasa terlindungi.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-bpjs_preview.png".to_string(),
+            category: "social".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-chatgpt".to_string(),
+            title: "AskLove".to_string(),
+            desc: "Generate love instantly! Antarmuka AI yang intuitif dan membantu untuk merancang masa depan kalian dalam sekejap.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-chatgpt_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-familymart".to_string(),
+            title: "FamilyLove".to_string(),
+            desc: "Hangat seperti kopi di pagi hari. Tema convenience store yang ramah dan bikin tamu merasa seperti di rumah sendiri.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-familymart_preview.png".to_string(),
+            category: "entertainment".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-gemini".to_string(),
+            title: "GeminiLove".to_string(),
+            desc: "Dua hati dalam satu harmoni AI. Estetika teknologi masa depan yang clean, cerdas, dan penuh potensi luar biasa.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-gemini_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-genshin-theme".to_string(),
+            title: "GenshinLove".to_string(),
+            desc: "Adventure across Teyvat... to your wedding! Tema open-world yang megah dan penuh keajaiban buat para Traveler sejati.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-genshin-theme_preview.png".to_string(),
+            category: "game".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-indomaret".to_string(),
+            title: "IndoLove".to_string(),
+            desc: "Mudah dan dekat di hati. Tema minimarket ikonik yang familiar bagi seluruh masyarakat Indonesia.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-indomaret_preview.png".to_string(),
+            category: "entertainment".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-jago".to_string(),
+            title: "JagoLove".to_string(),
+            desc: "Jago dalam mengelola cinta. Tema finansial yang berani dan penuh energi untuk memulai lembaran baru kalian.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-jago_preview.png".to_string(),
+            category: "social".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-macintosh".to_string(),
+            title: "MacLove".to_string(),
+            desc: "Think Different, Love More. Estetika komputer klasik yang retro namun tetap terasa revolusioner dan elegan.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-macintosh_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-mlbb".to_string(),
+            title: "MobileLove".to_string(),
+            desc: "Welcome to the Wedding of Legends! Kumpulkan squad kalian dan rayakan kemenangan telak di land of dawn pelaminan.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-mlbb_preview.png".to_string(),
+            category: "game".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-ps5".to_string(),
+            title: "PlayLove".to_string(),
+            desc: "Play has no limits... and so does our love! Estetika konsol next-gen yang futuristik dan penuh performa maksimal.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-ps5_preview.png".to_string(),
+            category: "game".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-pubg".to_string(),
+            title: "PubLove".to_string(),
+            desc: "Winner Winner Wedding Dinner! Survive bersama sampai akhir dan rayakan kemenangan cinta di safe zone pelaminan.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-pubg_preview.png".to_string(),
+            category: "game".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-telegram-theme".to_string(),
+            title: "TeleLove".to_string(),
+            desc: "Cepat, aman, dan penuh cinta. Bagikan kabar bahagia kalian melalui kanal yang paling privasi dan eksklusif.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-telegram-theme_preview.png".to_string(),
+            category: "social".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-wa-channel".to_string(),
+            title: "WaLove".to_string(),
+            desc: "Saluran cinta terbaru! Ikuti terus perkembangan kisah kalian melalui antarmuka pesan instan yang paling populer.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-wa-channel_preview.png".to_string(),
+            category: "social".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-windows95".to_string(),
+            title: "Win95".to_string(),
+            desc: "Start with Love. Bernostalgia dengan sistem operasi legendaris yang membawa kita kembali ke masa-masa indah yang simpel.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-windows95_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-windowsxp".to_string(),
+            title: "WinXP".to_string(),
+            desc: "Bliss in every moment. Wallpaper padang hijau yang ikonik kini menjadi latar belakang kisah cinta kalian yang indah.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-windowsxp_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "whoosh-wedding".to_string(),
+            title: "WhooshLove".to_string(),
+            desc: "Cinta secepat kilat! Rasakan sensasi kegembiraan yang melesat tinggi dengan tema kereta cepat kebanggaan bangsa.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/whoosh-wedding_preview.png".to_string(),
             category: "on-demand".to_string(),
             plan: "NOBLE".to_string(),
         },
@@ -662,16 +1094,35 @@ pub async fn create_invitation(
         extra_data,
     };
 
-    let mayar_res = state.http_client
+    let res = match state.http_client
         .post(&state.mayar_base_url)
         .header("Authorization", format!("Bearer {}", state.mayar_api_key))
         .json(&mayar_req)
         .send()
-        .await
-        .unwrap()
-        .json::<MayarInvoiceResponse>()
-        .await
-        .unwrap();
+        .await {
+            Ok(r) => r,
+            Err(e) => {
+                eprintln!("Failed to send request to Mayar: {}", e);
+                return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to connect to payment gateway").into_response();
+            }
+        };
+
+    let status = res.status();
+    let body_text = match res.text().await {
+        Ok(t) => t,
+        Err(e) => {
+            eprintln!("Failed to get body from Mayar response: {}", e);
+            return (StatusCode::INTERNAL_SERVER_ERROR, "Invalid response from payment gateway").into_response();
+        }
+    };
+    
+    let mayar_res: MayarInvoiceResponse = match serde_json::from_str(&body_text) {
+        Ok(data) => data,
+        Err(e) => {
+            eprintln!("Failed to decode Mayar response (status {}): {}. Body: {}", status, e, body_text);
+            return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to process payment response").into_response();
+        }
+    };
 
     let (payment_link, invoice_id) = if let Some(data) = mayar_res.data {
         (Some(data.link), Some(data.id))
@@ -1150,6 +1601,438 @@ pub struct WePlayStationTemplate {
 }
 
 #[derive(Template)]
+#[template(path = "invitation/gmail-wedding.html")]
+pub struct GmailWeddingTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-behance.html")]
+pub struct WeBehanceTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-chatime.html")]
+pub struct WeChatimeTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-dribbble.html")]
+pub struct WeDribbbleTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-hm.html")]
+pub struct WeHMTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-janjijiwa.html")]
+pub struct WeJanjiJiwaTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-kopikenangan.html")]
+pub struct WeKopiKenanganTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-powerpoint.html")]
+pub struct WePowerPointTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-talenta.html")]
+pub struct WeTalentaTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-animal-crossing.html")]
+pub struct WeddingAnimalCrossingTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-claude.html")]
+pub struct WeddingClaudeTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-cod.html")]
+pub struct WeddingCodTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-danamon.html")]
+pub struct WeddingDanamonTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-excel-theme.html")]
+pub struct WeddingExcelThemeTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-freefire.html")]
+pub struct WeddingFreeFireTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-github.html")]
+pub struct WeddingGithubTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-jenius-v2.html")]
+pub struct WeddingJeniusV2Template {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-linux.html")]
+pub struct WeddingLinuxTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-word-theme.html")]
+pub struct WeddingWordThemeTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/canva-elegant-wedding.html")]
+pub struct CanvaElegantWeddingTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/elegant-wedding.html")]
+pub struct ElegantWeddingTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/mrt-wedding.html")]
+pub struct MrtWeddingTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-brimo.html")]
+pub struct WeBrimoTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-duolingo.html")]
+pub struct WeDuolingoTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-google-calendar.html")]
+pub struct WeGoogleCalendarTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-livin.html")]
+pub struct WeLivinTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-manhua.html")]
+pub struct WeManhuaTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-manhwa.html")]
+pub struct WeManhwaTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-momoyo.html")]
+pub struct WeMomoyoTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-steam-store.html")]
+pub struct WeSteamStoreTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-uniqlo.html")]
+pub struct WeUniqloTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-zara.html")]
+pub struct WeZaraTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-bpjs.html")]
+pub struct WeddingBpjsTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-chatgpt.html")]
+pub struct WeddingChatGptTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-familymart.html")]
+pub struct WeddingFamilyMartTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-gemini.html")]
+pub struct WeddingGeminiTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-genshin-theme.html")]
+pub struct WeddingGenshinThemeTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-indomaret.html")]
+pub struct WeddingIndomaretTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-jago.html")]
+pub struct WeddingJagoTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-macintosh.html")]
+pub struct WeddingMacintoshTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-mlbb.html")]
+pub struct WeddingMlbbTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-ps5.html")]
+pub struct WeddingPs5Template {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-pubg.html")]
+pub struct WeddingPubgTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-telegram-theme.html")]
+pub struct WeddingTelegramThemeTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-wa-channel.html")]
+pub struct WeddingWaChannelTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-windows95.html")]
+pub struct WeddingWindows95Template {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-windowsxp.html")]
+pub struct WeddingWindowsXpTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/whoosh-wedding.html")]
+pub struct WhooshWeddingTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
 #[template(path = "invitation/we-threads-app.html")]
 pub struct WeThreadsAppTemplate {
     #[allow(dead_code)]
@@ -1503,6 +2386,54 @@ pub async fn invitation_detail(
                 "wedding-minecraft" => HtmlTemplate(WeddingMinecraftTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "wedding-zoom-v2" => HtmlTemplate(WeddingZoomV2Template { invitation, is_dev: state.is_dev }).into_response(),
                 "we-vscode" => HtmlTemplate(WeVSCodeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "gmail-wedding" => HtmlTemplate(GmailWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-behance" => HtmlTemplate(WeBehanceTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-chatime" => HtmlTemplate(WeChatimeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-dribbble" => HtmlTemplate(WeDribbbleTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-hm" => HtmlTemplate(WeHMTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-janjijiwa" => HtmlTemplate(WeJanjiJiwaTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-kopikenangan" => HtmlTemplate(WeKopiKenanganTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-powerpoint" => HtmlTemplate(WePowerPointTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-talenta" => HtmlTemplate(WeTalentaTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-animal-crossing" => HtmlTemplate(WeddingAnimalCrossingTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-claude" => HtmlTemplate(WeddingClaudeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-cod" => HtmlTemplate(WeddingCodTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-danamon" => HtmlTemplate(WeddingDanamonTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-excel-theme" => HtmlTemplate(WeddingExcelThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-freefire" => HtmlTemplate(WeddingFreeFireTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-github" => HtmlTemplate(WeddingGithubTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-jenius-v2" => HtmlTemplate(WeddingJeniusV2Template { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-linux" => HtmlTemplate(WeddingLinuxTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-word-theme" => HtmlTemplate(WeddingWordThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "canva-elegant-wedding" => HtmlTemplate(CanvaElegantWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "elegant-wedding" => HtmlTemplate(ElegantWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "mrt-wedding" => HtmlTemplate(MrtWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-brimo" => HtmlTemplate(WeBrimoTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-duolingo" => HtmlTemplate(WeDuolingoTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-google-calendar" => HtmlTemplate(WeGoogleCalendarTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-livin" => HtmlTemplate(WeLivinTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-manhua" => HtmlTemplate(WeManhuaTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-manhwa" => HtmlTemplate(WeManhwaTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-momoyo" => HtmlTemplate(WeMomoyoTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-steam-store" => HtmlTemplate(WeSteamStoreTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-uniqlo" => HtmlTemplate(WeUniqloTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-zara" => HtmlTemplate(WeZaraTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-bpjs" => HtmlTemplate(WeddingBpjsTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-chatgpt" => HtmlTemplate(WeddingChatGptTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-familymart" => HtmlTemplate(WeddingFamilyMartTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-gemini" => HtmlTemplate(WeddingGeminiTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-genshin-theme" => HtmlTemplate(WeddingGenshinThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-indomaret" => HtmlTemplate(WeddingIndomaretTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-jago" => HtmlTemplate(WeddingJagoTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-macintosh" => HtmlTemplate(WeddingMacintoshTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-mlbb" => HtmlTemplate(WeddingMlbbTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-ps5" => HtmlTemplate(WeddingPs5Template { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-pubg" => HtmlTemplate(WeddingPubgTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-telegram-theme" => HtmlTemplate(WeddingTelegramThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-wa-channel" => HtmlTemplate(WeddingWaChannelTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-windows95" => HtmlTemplate(WeddingWindows95Template { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-windowsxp" => HtmlTemplate(WeddingWindowsXpTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "whoosh-wedding" => HtmlTemplate(WhooshWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
             }
         },
@@ -1547,6 +2478,54 @@ pub async fn invitation_detail(
                     "wedding-minecraft-sample" => ("Nazma & Guntur", "wedding-minecraft"),
                     "wedding-zoom-v2-sample" => ("Nazma & Guntur", "wedding-zoom-v2"),
                     "we-vscode-sample" => ("Nazma & Guntur", "we-vscode"),
+                    "gmail-wedding-sample" => ("Nazma & Guntur", "gmail-wedding"),
+                    "we-behance-sample" => ("Nazma & Guntur", "we-behance"),
+                    "we-chatime-sample" => ("Nazma & Guntur", "we-chatime"),
+                    "we-dribbble-sample" => ("Nazma & Guntur", "we-dribbble"),
+                    "we-hm-sample" => ("Nazma & Guntur", "we-hm"),
+                    "we-janjijiwa-sample" => ("Nazma & Guntur", "we-janjijiwa"),
+                    "we-kopikenangan-sample" => ("Nazma & Guntur", "we-kopikenangan"),
+                    "we-powerpoint-sample" => ("Nazma & Guntur", "we-powerpoint"),
+                    "we-talenta-sample" => ("Nazma & Guntur", "we-talenta"),
+                    "wedding-animal-crossing-sample" => ("Nazma & Guntur", "wedding-animal-crossing"),
+                    "wedding-claude-sample" => ("Nazma & Guntur", "wedding-claude"),
+                    "wedding-cod-sample" => ("Nazma & Guntur", "wedding-cod"),
+                    "wedding-danamon-sample" => ("Nazma & Guntur", "wedding-danamon"),
+                    "wedding-excel-theme-sample" => ("Nazma & Guntur", "wedding-excel-theme"),
+                    "wedding-freefire-sample" => ("Nazma & Guntur", "wedding-freefire"),
+                    "wedding-github-sample" => ("Nazma & Guntur", "wedding-github"),
+                    "wedding-jenius-v2-sample" => ("Nazma & Guntur", "wedding-jenius-v2"),
+                    "wedding-linux-sample" => ("Nazma & Guntur", "wedding-linux"),
+                    "wedding-word-theme-sample" => ("Nazma & Guntur", "wedding-word-theme"),
+                    "canva-elegant-wedding-sample" => ("Nazma & Guntur", "canva-elegant-wedding"),
+                    "elegant-wedding-sample" => ("Nazma & Guntur", "elegant-wedding"),
+                    "mrt-wedding-sample" => ("Nazma & Guntur", "mrt-wedding"),
+                    "we-brimo-sample" => ("Nazma & Guntur", "we-brimo"),
+                    "we-duolingo-sample" => ("Nazma & Guntur", "we-duolingo"),
+                    "we-google-calendar-sample" => ("Nazma & Guntur", "we-google-calendar"),
+                    "we-livin-sample" => ("Nazma & Guntur", "we-livin"),
+                    "we-manhua-sample" => ("Nazma & Guntur", "we-manhua"),
+                    "we-manhwa-sample" => ("Nazma & Guntur", "we-manhwa"),
+                    "we-momoyo-sample" => ("Nazma & Guntur", "we-momoyo"),
+                    "we-steam-store-sample" => ("Nazma & Guntur", "we-steam-store"),
+                    "we-uniqlo-sample" => ("Nazma & Guntur", "we-uniqlo"),
+                    "we-zara-sample" => ("Nazma & Guntur", "we-zara"),
+                    "wedding-bpjs-sample" => ("Nazma & Guntur", "wedding-bpjs"),
+                    "wedding-chatgpt-sample" => ("Nazma & Guntur", "wedding-chatgpt"),
+                    "wedding-familymart-sample" => ("Nazma & Guntur", "wedding-familymart"),
+                    "wedding-gemini-sample" => ("Nazma & Guntur", "wedding-gemini"),
+                    "wedding-genshin-theme-sample" => ("Nazma & Guntur", "wedding-genshin-theme"),
+                    "wedding-indomaret-sample" => ("Nazma & Guntur", "wedding-indomaret"),
+                    "wedding-jago-sample" => ("Nazma & Guntur", "wedding-jago"),
+                    "wedding-macintosh-sample" => ("Nazma & Guntur", "wedding-macintosh"),
+                    "wedding-mlbb-sample" => ("Nazma & Guntur", "wedding-mlbb"),
+                    "wedding-ps5-sample" => ("Nazma & Guntur", "wedding-ps5"),
+                    "wedding-pubg-sample" => ("Nazma & Guntur", "wedding-pubg"),
+                    "wedding-telegram-theme-sample" => ("Nazma & Guntur", "wedding-telegram-theme"),
+                    "wedding-wa-channel-sample" => ("Nazma & Guntur", "wedding-wa-channel"),
+                    "wedding-windows95-sample" => ("Nazma & Guntur", "wedding-windows95"),
+                    "wedding-windowsxp-sample" => ("Nazma & Guntur", "wedding-windowsxp"),
+                    "whoosh-wedding-sample" => ("Nazma & Guntur", "whoosh-wedding"),
                     _ => ("Nazma & Guntur", "trendvibe"),
                 };
 
@@ -1640,6 +2619,54 @@ pub async fn invitation_detail(
                     "wedding-minecraft" => HtmlTemplate(WeddingMinecraftTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     "wedding-zoom-v2" => HtmlTemplate(WeddingZoomV2Template { invitation, is_dev: state.is_dev }).into_response(),
                     "we-vscode" => HtmlTemplate(WeVSCodeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "gmail-wedding" => HtmlTemplate(GmailWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-behance" => HtmlTemplate(WeBehanceTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-chatime" => HtmlTemplate(WeChatimeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-dribbble" => HtmlTemplate(WeDribbbleTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-hm" => HtmlTemplate(WeHMTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-janjijiwa" => HtmlTemplate(WeJanjiJiwaTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-kopikenangan" => HtmlTemplate(WeKopiKenanganTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-powerpoint" => HtmlTemplate(WePowerPointTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-talenta" => HtmlTemplate(WeTalentaTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-animal-crossing" => HtmlTemplate(WeddingAnimalCrossingTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-claude" => HtmlTemplate(WeddingClaudeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-cod" => HtmlTemplate(WeddingCodTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-danamon" => HtmlTemplate(WeddingDanamonTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-excel-theme" => HtmlTemplate(WeddingExcelThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-freefire" => HtmlTemplate(WeddingFreeFireTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-github" => HtmlTemplate(WeddingGithubTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-jenius-v2" => HtmlTemplate(WeddingJeniusV2Template { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-linux" => HtmlTemplate(WeddingLinuxTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-word-theme" => HtmlTemplate(WeddingWordThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "canva-elegant-wedding" => HtmlTemplate(CanvaElegantWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "elegant-wedding" => HtmlTemplate(ElegantWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "mrt-wedding" => HtmlTemplate(MrtWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-brimo" => HtmlTemplate(WeBrimoTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-duolingo" => HtmlTemplate(WeDuolingoTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-google-calendar" => HtmlTemplate(WeGoogleCalendarTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-livin" => HtmlTemplate(WeLivinTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-manhua" => HtmlTemplate(WeManhuaTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-manhwa" => HtmlTemplate(WeManhwaTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-momoyo" => HtmlTemplate(WeMomoyoTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-steam-store" => HtmlTemplate(WeSteamStoreTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-uniqlo" => HtmlTemplate(WeUniqloTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-zara" => HtmlTemplate(WeZaraTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-bpjs" => HtmlTemplate(WeddingBpjsTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-chatgpt" => HtmlTemplate(WeddingChatGptTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-familymart" => HtmlTemplate(WeddingFamilyMartTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-gemini" => HtmlTemplate(WeddingGeminiTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-genshin-theme" => HtmlTemplate(WeddingGenshinThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-indomaret" => HtmlTemplate(WeddingIndomaretTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-jago" => HtmlTemplate(WeddingJagoTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-macintosh" => HtmlTemplate(WeddingMacintoshTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-mlbb" => HtmlTemplate(WeddingMlbbTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-ps5" => HtmlTemplate(WeddingPs5Template { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-pubg" => HtmlTemplate(WeddingPubgTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-telegram-theme" => HtmlTemplate(WeddingTelegramThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-wa-channel" => HtmlTemplate(WeddingWaChannelTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-windows95" => HtmlTemplate(WeddingWindows95Template { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-windowsxp" => HtmlTemplate(WeddingWindowsXpTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "whoosh-wedding" => HtmlTemplate(WhooshWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 }
             } else {

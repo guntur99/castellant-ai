@@ -1,0 +1,1406 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>웨딩 만화 — Anita & Zarda</title>
+<link href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@400;700;800&family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Korean Drama / Manhwa Palette */
+  --ink:      #0e0c18;
+  --deep:     #1a1628;
+  --panel:    #12101e;
+  --mauve:    #2d1f3d;
+  --rose:     #e8547a;
+  --rose2:    #f4829e;
+  --violet:   #7c4daa;
+  --violet2:  #a87fd4;
+  --gold:     #d4a843;
+  --gold2:    #f0cc78;
+  --teal:     #2bbfaa;
+  --blue:     #3a6fff;
+  --cream:    #fdf6f0;
+  --white:    #fdfcff;
+  --gray:     #8a829a;
+  --lgray:    #3a3448;
+  --border:   rgba(124,77,170,.25);
+
+  --fK: 'Black Han Sans', sans-serif;
+  --fN: 'Noto Sans KR', sans-serif;
+  --fM: 'Nanum Myeongjo', serif;
+  --fG: 'Gowun Batang', serif;
+
+  --glow-rose:   0 0 30px rgba(232,84,122,.35), 0 0 80px rgba(232,84,122,.12);
+  --glow-violet: 0 0 30px rgba(124,77,170,.4),  0 0 80px rgba(124,77,170,.15);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ink);
+  color:var(--white);
+  font-family:var(--fN);
+  overflow-x:hidden;
+}
+
+/* ── NOISE GRAIN ── */
+body::before{
+  content:'';position:fixed;inset:0;z-index:9990;pointer-events:none;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='250' height='250'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='250' height='250' filter='url(%23n)' opacity='.035'/%3E%3C/svg%3E");
+  opacity:.55;mix-blend-mode:overlay;
+}
+
+/* ── INK WASH BACKGROUNDS ── */
+.ink-wash{
+  position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 120% 80% at 50% 0%, rgba(124,77,170,.08) 0%, transparent 70%),
+             radial-gradient(ellipse 80% 60% at 80% 100%, rgba(232,84,122,.06) 0%, transparent 60%);
+}
+
+/* ── PANEL GLOW BORDER ── */
+.glow-border{
+  border:1px solid var(--border);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.03);
+}
+
+/* ══════════════════════════
+   OPENING — 만화 Cover
+══════════════════════════ */
+#opening{
+  position:fixed;inset:0;z-index:9999;
+  overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:0;
+  transition:opacity .9s ease,transform .9s ease;
+}
+#opening.hide{opacity:0;transform:scale(1.05) translateY(-10px);pointer-events:none}
+
+/* Full BG photo */
+.op-bg{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;z-index:0;
+  filter:brightness(.28) saturate(.8) hue-rotate(10deg);
+}
+/* Multi-layer color wash */
+.op-wash{
+  position:absolute;inset:0;z-index:1;
+  background:
+    linear-gradient(160deg, rgba(14,12,24,.9) 0%, rgba(29,22,45,.6) 40%, rgba(14,12,24,.85) 100%),
+    radial-gradient(ellipse 100% 70% at 50% 30%, rgba(124,77,170,.2) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 80% 80%, rgba(232,84,122,.12) 0%, transparent 60%);
+}
+/* Vertical speed lines */
+.op-speed{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:repeating-conic-gradient(from 0deg at 50% 50%,
+    transparent 0deg,transparent 3deg,
+    rgba(232,84,122,.015) 3deg,rgba(232,84,122,.015) 3.5deg);
+}
+/* Horizontal scan */
+.op-scan{
+  position:absolute;left:0;right:0;height:1px;z-index:2;
+  background:linear-gradient(90deg,transparent,rgba(232,84,122,.6) 30%,rgba(248,180,200,.9) 50%,rgba(232,84,122,.6) 70%,transparent);
+  animation:scan-v 5s linear infinite;pointer-events:none;
+}
+@keyframes scan-v{0%{top:-1px;opacity:0}5%{opacity:1}90%{opacity:.4}100%{top:100%;opacity:0}}
+
+/* Corner frames */
+.op-frame{position:absolute;z-index:3;pointer-events:none}
+.op-frame svg{display:block}
+.of-tl{top:20px;left:20px}
+.of-tr{top:20px;right:20px;transform:scaleX(-1)}
+.of-bl{bottom:20px;left:20px;transform:scaleY(-1)}
+.of-br{bottom:20px;right:20px;transform:scale(-1)}
+
+.op-inner{position:relative;z-index:4;text-align:center;padding:0 24px}
+
+/* Episode badge */
+.op-ep{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--fN);font-size:10px;font-weight:700;letter-spacing:.35em;
+  color:rgba(255,255,255,.35);text-transform:uppercase;margin-bottom:18px;
+}
+.op-ep::before,.op-ep::after{content:'';width:24px;height:1px;background:rgba(255,255,255,.2)}
+
+/* Korean title */
+.op-kr-title{
+  font-family:var(--fK);font-size:clamp(13px,3.5vw,18px);
+  color:var(--rose2);letter-spacing:.2em;margin-bottom:10px;
+  text-shadow:0 0 20px rgba(232,84,122,.4);
+}
+/* Main title panel */
+.op-title-wrap{
+  position:relative;margin:0 auto 8px;display:inline-block;
+}
+.op-title-glow{
+  position:absolute;inset:-20px;
+  background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(124,77,170,.25),transparent 70%);
+  pointer-events:none;
+}
+.op-title{
+  font-family:var(--fK);font-size:clamp(42px,12vw,72px);
+  color:var(--white);line-height:.95;letter-spacing:.04em;
+  text-shadow:var(--glow-rose), 2px 4px 20px rgba(0,0,0,.8);
+  position:relative;z-index:1;
+}
+/* Rose underline */
+.op-underline{
+  width:100%;height:3px;
+  background:linear-gradient(90deg,transparent,var(--rose),var(--gold),var(--rose),transparent);
+  margin:8px auto 12px;
+  box-shadow:0 0 12px rgba(232,84,122,.6);
+}
+.op-genre{
+  font-family:var(--fN);font-size:11px;font-weight:500;letter-spacing:.2em;
+  color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:26px;
+}
+
+/* Dear bubble */
+.op-dear{
+  background:rgba(255,255,255,.04);border:1px solid rgba(232,84,122,.25);
+  border-radius:16px;padding:13px 28px;margin:0 auto 28px;display:inline-block;
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.op-dear-lbl{font-family:var(--fN);font-size:9px;font-weight:500;letter-spacing:.2em;color:rgba(255,255,255,.3);text-transform:uppercase;margin-bottom:4px}
+.op-dear-name{font-family:var(--fG);font-size:18px;color:var(--white)}
+
+/* Play button */
+.op-btn{
+  position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--rose),var(--violet));
+  color:var(--white);border:none;
+  padding:16px 56px;border-radius:4px;
+  font-family:var(--fK);font-size:16px;letter-spacing:.12em;
+  cursor:pointer;
+  box-shadow:var(--glow-rose);
+  transition:transform .15s,box-shadow .15s;
+}
+.op-btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);
+  transform:translateX(-100%);transition:transform .5s ease;
+}
+.op-btn:hover::before{transform:translateX(100%)}
+.op-btn:hover{transform:translateY(-3px);box-shadow:var(--glow-rose),0 12px 40px rgba(232,84,122,.35)}
+.op-btn:active{transform:translateY(0)}
+
+/* Bottom info */
+.op-bot{position:absolute;bottom:22px;left:0;right:0;z-index:4;display:flex;justify-content:space-between;padding:0 24px}
+.op-bot span{font-family:var(--fN);font-size:10px;font-weight:500;color:rgba(255,255,255,.25);letter-spacing:.1em}
+
+/* ══════════════════════════
+   MAIN
+══════════════════════════ */
+#main{opacity:0;transition:opacity .8s ease .2s}
+#main.show{opacity:1}
+
+/* ══════════════════════════
+   EPISODE BREAKS
+══════════════════════════ */
+.ep-break{
+  background:var(--deep);
+  border-top:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  padding:10px 18px;
+  display:flex;align-items:center;gap:14px;
+  position:relative;overflow:hidden;
+}
+.ep-break::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,rgba(124,77,170,.1) 0%,transparent 50%);
+  pointer-events:none;
+}
+.ep-kr{font-family:var(--fK);font-size:20px;color:var(--rose);letter-spacing:.06em;position:relative;z-index:1;flex-shrink:0}
+.ep-divider{width:1px;height:24px;background:var(--border);flex-shrink:0}
+.ep-title{font-family:var(--fN);font-size:11px;font-weight:500;letter-spacing:.2em;color:rgba(255,255,255,.5);text-transform:uppercase;position:relative;z-index:1}
+.ep-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.ep-num{font-family:var(--fN);font-size:10px;color:rgba(255,255,255,.2);letter-spacing:.1em}
+
+/* ══════════════════════════
+   HERO — MANHWA SPLASH
+══════════════════════════ */
+#home{position:relative}
+
+/* Top bar */
+.mw-topbar{
+  background:rgba(14,12,24,.92);
+  border-bottom:1px solid var(--border);
+  padding:12px 18px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:relative;z-index:10;
+  backdrop-filter:blur(12px);
+}
+.mtb-l{display:flex;align-items:center;gap:10px}
+.mtb-logo{
+  width:30px;height:30px;
+  background:linear-gradient(135deg,var(--rose),var(--violet));
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--fK);font-size:14px;color:var(--white);
+  box-shadow:0 0 14px rgba(232,84,122,.35);
+}
+.mtb-title{font-family:var(--fN);font-size:10px;font-weight:500;color:rgba(255,255,255,.4);letter-spacing:.12em}
+.mtb-r{display:flex;align-items:center;gap:10px}
+.mtb-ep{
+  font-family:var(--fK);font-size:11px;color:var(--rose);letter-spacing:.08em;
+}
+.mtb-likes{font-family:var(--fN);font-size:10px;font-weight:700;color:rgba(255,255,255,.3)}
+
+/* FULLSCREEN SPLASH */
+.splash{
+  position:relative;overflow:hidden;
+  min-height:100svh;display:flex;flex-direction:column;
+}
+.splash-bg-img{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;z-index:0;
+  filter:brightness(.35) saturate(.9);
+}
+/* Color wash layers */
+.splash-wash{
+  position:absolute;inset:0;z-index:1;
+  background:
+    linear-gradient(180deg,rgba(14,12,24,.1) 0%,rgba(14,12,24,.05) 30%,rgba(14,12,24,.2) 60%,rgba(14,12,24,.95) 100%),
+    radial-gradient(ellipse 100% 80% at 50% 20%,rgba(124,77,170,.18) 0%,transparent 60%),
+    radial-gradient(ellipse 70% 50% at 80% 80%,rgba(232,84,122,.1) 0%,transparent 60%);
+}
+/* Cinematic screentone */
+.splash-tone{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  background-image:radial-gradient(circle,rgba(255,255,255,.025) 1px,transparent 1px);
+  background-size:6px 6px;mix-blend-mode:screen;
+}
+/* Speed lines */
+.splash-speed{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:repeating-conic-gradient(from 0deg at 50% 35%,transparent 0deg,transparent 2.5deg,rgba(124,77,170,.02) 2.5deg,rgba(124,77,170,.02) 3deg);
+}
+
+/* Title block — bottom of splash */
+.splash-content{
+  position:absolute;bottom:0;left:0;right:0;z-index:5;
+  padding:0 18px 18px;
+}
+.sp-badge{
+  display:inline-block;
+  background:linear-gradient(135deg,var(--rose),var(--violet));
+  font-family:var(--fN);font-size:9px;font-weight:700;letter-spacing:.2em;
+  color:var(--white);padding:4px 14px;border-radius:2px;
+  margin-bottom:10px;text-transform:uppercase;
+  box-shadow:0 0 12px rgba(232,84,122,.4);
+}
+.sp-kr-sub{font-family:var(--fN);font-size:10px;font-weight:500;color:var(--rose2);letter-spacing:.2em;margin-bottom:6px;opacity:.8}
+.sp-title{
+  font-family:var(--fK);font-size:clamp(46px,14vw,88px);
+  color:var(--white);line-height:.92;letter-spacing:.04em;
+  text-shadow:var(--glow-rose), 0 4px 40px rgba(0,0,0,.7);
+  margin-bottom:10px;
+}
+.sp-date-kr{font-family:var(--fG);font-size:clamp(16px,4vw,22px);color:rgba(255,255,255,.65);letter-spacing:.08em;margin-bottom:16px}
+
+/* Track pills */
+.sp-pills{display:flex;gap:7px;margin-bottom:8px;flex-wrap:wrap}
+.sp-pill{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  border-radius:20px;padding:5px 14px;
+  font-family:var(--fN);font-size:9px;font-weight:600;letter-spacing:.1em;
+  color:rgba(255,255,255,.4);cursor:pointer;transition:all .2s;text-transform:uppercase;
+}
+.sp-pill.active{background:rgba(232,84,122,.2);border-color:rgba(232,84,122,.5);color:var(--rose2)}
+
+/* Player bar */
+.sp-player{
+  display:flex;align-items:center;gap:11px;
+  background:rgba(14,12,24,.75);
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--border);border-radius:10px;padding:11px 14px;
+}
+.sp-play{
+  width:40px;height:40px;border-radius:50%;flex-shrink:0;border:none;cursor:pointer;
+  background:linear-gradient(135deg,var(--rose),var(--violet));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:var(--glow-rose);transition:transform .15s,box-shadow .15s;
+}
+.sp-play:hover{transform:scale(1.08);box-shadow:0 0 30px rgba(232,84,122,.6),0 0 60px rgba(232,84,122,.2)}
+.sp-play svg{width:15px;height:15px;fill:white}
+.sp-info{flex:1;min-width:0}
+.sp-track-title{font-family:var(--fN);font-size:13px;font-weight:700;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.sp-artist{font-family:var(--fN);font-size:9px;font-weight:400;color:rgba(255,255,255,.35);letter-spacing:.06em}
+.sp-prog{flex:2;min-width:0}
+.sp-times{display:flex;justify-content:space-between;font-family:var(--fN);font-size:9px;font-weight:600;color:rgba(255,255,255,.3);margin-bottom:5px}
+.sp-track{height:3px;background:rgba(255,255,255,.12);border-radius:2px;cursor:pointer;position:relative}
+.sp-fill{height:100%;background:linear-gradient(90deg,var(--rose),var(--violet));border-radius:2px;width:0%;transition:width .5s linear;position:relative}
+.sp-fill::after{content:'';position:absolute;right:-5px;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:var(--rose2);box-shadow:0 0 8px rgba(232,84,122,.7)}
+/* EQ bars */
+.eq{display:inline-flex;align-items:flex-end;gap:2px;height:13px;vertical-align:middle;margin-left:5px}
+.eq-b{width:3px;background:var(--rose2);border-radius:1px;animation:eq var(--s,.5s) ease-in-out infinite alternate}
+.eq-b:nth-child(2){--s:.75s;animation-delay:.1s}
+.eq-b:nth-child(3){--s:.55s;animation-delay:.2s}
+@keyframes eq{from{height:2px}to{height:13px}}
+.eq.paused .eq-b{animation-play-state:paused;height:2px}
+
+/* ══════════════════════════
+   COUNTDOWN — Korean drama style
+══════════════════════════ */
+.countdown-section{
+  background:var(--deep);
+  border-top:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.cd-img-wrap{position:relative;overflow:hidden}
+.cd-img{
+  width:100%;height:clamp(220px,45vw,360px);
+  object-fit:cover;display:block;
+  filter:brightness(.35) saturate(.8) hue-rotate(10deg);
+}
+.cd-img-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(14,12,24,.1) 0%,rgba(14,12,24,.6) 60%,rgba(26,22,40,1) 100%);
+}
+.cd-img-text{
+  position:absolute;bottom:0;left:0;right:0;padding:0 20px 24px;z-index:2;text-align:center;
+}
+.cd-img-kr{font-family:var(--fK);font-size:clamp(24px,6vw,36px);color:var(--white);letter-spacing:.06em;text-shadow:var(--glow-rose);margin-bottom:4px}
+.cd-img-sub{font-family:var(--fN);font-size:10px;font-weight:500;color:rgba(255,255,255,.4);letter-spacing:.2em;text-transform:uppercase}
+/* Countdown numbers */
+.cd-nums{
+  padding:28px 20px 36px;
+  display:flex;justify-content:center;gap:8px;flex-wrap:wrap;
+  position:relative;z-index:1;
+}
+.cd-box{
+  min-width:78px;position:relative;overflow:hidden;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border);
+  border-radius:8px;text-align:center;padding:18px 10px 14px;
+}
+/* glow top border */
+.cd-box::before{content:'';position:absolute;top:0;left:20%;right:20%;height:1.5px;background:linear-gradient(90deg,transparent,var(--rose),transparent);box-shadow:0 0 8px rgba(232,84,122,.5)}
+.cd-n{font-family:var(--fK);font-size:clamp(32px,8vw,46px);line-height:1;margin-bottom:4px;background:linear-gradient(180deg,var(--white) 0%,rgba(255,255,255,.5) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.cd-u{font-family:var(--fN);font-size:9px;font-weight:700;letter-spacing:.15em;color:var(--gray);text-transform:uppercase}
+.cd-kr{font-family:var(--fN);font-size:8px;color:var(--rose);margin-top:2px;opacity:.7}
+
+/* ══════════════════════════
+   VERSE — ink wash panel
+══════════════════════════ */
+.verse-section{
+  position:relative;overflow:hidden;
+  border-top:1px solid var(--border);
+}
+.verse-photo{
+  width:100%;height:clamp(220px,48vw,380px);
+  object-fit:cover;display:block;
+  filter:brightness(.25) saturate(.7) hue-rotate(15deg);
+}
+.verse-overlay{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(180deg,rgba(14,12,24,.4) 0%,rgba(14,12,24,.15) 35%,rgba(14,12,24,.7) 100%),
+    radial-gradient(ellipse 80% 60% at 50% 50%,rgba(124,77,170,.12),transparent 70%);
+}
+.verse-content{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:28px 24px;text-align:center;
+}
+/* Ornamental line */
+.verse-ornament{
+  display:flex;align-items:center;gap:12px;margin-bottom:18px;
+}
+.vo-line{flex:1;height:1px;max-width:50px;background:linear-gradient(90deg,transparent,rgba(232,84,122,.5))}
+.vo-line.r{background:linear-gradient(270deg,transparent,rgba(232,84,122,.5))}
+.vo-gem{
+  width:8px;height:8px;
+  background:linear-gradient(135deg,var(--rose),var(--gold));
+  transform:rotate(45deg);
+  box-shadow:0 0 8px rgba(232,84,122,.5);
+}
+.verse-text{
+  font-family:var(--fG);font-size:clamp(14px,3.5vw,19px);
+  font-weight:400;line-height:1.95;
+  color:rgba(255,255,255,.88);
+  font-style:italic;max-width:520px;margin-bottom:16px;
+}
+.verse-ref{
+  font-family:var(--fN);font-size:9px;font-weight:600;letter-spacing:.25em;
+  color:var(--rose2);text-transform:uppercase;opacity:.8;
+}
+
+/* ══════════════════════════
+   COUPLE — Korean manhwa character card
+══════════════════════════ */
+.couple-section{
+  background:var(--deep);
+  border-top:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.couple-section .ink-wash{}
+.couple-header{
+  padding:32px 20px 24px;text-align:center;
+  border-bottom:1px solid var(--border);
+  position:relative;z-index:1;
+}
+.couple-header-kr{font-family:var(--fK);font-size:12px;color:var(--rose);letter-spacing:.2em;margin-bottom:6px}
+.couple-header-title{font-family:var(--fK);font-size:clamp(26px,7vw,42px);color:var(--white);letter-spacing:.06em;text-shadow:var(--glow-rose)}
+/* underline */
+.couple-header::after{
+  content:'';display:block;width:48px;height:2px;
+  background:linear-gradient(90deg,var(--rose),var(--violet));
+  margin:12px auto 0;border-radius:1px;
+  box-shadow:0 0 8px rgba(232,84,122,.4);
+}
+
+/* Character panels — tall portraits */
+.char-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid var(--border)}
+.char-card{position:relative;overflow:hidden;border-right:1px solid var(--border)}
+.char-card:last-child{border-right:none}
+.cc-photo-wrap{position:relative;overflow:hidden}
+.cc-ratio{padding-top:145%}
+.cc-photo{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:top;
+  filter:brightness(.65) saturate(.9);
+  transition:filter .6s,transform .7s;
+}
+.char-card:hover .cc-photo{filter:brightness(.8) saturate(1);transform:scale(1.04)}
+/* Color tint per char */
+.char-card:first-child .cc-photo::after{display:none}
+.cc-tint-female{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,transparent 38%,rgba(232,84,122,.35) 100%);mix-blend-mode:screen}
+.cc-tint-male{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,transparent 38%,rgba(124,77,170,.35) 100%);mix-blend-mode:screen}
+/* Screentone on photo */
+.cc-tone{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  background-image:radial-gradient(circle,rgba(255,255,255,.04) 1px,transparent 1px);
+  background-size:5px 5px;mix-blend-mode:screen;
+}
+/* Gradient fade bottom */
+.cc-fade{
+  position:absolute;bottom:0;left:0;right:0;height:55%;z-index:3;
+  background:linear-gradient(0deg,var(--deep) 0%,rgba(26,22,40,.5) 60%,transparent 100%);
+}
+/* Info overlay */
+.cc-info{position:absolute;bottom:0;left:0;right:0;z-index:4;padding:14px 13px}
+.cc-role{font-family:var(--fN);font-size:8px;font-weight:700;letter-spacing:.2em;color:var(--rose2);text-transform:uppercase;margin-bottom:3px}
+.cc-role.male{color:var(--violet2)}
+.cc-name{font-family:var(--fK);font-size:clamp(17px,4.5vw,24px);color:var(--white);line-height:1.15;margin-bottom:5px}
+.cc-parents{font-family:var(--fN);font-size:9px;font-weight:300;color:rgba(255,255,255,.4);line-height:1.7}
+.cc-parents strong{color:rgba(255,255,255,.7);font-weight:600}
+/* Episode label */
+.cc-ep{position:absolute;top:10px;left:10px;z-index:5;
+  background:rgba(14,12,24,.7);border:1px solid var(--border);
+  border-radius:4px;font-family:var(--fN);font-size:8px;font-weight:700;letter-spacing:.1em;
+  color:var(--rose2);padding:3px 8px;backdrop-filter:blur(6px)}
+.cc-ep.male{color:var(--violet2);border-color:rgba(124,77,170,.3)}
+
+/* Love meter */
+.love-meter{
+  display:flex;align-items:center;gap:12px;
+  background:rgba(255,255,255,.02);border-top:1px solid var(--border);
+  padding:14px 18px;position:relative;z-index:1;
+}
+.lm-label{font-family:var(--fK);font-size:10px;color:rgba(255,255,255,.35);flex-shrink:0;letter-spacing:.08em}
+.lm-track{flex:1;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden;position:relative}
+.lm-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--rose),var(--gold),var(--violet));
+  width:0%;animation:lm-anim 1.8s ease .6s forwards}
+@keyframes lm-anim{from{width:0%}to{width:96%}}
+.lm-heart{font-size:18px;animation:hb 1.2s ease-in-out infinite;flex-shrink:0}
+@keyframes hb{0%,100%{transform:scale(1)}50%{transform:scale(1.25)}}
+
+/* ══════════════════════════
+   EVENT — cinematic location
+══════════════════════════ */
+.event-section{
+  background:var(--panel);
+  border-top:1px solid var(--border);
+}
+.event-header{padding:32px 20px 24px;text-align:center;border-bottom:1px solid var(--border)}
+.ev-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid var(--border)}
+@media(max-width:500px){.ev-grid{grid-template-columns:1fr}}
+.ev-card{position:relative;overflow:hidden;border-right:1px solid var(--border)}
+.ev-card:last-child{border-right:none}
+/* Photo bg */
+.ev-photo{width:100%;height:160px;object-fit:cover;display:block;filter:brightness(.3) saturate(.8) hue-rotate(10deg)}
+.ev-photo-tone{
+  position:absolute;top:0;left:0;right:0;height:160px;z-index:1;pointer-events:none;
+  background-image:radial-gradient(circle,rgba(255,255,255,.03) 1px,transparent 1px);
+  background-size:5px 5px;mix-blend-mode:screen;
+}
+.ev-photo-color{
+  position:absolute;top:0;left:0;right:0;height:160px;z-index:1;
+}
+.ev-body{padding:16px 16px 18px;position:relative;overflow:hidden}
+.ev-body::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 100% 100% at 50% 0%,rgba(232,84,122,.04),transparent 70%);
+  pointer-events:none}
+.ev-type{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:var(--fN);font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  margin-bottom:10px;
+}
+.ev-type-dot{width:5px;height:5px;border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.ev-date{font-family:var(--fK);font-size:clamp(18px,5vw,24px);line-height:1.3;margin-bottom:10px;color:var(--white)}
+.ev-detail{display:flex;gap:7px;margin-bottom:7px;align-items:flex-start}
+.ev-ico{width:12px;height:12px;fill:currentColor;flex-shrink:0;opacity:.4;margin-top:1px}
+.ev-txt{font-family:var(--fN);font-size:10px;font-weight:300;color:var(--gray);line-height:1.65}
+.ev-maps{
+  display:inline-flex;align-items:center;gap:5px;margin-top:12px;
+  font-family:var(--fN);font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--white);text-decoration:none;
+  background:rgba(255,255,255,.05);border:1px solid var(--border);
+  border-radius:6px;padding:7px 14px;transition:all .2s;
+}
+.ev-maps:hover{border-color:var(--rose);color:var(--rose2);box-shadow:0 0 12px rgba(232,84,122,.2)}
+
+/* ══════════════════════════
+   STORY — manhwa panel alternating
+══════════════════════════ */
+.story-section{background:var(--deep);border-top:1px solid var(--border)}
+.story-header{padding:32px 20px 24px;border-bottom:1px solid var(--border)}
+/* Each story item — like a manhwa chapter page */
+.mw-page{
+  display:grid;grid-template-columns:1fr 1fr;gap:0;
+  border-bottom:1px solid var(--border);
+  opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s ease;
+}
+.mw-page.visible{opacity:1;transform:translateY(0)}
+.mw-page.rev{direction:rtl}
+.mw-page.rev>*{direction:ltr}
+/* Photo half */
+.mw-photo{overflow:hidden;position:relative;border-right:1px solid var(--border)}
+.mw-page.rev .mw-photo{border-right:none;border-left:1px solid var(--border)}
+.mw-photo img{
+  width:100%;height:clamp(200px,45vw,300px);object-fit:cover;display:block;
+  filter:brightness(.6) saturate(.85);
+  transition:filter .5s,transform .6s;
+}
+.mw-page:hover .mw-photo img{filter:brightness(.8) saturate(1);transform:scale(1.04)}
+.mw-photo-wash{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,transparent 40%,rgba(26,22,40,.6) 100%);
+}
+.mw-photo-tone{
+  position:absolute;inset:0;z-index:2;pointer-events:none;mix-blend-mode:screen;
+  background-image:radial-gradient(circle,rgba(255,255,255,.03) 1px,transparent 1px);background-size:5px 5px;
+}
+/* Season badge inside photo */
+.mw-season{
+  position:absolute;bottom:10px;left:10px;z-index:3;
+  background:rgba(14,12,24,.75);border:1px solid var(--border);
+  border-radius:4px;backdrop-filter:blur(6px);
+  font-family:var(--fN);font-size:8px;font-weight:700;letter-spacing:.1em;
+  color:var(--rose2);padding:3px 8px;
+}
+/* Text half */
+.mw-text{background:var(--panel);padding:24px 16px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.mw-text::before{content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 100% 80% at 50% 0%,rgba(124,77,170,.05),transparent 70%);pointer-events:none}
+.mw-ep{font-family:var(--fN);font-size:8px;font-weight:700;letter-spacing:.2em;color:var(--rose);text-transform:uppercase;margin-bottom:4px;position:relative;z-index:1}
+.mw-date{font-family:var(--fN);font-size:9px;font-weight:400;color:var(--gray);letter-spacing:.08em;margin-bottom:8px;position:relative;z-index:1}
+.mw-title{font-family:var(--fK);font-size:clamp(18px,5vw,26px);color:var(--white);line-height:1.2;margin-bottom:8px;letter-spacing:.04em;position:relative;z-index:1;text-shadow:0 0 20px rgba(232,84,122,.2)}
+.mw-desc{font-family:var(--fN);font-size:11px;font-weight:300;color:var(--gray);line-height:1.85;position:relative;z-index:1}
+@media(max-width:500px){.mw-page,.mw-page.rev{grid-template-columns:1fr;direction:ltr}.mw-photo img{height:200px}.mw-page.rev .mw-photo{border-left:none;border-right:none;border-bottom:1px solid var(--border)}}
+
+/* ══════════════════════════
+   GALLERY — dual infinite rows
+══════════════════════════ */
+.gallery-section{background:var(--ink);border-top:1px solid var(--border)}
+.gallery-header{padding:32px 20px 22px;display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1px solid var(--border)}
+.g-hint{font-family:var(--fN);font-size:9px;font-weight:600;color:var(--gray);letter-spacing:.1em;text-transform:uppercase}
+.gal-runner{overflow:hidden;position:relative;border-bottom:1px solid var(--border)}
+.gal-runner::before,.gal-runner::after{content:'';position:absolute;top:0;bottom:0;width:70px;z-index:10;pointer-events:none}
+.gal-runner::before{left:0;background:linear-gradient(90deg,var(--ink),transparent)}
+.gal-runner::after{right:0;background:linear-gradient(270deg,var(--ink),transparent)}
+.gal-track{display:flex;gap:2px;width:max-content;will-change:transform}
+.g-item{
+  flex-shrink:0;overflow:hidden;position:relative;cursor:pointer;
+  background:var(--deep);border-right:1px solid var(--border);
+  transition:transform .3s;
+}
+.g-item:hover{z-index:5;transform:scale(1.04)}
+.g-item.sz1{width:clamp(150px,32vw,220px);height:clamp(190px,42vw,275px)}
+.g-item.sz2{width:clamp(125px,27vw,185px);height:clamp(160px,35vw,235px)}
+.g-item img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(.75) saturate(.85);transition:filter .4s}
+.g-item:hover img{filter:brightness(.95) saturate(1.1)}
+/* Color wash on hover */
+.g-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg,transparent 55%,rgba(14,12,24,.5) 100%)}
+.g-tone{position:absolute;inset:0;z-index:2;pointer-events:none;mix-blend-mode:screen;
+  background-image:radial-gradient(circle,rgba(255,255,255,.03) 1px,transparent 1px);background-size:5px 5px}
+.g-item::after{content:'';position:absolute;inset:0;z-index:3;background:linear-gradient(135deg,rgba(232,84,122,.08),rgba(124,77,170,.06));opacity:0;transition:opacity .3s}
+.g-item:hover::after{opacity:1}
+.g-num{position:absolute;bottom:7px;left:9px;z-index:4;font-family:var(--fN);font-size:8px;font-weight:700;color:rgba(255,255,255,.25);letter-spacing:.06em}
+
+/* ══════════════════════════
+   GIFT
+══════════════════════════ */
+.gift-section{background:var(--deep);border-top:1px solid var(--border);padding:56px 20px}
+.gift-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:500px;margin:28px auto 0}
+@media(max-width:460px){.gift-grid{grid-template-columns:1fr}}
+.gift-card{
+  background:rgba(255,255,255,.02);border:1px solid var(--border);
+  border-radius:10px;padding:22px 18px;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;align-items:flex-start;
+  transition:border-color .2s,transform .15s,box-shadow .15s;
+}
+.gift-card:hover{border-color:rgba(232,84,122,.4);transform:translateY(-3px);box-shadow:0 12px 40px rgba(232,84,122,.1)}
+/* Glow line top */
+.gift-card::before{content:'';position:absolute;top:0;left:20%;right:20%;height:1.5px;
+  background:linear-gradient(90deg,transparent,var(--rose),transparent);
+  box-shadow:0 0 8px rgba(232,84,122,.4);opacity:0;transition:opacity .2s}
+.gift-card:hover::before{opacity:1}
+.g-chip{font-family:var(--fN);font-size:8px;font-weight:700;letter-spacing:.15em;color:var(--gray);text-transform:uppercase;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  border-radius:4px;padding:2px 8px;display:inline-block;margin-bottom:12px}
+.g-bank{font-family:var(--fK);font-size:28px;color:var(--white);margin-bottom:4px;letter-spacing:.04em;text-shadow:0 0 20px rgba(232,84,122,.2)}
+.g-holder{font-family:var(--fN);font-size:10px;font-weight:300;color:var(--gray);margin-bottom:12px}
+.gift-num{font-family:var(--fN);font-size:15px;font-weight:700;letter-spacing:.1em;margin-bottom:14px;color:var(--white);display:block}
+.copy-btn{display:inline-flex;align-items:center;gap:6px;
+  background:rgba(232,84,122,.12);border:1px solid rgba(232,84,122,.3);
+  color:var(--rose2);font-family:var(--fN);font-size:11px;font-weight:700;
+  padding:8px 16px;border-radius:6px;cursor:pointer;letter-spacing:.06em;
+  transition:all .15s;text-transform:uppercase}
+.copy-btn:hover{background:rgba(232,84,122,.2);border-color:var(--rose);box-shadow:0 0 12px rgba(232,84,122,.2)}
+.copy-btn.copied{background:rgba(212,168,67,.12);border-color:rgba(212,168,67,.4);color:var(--gold2)}
+
+/* ══════════════════════════
+   RSVP
+══════════════════════════ */
+.rsvp-section{background:var(--panel);border-top:1px solid var(--border);padding:56px 20px}
+.rsvp-stats{display:flex;gap:10px;justify-content:center;margin-bottom:38px;flex-wrap:wrap}
+.rs-box{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:8px;padding:14px 20px;text-align:center;min-width:82px;position:relative;overflow:hidden}
+.rs-box::before{content:'';position:absolute;top:0;left:30%;right:30%;height:1px;background:linear-gradient(90deg,transparent,var(--rose),transparent);box-shadow:0 0 6px rgba(232,84,122,.4)}
+.rs-n{font-family:var(--fK);font-size:34px;color:var(--rose2);line-height:1}
+.rs-l{font-family:var(--fN);font-size:8px;font-weight:700;color:var(--gray);letter-spacing:.15em;text-transform:uppercase;margin-top:4px}
+.rsvp-form{max-width:450px;margin:0 auto}
+.f-grp{margin-bottom:17px}
+.f-lbl{font-family:var(--fN);font-size:9px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gray);margin-bottom:7px;display:block}
+.f-inp{width:100%;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:7px;padding:12px 14px;color:var(--white);font-family:var(--fN);font-size:13px;font-weight:400;outline:none;transition:border-color .2s,box-shadow .2s}
+.f-inp:focus{border-color:rgba(232,84,122,.5);box-shadow:0 0 0 3px rgba(232,84,122,.08)}
+.f-inp::placeholder{color:rgba(255,255,255,.15)}
+select.f-inp{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238a829a' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;cursor:pointer}
+select.f-inp option{background:var(--deep);color:var(--white)}
+textarea.f-inp{min-height:88px;resize:vertical}
+.gs-row{display:flex;gap:7px}
+.gs-btn{flex:1;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:7px;padding:12px;color:var(--gray);font-family:var(--fN);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s}
+.gs-btn.active{background:rgba(232,84,122,.12);border-color:rgba(232,84,122,.4);color:var(--rose2);box-shadow:0 0 12px rgba(232,84,122,.1)}
+.rsvp-btn{
+  width:100%;background:linear-gradient(135deg,var(--rose),var(--violet));
+  border:none;border-radius:7px;padding:15px;color:var(--white);
+  font-family:var(--fK);font-size:15px;letter-spacing:.12em;cursor:pointer;margin-top:6px;
+  box-shadow:var(--glow-rose);transition:transform .15s,box-shadow .15s;
+}
+.rsvp-btn:hover{transform:translateY(-2px);box-shadow:0 0 40px rgba(232,84,122,.5),0 0 80px rgba(232,84,122,.2)}
+.rsvp-btn:active{transform:translateY(0)}
+
+/* ══════════════════════════
+   WISHES
+══════════════════════════ */
+.wishes-section{background:var(--deep);border-top:1px solid var(--border);padding:56px 20px}
+.wish-list{max-width:540px;margin:28px auto 0;display:flex;flex-direction:column;gap:10px}
+.w-card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;padding:16px;opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s}
+.w-card.visible{opacity:1;transform:translateY(0)}
+.w-hd{display:flex;align-items:flex-start;gap:10px;margin-bottom:9px}
+.w-av{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--fK);font-size:13px;color:var(--white);flex-shrink:0;border:1px solid rgba(255,255,255,.1)}
+.w-nm{font-family:var(--fN);font-size:13px;font-weight:700;color:var(--white)}
+.w-st{font-family:var(--fN);font-size:9px;font-weight:600;color:var(--rose2);letter-spacing:.06em;margin-top:1px}
+/* Manhwa speech bubble style */
+.w-msg{
+  font-family:var(--fN);font-size:12px;font-weight:300;color:var(--gray);line-height:1.8;
+  background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05);
+  border-radius:0 10px 10px 10px;padding:10px 13px;margin-top:6px;
+}
+
+/* ══════════════════════════
+   FOOTER — back cover
+══════════════════════════ */
+.footer-section{position:relative;overflow:hidden;border-top:1px solid var(--border)}
+.ft-photo{width:100%;height:clamp(300px,65vw,520px);object-fit:cover;display:block;filter:brightness(.25) saturate(.8) hue-rotate(12deg)}
+.ft-overlay{position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,12,24,.2) 0%,rgba(14,12,24,.97) 100%)}
+.ft-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:0 20px 52px;text-align:center}
+/* Glow orb */
+.ft-glow{position:absolute;bottom:30%;left:50%;transform:translateX(-50%);
+  width:300px;height:200px;
+  background:radial-gradient(ellipse,rgba(124,77,170,.2),transparent 70%);
+  pointer-events:none;z-index:0}
+.ft-tag{font-family:var(--fN);font-size:9px;font-weight:600;letter-spacing:.3em;color:rgba(255,255,255,.28);text-transform:uppercase;margin-bottom:12px;position:relative;z-index:1}
+/* Decorative line */
+.ft-rule{display:flex;align-items:center;gap:12px;margin:0 auto 16px;max-width:200px;position:relative;z-index:1}
+.ft-rule-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(232,84,122,.4))}
+.ft-rule-gem{width:7px;height:7px;background:linear-gradient(135deg,var(--rose),var(--gold));transform:rotate(45deg);box-shadow:0 0 8px rgba(232,84,122,.5)}
+.ft-rule-line.r{background:linear-gradient(270deg,transparent,rgba(232,84,122,.4))}
+.ft-names{font-family:var(--fK);font-size:clamp(36px,10vw,62px);color:var(--white);line-height:.95;letter-spacing:.04em;text-shadow:var(--glow-rose);margin-bottom:16px;position:relative;z-index:1}
+.ft-msg{font-family:var(--fN);font-size:12px;font-weight:300;color:rgba(255,255,255,.45);line-height:1.9;max-width:380px;margin:0 auto 18px;position:relative;z-index:1}
+.ft-sig{font-family:var(--fG);font-size:17px;color:rgba(255,255,255,.5);margin-bottom:28px;position:relative;z-index:1}
+.ft-brand{font-family:var(--fN);font-size:9px;font-weight:600;color:rgba(255,255,255,.2);letter-spacing:.12em;text-transform:uppercase;position:relative;z-index:1}
+.ft-brand a{color:var(--rose2);text-decoration:none}
+
+/* ── SHARED SECTION HEADERS ── */
+.s-kr{font-family:var(--fN);font-size:9px;font-weight:700;letter-spacing:.3em;color:var(--rose);text-transform:uppercase;display:block;margin-bottom:6px}
+.s-h{font-family:var(--fK);font-size:clamp(24px,6vw,38px);color:var(--white);letter-spacing:.06em;text-shadow:0 0 30px rgba(232,84,122,.2)}
+.s-underline{display:flex;align-items:center;gap:8px;margin-top:10px}
+.su-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
+.su-dot{width:5px;height:5px;background:linear-gradient(135deg,var(--rose),var(--violet));transform:rotate(45deg);box-shadow:0 0 6px rgba(232,84,122,.4);flex-shrink:0}
+
+/* ── BOTTOM NAV ── */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(14,12,24,.92);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-top:1px solid var(--border);display:flex;justify-content:space-around;padding:10px 0 max(10px,env(safe-area-inset-bottom));z-index:100;transform:translateY(100%);transition:transform .5s ease 1s}
+.bnav.show{transform:translateY(0)}
+.n-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:rgba(255,255,255,.25);text-decoration:none;transition:color .15s;font-family:var(--fN);font-size:8px;font-weight:600;letter-spacing:.06em;padding:4px 10px;text-transform:uppercase}
+.n-item:hover,.n-item.active{color:var(--rose2)}
+.n-item svg{width:17px;height:17px;fill:currentColor}
+
+/* ── LIGHTBOX ── */
+.lb{position:fixed;inset:0;background:rgba(14,12,24,.97);z-index:9998;display:none;align-items:center;justify-content:center}
+.lb.open{display:flex}
+.lb-img{max-width:92vw;max-height:88vh;border-radius:6px;object-fit:contain;border:1px solid var(--border);filter:brightness(.9) saturate(1.05)}
+.lb-x{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.05);border:1px solid var(--border);color:var(--white);cursor:pointer;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;transition:all .15s}
+.lb-x:hover{border-color:var(--rose);color:var(--rose2)}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.04);border:1px solid var(--border);color:var(--white);cursor:pointer;width:38px;height:52px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:20px;transition:all .2s}
+.lb-nav:hover{border-color:var(--rose);color:var(--rose2);box-shadow:0 0 12px rgba(232,84,122,.2)}
+.lb-p{left:12px}.lb-n{right:12px}
+.lb-c{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-family:var(--fN);font-size:10px;font-weight:600;color:rgba(255,255,255,.3);letter-spacing:.12em}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:86px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(14,12,24,.9);border:1px solid rgba(232,84,122,.4);color:var(--white);padding:9px 22px;border-radius:8px;font-family:var(--fN);font-size:10px;font-weight:600;letter-spacing:.08em;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;z-index:9999;box-shadow:0 0 20px rgba(232,84,122,.2)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ══ OPENING ══ -->
+<div id="opening">
+  <img class="op-bg" src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&h=900&fit=crop&q=85" alt="">
+  <div class="op-wash"></div>
+  <div class="op-speed"></div>
+  <div class="op-scan"></div>
+
+  <!-- Corner frames -->
+  <div class="op-frame of-tl">
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+      <path d="M2 2 L2 18 M2 2 L18 2" stroke="rgba(232,84,122,.5)" stroke-width="1.5"/>
+      <path d="M6 6 L6 14 M6 6 L14 6" stroke="rgba(232,84,122,.25)" stroke-width="1"/>
+    </svg>
+  </div>
+  <div class="op-frame of-tr">
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+      <path d="M2 2 L2 18 M2 2 L18 2" stroke="rgba(232,84,122,.5)" stroke-width="1.5"/>
+      <path d="M6 6 L6 14 M6 6 L14 6" stroke="rgba(232,84,122,.25)" stroke-width="1"/>
+    </svg>
+  </div>
+  <div class="op-frame of-bl">
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+      <path d="M2 2 L2 18 M2 2 L18 2" stroke="rgba(232,84,122,.5)" stroke-width="1.5"/>
+      <path d="M6 6 L6 14 M6 6 L14 6" stroke="rgba(232,84,122,.25)" stroke-width="1"/>
+    </svg>
+  </div>
+  <div class="op-frame of-br">
+    <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+      <path d="M2 2 L2 18 M2 2 L18 2" stroke="rgba(232,84,122,.5)" stroke-width="1.5"/>
+      <path d="M6 6 L6 14 M6 6 L14 6" stroke="rgba(232,84,122,.25)" stroke-width="1"/>
+    </svg>
+  </div>
+
+  <div class="op-inner">
+    <div class="op-ep">웨딩 만화 · Wedding Manhwa</div>
+    <p class="op-kr-title">최종화 · Final Episode</p>
+    <div class="op-title-wrap">
+      <div class="op-title-glow"></div>
+      <h1 class="op-title">Anita<br>& Zarda</h1>
+    </div>
+    <div class="op-underline"></div>
+    <p class="op-genre">Romance · Drama · 2026</p>
+    <div class="op-dear">
+      <p class="op-dear-lbl">Kepada yang terhormat</p>
+      <p class="op-dear-name">Ade Guntur Fitridullah & Partner</p>
+    </div>
+    <button class="op-btn" onclick="openInvitation()">▶ &nbsp;읽기 시작 · Baca Sekarang</button>
+  </div>
+
+  <div class="op-bot">
+    <span>EP.01 · FINAL</span>
+    <span>2026 · Wedding Arc</span>
+  </div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div id="main">
+
+<!-- EP 1: HERO SPLASH -->
+<div class="ep-break">
+  <span class="ep-kr">제1화</span>
+  <div class="ep-divider"></div>
+  <span class="ep-title">The Beginning · 시작</span>
+  <div class="ep-line"></div>
+  <span class="ep-num">p.001</span>
+</div>
+<section id="home">
+  <div class="mw-topbar">
+    <div class="mtb-l">
+      <div class="mtb-logo">만</div>
+      <span class="mtb-title">Wedding Manhwa · Vol.01</span>
+    </div>
+    <div class="mtb-r">
+      <span class="mtb-ep">제1화</span>
+      <span class="mtb-likes">♥ 24.8K</span>
+    </div>
+  </div>
+  <div class="splash">
+    <img class="splash-bg-img" src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=900&fit=crop&q=85" alt="">
+    <div class="splash-speed"></div>
+    <div class="splash-wash"></div>
+    <div class="splash-tone"></div>
+    <div class="splash-content">
+      <div class="sp-pills">
+        <div class="sp-pill active" onclick="sw(0,this)">Track 01</div>
+        <div class="sp-pill" onclick="sw(1,this)">Track 02</div>
+        <div class="sp-pill" onclick="sw(2,this)">Track 03</div>
+      </div>
+      <span class="sp-badge">최종화 · Final Episode</span>
+      <p class="sp-kr-sub">웨딩 만화 · Wedding Manhwa</p>
+      <h1 class="sp-title">Anita<br>&amp; Zarda</h1>
+      <p class="sp-date-kr">2026년 5월 24일 · 따뜻한 봄날</p>
+      <div class="sp-player">
+        <button class="sp-play" id="playBtn" onclick="togglePlay()">
+          <svg id="pIco" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="pauseIco" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+        <div class="sp-info">
+          <div class="sp-track-title" id="pTitle">Wedding Day <span class="eq paused" id="eqB"><span class="eq-b"></span><span class="eq-b"></span><span class="eq-b"></span></span></div>
+          <div class="sp-artist" id="pArtist">Anita & Zarda · Wedding OST</div>
+        </div>
+        <div class="sp-prog">
+          <div class="sp-times"><span id="curT">0:00</span><span id="totT">3:24</span></div>
+          <div class="sp-track" id="pTrack"><div class="sp-fill" id="pFill"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EP 2: COUNTDOWN -->
+<div class="ep-break">
+  <span class="ep-kr">제2화</span>
+  <div class="ep-divider"></div>
+  <span class="ep-title">Countdown · 카운트다운</span>
+  <div class="ep-line"></div>
+  <span class="ep-num">p.010</span>
+</div>
+<div class="countdown-section">
+  <div class="cd-img-wrap">
+    <img class="cd-img" src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1200&h=500&fit=crop&q=85" alt="" loading="lazy">
+    <div class="cd-img-overlay"></div>
+    <div class="cd-img-text">
+      <div class="cd-img-kr">결혼까지</div>
+      <div class="cd-img-sub">Menuju Hari Istimewa</div>
+    </div>
+  </div>
+  <div class="cd-nums">
+    <div class="cd-box"><div class="cd-n" id="cdD">00</div><div class="cd-u">Hari</div><div class="cd-kr">일</div></div>
+    <div class="cd-box"><div class="cd-n" id="cdH">00</div><div class="cd-u">Jam</div><div class="cd-kr">시간</div></div>
+    <div class="cd-box"><div class="cd-n" id="cdM">00</div><div class="cd-u">Menit</div><div class="cd-kr">분</div></div>
+    <div class="cd-box"><div class="cd-n" id="cdS">00</div><div class="cd-u">Detik</div><div class="cd-kr">초</div></div>
+  </div>
+</div>
+
+<!-- EP 3: VERSE -->
+<div class="ep-break">
+  <span class="ep-kr">제3화</span>
+  <div class="ep-divider"></div>
+  <span class="ep-title">Ayat Suci · 성구</span>
+  <div class="ep-line"></div>
+  <span class="ep-num">p.018</span>
+</div>
+<div class="verse-section">
+  <img class="verse-photo" src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=1200&h=500&fit=crop&q=85" alt="" loading="lazy">
+  <div class="verse-overlay"></div>
+  <div class="verse-content">
+    <div class="verse-ornament">
+      <div class="vo-line"></div>
+      <div class="vo-gem"></div>
+      <div class="vo-line r"></div>
+    </div>
+    <p class="verse-text">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya..."</p>
+    <span class="verse-ref">— Surah Ar-Rum : 21 —</span>
+  </div>
+</div>
+
+<!-- EP 4: COUPLE -->
+<div class="ep-break">
+  <span class="ep-kr">제4화</span>
+  <div class="ep-divider"></div>
+  <span class="ep-title">Character Profile · 캐릭터</span>
+  <div class="ep-line"></div>
+  <span class="ep-num">p.024</span>
+</div>
+<section class="couple-section" id="couple">
+  <div class="ink-wash"></div>
+  <div class="couple-header">
+    <span class="couple-header-kr">등장인물 · Pasangan Kami</span>
+    <h2 class="couple-header-title">Anita &amp; Zarda</h2>
+  </div>
+  <div class="char-grid">
+    <div class="char-card">
+      <div class="cc-photo-wrap">
+        <div class="cc-ratio"></div>
+        <img class="cc-photo" style="position:absolute;inset:0" src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500&h=700&fit=crop&q=80" alt="Anita" loading="lazy">
+        <div class="cc-tint-female"></div>
+        <div class="cc-tone"></div>
+        <div class="cc-fade"></div>
+        <div class="cc-info">
+          <div class="cc-role">여주인공 · Mempelai Wanita</div>
+          <div class="cc-name">Anita<br>Pangestuti, S.Kom</div>
+          <div class="cc-parents">Putri Pertama dari<br><strong>Bpk. Taryono & Ibu Wiwit Jayanti</strong></div>
+        </div>
+        <span class="cc-ep">EP.HEROINE</span>
+      </div>
+    </div>
+    <div class="char-card">
+      <div class="cc-photo-wrap">
+        <div class="cc-ratio"></div>
+        <img class="cc-photo" style="position:absolute;inset:0" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&h=700&fit=crop&q=80" alt="Zarda" loading="lazy">
+        <div class="cc-tint-male"></div>
+        <div class="cc-tone"></div>
+        <div class="cc-fade"></div>
+        <div class="cc-info">
+          <div class="cc-role male">남주인공 · Mempelai Pria</div>
+          <div class="cc-name">Zardarian<br>Ahadika N, S.Kom</div>
+          <div class="cc-parents">Putra Kedua dari<br><strong>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</strong></div>
+        </div>
+        <span class="cc-ep male">EP.HERO</span>
+      </div>
+    </div>
+  </div>
+  <div class="love-meter">
+    <span class="lm-label">ANITA</span>
+    <div class="lm-track"><div class="lm-fill"></div></div>
+    <span class="lm-heart">💕</span>
+    <div class="lm-track" style="transform:scaleX(-1)"><div class="lm-fill"></div></div>
+    <span class="lm-label">ZARDA</span>
+  </div>
+</section>
+
+<!-- EP 5: EVENT -->
+<div class="ep-break">
+  <span class="ep-kr">제5화</span>
+  <div class="ep-divider"></div>
+  <span class="ep-title">Scene Location · 장소</span>
+  <div class="ep-line"></div>
+  <span class="ep-num">p.038</span>
+</div>
+<section class="event-section" id="event">
+  <div class="event-header">
+    <span class="s-kr">장소 · Waktu & Tempat</span>
+    <h2 class="s-h">Waktu &amp; Tempat</h2>
+    <div class="s-underline"><div class="su-line"></div><div class="su-dot"></div><div class="su-line"></div></div>
+  </div>
+  <div class="ev-grid">
+    <div class="ev-card">
+      <img class="ev-photo" src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=500&h=160&fit=crop&q=80" alt="" loading="lazy">
+      <div class="ev-photo-tone"></div>
+      <div class="ev-photo-color" style="background:linear-gradient(180deg,rgba(232,84,122,.08),transparent 60%)"></div>
+      <div class="ev-body">
+        <div class="ev-type" style="color:var(--rose2)"><span class="ev-type-dot" style="background:var(--rose);box-shadow:0 0 6px rgba(232,84,122,.5)"></span>Akad Nikah</div>
+        <div class="ev-date">Minggu,<br>24 Mei 2026</div>
+        <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg><span class="ev-txt">08.00 WIB</span></div>
+        <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span class="ev-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-maps">📍 지도 · Maps</a>
+      </div>
+    </div>
+    <div class="ev-card">
+      <img class="ev-photo" src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=500&h=160&fit=crop&q=80" alt="" loading="lazy">
+      <div class="ev-photo-tone"></div>
+      <div class="ev-photo-color" style="background:linear-gradient(180deg,rgba(124,77,170,.08),transparent 60%)"></div>
+      <div class="ev-body">
+        <div class="ev-type" style="color:var(--violet2)"><span class="ev-type-dot" style="background:var(--violet);box-shadow:0 0 6px rgba(124,77,170,.5)"></span>Resepsi</div>
+        <div class="ev-date">Minggu,<br>24 Mei 2026</div>
+        <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg><span class="ev-txt">11.00 – 13.00 WIB</span></div>
+        <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span class="ev-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-maps">📍 지도 · Maps</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EP 6: STORY -->
+<div class="ep-break">
+  <span class="ep-kr">제6화</span>
+  <div class="ep-divider"></div>
+  <span class="ep-title">Love Story Arc · 러브스토리</span>
+  <div class="ep-line"></div>
+  <span class="ep-num">p.046</span>
+</div>
+<section class="story-section">
+  <div class="story-header">
+    <span class="s-kr">회상 · Flashback</span>
+    <h2 class="s-h">Love Story</h2>
+    <div class="s-underline"><div class="su-line"></div><div class="su-dot"></div><div class="su-line"></div></div>
+  </div>
+  <div class="mw-page">
+    <div class="mw-photo">
+      <img src="https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=600&h=300&fit=crop&q=80" alt="" loading="lazy">
+      <div class="mw-photo-wash"></div>
+      <div class="mw-photo-tone"></div>
+      <span class="mw-season">Juni 2025</span>
+    </div>
+    <div class="mw-text">
+      <div class="mw-ep">EP.001 · Pertemuan Pertama</div>
+      <div class="mw-date">Juni 2025</div>
+      <div class="mw-title">Awal Pertemuan</div>
+      <div class="mw-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</div>
+    </div>
+  </div>
+  <div class="mw-page rev">
+    <div class="mw-photo">
+      <img src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&h=300&fit=crop&q=80" alt="" loading="lazy">
+      <div class="mw-photo-wash"></div>
+      <div class="mw-photo-tone"></div>
+      <span class="mw-season">Nov 2025</span>
+    </div>
+    <div class="mw-text">
+      <div class="mw-ep">EP.002 · 프로포즈</div>
+      <div class="mw-date">November 2025</div>
+      <div class="mw-title">Lamaran</div>
+      <div class="mw-desc">Rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div>
+    </div>
+  </div>
+  <div class="mw-page">
+    <div class="mw-photo">
+      <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&h=300&fit=crop&q=80" alt="" loading="lazy">
+      <div class="mw-photo-wash"></div>
+      <div class="mw-photo-tone"></div>
+      <span class="mw-season" style="background:rgba(232,84,122,.15);border-color:rgba(232,84,122,.3);color:var(--rose2)">Mei 2026 ♥</span>
+    </div>
+    <div class="mw-text">
+      <div class="mw-ep">EP.003 · 결혼식</div>
+      <div class="mw-date">Mei 2026</div>
+      <div class="mw-title">Pernikahan</div>
+      <div class="mw-desc">Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.</div>
+    </div>
+  </div>
+</section>
+
+<!-- EP 7: GALLERY -->
+<div class="ep-break">
+  <span class="ep-kr">제7화</span>
+  <div class="ep-divider"></div>
+  <span class="ep-title">Gallery · 갤러리</span>
+  <div class="ep-line"></div>
+  <span class="ep-num">p.060</span>
+</div>
+<section class="gallery-section">
+  <div class="gallery-header">
+    <div>
+      <span class="s-kr">사진 · Galeri Foto</span>
+      <h2 class="s-h" style="font-size:clamp(20px,5vw,30px)">Galeri Foto</h2>
+    </div>
+    <span class="g-hint">drag · swipe</span>
+  </div>
+  <div class="gal-runner" id="gr1"><div class="gal-track" id="gt1"></div></div>
+  <div class="gal-runner" id="gr2" style="border-top:1px solid var(--border)"><div class="gal-track" id="gt2"></div></div>
+</section>
+
+<!-- EP 8: GIFT -->
+<div class="ep-break">
+  <span class="ep-kr">제8화</span>
+  <div class="ep-divider"></div>
+  <span class="ep-title">Digital Gift · 선물</span>
+  <div class="ep-line"></div>
+  <span class="ep-num">p.072</span>
+</div>
+<section class="gift-section" id="gift">
+  <div style="text-align:center;max-width:560px;margin:0 auto">
+    <span class="s-kr" style="text-align:center;display:block">선물 · Amplop Digital</span>
+    <h2 class="s-h" style="text-align:center;margin-bottom:8px">Amplop Digital</h2>
+    <div class="s-underline" style="justify-content:center"><div class="su-line" style="max-width:50px"></div><div class="su-dot"></div><div class="su-line" style="max-width:50px"></div></div>
+    <p style="font-family:var(--fN);font-size:12px;font-weight:300;color:var(--gray);line-height:1.9;margin-top:16px">Doa restu sudah sangat cukup, namun jika memberi merupakan tanda kasih, kami dengan senang hati menerimanya.</p>
+  </div>
+  <div class="gift-grid">
+    <div class="gift-card">
+      <span class="g-chip">Bank · BCA</span>
+      <div class="g-bank">BCA</div>
+      <div class="g-holder">Zardarian Ahadika N</div>
+      <span class="gift-num">8210 3705 61</span>
+      <button class="copy-btn" onclick="cp('8210370561',this)">복사 · Salin</button>
+    </div>
+    <div class="gift-card">
+      <span class="g-chip">Bank · BNI</span>
+      <div class="g-bank">BNI</div>
+      <div class="g-holder">Anita Pangestuti</div>
+      <span class="gift-num">1192 9784 03</span>
+      <button class="copy-btn" onclick="cp('1192978403',this)">복사 · Salin</button>
+    </div>
+  </div>
+</section>
+
+<!-- EP 9: RSVP -->
+<div class="ep-break">
+  <span class="ep-kr">제9화</span>
+  <div class="ep-divider"></div>
+  <span class="ep-title">RSVP · 참석 확인</span>
+  <div class="ep-line"></div>
+  <span class="ep-num">p.080</span>
+</div>
+<section class="rsvp-section" id="rsvp">
+  <div style="text-align:center;max-width:560px;margin:0 auto 32px">
+    <span class="s-kr" style="text-align:center;display:block">참석 확인 · Konfirmasi</span>
+    <h2 class="s-h" style="text-align:center">RSVP</h2>
+    <div class="s-underline" style="justify-content:center"><div class="su-line" style="max-width:50px"></div><div class="su-dot"></div><div class="su-line" style="max-width:50px"></div></div>
+  </div>
+  <div class="rsvp-stats">
+    <div class="rs-box"><div class="rs-n">7</div><div class="rs-l">Respons</div></div>
+    <div class="rs-box"><div class="rs-n">7</div><div class="rs-l">Hadir</div></div>
+    <div class="rs-box"><div class="rs-n">13</div><div class="rs-l">Total Tamu</div></div>
+  </div>
+  <div class="rsvp-form">
+    <div class="f-grp"><label class="f-lbl">이름 · Nama Lengkap</label><input type="text" class="f-inp" placeholder="Masukkan nama Anda" id="rN"></div>
+    <div class="f-grp"><label class="f-lbl">참석 여부 · Konfirmasi</label>
+      <select class="f-inp" id="rS"><option value="">Pilih status kehadiran</option><option value="hadir">참석 · Hadir ✓</option><option value="tidak">불참 · Tidak Hadir ✗</option></select>
+    </div>
+    <div class="f-grp"><label class="f-lbl">인원수 · Jumlah Tamu</label>
+      <div class="gs-row"><button class="gs-btn active" onclick="sg(1,this)">1 Orang</button><button class="gs-btn" onclick="sg(2,this)">2 Orang</button></div>
+    </div>
+    <div class="f-grp"><label class="f-lbl">메시지 · Ucapan & Pesan</label><textarea class="f-inp" placeholder="Tuliskan ucapan untuk Anita & Zarda..." id="rM"></textarea></div>
+    <button class="rsvp-btn" onclick="submitR()">💕 &nbsp;참석 확인 · Konfirmasi Kehadiran</button>
+  </div>
+</section>
+
+<!-- EP 10: WISHES -->
+<div class="ep-break">
+  <span class="ep-kr">제10화</span>
+  <div class="ep-divider"></div>
+  <span class="ep-title">Comments · 댓글</span>
+  <div class="ep-line"></div>
+  <span class="ep-num">p.088</span>
+</div>
+<section class="wishes-section">
+  <div style="max-width:680px;margin:0 auto">
+    <span class="s-kr">댓글 · Ucapan & Doa</span>
+    <h2 class="s-h">Ucapan &amp; Doa</h2>
+    <div class="s-underline"><div class="su-line"></div><div class="su-dot"></div><div class="su-line"></div></div>
+  </div>
+  <div class="wish-list" id="wList">
+    <div class="w-card visible">
+      <div class="w-hd"><div class="w-av" style="background:linear-gradient(135deg,var(--rose),var(--violet))">A</div><div><div class="w-nm">Ayu Rahmawati</div><div class="w-st">✓ HADIR · 2 TAMU</div></div></div>
+      <div class="w-msg">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu Anita & Zarda! 🌸</div>
+    </div>
+    <div class="w-card visible">
+      <div class="w-hd"><div class="w-av" style="background:linear-gradient(135deg,var(--blue),var(--teal))">R</div><div><div class="w-nm">Reza Firmansyah</div><div class="w-st">✓ HADIR · 1 TAMU</div></div></div>
+      <div class="w-msg">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan kebahagiaan yang tidak pernah habis. Aamiin!</div>
+    </div>
+    <div class="w-card visible">
+      <div class="w-hd"><div class="w-av" style="background:linear-gradient(135deg,var(--violet),var(--rose))">S</div><div><div class="w-nm">Sinta Dewi</div><div class="w-st">✓ HADIR · 2 TAMU</div></div></div>
+      <div class="w-msg">Wishing you both a lifetime of love and laughter. Semoga langkah kalian selalu diberkahi Allah SWT 💜</div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div class="ep-break" style="background:var(--ink)">
+  <span class="ep-kr" style="color:var(--gold2)">완결</span>
+  <div class="ep-divider"></div>
+  <span class="ep-title">Fin · 끝</span>
+  <div class="ep-line"></div>
+  <span class="ep-num">p.096</span>
+</div>
+<footer class="footer-section">
+  <img class="ft-photo" src="https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=1400&h=700&fit=crop&q=80" alt="" loading="lazy">
+  <div class="ft-overlay"></div>
+  <div class="ft-glow"></div>
+  <div class="ft-inner">
+    <p class="ft-tag">완결 · Fin · End of Story</p>
+    <div class="ft-rule">
+      <div class="ft-rule-line"></div>
+      <div class="ft-rule-gem"></div>
+      <div class="ft-rule-line r"></div>
+    </div>
+    <h2 class="ft-names">Anita &amp; Zarda</h2>
+    <p class="ft-msg">Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu kepada kami.</p>
+    <p class="ft-sig">kami yang berbahagia — Anita & Zarda 💕</p>
+    <p class="ft-brand">Digital Invitation by <a href="#">BridesSpace</a> · Manhwa Theme</p>
+  </div>
+</footer>
+
+</div><!-- /main -->
+
+<!-- NAV -->
+<nav class="bnav" id="bnav">
+  <a href="#home" class="n-item active"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home</a>
+  <a href="#couple" class="n-item"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Couple</a>
+  <a href="#event" class="n-item"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>Event</a>
+  <a href="#gift" class="n-item"><svg viewBox="0 0 24 24"><path d="M20 6h-2.18c.07-.23.18-.46.18-.71C18 3.47 16.53 2 14.71 2c-.87 0-1.65.36-2.22.93L12 3.4l-.49-.47C10.94 2.36 10.16 2 9.29 2 7.47 2 6 3.47 6 5.29c0 .25.11.48.18.71H4c-1.11 0-2 .89-2 2v13c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5.29-2c.47 0 .79.32.79.79S15.18 5.58 14.71 5.58h-1.53l.75-.75c.2-.2.49-.33.78-.33zM9.29 4c.29 0 .58.13.78.33l.75.75H9.29C8.82 5.08 8.5 4.76 8.5 4.29S8.82 4 9.29 4zM11 19H4v-6h7v6zm0-8H4V8h7v3zm9 8h-7v-6h7v6zm0-8h-7V8h7v3z"/></svg>Gift</a>
+  <a href="#rsvp" class="n-item"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>RSVP</a>
+</nav>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lb">
+  <button class="lb-x" onclick="closeLb()">✕</button>
+  <button class="lb-nav lb-p" onclick="lbPrev()">‹</button>
+  <img class="lb-img" id="lbI" src="" alt="">
+  <button class="lb-nav lb-n" onclick="lbNext()">›</button>
+  <div class="lb-c" id="lbC"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const TRACKS=[
+  {title:"Wedding Day",artist:"Anita & Zarda · Wedding OST",dur:"3:24",secs:204},
+  {title:"First Look",artist:"Anita & Zarda · Wedding OST",dur:"2:58",secs:178},
+  {title:"Lamaran",artist:"Anita & Zarda · Wedding OST",dur:"4:12",secs:252},
+];
+const IMGS=[
+  "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=650&fit=crop&q=80",
+];
+
+let tIdx=0,isPlaying=false,prog=0,pTimer=null,lbIdx=0,gCnt=1;
+
+function openInvitation(){
+  document.getElementById('opening').classList.add('hide');
+  setTimeout(()=>document.getElementById('main').classList.add('show'),100);
+  document.getElementById('bnav').classList.add('show');
+  setTimeout(init,400);
+}
+function init(){countdown();buildGallery();scrollAnims();navHL()}
+
+/* Player */
+function togglePlay(){isPlaying?pause():play()}
+function play(){setPlay(true)}
+function pause(){clearInterval(pTimer);setPlay(false)}
+function setPlay(p){
+  isPlaying=p;
+  document.getElementById('pIco').style.display=p?'none':'block';
+  document.getElementById('pauseIco').style.display=p?'block':'none';
+  const eq=document.getElementById('eqB');if(eq)eq.classList.toggle('paused',!p);
+  if(p){const t=TRACKS[tIdx];pTimer=setInterval(()=>{prog=Math.min(prog+(100/t.secs),100);updProg();if(prog>=100)nextTrack()},1000)}
+}
+function updProg(){
+  document.getElementById('pFill').style.width=prog+'%';
+  const t=TRACKS[tIdx],e=Math.round((prog/100)*t.secs);
+  document.getElementById('curT').textContent=Math.floor(e/60)+':'+String(e%60).padStart(2,'0');
+}
+function sw(idx,btn){
+  document.querySelectorAll('.sp-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');tIdx=idx;clearInterval(pTimer);prog=0;
+  const t=TRACKS[idx];
+  document.getElementById('pTitle').innerHTML=`${t.title} <span class="eq ${isPlaying?'':'paused'}" id="eqB"><span class="eq-b"></span><span class="eq-b"></span><span class="eq-b"></span></span>`;
+  document.getElementById('pArtist').textContent=t.artist;
+  document.getElementById('totT').textContent=t.dur;
+  updProg();
+  if(isPlaying){pTimer=setInterval(()=>{prog=Math.min(prog+(100/t.secs),100);updProg();if(prog>=100)nextTrack()},1000)}
+}
+function nextTrack(){const n=(tIdx+1)%TRACKS.length;const pill=document.querySelectorAll('.sp-pill')[n];if(pill)sw(n,pill)}
+document.addEventListener('click',e=>{const tr=document.getElementById('pTrack');if(tr&&tr.contains(e.target)){const r=tr.getBoundingClientRect();prog=Math.max(0,Math.min(100,((e.clientX-r.left)/r.width)*100));updProg()}});
+
+/* Countdown */
+function countdown(){
+  const t=new Date('2026-05-24T08:00:00');
+  function tick(){
+    const d=t-new Date();
+    if(d<=0){['cdD','cdH','cdM','cdS'].forEach(id=>document.getElementById(id).textContent='00');return}
+    document.getElementById('cdD').textContent=String(Math.floor(d/86400000)).padStart(2,'0');
+    document.getElementById('cdH').textContent=String(Math.floor((d%86400000)/3600000)).padStart(2,'0');
+    document.getElementById('cdM').textContent=String(Math.floor((d%3600000)/60000)).padStart(2,'0');
+    document.getElementById('cdS').textContent=String(Math.floor((d%60000)/1000)).padStart(2,'0');
+  }
+  tick();setInterval(tick,1000);
+}
+
+/* Gallery */
+function buildGallery(){
+  buildRow('gt1','gr1',IMGS,.5,'sz1');
+  buildRow('gt2','gr2',[...IMGS].reverse(),-.42,'sz2');
+}
+function buildRow(tId,wId,imgs,spd,cls){
+  const track=document.getElementById(tId),wrap=document.getElementById(wId);
+  const all=[...imgs,...imgs,...imgs];
+  all.forEach((src,i)=>{
+    const ri=i%imgs.length;
+    const el=document.createElement('div');el.className=`g-item ${cls}`;
+    el.innerHTML=`<img src="${src}" alt="G${ri+1}" loading="lazy"><div class="g-overlay"></div><div class="g-tone"></div><span class="g-num">${String(ri+1).padStart(2,'0')}</span>`;
+    el.addEventListener('click',()=>openLb(ri));
+    track.appendChild(el);
+  });
+  requestAnimationFrame(()=>{
+    const item=track.querySelector('.g-item');if(!item)return;
+    const iw=item.offsetWidth+2,total=imgs.length*iw;
+    let off=total,paused=false,drag=false,dS=0,sS=0;
+    function tick(){
+      if(!paused){off+=spd;if(spd>0){if(off>=total*2)off-=total;if(off<total)off+=total}else{if(off<=0)off+=total;if(off>total)off-=total}}
+      track.style.transform=`translateX(-${off}px)`;requestAnimationFrame(tick);
+    }
+    track.style.transform=`translateX(-${off}px)`;requestAnimationFrame(tick);
+    wrap.addEventListener('mousedown',e=>{drag=true;dS=e.clientX;sS=off;paused=true});
+    window.addEventListener('mousemove',e=>{if(!drag)return;off=sS-(e.clientX-dS)});
+    window.addEventListener('mouseup',()=>{drag=false;paused=false});
+    wrap.addEventListener('touchstart',e=>{dS=e.touches[0].clientX;sS=off;paused=true},{passive:true});
+    wrap.addEventListener('touchmove',e=>{off=sS-(e.touches[0].clientX-dS)},{passive:true});
+    wrap.addEventListener('touchend',()=>{paused=false});
+    wrap.addEventListener('mouseenter',()=>{if(!drag)paused=true});
+    wrap.addEventListener('mouseleave',()=>{drag=false;paused=false});
+  });
+}
+
+/* Lightbox */
+function openLb(idx){lbIdx=idx;updLb();document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden'}
+function closeLb(){document.getElementById('lb').classList.remove('open');document.body.style.overflow=''}
+function lbPrev(){lbIdx=(lbIdx-1+IMGS.length)%IMGS.length;updLb()}
+function lbNext(){lbIdx=(lbIdx+1)%IMGS.length;updLb()}
+function updLb(){document.getElementById('lbI').src=IMGS[lbIdx];document.getElementById('lbC').textContent=`${lbIdx+1} / ${IMGS.length}`}
+document.addEventListener('keydown',e=>{if(!document.getElementById('lb').classList.contains('open'))return;if(e.key==='Escape')closeLb();if(e.key==='ArrowLeft')lbPrev();if(e.key==='ArrowRight')lbNext()});
+
+/* Scroll anims */
+function scrollAnims(){
+  const obs=new IntersectionObserver(en=>en.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.08});
+  document.querySelectorAll('.mw-page,.w-card').forEach(el=>obs.observe(el));
+}
+
+/* Nav */
+function navHL(){
+  const obs=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.n-item').forEach(n=>n.classList.remove('active'));const a=document.querySelector(`.n-item[href="#${e.target.id}"]`);if(a)a.classList.add('active')}})},{rootMargin:'-40% 0px -40% 0px'});
+  ['home','couple','event','gift','rsvp'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el)});
+}
+
+/* RSVP */
+function sg(n,btn){gCnt=n;document.querySelectorAll('.gs-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+function submitR(){
+  const name=document.getElementById('rN').value.trim(),status=document.getElementById('rS').value,msg=document.getElementById('rM').value.trim();
+  if(!name||!status){showT('Mohon isi nama dan status kehadiran');return}
+  const init=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const grads=[
+    'linear-gradient(135deg,#e8547a,#7c4daa)',
+    'linear-gradient(135deg,#3a6fff,#2bbfaa)',
+    'linear-gradient(135deg,#7c4daa,#e8547a)',
+    'linear-gradient(135deg,#d4a843,#e8547a)',
+    'linear-gradient(135deg,#2bbfaa,#3a6fff)',
+  ];
+  const grad=grads[Math.floor(Math.random()*grads.length)];
+  const stxt=status==='hadir'?`✓ HADIR · ${gCnt} TAMU`:'✗ TIDAK HADIR';
+  const card=document.createElement('div');card.className='w-card';
+  card.innerHTML=`<div class="w-hd"><div class="w-av" style="background:${grad}">${init}</div><div><div class="w-nm">${name}</div><div class="w-st">${stxt}</div></div></div><div class="w-msg">${msg||'Selamat dan semoga bahagia selalu! 💜'}</div>`;
+  document.getElementById('wList').prepend(card);
+  setTimeout(()=>card.classList.add('visible'),50);
+  document.getElementById('rN').value='';document.getElementById('rS').value='';document.getElementById('rM').value='';
+  showT('감사합니다 · Terima kasih! 💕');
+  setTimeout(()=>document.querySelector('.wishes-section').scrollIntoView({behavior:'smooth',block:'start'}),300);
+}
+
+/* Copy */
+function cp(txt,btn){
+  navigator.clipboard.writeText(txt).then(()=>{
+    btn.classList.add('copied');btn.textContent='✓ 복사됨 · Tersalin!';
+    showT('Nomor rekening tersalin ✓');
+    setTimeout(()=>{btn.classList.remove('copied');btn.textContent='복사 · Salin'},2500);
+  }).catch(()=>showT('Salin manual: '+txt));
+}
+
+/* Toast */
+let tT;
+function showT(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2800)}
+</script>
+</body>
+</html>

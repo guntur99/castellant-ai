@@ -1,0 +1,2035 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Wedding XP — Anita & Zarda</title>
+<link href="https://fonts.googleapis.com/css2?family=Tahoma:wght@400;700&family=Playfair+Display:ital,wght@0,700;1,400;1,700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   WINDOWS XP — LUNA THEME DESIGN SYSTEM
+═══════════════════════════════════════════════ */
+:root {
+  /* XP Luna Blue */
+  --xp-blue1:     #0a246a;
+  --xp-blue2:     #245edb;
+  --xp-blue3:     #4d90fe;
+  --xp-titlebar1: #0a246a;
+  --xp-titlebar2: #a6caf0;
+  --xp-taskbar1:  #1f3b79;
+  --xp-taskbar2:  #3a6fc4;
+  --xp-start1:    #1a7300;
+  --xp-start2:    #43b019;
+  --xp-desktop:   #3a6ea8;
+  --xp-window:    #ece9d8;
+  --xp-winborder: #0055ea;
+  --xp-content:   #ffffff;
+  --xp-silver:    #d4d0c8;
+  --xp-text:      #000000;
+  --xp-gray:      #808080;
+  --xp-navy:      #0000a0;
+  --xp-green:     #008000;
+  --xp-red:       #cc0000;
+  --xp-orange:    #ff6600;
+  --xp-selected:  #316ac5;
+  --xp-sel-text:  #ffffff;
+  --xp-hover:     #e8f4ff;
+  --xp-shadow:    rgba(0,0,0,.35);
+  --font-ui:      Tahoma, 'Segoe UI', sans-serif;
+  --font-d:       'Playfair Display', Georgia, serif;
+  --r-win:        8px 8px 0 0;
+  --r-btn:        4px;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:100%; height:100%; overflow:hidden; }
+
+body {
+  font-family: var(--font-ui);
+  font-size: 11px;
+  background: var(--xp-desktop);
+  cursor: default;
+  user-select: none;
+  -webkit-font-smoothing: auto;
+}
+
+/* ═══════════════════════════════════════════
+   BOOT / SPLASH SCREEN
+═══════════════════════════════════════════ */
+#bootXP {
+  position: fixed; inset: 0; z-index: 9999;
+  background: #000;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  transition: opacity .6s ease;
+}
+#bootXP.hide { opacity: 0; pointer-events: none; }
+
+.xp-boot-logo {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 48px;
+}
+.xp-logo-flag {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2px; width: 56px; height: 56px;
+}
+.xp-logo-flag div { border-radius: 3px; }
+.xp-boot-text { color: #fff; }
+.xp-boot-name { font-family: var(--font-ui); font-size: 36px; font-weight: 300; letter-spacing: -.02em; }
+.xp-boot-name span { color: #ff9900; font-weight: 700; }
+.xp-boot-edition { font-size: 11px; color: #aaa; letter-spacing: .2em; text-transform: uppercase; margin-top: 2px; }
+
+.xp-boot-progress-wrap { width: 300px; text-align: center; }
+.xp-boot-bar-outer {
+  width: 100%; height: 14px; border-radius: 7px;
+  background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15);
+  padding: 2px; overflow: hidden; margin-bottom: 12px;
+}
+.xp-boot-bar-inner {
+  height: 100%; border-radius: 5px;
+  background: linear-gradient(90deg, #ff6600, #ff9900, #ff6600);
+  background-size: 200% 100%;
+  animation: xp-bar-shimmer 1s linear infinite;
+  transition: width .4s ease;
+  width: 0%;
+}
+@keyframes xp-bar-shimmer { 0%{background-position:200% 0} 100%{background-position:0 0} }
+.xp-boot-status { color: #999; font-size: 11px; font-family: var(--font-ui); }
+.xp-boot-copy { color: #555; font-size: 10px; margin-top: 32px; font-family: var(--font-ui); }
+
+/* ═══════════════════════════════════════════
+   BLISS WALLPAPER (XP iconic green hills)
+═══════════════════════════════════════════ */
+#desktop {
+  position: fixed; inset: 0 0 40px 0;
+  overflow: hidden;
+  background:
+    /* sky */
+    linear-gradient(180deg, #4a90d9 0%, #87ceeb 35%, #c8e6f5 55%,
+    /* hill */
+    #7ec850 55%, #5caa2a 70%, #4a9020 80%, #3d7a1a 100%);
+  background-size: 100% 100%;
+}
+
+/* Bliss clouds */
+.bliss-cloud {
+  position: absolute; border-radius: 50%;
+  background: rgba(255,255,255,.82);
+  filter: blur(4px);
+  animation: cloud-drift linear infinite;
+}
+@keyframes cloud-drift { from{transform:translateX(-120%)} to{transform:translateX(110vw)} }
+
+/* Bliss sun glare */
+#desktop::before {
+  content: '';
+  position: absolute; top: -80px; right: 10%;
+  width: 300px; height: 300px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,200,.25) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════
+   DESKTOP ICONS
+═══════════════════════════════════════════ */
+.desktop-icons {
+  position: absolute; top: 16px; left: 14px;
+  display: flex; flex-direction: column; gap: 2px;
+  z-index: 5;
+}
+.desk-icon {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 3px; padding: 5px 6px; cursor: pointer;
+  width: 72px; text-align: center;
+  border-radius: 4px; border: 1px solid transparent;
+}
+.desk-icon:hover {
+  background: rgba(49,106,197,.4);
+  border-color: rgba(49,106,197,.6);
+}
+.desk-icon:active { background: rgba(49,106,197,.6); }
+.desk-icon-img { font-size: 32px; line-height: 1; height: 40px; display:flex; align-items:center; justify-content:center; filter: drop-shadow(1px 2px 3px rgba(0,0,0,.4)); }
+.desk-icon-label {
+  font-family: var(--font-ui); font-size: 11px;
+  color: white; text-shadow: 1px 1px 2px #000, 0 0 4px #000;
+  line-height: 1.3; word-break: break-word;
+}
+.desk-icon:hover .desk-icon-label {
+  background: var(--xp-selected);
+  text-shadow: none; padding: 0 2px;
+}
+
+/* ═══════════════════════════════════════════
+   XP WINDOW
+═══════════════════════════════════════════ */
+.xp-window {
+  position: absolute;
+  background: var(--xp-window);
+  border-radius: 8px 8px 0 0;
+  border: 1px solid #0055ea;
+  box-shadow: 3px 3px 10px rgba(0,0,0,.4), inset 0 0 0 1px rgba(255,255,255,.3);
+  display: flex; flex-direction: column;
+  min-width: 200px; z-index: 10;
+  overflow: hidden;
+}
+.xp-window.focused { z-index: 100; }
+.xp-window.minimized, .xp-window.hidden { display: none !important; }
+
+/* XP Title Bar — glossy blue gradient */
+.xp-titlebar {
+  background: linear-gradient(180deg,
+    #2f72d0 0%, #4a90e2 8%, #245cba 50%, #1a4a9e 90%, #0f3080 100%);
+  padding: 4px 6px 5px;
+  display: flex; align-items: center; gap: 5px;
+  cursor: move; flex-shrink: 0;
+  border-radius: 7px 7px 0 0;
+  position: relative;
+}
+.xp-titlebar::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,.25) 0%, transparent 100%);
+  border-radius: 7px 7px 0 0; pointer-events: none;
+}
+.xp-window:not(.focused) .xp-titlebar {
+  background: linear-gradient(180deg, #9db4d1 0%, #7a9cbf 40%, #6a8caf 100%);
+}
+.xp-titlebar-icon { font-size: 14px; flex-shrink: 0; position: relative; z-index: 1; }
+.xp-titlebar-text {
+  flex: 1; font-size: 12px; font-weight: 700; color: white;
+  text-shadow: 1px 1px 2px rgba(0,0,0,.5);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  position: relative; z-index: 1;
+}
+.xp-titlebar-btns { display: flex; gap: 2px; flex-shrink: 0; position: relative; z-index: 1; }
+
+/* XP window control buttons — glossy */
+.xp-tb-btn {
+  width: 21px; height: 21px; border-radius: 3px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 900; cursor: pointer;
+  font-family: 'Marlett', 'Webdings', sans-serif;
+  color: white; text-shadow: 0 1px 1px rgba(0,0,0,.3);
+  position: relative; overflow: hidden;
+}
+.xp-tb-btn::before {
+  content: '';
+  position: absolute; inset: 0; border-radius: 3px;
+  background: linear-gradient(180deg, rgba(255,255,255,.3) 0%, transparent 50%);
+}
+.xp-tb-btn.min { background: linear-gradient(180deg, #5eb0f0 0%, #2d7dd2 50%, #1e5ab0 100%); }
+.xp-tb-btn.max { background: linear-gradient(180deg, #5eb0f0 0%, #2d7dd2 50%, #1e5ab0 100%); }
+.xp-tb-btn.cls { background: linear-gradient(180deg, #f08070 0%, #d94040 50%, #b82020 100%); }
+.xp-tb-btn:hover { filter: brightness(1.2); }
+.xp-tb-btn:active { filter: brightness(.9); }
+
+/* XP Menu Bar */
+.xp-menubar {
+  background: var(--xp-window);
+  border-bottom: 1px solid #aca899;
+  padding: 1px 2px; display: flex;
+  position: relative; flex-shrink: 0;
+}
+.xp-menu-item {
+  font-family: var(--font-ui); font-size: 11px;
+  padding: 3px 6px; cursor: pointer; border-radius: 3px;
+  color: #000;
+}
+.xp-menu-item:hover { background: var(--xp-selected); color: white; }
+.xp-menu-item.active { background: var(--xp-selected); color: white; }
+
+/* XP Toolbar */
+.xp-toolbar {
+  background: linear-gradient(180deg, #f0ede0 0%, #dbd8c8 100%);
+  border-bottom: 1px solid #aca899;
+  padding: 2px 4px; display: flex; gap: 2px; align-items: center;
+  flex-shrink: 0;
+}
+.xp-tool-btn {
+  font-family: var(--font-ui); font-size: 11px;
+  padding: 3px 8px; cursor: pointer; border-radius: 3px;
+  color: #000; display: flex; align-items: center; gap: 4px;
+  background: none; border: 1px solid transparent;
+}
+.xp-tool-btn:hover {
+  background: linear-gradient(180deg, #fff 0%, #e8e5d5 100%);
+  border: 1px solid #aca899;
+}
+.xp-tool-btn:active { background: linear-gradient(180deg, #d0cdc0 0%, #e0ddd0 100%); }
+.xp-tool-sep { width: 1px; height: 20px; background: #aca899; margin: 0 2px; }
+
+/* XP Content area */
+.xp-content {
+  flex: 1; overflow: auto; background: #fff;
+  font-family: var(--font-ui); font-size: 11px;
+}
+.xp-content::-webkit-scrollbar { width: 16px; }
+.xp-content::-webkit-scrollbar-track {
+  background: linear-gradient(90deg, #d4d0c8 0%, #e4e0d8 100%);
+}
+.xp-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #e0ddd0 0%, #c0bdb0 100%);
+  border: 1px solid #aca899; border-radius: 2px;
+}
+
+/* XP Status Bar */
+.xp-statusbar {
+  background: var(--xp-window);
+  border-top: 1px solid #aca899;
+  padding: 2px 6px;
+  display: flex; gap: 8px; font-size: 11px; flex-shrink: 0;
+}
+.xp-status-panel {
+  padding: 1px 6px;
+  border-top: 1px solid #aca899; border-left: 1px solid #aca899;
+  border-right: 1px solid #fff; border-bottom: 1px solid #fff;
+}
+
+/* XP Buttons */
+.xp-btn {
+  font-family: var(--font-ui); font-size: 11px; color: #000;
+  padding: 4px 14px; cursor: pointer; border-radius: var(--r-btn);
+  background: linear-gradient(180deg, #fff 0%, #ece9d8 40%, #dbd8c8 100%);
+  border: 1px solid #7f9db9;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 1px 2px rgba(0,0,0,.15);
+  min-width: 70px; text-align: center;
+}
+.xp-btn:hover {
+  background: linear-gradient(180deg, #fff 0%, #f0eee0 40%, #e4e0d0 100%);
+  border-color: #316ac5;
+}
+.xp-btn:active {
+  background: linear-gradient(180deg, #d0cdc0 0%, #e0ddd0 100%);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,.2);
+}
+.xp-btn.primary {
+  background: linear-gradient(180deg, #4a90e2 0%, #2060c0 50%, #1a50b0 100%);
+  color: white; border-color: #1a4090;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.3), 0 1px 2px rgba(0,0,0,.2);
+}
+.xp-btn.primary:hover { background: linear-gradient(180deg, #60a0f0 0%, #3070d0 50%, #2060c0 100%); }
+
+/* ═══════════════════════════════════════════
+   XP DROPDOWN MENUS
+═══════════════════════════════════════════ */
+.xp-dropdown {
+  position: absolute; z-index: 9500;
+  background: #fff;
+  border: 1px solid #aca899;
+  box-shadow: 3px 3px 8px rgba(0,0,0,.25);
+  min-width: 190px; padding: 2px 0;
+  display: none; flex-direction: column;
+  border-radius: 0 0 4px 4px;
+}
+.xp-dropdown.open { display: flex; }
+.xp-dd-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 4px 20px 4px 6px;
+  font-family: var(--font-ui); font-size: 11px;
+  cursor: pointer; color: #000; white-space: nowrap; position: relative;
+}
+.xp-dd-item:hover { background: var(--xp-selected); color: white; }
+.xp-dd-item.disabled { color: #aaa; cursor: default; }
+.xp-dd-item.disabled:hover { background: none; color: #aaa; }
+.xp-dd-sep { height: 1px; background: #d4d0c8; margin: 2px 4px; }
+.xp-dd-icon { font-size: 14px; width: 20px; text-align: center; flex-shrink: 0; }
+.xp-dd-shortcut { margin-left: auto; font-size: 11px; opacity: .7; padding-left: 20px; }
+.xp-dd-arrow { margin-left: auto; font-size: 9px; padding-left: 12px; }
+.xp-dd-check { width: 14px; font-size: 10px; flex-shrink: 0; color: #316ac5; }
+
+/* left icon stripe in menu */
+.xp-dropdown::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0; width: 24px;
+  background: linear-gradient(180deg, #7a9cbf 0%, #4a6a9e 100%);
+  border-right: 1px solid #aca899;
+  pointer-events: none;
+}
+.xp-dd-item { padding-left: 30px; }
+.xp-dd-icon { position: absolute; left: 4px; }
+
+/* ═══════════════════════════════════════════
+   TASKBAR — XP Luna Blue
+═══════════════════════════════════════════ */
+#taskbar {
+  position: fixed; bottom: 0; left: 0; right: 0; height: 40px; z-index: 9000;
+  background: linear-gradient(180deg, #3a6fc4 0%, #2558b0 20%, #1f4da0 80%, #1a3d8a 100%);
+  border-top: 1px solid #5a8fe4;
+  display: flex; align-items: center; padding: 0 4px; gap: 4px;
+  box-shadow: 0 -1px 0 rgba(255,255,255,.15);
+}
+
+/* XP Start Button — green pill with orb glow */
+.xp-start-btn {
+  display: flex; align-items: center; gap: 5px;
+  height: 34px; padding: 0 14px 0 10px;
+  border-radius: 0 17px 17px 0;
+  background: linear-gradient(180deg, #5fc230 0%, #3aaa10 40%, #2a8800 80%, #1e6600 100%);
+  border: 1px solid #1a5a00;
+  border-left: none; margin-left: -4px;
+  cursor: pointer; flex-shrink: 0;
+  box-shadow: 2px 0 8px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.3);
+  position: relative; overflow: hidden;
+}
+.xp-start-btn::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,.3) 0%, transparent 100%);
+  border-radius: 0 17px 0 0;
+}
+.xp-start-btn:hover {
+  background: linear-gradient(180deg, #70d040 0%, #4abf20 40%, #38a010 80%, #2a7a00 100%);
+}
+.xp-start-btn:active { background: linear-gradient(180deg, #2a8800 0%, #1e6600 100%); }
+.xp-start-btn.active {
+  background: linear-gradient(180deg, #1e6600 0%, #2a8800 40%, #3aaa10 100%);
+}
+.xp-start-logo {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 1px;
+  width: 20px; height: 20px; flex-shrink: 0; position: relative; z-index: 1;
+}
+.xp-start-logo div { border-radius: 1.5px; }
+.xp-start-text {
+  color: white; font-size: 13px; font-weight: 700; font-style: italic;
+  text-shadow: 1px 1px 2px rgba(0,0,0,.5); position: relative; z-index: 1;
+  letter-spacing: .02em;
+}
+.tb-sep2 { width: 1px; height: 28px; background: rgba(255,255,255,.2); margin: 0 2px; }
+
+/* XP Taskbar app buttons */
+.xp-tb-app {
+  display: flex; align-items: center; gap: 5px;
+  height: 30px; padding: 0 8px;
+  border-radius: 3px; cursor: pointer;
+  font-family: var(--font-ui); font-size: 11px; color: white;
+  max-width: 150px; overflow: hidden; white-space: nowrap;
+  background: linear-gradient(180deg, #4a7fd4 0%, #2a5aaa 60%, #1e4890 100%);
+  border: 1px solid rgba(255,255,255,.15);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.2);
+  text-shadow: 1px 1px 1px rgba(0,0,0,.4);
+}
+.xp-tb-app:hover { background: linear-gradient(180deg, #5a90e4 0%, #3a6abb 60%, #2a58a0 100%); }
+.xp-tb-app.active {
+  background: linear-gradient(180deg, #1a3880 0%, #2a5aaa 100%);
+  border-color: rgba(255,255,255,.25);
+  box-shadow: inset 1px 1px 3px rgba(0,0,0,.3);
+}
+
+.tb-spacer { flex: 1; }
+
+/* System tray */
+.xp-systray {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 10px; height: 30px;
+  background: linear-gradient(180deg, #1e4890 0%, #152c6e 100%);
+  border-radius: 3px; border: 1px solid rgba(255,255,255,.1);
+  font-family: var(--font-ui); font-size: 11px; color: white;
+}
+.xp-clock { font-size: 11px; color: white; text-align: center; line-height: 1.2; }
+
+/* ═══════════════════════════════════════════
+   XP START MENU — Full panel
+═══════════════════════════════════════════ */
+#xpStartMenu {
+  position: fixed; bottom: 40px; left: 0;
+  width: 340px;
+  border-radius: 8px 8px 0 0;
+  overflow: hidden;
+  box-shadow: 3px 0 12px rgba(0,0,0,.4);
+  display: none; flex-direction: column;
+  z-index: 9600;
+}
+#xpStartMenu.open { display: flex; }
+
+/* Start menu header */
+.sm-header {
+  background: linear-gradient(90deg, #1f4da0 0%, #3a6fc4 100%);
+  padding: 10px 12px; display: flex; align-items: center; gap: 10px;
+}
+.sm-user-pic {
+  width: 48px; height: 48px; border-radius: 4px; overflow: hidden;
+  border: 2px solid rgba(255,255,255,.4);
+  background: var(--xp-selected); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 28px;
+}
+.sm-user-name { font-size: 14px; font-weight: 700; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,.4); }
+
+/* Start menu body */
+.sm-body { display: flex; background: #fff; flex: 1; }
+
+/* Left panel */
+.sm-left {
+  flex: 1; padding: 6px 0; border-right: 1px solid #ddd;
+  display: flex; flex-direction: column;
+}
+.sm-pinned-label {
+  font-size: 10px; color: #666; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; padding: 4px 8px 2px;
+  border-bottom: 1px solid #ddd; margin-bottom: 2px;
+}
+.sm-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 10px; cursor: pointer;
+  font-family: var(--font-ui); font-size: 11px; color: #000;
+}
+.sm-item:hover { background: var(--xp-selected); color: white; }
+.sm-item:hover .sm-item-sub { color: rgba(255,255,255,.8); }
+.sm-item-icon { font-size: 24px; flex-shrink: 0; width: 28px; text-align: center; }
+.sm-item-text { flex: 1; }
+.sm-item-name { font-weight: 700; font-size: 12px; }
+.sm-item-sub { font-size: 10px; color: #666; }
+.sm-sep { height: 1px; background: #ddd; margin: 4px 0; }
+
+/* Right panel */
+.sm-right {
+  width: 140px; background: linear-gradient(180deg, #3a6fc4 0%, #2558a8 100%);
+  padding: 6px 0;
+}
+.sm-right-item {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 8px; cursor: pointer;
+  font-family: var(--font-ui); font-size: 11px; color: white;
+  text-shadow: 1px 1px 1px rgba(0,0,0,.3);
+}
+.sm-right-item:hover { background: rgba(255,255,255,.2); }
+.sm-right-icon { font-size: 16px; flex-shrink: 0; }
+.sm-right-sep { height: 1px; background: rgba(255,255,255,.2); margin: 4px 8px; }
+
+/* Start menu footer */
+.sm-footer {
+  background: linear-gradient(90deg, #1f4da0 0%, #3a6fc4 100%);
+  display: flex; justify-content: flex-end; gap: 6px; padding: 6px 10px;
+}
+.sm-footer-btn {
+  display: flex; align-items: center; gap: 5px;
+  background: linear-gradient(180deg, #4a7fd4 0%, #2a5aaa 100%);
+  color: white; border: 1px solid rgba(255,255,255,.2);
+  border-radius: 3px; padding: 4px 12px;
+  font-family: var(--font-ui); font-size: 11px; cursor: pointer;
+}
+.sm-footer-btn:hover { background: linear-gradient(180deg, #5a90e4 0%, #3a6abb 100%); }
+
+/* ═══════════════════════════════════════════
+   XP DIALOG BOXES
+═══════════════════════════════════════════ */
+.xp-dialog {
+  position: fixed; z-index: 8500;
+  background: var(--xp-window);
+  border: 1px solid var(--xp-winborder);
+  border-radius: 8px 8px 0 0;
+  box-shadow: 4px 4px 12px rgba(0,0,0,.4);
+  min-width: 280px; max-width: 420px;
+  display: none; flex-direction: column; overflow: hidden;
+}
+.xp-dialog.open { display: flex; }
+.xp-dlg-titlebar {
+  background: linear-gradient(180deg, #2f72d0 0%, #4a90e2 8%, #245cba 50%, #1a4a9e 100%);
+  padding: 4px 6px 5px; display: flex; align-items: center; gap: 5px;
+  cursor: move; position: relative;
+}
+.xp-dlg-titlebar::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 50%;
+  background: linear-gradient(180deg, rgba(255,255,255,.25) 0%, transparent 100%);
+  pointer-events: none;
+}
+.xp-dlg-icon { font-size: 14px; position: relative; z-index: 1; }
+.xp-dlg-text { flex: 1; font-size: 12px; font-weight: 700; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,.5); position: relative; z-index: 1; }
+.xp-dlg-close {
+  width: 21px; height: 21px; border-radius: 3px;
+  background: linear-gradient(180deg, #f08070 0%, #d94040 50%, #b82020 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; color: white; cursor: pointer; position: relative; z-index: 1;
+}
+.xp-dlg-close:hover { filter: brightness(1.2); }
+.xp-dlg-body { padding: 16px; }
+.xp-dlg-icon-row { display: flex; align-items: flex-start; gap: 14px; margin-bottom: 16px; }
+.xp-dlg-big-icon { font-size: 42px; flex-shrink: 0; }
+.xp-dlg-msg { font-family: var(--font-ui); font-size: 11px; line-height: 1.6; color: #000; }
+.xp-dlg-btn-row { display: flex; justify-content: center; gap: 8px; padding: 0 16px 14px; }
+
+/* ═══════════════════════════════════════════
+   WINDOW CONTENT STYLES
+═══════════════════════════════════════════ */
+
+/* Address bar */
+.xp-addr-bar {
+  display: flex; align-items: center; gap: 6px;
+  background: linear-gradient(180deg, #f5f3e8 0%, #e8e5d8 100%);
+  border-bottom: 1px solid #aca899; padding: 3px 6px; flex-shrink: 0;
+}
+.xp-addr-input {
+  flex: 1; padding: 2px 6px; font-family: var(--font-ui); font-size: 11px;
+  background: white; border: 1px solid #7f9db9;
+  border-radius: 3px; outline: none; color: #000;
+}
+
+/* Left sidebar in explorer */
+.xp-explorer-layout { display: flex; flex: 1; overflow: hidden; }
+.xp-explorer-sidebar {
+  width: 160px; flex-shrink: 0;
+  background: linear-gradient(180deg, #dde8f8 0%, #c8d8f0 100%);
+  border-right: 1px solid #aca899; overflow-y: auto; padding: 8px 0;
+}
+.xp-sidebar-section { margin-bottom: 8px; }
+.xp-sidebar-title {
+  background: linear-gradient(90deg, #316ac5 0%, #4a85e0 100%);
+  color: white; font-size: 11px; font-weight: 700;
+  padding: 3px 8px; display: flex; align-items: center; gap: 4px;
+}
+.xp-sidebar-item {
+  padding: 4px 8px 4px 16px;
+  font-size: 11px; color: #0000cc; cursor: pointer;
+  text-decoration: underline; line-height: 1.4;
+}
+.xp-sidebar-item:hover { background: rgba(49,106,197,.1); }
+
+/* Explorer file grid */
+.xp-file-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 2px; padding: 8px; flex: 1; align-content: start;
+}
+.xp-file {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 3px; padding: 6px 4px; cursor: pointer; text-align: center;
+  border-radius: 3px; border: 1px solid transparent;
+}
+.xp-file:hover { background: rgba(49,106,197,.15); border-color: rgba(49,106,197,.4); }
+.xp-file.selected { background: var(--xp-selected); color: white; }
+.xp-file-icon { font-size: 32px; }
+.xp-file-name { font-size: 11px; color: #000; line-height: 1.2; word-break: break-word; }
+.xp-file.selected .xp-file-name { color: white; }
+
+/* Welcome panel */
+.xp-welcome {
+  background: linear-gradient(135deg, #e8f0ff 0%, #f0e8ff 50%, #e8fff0 100%);
+  padding: 20px; text-align: center;
+}
+.xp-welcome-title {
+  font-family: var(--font-d); font-size: 32px; font-style: italic;
+  color: #1a4090; margin-bottom: 6px;
+}
+.xp-welcome-sub { font-size: 11px; color: #666; margin-bottom: 16px; }
+.xp-welcome-verse {
+  background: white; border: 1px solid #c0d0e8;
+  border-radius: 4px; padding: 12px; margin-bottom: 16px;
+  font-size: 11px; line-height: 1.7; color: #333; text-align: left;
+  font-style: italic; border-left: 4px solid #316ac5;
+}
+
+/* Countdown in XP style */
+.xp-countdown { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; justify-content: center; }
+.xp-cd-cell {
+  background: linear-gradient(180deg, #fff 0%, #ece9d8 100%);
+  border: 1px solid #7f9db9; border-radius: 4px;
+  padding: 8px 12px; text-align: center; min-width: 62px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.8), 0 1px 2px rgba(0,0,0,.1);
+}
+.xp-cd-num { font-size: 28px; font-weight: 700; color: #1a4090; font-family: var(--font-ui); line-height: 1; }
+.xp-cd-unit { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: .1em; margin-top: 2px; }
+
+/* Couple cards */
+.xp-couple-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 12px; }
+@media(max-width:500px){ .xp-couple-grid { grid-template-columns: 1fr; } }
+.xp-couple-card {
+  background: white; border: 1px solid #c0c8d8; border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,.1), inset 0 1px 0 rgba(255,255,255,.8);
+}
+.xp-couple-card img { width: 100%; height: 140px; object-fit: cover; display: block; }
+.xp-couple-card-body { padding: 10px; }
+.xp-couple-role { font-size: 10px; color: #316ac5; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 3px; }
+.xp-couple-name { font-size: 14px; font-weight: 700; color: #000; margin-bottom: 4px; }
+.xp-couple-parents { font-size: 11px; color: #555; line-height: 1.55; }
+
+/* Event cards */
+.xp-event-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 12px; }
+@media(max-width:500px){ .xp-event-grid { grid-template-columns: 1fr; } }
+.xp-event-card {
+  background: white; border: 1px solid #c0c8d8; border-radius: 6px; padding: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,.1); position: relative; overflow: hidden;
+}
+.xp-event-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, #316ac5 0%, #60a0f0 100%);
+}
+.xp-event-badge {
+  display: inline-block; background: #316ac5; color: white;
+  font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 10px; margin-bottom: 8px;
+}
+.xp-event-name { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: #000; }
+.xp-event-row { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 5px; font-size: 11px; }
+.xp-event-icon { font-size: 13px; flex-shrink: 0; }
+.xp-event-text { color: #444; line-height: 1.5; }
+.xp-event-map {
+  display: inline-flex; align-items: center; gap: 4px; margin-top: 10px;
+  background: linear-gradient(180deg, #5a90e4 0%, #316ac5 100%);
+  color: white; font-size: 11px; font-weight: 700;
+  padding: 4px 12px; border-radius: 12px;
+  border: 1px solid #1a4090;
+}
+
+/* Gallery grid */
+.xp-gallery-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; padding: 8px; }
+@media(max-width:400px){ .xp-gallery-grid { grid-template-columns: repeat(2,1fr); } }
+.xp-gallery-item {
+  aspect-ratio: 1; overflow: hidden; cursor: pointer;
+  border: 2px solid #c0c8d8; border-radius: 3px; position: relative;
+  box-shadow: 0 1px 3px rgba(0,0,0,.2);
+}
+.xp-gallery-item img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s; }
+.xp-gallery-item:hover img { transform: scale(1.07); }
+.xp-gallery-item:hover { border-color: #316ac5; }
+.xp-gallery-more {
+  position: absolute; inset: 0; background: rgba(49,106,197,.7);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 18px; font-weight: 700;
+}
+
+/* Timeline */
+.xp-timeline { padding: 12px 12px 12px 20px; position: relative; }
+.xp-timeline::before { content: ''; position: absolute; left: 26px; top: 12px; bottom: 12px; width: 2px; background: linear-gradient(to bottom, #316ac5, rgba(49,106,197,.1)); }
+.xp-tl-item { display: flex; gap: 18px; margin-bottom: 28px; opacity: 0; transform: translateX(-12px); transition: opacity .5s, transform .5s; }
+.xp-tl-item.vis { opacity: 1; transform: translateX(0); }
+.xp-tl-dot { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; background: linear-gradient(135deg, #4a90e2 0%, #1a60c0 100%); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: white; z-index: 1; position: relative; box-shadow: 0 0 0 3px #e8f0ff, 0 2px 4px rgba(0,0,0,.2); }
+.xp-tl-body { padding-top: 4px; }
+.xp-tl-track { font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: #316ac5; font-weight: 700; margin-bottom: 2px; }
+.xp-tl-month { font-size: 10px; color: #888; margin-bottom: 3px; }
+.xp-tl-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: #000; }
+.xp-tl-desc { font-size: 11px; color: #555; line-height: 1.65; }
+
+/* Gift */
+.xp-gift-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 12px; }
+@media(max-width:480px){ .xp-gift-grid { grid-template-columns: 1fr; } }
+.xp-gift-card {
+  background: white; border: 1px solid #c0c8d8; border-radius: 6px; padding: 16px; text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,.1);
+}
+.xp-gift-bank { font-size: 22px; font-weight: 700; color: #316ac5; margin: 4px 0 2px; }
+.xp-gift-holder { font-size: 10px; color: #888; margin-bottom: 8px; }
+.xp-gift-num {
+  font-family: 'Courier New', monospace; font-size: 14px; letter-spacing: .08em;
+  background: #f0ede0; border: 1px solid #aca899; border-radius: 3px;
+  padding: 5px 8px; margin-bottom: 10px; color: #000;
+}
+.xp-gift-copy {
+  background: linear-gradient(180deg, #4a90e2 0%, #2060c0 100%);
+  color: white; font-size: 11px; font-weight: 700; border: 1px solid #1a4090;
+  padding: 4px 14px; border-radius: 12px; cursor: pointer; transition: all .2s;
+}
+.xp-gift-copy:hover { background: linear-gradient(180deg, #5aa0f2 0%, #3070d0 100%); }
+.xp-gift-copy.copied { background: linear-gradient(180deg, #4ab840 0%, #2a9020 100%); border-color: #1a6010; }
+
+/* RSVP */
+.xp-rsvp-stats { display: flex; gap: 8px; flex-wrap: wrap; padding: 12px 12px 0; }
+.xp-rsvp-stat {
+  flex: 1; background: linear-gradient(180deg, #e8f0ff 0%, #d0ddf5 100%);
+  border: 1px solid #c0c8d8; border-radius: 4px; padding: 10px 8px; text-align: center; min-width: 72px;
+}
+.xp-rsvp-stat-num { font-size: 28px; font-weight: 700; color: #316ac5; line-height: 1; }
+.xp-rsvp-stat-label { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: .1em; }
+.xp-form-wrap { padding: 12px; }
+.xp-form-group { margin-bottom: 10px; }
+.xp-form-label { display: block; font-size: 11px; font-weight: 700; color: #000; margin-bottom: 3px; }
+.xp-form-input {
+  width: 100%; padding: 4px 6px; font-family: var(--font-ui); font-size: 11px;
+  background: white; border: 1px solid #7f9db9; border-radius: 3px; outline: none; color: #000;
+}
+.xp-form-input:focus { border-color: #316ac5; box-shadow: 0 0 0 2px rgba(49,106,197,.2); }
+.xp-form-input::placeholder { color: #aaa; }
+textarea.xp-form-input { min-height: 70px; resize: vertical; }
+.xp-form-select {
+  width: 100%; padding: 3px 6px; font-family: var(--font-ui); font-size: 11px;
+  background: white; border: 1px solid #7f9db9; border-radius: 3px; cursor: pointer;
+}
+.xp-radio-group { display: flex; flex-direction: column; gap: 4px; }
+.xp-radio-item { display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 11px; }
+.xp-radio-dot { width: 14px; height: 14px; border-radius: 50%; border: 2px solid #7f9db9; background: white; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.xp-radio-dot.checked::after { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #316ac5; }
+.xp-wish-list { padding: 0 12px 12px; display: flex; flex-direction: column; gap: 6px; }
+.xp-wish {
+  background: white; border: 1px solid #c0c8d8; border-radius: 4px; padding: 8px 10px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.08); opacity: 0; transform: translateY(8px); transition: opacity .4s, transform .4s;
+}
+.xp-wish.vis { opacity: 1; transform: translateY(0); }
+.xp-wish-hdr { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.xp-wish-ava { width: 24px; height: 24px; border-radius: 4px; background: #316ac5; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: white; flex-shrink: 0; }
+.xp-wish-name { font-size: 11px; font-weight: 700; }
+.xp-wish-status { font-size: 10px; color: #316ac5; margin-left: auto; }
+.xp-wish-text { font-size: 11px; color: #444; line-height: 1.55; }
+
+/* Video grid */
+.xp-video-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; padding: 12px; }
+.xp-video-item { border-radius: 4px; overflow: hidden; cursor: pointer; position: relative; aspect-ratio: 16/9; background: #000; border: 1px solid #c0c8d8; box-shadow: 0 2px 4px rgba(0,0,0,.15); }
+.xp-video-item video { width: 100%; height: 100%; object-fit: cover; display: block; opacity: .85; }
+.xp-video-overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, transparent, rgba(0,0,0,.5)); display: flex; align-items: flex-end; padding: 6px; }
+.xp-video-label { color: white; font-size: 11px; font-weight: 700; text-shadow: 1px 1px 2px #000; }
+.xp-video-play { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 36px; height: 36px; border-radius: 50%; background: rgba(49,106,197,.85); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; transition: transform .2s; }
+.xp-video-item:hover .xp-video-play { transform: translate(-50%,-50%) scale(1.15); }
+
+/* Notepad style */
+.xp-notepad { background: white; font-family: 'Courier New', monospace; font-size: 12px; padding: 8px; line-height: 1.7; white-space: pre-wrap; color: #000; height: 100%; overflow: auto; }
+
+/* XP Section title */
+.xp-section-title {
+  background: linear-gradient(90deg, #316ac5 0%, #5a90e0 100%);
+  color: white; font-size: 11px; font-weight: 700;
+  padding: 5px 12px; display: flex; align-items: center; gap: 6px;
+  margin-bottom: 4px; font-family: var(--font-ui);
+}
+
+/* Lightbox XP */
+.lb-xp { position: fixed; inset: 0; z-index: 9998; background: rgba(0,0,0,.88); display: none; align-items: center; justify-content: center; }
+.lb-xp.open { display: flex; }
+.lb-xp-win { background: var(--xp-window); border: 1px solid #0055ea; border-radius: 8px 8px 0 0; box-shadow: 4px 4px 16px rgba(0,0,0,.5); overflow: hidden; max-width: 90vw; }
+.lb-xp-img { max-width: 80vw; max-height: 70vh; display: block; border: 2px solid #c0c8d8; }
+.lb-xp-controls { display: flex; gap: 6px; padding: 8px; justify-content: center; align-items: center; background: var(--xp-window); }
+
+/* VM XP */
+.vm-xp { position: fixed; inset: 0; z-index: 9998; background: rgba(0,0,0,.88); display: none; align-items: center; justify-content: center; }
+.vm-xp.open { display: flex; }
+
+/* Toast XP */
+.toast-xp {
+  position: fixed; bottom: 48px; right: 12px; z-index: 9999;
+  background: var(--xp-window); border: 1px solid #7f9db9;
+  border-radius: 8px 8px 0 0; padding: 0;
+  box-shadow: 2px 2px 8px rgba(0,0,0,.3); display: none; overflow: hidden; min-width: 220px;
+}
+.toast-xp.show { display: block; }
+.toast-xp-title {
+  background: linear-gradient(180deg, #2f72d0 0%, #245cba 100%);
+  color: white; font-size: 11px; font-weight: 700; padding: 3px 8px;
+  display: flex; align-items: center; gap: 4px;
+}
+.toast-xp-body { padding: 8px 10px; font-size: 11px; color: #000; display: flex; align-items: center; gap: 8px; }
+
+/* Scrollbar XP style */
+::-webkit-scrollbar { width: 16px; }
+::-webkit-scrollbar-track { background: #d4d0c8; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #e0ddd0 0%, #c0bdb0 100%); border: 1px solid #aca899; border-radius: 2px; }
+
+/* Responsive */
+@media(max-width:600px) {
+  .xp-window { min-width:280px!important; max-width:98vw!important; }
+  .sm-right { width: 110px; }
+  #xpStartMenu { width: 280px; }
+  .xp-explorer-sidebar { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ BOOT SCREEN ═══ -->
+<div id="bootXP">
+  <div class="xp-boot-logo">
+    <div class="xp-logo-flag">
+      <div style="background:#f00"></div>
+      <div style="background:#0a0"></div>
+      <div style="background:#00f"></div>
+      <div style="background:#ff0"></div>
+    </div>
+    <div class="xp-boot-text">
+      <div class="xp-boot-name">Windows <span>XP</span></div>
+      <div class="xp-boot-edition">Wedding Professional Edition</div>
+    </div>
+  </div>
+  <div class="xp-boot-progress-wrap">
+    <div class="xp-boot-bar-outer">
+      <div class="xp-boot-bar-inner" id="xpBootBar" style="width:0%"></div>
+    </div>
+    <div class="xp-boot-status" id="xpBootStatus">Starting Windows XP...</div>
+  </div>
+  <div class="xp-boot-copy">Copyright © 2026 BridesSpace Corporation. All rights reserved.<br>Wedding Edition — Licensed to Anita & Zarda</div>
+</div>
+
+<!-- ═══ DESKTOP ═══ -->
+<div id="desktop" style="display:none">
+  <!-- Bliss clouds -->
+  <div class="bliss-cloud" style="width:180px;height:60px;top:8%;left:-20%;animation-duration:45s;animation-delay:0s"></div>
+  <div class="bliss-cloud" style="width:120px;height:40px;top:15%;left:-10%;animation-duration:60s;animation-delay:-20s"></div>
+  <div class="bliss-cloud" style="width:220px;height:70px;top:5%;left:-30%;animation-duration:55s;animation-delay:-35s"></div>
+
+  <!-- Desktop Icons -->
+  <div class="desktop-icons">
+    <div class="desk-icon" onclick="openWin('winWedding')" title="Wedding.exe">
+      <div class="desk-icon-img">💒</div>
+      <div class="desk-icon-label">Wedding.exe</div>
+    </div>
+    <div class="desk-icon" onclick="openWin('winCouple')" title="Couple">
+      <div class="desk-icon-img">💑</div>
+      <div class="desk-icon-label">Couple.txt</div>
+    </div>
+    <div class="desk-icon" onclick="openWin('winEvent')" title="Event">
+      <div class="desk-icon-img">📅</div>
+      <div class="desk-icon-label">Event.cal</div>
+    </div>
+    <div class="desk-icon" onclick="openWin('winGallery')" title="Galeri">
+      <div class="desk-icon-img">🖼️</div>
+      <div class="desk-icon-label">Galeri Foto</div>
+    </div>
+    <div class="desk-icon" onclick="openWin('winVideo')" title="Video">
+      <div class="desk-icon-img">🎬</div>
+      <div class="desk-icon-label">Video.avi</div>
+    </div>
+    <div class="desk-icon" onclick="openWin('winGift')" title="Gift">
+      <div class="desk-icon-img">🎁</div>
+      <div class="desk-icon-label">Gift.dat</div>
+    </div>
+    <div class="desk-icon" onclick="openWin('winRsvp')" title="RSVP">
+      <div class="desk-icon-img">📋</div>
+      <div class="desk-icon-label">RSVP.doc</div>
+    </div>
+    <div class="desk-icon" onclick="openWin('winExplorer')" title="Explorer">
+      <div class="desk-icon-img">📁</div>
+      <div class="desk-icon-label">My Wedding</div>
+    </div>
+    <div class="desk-icon" onclick="openAllWins()" title="Buka Semua">
+      <div class="desk-icon-img">🪟</div>
+      <div class="desk-icon-label">Buka Semua</div>
+    </div>
+    <div class="desk-icon" onclick="showXpError('Recycle Bin','The Recycle Bin is empty.\n\nAll love memories have been permanently saved. 💍')" title="Recycle Bin">
+      <div class="desk-icon-img">🗑️</div>
+      <div class="desk-icon-label">Recycle Bin</div>
+    </div>
+  </div>
+
+  <!-- ══ WEDDING MAIN WINDOW ══ -->
+  <div class="xp-window focused" id="winWedding" style="width:min(600px,96vw);left:100px;top:20px" onmousedown="focusWin('winWedding')">
+    <div class="xp-titlebar" onmousedown="startDrag(event,'winWedding')" ontouchstart="startDragT(event,'winWedding')">
+      <span class="xp-titlebar-icon">💍</span>
+      <span class="xp-titlebar-text">Wedding of Anita & Zarda — [My Documents\Wedding\Invitation.exe]</span>
+      <div class="xp-titlebar-btns">
+        <div class="xp-tb-btn min" onclick="minWin('winWedding')" title="Minimize">_</div>
+        <div class="xp-tb-btn max" title="Maximize">□</div>
+        <div class="xp-tb-btn cls" onclick="closeWin('winWedding')" title="Close">✕</div>
+      </div>
+    </div>
+    <!-- Menubar -->
+    <div class="xp-menubar" style="position:relative">
+      <div class="xp-menu-item" onclick="toggleXpMenu('mw-file',this)">File</div>
+      <div class="xp-menu-item" onclick="toggleXpMenu('mw-view',this)">View</div>
+      <div class="xp-menu-item" onclick="toggleXpMenu('mw-go',this)">Go</div>
+      <div class="xp-menu-item" onclick="toggleXpMenu('mw-help',this)">Help</div>
+      <div class="xp-dropdown" id="mw-file" style="top:22px;left:0">
+        <div class="xp-dd-item" onclick="openWin('winWedding');closeMenus()"><span class="xp-dd-icon">💒</span>Buka Wedding.exe<span class="xp-dd-shortcut">Ctrl+O</span></div>
+        <div class="xp-dd-item" onclick="openWin('winExplorer');closeMenus()"><span class="xp-dd-icon">📁</span>My Wedding (Explorer)</div>
+        <div class="xp-dd-sep"></div>
+        <div class="xp-dd-item" onclick="window.print();closeMenus()"><span class="xp-dd-icon">🖨️</span>Print<span class="xp-dd-shortcut">Ctrl+P</span></div>
+        <div class="xp-dd-sep"></div>
+        <div class="xp-dd-item" onclick="showShutdown();closeMenus()"><span class="xp-dd-icon">🔴</span>Exit</div>
+      </div>
+      <div class="xp-dropdown" id="mw-view" style="top:22px;left:32px">
+        <div class="xp-dd-item" onclick="switchXpTab('home');closeMenus()"><span class="xp-dd-icon">🏠</span>Tab Home</div>
+        <div class="xp-dd-item" onclick="switchXpTab('couple');closeMenus()"><span class="xp-dd-icon">💑</span>Tab Couple</div>
+        <div class="xp-dd-item" onclick="switchXpTab('event');closeMenus()"><span class="xp-dd-icon">📅</span>Tab Event</div>
+        <div class="xp-dd-item" onclick="switchXpTab('story');closeMenus()"><span class="xp-dd-icon">📖</span>Tab Story</div>
+        <div class="xp-dd-sep"></div>
+        <div class="xp-dd-item disabled"><span class="xp-dd-check">✓</span>Status Bar</div>
+        <div class="xp-dd-item disabled"><span class="xp-dd-check">✓</span>Toolbar</div>
+      </div>
+      <div class="xp-dropdown" id="mw-go" style="top:22px;left:64px">
+        <div class="xp-dd-item" onclick="openWin('winCouple');closeMenus()"><span class="xp-dd-icon">💑</span>Couple.txt</div>
+        <div class="xp-dd-item" onclick="openWin('winEvent');closeMenus()"><span class="xp-dd-icon">📅</span>Event Calendar</div>
+        <div class="xp-dd-item" onclick="openWin('winGallery');closeMenus()"><span class="xp-dd-icon">🖼️</span>Galeri Foto</div>
+        <div class="xp-dd-item" onclick="openWin('winVideo');closeMenus()"><span class="xp-dd-icon">🎬</span>Video Stories</div>
+        <div class="xp-dd-item" onclick="openWin('winGift');closeMenus()"><span class="xp-dd-icon">🎁</span>Amplop Digital</div>
+        <div class="xp-dd-item" onclick="openWin('winRsvp');closeMenus()"><span class="xp-dd-icon">📋</span>RSVP Form</div>
+        <div class="xp-dd-item" onclick="openWin('winExplorer');closeMenus()"><span class="xp-dd-icon">📁</span>My Wedding</div>
+      </div>
+      <div class="xp-dropdown" id="mw-help" style="top:22px;left:90px">
+        <div class="xp-dd-item" onclick="showXpHelp();closeMenus()"><span class="xp-dd-icon">❓</span>Help Topics<span class="xp-dd-shortcut">F1</span></div>
+        <div class="xp-dd-sep"></div>
+        <div class="xp-dd-item" onclick="showAbout();closeMenus()"><span class="xp-dd-icon">💍</span>About Wedding XP</div>
+      </div>
+    </div>
+    <!-- Toolbar -->
+    <div class="xp-toolbar">
+      <div class="xp-tool-btn" onclick="openWin('winExplorer')">📁 Back</div>
+      <div class="xp-tool-sep"></div>
+      <div class="xp-tool-btn" onclick="openWin('winGallery')">🖼️ Galeri</div>
+      <div class="xp-tool-btn" onclick="openWin('winVideo')">🎬 Video</div>
+      <div class="xp-tool-btn" onclick="openWin('winRsvp')">📋 RSVP</div>
+      <div class="xp-tool-btn" onclick="openWin('winGift')">🎁 Gift</div>
+      <div class="xp-tool-sep"></div>
+      <div class="xp-tool-btn" onclick="openAllWins()">🪟 Buka Semua</div>
+    </div>
+    <!-- Addr bar -->
+    <div class="xp-addr-bar">
+      <span style="font-size:11px;color:#666">Address:</span>
+      <input class="xp-addr-input" value="C:\My Documents\Wedding\Invitation.exe" readonly>
+      <button class="xp-btn" style="padding:2px 10px;font-size:11px;min-width:40px" onclick="openWin('winExplorer')">Go</button>
+    </div>
+    <!-- Tabs -->
+    <div style="background:var(--xp-window);padding:4px 6px 0;display:flex;gap:2px;border-bottom:1px solid #aca899;flex-shrink:0">
+      <div class="xp-menu-item active" id="xtab-home" onclick="switchXpTab('home')" style="border:1px solid #aca899;border-bottom:1px solid #fff;border-radius:4px 4px 0 0;background:#fff;padding:4px 12px">🏠 Home</div>
+      <div class="xp-menu-item" id="xtab-couple" onclick="switchXpTab('couple')" style="border:1px solid #aca899;border-radius:4px 4px 0 0;padding:4px 12px">💑 Couple</div>
+      <div class="xp-menu-item" id="xtab-event" onclick="switchXpTab('event')" style="border:1px solid #aca899;border-radius:4px 4px 0 0;padding:4px 12px">📅 Event</div>
+      <div class="xp-menu-item" id="xtab-story" onclick="switchXpTab('story')" style="border:1px solid #aca899;border-radius:4px 4px 0 0;padding:4px 12px">📖 Story</div>
+    </div>
+    <div class="xp-content" style="min-height:250px">
+      <!-- Home -->
+      <div id="xtc-home">
+        <div class="xp-welcome">
+          <div style="font-size:40px;margin-bottom:8px">💍</div>
+          <div class="xp-welcome-title">Anita & Zarda</div>
+          <div class="xp-welcome-sub">Wedding.exe v1.0 • 24 Mei 2026 • Tangerang</div>
+          <div class="xp-welcome-verse">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya." — Ar-Rum : 21</div>
+          <div style="font-size:12px;font-weight:700;color:#316ac5;margin-bottom:8px">⏳ Hitung Mundur Hari H</div>
+          <div class="xp-countdown">
+            <div class="xp-cd-cell"><div class="xp-cd-num" id="cdD">--</div><div class="xp-cd-unit">Hari</div></div>
+            <div class="xp-cd-cell"><div class="xp-cd-num" id="cdH">--</div><div class="xp-cd-unit">Jam</div></div>
+            <div class="xp-cd-cell"><div class="xp-cd-num" id="cdM">--</div><div class="xp-cd-unit">Menit</div></div>
+            <div class="xp-cd-cell"><div class="xp-cd-num" id="cdS">--</div><div class="xp-cd-unit">Detik</div></div>
+          </div>
+          <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:12px">
+            <button class="xp-btn primary" onclick="openWin('winCouple')">💑 Couple</button>
+            <button class="xp-btn primary" onclick="openWin('winEvent')">📅 Event</button>
+            <button class="xp-btn primary" onclick="openWin('winGallery')">🖼️ Gallery</button>
+            <button class="xp-btn primary" onclick="openWin('winRsvp')">📋 RSVP</button>
+            <button class="xp-btn primary" onclick="openWin('winGift')">🎁 Gift</button>
+          </div>
+        </div>
+      </div>
+      <!-- Couple -->
+      <div id="xtc-couple" style="display:none">
+        <div class="xp-section-title">💑 Pasangan Kami — Featured Artists</div>
+        <div class="xp-couple-grid">
+          <div class="xp-couple-card">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=280&fit=crop&q=80" alt="Anita">
+            <div class="xp-couple-card-body">
+              <div class="xp-couple-role">Mempelai Wanita</div>
+              <div class="xp-couple-name">Anita Pangestuti, S.Kom</div>
+              <div class="xp-couple-parents">Putri Pertama dari<br><b>Bpk. Taryono & Ibu Wiwit Jayanti</b></div>
+            </div>
+          </div>
+          <div class="xp-couple-card">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=280&fit=crop&q=80" alt="Zarda">
+            <div class="xp-couple-card-body">
+              <div class="xp-couple-role">Mempelai Pria</div>
+              <div class="xp-couple-name">Zardarian Ahadika N, S.Kom</div>
+              <div class="xp-couple-parents">Putra Kedua dari<br><b>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Event -->
+      <div id="xtc-event" style="display:none">
+        <div class="xp-section-title">📅 Waktu & Tempat — On Stage</div>
+        <div class="xp-event-grid">
+          <div class="xp-event-card">
+            <div class="xp-event-badge">Akad Nikah</div>
+            <div class="xp-event-name">Minggu, 24 Mei 2026</div>
+            <div class="xp-event-row"><span class="xp-event-icon">🕗</span><span class="xp-event-text">08.00 WIB</span></div>
+            <div class="xp-event-row"><span class="xp-event-icon">📍</span><span class="xp-event-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
+            <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank"><div class="xp-event-map">📍 Google Maps</div></a>
+          </div>
+          <div class="xp-event-card">
+            <div class="xp-event-badge">Resepsi</div>
+            <div class="xp-event-name">Minggu, 24 Mei 2026</div>
+            <div class="xp-event-row"><span class="xp-event-icon">🕙</span><span class="xp-event-text">11.00 – 13.00 WIB</span></div>
+            <div class="xp-event-row"><span class="xp-event-icon">📍</span><span class="xp-event-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
+            <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank"><div class="xp-event-map">📍 Google Maps</div></a>
+          </div>
+        </div>
+      </div>
+      <!-- Story -->
+      <div id="xtc-story" style="display:none">
+        <div class="xp-section-title">📖 Our Love Story — Tracklist</div>
+        <div class="xp-timeline" id="mainTimeline">
+          <div class="xp-tl-item"><div class="xp-tl-dot">1</div><div class="xp-tl-body"><div class="xp-tl-track">Track 01</div><div class="xp-tl-month">Juni 2025</div><div class="xp-tl-title">Awal Pertemuan</div><div class="xp-tl-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</div></div></div>
+          <div class="xp-tl-item"><div class="xp-tl-dot">2</div><div class="xp-tl-body"><div class="xp-tl-track">Track 02</div><div class="xp-tl-month">November 2025</div><div class="xp-tl-title">Lamaran</div><div class="xp-tl-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div></div></div>
+          <div class="xp-tl-item"><div class="xp-tl-dot">3</div><div class="xp-tl-body"><div class="xp-tl-track">Track 03</div><div class="xp-tl-month">Mei 2026</div><div class="xp-tl-title">Pernikahan 💍</div><div class="xp-tl-desc">Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="xp-statusbar">
+      <div class="xp-status-panel">💍 Ready</div>
+      <div class="xp-status-panel">24 Mei 2026</div>
+      <div class="xp-status-panel" id="mainCdStatus">Loading...</div>
+    </div>
+  </div>
+
+  <!-- ══ GALLERY WINDOW ══ -->
+  <div class="xp-window" id="winGallery" style="width:min(520px,96vw);left:140px;top:50px;display:none" onmousedown="focusWin('winGallery')">
+    <div class="xp-titlebar" onmousedown="startDrag(event,'winGallery')" ontouchstart="startDragT(event,'winGallery')">
+      <span class="xp-titlebar-icon">🖼️</span>
+      <span class="xp-titlebar-text">My Pictures — Windows Picture and Fax Viewer</span>
+      <div class="xp-titlebar-btns">
+        <div class="xp-tb-btn min" onclick="minWin('winGallery')">_</div>
+        <div class="xp-tb-btn max">□</div>
+        <div class="xp-tb-btn cls" onclick="closeWin('winGallery')">✕</div>
+      </div>
+    </div>
+    <div class="xp-menubar" style="position:relative">
+      <div class="xp-menu-item" onclick="toggleXpMenu('gal-file',this)">File</div>
+      <div class="xp-menu-item" onclick="toggleXpMenu('gal-view',this)">View</div>
+      <div class="xp-menu-item" onclick="toggleXpMenu('gal-go',this)">Go</div>
+      <div class="xp-dropdown" id="gal-file" style="top:22px;left:0">
+        <div class="xp-dd-item" onclick="openLbXp(curGalIdx);closeMenus()"><span class="xp-dd-icon">🔍</span>Perbesar Foto</div>
+        <div class="xp-dd-item" onclick="prevGal();closeMenus()"><span class="xp-dd-icon">◀</span>Foto Sebelumnya</div>
+        <div class="xp-dd-item" onclick="nextGal();closeMenus()"><span class="xp-dd-icon">▶</span>Foto Berikutnya</div>
+        <div class="xp-dd-sep"></div>
+        <div class="xp-dd-item" onclick="closeWin('winGallery');closeMenus()"><span class="xp-dd-icon">✕</span>Tutup</div>
+      </div>
+      <div class="xp-dropdown" id="gal-view" style="top:22px;left:32px">
+        <div class="xp-dd-item disabled"><span class="xp-dd-check">✓</span>Filmstrip</div>
+        <div class="xp-dd-item disabled"><span class="xp-dd-icon"> </span>Thumbnails</div>
+        <div class="xp-dd-item disabled"><span class="xp-dd-icon"> </span>Slideshow</div>
+      </div>
+      <div class="xp-dropdown" id="gal-go" style="top:22px;left:64px">
+        <div class="xp-dd-item" onclick="openWin('winWedding');closeMenus()"><span class="xp-dd-icon">💒</span>Wedding.exe</div>
+        <div class="xp-dd-item" onclick="openWin('winVideo');closeMenus()"><span class="xp-dd-icon">🎬</span>Video Stories</div>
+        <div class="xp-dd-item" onclick="openWin('winRsvp');closeMenus()"><span class="xp-dd-icon">📋</span>RSVP Form</div>
+        <div class="xp-dd-item" onclick="openWin('winGift');closeMenus()"><span class="xp-dd-icon">🎁</span>Gift</div>
+        <div class="xp-dd-item" onclick="openWin('winEvent');closeMenus()"><span class="xp-dd-icon">📅</span>Event</div>
+        <div class="xp-dd-item" onclick="openWin('winExplorer');closeMenus()"><span class="xp-dd-icon">📁</span>My Wedding</div>
+      </div>
+    </div>
+    <div class="xp-toolbar">
+      <div class="xp-tool-btn" onclick="prevGal()">◀ Prev</div>
+      <div class="xp-tool-btn" onclick="nextGal()">Next ▶</div>
+      <div class="xp-tool-sep"></div>
+      <div class="xp-tool-btn" onclick="openLbXp(curGalIdx)">🔍 Perbesar</div>
+      <div class="xp-tool-sep"></div>
+      <div style="font-size:11px;padding:0 8px;color:#666" id="galStatus">1 / 9</div>
+    </div>
+    <!-- Large photo view -->
+    <div style="background:#222;position:relative;height:220px;cursor:pointer;flex-shrink:0" onclick="openLbXp(curGalIdx)">
+      <img id="galBigImg" src="https://images.unsplash.com/photo-1519741497674-611481863552?w=700&h=440&fit=crop&q=80" alt="" style="width:100%;height:100%;object-fit:contain;display:block">
+    </div>
+    <!-- Thumbnail strip -->
+    <div style="background:#ece9d8;border-top:1px solid #aca899;padding:6px;overflow-x:auto;flex-shrink:0">
+      <div style="display:flex;gap:4px;width:max-content" id="galThumbs"></div>
+    </div>
+    <div class="xp-statusbar">
+      <div class="xp-status-panel" id="galStatusBar">9 photos • Click to enlarge</div>
+    </div>
+  </div>
+
+  <!-- ══ VIDEO WINDOW ══ -->
+  <div class="xp-window" id="winVideo" style="width:min(480px,96vw);left:180px;top:80px;display:none" onmousedown="focusWin('winVideo')">
+    <div class="xp-titlebar" onmousedown="startDrag(event,'winVideo')" ontouchstart="startDragT(event,'winVideo')">
+      <span class="xp-titlebar-icon">🎬</span>
+      <span class="xp-titlebar-text">Windows Media Player — Video Stories</span>
+      <div class="xp-titlebar-btns">
+        <div class="xp-tb-btn min" onclick="minWin('winVideo')">_</div>
+        <div class="xp-tb-btn max">□</div>
+        <div class="xp-tb-btn cls" onclick="closeWin('winVideo')">✕</div>
+      </div>
+    </div>
+    <div class="xp-menubar" style="position:relative">
+      <div class="xp-menu-item" onclick="toggleXpMenu('vid-file',this)">File</div>
+      <div class="xp-menu-item" onclick="toggleXpMenu('vid-play',this)">Play</div>
+      <div class="xp-menu-item" onclick="toggleXpMenu('vid-go',this)">Go</div>
+      <div class="xp-dropdown" id="vid-file" style="top:22px;left:0">
+        <div class="xp-dd-item" onclick="openWin('winGallery');closeMenus()"><span class="xp-dd-icon">🖼️</span>Galeri Foto</div>
+        <div class="xp-dd-sep"></div>
+        <div class="xp-dd-item" onclick="closeWin('winVideo');closeMenus()"><span class="xp-dd-icon">✕</span>Tutup</div>
+      </div>
+      <div class="xp-dropdown" id="vid-play" style="top:22px;left:32px">
+        <div class="xp-dd-item" onclick="openVmXp(VIDEOS[0].src);closeMenus()"><span class="xp-dd-icon">▶</span>Play Video 1</div>
+        <div class="xp-dd-item" onclick="openVmXp(VIDEOS[1].src);closeMenus()"><span class="xp-dd-icon">▶</span>Play Video 2</div>
+        <div class="xp-dd-item" onclick="openVmXp(VIDEOS[2].src);closeMenus()"><span class="xp-dd-icon">▶</span>Play Video 3</div>
+        <div class="xp-dd-item" onclick="openVmXp(VIDEOS[3].src);closeMenus()"><span class="xp-dd-icon">▶</span>Play Video 4</div>
+      </div>
+      <div class="xp-dropdown" id="vid-go" style="top:22px;left:64px">
+        <div class="xp-dd-item" onclick="openWin('winWedding');closeMenus()"><span class="xp-dd-icon">💒</span>Wedding.exe</div>
+        <div class="xp-dd-item" onclick="openWin('winGallery');closeMenus()"><span class="xp-dd-icon">🖼️</span>Galeri Foto</div>
+        <div class="xp-dd-item" onclick="openWin('winRsvp');closeMenus()"><span class="xp-dd-icon">📋</span>RSVP Form</div>
+        <div class="xp-dd-item" onclick="openWin('winGift');closeMenus()"><span class="xp-dd-icon">🎁</span>Gift</div>
+        <div class="xp-dd-item" onclick="openWin('winExplorer');closeMenus()"><span class="xp-dd-icon">📁</span>My Wedding</div>
+      </div>
+    </div>
+    <div class="xp-content">
+      <div class="xp-section-title">🎬 Cinematic Wedding Stories</div>
+      <div class="xp-video-grid" id="vidGrid"></div>
+    </div>
+    <div class="xp-statusbar">
+      <div class="xp-status-panel">4 videos • Click to play fullscreen</div>
+    </div>
+  </div>
+
+  <!-- ══ COUPLE WINDOW ══ -->
+  <div class="xp-window" id="winCouple" style="width:min(400px,96vw);left:220px;top:100px;display:none" onmousedown="focusWin('winCouple')">
+    <div class="xp-titlebar" onmousedown="startDrag(event,'winCouple')" ontouchstart="startDragT(event,'winCouple')">
+      <span class="xp-titlebar-icon">💑</span>
+      <span class="xp-titlebar-text">Couple.txt — Notepad</span>
+      <div class="xp-titlebar-btns">
+        <div class="xp-tb-btn min" onclick="minWin('winCouple')">_</div>
+        <div class="xp-tb-btn max">□</div>
+        <div class="xp-tb-btn cls" onclick="closeWin('winCouple')">✕</div>
+      </div>
+    </div>
+    <div class="xp-menubar" style="position:relative">
+      <div class="xp-menu-item" onclick="toggleXpMenu('cpl-file',this)">File</div>
+      <div class="xp-menu-item" onclick="toggleXpMenu('cpl-go',this)">Go</div>
+      <div class="xp-dropdown" id="cpl-file" style="top:22px;left:0">
+        <div class="xp-dd-item" onclick="openWin('winCouple');closeMenus()"><span class="xp-dd-icon">📄</span>Buka Couple.txt</div>
+        <div class="xp-dd-sep"></div>
+        <div class="xp-dd-item" onclick="window.print();closeMenus()"><span class="xp-dd-icon">🖨️</span>Print</div>
+        <div class="xp-dd-sep"></div>
+        <div class="xp-dd-item" onclick="closeWin('winCouple');closeMenus()"><span class="xp-dd-icon">✕</span>Tutup</div>
+      </div>
+      <div class="xp-dropdown" id="cpl-go" style="top:22px;left:32px">
+        <div class="xp-dd-item" onclick="openWin('winWedding');closeMenus()"><span class="xp-dd-icon">💒</span>Wedding.exe</div>
+        <div class="xp-dd-item" onclick="openWin('winEvent');closeMenus()"><span class="xp-dd-icon">📅</span>Event Calendar</div>
+        <div class="xp-dd-item" onclick="openWin('winGallery');closeMenus()"><span class="xp-dd-icon">🖼️</span>Galeri Foto</div>
+        <div class="xp-dd-item" onclick="openWin('winGift');closeMenus()"><span class="xp-dd-icon">🎁</span>Gift</div>
+        <div class="xp-dd-item" onclick="openWin('winRsvp');closeMenus()"><span class="xp-dd-icon">📋</span>RSVP Form</div>
+        <div class="xp-dd-item" onclick="openWin('winExplorer');closeMenus()"><span class="xp-dd-icon">📁</span>My Wedding</div>
+      </div>
+    </div>
+    <div class="xp-notepad" style="height:320px">=====================================
+  WEDDING OF ANITA & ZARDA
+  Windows XP Wedding Edition™
+=====================================
+  24 Mei 2026 | Graha Yadika | Tangerang
+
+MEMPELAI WANITA:
+  Anita Pangestuti, S.Kom
+  Putri Pertama dari:
+    Bpk. Taryono
+    Ibu Wiwit Jayanti
+
+MEMPELAI PRIA:
+  Zardarian Ahadika N, S.Kom
+  Putra Kedua dari:
+    Bpk. Wan Sabran, M.MAR
+    Ibu Titik Sundari, M.Si
+
+LOVE STORY:
+  [Juni 2025]    — Awal Pertemuan
+  [Nov  2025]    — Lamaran
+  [Mei  2026]    — Pernikahan 💍
+
+VERSE:
+  "Dan di antara tanda-tanda
+  kebesaran-Nya ialah Dia
+  menciptakan pasangan-pasangan
+  untukmu dari jenismu sendiri."
+  — Surah Ar-Rum : 21
+
+=====================================
+   Semoga Bahagia Selalu 🙏
+=====================================</div>
+    <div class="xp-statusbar"><div class="xp-status-panel">Ln 1, Col 1</div></div>
+  </div>
+
+  <!-- ══ EVENT WINDOW ══ -->
+  <div class="xp-window" id="winEvent" style="width:min(420px,96vw);left:260px;top:120px;display:none" onmousedown="focusWin('winEvent')">
+    <div class="xp-titlebar" onmousedown="startDrag(event,'winEvent')" ontouchstart="startDragT(event,'winEvent')">
+      <span class="xp-titlebar-icon">📅</span>
+      <span class="xp-titlebar-text">Event Calendar — Wedding Scheduler</span>
+      <div class="xp-titlebar-btns">
+        <div class="xp-tb-btn min" onclick="minWin('winEvent')">_</div>
+        <div class="xp-tb-btn max">□</div>
+        <div class="xp-tb-btn cls" onclick="closeWin('winEvent')">✕</div>
+      </div>
+    </div>
+    <div class="xp-menubar" style="position:relative">
+      <div class="xp-menu-item" onclick="toggleXpMenu('ev-file',this)">File</div>
+      <div class="xp-menu-item" onclick="toggleXpMenu('ev-go',this)">Go</div>
+      <div class="xp-dropdown" id="ev-file" style="top:22px;left:0">
+        <div class="xp-dd-item" onclick="openWin('winRsvp');closeMenus()"><span class="xp-dd-icon">📋</span>Isi RSVP</div>
+        <div class="xp-dd-item" onclick="openWin('winGift');closeMenus()"><span class="xp-dd-icon">🎁</span>Lihat Gift</div>
+        <div class="xp-dd-sep"></div>
+        <div class="xp-dd-item" onclick="closeWin('winEvent');closeMenus()"><span class="xp-dd-icon">✕</span>Tutup</div>
+      </div>
+      <div class="xp-dropdown" id="ev-go" style="top:22px;left:32px">
+        <div class="xp-dd-item" onclick="openWin('winWedding');closeMenus()"><span class="xp-dd-icon">💒</span>Wedding.exe</div>
+        <div class="xp-dd-item" onclick="openWin('winCouple');closeMenus()"><span class="xp-dd-icon">💑</span>Couple.txt</div>
+        <div class="xp-dd-item" onclick="openWin('winGallery');closeMenus()"><span class="xp-dd-icon">🖼️</span>Galeri Foto</div>
+        <div class="xp-dd-item" onclick="openWin('winVideo');closeMenus()"><span class="xp-dd-icon">🎬</span>Video Stories</div>
+        <div class="xp-dd-item" onclick="openWin('winGift');closeMenus()"><span class="xp-dd-icon">🎁</span>Gift</div>
+        <div class="xp-dd-item" onclick="openWin('winRsvp');closeMenus()"><span class="xp-dd-icon">📋</span>RSVP Form</div>
+        <div class="xp-dd-item" onclick="openWin('winExplorer');closeMenus()"><span class="xp-dd-icon">📁</span>My Wedding</div>
+      </div>
+    </div>
+    <div class="xp-content">
+      <div class="xp-section-title">📅 Jadwal Acara Pernikahan</div>
+      <div style="padding:10px">
+        <div style="font-size:12px;font-weight:700;color:#316ac5;margin-bottom:8px">⏳ Countdown</div>
+        <div class="xp-countdown" style="margin-bottom:12px">
+          <div class="xp-cd-cell"><div class="xp-cd-num" data-cd="D">--</div><div class="xp-cd-unit">Hari</div></div>
+          <div class="xp-cd-cell"><div class="xp-cd-num" data-cd="H">--</div><div class="xp-cd-unit">Jam</div></div>
+          <div class="xp-cd-cell"><div class="xp-cd-num" data-cd="M">--</div><div class="xp-cd-unit">Menit</div></div>
+          <div class="xp-cd-cell"><div class="xp-cd-num" data-cd="S">--</div><div class="xp-cd-unit">Detik</div></div>
+        </div>
+      </div>
+      <div class="xp-event-grid">
+        <div class="xp-event-card">
+          <div class="xp-event-badge">Akad Nikah</div>
+          <div class="xp-event-name">Minggu, 24 Mei 2026</div>
+          <div class="xp-event-row"><span class="xp-event-icon">🕗</span><span class="xp-event-text">08.00 WIB</span></div>
+          <div class="xp-event-row"><span class="xp-event-icon">📍</span><span class="xp-event-text">Graha Yadika, Jl. Palem Ganda Asri, Ciledug, Tangerang</span></div>
+          <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank"><div class="xp-event-map">📍 Google Maps</div></a>
+        </div>
+        <div class="xp-event-card">
+          <div class="xp-event-badge">Resepsi</div>
+          <div class="xp-event-name">Minggu, 24 Mei 2026</div>
+          <div class="xp-event-row"><span class="xp-event-icon">🕙</span><span class="xp-event-text">11.00 – 13.00 WIB</span></div>
+          <div class="xp-event-row"><span class="xp-event-icon">📍</span><span class="xp-event-text">Graha Yadika, Jl. Palem Ganda Asri, Ciledug, Tangerang</span></div>
+          <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank"><div class="xp-event-map">📍 Google Maps</div></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ GIFT WINDOW ══ -->
+  <div class="xp-window" id="winGift" style="width:min(380px,96vw);left:300px;top:140px;display:none" onmousedown="focusWin('winGift')">
+    <div class="xp-titlebar" onmousedown="startDrag(event,'winGift')" ontouchstart="startDragT(event,'winGift')">
+      <span class="xp-titlebar-icon">🎁</span>
+      <span class="xp-titlebar-text">Gift.dat — Amplop Digital</span>
+      <div class="xp-titlebar-btns">
+        <div class="xp-tb-btn min" onclick="minWin('winGift')">_</div>
+        <div class="xp-tb-btn max">□</div>
+        <div class="xp-tb-btn cls" onclick="closeWin('winGift')">✕</div>
+      </div>
+    </div>
+    <div class="xp-menubar" style="position:relative">
+      <div class="xp-menu-item" onclick="toggleXpMenu('gift-file',this)">File</div>
+      <div class="xp-menu-item" onclick="toggleXpMenu('gift-go',this)">Go</div>
+      <div class="xp-dropdown" id="gift-file" style="top:22px;left:0">
+        <div class="xp-dd-item" onclick="copyGiftXp('8210370561',this);closeMenus()"><span class="xp-dd-icon">📋</span>Copy No. BCA</div>
+        <div class="xp-dd-item" onclick="copyGiftXp('1192978403',this);closeMenus()"><span class="xp-dd-icon">📋</span>Copy No. BNI</div>
+        <div class="xp-dd-sep"></div>
+        <div class="xp-dd-item" onclick="openWin('winRsvp');closeMenus()"><span class="xp-dd-icon">📋</span>Isi RSVP</div>
+        <div class="xp-dd-sep"></div>
+        <div class="xp-dd-item" onclick="closeWin('winGift');closeMenus()"><span class="xp-dd-icon">✕</span>Tutup</div>
+      </div>
+      <div class="xp-dropdown" id="gift-go" style="top:22px;left:32px">
+        <div class="xp-dd-item" onclick="openWin('winWedding');closeMenus()"><span class="xp-dd-icon">💒</span>Wedding.exe</div>
+        <div class="xp-dd-item" onclick="openWin('winCouple');closeMenus()"><span class="xp-dd-icon">💑</span>Couple.txt</div>
+        <div class="xp-dd-item" onclick="openWin('winEvent');closeMenus()"><span class="xp-dd-icon">📅</span>Event</div>
+        <div class="xp-dd-item" onclick="openWin('winGallery');closeMenus()"><span class="xp-dd-icon">🖼️</span>Galeri Foto</div>
+        <div class="xp-dd-item" onclick="openWin('winRsvp');closeMenus()"><span class="xp-dd-icon">📋</span>RSVP Form</div>
+        <div class="xp-dd-item" onclick="openWin('winExplorer');closeMenus()"><span class="xp-dd-icon">📁</span>My Wedding</div>
+      </div>
+    </div>
+    <div class="xp-content">
+      <div class="xp-section-title">🎁 Amplop Digital — Digital Gift</div>
+      <div style="padding:10px;font-size:11px;color:#555;line-height:1.6">Doa restu sudah sangat cukup, namun jika memberi merupakan tanda kasih, kami dengan senang hati menerimanya. 🙏</div>
+      <div class="xp-gift-grid">
+        <div class="xp-gift-card">
+          <div style="font-size:24px">🏦</div>
+          <div class="xp-gift-bank">BCA</div>
+          <div class="xp-gift-holder">Zardarian Ahadika N</div>
+          <div class="xp-gift-num">8210 3705 61</div>
+          <button class="xp-gift-copy" onclick="copyGiftXp('8210370561',this)">📋 Salin Nomor</button>
+        </div>
+        <div class="xp-gift-card">
+          <div style="font-size:24px">🏦</div>
+          <div class="xp-gift-bank">BNI</div>
+          <div class="xp-gift-holder">Anita Pangestuti</div>
+          <div class="xp-gift-num">1192 9784 03</div>
+          <button class="xp-gift-copy" onclick="copyGiftXp('1192978403',this)">📋 Salin Nomor</button>
+        </div>
+      </div>
+    </div>
+    <div class="xp-statusbar"><div class="xp-status-panel">2 rekening tersedia</div></div>
+  </div>
+
+  <!-- ══ RSVP WINDOW ══ -->
+  <div class="xp-window" id="winRsvp" style="width:min(440px,96vw);left:120px;top:60px;display:none" onmousedown="focusWin('winRsvp')">
+    <div class="xp-titlebar" onmousedown="startDrag(event,'winRsvp')" ontouchstart="startDragT(event,'winRsvp')">
+      <span class="xp-titlebar-icon">📋</span>
+      <span class="xp-titlebar-text">RSVP.doc — Konfirmasi Kehadiran</span>
+      <div class="xp-titlebar-btns">
+        <div class="xp-tb-btn min" onclick="minWin('winRsvp')">_</div>
+        <div class="xp-tb-btn max">□</div>
+        <div class="xp-tb-btn cls" onclick="closeWin('winRsvp')">✕</div>
+      </div>
+    </div>
+    <div class="xp-menubar" style="position:relative">
+      <div class="xp-menu-item" onclick="toggleXpMenu('rsvp-file',this)">File</div>
+      <div class="xp-menu-item" onclick="toggleXpMenu('rsvp-go',this)">Go</div>
+      <div class="xp-dropdown" id="rsvp-file" style="top:22px;left:0">
+        <div class="xp-dd-item" onclick="submitXpRsvp();closeMenus()"><span class="xp-dd-icon">✅</span>Submit RSVP<span class="xp-dd-shortcut">Ctrl+S</span></div>
+        <div class="xp-dd-sep"></div>
+        <div class="xp-dd-item" onclick="openWin('winGift');closeMenus()"><span class="xp-dd-icon">🎁</span>Lihat Gift</div>
+        <div class="xp-dd-sep"></div>
+        <div class="xp-dd-item" onclick="closeWin('winRsvp');closeMenus()"><span class="xp-dd-icon">✕</span>Tutup</div>
+      </div>
+      <div class="xp-dropdown" id="rsvp-go" style="top:22px;left:32px">
+        <div class="xp-dd-item" onclick="openWin('winWedding');closeMenus()"><span class="xp-dd-icon">💒</span>Wedding.exe</div>
+        <div class="xp-dd-item" onclick="openWin('winCouple');closeMenus()"><span class="xp-dd-icon">💑</span>Couple.txt</div>
+        <div class="xp-dd-item" onclick="openWin('winEvent');closeMenus()"><span class="xp-dd-icon">📅</span>Event</div>
+        <div class="xp-dd-item" onclick="openWin('winGallery');closeMenus()"><span class="xp-dd-icon">🖼️</span>Galeri</div>
+        <div class="xp-dd-item" onclick="openWin('winGift');closeMenus()"><span class="xp-dd-icon">🎁</span>Gift</div>
+        <div class="xp-dd-item" onclick="openWin('winExplorer');closeMenus()"><span class="xp-dd-icon">📁</span>My Wedding</div>
+      </div>
+    </div>
+    <div class="xp-content">
+      <div class="xp-section-title">📋 RSVP — Konfirmasi Kehadiran</div>
+      <div class="xp-rsvp-stats">
+        <div class="xp-rsvp-stat"><div class="xp-rsvp-stat-num" id="xstR">7</div><div class="xp-rsvp-stat-label">Respons</div></div>
+        <div class="xp-rsvp-stat"><div class="xp-rsvp-stat-num" id="xstH">7</div><div class="xp-rsvp-stat-label">Hadir</div></div>
+        <div class="xp-rsvp-stat"><div class="xp-rsvp-stat-num" id="xstT">13</div><div class="xp-rsvp-stat-label">Total Tamu</div></div>
+      </div>
+      <div class="xp-form-wrap">
+        <div class="xp-form-group">
+          <label class="xp-form-label">Nama Lengkap:</label>
+          <input type="text" class="xp-form-input" id="xrName" placeholder="Masukkan nama Anda">
+        </div>
+        <div class="xp-form-group">
+          <label class="xp-form-label">Status Kehadiran:</label>
+          <div class="xp-radio-group">
+            <div class="xp-radio-item" onclick="selXpRsvp('hadir',this)"><div class="xp-radio-dot" id="xrad-hadir"></div><span>✅ Hadir</span></div>
+            <div class="xp-radio-item" onclick="selXpRsvp('tidak',this)"><div class="xp-radio-dot" id="xrad-tidak"></div><span>😔 Tidak Hadir</span></div>
+          </div>
+        </div>
+        <div class="xp-form-group">
+          <label class="xp-form-label">Jumlah Tamu:</label>
+          <select class="xp-form-select" id="xguestSel">
+            <option value="1">👤 1 Tamu</option>
+            <option value="2">👥 2 Tamu</option>
+          </select>
+        </div>
+        <div class="xp-form-group">
+          <label class="xp-form-label">Ucapan & Doa:</label>
+          <textarea class="xp-form-input" id="xrMsg" placeholder="Tuliskan ucapan..."></textarea>
+        </div>
+        <div style="display:flex;gap:6px;justify-content:flex-end">
+          <button class="xp-btn primary" onclick="submitXpRsvp()">✅ OK</button>
+          <button class="xp-btn" onclick="closeWin('winRsvp')">Cancel</button>
+        </div>
+      </div>
+      <div class="xp-section-title" style="margin-top:4px">💬 Ucapan & Doa</div>
+      <div class="xp-wish-list" id="xWishesList">
+        <div class="xp-wish vis"><div class="xp-wish-hdr"><div class="xp-wish-ava">A</div><div class="xp-wish-name">Ayu Rahmawati</div><div class="xp-wish-status">✓ Hadir · 2</div></div><div class="xp-wish-text">Selamat menempuh hidup baru! Sakinah mawaddah wa rahmah 🌿</div></div>
+        <div class="xp-wish vis"><div class="xp-wish-hdr"><div class="xp-wish-ava" style="background:#0040a0">R</div><div class="xp-wish-name">Reza Firmansyah</div><div class="xp-wish-status">✓ Hadir · 1</div></div><div class="xp-wish-text">Alhamdulillah! Semoga berkah dan bahagia selalu. Aamiin! 🤲</div></div>
+        <div class="xp-wish vis"><div class="xp-wish-hdr"><div class="xp-wish-ava" style="background:#800000">S</div><div class="xp-wish-name">Sinta Dewi</div><div class="xp-wish-status">✓ Hadir · 2</div></div><div class="xp-wish-text">Semoga langkah kalian selalu diberkahi Allah SWT 💚</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ MY WEDDING EXPLORER ══ -->
+  <div class="xp-window" id="winExplorer" style="width:min(520px,96vw);left:80px;top:40px;display:none" onmousedown="focusWin('winExplorer')">
+    <div class="xp-titlebar" onmousedown="startDrag(event,'winExplorer')" ontouchstart="startDragT(event,'winExplorer')">
+      <span class="xp-titlebar-icon">📁</span>
+      <span class="xp-titlebar-text">My Wedding — Windows Explorer</span>
+      <div class="xp-titlebar-btns">
+        <div class="xp-tb-btn min" onclick="minWin('winExplorer')">_</div>
+        <div class="xp-tb-btn max">□</div>
+        <div class="xp-tb-btn cls" onclick="closeWin('winExplorer')">✕</div>
+      </div>
+    </div>
+    <div class="xp-menubar" style="position:relative">
+      <div class="xp-menu-item" onclick="toggleXpMenu('exp-file',this)">File</div>
+      <div class="xp-menu-item" onclick="toggleXpMenu('exp-view',this)">View</div>
+      <div class="xp-menu-item" onclick="toggleXpMenu('exp-go',this)">Go</div>
+      <div class="xp-menu-item" onclick="toggleXpMenu('exp-fav',this)">Favorites</div>
+      <div class="xp-menu-item" onclick="toggleXpMenu('exp-help',this)">Help</div>
+      <div class="xp-dropdown" id="exp-file" style="top:22px;left:0">
+        <div class="xp-dd-item" onclick="openAllWins();closeMenus()"><span class="xp-dd-icon">🪟</span>Buka Semua</div>
+        <div class="xp-dd-sep"></div>
+        <div class="xp-dd-item" onclick="closeWin('winExplorer');closeMenus()"><span class="xp-dd-icon">✕</span>Tutup</div>
+      </div>
+      <div class="xp-dropdown" id="exp-view" style="top:22px;left:32px">
+        <div class="xp-dd-item disabled"><span class="xp-dd-check">✓</span>Thumbnails</div>
+        <div class="xp-dd-item disabled"><span class="xp-dd-icon"> </span>Tiles</div>
+        <div class="xp-dd-item disabled"><span class="xp-dd-icon"> </span>Icons</div>
+        <div class="xp-dd-item disabled"><span class="xp-dd-icon"> </span>List</div>
+        <div class="xp-dd-item disabled"><span class="xp-dd-icon"> </span>Details</div>
+        <div class="xp-dd-sep"></div>
+        <div class="xp-dd-item disabled"><span class="xp-dd-check">✓</span>Status Bar</div>
+      </div>
+      <div class="xp-dropdown" id="exp-go" style="top:22px;left:64px">
+        <div class="xp-dd-item" onclick="openWin('winWedding');closeMenus()"><span class="xp-dd-icon">💒</span>Wedding.exe</div>
+        <div class="xp-dd-item" onclick="openWin('winCouple');closeMenus()"><span class="xp-dd-icon">💑</span>Couple.txt</div>
+        <div class="xp-dd-item" onclick="openWin('winEvent');closeMenus()"><span class="xp-dd-icon">📅</span>Event Calendar</div>
+        <div class="xp-dd-item" onclick="openWin('winGallery');closeMenus()"><span class="xp-dd-icon">🖼️</span>Galeri Foto</div>
+        <div class="xp-dd-item" onclick="openWin('winVideo');closeMenus()"><span class="xp-dd-icon">🎬</span>Video Stories</div>
+        <div class="xp-dd-item" onclick="openWin('winGift');closeMenus()"><span class="xp-dd-icon">🎁</span>Gift</div>
+        <div class="xp-dd-item" onclick="openWin('winRsvp');closeMenus()"><span class="xp-dd-icon">📋</span>RSVP Form</div>
+      </div>
+      <div class="xp-dropdown" id="exp-fav" style="top:22px;left:96px">
+        <div class="xp-dd-item" onclick="openWin('winWedding');closeMenus()"><span class="xp-dd-icon">⭐</span>Wedding.exe</div>
+        <div class="xp-dd-item" onclick="openWin('winGallery');closeMenus()"><span class="xp-dd-icon">⭐</span>Galeri Foto</div>
+        <div class="xp-dd-item" onclick="openWin('winRsvp');closeMenus()"><span class="xp-dd-icon">⭐</span>RSVP Form</div>
+        <div class="xp-dd-item" onclick="openWin('winGift');closeMenus()"><span class="xp-dd-icon">⭐</span>Gift</div>
+      </div>
+      <div class="xp-dropdown" id="exp-help" style="top:22px;left:140px">
+        <div class="xp-dd-item" onclick="showXpHelp();closeMenus()"><span class="xp-dd-icon">❓</span>Help Topics</div>
+        <div class="xp-dd-item" onclick="showAbout();closeMenus()"><span class="xp-dd-icon">💍</span>About</div>
+      </div>
+    </div>
+    <div class="xp-toolbar">
+      <div class="xp-tool-btn">⬅ Back</div>
+      <div class="xp-tool-btn">➡ Forward</div>
+      <div class="xp-tool-btn">⬆ Up</div>
+      <div class="xp-tool-sep"></div>
+      <div class="xp-tool-btn" onclick="openAllWins()">🪟 Buka Semua</div>
+    </div>
+    <div class="xp-addr-bar">
+      <span style="font-size:11px;color:#666">Address:</span>
+      <input class="xp-addr-input" value="C:\My Documents\My Wedding\" readonly>
+    </div>
+    <div class="xp-explorer-layout" style="flex:1;min-height:200px">
+      <div class="xp-explorer-sidebar">
+        <div class="xp-sidebar-section">
+          <div class="xp-sidebar-title">📁 File & Folder Tasks</div>
+          <div class="xp-sidebar-item" onclick="openAllWins()">Buka Semua</div>
+        </div>
+        <div class="xp-sidebar-section">
+          <div class="xp-sidebar-title">🌐 Other Places</div>
+          <div class="xp-sidebar-item" onclick="openWin('winWedding')">Wedding.exe</div>
+          <div class="xp-sidebar-item" onclick="openWin('winGallery')">Galeri Foto</div>
+          <div class="xp-sidebar-item" onclick="openWin('winRsvp')">RSVP Form</div>
+          <div class="xp-sidebar-item" onclick="openWin('winGift')">Gift.dat</div>
+        </div>
+        <div class="xp-sidebar-section">
+          <div class="xp-sidebar-title">ℹ️ Details</div>
+          <div style="padding:6px 8px;font-size:10px;color:#444;line-height:1.5">Wedding<br>8 items<br>2.46 MB</div>
+        </div>
+      </div>
+      <div class="xp-file-grid" style="flex:1">
+        <div class="xp-file" onclick="openWin('winWedding')"><div class="xp-file-icon">💒</div><div class="xp-file-name">Wedding.exe</div></div>
+        <div class="xp-file" onclick="openWin('winCouple')"><div class="xp-file-icon">📄</div><div class="xp-file-name">Couple.txt</div></div>
+        <div class="xp-file" onclick="openWin('winEvent')"><div class="xp-file-icon">📅</div><div class="xp-file-name">Event.cal</div></div>
+        <div class="xp-file" onclick="openWin('winGallery')"><div class="xp-file-icon">🖼️</div><div class="xp-file-name">Galeri.bmp</div></div>
+        <div class="xp-file" onclick="openWin('winVideo')"><div class="xp-file-icon">🎬</div><div class="xp-file-name">Video.avi</div></div>
+        <div class="xp-file" onclick="openWin('winGift')"><div class="xp-file-icon">🎁</div><div class="xp-file-name">Gift.dat</div></div>
+        <div class="xp-file" onclick="openWin('winRsvp')"><div class="xp-file-icon">📋</div><div class="xp-file-name">RSVP.doc</div></div>
+        <div class="xp-file" onclick="openAllWins()"><div class="xp-file-icon">🪟</div><div class="xp-file-name">Buka Semua</div></div>
+      </div>
+    </div>
+    <div class="xp-statusbar">
+      <div class="xp-status-panel">8 object(s)</div>
+      <div class="xp-status-panel">2.46 MB</div>
+    </div>
+  </div>
+
+</div><!-- /desktop -->
+
+<!-- ═══ XP START MENU ═══ -->
+<div id="xpStartMenu">
+  <div class="sm-header">
+    <div class="sm-user-pic">💍</div>
+    <div class="sm-user-name">Ade Guntur Fitridullah</div>
+  </div>
+  <div class="sm-body">
+    <div class="sm-left">
+      <div class="sm-pinned-label">📌 Pinned Programs</div>
+      <div class="sm-item" onclick="openWin('winWedding');closeXpStart()"><span class="sm-item-icon">💒</span><div class="sm-item-text"><div class="sm-item-name">Wedding.exe</div><div class="sm-item-sub">Buka Undangan</div></div></div>
+      <div class="sm-item" onclick="openWin('winGallery');closeXpStart()"><span class="sm-item-icon">🖼️</span><div class="sm-item-text"><div class="sm-item-name">Windows Picture Viewer</div><div class="sm-item-sub">Galeri Foto</div></div></div>
+      <div class="sm-item" onclick="openWin('winVideo');closeXpStart()"><span class="sm-item-icon">🎬</span><div class="sm-item-text"><div class="sm-item-name">Windows Media Player</div><div class="sm-item-sub">Video Stories</div></div></div>
+      <div class="sm-sep"></div>
+      <div class="sm-pinned-label">🕐 Recently Used</div>
+      <div class="sm-item" onclick="openWin('winCouple');closeXpStart()"><span class="sm-item-icon">💑</span><div class="sm-item-text"><div class="sm-item-name">Couple.txt</div><div class="sm-item-sub">Notepad</div></div></div>
+      <div class="sm-item" onclick="openWin('winEvent');closeXpStart()"><span class="sm-item-icon">📅</span><div class="sm-item-text"><div class="sm-item-name">Event Calendar</div></div></div>
+      <div class="sm-item" onclick="openWin('winGift');closeXpStart()"><span class="sm-item-icon">🎁</span><div class="sm-item-text"><div class="sm-item-name">Gift.dat</div><div class="sm-item-sub">Amplop Digital</div></div></div>
+      <div class="sm-item" onclick="openWin('winRsvp');closeXpStart()"><span class="sm-item-icon">📋</span><div class="sm-item-text"><div class="sm-item-name">RSVP.doc</div><div class="sm-item-sub">Konfirmasi Hadir</div></div></div>
+      <div class="sm-sep"></div>
+      <div class="sm-item" onclick="openAllWins();closeXpStart()"><span class="sm-item-icon">🪟</span><div class="sm-item-text"><div class="sm-item-name">Buka Semua Program</div></div></div>
+    </div>
+    <div class="sm-right">
+      <div class="sm-right-item" onclick="openWin('winExplorer');closeXpStart()"><span class="sm-right-icon">📁</span>My Wedding</div>
+      <div class="sm-right-item" onclick="openWin('winGallery');closeXpStart()"><span class="sm-right-icon">🖼️</span>My Pictures</div>
+      <div class="sm-right-item" onclick="openWin('winVideo');closeXpStart()"><span class="sm-right-icon">🎬</span>My Videos</div>
+      <div class="sm-right-sep"></div>
+      <div class="sm-right-item" onclick="openWin('winCouple');closeXpStart()"><span class="sm-right-icon">💑</span>Couple Info</div>
+      <div class="sm-right-item" onclick="openWin('winEvent');closeXpStart()"><span class="sm-right-icon">📅</span>Event Details</div>
+      <div class="sm-right-item" onclick="openWin('winGift');closeXpStart()"><span class="sm-right-icon">🎁</span>Digital Gift</div>
+      <div class="sm-right-item" onclick="openWin('winRsvp');closeXpStart()"><span class="sm-right-icon">📋</span>RSVP Form</div>
+      <div class="sm-right-sep"></div>
+      <div class="sm-right-item" onclick="showXpHelp();closeXpStart()"><span class="sm-right-icon">❓</span>Help & Support</div>
+      <div class="sm-right-item" onclick="showAbout();closeXpStart()"><span class="sm-right-icon">💍</span>About Wedding XP</div>
+    </div>
+  </div>
+  <div class="sm-footer">
+    <div class="sm-footer-btn" onclick="showShutdown()">🔴 Turn Off Computer</div>
+  </div>
+</div>
+
+<!-- ═══ TASKBAR ═══ -->
+<div id="taskbar">
+  <div class="xp-start-btn" id="xpStartBtn" onclick="toggleXpStart()">
+    <div class="xp-start-logo">
+      <div style="background:#f00"></div>
+      <div style="background:#0a0"></div>
+      <div style="background:#00f"></div>
+      <div style="background:#ff0"></div>
+    </div>
+    <span class="xp-start-text">start</span>
+  </div>
+  <div class="tb-sep2"></div>
+  <div id="xpTaskbarApps" style="display:flex;gap:3px;flex:1;overflow:hidden;align-items:center"></div>
+  <div class="tb-sep2"></div>
+  <div class="xp-systray">
+    <span title="Volume">🔊</span>
+    <span title="Network">🌐</span>
+    <span title="Security">🔒</span>
+    <div class="xp-clock" id="xpClock">12:00<br>AM</div>
+  </div>
+</div>
+
+<!-- ═══ XP DIALOGS ═══ -->
+<!-- Welcome Dialog -->
+<div class="xp-dialog open" id="dlgXpWelcome" style="top:20%;left:50%;transform:translateX(-50%);width:380px">
+  <div class="xp-dlg-titlebar" onmousedown="startDrag(event,'dlgXpWelcome')">
+    <span class="xp-dlg-icon">💍</span>
+    <span class="xp-dlg-text">Wedding XP — Selamat Datang!</span>
+    <div class="xp-dlg-close" onclick="closeXpDlg('dlgXpWelcome')">✕</div>
+  </div>
+  <div class="xp-dlg-body">
+    <div class="xp-dlg-icon-row">
+      <div class="xp-dlg-big-icon">💒</div>
+      <div class="xp-dlg-msg">
+        <b>Kepada Yth,</b><br>
+        Ade Guntur Fitridullah & Partner<br><br>
+        Dengan hormat, Anda diundang ke:<br>
+        <b>The Wedding of Anita & Zarda</b><br>
+        📅 Minggu, 24 Mei 2026<br>
+        📍 Graha Yadika, Tangerang<br><br>
+        Klik <b>OK</b> untuk membuka undangan.
+      </div>
+    </div>
+  </div>
+  <div class="xp-dlg-btn-row">
+    <button class="xp-btn primary" onclick="openXpWelcome()">💍 OK</button>
+    <button class="xp-btn" onclick="closeXpDlg('dlgXpWelcome')">Cancel</button>
+  </div>
+</div>
+
+<!-- Generic Dialog -->
+<div class="xp-dialog" id="dlgXpGeneric" style="top:25%;left:50%;transform:translateX(-50%)">
+  <div class="xp-dlg-titlebar" onmousedown="startDrag(event,'dlgXpGeneric')">
+    <span class="xp-dlg-icon">ℹ️</span>
+    <span class="xp-dlg-text" id="xpDlgTitle">Windows XP</span>
+    <div class="xp-dlg-close" onclick="closeXpDlg('dlgXpGeneric')">✕</div>
+  </div>
+  <div class="xp-dlg-body">
+    <div class="xp-dlg-icon-row">
+      <div class="xp-dlg-big-icon" id="xpDlgIcon">ℹ️</div>
+      <div class="xp-dlg-msg" id="xpDlgMsg"></div>
+    </div>
+  </div>
+  <div class="xp-dlg-btn-row">
+    <button class="xp-btn primary" onclick="closeXpDlg('dlgXpGeneric')">OK</button>
+  </div>
+</div>
+
+<!-- RSVP Success -->
+<div class="xp-dialog" id="dlgXpRsvpOk" style="top:30%;left:50%;transform:translateX(-50%);width:320px">
+  <div class="xp-dlg-titlebar">
+    <span class="xp-dlg-icon">✅</span>
+    <span class="xp-dlg-text">RSVP — Konfirmasi Berhasil</span>
+    <div class="xp-dlg-close" onclick="closeXpDlg('dlgXpRsvpOk')">✕</div>
+  </div>
+  <div class="xp-dlg-body">
+    <div class="xp-dlg-icon-row">
+      <div class="xp-dlg-big-icon">🎉</div>
+      <div class="xp-dlg-msg" id="xpRsvpOkMsg">RSVP berhasil! Terima kasih! 🥳</div>
+    </div>
+  </div>
+  <div class="xp-dlg-btn-row">
+    <button class="xp-btn primary" onclick="closeXpDlg('dlgXpRsvpOk')">OK</button>
+  </div>
+</div>
+
+<!-- Shutdown Dialog -->
+<div class="xp-dialog" id="dlgXpShutdown" style="top:30%;left:50%;transform:translateX(-50%);width:340px">
+  <div class="xp-dlg-titlebar">
+    <span class="xp-dlg-icon">🔴</span>
+    <span class="xp-dlg-text">Turn Off Computer</span>
+    <div class="xp-dlg-close" onclick="closeXpDlg('dlgXpShutdown')">✕</div>
+  </div>
+  <div class="xp-dlg-body">
+    <div class="xp-dlg-icon-row">
+      <div class="xp-dlg-big-icon">🖥️</div>
+      <div class="xp-dlg-msg">What do you want the computer to do?<br><br>Turning off will end all<br>wedding invitation sessions.</div>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center;margin-top:8px">
+      <button class="xp-btn" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 14px;min-width:80px" onclick="closeXpDlg('dlgXpShutdown')">
+        <span style="font-size:22px">💤</span><span style="font-size:10px">Stand By</span>
+      </button>
+      <button class="xp-btn" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 14px;min-width:80px" onclick="closeXpDlg('dlgXpShutdown')">
+        <span style="font-size:22px">🔄</span><span style="font-size:10px">Restart</span>
+      </button>
+      <button class="xp-btn" style="display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 14px;min-width:80px" onclick="closeXpDlg('dlgXpShutdown')">
+        <span style="font-size:22px">🔴</span><span style="font-size:10px">Turn Off</span>
+      </button>
+    </div>
+  </div>
+  <div class="xp-dlg-btn-row">
+    <button class="xp-btn" onclick="closeXpDlg('dlgXpShutdown')">Cancel</button>
+  </div>
+</div>
+
+<!-- Lightbox XP -->
+<div class="lb-xp" id="lbXp">
+  <div class="lb-xp-win">
+    <div class="xp-dlg-titlebar">
+      <span class="xp-dlg-icon">🖼️</span>
+      <span class="xp-dlg-text" id="lbXpTitle">Photo Viewer</span>
+      <div class="xp-dlg-close" onclick="closeLbXp()">✕</div>
+    </div>
+    <div style="padding:6px;background:#fff;text-align:center">
+      <img class="lb-xp-img" id="lbXpImg" src="" alt="">
+    </div>
+    <div class="lb-xp-controls">
+      <button class="xp-btn" onclick="lbXpMv(-1)">◀ Prev</button>
+      <span id="lbXpCount" style="font-size:11px;padding:0 12px"></span>
+      <button class="xp-btn" onclick="lbXpMv(1)">Next ▶</button>
+      <button class="xp-btn" onclick="closeLbXp()">✕ Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- VM XP -->
+<div class="vm-xp" id="vmXp">
+  <div class="lb-xp-win" style="max-width:92vw">
+    <div class="xp-dlg-titlebar">
+      <span class="xp-dlg-icon">🎬</span>
+      <span class="xp-dlg-text">Windows Media Player</span>
+      <div class="xp-dlg-close" onclick="closeVmXp()">✕</div>
+    </div>
+    <div style="padding:4px;background:#000">
+      <video id="xpVmVid" controls style="max-width:88vw;max-height:78vh;display:block">
+        <source id="xpVmSrc" src="" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</div>
+
+<!-- Toast XP -->
+<div class="toast-xp" id="xpToast">
+  <div class="toast-xp-title">💍 Wedding XP</div>
+  <div class="toast-xp-body"><span style="font-size:18px">ℹ️</span><span id="xpToastMsg">Message</span></div>
+</div>
+
+<script>
+/* ═══ DATA ═══ */
+const GALLERY_IMGS=[
+  "https://images.unsplash.com/photo-1519741497674-611481863552?w=700&h=500&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=700&h=500&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=700&h=500&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=700&h=500&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=700&h=500&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=700&h=500&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=700&h=500&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=700&h=500&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=700&h=500&fit=crop&q=80",
+];
+const VIDEOS=[
+  {src:"https://www.w3schools.com/html/mov_bbb.mp4",label:"Awal Pertemuan 💑"},
+  {src:"https://www.w3schools.com/html/movie.mp4",label:"Lamaran 💍"},
+  {src:"https://www.w3schools.com/html/mov_bbb.mp4",label:"Prewedding ✨"},
+  {src:"https://www.w3schools.com/html/movie.mp4",label:"Wedding Day 🎊"},
+];
+
+/* ═══ STATE ═══ */
+let dragId=null,dragOX=0,dragOY=0;
+let openWins=[],zCtr=10;
+let curGalIdx=0,lbXpIdx=0;
+let xpRsvpSt='';
+let activeXpMenu=null;
+
+/* ═══ BOOT ═══ */
+const BOOT_STEPS=[
+  {pct:20,status:"Memuat WEDDING.SYS..."},
+  {pct:40,status:"Menginisialisasi LOVE.DLL..."},
+  {pct:60,status:"Memulai Windows XP..."},
+  {pct:80,status:"Menyiapkan Wedding Edition..."},
+  {pct:95,status:"Hampir siap! Mendekorasi desktop..."},
+  {pct:100,status:"Selamat datang! 💍"},
+];
+let bootSt=0;
+function runXpBoot(){
+  if(bootSt>=BOOT_STEPS.length){ setTimeout(finishXpBoot,700); return; }
+  const s=BOOT_STEPS[bootSt];
+  document.getElementById('xpBootBar').style.width=s.pct+'%';
+  document.getElementById('xpBootStatus').textContent=s.status;
+  bootSt++; setTimeout(runXpBoot,800);
+}
+function finishXpBoot(){
+  document.getElementById('bootXP').classList.add('hide');
+  document.getElementById('desktop').style.display='block';
+  setTimeout(()=>{
+    updateXpClock(); setInterval(updateXpClock,1000);
+    startXpCountdown(); buildGallery(); buildVideos();
+    initTimelines();
+    // show welcome balloon after 1s
+    setTimeout(()=>showXpBalloon('Selamat datang di Wedding XP! 💍 Klik ikon di desktop untuk mulai.'),1000);
+  },300);
+}
+setTimeout(runXpBoot,600);
+
+/* ═══ CLOCK ═══ */
+function updateXpClock(){
+  const d=new Date();
+  const h=d.getHours(),m=d.getMinutes(),ampm=h>=12?'PM':'AM';
+  const h12=h%12||12;
+  document.getElementById('xpClock').innerHTML=`${String(h12).padStart(2,'0')}:${String(m).padStart(2,'0')}<br>${ampm}`;
+}
+
+/* ═══ COUNTDOWN ═══ */
+function startXpCountdown(){
+  const target=new Date('2026-05-24T08:00:00');
+  function tick(){
+    const diff=target-new Date(); if(diff<=0) return;
+    const D=Math.floor(diff/86400000),H=Math.floor((diff%86400000)/3600000);
+    const M=Math.floor((diff%3600000)/60000),S=Math.floor((diff%60000)/1000);
+    // main window
+    ['cdD','cdH','cdM','cdS'].forEach((id,i)=>{
+      const vals=[D,H,M,S]; const el=document.getElementById(id);
+      if(el) el.textContent=String(vals[i]).padStart(2,'0');
+    });
+    // event window data-cd
+    document.querySelectorAll('[data-cd]').forEach(el=>{
+      const u=el.getAttribute('data-cd');
+      const map={D,H,M,S};
+      el.textContent=String(map[u]).padStart(2,'0');
+    });
+    // statusbar
+    const sb=document.getElementById('mainCdStatus');
+    if(sb) sb.textContent=`${D}h ${H}j ${M}m lagi`;
+  }
+  tick(); setInterval(tick,1000);
+}
+
+/* ═══ WINDOW MANAGEMENT ═══ */
+function openWin(id){
+  const w=document.getElementById(id); if(!w) return;
+  w.classList.remove('minimized','hidden');
+  w.style.display='flex';
+  focusWin(id);
+  if(!openWins.includes(id)) openWins.push(id);
+  updateXpTaskbar();
+}
+function closeWin(id){
+  const w=document.getElementById(id); if(w){ w.style.display='none'; w.classList.add('hidden'); }
+  openWins=openWins.filter(x=>x!==id);
+  updateXpTaskbar();
+}
+function minWin(id){
+  const w=document.getElementById(id); if(w){ w.style.display='none'; w.classList.add('minimized'); }
+  updateXpTaskbar();
+}
+function focusWin(id){
+  document.querySelectorAll('.xp-window,.xp-dialog').forEach(w=>w.classList.remove('focused'));
+  const w=document.getElementById(id); if(w){ w.classList.add('focused'); zCtr++; w.style.zIndex=zCtr; }
+}
+function openAllWins(){
+  const ids=['winWedding','winCouple','winEvent','winGallery','winVideo','winGift','winRsvp'];
+  const pos=[[100,20],[420,30],[120,260],[480,50],[200,300],[560,220],[80,180]];
+  ids.forEach((id,i)=>{
+    const w=document.getElementById(id);
+    if(w){ w.style.left=pos[i][0]+'px'; w.style.top=pos[i][1]+'px'; openWin(id); }
+  });
+}
+const WIN_LABELS={
+  winWedding:'💒 Wedding.exe',winGallery:'🖼️ Gallery',winVideo:'🎬 Media Player',
+  winCouple:'💑 Couple.txt',winEvent:'📅 Calendar',winGift:'🎁 Gift.dat',
+  winRsvp:'📋 RSVP.doc',winExplorer:'📁 My Wedding',
+};
+function updateXpTaskbar(){
+  const bar=document.getElementById('xpTaskbarApps'); bar.innerHTML='';
+  openWins.forEach(id=>{
+    const w=document.getElementById(id);
+    const btn=document.createElement('div'); btn.className='xp-tb-app';
+    const lbl=(WIN_LABELS[id]||id).slice(0,20);
+    btn.textContent=lbl; btn.title=WIN_LABELS[id]||id;
+    if(w && w.classList.contains('focused')) btn.classList.add('active');
+    btn.onclick=()=>{
+      const el=document.getElementById(id); if(!el) return;
+      if(el.classList.contains('minimized')){ el.classList.remove('minimized'); el.style.display='flex'; focusWin(id); }
+      else if(el.classList.contains('focused')){ minWin(id); }
+      else { focusWin(id); }
+      updateXpTaskbar();
+    };
+    bar.appendChild(btn);
+  });
+}
+
+/* ═══ DRAG ═══ */
+function startDrag(e,id){
+  dragId=id; focusWin(id);
+  const w=document.getElementById(id); if(!w) return;
+  const r=w.getBoundingClientRect();
+  dragOX=e.clientX-r.left; dragOY=e.clientY-r.top;
+  e.preventDefault();
+}
+function startDragT(e,id){
+  const t=e.touches[0];
+  dragId=id; focusWin(id);
+  const w=document.getElementById(id); if(!w) return;
+  const r=w.getBoundingClientRect();
+  dragOX=t.clientX-r.left; dragOY=t.clientY-r.top;
+}
+document.addEventListener('mousemove',e=>{
+  if(!dragId) return;
+  const w=document.getElementById(dragId); if(!w) return;
+  const x=Math.max(0,Math.min(window.innerWidth-60,e.clientX-dragOX));
+  const y=Math.max(0,Math.min(window.innerHeight-80,e.clientY-dragOY));
+  w.style.left=x+'px'; w.style.top=y+'px';
+});
+document.addEventListener('mouseup',()=>dragId=null);
+document.addEventListener('touchmove',e=>{
+  if(!dragId) return;
+  const t=e.touches[0];
+  const w=document.getElementById(dragId); if(!w) return;
+  const x=Math.max(0,Math.min(window.innerWidth-60,t.clientX-dragOX));
+  const y=Math.max(0,Math.min(window.innerHeight-80,t.clientY-dragOY));
+  w.style.left=x+'px'; w.style.top=y+'px';
+  e.preventDefault();
+},{passive:false});
+document.addEventListener('touchend',()=>dragId=null);
+
+/* ═══ DROPDOWN MENUS ═══ */
+function toggleXpMenu(id,el){
+  const dd=document.getElementById(id); if(!dd) return;
+  if(activeXpMenu&&activeXpMenu!==id){ document.getElementById(activeXpMenu)?.classList.remove('open'); }
+  dd.classList.toggle('open');
+  activeXpMenu=dd.classList.contains('open')?id:null;
+}
+function closeMenus(){
+  document.querySelectorAll('.xp-dropdown').forEach(d=>d.classList.remove('open'));
+  activeXpMenu=null;
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.xp-menubar')&&!e.target.closest('.xp-dropdown')) closeMenus();
+});
+document.querySelectorAll('.xp-menubar').forEach(bar=>{
+  bar.querySelectorAll('.xp-menu-item').forEach(item=>{
+    item.addEventListener('mouseenter',()=>{ if(activeXpMenu) item.click(); });
+  });
+});
+
+/* ═══ START MENU ═══ */
+function toggleXpStart(){
+  const m=document.getElementById('xpStartMenu');
+  const b=document.getElementById('xpStartBtn');
+  m.classList.toggle('open'); b.classList.toggle('active');
+}
+function closeXpStart(){
+  document.getElementById('xpStartMenu').classList.remove('open');
+  document.getElementById('xpStartBtn').classList.remove('active');
+}
+document.addEventListener('click',e=>{
+  if(!document.getElementById('xpStartMenu').contains(e.target)&&
+     !document.getElementById('xpStartBtn').contains(e.target)) closeXpStart();
+});
+
+/* ═══ TABS ═══ */
+const XP_TABS=['home','couple','event','story'];
+function switchXpTab(tab){
+  XP_TABS.forEach(t=>{
+    document.getElementById('xtab-'+t)?.classList.toggle('active',t===tab);
+    document.getElementById('xtc-'+t).style.display=t===tab?'block':'none';
+  });
+  // run timeline animation
+  if(tab==='story') initTimelines();
+}
+
+/* ═══ GALLERY ═══ */
+function buildGallery(){
+  const thumbWrap=document.getElementById('galThumbs'); if(!thumbWrap) return;
+  GALLERY_IMGS.forEach((src,i)=>{
+    const img=document.createElement('img');
+    img.src=src.replace('w=700&h=500','w=80&h=60');
+    img.style.cssText='width:80px;height:60px;object-fit:cover;cursor:pointer;border:2px solid '+(i===0?'#316ac5':'#c0c8d8')+';border-radius:2px;flex-shrink:0;display:block';
+    img.onclick=()=>{ curGalIdx=i; updateGalBig(); document.querySelectorAll('#galThumbs img').forEach((im,ii)=>im.style.borderColor=ii===i?'#316ac5':'#c0c8d8'); img.style.borderColor='#316ac5'; };
+    thumbWrap.appendChild(img);
+  });
+  updateGalBig();
+}
+function updateGalBig(){
+  document.getElementById('galBigImg').src=GALLERY_IMGS[curGalIdx];
+  document.getElementById('galStatus').textContent=`${curGalIdx+1} / ${GALLERY_IMGS.length}`;
+  document.getElementById('galStatusBar').textContent=`Photo ${curGalIdx+1} of ${GALLERY_IMGS.length} • Click to enlarge`;
+}
+function prevGal(){ curGalIdx=(curGalIdx-1+GALLERY_IMGS.length)%GALLERY_IMGS.length; updateGalBig(); }
+function nextGal(){ curGalIdx=(curGalIdx+1)%GALLERY_IMGS.length; updateGalBig(); }
+
+/* ═══ VIDEOS ═══ */
+function buildVideos(){
+  const grid=document.getElementById('vidGrid'); if(!grid) return;
+  VIDEOS.forEach(v=>{
+    const div=document.createElement('div'); div.className='xp-video-item';
+    div.innerHTML=`<video muted autoplay loop playsinline><source src="${v.src}" type="video/mp4"></video><div class="xp-video-overlay"><span class="xp-video-label">${v.label}</span></div><div class="xp-video-play">▶</div>`;
+    div.onclick=()=>openVmXp(v.src);
+    grid.appendChild(div);
+  });
+}
+
+/* ═══ LIGHTBOX ═══ */
+function openLbXp(i){ lbXpIdx=i; updLbXp(); document.getElementById('lbXp').classList.add('open'); }
+function closeLbXp(){ document.getElementById('lbXp').classList.remove('open'); }
+function lbXpMv(d){ lbXpIdx=(lbXpIdx+d+GALLERY_IMGS.length)%GALLERY_IMGS.length; updLbXp(); }
+function updLbXp(){
+  document.getElementById('lbXpImg').src=GALLERY_IMGS[lbXpIdx];
+  document.getElementById('lbXpCount').textContent=`${lbXpIdx+1} / ${GALLERY_IMGS.length}`;
+  document.getElementById('lbXpTitle').textContent=`Photo ${lbXpIdx+1} — Wedding Gallery`;
+}
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('lbXp').classList.contains('open')){ if(e.key==='Escape') closeLbXp(); if(e.key==='ArrowLeft') lbXpMv(-1); if(e.key==='ArrowRight') lbXpMv(1); }
+  if(document.getElementById('vmXp').classList.contains('open')&&e.key==='Escape') closeVmXp();
+});
+
+/* ═══ VIDEO MODAL ═══ */
+function openVmXp(src){ document.getElementById('xpVmSrc').src=src; document.getElementById('xpVmVid').load(); document.getElementById('xpVmVid').play().catch(()=>{}); document.getElementById('vmXp').classList.add('open'); }
+function closeVmXp(){ document.getElementById('xpVmVid').pause(); document.getElementById('vmXp').classList.remove('open'); }
+
+/* ═══ DIALOGS ═══ */
+function closeXpDlg(id){ document.getElementById(id).classList.remove('open'); }
+function showXpError(title,msg){ document.getElementById('xpDlgTitle').textContent=title; document.getElementById('xpDlgIcon').textContent='⛔'; document.getElementById('xpDlgMsg').textContent=msg; document.getElementById('dlgXpGeneric').classList.add('open'); }
+function showXpHelp(){ document.getElementById('xpDlgTitle').textContent='Help & Support'; document.getElementById('xpDlgIcon').textContent='❓'; document.getElementById('xpDlgMsg').innerHTML='<b>Wedding XP Help</b><br><br>• Klik ikon di desktop untuk buka program<br>• Drag title bar untuk pindah window<br>• Klik Start untuk menu lengkap<br>• Semua menu tersedia dan berfungsi!<br><br>Selamat menikmati undangan! 💍'; document.getElementById('dlgXpGeneric').classList.add('open'); }
+function showAbout(){ document.getElementById('xpDlgTitle').textContent='About Wedding XP'; document.getElementById('xpDlgIcon').textContent='💍'; document.getElementById('xpDlgMsg').innerHTML='<b>Wedding XP Professional</b><br>Version 5.1.2600<br><br>Copyright © 2026 BridesSpace Corporation<br>All rights reserved.<br><br>Licensed to:<br>Anita & Zarda<br>24 Mei 2026 · Tangerang'; document.getElementById('dlgXpGeneric').classList.add('open'); }
+function showShutdown(){ document.getElementById('dlgXpShutdown').classList.add('open'); closeXpStart(); }
+function openXpWelcome(){ closeXpDlg('dlgXpWelcome'); openWin('winWedding'); if(!openWins.includes('winWedding')) openWins.push('winWedding'); updateXpTaskbar(); }
+
+/* ═══ RSVP ═══ */
+function selXpRsvp(s){ xpRsvpSt=s; document.getElementById('xrad-hadir').classList.toggle('checked',s==='hadir'); document.getElementById('xrad-tidak').classList.toggle('checked',s==='tidak'); }
+function submitXpRsvp(){
+  const name=document.getElementById('xrName')?.value.trim();
+  const msg=document.getElementById('xrMsg')?.value.trim();
+  if(!name){ showXpError('Input Error','Nama tidak boleh kosong!'); return; }
+  if(!xpRsvpSt){ showXpError('Input Error','Pilih status kehadiran terlebih dahulu!'); return; }
+  const gc=parseInt(document.getElementById('xguestSel')?.value||1);
+  const st=xpRsvpSt==='hadir'?`✓ Hadir · ${gc}`:'✗ Tidak Hadir';
+  const cols=['#316ac5','#008000','#800000','#804000','#400080'];
+  const col=cols[Math.floor(Math.random()*cols.length)];
+  const init=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const item=document.createElement('div'); item.className='xp-wish vis';
+  item.innerHTML=`<div class="xp-wish-hdr"><div class="xp-wish-ava" style="background:${col}">${init}</div><div class="xp-wish-name">${name}</div><div class="xp-wish-status">${st}</div></div><div class="xp-wish-text">${msg||'Selamat dan bahagia selalu! 💍'}</div>`;
+  document.getElementById('xWishesList')?.prepend(item);
+  const r=document.getElementById('xstR'); if(r) r.textContent=parseInt(r.textContent)+1;
+  if(xpRsvpSt==='hadir'){ const h=document.getElementById('xstH'); if(h) h.textContent=parseInt(h.textContent)+1; const t=document.getElementById('xstT'); if(t) t.textContent=parseInt(t.textContent)+gc; }
+  if(document.getElementById('xrName')) document.getElementById('xrName').value='';
+  if(document.getElementById('xrMsg')) document.getElementById('xrMsg').value='';
+  xpRsvpSt='';
+  document.getElementById('xrad-hadir')?.classList.remove('checked');
+  document.getElementById('xrad-tidak')?.classList.remove('checked');
+  document.getElementById('xpRsvpOkMsg').innerHTML=`RSVP berhasil disimpan!<br><b>${name}</b> — ${st}<br><br>Terima kasih! 🎉`;
+  document.getElementById('dlgXpRsvpOk').classList.add('open');
+}
+
+/* ═══ GIFT ═══ */
+function copyGiftXp(text,btn){
+  navigator.clipboard.writeText(text).then(()=>{
+    if(btn&&btn.classList) { btn.classList.add('copied'); btn.textContent='✅ Tersalin!'; setTimeout(()=>{ btn.classList.remove('copied'); btn.textContent='📋 Salin Nomor'; },2500); }
+    showXpBalloon('Nomor rekening berhasil disalin ke clipboard! 📋');
+  }).catch(()=>showXpError('Clipboard','Salin manual: '+text));
+}
+
+/* ═══ BALLOON TOAST ═══ */
+let toastTimer;
+function showXpBalloon(msg){
+  const t=document.getElementById('xpToast');
+  document.getElementById('xpToastMsg').textContent=msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('show'),3500);
+}
+
+/* ═══ TIMELINES ═══ */
+function initTimelines(){
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('vis'); }),{threshold:.1});
+  document.querySelectorAll('.xp-tl-item').forEach(el=>obs.observe(el));
+  // also trigger immediately if visible
+  document.querySelectorAll('.xp-tl-item').forEach(el=>{ const r=el.getBoundingClientRect(); if(r.top<window.innerHeight) el.classList.add('vis'); });
+}
+</script>
+</body>
+</html>

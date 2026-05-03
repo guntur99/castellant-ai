@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>WhatsApp Channel — Anita & Zarda 💍</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,500;1,600&display=swap" rel="stylesheet">
+<style>
+
+/* ═══════════════════════════
+   TOKENS
+═══════════════════════════ */
+:root {
+  --wa-bg:        #111B21;
+  --wa-bg2:       #0B1014;
+  --wa-surface:   #1F2C34;
+  --wa-surface2:  #2A3942;
+  --wa-green:     #00A884;
+  --wa-green-d:   #008069;
+  --wa-green-msg: #005C4B;
+  --wa-teal:      #25D366;
+  --wa-white:     #E9EDEF;
+  --wa-gray1:     #C9D0D5;
+  --wa-gray2:     #8696A0;
+  --wa-gray3:     #536471;
+  --wa-gray4:     #2A3942;
+  --wa-sep:       rgba(134,150,160,0.15);
+  --wa-read:      #53BDEB;
+  --wa-like:      #FF6B6B;
+  --font:         'Nunito', 'Segoe UI', sans-serif;
+  --font-script:  'Playfair Display', serif;
+  --ease:         cubic-bezier(0.25,0.46,0.45,0.94);
+  --spring:       cubic-bezier(0.34,1.56,0.64,1);
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-font-smoothing:antialiased}
+body{
+  background:var(--wa-bg2);
+  font-family:var(--font);
+  color:var(--wa-white);
+  overflow:hidden;
+  height:100svh;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ═══════════════════════════
+   PHONE FRAME
+═══════════════════════════ */
+.phone{
+  width:min(430px,100vw);
+  height:min(870px,100svh);
+  position:relative;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  background:var(--wa-bg);
+}
+
+/* ═══════════════════════════
+   SPLASH
+═══════════════════════════ */
+#splash{
+  position:absolute;inset:0;z-index:999;
+  background:#00A884;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:0;
+  transition:opacity .6s var(--ease),transform .6s var(--ease);
+}
+#splash.out{opacity:0;transform:scale(1.04);pointer-events:none}
+
+.sp-logo{
+  width:80px;height:80px;margin-bottom:20px;
+  animation:sp-pop .5s var(--spring) .2s both;
+}
+@keyframes sp-pop{from{transform:scale(.3);opacity:0}to{transform:scale(1);opacity:1}}
+.sp-logo svg{width:100%;height:100%}
+.sp-bottom{
+  position:absolute;bottom:max(44px,env(safe-area-inset-bottom,44px));
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+}
+.sp-dots{display:flex;gap:5px}
+.sp-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:rgba(255,255,255,.45);
+  animation:sp-dot 1.4s ease-in-out infinite;
+}
+.sp-dot:nth-child(2){animation-delay:.2s}
+.sp-dot:nth-child(3){animation-delay:.4s}
+@keyframes sp-dot{0%,80%,100%{transform:scale(1);opacity:.45}40%{transform:scale(1.4);opacity:1}}
+.sp-from{font-size:12px;color:rgba(255,255,255,.55);letter-spacing:.04em}
+.sp-meta{font-size:10px;color:rgba(255,255,255,.35);letter-spacing:.08em;text-transform:uppercase}
+
+/* ═══════════════════════════
+   CHANNELS DISCOVERY LIST
+═══════════════════════════ */
+#chanList{
+  position:absolute;inset:0;z-index:10;
+  display:flex;flex-direction:column;
+  background:var(--wa-bg);
+  opacity:0;transition:opacity .35s var(--ease);
+}
+#chanList.show{opacity:1}
+#chanList.out{transform:translateX(-100%);opacity:0;transition:transform .3s var(--ease),opacity .3s}
+
+/* header */
+.cl-header{
+  background:var(--wa-surface);
+  padding:max(env(safe-area-inset-top,0px),14px) 16px 12px;
+  display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--wa-sep);
+  flex-shrink:0;
+}
+.cl-title{font-size:20px;font-weight:800;color:var(--wa-white);letter-spacing:-.02em}
+.cl-actions{display:flex;gap:4px}
+.cl-act-btn{
+  width:36px;height:36px;border-radius:50%;border:none;background:none;
+  color:var(--wa-gray2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s;
+}
+.cl-act-btn:hover{background:rgba(255,255,255,.06)}
+.cl-act-btn svg{width:22px;height:22px}
+
+/* search */
+.cl-search{
+  padding:8px 14px;background:var(--wa-surface);
+  border-bottom:1px solid var(--wa-sep);flex-shrink:0;
+}
+.cl-search-box{
+  display:flex;align-items:center;gap:8px;
+  background:var(--wa-surface2);border-radius:10px;
+  padding:9px 12px;
+}
+.cl-search-box svg{width:16px;height:16px;color:var(--wa-gray3);flex-shrink:0}
+.cl-search-inp{
+  background:transparent;border:none;outline:none;
+  color:var(--wa-white);font-family:var(--font);font-size:14px;width:100%;
+}
+.cl-search-inp::placeholder{color:var(--wa-gray3)}
+
+/* tabs */
+.cl-tabs{
+  display:flex;background:var(--wa-surface);
+  border-bottom:1px solid var(--wa-sep);flex-shrink:0;
+}
+.cl-tab{
+  flex:1;text-align:center;padding:12px 8px;
+  font-size:14px;font-weight:600;color:var(--wa-gray2);
+  cursor:pointer;transition:color .15s;position:relative;
+}
+.cl-tab.on{color:var(--wa-green)}
+.cl-tab.on::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2px;
+  background:var(--wa-green);border-radius:2px 2px 0 0;
+}
+
+/* featured channel banner */
+.feat-banner{
+  margin:12px 14px;border-radius:14px;overflow:hidden;position:relative;
+  cursor:pointer;flex-shrink:0;
+}
+.feat-img{width:100%;height:140px;object-fit:cover;display:block}
+.feat-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(0deg,rgba(0,0,0,.85) 0%,rgba(0,0,0,.1) 60%);
+}
+.feat-body{position:absolute;bottom:0;left:0;right:0;padding:14px}
+.feat-tag{
+  display:inline-block;background:var(--wa-green);color:#000;
+  font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 8px;border-radius:4px;margin-bottom:6px;
+}
+.feat-name{font-size:18px;font-weight:800;margin-bottom:2px}
+.feat-subs{font-size:12px;color:rgba(255,255,255,.65)}
+
+/* channel list items */
+.chan-list{flex:1;overflow-y:auto}
+.chan-list::-webkit-scrollbar{width:3px}
+.chan-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:2px}
+.chan-section{padding:10px 14px 4px;font-size:12px;color:var(--wa-gray2);font-weight:700;letter-spacing:.04em;text-transform:uppercase}
+.chan-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 14px;cursor:pointer;transition:background .15s;
+}
+.chan-item:hover{background:rgba(255,255,255,.04)}
+.chan-ava{
+  width:48px;height:48px;border-radius:50%;flex-shrink:0;overflow:hidden;
+  position:relative;
+}
+.chan-ava img{width:100%;height:100%;object-fit:cover;display:block}
+.chan-ava-grad{
+  width:100%;height:100%;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;
+}
+.chan-body{flex:1;min-width:0}
+.chan-name-row{display:flex;align-items:center;gap:5px;margin-bottom:2px}
+.chan-name{font-size:15px;font-weight:700;color:var(--wa-white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chan-verified{color:var(--wa-green);flex-shrink:0}
+.chan-verified svg{width:14px;height:14px}
+.chan-preview{font-size:13px;color:var(--wa-gray2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chan-meta{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.chan-subs{font-size:11px;color:var(--wa-gray3)}
+.chan-follow-btn{
+  background:rgba(0,168,132,.15);border:1px solid rgba(0,168,132,.3);
+  color:var(--wa-green);font-family:var(--font);font-size:11px;font-weight:700;
+  padding:4px 10px;border-radius:20px;cursor:pointer;white-space:nowrap;
+  transition:background .15s;
+}
+.chan-follow-btn.following{background:var(--wa-surface2);border-color:var(--wa-sep);color:var(--wa-gray2)}
+.chan-follow-btn:hover{background:rgba(0,168,132,.25)}
+
+/* ═══════════════════════════
+   CHANNEL VIEW
+═══════════════════════════ */
+#chanView{
+  position:absolute;inset:0;z-index:20;
+  display:flex;flex-direction:column;
+  background:var(--wa-bg);
+  transform:translateX(100%);opacity:0;
+  transition:transform .3s var(--ease),opacity .3s var(--ease);
+}
+#chanView.show{transform:translateX(0);opacity:1}
+
+/* top bar */
+.cv-topbar{
+  background:var(--wa-surface);
+  padding:max(env(safe-area-inset-top,0px),10px) 10px 10px;
+  display:flex;align-items:center;gap:8px;
+  border-bottom:1px solid var(--wa-sep);
+  flex-shrink:0;
+}
+.cv-back{
+  background:none;border:none;color:var(--wa-green);
+  cursor:pointer;padding:6px;display:flex;align-items:center;
+}
+.cv-back svg{width:22px;height:22px}
+.cv-ava{width:38px;height:38px;border-radius:50%;overflow:hidden;flex-shrink:0;cursor:pointer}
+.cv-ava img{width:100%;height:100%;object-fit:cover}
+.cv-info{flex:1;min-width:0;cursor:pointer}
+.cv-name{font-size:16px;font-weight:700;color:var(--wa-white);display:flex;align-items:center;gap:4px}
+.cv-v svg{width:14px;height:14px;color:var(--wa-green)}
+.cv-subs{font-size:12px;color:var(--wa-gray2);margin-top:1px}
+.cv-acts{display:flex;gap:2px}
+.cv-act{
+  width:36px;height:36px;border-radius:50%;border:none;background:none;
+  color:var(--wa-gray2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:background .15s;
+}
+.cv-act:hover{background:rgba(255,255,255,.06)}
+.cv-act svg{width:20px;height:20px}
+
+/* channel info card (collapsible) */
+.chan-info-card{
+  background:var(--wa-surface);
+  margin:0;padding:0;
+  border-bottom:1px solid var(--wa-sep);
+  flex-shrink:0;overflow:hidden;
+  max-height:240px;transition:max-height .4s var(--ease);
+}
+.chan-info-card.collapsed{max-height:0}
+.cic-cover{
+  width:100%;height:120px;object-fit:cover;display:block;
+  background:linear-gradient(135deg,#1a3a2a,#0d2018);
+}
+.cic-body{padding:12px 16px 14px;display:flex;gap:12px;align-items:flex-start}
+.cic-avatar{
+  width:60px;height:60px;border-radius:50%;overflow:hidden;
+  border:3px solid var(--wa-surface);margin-top:-30px;flex-shrink:0;
+  box-shadow:0 4px 12px rgba(0,0,0,.5);
+}
+.cic-avatar img{width:100%;height:100%;object-fit:cover}
+.cic-text{flex:1;min-width:0}
+.cic-chan-name{font-size:17px;font-weight:800;color:var(--wa-white);margin-bottom:2px;display:flex;align-items:center;gap:5px}
+.cic-desc{font-size:13px;color:var(--wa-gray2);line-height:1.55;margin-bottom:10px}
+.cic-stats{display:flex;gap:16px}
+.cic-stat{text-align:center}
+.cic-stat-num{font-size:16px;font-weight:700;color:var(--wa-white)}
+.cic-stat-lbl{font-size:11px;color:var(--wa-gray3)}
+.cic-actions{display:flex;gap:8px;margin-top:10px}
+.cic-btn{
+  flex:1;padding:10px;border-radius:10px;border:none;
+  font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;
+  transition:background .15s,transform .1s;text-align:center;
+}
+.cic-btn:active{transform:scale(.97)}
+.cic-btn.primary{background:var(--wa-green);color:#000}
+.cic-btn.primary:hover{background:var(--wa-green-d)}
+.cic-btn.ghost{background:var(--wa-surface2);color:var(--wa-gray1)}
+.cic-btn.ghost:hover{background:rgba(255,255,255,.08)}
+
+/* toggle info bar */
+.info-toggle{
+  padding:8px 16px;display:flex;align-items:center;justify-content:center;gap:6px;
+  background:var(--wa-surface);cursor:pointer;
+  border-bottom:1px solid var(--wa-sep);flex-shrink:0;
+  font-size:12px;color:var(--wa-gray2);font-weight:600;
+  transition:background .15s;
+}
+.info-toggle:hover{background:rgba(255,255,255,.04)}
+.info-toggle svg{width:14px;height:14px;transition:transform .3s}
+.info-toggle.up svg{transform:rotate(180deg)}
+
+/* ═══════════════════════════
+   POSTS FEED
+═══════════════════════════ */
+.posts-feed{
+  flex:1;overflow-y:auto;
+  display:flex;flex-direction:column;
+  gap:0;
+}
+.posts-feed::-webkit-scrollbar{width:4px}
+.posts-feed::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:2px}
+
+/* date chip */
+.post-date{
+  text-align:center;padding:10px 0 6px;
+}
+.post-date span{
+  background:rgba(0,0,0,.4);backdrop-filter:blur(8px);
+  border-radius:10px;padding:4px 12px;
+  font-size:11px;color:var(--wa-gray2);font-weight:600;
+}
+
+/* individual post card */
+.post-card{
+  background:var(--wa-surface);
+  margin:0 0 1px;
+  position:relative;
+  opacity:0;transform:translateY(12px);
+  animation:post-in .4s var(--ease) var(--d,0s) forwards;
+}
+@keyframes post-in{to{opacity:1;transform:translateY(0)}}
+
+.post-header{
+  display:flex;align-items:center;gap:10px;
+  padding:12px 14px 8px;
+}
+.post-ava{
+  width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0;
+}
+.post-ava img{width:100%;height:100%;object-fit:cover}
+.post-chan-name{
+  font-size:14px;font-weight:700;color:var(--wa-white);
+  display:flex;align-items:center;gap:4px;
+}
+.post-chan-v svg{width:13px;height:13px;color:var(--wa-green)}
+.post-time{font-size:11px;color:var(--wa-gray3);margin-top:1px}
+.post-menu-btn{
+  margin-left:auto;background:none;border:none;
+  color:var(--wa-gray3);cursor:pointer;padding:4px;
+  display:flex;align-items:center;
+}
+.post-menu-btn svg{width:18px;height:18px}
+
+/* post media */
+.post-media{
+  width:100%;position:relative;overflow:hidden;cursor:pointer;
+}
+.post-media img{
+  width:100%;display:block;
+  max-height:320px;object-fit:cover;
+  transition:filter .25s;
+}
+.post-media:hover img{filter:brightness(.88)}
+.post-media-overlay{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .2s;
+}
+.post-media:hover .post-media-overlay{opacity:1}
+.pmo-btn{
+  width:52px;height:52px;border-radius:50%;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+}
+.pmo-btn svg{width:24px;height:24px;fill:white}
+
+/* album 2-up */
+.post-album{
+  display:grid;grid-template-columns:1fr 1fr;gap:2px;
+  cursor:pointer;
+}
+.post-album-cell{overflow:hidden;position:relative}
+.post-album-cell img{width:100%;aspect-ratio:1;object-fit:cover;display:block;transition:filter .2s}
+.post-album-cell:hover img{filter:brightness(.8)}
+.more-overlay{
+  position:absolute;inset:0;
+  background:rgba(0,0,0,.55);
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;font-weight:800;color:white;
+}
+
+/* post body text */
+.post-body{padding:10px 14px 6px}
+.post-text{
+  font-size:14.5px;line-height:1.6;color:var(--wa-gray1);
+  word-break:break-word;white-space:pre-wrap;
+}
+.post-text b{font-weight:700;color:var(--wa-white)}
+.post-text i{font-style:italic}
+.post-text .wa-link{color:var(--wa-green);text-decoration:none}
+.post-read-more{
+  color:var(--wa-green);font-size:13px;font-weight:600;
+  cursor:pointer;margin-top:4px;display:inline-block;
+}
+
+/* link preview */
+.link-preview{
+  margin:8px 14px;border-radius:10px;overflow:hidden;
+  border:1px solid var(--wa-sep);background:var(--wa-surface2);
+  cursor:pointer;transition:background .15s;
+}
+.link-preview:hover{background:var(--wa-gray4)}
+.lp-img{width:100%;height:120px;object-fit:cover;display:block}
+.lp-body{padding:10px 12px}
+.lp-domain{font-size:11px;color:var(--wa-green);font-weight:700;margin-bottom:3px;letter-spacing:.04em}
+.lp-title{font-size:14px;font-weight:700;color:var(--wa-white);margin-bottom:4px;line-height:1.3}
+.lp-desc{font-size:12px;color:var(--wa-gray2);line-height:1.4;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+
+/* audio post */
+.audio-post{
+  margin:8px 14px;background:var(--wa-surface2);
+  border-radius:12px;padding:14px;
+  display:flex;align-items:center;gap:12px;
+  cursor:pointer;border:1px solid var(--wa-sep);
+}
+.audio-play-btn{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--wa-green);border:none;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s,transform .1s;
+}
+.audio-play-btn:active{transform:scale(.9)}
+.audio-play-btn svg{width:20px;height:20px;fill:#000}
+.audio-info{flex:1;min-width:0}
+.audio-title{font-size:14px;font-weight:700;color:var(--wa-white);margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.audio-wf{display:flex;align-items:center;gap:2px;height:24px;margin-bottom:4px}
+.audio-bar{width:3px;border-radius:2px;background:rgba(0,168,132,.35);flex-shrink:0;transition:background .2s}
+.audio-bar.lit{background:var(--wa-green)}
+.audio-dur{font-size:11px;color:var(--wa-gray3)}
+
+/* poll in post */
+.post-poll{padding:10px 14px}
+.poll-q-post{font-size:15px;font-weight:700;color:var(--wa-white);margin-bottom:10px}
+.poll-opt-post{
+  border:1px solid var(--wa-sep);border-radius:10px;
+  padding:10px 14px;margin-bottom:6px;cursor:pointer;
+  display:flex;align-items:center;gap:10px;
+  position:relative;overflow:hidden;transition:border-color .2s;
+}
+.poll-opt-post::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  background:rgba(0,168,132,.12);width:var(--p,0%);transition:width .5s var(--ease);
+}
+.poll-opt-post.voted{border-color:rgba(0,168,132,.4)}
+.poll-opt-post:hover{border-color:rgba(0,168,132,.3)}
+.pop-emoji{font-size:18px;flex-shrink:0;position:relative;z-index:1}
+.pop-label{flex:1;font-size:14px;color:var(--wa-gray1);position:relative;z-index:1}
+.pop-pct{font-size:13px;font-weight:700;color:var(--wa-green);position:relative;z-index:1}
+.poll-votes-post{font-size:11px;color:var(--wa-gray3);padding:0 14px;margin-bottom:4px}
+
+/* countdown in post */
+.post-countdown{
+  margin:8px 14px;padding:16px;
+  background:linear-gradient(135deg,rgba(0,168,132,.08),rgba(0,90,70,.12));
+  border:1px solid rgba(0,168,132,.18);border-radius:12px;
+  text-align:center;
+}
+.pcd-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--wa-green);font-weight:700;margin-bottom:10px}
+.pcd-nums{display:flex;justify-content:center;gap:8px}
+.pcd-box{background:rgba(0,0,0,.3);border-radius:8px;padding:10px 12px;min-width:58px}
+.pcd-num{font-family:var(--font-script);font-size:28px;font-style:italic;color:var(--wa-white);line-height:1}
+.pcd-unit{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--wa-gray3);margin-top:3px}
+
+/* forwarded */
+.post-fwd{
+  margin:4px 14px 0;padding:8px 12px;
+  border-left:3px solid var(--wa-green);
+  background:rgba(0,168,132,.06);border-radius:0 8px 8px 0;
+}
+.fwd-lbl{font-size:11px;color:var(--wa-green);font-weight:700;margin-bottom:3px}
+.fwd-txt{font-size:13px;color:var(--wa-gray2);font-style:italic;line-height:1.4}
+
+/* post footer */
+.post-footer{
+  display:flex;align-items:center;gap:0;
+  padding:6px 10px 10px;
+}
+.pf-reactions{display:flex;flex-wrap:wrap;gap:4px;flex:1}
+.pf-reaction{
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--wa-surface2);border:1px solid var(--wa-sep);
+  border-radius:20px;padding:4px 10px;cursor:pointer;
+  font-size:13px;transition:background .15s,transform .1s,border-color .2s;
+}
+.pf-reaction:active{transform:scale(.9)}
+.pf-reaction.liked{background:rgba(255,107,107,.12);border-color:rgba(255,107,107,.3)}
+.pf-reaction.liked .pr-count{color:var(--wa-like)}
+.pf-reaction.green-r.liked{background:rgba(0,168,132,.12);border-color:rgba(0,168,132,.3)}
+.pf-reaction.green-r.liked .pr-count{color:var(--wa-green)}
+.pr-count{font-size:12px;color:var(--wa-gray2);font-weight:600}
+.pf-spacer{flex:1}
+.pf-views{
+  display:flex;align-items:center;gap:4px;
+  font-size:12px;color:var(--wa-gray3);
+}
+.pf-views svg{width:14px;height:14px}
+.pf-time{font-size:11px;color:var(--wa-gray3);margin-left:8px}
+.pf-share{
+  width:30px;height:30px;border-radius:50%;border:none;background:none;
+  color:var(--wa-gray3);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:color .15s;
+}
+.pf-share:hover{color:var(--wa-green)}
+.pf-share svg{width:18px;height:18px}
+
+/* ═══════════════════════════
+   INPUT BAR
+═══════════════════════════ */
+.chan-input-bar{
+  background:var(--wa-surface);
+  padding:8px 12px max(8px,env(safe-area-inset-bottom,8px));
+  display:flex;align-items:center;gap:8px;
+  border-top:1px solid var(--wa-sep);flex-shrink:0;
+}
+.cib-box{
+  flex:1;background:var(--wa-surface2);border-radius:22px;
+  display:flex;align-items:center;padding:10px 14px;gap:8px;
+}
+.cib-icon{color:var(--wa-gray3);display:flex;align-items:center;flex-shrink:0}
+.cib-icon svg{width:20px;height:20px}
+.cib-txt{flex:1;font-size:14px;color:var(--wa-gray3)}
+.cib-send{
+  width:42px;height:42px;border-radius:50%;
+  background:var(--wa-green);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:background .15s,transform .1s;
+}
+.cib-send:hover{background:var(--wa-green-d)}
+.cib-send:active{transform:scale(.88)}
+.cib-send svg{width:20px;height:20px;fill:#000}
+
+/* notify me button area */
+.notify-bar{
+  padding:10px 14px;
+  display:flex;align-items:center;gap:10px;
+  background:rgba(0,168,132,.06);
+  border-top:1px solid rgba(0,168,132,.1);
+  flex-shrink:0;
+}
+.notify-text{flex:1;font-size:13px;color:var(--wa-gray2);line-height:1.4}
+.notify-btn{
+  background:var(--wa-green);color:#000;border:none;
+  font-family:var(--font);font-size:13px;font-weight:700;
+  padding:8px 16px;border-radius:20px;cursor:pointer;white-space:nowrap;
+  transition:background .15s;flex-shrink:0;
+}
+.notify-btn:hover{background:var(--wa-green-d)}
+.notify-btn.done{background:var(--wa-surface2);color:var(--wa-gray2)}
+
+/* ═══════════════════════════
+   RSVP MODAL
+═══════════════════════════ */
+.rsvp-overlay{
+  position:absolute;inset:0;z-index:50;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(6px);
+  display:flex;align-items:flex-end;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.rsvp-overlay.open{opacity:1;pointer-events:all}
+.rsvp-sheet{
+  width:100%;background:var(--wa-surface);
+  border-radius:20px 20px 0 0;
+  padding:12px 16px max(28px,env(safe-area-inset-bottom,28px));
+  transform:translateY(100%);transition:transform .4s var(--spring);
+  max-height:88svh;overflow-y:auto;
+}
+.rsvp-overlay.open .rsvp-sheet{transform:translateY(0)}
+.rs-handle{width:40px;height:4px;border-radius:2px;background:var(--wa-surface2);margin:0 auto 16px}
+.rs-title{font-size:18px;font-weight:800;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+.rs-sub{font-size:13px;color:var(--wa-gray2);margin-bottom:20px}
+.rs-field{margin-bottom:14px}
+.rs-label{font-size:12px;color:var(--wa-gray2);margin-bottom:6px;font-weight:700;letter-spacing:.03em}
+.rs-inp{
+  width:100%;background:var(--wa-surface2);border:none;border-radius:10px;
+  padding:12px 14px;color:var(--wa-white);font-family:var(--font);font-size:15px;
+  outline:none;caret-color:var(--wa-green);transition:box-shadow .2s;
+}
+.rs-inp:focus{box-shadow:0 0 0 2px rgba(0,168,132,.35)}
+.rs-inp::placeholder{color:var(--wa-gray3)}
+textarea.rs-inp{min-height:80px;resize:vertical}
+.rs-sel-row{display:flex;gap:8px}
+.rs-sel-btn{
+  flex:1;background:var(--wa-surface2);border:2px solid transparent;
+  border-radius:10px;padding:10px;color:var(--wa-gray3);
+  font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;
+  transition:all .15s;text-align:center;
+}
+.rs-sel-btn.on{background:rgba(0,168,132,.12);border-color:var(--wa-green);color:var(--wa-green)}
+.rs-submit{
+  width:100%;background:var(--wa-green);color:#000;border:none;border-radius:12px;
+  padding:14px;font-family:var(--font);font-size:16px;font-weight:800;
+  cursor:pointer;margin-top:16px;transition:background .15s,transform .1s;
+}
+.rs-submit:hover{background:var(--wa-green-d)}
+.rs-submit:active{transform:scale(.98)}
+
+/* ═══════════════════════════
+   LIGHTBOX
+═══════════════════════════ */
+.lb{
+  position:absolute;inset:0;z-index:60;
+  background:#000;display:none;flex-direction:column;
+}
+.lb.open{display:flex}
+.lb-hdr{
+  padding:max(env(safe-area-inset-top,12px),12px) 14px 12px;
+  display:flex;align-items:center;gap:10px;
+  background:rgba(0,0,0,.6);
+}
+.lb-back{background:none;border:none;color:var(--wa-green);cursor:pointer;display:flex;align-items:center;padding:4px}
+.lb-back svg{width:22px;height:22px}
+.lb-sender{flex:1;font-size:15px;font-weight:700}
+.lb-t{font-size:12px;color:rgba(255,255,255,.4)}
+.lb-main{flex:1;display:flex;align-items:center;justify-content:center;padding:10px}
+.lb-img{max-width:100%;max-height:100%;object-fit:contain;border-radius:4px}
+.lb-nav{
+  position:absolute;top:50%;transform:translateY(-50%);
+  background:rgba(255,255,255,.08);border:none;color:white;
+  width:44px;height:44px;border-radius:50%;font-size:22px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s;
+}
+.lb-nav:hover{background:rgba(255,255,255,.15)}
+.lb-nav.prev{left:12px}
+.lb-nav.next{right:12px}
+.lb-ftr{
+  padding:12px 14px max(20px,env(safe-area-inset-bottom,20px));
+  display:flex;justify-content:space-around;
+}
+.lb-act{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  color:rgba(255,255,255,.5);cursor:pointer;font-size:11px;transition:color .15s;
+}
+.lb-act svg{width:22px;height:22px}
+.lb-act:hover{color:white}
+
+/* toast */
+#toast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(8px);
+  background:rgba(25,25,25,.95);color:white;
+  padding:10px 20px;border-radius:22px;
+  font-size:13px;font-weight:600;
+  opacity:0;transition:opacity .25s,transform .25s;
+  pointer-events:none;white-space:nowrap;z-index:9999;
+  box-shadow:0 4px 20px rgba(0,0,0,.4);
+}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ═══════════════════════════
+   UTILITIES
+═══════════════════════════ */
+.green{color:var(--wa-green)}
+</style>
+</head>
+<body>
+
+<div class="phone" id="phone">
+
+<!-- ══ SPLASH ══ -->
+<div id="splash">
+  <svg class="sp-logo" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="50" fill="#25D366"/>
+    <path d="M50 15C30.67 15 15 30.67 15 50c0 6.11 1.63 11.85 4.48 16.82L15 85l18.62-4.38A34.86 34.86 0 0050 85c19.33 0 35-15.67 35-35S69.33 15 50 15zm17.54 47.62a.622.622 0 01-.857.207c-2.348-1.435-5.304-1.76-8.785-.964a.622.622 0 01-.277-1.215c3.809-.87 7.076-.496 9.712 1.115a.623.623 0 01.207.857zm1.223-2.722a.78.78 0 01-1.072.257c-2.687-1.652-6.785-2.131-9.965-1.166a.78.78 0 01-.973-.519.781.781 0 01.519-.973c3.632-1.102 8.147-.568 11.234 1.329a.78.78 0 01.257 1.072zm.105-2.835C65.55 55.19 58.91 55 55 55.79a.937.937 0 11-.543-1.792c4.532-1.072 9.904-.865 13.315 1.338a.937.937 0 01-.955 1.61l.065-.053zM39.5 42.5c0-1.1.9-2 2-2h17a2 2 0 010 4h-17a2 2 0 01-2-2zm2 5h13a2 2 0 010 4h-13a2 2 0 010-4z" fill="white"/>
+  </svg>
+  <div class="sp-bottom">
+    <div class="sp-dots">
+      <div class="sp-dot"></div><div class="sp-dot"></div><div class="sp-dot"></div>
+    </div>
+    <div class="sp-from">from</div>
+    <div class="sp-meta">Meta</div>
+  </div>
+</div>
+
+<!-- ══ CHANNEL LIST ══ -->
+<div id="chanList">
+  <div class="cl-header">
+    <div class="cl-title">Channels</div>
+    <div class="cl-actions">
+      <button class="cl-act-btn" onclick="toast('🔍 Cari channel')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      </button>
+      <button class="cl-act-btn" onclick="toast('⋮ Opsi')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="cl-search">
+    <div class="cl-search-box">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <input class="cl-search-inp" placeholder="Cari channel" readonly>
+    </div>
+  </div>
+
+  <div class="cl-tabs">
+    <div class="cl-tab on">Semua</div>
+    <div class="cl-tab" onclick="toast('📌 Diikuti')">Diikuti</div>
+    <div class="cl-tab" onclick="toast('🔥 Populer')">Populer</div>
+  </div>
+
+  <!-- Featured -->
+  <div class="feat-banner" onclick="openChan()">
+    <img class="feat-img" src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=300&fit=crop&q=80" alt="">
+    <div class="feat-overlay"></div>
+    <div class="feat-body">
+      <div class="feat-tag">⭐ Channel Pilihan</div>
+      <div class="feat-name">Anita & Zarda 💍</div>
+      <div class="feat-subs">12.4K pengikut · Update pernikahan terbaru</div>
+    </div>
+  </div>
+
+  <!-- List -->
+  <div class="chan-list">
+    <div class="chan-section">Channel yang Diikuti</div>
+
+    <div class="chan-item" onclick="openChan()">
+      <div class="chan-ava"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=100&h=100&fit=crop&q=80" alt=""></div>
+      <div class="chan-body">
+        <div class="chan-name-row">
+          <span class="chan-name">Anita & Zarda 💍</span>
+          <span class="chan-verified"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>
+        </div>
+        <div class="chan-preview">📸 Foto pre-wedding terbaru sudah up!</div>
+      </div>
+      <div class="chan-meta">
+        <span class="chan-subs">12.4K</span>
+        <button class="chan-follow-btn following" onclick="event.stopPropagation();toggleFollow(this)">Mengikuti ✓</button>
+      </div>
+    </div>
+
+    <div class="chan-section">Channel Lainnya</div>
+
+    <div class="chan-item" onclick="toast('💐 Bukan channel ini')">
+      <div class="chan-ava">
+        <div class="chan-ava-grad" style="background:linear-gradient(135deg,#e57373,#c62828)">💐</div>
+      </div>
+      <div class="chan-body">
+        <div class="chan-name-row"><span class="chan-name">Wedding Inspiration ID</span></div>
+        <div class="chan-preview">Tips dekorasi pernikahan terbaik 2026</div>
+      </div>
+      <div class="chan-meta">
+        <span class="chan-subs">88K</span>
+        <button class="chan-follow-btn" onclick="event.stopPropagation();toggleFollow(this)">Ikuti</button>
+      </div>
+    </div>
+
+    <div class="chan-item" onclick="toast('📸 Bukan channel ini')">
+      <div class="chan-ava">
+        <div class="chan-ava-grad" style="background:linear-gradient(135deg,#64b5f6,#1565c0)">📸</div>
+      </div>
+      <div class="chan-body">
+        <div class="chan-name-row"><span class="chan-name">Wedding Photo Stories</span></div>
+        <div class="chan-preview">Galeri foto pernikahan impian 🤍</div>
+      </div>
+      <div class="chan-meta">
+        <span class="chan-subs">54K</span>
+        <button class="chan-follow-btn" onclick="event.stopPropagation();toggleFollow(this)">Ikuti</button>
+      </div>
+    </div>
+
+    <div class="chan-item" onclick="toast('🎶 Bukan channel ini')">
+      <div class="chan-ava">
+        <div class="chan-ava-grad" style="background:linear-gradient(135deg,#ce93d8,#6a1b9a)">🎶</div>
+      </div>
+      <div class="chan-body">
+        <div class="chan-name-row"><span class="chan-name">Lagu Romantis Indonesia</span></div>
+        <div class="chan-preview">Playlist wedding terpopuler minggu ini</div>
+      </div>
+      <div class="chan-meta">
+        <span class="chan-subs">210K</span>
+        <button class="chan-follow-btn" onclick="event.stopPropagation();toggleFollow(this)">Ikuti</button>
+      </div>
+    </div>
+
+    <div class="chan-item" onclick="toast('🍰 Bukan channel ini')">
+      <div class="chan-ava">
+        <div class="chan-ava-grad" style="background:linear-gradient(135deg,#ffcc80,#e65100)">🍰</div>
+      </div>
+      <div class="chan-body">
+        <div class="chan-name-row"><span class="chan-name">Wedding Cake & Desserts</span></div>
+        <div class="chan-preview">Inspirasi kue pengantin 2026 🎂</div>
+      </div>
+      <div class="chan-meta">
+        <span class="chan-subs">32K</span>
+        <button class="chan-follow-btn" onclick="event.stopPropagation();toggleFollow(this)">Ikuti</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CHANNEL VIEW ══ -->
+<div id="chanView">
+
+  <!-- Top bar -->
+  <div class="cv-topbar">
+    <button class="cv-back" onclick="closeChan()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </button>
+    <div class="cv-ava">
+      <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=80&h=80&fit=crop&q=80" alt="">
+    </div>
+    <div class="cv-info" onclick="toggleInfo()">
+      <div class="cv-name">
+        Anita & Zarda 💍
+        <span class="cv-v"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>
+      </div>
+      <div class="cv-subs">12.4K pengikut</div>
+    </div>
+    <div class="cv-acts">
+      <button class="cv-act" onclick="toast('🔍 Cari di channel')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      </button>
+      <button class="cv-act" onclick="toast('📌 Notifikasi diatur')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+      </button>
+      <button class="cv-act" onclick="toast('⋮ Opsi channel')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Channel info card -->
+  <div class="chan-info-card" id="chanInfoCard">
+    <img class="cic-cover" src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&h=240&fit=crop&q=80" alt="">
+    <div class="cic-body">
+      <div class="cic-avatar">
+        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=100&h=100&fit=crop&q=80" alt="">
+      </div>
+      <div class="cic-text">
+        <div class="cic-chan-name">
+          Anita & Zarda 💍
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px;color:var(--wa-green)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        </div>
+        <div class="cic-desc">Channel resmi pernikahan Anita Pangestuti & Zardarian Ahadika N. Update informasi, foto, dan countdown menuju hari bahagia kami 🤍 — 24 Mei 2026</div>
+        <div class="cic-stats">
+          <div class="cic-stat"><div class="cic-stat-num">12.4K</div><div class="cic-stat-lbl">Pengikut</div></div>
+          <div class="cic-stat"><div class="cic-stat-num">24</div><div class="cic-stat-lbl">Postingan</div></div>
+          <div class="cic-stat"><div class="cic-stat-num">98%</div><div class="cic-stat-lbl">Dibaca</div></div>
+        </div>
+        <div class="cic-actions">
+          <button class="cic-btn primary" onclick="openRSVP()">💌 RSVP Sekarang</button>
+          <button class="cic-btn ghost" onclick="toast('🔔 Notifikasi aktif!')">🔔 Notifikasi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toggle info -->
+  <div class="info-toggle up" id="infoToggle" onclick="toggleInfo()">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z"/></svg>
+    <span id="infoToggleText">Sembunyikan info</span>
+  </div>
+
+  <!-- Notify bar -->
+  <div class="notify-bar">
+    <div class="notify-text">🔔 Aktifkan notifikasi untuk tidak melewatkan update hari istimewa kami</div>
+    <button class="notify-btn" id="notifyBtn" onclick="toggleNotify(this)">Aktifkan</button>
+  </div>
+
+  <!-- Posts feed -->
+  <div class="posts-feed" id="postsFeed"></div>
+
+  <!-- Input bar (channel — read only prompt) -->
+  <div class="chan-input-bar">
+    <div class="cib-box" onclick="toast('💬 Balas di grup terhubung')">
+      <div class="cib-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg></div>
+      <div class="cib-txt">Balas ke grup...</div>
+    </div>
+    <button class="cib-send" onclick="openRSVP()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- ══ RSVP SHEET ══ -->
+<div class="rsvp-overlay" id="rsvpOverlay" onclick="closeRSVP(event)">
+  <div class="rsvp-sheet">
+    <div class="rs-handle"></div>
+    <div class="rs-title">💌 Konfirmasi Kehadiran</div>
+    <div class="rs-sub">Anita & Zarda · Minggu, 24 Mei 2026 · Graha Yadika</div>
+    <div class="rs-field">
+      <div class="rs-label">Nama Lengkap</div>
+      <input type="text" class="rs-inp" placeholder="Masukkan nama Anda" id="rsName">
+    </div>
+    <div class="rs-field">
+      <div class="rs-label">Kehadiran</div>
+      <div class="rs-sel-row">
+        <button class="rs-sel-btn on" onclick="selStat('hadir',this)">✅ Hadir</button>
+        <button class="rs-sel-btn" onclick="selStat('tidak',this)">❌ Tidak Hadir</button>
+      </div>
+    </div>
+    <div class="rs-field">
+      <div class="rs-label">Jumlah Tamu</div>
+      <div class="rs-sel-row">
+        <button class="rs-sel-btn on" onclick="selGuest(1,this)">1 orang</button>
+        <button class="rs-sel-btn" onclick="selGuest(2,this)">2 orang</button>
+      </div>
+    </div>
+    <div class="rs-field">
+      <div class="rs-label">Ucapan & Doa</div>
+      <textarea class="rs-inp" placeholder="Tulis ucapan untuk Anita & Zarda..." id="rsMsg"></textarea>
+    </div>
+    <button class="rs-submit" onclick="submitRSVP()">Kirim Konfirmasi 📨</button>
+  </div>
+</div>
+
+<!-- ══ LIGHTBOX ══ -->
+<div class="lb" id="lb">
+  <div class="lb-hdr">
+    <button class="lb-back" onclick="closeLb()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
+    <div class="lb-sender">Anita & Zarda 💍</div>
+    <div class="lb-t" id="lbTime">09:00</div>
+  </div>
+  <div class="lb-main">
+    <img class="lb-img" id="lbImg" src="" alt="">
+    <button class="lb-nav prev" onclick="lbPrev()">‹</button>
+    <button class="lb-nav next" onclick="lbNext()">›</button>
+  </div>
+  <div class="lb-ftr">
+    <div class="lb-act" onclick="toast('⬇️ Foto disimpan!')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Simpan</div>
+    <div class="lb-act" onclick="toast('↗️ Dibagikan!')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>Bagikan</div>
+    <div class="lb-act" onclick="toast('⭐ Disimpan ke Favorit!')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>Favorit</div>
+    <div class="lb-act" onclick="toast('ℹ️ Informasi foto')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>Info</div>
+  </div>
+</div>
+
+</div><!-- /phone -->
+
+<div id="toast"></div>
+
+<script>
+/* ══════════════════════
+   IMAGES DATA
+══════════════════════ */
+const IMGS = [
+  {src:"https://images.unsplash.com/photo-1519741497674-611481863552?w=700&h=525&fit=crop&q=85",t:"09:00"},
+  {src:"https://images.unsplash.com/photo-1606800052052-a08af7148866?w=700&h=525&fit=crop&q=85",t:"09:15"},
+  {src:"https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=700&h=525&fit=crop&q=85",t:"09:30"},
+  {src:"https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=700&h=525&fit=crop&q=85",t:"09:45"},
+  {src:"https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=700&h=525&fit=crop&q=85",t:"10:00"},
+  {src:"https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=700&h=525&fit=crop&q=85",t:"10:15"},
+  {src:"https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=700&h=525&fit=crop&q=85",t:"10:30"},
+  {src:"https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=700&h=525&fit=crop&q=85",t:"10:45"},
+];
+
+/* ══ STATE ══ */
+let rsStatus='hadir', gCount=1;
+let infoExpanded=true;
+let lbIdx=0;
+let audioPlaying=false, audioTimer=null, audioPct=0;
+
+/* ══ SPLASH ══ */
+async function init(){
+  await sleep(2000);
+  document.getElementById('splash').classList.add('out');
+  await sleep(300);
+  document.getElementById('chanList').classList.add('show');
+}
+init();
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+
+/* ══ OPEN / CLOSE CHANNEL ══ */
+function openChan(){
+  document.getElementById('chanList').classList.add('out');
+  document.getElementById('chanView').classList.add('show');
+  setTimeout(renderPosts, 250);
+}
+function closeChan(){
+  document.getElementById('chanView').classList.remove('show');
+  setTimeout(()=>document.getElementById('chanList').classList.remove('out'),300);
+}
+
+/* ══ TOGGLE INFO ══ */
+function toggleInfo(){
+  infoExpanded=!infoExpanded;
+  document.getElementById('chanInfoCard').classList.toggle('collapsed',!infoExpanded);
+  const tog=document.getElementById('infoToggle');
+  const txt=document.getElementById('infoToggleText');
+  tog.classList.toggle('up',infoExpanded);
+  txt.textContent=infoExpanded?'Sembunyikan info':'Tampilkan info';
+}
+
+/* ══ FOLLOW ══ */
+function toggleFollow(btn){
+  const following=btn.classList.contains('following');
+  btn.classList.toggle('following',!following);
+  btn.textContent=following?'Ikuti':'Mengikuti ✓';
+  toast(following?'Channel berhenti diikuti':'✓ Mengikuti channel');
+}
+
+/* ══ NOTIFY ══ */
+function toggleNotify(btn){
+  btn.classList.toggle('done');
+  toast(btn.classList.contains('done')?'🔔 Notifikasi diaktifkan!':'🔕 Notifikasi dinonaktifkan');
+  btn.textContent=btn.classList.contains('done')?'Aktif ✓':'Aktifkan';
+}
+
+/* ══ POSTS DATA ══ */
+const POSTS = [
+  {
+    type:'announcement',
+    time:'09:00', views:'12.4K',
+    text:'<b>📢 PENGUMUMAN RESMI</b>\n\nBismillah...\n\nDengan penuh rasa syukur dan kebahagiaan, kami mengumumkan bahwa pernikahan kami akan dilangsungkan pada:\n\n📅 <b>Minggu, 24 Mei 2026</b>\n🕗 Akad Nikah · 08.00 WIB\n🎊 Resepsi · 11.00 – 13.00 WIB\n📍 Graha Yadika, Ciledug, Tangerang\n\nSemoga Allah meridhoi langkah kami 🤍',
+    reactions:[{e:'❤️',n:842,green:false},{e:'🥹',n:324,green:false},{e:'🎊',n:218,green:false},{e:'🤲',n:156,green:true}],
+  },
+  {
+    type:'photo-single',
+    time:'09:15', views:'9.8K',
+    img:0,
+    caption:'Save the Date!\n\n<b>Anita & Zarda</b> — 24 Mei 2026 💍\n\nGraha Yadika, Ciledug, Tangerang',
+    reactions:[{e:'❤️',n:712,green:false},{e:'😍',n:289,green:false},{e:'✨',n:134,green:true}],
+  },
+  {
+    type:'countdown',
+    time:'09:30', views:'11.2K',
+    reactions:[{e:'⏰',n:445,green:false},{e:'🤩',n:198,green:false}],
+  },
+  {
+    type:'album',
+    time:'09:45', views:'10.1K',
+    caption:'✨ <b>Pre-Wedding Photos</b> — Our Story\n\nKami sangat bersyukur bisa mengabadikan momen indah ini. Setiap foto menyimpan cerita yang tak ternilai 🌸',
+    reactions:[{e:'😍',n:934,green:false},{e:'❤️',n:671,green:false},{e:'👏',n:289,green:true}],
+  },
+  {
+    type:'link',
+    time:'10:00', views:'7.3K',
+    caption:'📍 <b>Informasi Venue</b>\n\nAkses lokasi lengkap dan cara menuju Graha Yadika:',
+    link:{
+      img:'https://images.unsplash.com/photo-1568667256549-094345857637?w=600&h=225&fit=crop&q=80',
+      domain:'maps.google.com',
+      title:'Graha Yadika — Jl. Palem Ganda Asri, Ciledug',
+      desc:'Gedung resepsi pernikahan di Ciledug, Tangerang. Kapasitas 500 tamu. Parkir luas tersedia.',
+    },
+    reactions:[{e:'📍',n:334,green:false},{e:'👌',n:178,green:true}],
+  },
+  {
+    type:'audio',
+    time:'10:15', views:'8.9K',
+    title:'OST Pernikahan — "Selamanya Bersamamu"',
+    dur:'3:24',
+    caption:'🎵 <b>Lagu tema pernikahan kami</b>\n\nIni adalah lagu yang akan menemani momen bersejarah kami. Semoga membawa kebaikan untuk kalian semua 🤍',
+    reactions:[{e:'🎵',n:567,green:false},{e:'❤️',n:423,green:false},{e:'😭',n:89,green:true}],
+  },
+  {
+    type:'poll',
+    time:'10:30', views:'6.8K',
+    q:'Anda berencana hadir di acara mana?',
+    opts:[
+      {e:'💍',label:'Akad Nikah (08.00)',pct:38},
+      {e:'🎊',label:'Resepsi (11.00–13.00)',pct:28},
+      {e:'🤩',label:'Keduanya!',pct:34},
+    ],
+    votes:'2.847 suara',
+    reactions:[{e:'📊',n:312,green:false},{e:'👍',n:145,green:true}],
+  },
+  {
+    type:'fwd',
+    time:'10:45', views:'5.4K',
+    from:'Anita Pangestuti 🌸',
+    text:'_"Terima kasih sudah selalu ada dan mendukung kami. Doa dari kalian adalah kekuatan terbesar kami menuju hari bahagia ini."_\n\n— Anita',
+    reactions:[{e:'🥹',n:789,green:false},{e:'❤️',n:512,green:false}],
+  },
+  {
+    type:'cta',
+    time:'11:00', views:'12.4K',
+    reactions:[{e:'💌',n:1204,green:false},{e:'✅',n:893,green:true}],
+  },
+];
+
+/* ══ RENDER POSTS ══ */
+async function renderPosts(){
+  const feed=document.getElementById('postsFeed');
+  feed.innerHTML='';
+
+  const dateEl=document.createElement('div');
+  dateEl.className='post-date';
+  dateEl.innerHTML='<span>Minggu, 24 Mei 2026</span>';
+  feed.appendChild(dateEl);
+
+  for(let i=0;i<POSTS.length;i++){
+    await sleep(i===0?100:220);
+    const p=POSTS[i];
+    const card=buildPost(p,i);
+    feed.appendChild(card);
+    feed.scrollTop=feed.scrollHeight;
+  }
+}
+
+function buildPost(p,idx){
+  const card=document.createElement('div');
+  card.className='post-card';
+  card.style.setProperty('--d',(idx*0.04)+'s');
+
+  const header=`
+    <div class="post-header">
+      <div class="post-ava"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=80&h=80&fit=crop&q=80" alt=""></div>
+      <div>
+        <div class="post-chan-name">Anita & Zarda 💍 <span class="post-chan-v"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></div>
+        <div class="post-time">${p.time}</div>
+      </div>
+      <button class="post-menu-btn" onclick="toast('⋮ Opsi postingan')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
+    </div>`;
+
+  const reactions=p.reactions?`<div class="pf-reactions">${p.reactions.map(r=>`<div class="pf-reaction${r.green?' green-r':''}" onclick="reactPost(this,'${r.e}')">${r.e}<span class="pr-count">${r.n.toLocaleString()}</span></div>`).join('')}</div>`:'<div class="pf-reactions"></div>';
+  const footer=`<div class="post-footer">${reactions}<span class="pf-views"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>${p.views}</span><button class="pf-share" onclick="toast('↗️ Postingan dibagikan!')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg></button></div>`;
+
+  if(p.type==='announcement'){
+    const fmt=p.text.replace(/\n/g,'<br>').replace(/<b>(.*?)<\/b>/g,'<b>$1</b>');
+    card.innerHTML=`${header}<div class="post-body"><div class="post-text">${fmt}</div></div>${footer}`;
+  }
+  else if(p.type==='photo-single'){
+    const fmt=p.caption.replace(/\n/g,'<br>').replace(/<b>(.*?)<\/b>/g,'<b>$1</b>');
+    card.innerHTML=`${header}
+    <div class="post-media" onclick="openLb(${p.img})">
+      <img src="${IMGS[p.img].src}" alt="" loading="lazy">
+      <div class="post-media-overlay"><div class="pmo-btn"><svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg></div></div>
+    </div>
+    <div class="post-body"><div class="post-text">${fmt}</div></div>${footer}`;
+  }
+  else if(p.type==='countdown'){
+    card.innerHTML=`${header}
+    <div class="post-countdown">
+      <div class="pcd-label">⏳ Hitung Mundur Pernikahan</div>
+      <div class="pcd-nums">
+        <div class="pcd-box"><div class="pcd-num" id="pcdD">--</div><div class="pcd-unit">Hari</div></div>
+        <div class="pcd-box"><div class="pcd-num" id="pcdH">--</div><div class="pcd-unit">Jam</div></div>
+        <div class="pcd-box"><div class="pcd-num" id="pcdM">--</div><div class="pcd-unit">Menit</div></div>
+        <div class="pcd-box"><div class="pcd-num" id="pcdS">--</div><div class="pcd-unit">Detik</div></div>
+      </div>
+    </div>${footer}`;
+    startCountdown();
+  }
+  else if(p.type==='album'){
+    const fmt=p.caption.replace(/\n/g,'<br>').replace(/<b>(.*?)<\/b>/g,'<b>$1</b>');
+    card.innerHTML=`${header}
+    <div class="post-album">
+      <div class="post-album-cell" onclick="openLb(2)"><img src="${IMGS[2].src}" alt="" loading="lazy"></div>
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <div class="post-album-cell" onclick="openLb(3)"><img src="${IMGS[3].src}" alt="" loading="lazy"></div>
+        <div class="post-album-cell" onclick="openLb(4)">
+          <img src="${IMGS[4].src}" alt="" loading="lazy">
+          <div class="more-overlay">+${IMGS.length-4}</div>
+        </div>
+      </div>
+    </div>
+    <div class="post-body"><div class="post-text">${fmt}</div></div>${footer}`;
+  }
+  else if(p.type==='link'){
+    const fmt=p.caption.replace(/\n/g,'<br>').replace(/<b>(.*?)<\/b>/g,'<b>$1</b>');
+    card.innerHTML=`${header}
+    <div class="post-body"><div class="post-text">${fmt}</div></div>
+    <div class="link-preview" onclick="window.open('https://maps.app.goo.gl/mxac1yXcYLrYQmvA6','_blank')">
+      <img class="lp-img" src="${p.link.img}" alt="" loading="lazy">
+      <div class="lp-body">
+        <div class="lp-domain">${p.link.domain}</div>
+        <div class="lp-title">${p.link.title}</div>
+        <div class="lp-desc">${p.link.desc}</div>
+      </div>
+    </div>${footer}`;
+  }
+  else if(p.type==='audio'){
+    const fmt=p.caption.replace(/\n/g,'<br>').replace(/<b>(.*?)<\/b>/g,'<b>$1</b>');
+    const wfBars=Array.from({length:32},(_,i)=>`<div class="audio-bar" style="height:${Math.random()*70+15}%" data-i="${i}"></div>`).join('');
+    card.innerHTML=`${header}
+    <div class="audio-post">
+      <button class="audio-play-btn" onclick="playAudio(this)">
+        <svg id="apPlay${idx}" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="apPause${idx}" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+      </button>
+      <div class="audio-info">
+        <div class="audio-title">${p.title}</div>
+        <div class="audio-wf">${wfBars}</div>
+        <div class="audio-dur">${p.dur}</div>
+      </div>
+    </div>
+    <div class="post-body"><div class="post-text">${fmt}</div></div>${footer}`;
+  }
+  else if(p.type==='poll'){
+    const opts=p.opts.map(o=>`
+      <div class="poll-opt-post" style="--p:${o.pct}%" onclick="votePost(this)">
+        <span class="pop-emoji">${o.e}</span>
+        <span class="pop-label">${o.label}</span>
+        <span class="pop-pct">${o.pct}%</span>
+      </div>`).join('');
+    card.innerHTML=`${header}
+    <div class="post-poll">
+      <div class="poll-q-post">📊 ${p.q}</div>
+      ${opts}
+      <div class="poll-votes-post">${p.votes} · Berakhir 23 Mei 2026</div>
+    </div>${footer}`;
+  }
+  else if(p.type==='fwd'){
+    const fmt=p.text.replace(/\n/g,'<br>').replace(/_(.*?)_/g,'<i>$1</i>');
+    card.innerHTML=`${header}
+    <div class="post-fwd">
+      <div class="fwd-lbl">💬 Pesan dari</div>
+      <div class="fwd-txt">${p.from}</div>
+    </div>
+    <div class="post-body"><div class="post-text">${fmt}</div></div>${footer}`;
+  }
+  else if(p.type==='cta'){
+    card.innerHTML=`${header}
+    <div class="post-body">
+      <div class="post-text" style="text-align:center;padding:8px 0">
+        <div style="font-size:40px;margin-bottom:12px">💌</div>
+        <b>Konfirmasi Kehadiranmu!</b>
+        Kami sangat berharap bisa merayakan momen bahagia ini bersama Anda.\n\nKlik tombol di bawah untuk mengisi RSVP.
+      </div>
+    </div>
+    <div style="padding:0 14px 12px">
+      <button onclick="openRSVP()" style="width:100%;background:var(--wa-green);color:#000;border:none;border-radius:12px;padding:14px;font-family:var(--font);font-size:16px;font-weight:800;cursor:pointer;transition:background .15s">💌 RSVP Sekarang</button>
+    </div>${footer}`;
+  }
+
+  return card;
+}
+
+/* ══ COUNTDOWN ══ */
+function startCountdown(){
+  const t=new Date('2026-05-24T08:00:00');
+  function tick(){
+    const d=t-new Date();
+    if(d<=0){['pcdD','pcdH','pcdM','pcdS'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='00'});return}
+    const vals=[Math.floor(d/86400000),Math.floor((d%86400000)/3600000),Math.floor((d%3600000)/60000),Math.floor((d%60000)/1000)];
+    ['pcdD','pcdH','pcdM','pcdS'].forEach((id,i)=>{const e=document.getElementById(id);if(e)e.textContent=String(vals[i]).padStart(2,'0')});
+  }
+  tick();setInterval(tick,1000);
+}
+
+/* ══ AUDIO ══ */
+function playAudio(btn){
+  audioPlaying=!audioPlaying;
+  const card=btn.closest('.audio-post');
+  const bars=card.querySelectorAll('.audio-bar');
+  const pi=btn.querySelector('[id^="apPlay"]'),pa=btn.querySelector('[id^="apPause"]');
+  if(audioPlaying){
+    pi.style.display='none';pa.style.display='block';
+    audioPct=0;
+    audioTimer=setInterval(()=>{
+      audioPct++;
+      const idx=Math.floor((audioPct/100)*bars.length);
+      bars.forEach((b,i)=>b.classList.toggle('lit',i<idx));
+      if(audioPct>=100){clearInterval(audioTimer);audioPlaying=false;pi.style.display='block';pa.style.display='none';bars.forEach(b=>b.classList.remove('lit'));}
+    },204);
+  } else {
+    clearInterval(audioTimer);pi.style.display='block';pa.style.display='none';
+  }
+}
+
+/* ══ REACTIONS ══ */
+function reactPost(el,emoji){
+  el.classList.toggle('liked');
+  const count=el.querySelector('.pr-count');
+  const n=parseInt(count.textContent.replace(/,/g,''));
+  const liked=el.classList.contains('liked');
+  count.textContent=(liked?n+1:n-1).toLocaleString();
+  if(liked)toast(emoji+' Reaksi ditambahkan!');
+}
+
+/* ══ POLL ══ */
+function votePost(el){
+  const opts=el.parentElement.querySelectorAll('.poll-opt-post');
+  opts.forEach(o=>o.classList.remove('voted'));
+  el.classList.add('voted');
+  toast('✅ Pilihan tercatat!');
+}
+
+/* ══ RSVP ══ */
+function openRSVP(){document.getElementById('rsvpOverlay').classList.add('open')}
+function closeRSVP(e){if(e.target.id==='rsvpOverlay')document.getElementById('rsvpOverlay').classList.remove('open')}
+function selStat(v,btn){rsStatus=v;document.querySelectorAll('.rs-sel-btn').forEach((b,i)=>{if(i<2)b.classList.toggle('on',b===btn)})}
+function selGuest(n,btn){gCount=n;document.querySelectorAll('.rs-sel-btn').forEach((b,i)=>{if(i>=2)b.classList.toggle('on',b===btn)})}
+function submitRSVP(){
+  const name=document.getElementById('rsName').value.trim();
+  if(!name){toast('Mohon isi nama terlebih dahulu');return}
+  document.getElementById('rsvpOverlay').classList.remove('open');
+  toast('💌 Konfirmasi berhasil dikirim! Terima kasih '+name+' 🎉');
+  document.getElementById('rsName').value='';
+  document.getElementById('rsMsg').value='';
+}
+
+/* ══ LIGHTBOX ══ */
+function openLb(i){
+  lbIdx=i;showLb();
+  document.getElementById('lb').classList.add('open');
+}
+function closeLb(){document.getElementById('lb').classList.remove('open')}
+function lbPrev(){lbIdx=(lbIdx-1+IMGS.length)%IMGS.length;showLb()}
+function lbNext(){lbIdx=(lbIdx+1)%IMGS.length;showLb()}
+function showLb(){
+  document.getElementById('lbImg').src=IMGS[lbIdx].src;
+  document.getElementById('lbTime').textContent=IMGS[lbIdx].t;
+}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lb').classList.contains('open'))return;
+  if(e.key==='Escape')closeLb();
+  if(e.key==='ArrowLeft')lbPrev();
+  if(e.key==='ArrowRight')lbNext();
+});
+
+/* ══ TOAST ══ */
+let _tt;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('on');
+  clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('on'),2600);
+}
+</script>
+</body>
+</html>

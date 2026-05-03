@@ -1,0 +1,1462 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Anita & Zarda · Steam Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Motiva+Sans:wght@400;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+:root{
+  --bg:        #1b2838;
+  --bg2:       #171a21;
+  --bg3:       #0e141b;
+  --surface:   #1e2a3a;
+  --card:      #16202d;
+  --card2:     #253346;
+  --border:    rgba(255,255,255,0.08);
+  --border2:   rgba(102,192,244,0.3);
+  --blue:      #66c0f4;
+  --blue2:     #1b9cdb;
+  --blue3:     #4b7898;
+  --green:     #5ba32b;
+  --green2:    #a4d007;
+  --orange:    #e8821a;
+  --text:      #c6d4df;
+  --text2:     #acb2b8;
+  --sub:       #7193a4;
+  --sub2:      #4d6f85;
+  --white:     #ffffff;
+  --font:      'Inter', 'Arial', sans-serif;
+  --nav-h:     52px;
+  --bot-h:     60px;
+}
+body{
+  background:var(--bg2);color:var(--text);
+  font-family:var(--font);overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ─── VIDEO BG ─── */
+.vid-bg{
+  position:absolute;inset:0;z-index:0;
+  overflow:hidden;pointer-events:none;
+}
+.vid-bg video{
+  width:100%;height:100%;object-fit:cover;
+  opacity:.22;filter:blur(2px) saturate(.7);
+}
+.vid-bg-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(160deg,rgba(14,20,27,.82) 0%,rgba(14,20,27,.65) 100%);
+}
+
+/* ─── OPENING / INSTALL SCREEN ─── */
+#opening{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg3);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:32px 24px;text-align:center;
+  transition:opacity .6s ease;
+  overflow:hidden;
+}
+#opening.hide{opacity:0;pointer-events:none}
+#opening > *:not(.vid-bg){position:relative;z-index:1}
+
+.steam-logo{
+  display:flex;align-items:center;gap:10px;margin:0 auto 28px;
+}
+.steam-logo svg{width:48px;height:48px}
+.steam-logo-text{
+  font-size:26px;font-weight:700;color:var(--white);letter-spacing:.02em;
+}
+
+.op-game-title{
+  font-size:clamp(28px,8vw,48px);font-weight:700;
+  color:var(--white);line-height:1;margin-bottom:6px;letter-spacing:-.01em;
+}
+.op-game-sub{
+  font-size:13px;color:var(--sub);letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:28px;font-weight:500;
+}
+
+/* game capsule image area */
+.op-capsule{
+  width:min(340px,90vw);margin:0 auto 24px;
+  border-radius:4px;overflow:hidden;position:relative;
+  border:1px solid rgba(255,255,255,.08);
+  background:linear-gradient(160deg,#1b3a5c,#0e1f30);
+  height:160px;display:flex;align-items:center;justify-content:center;
+}
+.op-capsule-title{
+  font-size:clamp(24px,7vw,40px);font-weight:700;color:var(--white);
+  text-align:center;line-height:1.1;
+  text-shadow:0 2px 20px rgba(0,0,0,.8);
+}
+.op-capsule-title span{color:var(--blue);display:block;font-size:.55em;font-weight:400;margin-bottom:4px;letter-spacing:.15em;text-transform:uppercase}
+.op-capsule-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 40%,rgba(0,0,0,.7) 100%);
+}
+.op-capsule-badge{
+  position:absolute;bottom:10px;right:10px;
+  background:var(--green);color:#fff;font-size:10px;font-weight:700;
+  padding:3px 8px;border-radius:2px;letter-spacing:.06em;
+}
+
+.op-dear{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:4px;padding:14px 20px;margin-bottom:20px;
+  width:min(340px,90vw);text-align:left;
+}
+.op-dear-label{font-size:10px;color:var(--sub);text-transform:uppercase;letter-spacing:.15em;margin-bottom:4px;font-weight:600}
+.op-dear-name{font-size:15px;font-weight:600;color:var(--white)}
+
+.op-tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:24px}
+.op-tag{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  border-radius:2px;padding:3px 10px;
+  font-size:11px;color:var(--text2);font-weight:500;
+}
+
+.op-btn{
+  background:linear-gradient(180deg,#4c6b8a,#3b5470);
+  color:var(--white);border:none;border-radius:3px;
+  padding:13px 48px;
+  font-size:15px;font-weight:700;cursor:pointer;
+  transition:all .15s;letter-spacing:.03em;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1);
+  width:min(340px,90vw);
+}
+.op-btn:hover{background:linear-gradient(180deg,#5a7fa5,#4a6885)}
+
+/* ─── TOP NAV ─── */
+.top-nav{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  background:var(--bg3);border-bottom:1px solid rgba(0,0,0,.4);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;z-index:100;
+  transform:translateY(-100%);transition:transform .4s ease .3s;
+}
+.top-nav.show{transform:translateY(0)}
+.tn-left{display:flex;align-items:center;gap:10px}
+.tn-steam-icon svg{width:22px;height:22px;opacity:.8}
+.tn-title{font-size:13px;font-weight:600;color:var(--text2);letter-spacing:.02em}
+.tn-right{display:flex;align-items:center;gap:8px}
+.tn-btn{
+  background:linear-gradient(180deg,#4c6b8a,#3b5470);
+  border:none;border-radius:2px;padding:5px 12px;
+  font-size:11px;font-weight:600;color:var(--white);
+  cursor:pointer;transition:background .15s;white-space:nowrap;
+}
+.tn-btn:hover{background:linear-gradient(180deg,#5a7fa5,#4a6885)}
+
+/* ─── BOTTOM NAV ─── */
+.bot-nav{
+  position:fixed;bottom:0;left:0;right:0;height:var(--bot-h);
+  background:var(--bg3);border-top:1px solid rgba(0,0,0,.5);
+  display:flex;align-items:center;justify-content:space-around;
+  padding:0 4px calc(env(safe-area-inset-bottom));
+  z-index:100;
+  transform:translateY(100%);transition:transform .4s ease .3s;
+}
+.bot-nav.show{transform:translateY(0)}
+.bn-item{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  color:var(--sub2);text-decoration:none;cursor:pointer;
+  transition:color .15s;padding:5px 10px;border-radius:3px;
+  font-size:10px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;
+}
+.bn-item svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bn-item:hover{color:var(--text2)}
+.bn-item.active{color:var(--blue)}
+.bn-item.active svg{stroke:var(--blue)}
+
+/* ─── MAIN ─── */
+#main{
+  opacity:0;transition:opacity .5s ease .2s;
+  padding-top:var(--nav-h);
+  padding-bottom:calc(var(--bot-h) + env(safe-area-inset-bottom));
+  background:var(--bg2);
+}
+#main.show{opacity:1}
+
+/* ─── HERO / GAME HEADER ─── */
+.game-header{
+  background:var(--bg3);padding:20px 0 0;
+  border-bottom:1px solid rgba(0,0,0,.4);
+  position:relative;overflow:hidden;
+}
+/* background blur art */
+.gh-bg{
+  position:absolute;inset:0;
+  background:linear-gradient(160deg,#1a3a5c 0%,#0d1f2f 60%,#0e141b 100%);
+  pointer-events:none;
+}
+.gh-bg::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 60%,var(--bg3) 100%);
+}
+.gh-inner{
+  position:relative;z-index:1;
+  max-width:940px;margin:0 auto;padding:0 16px;
+}
+
+/* breadcrumb */
+.gh-breadcrumb{
+  font-size:11px;color:var(--sub);margin-bottom:10px;
+  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
+}
+.gh-breadcrumb a{color:var(--blue);text-decoration:none;cursor:pointer}
+.gh-breadcrumb a:hover{text-decoration:underline}
+.gh-breadcrumb span{opacity:.5}
+
+.gh-title{
+  font-size:clamp(22px,5vw,34px);font-weight:700;
+  color:var(--white);margin-bottom:6px;line-height:1.15;
+}
+
+/* main capsule + sidebar layout */
+.gh-layout{
+  display:grid;grid-template-columns:1fr 220px;gap:16px;
+  margin-bottom:0;align-items:start;
+}
+.gh-layout > *{min-width:0}
+@media(max-width:600px){.gh-layout{grid-template-columns:1fr}}
+@media(max-width:600px){.gh-sidebar{display:none}}
+
+.gh-main{}
+.gh-capsule{
+  width:100%;border-radius:3px;overflow:hidden;
+  background:#050d14;
+  aspect-ratio:16/7;display:flex;align-items:center;justify-content:center;
+  position:relative;margin-bottom:0;
+  border:1px solid rgba(255,255,255,.06);
+}
+/* video inside capsule */
+.gh-capsule .vid-bg video{opacity:.32;filter:blur(0px) saturate(.6) brightness(.6)}
+.gh-capsule .vid-bg-overlay{
+  background:linear-gradient(160deg,rgba(14,20,27,.55) 0%,rgba(14,20,27,.4) 100%);
+}
+.gh-capsule-text{
+  font-size:clamp(28px,7vw,52px);font-weight:700;color:var(--white);
+  text-align:center;z-index:1;
+  text-shadow:0 2px 20px rgba(0,0,0,.6);
+  line-height:1;
+}
+.gh-capsule-text em{
+  display:block;font-style:normal;
+  font-size:.4em;color:var(--blue);font-weight:400;
+  letter-spacing:.2em;text-transform:uppercase;margin-bottom:8px;
+}
+/* EQ bars animation in capsule */
+.gh-capsule-eq{
+  position:absolute;bottom:0;left:0;right:0;
+  display:flex;align-items:flex-end;justify-content:center;gap:2px;
+  height:40px;opacity:.12;pointer-events:none;
+}
+.eq-b{
+  width:5px;background:var(--blue);border-radius:2px 2px 0 0;
+  animation:eq-anim var(--s,.7s) ease-in-out infinite alternate;
+}
+@keyframes eq-anim{from{height:15%}to{height:100%}}
+
+.gh-sidebar{}
+.gh-sidebar-capsule{
+  width:100%;border-radius:3px;overflow:hidden;
+  background:linear-gradient(160deg,#1a3050,#0e1f2f);
+  aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(255,255,255,.06);margin-bottom:8px;
+}
+.gh-sidebar-capsule-text{
+  font-size:18px;font-weight:700;color:var(--white);text-align:center;padding:12px;
+  line-height:1.2;
+}
+.gh-sidebar-capsule-text em{display:block;font-size:.65em;font-style:normal;color:var(--blue);margin-bottom:6px;letter-spacing:.1em;text-transform:uppercase}
+
+/* tab nav under header */
+.gh-tabs{
+  display:flex;gap:0;margin-top:16px;
+  border-top:1px solid rgba(0,0,0,.3);
+}
+.gh-tab{
+  padding:10px 16px;font-size:12px;font-weight:600;
+  color:var(--sub);cursor:pointer;text-transform:uppercase;
+  letter-spacing:.06em;border-top:2px solid transparent;
+  transition:color .15s,border-color .15s;
+  margin-top:-1px;
+}
+.gh-tab:hover{color:var(--text)}
+.gh-tab.active{color:var(--white);border-top-color:var(--blue)}
+
+/* ─── CONTENT AREA ─── */
+.content-wrap{max-width:940px;margin:0 auto;padding:20px 16px}
+
+/* two column layout */
+.content-layout{
+  display:grid;grid-template-columns:1fr 220px;gap:20px;
+  align-items:start;
+}
+.content-layout > *{min-width:0}
+@media(max-width:600px){
+  .content-layout{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .purchase-box{position:static !important}
+}
+
+/* ─── ABOUT / DESCRIPTION ─── */
+.about-section{
+  background:var(--surface);border:1px solid rgba(0,0,0,.3);
+  border-radius:3px;padding:16px;margin-bottom:16px;
+  overflow:hidden;min-width:0;
+}
+.about-section h3{
+  font-size:11px;font-weight:700;color:var(--sub);
+  text-transform:uppercase;letter-spacing:.12em;
+  margin-bottom:12px;padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+.about-text{font-size:13px;color:var(--text2);line-height:1.7}
+.about-text b{color:var(--white);font-weight:600}
+
+/* ─── TAGS ─── */
+.tags-wrap{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}
+.tag{
+  background:rgba(103,193,245,.08);border:1px solid rgba(103,193,245,.15);
+  border-radius:2px;padding:3px 9px;
+  font-size:11px;color:var(--blue);font-weight:500;
+  cursor:pointer;transition:background .15s;
+}
+.tag:hover{background:rgba(103,193,245,.16)}
+
+/* ─── REVIEW SCORE ─── */
+.review-score{
+  background:var(--surface);border:1px solid rgba(0,0,0,.3);
+  border-radius:3px;padding:16px;margin-bottom:16px;
+}
+.review-score h3{
+  font-size:11px;font-weight:700;color:var(--sub);
+  text-transform:uppercase;letter-spacing:.12em;
+  margin-bottom:12px;padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+.rs-overall{
+  display:flex;align-items:center;gap:12px;margin-bottom:12px;
+}
+.rs-label{font-size:18px;font-weight:700;color:var(--blue)}
+.rs-sub{font-size:11px;color:var(--sub);margin-top:2px}
+.rs-count{font-size:12px;color:var(--sub);margin-top:2px}
+.rs-bar-wrap{flex:1}
+.rs-bar{height:6px;background:rgba(255,255,255,.08);border-radius:1px;overflow:hidden;margin-bottom:4px}
+.rs-bar-fill{height:100%;background:var(--blue2);border-radius:1px;animation:bar-fill 1.5s ease-out forwards}
+@keyframes bar-fill{from{width:0}to{width:var(--w,95%)}}
+
+/* Review breakdown */
+.review-items{display:flex;flex-direction:column;gap:6px}
+.review-row{
+  background:var(--card);border-radius:2px;padding:8px 12px;
+  display:flex;align-items:center;gap:10px;
+  border:1px solid rgba(0,0,0,.3);
+}
+.rv-avatar{
+  width:28px;height:28px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:700;color:#fff;
+}
+.rv-name{font-size:12px;font-weight:600;color:var(--white);flex-shrink:0;min-width:80px}
+.rv-thumb{font-size:14px;flex-shrink:0}
+.rv-text{font-size:11px;color:var(--sub);line-height:1.45;flex:1}
+.rv-hours{font-size:10px;color:var(--sub2);flex-shrink:0;white-space:nowrap}
+
+/* new wish card = review style */
+.wish-review{
+  background:var(--card);border:1px solid rgba(0,0,0,.3);
+  border-radius:2px;padding:10px 12px;margin-bottom:8px;
+  opacity:0;transform:translateY(8px);transition:opacity .4s,transform .4s;
+}
+.wish-review.visible{opacity:1;transform:translateY(0)}
+.wr-header{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.wr-avatar{
+  width:26px;height:26px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;color:#fff;
+}
+.wr-name{font-size:12px;font-weight:600;color:var(--white)}
+.wr-thumb{font-size:13px}
+.wr-status{font-size:10px;color:var(--sub);margin-left:auto}
+.wr-text{font-size:12px;color:var(--text2);line-height:1.6}
+
+/* ─── COUNTDOWN ─── */
+.countdown-block{
+  background:var(--surface);border:1px solid rgba(0,0,0,.3);
+  border-radius:3px;padding:16px;margin-bottom:16px;
+  overflow:hidden;min-width:0;
+}
+.countdown-block h3{
+  font-size:11px;font-weight:700;color:var(--sub);
+  text-transform:uppercase;letter-spacing:.12em;
+  margin-bottom:12px;padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+.cd-row{display:flex;gap:8px}
+.cd-unit{
+  flex:1;background:var(--card);border:1px solid rgba(0,0,0,.3);
+  border-radius:2px;padding:12px 6px;text-align:center;
+}
+.cd-num{
+  font-size:clamp(22px,5vw,30px);font-weight:700;
+  color:var(--white);display:block;line-height:1;margin-bottom:3px;
+}
+.cd-tag{font-size:9px;color:var(--sub);text-transform:uppercase;letter-spacing:.12em;font-weight:600}
+
+/* ─── SIDEBAR PURCHASE BOX ─── */
+.purchase-box{
+  background:var(--surface);border:1px solid rgba(0,0,0,.3);
+  border-radius:3px;padding:14px;margin-bottom:14px;
+  position:sticky;top:calc(var(--nav-h) + 16px);
+}
+.pb-price{
+  font-size:22px;font-weight:700;color:var(--green2);
+  margin-bottom:4px;
+}
+.pb-original{font-size:12px;color:var(--sub);text-decoration:line-through;margin-bottom:10px}
+.pb-discount{
+  display:inline-block;background:var(--green);color:#fff;
+  font-size:11px;font-weight:700;padding:2px 7px;border-radius:2px;
+  margin-left:8px;
+}
+.pb-btn{
+  width:100%;background:linear-gradient(180deg,#4c6b8a,#3b5470);
+  color:var(--white);border:none;border-radius:3px;
+  padding:11px;font-size:14px;font-weight:700;cursor:pointer;
+  transition:all .15s;margin-bottom:8px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1);
+  letter-spacing:.03em;
+}
+.pb-btn:hover{background:linear-gradient(180deg,#5a7fa5,#4a6885)}
+.pb-btn.green{background:linear-gradient(180deg,#5ba32b,#4a8520)}
+.pb-btn.green:hover{background:linear-gradient(180deg,#6db830,#59a028)}
+.pb-divider{height:1px;background:var(--border);margin:10px 0}
+.pb-detail-row{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-bottom:6px;
+}
+.pb-detail-label{font-size:11px;color:var(--sub)}
+.pb-detail-val{font-size:11px;color:var(--text2);font-weight:600;text-align:right}
+.pb-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
+.pb-tag{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  border-radius:2px;padding:2px 8px;font-size:10px;color:var(--text2);cursor:pointer;
+}
+.pb-tag:hover{background:rgba(103,193,245,.1);border-color:rgba(103,193,245,.2);color:var(--blue)}
+
+/* system requirements styled box */
+.sysreq-box{
+  background:var(--surface);border:1px solid rgba(0,0,0,.3);
+  border-radius:3px;padding:14px;margin-bottom:14px;
+}
+.sysreq-box h4{font-size:11px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.12em;margin-bottom:10px}
+.sysreq-row{margin-bottom:7px}
+.sysreq-label{font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.08em;margin-bottom:2px}
+.sysreq-val{font-size:11px;color:var(--text2)}
+
+/* ─── SECTION HEADER ─── */
+.section-head{
+  font-size:11px;font-weight:700;color:var(--sub);
+  text-transform:uppercase;letter-spacing:.12em;
+  padding-bottom:8px;border-bottom:1px solid var(--border);
+  margin-bottom:14px;
+}
+
+/* ─── SCREENSHOTS ─── */
+.screenshots-scroll{
+  display:flex;gap:8px;overflow-x:auto;
+  scrollbar-width:thin;scrollbar-color:var(--sub2) transparent;
+  padding-bottom:6px;scroll-snap-type:x mandatory;
+  margin:0 -16px;padding-left:16px;
+  width:calc(100% + 32px);
+}
+.screenshots-scroll::-webkit-scrollbar{height:4px}
+.screenshots-scroll::-webkit-scrollbar-track{background:transparent}
+.screenshots-scroll::-webkit-scrollbar-thumb{background:var(--sub2);border-radius:2px}
+.ss-cell{
+  flex-shrink:0;width:200px;height:113px;
+  border-radius:2px;overflow:hidden;border:1px solid rgba(255,255,255,.06);
+  cursor:pointer;scroll-snap-align:start;
+  transition:border-color .15s;
+}
+.ss-cell:hover{border-color:rgba(103,193,245,.4)}
+.ss-cell img{width:100%;height:100%;object-fit:cover;filter:saturate(.85);transition:filter .2s}
+.ss-cell:hover img{filter:saturate(1)}
+
+/* ─── EVENT / DETAILS ─── */
+.details-block{
+  background:var(--surface);border:1px solid rgba(0,0,0,.3);
+  border-radius:3px;padding:16px;margin-bottom:16px;
+}
+.details-block h3{
+  font-size:11px;font-weight:700;color:var(--sub);
+  text-transform:uppercase;letter-spacing:.12em;
+  margin-bottom:14px;padding-bottom:8px;
+  border-bottom:1px solid var(--border);
+}
+.event-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.event-cards-grid{grid-template-columns:1fr}}
+.ev-card{
+  background:var(--card);border:1px solid rgba(0,0,0,.3);
+  border-radius:2px;overflow:hidden;
+}
+.ev-card-header{
+  background:linear-gradient(135deg,#1b3a5c,#152d47);
+  padding:10px 12px;border-bottom:1px solid rgba(0,0,0,.3);
+  display:flex;justify-content:space-between;align-items:center;
+}
+.ev-badge{
+  background:var(--blue2);color:#fff;
+  font-size:9px;font-weight:700;padding:2px 8px;border-radius:2px;
+  text-transform:uppercase;letter-spacing:.08em;
+}
+.ev-live{font-size:9px;color:var(--green2);font-weight:700;display:flex;align-items:center;gap:3px}
+.ev-live::before{content:'●';font-size:7px;animation:blink 1.5s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.ev-card-body{padding:12px}
+.ev-title{font-size:15px;font-weight:700;color:var(--white);margin-bottom:8px;line-height:1.2}
+.ev-row{display:flex;align-items:flex-start;gap:7px;margin-bottom:6px}
+.ev-row svg{width:12px;height:12px;stroke:var(--sub);fill:none;stroke-width:2;flex-shrink:0;margin-top:1px}
+.ev-row span{font-size:11px;color:var(--sub);line-height:1.45}
+.ev-map-btn{
+  display:inline-flex;align-items:center;gap:5px;margin-top:8px;
+  background:rgba(103,193,245,.08);border:1px solid rgba(103,193,245,.2);
+  color:var(--blue);font-size:10px;font-weight:600;
+  padding:5px 12px;border-radius:2px;text-decoration:none;transition:background .15s;
+}
+.ev-map-btn:hover{background:rgba(103,193,245,.16)}
+.ev-map-btn svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2}
+/* map mini */
+.ev-map{
+  height:56px;background:var(--bg3);
+  border-top:1px solid rgba(0,0,0,.3);
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.ev-map::before{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(rgba(103,193,245,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(103,193,245,.04) 1px,transparent 1px);
+  background-size:14px 14px;
+}
+.ev-pin{
+  width:8px;height:8px;background:var(--blue);border-radius:50%;
+  box-shadow:0 0 0 3px rgba(103,193,245,.2),0 0 0 6px rgba(103,193,245,.08);
+  z-index:1;position:relative;animation:pin-pulse 2s ease-in-out infinite;
+}
+@keyframes pin-pulse{
+  0%,100%{box-shadow:0 0 0 3px rgba(103,193,245,.2),0 0 0 6px rgba(103,193,245,.08)}
+  50%{box-shadow:0 0 0 6px rgba(103,193,245,.15),0 0 0 12px rgba(103,193,245,.04)}
+}
+
+/* ─── ACHIEVEMENTS / LOVE STORY ─── */
+.achievement-list{display:flex;flex-direction:column;gap:8px}
+.ach-item{
+  background:var(--card);border:1px solid rgba(0,0,0,.3);
+  border-radius:2px;padding:10px 12px;
+  display:flex;align-items:center;gap:12px;
+  transition:border-color .15s;
+}
+.ach-item:hover{border-color:rgba(103,193,245,.2)}
+.ach-icon{
+  width:40px;height:40px;border-radius:2px;flex-shrink:0;
+  background:linear-gradient(135deg,#1a3050,#0e1f30);
+  border:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;font-size:20px;
+}
+.ach-body{flex:1}
+.ach-name{font-size:12px;font-weight:700;color:var(--white);margin-bottom:2px}
+.ach-desc{font-size:11px;color:var(--sub);line-height:1.45}
+.ach-badge{
+  flex-shrink:0;background:rgba(164,208,7,.1);
+  border:1px solid rgba(164,208,7,.2);
+  border-radius:2px;padding:2px 8px;
+  font-size:9px;font-weight:700;color:var(--green2);
+  text-transform:uppercase;letter-spacing:.08em;
+}
+.ach-badge.plat{background:rgba(103,193,245,.1);border-color:rgba(103,193,245,.2);color:var(--blue)}
+
+/* ─── PLAYER CARDS ─── */
+.player-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+@media(max-width:480px){.player-cards{grid-template-columns:1fr}}
+.pc{
+  background:var(--card);border:1px solid rgba(0,0,0,.3);
+  border-radius:2px;text-align:center;overflow:hidden;
+}
+.pc-header{
+  background:linear-gradient(135deg,#1a3050,#0e1f30);
+  padding:14px 12px;border-bottom:1px solid rgba(0,0,0,.3);
+}
+.pc-avatar{
+  width:64px;height:64px;border-radius:50%;margin:0 auto 8px;
+  overflow:hidden;border:2px solid rgba(103,193,245,.3);
+  position:relative;
+}
+.pc-avatar img{width:100%;height:100%;object-fit:cover}
+.pc-role{font-size:9px;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.15em;margin-bottom:3px}
+.pc-name{font-size:14px;font-weight:700;color:var(--white)}
+.pc-body{padding:10px 12px}
+.pc-parents{font-size:11px;color:var(--sub);line-height:1.6}
+.pc-hours{
+  display:flex;justify-content:center;gap:12px;margin-top:10px;padding-top:8px;
+  border-top:1px solid var(--border);
+}
+.pc-stat{text-align:center}
+.pc-stat-num{font-size:14px;font-weight:700;color:var(--green2);display:block}
+.pc-stat-label{font-size:9px;color:var(--sub);text-transform:uppercase;letter-spacing:.08em}
+
+/* ─── GIFT ─── */
+.gift-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.gift-grid{grid-template-columns:1fr}}
+.gift-card{
+  background:var(--card);border:1px solid rgba(0,0,0,.3);
+  border-radius:2px;padding:14px;
+}
+.gf-label{font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.1em;margin-bottom:3px}
+.gf-bank{font-size:20px;font-weight:700;color:var(--blue);margin-bottom:3px}
+.gf-owner{font-size:11px;color:var(--sub);margin-bottom:8px}
+.gf-num{font-size:13px;font-weight:700;font-family:monospace;letter-spacing:.08em;color:var(--text);margin-bottom:10px}
+.copy-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(103,193,245,.08);border:1px solid rgba(103,193,245,.15);
+  color:var(--sub);font-size:10px;font-weight:600;
+  padding:5px 10px;border-radius:2px;cursor:pointer;transition:all .15s;
+  text-transform:uppercase;letter-spacing:.06em;
+}
+.copy-btn:hover{color:var(--blue);border-color:rgba(103,193,245,.3)}
+.copy-btn.copied{color:var(--green2);border-color:rgba(164,208,7,.3)}
+
+/* ─── RSVP ─── */
+.rsvp-stats-row{display:flex;gap:8px;margin-bottom:14px}
+.rs-stat{
+  flex:1;background:var(--card);border:1px solid rgba(0,0,0,.3);
+  border-radius:2px;padding:10px 8px;text-align:center;
+}
+.rs-num{font-size:20px;font-weight:700;color:var(--white);display:block}
+.rs-label{font-size:9px;color:var(--sub);text-transform:uppercase;letter-spacing:.1em}
+
+.rsvp-form-block{
+  background:var(--card);border:1px solid rgba(0,0,0,.3);
+  border-radius:2px;padding:14px;
+}
+.rf-field{margin-bottom:12px}
+.rf-label{display:block;font-size:10px;font-weight:700;color:var(--sub);text-transform:uppercase;letter-spacing:.12em;margin-bottom:5px}
+.rf-input{
+  width:100%;background:var(--bg);border:1px solid rgba(255,255,255,.1);
+  border-radius:2px;padding:9px 12px;color:var(--white);
+  font-family:var(--font);font-size:13px;outline:none;transition:border-color .2s;
+}
+.rf-input:focus{border-color:rgba(103,193,245,.5)}
+.rf-input::placeholder{color:var(--sub2)}
+textarea.rf-input{resize:vertical;min-height:80px;line-height:1.5}
+select.rf-input{
+  appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237193a4' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;padding-right:30px;
+}
+.att-row{display:flex;gap:6px}
+.att-btn{
+  flex:1;background:var(--bg);border:1px solid rgba(255,255,255,.1);
+  color:var(--sub);font-family:var(--font);font-size:12px;font-weight:600;
+  padding:9px;border-radius:2px;cursor:pointer;transition:all .15s;text-transform:uppercase;letter-spacing:.04em;
+}
+.att-btn.on{background:rgba(103,193,245,.1);border-color:rgba(103,193,245,.3);color:var(--blue)}
+.g-row{display:flex;gap:5px}
+.g-btn{
+  width:40px;height:36px;background:var(--bg);border:1px solid rgba(255,255,255,.1);
+  color:var(--sub);font-family:var(--font);font-size:13px;font-weight:700;
+  border-radius:2px;cursor:pointer;transition:all .15s;
+}
+.g-btn.on{background:rgba(103,193,245,.1);border-color:rgba(103,193,245,.3);color:var(--blue)}
+.rsvp-submit{
+  width:100%;
+  background:linear-gradient(180deg,#4c6b8a,#3b5470);
+  border:none;border-radius:3px;padding:12px;
+  color:var(--white);font-family:var(--font);font-size:14px;font-weight:700;
+  cursor:pointer;transition:all .15s;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.1);
+  text-transform:uppercase;letter-spacing:.06em;margin-top:4px;
+}
+.rsvp-submit:hover{background:linear-gradient(180deg,#5a7fa5,#4a6885)}
+
+/* ─── FOOTER ─── */
+.steam-footer{
+  background:var(--bg3);border-top:1px solid rgba(0,0,0,.5);
+  padding:28px 16px 20px;text-align:center;
+}
+.sf-inner{max-width:940px;margin:0 auto}
+.sf-logo{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;opacity:.5}
+.sf-logo svg{width:20px;height:20px}
+.sf-logo span{font-size:14px;font-weight:700;color:var(--text2)}
+.sf-names{font-size:clamp(20px,5vw,30px);font-weight:700;color:var(--text2);margin-bottom:8px}
+.sf-msg{font-size:12px;color:var(--sub);line-height:1.7;max-width:400px;margin:0 auto 16px}
+.sf-copy{font-size:11px;color:var(--sub2)}
+
+/* ─── FADE ANIM ─── */
+.fade-st{opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease}
+.fade-st.visible{opacity:1;transform:translateY(0)}
+
+/* ─── LIGHTBOX ─── */
+.lb{position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:9990;display:none;align-items:center;justify-content:center}
+.lb.open{display:flex}
+.lb img{max-width:94vw;max-height:88vh;border-radius:2px;object-fit:contain;border:1px solid rgba(255,255,255,.08)}
+.lb-x{position:absolute;top:16px;right:16px;background:var(--card);border:1px solid rgba(255,255,255,.1);color:var(--text);width:36px;height:36px;border-radius:2px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,.7);border:1px solid rgba(255,255,255,.1);color:var(--text);width:42px;height:56px;border-radius:2px;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.lb-nav:hover{background:rgba(255,255,255,.1)}
+.lb-prev{left:12px}.lb-next{right:12px}
+.lb-ct{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-size:12px;color:var(--sub);background:rgba(0,0,0,.6);padding:3px 12px;border-radius:2px}
+
+/* ─── TOAST ─── */
+.toast{
+  position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(12px);
+  background:var(--bg3);border:1px solid rgba(103,193,245,.3);
+  color:var(--blue);padding:8px 18px;border-radius:2px;
+  font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;
+  opacity:0;transition:opacity .25s,transform .25s;
+  pointer-events:none;white-space:nowrap;z-index:9999;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ─── OPENING ─── -->
+<div id="opening">
+  <!-- video bg -->
+  <div class="vid-bg">
+    <video id="opVid" autoplay muted loop playsinline>
+      <source src="https://cdn.coverr.co/videos/coverr-bokeh-lights-background-2032/mp4" type="video/mp4">
+      <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+    </video>
+    <div class="vid-bg-overlay"></div>
+  </div>
+  <div class="steam-logo">
+    <svg viewBox="0 0 48 48" fill="none">
+      <path d="M24 4C13 4 4 13 4 24c0 8.6 5.4 16 13.1 19l4.8-11.5c-1.9-.8-3.2-2.7-3.2-4.8 0-2.9 2.4-5.3 5.3-5.3s5.3 2.4 5.3 5.3c0 2.8-2.1 5-4.8 5.3l-4.8 11.4C21.2 43.8 22.6 44 24 44c11 0 20-9 20-20S35 4 24 4z" fill="#66c0f4"/>
+      <circle cx="24" cy="26.7" r="3.5" fill="#1b2838"/>
+    </svg>
+    <span class="steam-logo-text">Steam</span>
+  </div>
+
+  <div class="op-capsule">
+    <div class="op-capsule-overlay"></div>
+    <div class="op-capsule-title">
+      <span>The Wedding of</span>
+      Nazma &<br>Guntur
+    </div>
+    <div class="op-capsule-badge">FREE TO ATTEND</div>
+  </div>
+
+  <div class="op-game-title">Nazma & Guntur</div>
+  <p class="op-game-sub">Forever Edition · 24 Mei 2026</p>
+
+  <div class="op-dear">
+    <div class="op-dear-label">Invitation for</div>
+    <div class="op-dear-name">Ade Guntur Fitridullah & Partner</div>
+  </div>
+
+  <div class="op-tags">
+    <span class="op-tag">Wedding</span>
+    <span class="op-tag">Romance</span>
+    <span class="op-tag">Co-op</span>
+    <span class="op-tag">Family Friendly</span>
+    <span class="op-tag">Tangerang</span>
+    <span class="op-tag">2026</span>
+  </div>
+
+  <button class="op-btn" onclick="openInvitation()">Install — Buka Undangan</button>
+</div>
+
+<!-- ─── TOP NAV ─── -->
+<header class="top-nav" id="topNav">
+  <div class="tn-left">
+    <div class="tn-steam-icon">
+      <svg viewBox="0 0 48 48" fill="none">
+        <path d="M24 4C13 4 4 13 4 24c0 8.6 5.4 16 13.1 19l4.8-11.5c-1.9-.8-3.2-2.7-3.2-4.8 0-2.9 2.4-5.3 5.3-5.3s5.3 2.4 5.3 5.3c0 2.8-2.1 5-4.8 5.3l-4.8 11.4C21.2 43.8 22.6 44 24 44c11 0 20-9 20-20S35 4 24 4z" fill="#66c0f4"/>
+      </svg>
+    </div>
+    <span class="tn-title">Nazma & Guntur · Wedding Store</span>
+  </div>
+  <div class="tn-right">
+    <button class="tn-btn" onclick="document.getElementById('rsvp').scrollIntoView({behavior:'smooth'})">RSVP Now</button>
+  </div>
+</header>
+
+<!-- ─── MAIN ─── -->
+<div id="main">
+
+  <!-- ══ GAME HEADER ══ -->
+  <div class="game-header" id="home">
+    <div class="gh-bg"></div>
+    <div class="gh-inner">
+      <div class="gh-breadcrumb">
+        <a>Steam</a><span>›</span>
+        <a>Store</a><span>›</span>
+        <a>Wedding</a><span>›</span>
+        <span style="color:var(--text2)">Nazma & Guntur</span>
+      </div>
+      <div class="gh-title">Nazma & Guntur: Forever Edition</div>
+      <div class="gh-layout">
+        <div class="gh-main">
+          <div class="gh-capsule">
+            <div class="vid-bg">
+              <video id="heroVid" autoplay muted loop playsinline>
+                <source src="https://cdn.coverr.co/videos/coverr-bokeh-lights-background-2032/mp4" type="video/mp4">
+                <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4">
+              </video>
+              <div class="vid-bg-overlay"></div>
+            </div>
+            <div class="gh-capsule-eq" id="ghEq"></div>
+            <div class="gh-capsule-text">
+              <em>The Wedding of</em>
+              Nazma & Guntur
+            </div>
+          </div>
+        </div>
+        <div class="gh-sidebar">
+          <div class="gh-sidebar-capsule">
+            <div class="gh-sidebar-capsule-text">
+              <em>24 · 05 · 2026</em>
+              Nazma<br>&<br>Guntur
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="gh-tabs">
+        <div class="gh-tab active" onclick="scrollToId('home')">Beranda</div>
+        <div class="gh-tab" onclick="scrollToId('couple')">Couple</div>
+        <div class="gh-tab" onclick="scrollToId('event')">Event</div>
+        <div class="gh-tab" onclick="scrollToId('rsvp')">RSVP</div>
+        <div class="gh-tab" onclick="scrollToId('gift')">Gift</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ CONTENT ══ -->
+  <div class="content-wrap">
+    <div class="content-layout">
+
+      <!-- LEFT COLUMN -->
+      <div>
+
+        <!-- About -->
+        <div class="about-section fade-st">
+          <h3>Tentang Undangan Ini</h3>
+          <p class="about-text">
+            Dengan penuh rasa syukur dan bahagia, kami mengundang Anda untuk hadir dan menjadi bagian dari
+            <b>hari paling istimewa dalam hidup kami.</b> Bersama keluarga dan orang-orang tersayang,
+            kami akan melangsungkan pernikahan pada <b>Minggu, 24 Mei 2026</b> di Tangerang.<br><br>
+            "Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri,
+            agar kamu cenderung dan merasa tenteram kepadanya..." — <b>Surah Ar-Rum : 21</b>
+          </p>
+          <div class="tags-wrap">
+            <span class="tag">Wedding</span>
+            <span class="tag">Romance</span>
+            <span class="tag">Co-op</span>
+            <span class="tag">Multiplayer</span>
+            <span class="tag">Family Friendly</span>
+            <span class="tag">Tangerang</span>
+            <span class="tag">2026</span>
+            <span class="tag">Sakinah</span>
+            <span class="tag">Mawaddah</span>
+            <span class="tag">Warahmah</span>
+          </div>
+        </div>
+
+        <!-- Countdown -->
+        <div class="countdown-block fade-st">
+          <h3>⏱ Early Access — Menuju Hari Istimewa</h3>
+          <div class="cd-row">
+            <div class="cd-unit"><span class="cd-num" id="cdD">--</span><span class="cd-tag">Hari</span></div>
+            <div class="cd-unit"><span class="cd-num" id="cdH">--</span><span class="cd-tag">Jam</span></div>
+            <div class="cd-unit"><span class="cd-num" id="cdM">--</span><span class="cd-tag">Menit</span></div>
+            <div class="cd-unit"><span class="cd-num" id="cdS">--</span><span class="cd-tag">Detik</span></div>
+          </div>
+        </div>
+
+        <!-- Screenshots -->
+        <div class="about-section fade-st">
+          <h3>📸 Screenshots</h3>
+          <div class="screenshots-scroll" id="screenshots"></div>
+        </div>
+
+        <!-- Couple -->
+        <div class="about-section fade-st" id="couple">
+          <h3>👫 Character Profiles</h3>
+          <div class="player-cards">
+            <div class="pc">
+              <div class="pc-header">
+                <div class="pc-avatar" id="nazmAv" style="background:linear-gradient(135deg,#1b3a5c,#0e2540);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:var(--blue);letter-spacing:0">
+                  N
+                  <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&h=200&fit=crop&q=80" alt="Nazma" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.style.display='none'">
+                </div>
+                <div class="pc-role">Mempelai Wanita</div>
+                <div class="pc-name">Nazma</div>
+              </div>
+              <div class="pc-body">
+                <p class="pc-parents">Putri Pertama dari<br><b style="color:var(--text)">Bpk. Taryono &<br>Ibu Wiwit Jayanti</b></p>
+                <div class="pc-hours">
+                  <div class="pc-stat"><span class="pc-stat-num">∞</span><span class="pc-stat-label">Love hrs</span></div>
+                  <div class="pc-stat"><span class="pc-stat-num">P1</span><span class="pc-stat-label">Player</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="pc">
+              <div class="pc-header">
+                <div class="pc-avatar" style="background:linear-gradient(135deg,#1b3a5c,#0e2540);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:var(--blue)">
+                  G
+                  <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Guntur" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.style.display='none'">
+                </div>
+                <div class="pc-role">Mempelai Pria</div>
+                <div class="pc-name">Guntur</div>
+              </div>
+              <div class="pc-body">
+                <p class="pc-parents">Putra Kedua dari<br><b style="color:var(--text)">Bpk. Wan Sabran, M.MAR &<br>Ibu Titik Sundari, M.Si</b></p>
+                <div class="pc-hours">
+                  <div class="pc-stat"><span class="pc-stat-num">∞</span><span class="pc-stat-label">Love hrs</span></div>
+                  <div class="pc-stat"><span class="pc-stat-num">P2</span><span class="pc-stat-label">Player</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Event -->
+        <div class="details-block fade-st" id="event">
+          <h3>📍 Event Details</h3>
+          <div class="event-cards-grid">
+            <div class="ev-card">
+              <div class="ev-card-header">
+                <span class="ev-badge">Akad Nikah</span>
+                <span class="ev-live">Live</span>
+              </div>
+              <div class="ev-card-body">
+                <div class="ev-title">Minggu, 24 Mei 2026</div>
+                <div class="ev-row">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span>08.00 WIB</span>
+                </div>
+                <div class="ev-row">
+                  <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                  <span>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span>
+                </div>
+                <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-map-btn">
+                  <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+                  Google Maps
+                </a>
+              </div>
+              <div class="ev-map"><div class="ev-pin"></div></div>
+            </div>
+            <div class="ev-card">
+              <div class="ev-card-header">
+                <span class="ev-badge">Resepsi</span>
+                <span class="ev-live">Live</span>
+              </div>
+              <div class="ev-card-body">
+                <div class="ev-title">Minggu, 24 Mei 2026</div>
+                <div class="ev-row">
+                  <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span>11.00 – 13.00 WIB</span>
+                </div>
+                <div class="ev-row">
+                  <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                  <span>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span>
+                </div>
+                <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-map-btn">
+                  <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+                  Google Maps
+                </a>
+              </div>
+              <div class="ev-map"><div class="ev-pin"></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Achievements / Love Story -->
+        <div class="about-section fade-st">
+          <h3>🏆 Achievements — Our Love Story</h3>
+          <div class="achievement-list">
+            <div class="ach-item">
+              <div class="ach-icon">🎳</div>
+              <div class="ach-body">
+                <div class="ach-name">First Encounter</div>
+                <div class="ach-desc">Juni 2025 · Tawa, bowling, sushi, dan es krim — saksi awal kisah kami.</div>
+              </div>
+              <div class="ach-badge">Gold</div>
+            </div>
+            <div class="ach-item">
+              <div class="ach-icon">💍</div>
+              <div class="ach-body">
+                <div class="ach-name">The Proposal</div>
+                <div class="ach-desc">November 2025 · Di hadapan keluarga, janji pertama menuju masa depan bersama.</div>
+              </div>
+              <div class="ach-badge">Gold</div>
+            </div>
+            <div class="ach-item">
+              <div class="ach-icon">🤍</div>
+              <div class="ach-body">
+                <div class="ach-name">Forever Mode Unlocked</div>
+                <div class="ach-desc">Mei 2026 · Dalam ikatan suci, berjanji untuk saling menjaga selamanya.</div>
+              </div>
+              <div class="ach-badge plat">Platinum</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Customer Reviews / Wishes -->
+        <div class="review-score fade-st">
+          <h3>⭐ Customer Reviews</h3>
+          <div class="rs-overall">
+            <div>
+              <div class="rs-label">Overwhelmingly Positive</div>
+              <div class="rs-count">Berdasarkan <b style="color:var(--white)" id="revCount">3</b> ulasan</div>
+            </div>
+            <div class="rs-bar-wrap">
+              <div class="rs-bar"><div class="rs-bar-fill" style="--w:98%"></div></div>
+              <div style="font-size:10px;color:var(--sub)">98% positive</div>
+            </div>
+          </div>
+          <div class="review-items" id="wishesList">
+            <div class="wish-review visible">
+              <div class="wr-header">
+                <div class="wr-avatar" style="background:#c4a96a">A</div>
+                <span class="wr-name">Ayu Rahmawati</span>
+                <span class="wr-thumb">👍</span>
+                <span class="wr-status">Hadir · 2 tamu</span>
+              </div>
+              <p class="wr-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu Nazma & Guntur! 🌿</p>
+            </div>
+            <div class="wish-review visible">
+              <div class="wr-header">
+                <div class="wr-avatar" style="background:#4a9eff">R</div>
+                <span class="wr-name">Reza Firmansyah</span>
+                <span class="wr-thumb">👍</span>
+                <span class="wr-status">Hadir · 1 tamu</span>
+              </div>
+              <p class="wr-text">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan kebahagiaan yang tidak pernah habis. Aamiin!</p>
+            </div>
+            <div class="wish-review visible">
+              <div class="wr-header">
+                <div class="wr-avatar" style="background:#ff6b6b">S</div>
+                <span class="wr-name">Sinta Dewi</span>
+                <span class="wr-thumb">👍</span>
+                <span class="wr-status">Hadir · 2 tamu</span>
+              </div>
+              <p class="wr-text">Wishing you both a lifetime of love and laughter. Semoga langkah kalian selalu diberkahi Allah SWT 💚</p>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /left -->
+
+      <!-- RIGHT COLUMN / SIDEBAR -->
+      <div>
+        <div class="purchase-box fade-st">
+          <div style="font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;font-weight:700">Special Offer</div>
+          <div class="pb-price">FREE <span class="pb-discount">HADIR</span></div>
+          <div class="pb-original">Priceless Memory</div>
+          <button class="pb-btn green" onclick="document.getElementById('rsvp').scrollIntoView({behavior:'smooth'})">Konfirmasi Kehadiran</button>
+          <button class="pb-btn" onclick="document.getElementById('gift').scrollIntoView({behavior:'smooth'})">Kirim Kado Digital</button>
+          <div class="pb-divider"></div>
+          <div class="pb-detail-row">
+            <span class="pb-detail-label">Tanggal</span>
+            <span class="pb-detail-val">24 Mei 2026</span>
+          </div>
+          <div class="pb-detail-row">
+            <span class="pb-detail-label">Akad</span>
+            <span class="pb-detail-val">08.00 WIB</span>
+          </div>
+          <div class="pb-detail-row">
+            <span class="pb-detail-label">Resepsi</span>
+            <span class="pb-detail-val">11.00–13.00</span>
+          </div>
+          <div class="pb-detail-row">
+            <span class="pb-detail-label">Lokasi</span>
+            <span class="pb-detail-val">Graha Yadika,<br>Tangerang</span>
+          </div>
+          <div class="pb-detail-row">
+            <span class="pb-detail-label">Players</span>
+            <span class="pb-detail-val">2 (Co-op)</span>
+          </div>
+          <div class="pb-divider"></div>
+          <div class="pb-tags">
+            <span class="pb-tag">Wedding</span>
+            <span class="pb-tag">Romance</span>
+            <span class="pb-tag">Co-op</span>
+            <span class="pb-tag">2026</span>
+            <span class="pb-tag">Forever</span>
+          </div>
+        </div>
+
+        <!-- System Requirements style box for RSVP stats -->
+        <div class="sysreq-box fade-st">
+          <h4>📊 Lobby Stats</h4>
+          <div class="sysreq-row">
+            <div class="sysreq-label">Respons</div>
+            <div class="sysreq-val" id="sbRes">7 tamu</div>
+          </div>
+          <div class="sysreq-row">
+            <div class="sysreq-label">Hadir</div>
+            <div class="sysreq-val" id="sbHadir">7 konfirmasi</div>
+          </div>
+          <div class="sysreq-row">
+            <div class="sysreq-label">Total Tamu</div>
+            <div class="sysreq-val" id="sbTamu">13 orang</div>
+          </div>
+          <div class="sysreq-row">
+            <div class="sysreq-label">Review</div>
+            <div class="sysreq-val" style="color:var(--blue)">Overwhelmingly<br>Positive</div>
+          </div>
+        </div>
+      </div><!-- /right -->
+
+    </div><!-- /content-layout -->
+
+    <!-- RSVP — full width -->
+    <div class="about-section fade-st" id="rsvp" style="margin-top:0">
+      <h3>📝 Write a Review — RSVP</h3>
+      <div class="rsvp-stats-row">
+        <div class="rs-stat"><span class="rs-num" id="rsRes">7</span><span class="rs-label">Respons</span></div>
+        <div class="rs-stat"><span class="rs-num" id="rsHadir">7</span><span class="rs-label">Hadir</span></div>
+        <div class="rs-stat"><span class="rs-num" id="rsTamu">13</span><span class="rs-label">Total Tamu</span></div>
+      </div>
+      <div class="rsvp-form-block">
+        <div class="rf-field">
+          <label class="rf-label">Username / Nama</label>
+          <input class="rf-input" id="rName" type="text" placeholder="Nama lengkap Anda">
+        </div>
+        <div class="rf-field">
+          <label class="rf-label">Kehadiran</label>
+          <div class="att-row">
+            <button class="att-btn on" onclick="setAtt('hadir',this)">👍 Hadir</button>
+            <button class="att-btn" onclick="setAtt('tidak',this)">👎 Tidak Hadir</button>
+          </div>
+        </div>
+        <div class="rf-field">
+          <label class="rf-label">Jumlah Tamu</label>
+          <div class="g-row">
+            <button class="g-btn on" onclick="setGuest(1,this)">1</button>
+            <button class="g-btn" onclick="setGuest(2,this)">2</button>
+            <button class="g-btn" onclick="setGuest(3,this)">3</button>
+            <button class="g-btn" onclick="setGuest(4,this)">4+</button>
+          </div>
+        </div>
+        <div class="rf-field">
+          <label class="rf-label">Review / Ucapan & Doa</label>
+          <textarea class="rf-input" id="rMsg" placeholder="Tulis ucapan untuk Nazma & Guntur..."></textarea>
+        </div>
+        <button class="rsvp-submit" onclick="submitRSVP()">Submit Review & Konfirmasi</button>
+      </div>
+    </div>
+
+    <!-- GIFT — full width -->
+    <div class="about-section fade-st" id="gift">
+      <h3>🎁 DLC — Amplop Digital</h3>
+      <p style="font-size:13px;color:var(--sub);margin-bottom:14px;line-height:1.6">Doa restu sudah sangat cukup. Namun jika ingin memberi tanda kasih, kami menerimanya dengan senang hati 🤍</p>
+      <div class="gift-grid">
+        <div class="gift-card">
+          <div class="gf-label">Bank</div>
+          <div class="gf-bank">BCA</div>
+          <div class="gf-owner">Guntur Fitridullah</div>
+          <div class="gf-num">8210 3705 61</div>
+          <button class="copy-btn" onclick="copyNum('8210370561',this)">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="gift-card">
+          <div class="gf-label">Bank</div>
+          <div class="gf-bank">BNI</div>
+          <div class="gf-owner">Nazma</div>
+          <div class="gf-num">1192 9784 03</div>
+          <button class="copy-btn" onclick="copyNum('1192978403',this)">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copy
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content-wrap -->
+
+  <!-- ══ FOOTER ══ -->
+  <div class="steam-footer">
+    <div class="sf-inner">
+      <div class="sf-logo">
+        <svg viewBox="0 0 48 48" fill="none"><path d="M24 4C13 4 4 13 4 24c0 8.6 5.4 16 13.1 19l4.8-11.5c-1.9-.8-3.2-2.7-3.2-4.8 0-2.9 2.4-5.3 5.3-5.3s5.3 2.4 5.3 5.3c0 2.8-2.1 5-4.8 5.3l-4.8 11.4C21.2 43.8 22.6 44 24 44c11 0 20-9 20-20S35 4 24 4z" fill="#66c0f4"/></svg>
+        <span>Steam Wedding Store</span>
+      </div>
+      <div class="sf-names">Nazma & Guntur</div>
+      <p class="sf-msg">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu kepada kami.</p>
+      <p style="font-size:13px;color:var(--sub);margin-bottom:8px">Kami yang berbahagia,<br><b style="color:var(--text)">Nazma & Guntur</b></p>
+      <div style="height:1px;background:rgba(255,255,255,.06);margin:16px 0"></div>
+      <p class="sf-copy">© 2026 Nazma & Guntur Wedding. All rights reserved.</p>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ─── BOTTOM NAV ─── -->
+<nav class="bot-nav" id="botNav">
+  <a href="#home" class="bn-item active" onclick="setNav(this)">
+    <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
+  </a>
+  <a href="#couple" class="bn-item" onclick="setNav(this)">
+    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    Couple
+  </a>
+  <a href="#event" class="bn-item" onclick="setNav(this)">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    Event
+  </a>
+  <a href="#gift" class="bn-item" onclick="setNav(this)">
+    <svg viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+    Gift
+  </a>
+  <a href="#rsvp" class="bn-item" onclick="setNav(this)">
+    <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+    RSVP
+  </a>
+</nav>
+
+<!-- ─── LIGHTBOX ─── -->
+<div class="lb" id="lb">
+  <button class="lb-x" onclick="closeLB()">✕</button>
+  <button class="lb-nav lb-prev" onclick="navLB(-1)">‹</button>
+  <img id="lbImg" src="" alt="">
+  <button class="lb-nav lb-next" onclick="navLB(1)">›</button>
+  <div class="lb-ct" id="lbCt"></div>
+</div>
+
+<!-- ─── TOAST ─── -->
+<div class="toast" id="toast"></div>
+
+<script>
+const IMGS=[
+  "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=338&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&h=338&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=338&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&h=338&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=600&h=338&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=600&h=338&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=600&h=338&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=338&fit=crop&q=80",
+];
+
+let attStatus='hadir',guestCount=1,lbIdx=0,toastTO;
+
+function openInvitation(){
+  document.getElementById('opening').classList.add('hide');
+  setTimeout(()=>{
+    document.getElementById('main').classList.add('show');
+    document.getElementById('topNav').classList.add('show');
+    document.getElementById('botNav').classList.add('show');
+    initAll();
+  },350);
+}
+
+// Start opening video immediately on page load
+window.addEventListener('DOMContentLoaded',()=>{
+  const BOKEH=[
+    "https://assets.mixkit.co/videos/preview/mixkit-bokeh-lights-1118-large.mp4",
+    "https://cdn.coverr.co/videos/coverr-bokeh-lights-background-2032/mp4",
+    "https://cdn.coverr.co/videos/coverr-blurred-lights-4980/mp4",
+    "https://www.w3schools.com/html/mov_bbb.mp4"
+  ];
+  const v=document.getElementById('opVid');
+  if(!v)return;
+  let i=0;
+  function tryNext(){
+    if(i>=BOKEH.length)return;
+    v.src=BOKEH[i++];
+    v.load();
+    v.play().catch(()=>{setTimeout(tryNext,300)});
+  }
+  v.addEventListener('error',()=>setTimeout(tryNext,200));
+  tryNext();
+});
+
+function initAll(){
+  buildScreenshots();
+  buildEqBars();
+  startCountdown();
+  initScroll();
+  initNavObs();
+  initVideos();
+}
+
+/* ── VIDEO INIT ── */
+function initVideos(){
+  // Bokeh video sources — try multiple CDNs for reliability
+  const SOURCES = [
+    "https://cdn.coverr.co/videos/coverr-bokeh-lights-background-2032/mp4",
+    "https://assets.mixkit.co/videos/preview/mixkit-bokeh-lights-1118-large.mp4",
+    "https://cdn.coverr.co/videos/coverr-blurred-lights-4980/mp4",
+    "https://www.w3schools.com/html/mov_bbb.mp4"
+  ];
+  ['opVid','heroVid'].forEach(id=>{
+    const v=document.getElementById(id);
+    if(!v)return;
+    let tried=0;
+    function tryNext(){
+      if(tried>=SOURCES.length)return;
+      v.src=SOURCES[tried++];
+      v.load();
+      v.play().catch(()=>tryNext());
+    }
+    v.addEventListener('error',tryNext,{once:false});
+    tryNext();
+  });
+}
+
+function buildScreenshots(){
+  const w=document.getElementById('screenshots');
+  IMGS.forEach((src,i)=>{
+    const el=document.createElement('div');
+    el.className='ss-cell';
+    el.innerHTML=`<img src="${src}" loading="lazy" alt="Screenshot ${i+1}">`;
+    el.onclick=()=>openLB(i);
+    w.appendChild(el);
+  });
+}
+
+function buildEqBars(){
+  const wrap=document.getElementById('ghEq');
+  for(let i=0;i<40;i++){
+    const b=document.createElement('div');
+    b.className='eq-b';
+    b.style.cssText=`--s:${(.4+Math.random()*.8).toFixed(2)}s;animation-delay:${(Math.random()*.5).toFixed(2)}s;height:${(Math.random()*60+20)}%`;
+    wrap.appendChild(b);
+  }
+}
+
+function startCountdown(){
+  const t=new Date('2026-05-24T08:00:00');
+  const tick=()=>{
+    const d=t-new Date();
+    if(d<=0){['cdD','cdH','cdM','cdS'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='00'});return;}
+    const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=String(v).padStart(2,'0')};
+    set('cdD',Math.floor(d/86400000));
+    set('cdH',Math.floor((d%86400000)/3600000));
+    set('cdM',Math.floor((d%3600000)/60000));
+    set('cdS',Math.floor((d%60000)/1000));
+  };
+  tick();setInterval(tick,1000);
+}
+
+function initScroll(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+  },{threshold:.08});
+  document.querySelectorAll('.fade-st,.wish-review').forEach(el=>obs.observe(el));
+}
+
+function initNavObs(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(!e.isIntersecting)return;
+      document.querySelectorAll('.bn-item').forEach(n=>n.classList.remove('active'));
+      const a=document.querySelector(`.bn-item[href="#${e.target.id}"]`);
+      if(a)a.classList.add('active');
+    });
+  },{rootMargin:'-30% 0px -60% 0px'});
+  ['home','couple','event','gift','rsvp'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el)});
+}
+
+function setNav(el){
+  setTimeout(()=>{
+    document.querySelectorAll('.bn-item').forEach(n=>n.classList.remove('active'));
+    el.classList.add('active');
+  },100);
+}
+
+function scrollToId(id){
+  const el=document.getElementById(id);
+  if(el)el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function setAtt(val,btn){
+  attStatus=val;
+  document.querySelectorAll('.att-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+function setGuest(n,btn){
+  guestCount=n;
+  document.querySelectorAll('.g-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function submitRSVP(){
+  const name=document.getElementById('rName').value.trim();
+  if(!name){showToast('Please enter your name');return;}
+  const msg=document.getElementById('rMsg').value.trim();
+  const inits=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const colors=['#c4a96a','#4a9eff','#ff6b6b','#5ba32b','#a070ff','#66c0f4'];
+  const color=colors[Math.floor(Math.random()*colors.length)];
+  const stText=attStatus==='hadir'?`Hadir · ${guestCount} tamu`:'Tidak Hadir';
+  const thumb=attStatus==='hadir'?'👍':'👎';
+
+  const card=document.createElement('div');
+  card.className='wish-review';
+  card.innerHTML=`<div class="wr-header"><div class="wr-avatar" style="background:${color}">${inits}</div><span class="wr-name">${name}</span><span class="wr-thumb">${thumb}</span><span class="wr-status">${stText}</span></div><p class="wr-text">${msg||'Selamat dan semoga bahagia selalu! 🤍'}</p>`;
+  document.getElementById('wishesList').prepend(card);
+  setTimeout(()=>card.classList.add('visible'),50);
+
+  // update all stat elements
+  const addTo=(ids,n=1)=>ids.forEach(id=>{const el=document.getElementById(id);if(el){const v=parseInt(el.textContent)||parseInt(el.textContent);el.textContent=isNaN(v)?n:v+n}});
+  ['rsRes'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=parseInt(el.textContent)+1});
+  const rc=document.getElementById('revCount');if(rc)rc.textContent=parseInt(rc.textContent)+1;
+  const sbr=document.getElementById('sbRes');if(sbr)sbr.textContent=(parseInt(sbr.textContent)+1)+' tamu';
+
+  if(attStatus==='hadir'){
+    ['rsHadir'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=parseInt(el.textContent)+1});
+    ['rsTamu'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=parseInt(el.textContent)+guestCount});
+    const sbh=document.getElementById('sbHadir');if(sbh)sbh.textContent=(parseInt(sbh.textContent)+1)+' konfirmasi';
+    const sbt=document.getElementById('sbTamu');if(sbt)sbt.textContent=(parseInt(sbt.textContent)+guestCount)+' orang';
+  }
+
+  document.getElementById('rName').value='';
+  document.getElementById('rMsg').value='';
+  showToast('Review submitted! Terima kasih 🎉');
+}
+
+function copyNum(text,btn){
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.classList.add('copied');
+    btn.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Copied!';
+    showToast('Nomor rekening tersalin!');
+    setTimeout(()=>{
+      btn.classList.remove('copied');
+      btn.innerHTML='<svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy';
+    },2500);
+  }).catch(()=>showToast('Salin: '+text));
+}
+
+function openLB(i){lbIdx=i;renderLB();document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden'}
+function closeLB(){document.getElementById('lb').classList.remove('open');document.body.style.overflow=''}
+function navLB(d){lbIdx=(lbIdx+d+IMGS.length)%IMGS.length;renderLB()}
+function renderLB(){document.getElementById('lbImg').src=IMGS[lbIdx];document.getElementById('lbCt').textContent=`${lbIdx+1} / ${IMGS.length}`}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lb').classList.contains('open'))return;
+  if(e.key==='Escape')closeLB();
+  if(e.key==='ArrowLeft')navLB(-1);
+  if(e.key==='ArrowRight')navLB(1);
+});
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTO);
+  toastTO=setTimeout(()=>t.classList.remove('show'),2800);
+}
+</script>
+</body>
+</html>

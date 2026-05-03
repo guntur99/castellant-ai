@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anita & Zarda — Mobile Legends Wedding</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;500;700;900&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --ml-gold:     #C8922A;
+  --ml-gold2:    #E5B347;
+  --ml-gold3:    #FFD878;
+  --ml-gold4:    #FFF0AA;
+  --ml-red:      #CC1A1A;
+  --ml-red2:     #E83030;
+  --ml-blue:     #1A3A8C;
+  --ml-blue2:    #2255CC;
+  --ml-blue3:    #5599FF;
+  --ml-cyan:     #00CCFF;
+  --ml-purple:   #6622CC;
+  --ml-purple2:  #9944EE;
+  --ml-dark:     #080810;
+  --ml-dark2:    #0E0E1C;
+  --ml-dark3:    #161628;
+  --ml-dark4:    #1E1E34;
+  --ml-card:     rgba(255,255,255,.05);
+  --ml-border:   rgba(200,146,42,.25);
+  --ml-border2:  rgba(200,146,42,.5);
+  --ml-gray:     #8888AA;
+  --ml-gray2:    #555570;
+  --ml-white:    #F0EEFF;
+
+  --cin:   'Cinzel', serif;
+  --raj:   'Rajdhani', sans-serif;
+  --orb:   'Orbitron', sans-serif;
+  --crim:  'Crimson Text', serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ml-dark);
+  color:var(--ml-white);
+  font-family:var(--raj);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ── CURSOR — RETICLE ── */
+#cur{
+  width:22px;height:22px;
+  position:fixed;z-index:99999;
+  pointer-events:none;
+  transform:translate(-50%,-50%);
+}
+#cur::before,#cur::after{content:'';position:absolute;background:var(--ml-gold2)}
+#cur::before{left:50%;top:2px;bottom:2px;width:1.5px;transform:translateX(-50%)}
+#cur::after{top:50%;left:2px;right:2px;height:1.5px;transform:translateY(-50%)}
+#cur-circle{
+  position:fixed;z-index:99998;
+  width:22px;height:22px;
+  border:1.5px solid rgba(200,146,42,.5);
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  transition:left .08s,top .08s;
+}
+
+/* ════════════════════════════════════
+   ML DECORATIVE ELEMENTS
+════════════════════════════════════ */
+/* Gold ornament corner bracket */
+.corner-tl::before,.corner-tl::after,
+.corner-br::before,.corner-br::after{
+  content:'';position:absolute;
+  width:16px;height:16px;
+}
+.corner-tl::before{top:0;left:0;border-top:2px solid var(--ml-gold);border-left:2px solid var(--ml-gold)}
+.corner-tl::after{bottom:0;right:0;border-bottom:2px solid var(--ml-gold);border-right:2px solid var(--ml-gold)}
+
+/* Glowing divider */
+.ml-divider{
+  display:flex;align-items:center;gap:12px;
+  margin:20px 0;
+}
+.ml-divider-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--ml-gold),transparent)}
+.ml-divider-gem{
+  width:8px;height:8px;
+  background:var(--ml-gold2);
+  clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+  box-shadow:0 0 8px var(--ml-gold2);
+  flex-shrink:0;
+}
+
+/* ════════════════════════════════════
+   OPENING — MATCH LOADING SCREEN
+════════════════════════════════════ */
+#opening{
+  position:fixed;inset:0;z-index:9990;
+  background:var(--ml-dark);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:24px;
+  overflow:hidden;
+  transition:opacity .8s ease;
+}
+#opening.hide{opacity:0;pointer-events:none}
+
+/* Video bg */
+.op-video{
+  position:absolute;inset:0;
+  width:100%;height:100%;object-fit:cover;z-index:0;
+  opacity:0;transition:opacity 2.5s ease;
+  filter:saturate(.12) brightness(.3) contrast(1.2) hue-rotate(220deg);
+}
+.op-video.show{opacity:1}
+
+/* Overlays */
+.op-ov{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 100% 100% at 50% 50%,rgba(8,8,16,.4) 0%,rgba(8,8,16,.9) 100%),
+    linear-gradient(180deg,rgba(8,8,16,.85) 0%,rgba(8,8,16,.3) 40%,rgba(8,8,16,.3) 60%,rgba(8,8,16,.9) 100%);
+}
+.op-ov-purple{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 60% 50% at 50% 60%,rgba(102,34,204,.12) 0%,transparent 70%);
+}
+.op-scan{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:repeating-linear-gradient(
+    0deg,transparent 0,transparent 3px,rgba(0,0,0,.05) 3px,rgba(0,0,0,.05) 4px
+  );
+}
+
+/* Rune particles */
+.op-runes{position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.rune{
+  position:absolute;
+  font-family:var(--cin);
+  font-size:clamp(10px,2vw,16px);
+  color:rgba(200,146,42,.15);
+  animation:runeFloat linear infinite;
+  user-select:none;
+}
+@keyframes runeFloat{
+  0%{opacity:0;transform:translateY(0) rotate(0deg)}
+  15%{opacity:1}
+  85%{opacity:.8}
+  100%{opacity:0;transform:translateY(-80px) rotate(20deg)}
+}
+
+/* Sound hint */
+.op-sound{
+  position:absolute;bottom:52px;right:20px;z-index:3;
+  font-family:var(--orb);font-size:8px;letter-spacing:.2em;
+  color:rgba(200,146,42,.35);
+  display:flex;align-items:center;gap:6px;
+  opacity:0;transition:opacity .4s ease 3s;
+}
+.op-sound.show{opacity:1}
+.op-sound-bars{display:flex;align-items:flex-end;gap:2px;height:12px}
+.osb{width:2px;background:rgba(200,146,42,.5);border-radius:1px;
+  animation:osbA var(--d,.5s) ease-in-out infinite alternate}
+@keyframes osbA{from{height:2px}to{height:100%}}
+
+.op-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
+
+/* ML Logo mark */
+.op-emblem{
+  width:80px;height:80px;margin:0 auto 20px;
+  position:relative;
+  opacity:0;animation:fadeUp .7s ease .2s forwards;
+}
+.op-emblem svg{width:100%;height:100%}
+
+/* Title */
+.op-pretitle{
+  font-family:var(--orb);font-size:9px;letter-spacing:.5em;
+  color:var(--ml-gold);text-transform:uppercase;
+  margin-bottom:10px;
+  opacity:0;animation:fadeUp .6s ease .5s forwards;
+}
+.op-title{
+  font-family:var(--cin);
+  font-size:clamp(40px,10vw,80px);
+  font-weight:900;line-height:.95;
+  letter-spacing:.04em;margin-bottom:8px;
+  opacity:0;animation:fadeUp .8s ease .7s forwards;
+}
+.op-title .gold{
+  background:linear-gradient(180deg,var(--ml-gold3) 0%,var(--ml-gold) 50%,#7A5010 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 20px rgba(200,146,42,.5));
+}
+.op-title .white{color:var(--ml-white)}
+.op-tagline{
+  font-family:var(--raj);font-size:12px;font-weight:600;
+  letter-spacing:.3em;color:var(--ml-gray);
+  text-transform:uppercase;margin-bottom:32px;
+  opacity:0;animation:fadeUp .6s ease .9s forwards;
+}
+
+/* Scroll / Dear */
+.op-scroll{
+  background:rgba(200,146,42,.07);
+  border:1px solid var(--ml-border2);
+  padding:18px 32px;max-width:400px;width:100%;
+  margin-bottom:32px;position:relative;
+  opacity:0;animation:fadeUp .7s ease 1.1s forwards;
+}
+.op-scroll::before,.op-scroll::after{
+  content:'';position:absolute;width:14px;height:14px;
+}
+.op-scroll::before{top:4px;left:4px;border-top:2px solid var(--ml-gold);border-left:2px solid var(--ml-gold)}
+.op-scroll::after{bottom:4px;right:4px;border-bottom:2px solid var(--ml-gold);border-right:2px solid var(--ml-gold)}
+.op-scroll-label{
+  font-family:var(--orb);font-size:8px;letter-spacing:.3em;
+  color:var(--ml-gold);text-transform:uppercase;margin-bottom:8px;
+}
+.op-scroll-name{
+  font-family:var(--cin);font-size:clamp(15px,3.5vw,19px);
+  font-weight:600;color:var(--ml-white);letter-spacing:.06em;
+}
+
+/* Battle button */
+.op-btn{
+  display:inline-flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,#8B5A00,var(--ml-gold),#8B5A00);
+  border:none;color:#000;
+  font-family:var(--cin);font-size:15px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;
+  padding:14px 40px;cursor:none;
+  clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px),0 12px);
+  box-shadow:0 0 30px rgba(200,146,42,.4);
+  transition:box-shadow .2s,transform .1s;
+  opacity:0;animation:fadeUp .6s ease 1.4s forwards;
+}
+.op-btn:hover{box-shadow:0 0 50px rgba(200,146,42,.6);transform:scale(1.03)}
+.op-btn:active{transform:scale(.97)}
+.op-btn svg{width:16px;height:16px}
+
+/* Loading bar */
+.op-loading{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.04);z-index:3}
+.op-loading-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--ml-gold),var(--ml-gold3));
+  transition:width 2s ease 1.6s;
+  box-shadow:0 0 10px var(--ml-gold2);
+}
+.op-loading-fill.go{width:100%}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ════════════════════════════════════
+   MAIN
+════════════════════════════════════ */
+#main{opacity:0;transition:opacity .8s ease}
+#main.show{opacity:1}
+
+/* ════════════════════════════════════
+   HERO — HERO SELECT SCREEN
+════════════════════════════════════ */
+.hero{
+  min-height:100svh;
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+  background:var(--ml-dark2);
+}
+
+/* Battlefield BG */
+.hero-field{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 60%,rgba(26,58,140,.3) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 40%,rgba(102,34,204,.2) 0%,transparent 60%),
+    radial-gradient(ellipse 100% 100% at 50% 100%,rgba(200,146,42,.06) 0%,transparent 70%),
+    var(--ml-dark2);
+}
+.hero-video{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;opacity:0;
+  transition:opacity 1.5s ease;
+  filter:saturate(.15) brightness(.35) contrast(1.1) hue-rotate(200deg);
+  z-index:1;
+}
+.hero-video.show{opacity:1}
+.hero-overlay{
+  position:absolute;inset:0;z-index:2;
+  background:
+    linear-gradient(180deg,rgba(8,8,16,.75) 0%,rgba(8,8,16,.1) 30%,rgba(8,8,16,.1) 60%,rgba(8,8,16,.9) 100%),
+    linear-gradient(90deg,rgba(8,8,16,.7) 0%,transparent 60%);
+}
+
+/* Rune grid overlay */
+.hero-rune-grid{
+  position:absolute;inset:0;z-index:2;
+  background-image:
+    linear-gradient(rgba(200,146,42,.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(200,146,42,.02) 1px,transparent 1px);
+  background-size:80px 80px;
+  pointer-events:none;
+}
+
+/* Dragon SVG decorative */
+.hero-dragon{
+  position:absolute;right:-60px;top:10%;z-index:3;
+  width:min(420px,55vw);opacity:.07;pointer-events:none;
+  filter:drop-shadow(0 0 40px var(--ml-gold));
+}
+
+/* Content */
+.hero-content{
+  position:relative;z-index:10;
+  flex:1;display:flex;
+  align-items:flex-end;padding:0 48px 80px;
+}
+@media(max-width:640px){.hero-content{padding:0 24px 96px}}
+
+.hero-card{max-width:640px;width:100%}
+.hc-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(200,146,42,.1);
+  border:1px solid var(--ml-border2);
+  padding:5px 16px;
+  font-family:var(--orb);font-size:9px;letter-spacing:.25em;
+  text-transform:uppercase;color:var(--ml-gold2);
+  margin-bottom:16px;
+}
+.hc-eyebrow::before,.hc-eyebrow::after{
+  content:'';width:5px;height:5px;
+  background:var(--ml-gold2);
+  clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+}
+.hc-title{
+  font-family:var(--cin);
+  font-size:clamp(40px,8vw,76px);
+  font-weight:900;line-height:.9;letter-spacing:.04em;
+  margin-bottom:12px;
+}
+.hc-title .gold{
+  background:linear-gradient(180deg,var(--ml-gold3) 0%,var(--ml-gold) 50%,#7A5010 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 12px rgba(200,146,42,.5));
+}
+.hc-title .white{color:var(--ml-white)}
+.hc-meta{
+  display:flex;flex-wrap:wrap;gap:8px;margin:18px 0;
+}
+.hc-tag{
+  font-family:var(--orb);font-size:9px;letter-spacing:.15em;
+  padding:5px 14px;border:1px solid;
+}
+.hc-tag.gold{color:var(--ml-gold2);border-color:var(--ml-border);background:rgba(200,146,42,.08)}
+.hc-tag.blue{color:var(--ml-blue3);border-color:rgba(34,85,204,.3);background:rgba(34,85,204,.08)}
+.hc-tag.gray{color:var(--ml-gray);border-color:var(--ml-gray2);background:rgba(255,255,255,.04)}
+.hc-desc{
+  font-family:var(--crim);font-style:italic;
+  font-size:clamp(14px,2vw,17px);color:rgba(240,238,255,.55);
+  line-height:1.8;max-width:500px;margin-bottom:28px;
+}
+.hc-actions{display:flex;gap:12px;flex-wrap:wrap}
+.ml-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--cin);font-size:13px;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:13px 28px;border:none;cursor:none;
+  transition:all .15s;text-decoration:none;
+}
+.ml-btn-primary{
+  background:linear-gradient(135deg,#8B5A00,var(--ml-gold2),#7A4A00);
+  color:#000;
+  clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px);
+  box-shadow:0 4px 24px rgba(200,146,42,.35);
+}
+.ml-btn-primary:hover{box-shadow:0 6px 36px rgba(200,146,42,.55);transform:translateY(-2px)}
+.ml-btn-secondary{
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--ml-border2);color:var(--ml-white);
+  clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% calc(100% - 10px),calc(100% - 10px) 100%,10px 100%,0 calc(100% - 10px),0 10px);
+}
+.ml-btn-secondary:hover{background:rgba(255,255,255,.1);transform:translateY(-2px)}
+
+/* Skill icons row */
+.hero-skills{
+  position:absolute;bottom:100px;right:48px;z-index:10;
+  display:flex;gap:10px;
+}
+@media(max-width:700px){.hero-skills{display:none}}
+.skill-btn{
+  width:52px;height:52px;border-radius:6px;
+  background:rgba(0,0,0,.6);
+  border:2px solid var(--ml-border2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+  position:relative;
+  box-shadow:0 0 12px rgba(200,146,42,.2);
+  animation:skillGlow 3s ease-in-out infinite;
+}
+.skill-btn:nth-child(2){animation-delay:.5s}
+.skill-btn:nth-child(3){animation-delay:1s}
+.skill-btn:nth-child(4){animation-delay:1.5s}
+@keyframes skillGlow{
+  0%,100%{box-shadow:0 0 8px rgba(200,146,42,.2)}
+  50%{box-shadow:0 0 18px rgba(200,146,42,.5)}
+}
+.skill-key{
+  position:absolute;top:-8px;left:50%;transform:translateX(-50%);
+  background:var(--ml-gold);color:#000;
+  font-family:var(--orb);font-size:7px;font-weight:700;
+  padding:1px 5px;border-radius:2px;
+  white-space:nowrap;
+}
+
+/* Versus glow effect */
+.hero-vs-glow{
+  position:absolute;bottom:0;left:0;right:0;height:200px;z-index:2;
+  background:linear-gradient(0deg,rgba(200,146,42,.08) 0%,transparent 100%);
+  pointer-events:none;
+}
+
+/* Scrolldown */
+.hero-scroll-hint{
+  position:absolute;bottom:32px;left:48px;z-index:10;
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--orb);font-size:8px;letter-spacing:.3em;
+  color:rgba(200,146,42,.35);text-transform:uppercase;
+}
+@media(max-width:640px){.hero-scroll-hint{left:24px}}
+.scroll-line{width:32px;height:1px;background:rgba(200,146,42,.3)}
+
+/* ════════════════════════════════════
+   ANNOUNCEMENT BAND
+════════════════════════════════════ */
+.ann-band{
+  background:linear-gradient(90deg,var(--ml-dark2),rgba(200,146,42,.08),var(--ml-dark2));
+  border-top:1px solid var(--ml-border);
+  border-bottom:1px solid var(--ml-border);
+  overflow:hidden;height:38px;
+  display:flex;align-items:center;
+}
+.ann-label{
+  background:linear-gradient(135deg,var(--ml-gold),#7A4A00);
+  color:#000;font-family:var(--cin);font-size:13px;
+  font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:0 20px;height:100%;
+  display:flex;align-items:center;flex-shrink:0;
+  white-space:nowrap;
+}
+.ann-scroll{
+  font-family:var(--raj);font-size:12px;
+  font-weight:600;letter-spacing:.1em;
+  color:rgba(200,146,42,.7);white-space:nowrap;
+  animation:annScroll 26s linear infinite;
+}
+@keyframes annScroll{
+  0%{transform:translateX(100vw)}
+  100%{transform:translateX(-200%)}
+}
+
+/* ════════════════════════════════════
+   SECTION BASE
+════════════════════════════════════ */
+.ml-section{padding:80px 40px;position:relative;z-index:1}
+@media(max-width:640px){.ml-section{padding:64px 20px}}
+.ml-eyebrow{
+  font-family:var(--orb);font-size:9px;letter-spacing:.35em;
+  text-transform:uppercase;color:var(--ml-gold2);
+  display:flex;align-items:center;gap:10px;margin-bottom:10px;
+}
+.ml-eyebrow::before{content:'';width:20px;height:1px;background:var(--ml-gold)}
+.ml-heading{
+  font-family:var(--cin);
+  font-size:clamp(26px,5vw,44px);
+  font-weight:700;letter-spacing:.06em;
+  color:var(--ml-white);line-height:1.05;
+}
+.ml-heading .gold{
+  background:linear-gradient(135deg,var(--ml-gold3),var(--ml-gold));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+/* ════════════════════════════════════
+   COUNTDOWN — RESPAWN TIMER
+════════════════════════════════════ */
+.cd-section{
+  background:var(--ml-dark3);
+  padding:80px 24px;text-align:center;
+  border-top:1px solid var(--ml-border);
+}
+.cd-eyebrow{
+  font-family:var(--orb);font-size:9px;letter-spacing:.4em;
+  color:var(--ml-gold2);text-transform:uppercase;
+  margin-bottom:8px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.cd-eyebrow::before,.cd-eyebrow::after{content:'';width:20px;height:1px;background:var(--ml-gold)}
+.cd-title{
+  font-family:var(--cin);font-size:clamp(18px,4vw,26px);
+  font-weight:600;color:var(--ml-white);margin-bottom:48px;
+  letter-spacing:.06em;
+}
+.cd-grid{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.cd-card{
+  background:rgba(200,146,42,.06);
+  border:1px solid var(--ml-border2);
+  padding:24px 20px 18px;min-width:100px;
+  position:relative;overflow:hidden;
+  clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));
+}
+.cd-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--ml-gold2),transparent);
+}
+/* Magic circle bg */
+.cd-card::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 80% at 50% 120%,rgba(200,146,42,.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.cd-n{
+  font-family:var(--cin);
+  font-size:clamp(44px,9vw,62px);
+  font-weight:900;letter-spacing:.02em;
+  background:linear-gradient(180deg,var(--ml-gold3) 0%,var(--ml-gold) 70%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 12px rgba(200,146,42,.4));
+  line-height:1;margin-bottom:8px;
+}
+.cd-u{
+  font-family:var(--orb);font-size:8px;letter-spacing:.25em;
+  color:var(--ml-gray2);text-transform:uppercase;
+}
+@media(max-width:480px){.cd-card{min-width:82px;padding:18px 14px 14px}}
+
+/* ════════════════════════════════════
+   HERO SELECT — COUPLE SECTION
+════════════════════════════════════ */
+.hero-select-section{
+  background:var(--ml-dark2);
+  padding:80px 24px;
+  position:relative;overflow:hidden;
+}
+/* Vignette bg */
+.hero-select-section::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 100% 80% at 50% 100%,rgba(200,146,42,.04) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+.hero-select-grid{
+  display:grid;grid-template-columns:1fr auto 1fr;
+  gap:20px;align-items:center;max-width:840px;margin:0 auto;
+}
+@media(max-width:660px){.hero-select-grid{grid-template-columns:1fr;max-width:360px}}
+
+.hero-card-ml{
+  background:var(--ml-dark3);
+  border:1px solid var(--ml-border);
+  clip-path:polygon(0 0,calc(100% - 20px) 0,100% 20px,100% 100%,20px 100%,0 calc(100% - 20px));
+  overflow:hidden;
+  transition:transform .25s,border-color .25s,box-shadow .25s;
+}
+.hero-card-ml:hover{
+  transform:translateY(-6px);
+  border-color:var(--ml-gold2);
+  box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 0 1px rgba(200,146,42,.2);
+}
+
+/* Hero splash art */
+.hc-splash{
+  height:180px;overflow:hidden;position:relative;
+  background:linear-gradient(135deg,var(--ml-dark3),var(--ml-dark4));
+}
+.hc-splash img{
+  width:100%;height:100%;object-fit:cover;object-position:top;
+  filter:saturate(.7) brightness(.75) contrast(1.05);
+  transition:transform .5s,filter .3s;
+}
+.hero-card-ml:hover .hc-splash img{transform:scale(1.06);filter:saturate(.9) brightness(.85)}
+.hc-splash-grad{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(0deg,var(--ml-dark3) 0%,transparent 50%),
+    linear-gradient(135deg,rgba(200,146,42,.2) 0%,transparent 50%);
+}
+/* Role badge */
+.hc-role-badge{
+  position:absolute;top:10px;left:10px;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  border:1px solid var(--ml-border);
+  font-family:var(--orb);font-size:8px;letter-spacing:.15em;
+  color:var(--ml-gold2);padding:3px 10px;
+  text-transform:uppercase;
+}
+/* Hero tier */
+.hc-tier{
+  position:absolute;top:10px;right:10px;
+  font-family:var(--cin);font-size:22px;
+  filter:drop-shadow(0 0 8px var(--ml-gold));
+}
+
+.hc-body{padding:16px 18px 20px}
+.hc-hero-role{
+  font-family:var(--orb);font-size:8px;letter-spacing:.25em;
+  color:var(--ml-gold2);text-transform:uppercase;margin-bottom:4px;
+}
+.hc-name{
+  font-family:var(--cin);
+  font-size:clamp(15px,3vw,19px);
+  font-weight:700;letter-spacing:.06em;
+  color:var(--ml-white);margin-bottom:6px;line-height:1.1;
+}
+.hc-parents{
+  font-size:11px;color:var(--ml-gray2);
+  font-weight:500;line-height:1.7;
+}
+
+/* Skill bar */
+.hc-skills{
+  display:flex;gap:6px;margin-top:14px;
+  padding-top:12px;border-top:1px solid var(--ml-border);
+}
+.hc-skill{
+  width:32px;height:32px;border-radius:4px;
+  background:rgba(200,146,42,.1);
+  border:1px solid var(--ml-border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;
+  transition:background .15s;
+}
+.hc-skill:hover{background:rgba(200,146,42,.2)}
+.hc-mvp{
+  margin-left:auto;
+  display:flex;align-items:center;gap:4px;
+  font-family:var(--orb);font-size:9px;
+  color:var(--ml-gold2);letter-spacing:.1em;
+}
+
+.vs-badge{
+  font-family:var(--cin);
+  font-size:clamp(32px,6vw,52px);
+  font-weight:900;letter-spacing:.08em;
+  background:linear-gradient(180deg,var(--ml-gold3),var(--ml-gold),#7A4A00);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 16px rgba(200,146,42,.4));
+  text-align:center;user-select:none;
+}
+@media(max-width:660px){.vs-badge{font-size:44px}}
+
+/* ════════════════════════════════════
+   EVENT — TOWER RUSH
+════════════════════════════════════ */
+.event-section{
+  background:var(--ml-dark);
+  padding:80px 24px;
+  border-top:1px solid var(--ml-border);
+}
+.event-grid{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:16px;max-width:840px;margin:40px auto 0;
+}
+@media(max-width:560px){.event-grid{grid-template-columns:1fr}}
+.event-card{
+  background:var(--ml-dark3);
+  border:1px solid var(--ml-border);
+  clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));
+  overflow:hidden;
+  transition:transform .2s,border-color .2s,box-shadow .2s;
+}
+.event-card:hover{
+  transform:translateY(-4px);
+  border-color:var(--ml-gold2);
+  box-shadow:0 16px 48px rgba(0,0,0,.4);
+}
+.ec-img{
+  height:130px;overflow:hidden;position:relative;
+}
+.ec-img img{
+  width:100%;height:100%;object-fit:cover;
+  filter:saturate(.5) brightness(.6) contrast(1.05);
+  transition:transform .5s;
+}
+.event-card:hover .ec-img img{transform:scale(1.05)}
+.ec-img-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(0deg,var(--ml-dark3) 0%,transparent 50%),
+             linear-gradient(135deg,rgba(200,146,42,.2),transparent 50%);
+}
+.ec-event-type{
+  position:absolute;top:10px;left:10px;
+  display:inline-flex;align-items:center;gap:5px;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  border:1px solid var(--ml-border);
+  font-family:var(--orb);font-size:8px;letter-spacing:.18em;
+  color:var(--ml-gold2);padding:3px 10px;text-transform:uppercase;
+}
+.ec-body{padding:18px 20px 22px}
+.ec-title{
+  font-family:var(--cin);
+  font-size:clamp(18px,3.5vw,24px);
+  font-weight:700;letter-spacing:.04em;
+  color:var(--ml-white);margin-bottom:14px;line-height:1.1;
+}
+.ec-row{
+  display:flex;align-items:flex-start;gap:8px;margin-bottom:10px;
+}
+.ec-ico{color:var(--ml-gold);flex-shrink:0;margin-top:2px;width:14px;height:14px}
+.ec-txt{font-size:12px;color:var(--ml-gray);font-weight:500;line-height:1.6}
+.ec-maps{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:14px;
+  background:rgba(200,146,42,.1);border:1px solid var(--ml-border2);
+  color:var(--ml-gold2);font-family:var(--orb);
+  font-size:9px;letter-spacing:.15em;text-transform:uppercase;
+  padding:9px 18px;text-decoration:none;cursor:none;
+  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
+  transition:background .15s;
+}
+.ec-maps:hover{background:rgba(200,146,42,.18)}
+
+/* ════════════════════════════════════
+   TIMELINE — BATTLE CHRONICLE
+════════════════════════════════════ */
+.tl-section{
+  background:var(--ml-dark2);
+  padding:80px 24px;
+  border-top:1px solid var(--ml-border);
+  position:relative;overflow:hidden;
+}
+.tl-section::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 60% 40% at 0% 50%,rgba(102,34,204,.06) 0%,transparent 70%),
+    radial-gradient(ellipse 60% 40% at 100% 50%,rgba(200,146,42,.04) 0%,transparent 70%);
+  pointer-events:none;
+}
+.tl-list{max-width:660px;margin:40px auto 0;position:relative}
+.tl-list::before{
+  content:'';position:absolute;
+  left:18px;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,var(--ml-gold) 0%,rgba(200,146,42,.2) 100%);
+}
+.tl-item{
+  display:flex;gap:28px;padding-left:56px;
+  margin-bottom:56px;position:relative;
+  opacity:0;transform:translateX(-16px);
+  transition:opacity .7s,transform .7s;
+}
+.tl-item.visible{opacity:1;transform:translateX(0)}
+.tl-node{
+  position:absolute;left:7px;top:3px;
+  width:24px;height:24px;
+  background:linear-gradient(135deg,var(--ml-gold2),var(--ml-gold));
+  clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 16px rgba(200,146,42,.5);
+}
+.tl-chapter{
+  font-family:var(--orb);font-size:8px;
+  color:var(--ml-gold2);letter-spacing:.25em;
+  text-transform:uppercase;margin-bottom:5px;
+}
+.tl-date{
+  font-family:var(--raj);font-size:11px;
+  color:var(--ml-gray2);margin-bottom:8px;
+  font-weight:600;letter-spacing:.08em;
+}
+.tl-title{
+  font-family:var(--cin);
+  font-size:clamp(18px,3.5vw,26px);
+  font-weight:700;letter-spacing:.05em;
+  color:var(--ml-white);margin-bottom:8px;
+}
+.tl-desc{
+  font-family:var(--crim);font-size:15px;font-style:italic;
+  color:var(--ml-gray);line-height:1.8;
+}
+
+/* ════════════════════════════════════
+   GALLERY — GALLERY SKIN VIEWER
+════════════════════════════════════ */
+.gallery-section{
+  background:var(--ml-dark);
+  padding:80px 0;
+  border-top:1px solid var(--ml-border);
+}
+.gallery-head{
+  max-width:1040px;margin:0 auto 28px;padding:0 40px;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  flex-wrap:wrap;gap:16px;
+}
+@media(max-width:640px){.gallery-head{padding:0 20px}}
+.gallery-sub{
+  font-family:var(--orb);font-size:9px;
+  letter-spacing:.2em;color:var(--ml-gray2);text-transform:uppercase;
+}
+.skin-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:3px;max-width:1040px;margin:0 auto;padding:0 40px;
+}
+@media(max-width:720px){.skin-grid{grid-template-columns:repeat(2,1fr);padding:0 20px}}
+.skin-item{
+  position:relative;overflow:hidden;
+  aspect-ratio:3/4;cursor:none;
+  background:var(--ml-dark3);
+}
+.skin-item:nth-child(1){grid-row:span 2;aspect-ratio:auto}
+@media(max-width:720px){.skin-item:nth-child(1){grid-row:span 1;aspect-ratio:3/4}}
+.skin-item img{
+  width:100%;height:100%;object-fit:cover;
+  filter:saturate(.75) contrast(1.05) brightness(.85);
+  transition:transform .5s,filter .3s;
+}
+.skin-item:hover img{transform:scale(1.06);filter:saturate(1.05) brightness(.95)}
+.skin-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(0deg,rgba(8,8,16,.8) 0%,transparent 50%);
+  opacity:0;transition:opacity .3s;
+}
+.skin-item:hover .skin-overlay{opacity:1}
+.skin-caption{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:10px 12px;
+  font-family:var(--cin);font-size:13px;font-weight:600;
+  letter-spacing:.04em;color:var(--ml-white);
+  transform:translateY(6px);opacity:0;
+  transition:transform .3s,opacity .3s;
+}
+.skin-item:hover .skin-caption{transform:translateY(0);opacity:1}
+.skin-badge{
+  position:absolute;top:8px;left:8px;
+  background:rgba(0,0,0,.65);backdrop-filter:blur(8px);
+  border:1px solid var(--ml-border);
+  font-family:var(--orb);font-size:8px;
+  color:var(--ml-gold2);padding:3px 8px;letter-spacing:.1em;
+}
+/* Limited skin badge */
+.skin-limited{
+  position:absolute;top:8px;right:8px;
+  background:linear-gradient(135deg,var(--ml-gold),#7A4A00);
+  color:#000;font-family:var(--orb);font-size:7px;
+  font-weight:700;padding:3px 8px;letter-spacing:.08em;
+  display:none;
+}
+.skin-item:hover .skin-limited{display:block}
+
+/* ════════════════════════════════════
+   GIFT — DIAMOND RECHARGE
+════════════════════════════════════ */
+.gift-section{
+  background:var(--ml-dark2);
+  padding:80px 24px;text-align:center;
+  border-top:1px solid var(--ml-border);
+}
+.diamond-cards{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:16px;max-width:580px;margin:40px auto 0;
+}
+@media(max-width:480px){.diamond-cards{grid-template-columns:1fr}}
+.diamond-card{
+  background:var(--ml-dark3);
+  border:1px solid var(--ml-border);
+  clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));
+  padding:28px 22px;position:relative;overflow:hidden;
+  transition:transform .2s,border-color .2s;
+}
+.diamond-card:hover{transform:translateY(-4px);border-color:var(--ml-gold2)}
+/* Magic shimmer */
+.diamond-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--ml-gold2),transparent);
+}
+.diamond-card::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 50% at 50% 120%,rgba(102,34,204,.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.dc-diamond{
+  font-size:32px;margin:0 auto 14px;
+  filter:drop-shadow(0 0 12px rgba(102,34,204,.6));
+  animation:diamondSpin 6s linear infinite;
+}
+@keyframes diamondSpin{0%,100%{filter:drop-shadow(0 0 8px rgba(102,34,204,.4))}50%{filter:drop-shadow(0 0 18px rgba(102,34,204,.8))}}
+.dc-bank{
+  font-family:var(--cin);
+  font-size:clamp(26px,5vw,34px);
+  font-weight:900;letter-spacing:.05em;
+  background:linear-gradient(180deg,var(--ml-gold3),var(--ml-gold));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  margin-bottom:4px;
+}
+.dc-holder{
+  font-family:var(--raj);font-size:11px;
+  color:rgba(255,255,255,.3);font-weight:500;
+  margin-bottom:14px;letter-spacing:.05em;
+}
+.dc-number{
+  font-family:var(--orb);font-size:15px;letter-spacing:.15em;
+  color:var(--ml-white);
+  background:rgba(0,0,0,.3);
+  border:1px solid var(--ml-border);
+  padding:9px 12px;margin-bottom:14px;
+  display:block;position:relative;
+}
+.dc-copy{
+  background:rgba(200,146,42,.12);
+  border:1px solid var(--ml-border2);
+  color:var(--ml-gold2);
+  font-family:var(--orb);font-size:9px;
+  letter-spacing:.2em;text-transform:uppercase;
+  padding:10px 20px;cursor:none;
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+  transition:background .15s;position:relative;
+}
+.dc-copy:hover{background:rgba(200,146,42,.22)}
+.dc-copy.copied{background:rgba(34,204,102,.12);border-color:rgba(34,204,102,.4);color:#44EE88}
+
+/* ════════════════════════════════════
+   RSVP — JOIN BATTLE
+════════════════════════════════════ */
+.rsvp-section{
+  background:var(--ml-dark);
+  padding:80px 24px;
+  border-top:1px solid var(--ml-border);
+  position:relative;
+}
+.rsvp-section::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(200,146,42,.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(200,146,42,.015) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;
+}
+.rsvp-inner{max-width:560px;margin:0 auto;position:relative}
+.rsvp-stats{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:8px;margin-bottom:36px;
+}
+.rs{
+  background:rgba(200,146,42,.06);
+  border:1px solid var(--ml-border);
+  padding:16px 12px;text-align:center;
+  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
+}
+.rs-n{
+  font-family:var(--cin);font-size:36px;font-weight:900;
+  background:linear-gradient(180deg,var(--ml-gold3),var(--ml-gold));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 10px rgba(200,146,42,.3));
+  line-height:1;margin-bottom:4px;letter-spacing:.04em;
+}
+.rs-l{
+  font-family:var(--orb);font-size:8px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--ml-gray2);
+}
+.fg{margin-bottom:18px}
+.fl{
+  display:block;font-family:var(--orb);font-size:8px;
+  letter-spacing:.25em;text-transform:uppercase;
+  color:var(--ml-gold2);margin-bottom:8px;
+}
+.fi{
+  width:100%;background:rgba(200,146,42,.04);
+  border:1px solid var(--ml-border);
+  border-bottom:2px solid var(--ml-gold);
+  padding:13px 16px;color:var(--ml-white);
+  font-family:var(--raj);font-size:15px;font-weight:500;
+  outline:none;-webkit-appearance:none;border-radius:0;
+  transition:border-color .2s,background .2s;
+  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%);
+}
+.fi:focus{background:rgba(200,146,42,.06);border-bottom-color:var(--ml-gold2)}
+.fi::placeholder{color:var(--ml-gray2)}
+textarea.fi{min-height:96px;resize:vertical;clip-path:none;border:1px solid var(--ml-border);border-bottom:2px solid var(--ml-gold)}
+.fs{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23C8922A' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;
+  padding-right:38px;cursor:none;
+}
+option{font-family:sans-serif}
+.guest-row{display:flex;gap:8px}
+.gst-btn{
+  flex:1;background:rgba(200,146,42,.05);
+  border:1px solid var(--ml-border);color:var(--ml-gray);
+  font-family:var(--cin);font-size:14px;font-weight:600;
+  letter-spacing:.08em;padding:12px;cursor:none;
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+  transition:all .15s;
+}
+.gst-btn.active{
+  background:rgba(200,146,42,.15);
+  border-color:var(--ml-gold2);color:var(--ml-gold2);
+}
+.rsvp-btn{
+  width:100%;
+  background:linear-gradient(135deg,#8B5A00,var(--ml-gold2),#7A4A00);
+  border:none;color:#000;
+  font-family:var(--cin);font-size:17px;font-weight:700;
+  letter-spacing:.12em;text-transform:uppercase;
+  padding:16px;cursor:none;margin-top:12px;
+  clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));
+  box-shadow:0 4px 24px rgba(200,146,42,.35);
+  transition:box-shadow .15s,transform .1s;
+}
+.rsvp-btn:hover{box-shadow:0 6px 36px rgba(200,146,42,.55);transform:translateY(-2px)}
+
+/* ════════════════════════════════════
+   WISHES — GUILD CHAT
+════════════════════════════════════ */
+.wishes-section{
+  background:var(--ml-dark2);
+  padding:80px 24px;
+  border-top:1px solid var(--ml-border);
+}
+.wishes-inner{max-width:660px;margin:0 auto}
+.wishes-list{margin-top:32px;display:flex;flex-direction:column;gap:10px}
+.wish-card{
+  display:flex;align-items:flex-start;gap:12px;
+  background:rgba(200,146,42,.04);
+  border:1px solid var(--ml-border);
+  border-left:3px solid var(--ml-gold);
+  padding:14px 18px;
+  opacity:0;transform:translateX(-14px);
+  transition:opacity .5s,transform .5s;
+}
+.wish-card.visible{opacity:1;transform:translateX(0)}
+.wa{
+  width:38px;height:38px;
+  background:linear-gradient(135deg,var(--ml-gold),#7A4A00);
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--cin);font-size:12px;font-weight:700;
+  color:#000;flex-shrink:0;letter-spacing:.04em;
+}
+.wn{font-family:var(--cin);font-size:14px;font-weight:600;letter-spacing:.06em;color:var(--ml-white)}
+.ws{font-family:var(--orb);font-size:8px;color:var(--ml-gold2);letter-spacing:.15em;text-transform:uppercase;margin-top:2px}
+.wt{font-family:var(--crim);font-style:italic;font-size:15px;color:var(--ml-gray);line-height:1.7;margin-top:6px}
+
+/* ════════════════════════════════════
+   FOOTER
+════════════════════════════════════ */
+.footer{
+  background:var(--ml-dark);
+  padding:100px 24px 56px;
+  text-align:center;
+  border-top:1px solid var(--ml-border);
+  position:relative;overflow:hidden;
+}
+.footer::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(200,146,42,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.footer-emblem{width:56px;height:56px;margin:0 auto 20px;opacity:.4}
+.footer-title{
+  font-family:var(--cin);
+  font-size:clamp(40px,10vw,80px);
+  font-weight:900;letter-spacing:.05em;line-height:.95;
+  margin-bottom:16px;
+}
+.footer-title .gold{
+  background:linear-gradient(180deg,var(--ml-gold3) 0%,var(--ml-gold) 50%,#7A5010 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 20px rgba(200,146,42,.3));
+}
+.footer-title .white{color:var(--ml-white)}
+.footer-verse{
+  font-family:var(--crim);font-style:italic;
+  font-size:clamp(14px,2vw,17px);color:rgba(240,238,255,.35);
+  max-width:460px;margin:0 auto 40px;line-height:1.9;
+}
+.footer-div{
+  display:flex;align-items:center;justify-content:center;
+  gap:12px;margin-bottom:24px;
+}
+.fdl{width:48px;height:1px;background:var(--ml-border)}
+.fdg{
+  width:8px;height:8px;
+  background:var(--ml-gold2);
+  clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+  box-shadow:0 0 10px var(--ml-gold2);
+}
+.footer-brand{
+  font-family:var(--orb);font-size:9px;letter-spacing:.2em;
+  color:rgba(255,255,255,.12);text-transform:uppercase;
+}
+.footer-brand a{color:var(--ml-gold2);text-decoration:none}
+
+/* ════════════════════════════════════
+   BOTTOM NAV — BATTLE UI
+════════════════════════════════════ */
+.battle-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(8,8,16,.92);
+  backdrop-filter:blur(20px);
+  border-top:1px solid var(--ml-border2);
+  display:flex;justify-content:space-around;
+  padding:10px 0 max(10px,env(safe-area-inset-bottom));
+  z-index:500;
+  transform:translateY(100%);
+  transition:transform .7s cubic-bezier(.16,1,.3,1) 1s;
+}
+.battle-nav.show{transform:translateY(0)}
+.nav-a{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  color:rgba(200,146,42,.3);text-decoration:none;cursor:none;
+  font-family:var(--orb);font-size:7px;letter-spacing:.12em;text-transform:uppercase;
+  padding:4px 14px;transition:color .2s;
+}
+.nav-a svg{width:18px;height:18px}
+.nav-a:hover,.nav-a.active{color:var(--ml-gold2)}
+.nav-a.active svg{filter:drop-shadow(0 0 4px var(--ml-gold))}
+
+/* LIGHTBOX + TOAST */
+.lbox{position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:9000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.lbox.open{display:flex}
+.lbox-img{max-width:88vw;max-height:86vh;object-fit:contain;border:2px solid var(--ml-border2)}
+.lbox-close{position:absolute;top:16px;right:20px;background:rgba(200,146,42,.12);border:1px solid var(--ml-border2);color:var(--ml-gold2);font-family:var(--orb);font-size:10px;letter-spacing:.1em;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:none;clip-path:polygon(0 0,calc(100% - 4px) 0,100% 4px,100% 100%,4px 100%,0 calc(100% - 4px));transition:background .15s}
+.lbox-close:hover{background:rgba(200,146,42,.22)}
+.lbox-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(200,146,42,.1);border:1px solid var(--ml-border);color:var(--ml-gold2);font-size:28px;width:48px;height:64px;display:flex;align-items:center;justify-content:center;cursor:none;transition:background .15s}
+.lbox-nav:hover{background:rgba(200,146,42,.2)}
+.lbox-prev{left:12px}.lbox-next{right:12px}
+.lbox-ctr{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-family:var(--orb);font-size:9px;letter-spacing:.2em;color:rgba(200,146,42,.4)}
+
+.toast{
+  position:fixed;bottom:80px;left:50%;
+  transform:translateX(-50%) translateY(14px);
+  background:rgba(8,8,16,.97);
+  border:1px solid var(--ml-border2);
+  border-left:3px solid var(--ml-gold);
+  color:var(--ml-white);
+  font-family:var(--orb);font-size:10px;
+  letter-spacing:.12em;padding:11px 22px;
+  white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity .3s,transform .3s;z-index:9999;
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .8s,transform .8s}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.rd1{transition-delay:.1s}.rd2{transition-delay:.2s}.rd3{transition-delay:.3s}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-circle"></div>
+
+<!-- ════ OPENING ════ -->
+<div id="opening">
+  <video class="op-video" id="opVideo"
+    src="https://www.w3schools.com/html/mov_bbb.mp4"
+    loop muted playsinline preload="auto"
+    poster="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=1400&q=60">
+  </video>
+  <div class="op-ov"></div>
+  <div class="op-ov-purple"></div>
+  <div class="op-scan"></div>
+
+  <!-- Floating runes -->
+  <div class="op-runes" id="opRunes"></div>
+
+  <!-- Sound hint -->
+  <div class="op-sound" id="opSound">
+    <div class="op-sound-bars">
+      <div class="osb" style="--d:.45s"></div>
+      <div class="osb" style="--d:.6s;animation-delay:.1s"></div>
+      <div class="osb" style="--d:.5s;animation-delay:.2s"></div>
+      <div class="osb" style="--d:.7s;animation-delay:.05s"></div>
+    </div>
+    MUTED
+  </div>
+
+  <div class="op-content">
+    <!-- ML Emblem SVG -->
+    <div class="op-emblem">
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="40,4 76,20 76,60 40,76 4,60 4,20" stroke="url(#goldGrad)" stroke-width="2" fill="none"/>
+        <polygon points="40,14 66,26 66,54 40,66 14,54 14,26" stroke="url(#goldGrad)" stroke-width="1" fill="rgba(200,146,42,.06)"/>
+        <path d="M24 48V32l8 8 8-8 8 8V48" stroke="#E5B347" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="40" cy="28" r="4" fill="#E5B347"/>
+        <defs>
+          <linearGradient id="goldGrad" x1="0" y1="0" x2="80" y2="80">
+            <stop offset="0%" stop-color="#FFD878"/>
+            <stop offset="50%" stop-color="#C8922A"/>
+            <stop offset="100%" stop-color="#FFD878"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <p class="op-pretitle">◈ Wedding Invitation ◈</p>
+    <h1 class="op-title">
+      <div class="gold">ANITA</div>
+      <div class="white">& ZARDA</div>
+    </h1>
+    <p class="op-tagline">Battle of Love · 24 May 2026 · Tangerang</p>
+
+    <div class="op-scroll">
+      <div class="op-scroll-label">◆ Invited Hero</div>
+      <div class="op-scroll-name">Ade Guntur Fitridullah & Partner</div>
+    </div>
+
+    <button class="op-btn" onclick="startBattle()">
+      <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16"><path d="M8 5v14l11-7z"/></svg>
+      Buka Undangan
+    </button>
+  </div>
+
+  <div class="op-loading"><div class="op-loading-fill" id="loadFill"></div></div>
+</div>
+
+<!-- ════ MAIN ════ -->
+<div id="main">
+
+<!-- HERO SECTION -->
+<section class="hero" id="home">
+  <div class="hero-field"></div>
+  <video class="hero-video" id="heroBgVid"
+    src="https://www.w3schools.com/html/movie.mp4"
+    loop muted playsinline preload="none"
+    poster="https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&q=60">
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="hero-rune-grid"></div>
+
+  <!-- Dragon watermark -->
+  <svg class="hero-dragon" viewBox="0 0 400 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M200 50 C280 80 360 160 340 260 C320 360 240 420 200 460 C160 420 80 360 60 260 C40 160 120 80 200 50Z" stroke="#C8922A" stroke-width="1.5" fill="rgba(200,146,42,.03)"/>
+    <path d="M200 80 C260 105 320 170 305 250 C290 330 225 385 200 415 C175 385 110 330 95 250 C80 170 140 105 200 80Z" stroke="#C8922A" stroke-width="1" fill="none"/>
+    <path d="M150 200 L200 120 L250 200 L230 280 L200 300 L170 280Z" stroke="#E5B347" stroke-width="1" fill="rgba(200,146,42,.04)"/>
+    <circle cx="200" cy="160" r="12" stroke="#E5B347" stroke-width="1" fill="rgba(200,146,42,.08)"/>
+    <path d="M120 240 Q140 200 160 220 Q180 240 200 200 Q220 240 240 220 Q260 200 280 240" stroke="#C8922A" stroke-width=".8" fill="none"/>
+    <path d="M100 300 Q130 260 160 280 Q190 300 200 260 Q210 300 240 280 Q270 260 300 300" stroke="#C8922A" stroke-width=".8" fill="none"/>
+  </svg>
+
+  <!-- Skill buttons -->
+  <div class="hero-skills">
+    <div class="skill-btn"><span class="skill-key">1</span>💍</div>
+    <div class="skill-btn"><span class="skill-key">2</span>💒</div>
+    <div class="skill-btn"><span class="skill-key">3</span>💖</div>
+    <div class="skill-btn"><span class="skill-key">ULT</span>♾️</div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-card">
+      <div class="hc-eyebrow">◆ Wedding Ceremony ◆</div>
+      <h1 class="hc-title">
+        <div class="gold">ANITA</div>
+        <div class="white">& ZARDA</div>
+      </h1>
+      <div class="hc-meta">
+        <span class="hc-tag gold">⚔ 24 MEI 2026</span>
+        <span class="hc-tag blue">📍 TANGERANG</span>
+        <span class="hc-tag gray">🕗 08:00 WIB</span>
+      </div>
+      <p class="hc-desc">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya." — Ar-Rum : 21</p>
+      <div class="hc-actions">
+        <button class="ml-btn ml-btn-primary" onclick="document.getElementById('rsvp').scrollIntoView({behavior:'smooth'})">
+          ⚔ RSVP — JOIN BATTLE
+        </button>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ml-btn ml-btn-secondary">
+          📍 LIHAT LOKASI
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-vs-glow"></div>
+  <div class="hero-scroll-hint">
+    <div class="scroll-line"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- ANNOUNCEMENT BAND -->
+<div class="ann-band">
+  <div class="ann-label">⚔ ANNOUNCEMENT</div>
+  <div class="ann-scroll">
+    ◆ &nbsp; SELAMAT DATANG DI UNDANGAN PERNIKAHAN ANITA & ZARDA &nbsp; ◈ &nbsp;
+    AKAD NIKAH: 24 MEI 2026 · 08:00 WIB · GRAHA YADIKA, TANGERANG &nbsp; ◈ &nbsp;
+    RESEPSI: 11:00–13:00 WIB · LOKASI YANG SAMA &nbsp; ◈ &nbsp;
+    KONFIRMASI KEHADIRAN ANDA SEKARANG! &nbsp; ◈ &nbsp;
+    THE BATTLEFIELD OF LOVE AWAITS &nbsp; ◆
+  </div>
+</div>
+
+<!-- COUNTDOWN -->
+<div class="cd-section">
+  <p class="cd-eyebrow reveal">Match Starting In</p>
+  <h2 class="cd-title reveal">Menuju Hari Istimewa</h2>
+  <div class="cd-grid">
+    <div class="cd-card reveal rd1"><span class="cd-n" id="cdD">00</span><span class="cd-u">Hari</span></div>
+    <div class="cd-card reveal rd2"><span class="cd-n" id="cdH">00</span><span class="cd-u">Jam</span></div>
+    <div class="cd-card reveal rd3"><span class="cd-n" id="cdM">00</span><span class="cd-u">Menit</span></div>
+    <div class="cd-card reveal" style="transition-delay:.4s"><span class="cd-n" id="cdS">00</span><span class="cd-u">Detik</span></div>
+  </div>
+</div>
+
+<!-- HERO SELECT / COUPLE -->
+<section id="couple" class="hero-select-section">
+  <div style="max-width:840px;margin:0 auto;text-align:center;margin-bottom:48px" class="reveal">
+    <p class="ml-eyebrow" style="justify-content:center">Hero Selection</p>
+    <h2 class="ml-heading" style="text-align:center">Mempelai <span class="gold">Kami</span></h2>
+  </div>
+  <div class="hero-select-grid">
+    <div class="hero-card-ml reveal">
+      <div class="hc-splash">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=300&fit=crop&q=80" alt="Anita">
+        <div class="hc-splash-grad"></div>
+        <div class="hc-role-badge">Mempelai Wanita</div>
+        <div class="hc-tier">⭐</div>
+      </div>
+      <div class="hc-body">
+        <p class="hc-hero-role">Hero · Support / Mage</p>
+        <h3 class="hc-name">Anita Pangestuti,<br>S.Kom</h3>
+        <p class="hc-parents">Putri Pertama dari<br>Bpk. Taryono & Ibu Wiwit Jayanti</p>
+        <div class="hc-skills">
+          <div class="hc-skill" title="Skill 1">💫</div>
+          <div class="hc-skill" title="Skill 2">🌸</div>
+          <div class="hc-skill" title="Ultimate">👑</div>
+          <div class="hc-mvp">⭐ MVP</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vs-badge">VS</div>
+
+    <div class="hero-card-ml reveal rd2">
+      <div class="hc-splash">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop&q=80" alt="Zarda">
+        <div class="hc-splash-grad"></div>
+        <div class="hc-role-badge">Mempelai Pria</div>
+        <div class="hc-tier">⭐</div>
+      </div>
+      <div class="hc-body">
+        <p class="hc-hero-role">Hero · Fighter / Tank</p>
+        <h3 class="hc-name">Zardarian Ahadika N,<br>S.Kom</h3>
+        <p class="hc-parents">Putra Kedua dari<br>Bpk. Wan Sabran, M.MAR &<br>Ibu Titik Sundari, M.Si</p>
+        <div class="hc-skills">
+          <div class="hc-skill" title="Skill 1">⚔</div>
+          <div class="hc-skill" title="Skill 2">🛡</div>
+          <div class="hc-skill" title="Ultimate">👑</div>
+          <div class="hc-mvp">⭐ MVP</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENT -->
+<section id="event" class="event-section">
+  <div class="ml-section-header reveal" style="max-width:840px;margin:0 auto">
+    <p class="ml-eyebrow">Battle Location</p>
+    <h2 class="ml-heading">Waktu & <span class="gold">Tempat</span></h2>
+  </div>
+  <div class="event-grid">
+    <div class="event-card reveal rd1">
+      <div class="ec-img">
+        <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=260&fit=crop&q=80" alt="">
+        <div class="ec-img-overlay"></div>
+        <div class="ec-event-type">⚔ Akad Nikah</div>
+      </div>
+      <div class="ec-body">
+        <h3 class="ec-title">Minggu,<br>24 Mei 2026</h3>
+        <div class="ec-row">
+          <svg class="ec-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 17.5v-2h-1v2C8.41 19.25 5.75 16.59 5.5 13.5h2v-1h-2C5.75 9.41 8.41 6.75 11.5 6.5v2h1v-2c3.09.25 5.75 2.91 6 6h-2v1h2c-.25 3.09-2.91 5.75-6 6z"/></svg>
+          <span class="ec-txt">08.00 WIB — Selesai</span>
+        </div>
+        <div class="ec-row">
+          <svg class="ec-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          <span class="ec-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span>
+        </div>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ec-maps">◈ BUKA MAPS</a>
+      </div>
+    </div>
+    <div class="event-card reveal rd2">
+      <div class="ec-img">
+        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=260&fit=crop&q=80" alt="">
+        <div class="ec-img-overlay"></div>
+        <div class="ec-event-type">🎉 Resepsi</div>
+      </div>
+      <div class="ec-body">
+        <h3 class="ec-title">Minggu,<br>24 Mei 2026</h3>
+        <div class="ec-row">
+          <svg class="ec-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 17.5v-2h-1v2C8.41 19.25 5.75 16.59 5.5 13.5h2v-1h-2C5.75 9.41 8.41 6.75 11.5 6.5v2h1v-2c3.09.25 5.75 2.91 6 6h-2v1h2c-.25 3.09-2.91 5.75-6 6z"/></svg>
+          <span class="ec-txt">11.00 — 13.00 WIB</span>
+        </div>
+        <div class="ec-row">
+          <svg class="ec-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          <span class="ec-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span>
+        </div>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ec-maps">◈ BUKA MAPS</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<div class="tl-section">
+  <div style="max-width:660px;margin:0 auto">
+    <p class="ml-eyebrow reveal">Battle Chronicle</p>
+    <h2 class="ml-heading reveal">Kisah <span class="gold">Cinta Kami</span></h2>
+  </div>
+  <div class="tl-list">
+    <div class="tl-item">
+      <div class="tl-node"></div>
+      <div>
+        <p class="tl-chapter">Chapter I · The Meeting</p>
+        <p class="tl-date">Juni 2025</p>
+        <h3 class="tl-title">Awal Pertemuan</h3>
+        <p class="tl-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-node"></div>
+      <div>
+        <p class="tl-chapter">Chapter II · The Alliance</p>
+        <p class="tl-date">November 2025</p>
+        <h3 class="tl-title">Lamaran</h3>
+        <p class="tl-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-node"></div>
+      <div>
+        <p class="tl-chapter">Chapter III · The Legend</p>
+        <p class="tl-date">Mei 2026</p>
+        <h3 class="tl-title">Pernikahan</h3>
+        <p class="tl-desc">Kini kami melangkah lebih jauh. Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya. Mobile Legends!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<section class="gallery-section">
+  <div class="gallery-head reveal">
+    <div>
+      <p class="ml-eyebrow" style="margin-bottom:8px">Skin Collection</p>
+      <h2 class="ml-heading" style="font-size:clamp(22px,4vw,34px)">Galeri <span class="gold">Foto</span></h2>
+    </div>
+    <p class="gallery-sub">Tap to Preview</p>
+  </div>
+  <div class="skin-grid" id="skinGrid"></div>
+</section>
+
+<!-- GIFT -->
+<section id="gift" class="gift-section">
+  <div class="reveal">
+    <p class="ml-eyebrow" style="justify-content:center">Diamond Top-Up</p>
+    <h2 class="ml-heading" style="text-align:center">Amplop <span class="gold">Digital</span></h2>
+  </div>
+  <p class="reveal" style="font-family:var(--crim);font-style:italic;font-size:15px;color:var(--ml-gray);text-align:center;margin-top:12px;line-height:1.9;max-width:420px;margin-left:auto;margin-right:auto">
+    Doa restu sudah lebih dari cukup. Namun jika memberi merupakan tanda kasih, kami dengan senang hati menerimanya.
+  </p>
+  <div class="diamond-cards">
+    <div class="diamond-card reveal rd1">
+      <div class="dc-diamond">💎</div>
+      <div class="dc-bank">BCA</div>
+      <div class="dc-holder">Zardarian Ahadika N</div>
+      <div class="dc-number">8210 3705 61</div>
+      <button class="dc-copy" onclick="copyNum('8210370561',this)">◈ SALIN NOMOR</button>
+    </div>
+    <div class="diamond-card reveal rd2">
+      <div class="dc-diamond">💎</div>
+      <div class="dc-bank">BNI</div>
+      <div class="dc-holder">Anita Pangestuti</div>
+      <div class="dc-number">1192 9784 03</div>
+      <button class="dc-copy" onclick="copyNum('1192978403',this)">◈ SALIN NOMOR</button>
+    </div>
+  </div>
+</section>
+
+<!-- RSVP -->
+<section id="rsvp" class="rsvp-section">
+  <div class="rsvp-inner">
+    <div class="reveal">
+      <p class="ml-eyebrow">Join Battle</p>
+      <h2 class="ml-heading" style="margin-bottom:32px">Konfirmasi <span class="gold">Kehadiran</span></h2>
+    </div>
+    <div class="rsvp-stats reveal">
+      <div class="rs"><div class="rs-n">7</div><div class="rs-l">Respons</div></div>
+      <div class="rs"><div class="rs-n">7</div><div class="rs-l">Hadir</div></div>
+      <div class="rs"><div class="rs-n">13</div><div class="rs-l">Heroes</div></div>
+    </div>
+    <div class="fg"><label class="fl">◈ Hero Name</label><input class="fi" id="rName" type="text" placeholder="Nama Anda..."></div>
+    <div class="fg"><label class="fl">◈ Status</label>
+      <select class="fi fs" id="rStatus">
+        <option value="">Pilih status...</option>
+        <option value="hadir">⚔ Hadir</option>
+        <option value="tidak">✗ Tidak Hadir</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">◈ Party Size</label>
+      <div class="guest-row">
+        <button class="gst-btn active" onclick="setGuest(1,this)">Solo (1)</button>
+        <button class="gst-btn" onclick="setGuest(2,this)">Duo (2)</button>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">◈ Pesan & Doa</label><textarea class="fi" id="rMsg" placeholder="Tulis ucapan tulus..."></textarea></div>
+    <button class="rsvp-btn" onclick="submitRSVP()">⚔ CONFIRM — JOIN THE BATTLE</button>
+  </div>
+</section>
+
+<!-- WISHES -->
+<section class="wishes-section">
+  <div class="wishes-inner">
+    <div class="reveal">
+      <p class="ml-eyebrow">Guild Chat</p>
+      <h2 class="ml-heading">Ucapan & <span class="gold">Doa</span></h2>
+    </div>
+    <div class="wishes-list" id="wishesList">
+      <div class="wish-card visible">
+        <div class="wa">AY</div>
+        <div><div class="wn">Ayu Rahmawati</div><div class="ws">⚔ Hadir · 2 heroes</div><p class="wt">Selamat menempuh hidup baru! Semoga sakinah, mawaddah, wa rahmah. Bahagia selalu Anita & Zarda! ⚔</p></div>
+      </div>
+      <div class="wish-card visible">
+        <div class="wa" style="background:linear-gradient(135deg,var(--ml-blue2),var(--ml-purple));color:#fff">RZ</div>
+        <div><div class="wn">Reza Firmansyah</div><div class="ws">⚔ Hadir · 1 hero</div><p class="wt">Alhamdulillah! Semoga pernikahannya membawa keberkahan tiada henti. Aamiin ya Rabbal Alamin.</p></div>
+      </div>
+      <div class="wish-card visible">
+        <div class="wa" style="background:linear-gradient(135deg,var(--ml-purple),#440088);color:#fff">ST</div>
+        <div><div class="wn">Sinta Dewi</div><div class="ws">⚔ Hadir · 2 heroes</div><p class="wt">Wishing you both a lifetime of love! Semoga selalu diberkahi Allah SWT. Mobile Legends! 💎</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <!-- Emblem -->
+  <svg class="footer-emblem" viewBox="0 0 80 80" fill="none">
+    <polygon points="40,4 76,20 76,60 40,76 4,60 4,20" stroke="#C8922A" stroke-width="1.5" fill="none" opacity=".6"/>
+    <path d="M24 48V32l8 8 8-8 8 8V48" stroke="#C8922A" stroke-width="2" fill="none" stroke-linecap="round"/>
+    <circle cx="40" cy="28" r="4" fill="#C8922A" opacity=".6"/>
+  </svg>
+  <div class="footer-title">
+    <div class="gold">ANITA</div>
+    <div class="white">& ZARDA</div>
+  </div>
+  <p class="footer-verse">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu kepada kami yang berbahagia.</p>
+  <div class="footer-div">
+    <div class="fdl"></div><div class="fdg"></div><div class="fdl"></div>
+    <div class="fdg" style="background:var(--ml-blue3);box-shadow:0 0 10px var(--ml-blue3)"></div>
+    <div class="fdl"></div>
+  </div>
+  <p class="footer-brand">Digital Invitation by <a href="#">BridesSpace</a></p>
+</footer>
+
+</div><!-- /main -->
+
+<!-- BATTLE NAV -->
+<nav class="battle-nav" id="battleNav">
+  <a href="#home" class="nav-a active"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home</a>
+  <a href="#couple" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Heroes</a>
+  <a href="#event" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>Battle</a>
+  <a href="#gift" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 14.5a1 1 0 110-2 1 1 0 010 2zm1-4.5h-2V7h2v5z"/></svg>Diamond</a>
+  <a href="#rsvp" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>RSVP</a>
+</nav>
+
+<div class="lbox" id="lbox">
+  <button class="lbox-close" onclick="closeLbox()">✕</button>
+  <button class="lbox-nav lbox-prev" onclick="lboxPrev()">‹</button>
+  <img class="lbox-img" id="lboxImg" src="" alt="">
+  <button class="lbox-nav lbox-next" onclick="lboxNext()">›</button>
+  <div class="lbox-ctr" id="lboxCtr"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const IMGS=[
+  {src:"https://images.unsplash.com/photo-1519741497674-611481863552?w=800&fit=crop&q=80",cap:"Awal Kisah"},
+  {src:"https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&fit=crop&q=80",cap:"Bersama"},
+  {src:"https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&fit=crop&q=80",cap:"Kebahagiaan"},
+  {src:"https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&fit=crop&q=80",cap:"Cinta Abadi"},
+  {src:"https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=800&fit=crop&q=80",cap:"Detail"},
+  {src:"https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=800&fit=crop&q=80",cap:"Momen"},
+  {src:"https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=800&fit=crop&q=80",cap:"Kenangan"},
+  {src:"https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&fit=crop&q=80",cap:"Hari Istimewa"},
+];
+let lboxIdx=0,guestN=1;
+
+/* ── CURSOR ── */
+document.addEventListener('mousemove',e=>{
+  const c=document.getElementById('cur');
+  const r=document.getElementById('cur-circle');
+  if(c){c.style.left=e.clientX+'px';c.style.top=e.clientY+'px';}
+  if(r){r.style.left=e.clientX+'px';r.style.top=e.clientY+'px';}
+});
+
+/* ── RUNES ── */
+const RUNE_CHARS = ['ᚠ','ᚢ','ᚦ','ᚨ','ᚱ','ᚲ','ᚷ','ᚹ','ᚺ','ᚾ','ᛁ','ᛃ','ᛇ','ᛈ','ᛉ','ᛊ','ᛏ','ᛒ','ᛖ','ᛗ','ᛚ','ᛜ','ᛞ','ᛟ'];
+function spawnRune(){
+  const el=document.getElementById('opRunes');
+  if(!el||document.getElementById('opening').classList.contains('hide'))return;
+  const r=document.createElement('div');
+  r.className='rune';
+  r.textContent=RUNE_CHARS[Math.floor(Math.random()*RUNE_CHARS.length)];
+  r.style.cssText=`
+    left:${Math.random()*100}%;
+    bottom:${Math.random()*60}%;
+    animation-duration:${4+Math.random()*4}s;
+    animation-delay:${Math.random()*2}s;
+    font-size:${10+Math.floor(Math.random()*12)}px;
+  `;
+  el.appendChild(r);
+  setTimeout(()=>r.remove(),8000);
+}
+setInterval(spawnRune,600);
+for(let i=0;i<6;i++) setTimeout(spawnRune,i*300);
+
+/* ── OPENING VIDEO ── */
+(function(){
+  const vid=document.getElementById('opVideo');
+  const hint=document.getElementById('opSound');
+  if(!vid)return;
+  vid.addEventListener('canplay',function once(){
+    vid.removeEventListener('canplay',once);
+    vid.play().then(()=>{
+      requestAnimationFrame(()=>vid.classList.add('show'));
+      if(hint)setTimeout(()=>hint.classList.add('show'),3000);
+    }).catch(()=>{});
+  });
+  new MutationObserver(()=>{
+    if(document.getElementById('opening').classList.contains('hide'))vid.pause();
+  }).observe(document.getElementById('opening'),{attributes:true,attributeFilter:['class']});
+})();
+
+/* ── START BATTLE ── */
+function startBattle(){
+  document.getElementById('loadFill').classList.add('go');
+  setTimeout(()=>{
+    document.getElementById('opening').classList.add('hide');
+    setTimeout(()=>{
+      document.getElementById('main').classList.add('show');
+      document.getElementById('battleNav').classList.add('show');
+      buildSkinGrid();
+      startCountdown();
+      initReveal();
+      initNav();
+      startHeroVid();
+    },300);
+  },2000);
+}
+setTimeout(()=>document.getElementById('loadFill')?.classList.add('go'),200);
+
+/* ── HERO VIDEO ── */
+function startHeroVid(){
+  const vid=document.getElementById('heroBgVid');
+  if(!vid)return;
+  vid.muted=true;vid.load();
+  vid.play().then(()=>setTimeout(()=>vid.classList.add('show'),200)).catch(()=>{});
+}
+
+/* ── SKIN GRID ── */
+function buildSkinGrid(){
+  const g=document.getElementById('skinGrid');
+  if(!g)return;
+  IMGS.forEach((img,i)=>{
+    const item=document.createElement('div');
+    item.className='skin-item';
+    item.innerHTML=`
+      <img src="${img.src}" alt="${img.cap}" loading="lazy">
+      <div class="skin-overlay"></div>
+      <div class="skin-caption">${img.cap}</div>
+      <div class="skin-badge">SKIN ${String(i+1).padStart(2,'0')}</div>
+      <div class="skin-limited">LIMITED</div>
+    `;
+    item.addEventListener('click',()=>openLbox(i));
+    g.appendChild(item);
+  });
+}
+
+/* ── LIGHTBOX ── */
+function openLbox(i){lboxIdx=i;updateLbox();document.getElementById('lbox').classList.add('open');document.body.style.overflow='hidden';}
+function closeLbox(){document.getElementById('lbox').classList.remove('open');document.body.style.overflow='';}
+function lboxPrev(){lboxIdx=(lboxIdx-1+IMGS.length)%IMGS.length;updateLbox();}
+function lboxNext(){lboxIdx=(lboxIdx+1)%IMGS.length;updateLbox();}
+function updateLbox(){
+  document.getElementById('lboxImg').src=IMGS[lboxIdx].src;
+  document.getElementById('lboxCtr').textContent=`${lboxIdx+1} / ${IMGS.length}`;
+}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lbox').classList.contains('open'))return;
+  if(e.key==='Escape')closeLbox();
+  if(e.key==='ArrowLeft')lboxPrev();
+  if(e.key==='ArrowRight')lboxNext();
+});
+
+/* ── COUNTDOWN ── */
+function startCountdown(){
+  const T=new Date('2026-05-24T08:00:00');
+  function tick(){
+    const d=T-new Date();if(d<=0)return;
+    document.getElementById('cdD').textContent=String(Math.floor(d/86400000)).padStart(2,'0');
+    document.getElementById('cdH').textContent=String(Math.floor((d%86400000)/3600000)).padStart(2,'0');
+    document.getElementById('cdM').textContent=String(Math.floor((d%3600000)/60000)).padStart(2,'0');
+    document.getElementById('cdS').textContent=String(Math.floor((d%60000)/1000)).padStart(2,'0');
+  }
+  tick();setInterval(tick,1000);
+}
+
+/* ── REVEAL ── */
+function initReveal(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+  },{threshold:.1});
+  document.querySelectorAll('.reveal,.tl-item,.wish-card').forEach(el=>obs.observe(el));
+}
+
+/* ── NAV ── */
+function initNav(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        document.querySelectorAll('.nav-a').forEach(n=>n.classList.remove('active'));
+        const a=document.querySelector(`.nav-a[href="#${e.target.id}"]`);
+        if(a)a.classList.add('active');
+      }
+    });
+  },{rootMargin:'-40% 0px -40% 0px'});
+  ['home','couple','event','gift','rsvp'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el);});
+}
+
+/* ── RSVP ── */
+function setGuest(n,btn){
+  guestN=n;
+  document.querySelectorAll('.gst-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function submitRSVP(){
+  const nm=document.getElementById('rName').value.trim();
+  const st=document.getElementById('rStatus').value;
+  const msg=document.getElementById('rMsg').value.trim();
+  if(!nm||!st){showToast('◈ ISI NAMA DAN STATUS DULU!');return;}
+  const init=nm.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const grads=[
+    'linear-gradient(135deg,var(--ml-gold),#7A4A00)',
+    'linear-gradient(135deg,var(--ml-blue2),var(--ml-purple))',
+    'linear-gradient(135deg,var(--ml-purple),#440088)',
+    'linear-gradient(135deg,#AA2200,#660000)',
+    'linear-gradient(135deg,#006644,#004422)',
+  ];
+  const grad=grads[Math.floor(Math.random()*grads.length)];
+  const col=grad.includes('gold')?'#000':'#fff';
+  const stTxt=st==='hadir'?`⚔ Hadir · ${guestN} hero${guestN>1?'es':''}`:'✗ Tidak Hadir';
+  const card=document.createElement('div');
+  card.className='wish-card';
+  card.innerHTML=`<div class="wa" style="background:${grad};color:${col}">${init}</div><div><div class="wn">${nm}</div><div class="ws">${stTxt}</div><p class="wt">${msg||'Selamat dan bahagia selalu! ⚔💎'}</p></div>`;
+  document.getElementById('wishesList').prepend(card);
+  setTimeout(()=>card.classList.add('visible'),50);
+  document.getElementById('rName').value='';document.getElementById('rStatus').value='';document.getElementById('rMsg').value='';
+  showToast('◈ JOINED THE BATTLE! TERIMA KASIH ✓');
+  setTimeout(()=>document.querySelector('.wishes-section').scrollIntoView({behavior:'smooth',block:'start'}),500);
+}
+
+/* ── COPY ── */
+function copyNum(txt,btn){
+  navigator.clipboard.writeText(txt).then(()=>{
+    btn.classList.add('copied');btn.textContent='✓ TERSALIN!';
+    showToast('◈ NOMOR REKENING TERSALIN!');
+    setTimeout(()=>{btn.classList.remove('copied');btn.textContent='◈ SALIN NOMOR';},2500);
+  }).catch(()=>showToast('Salin: '+txt));
+}
+
+/* ── TOAST ── */
+let tt;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2800);
+}
+</script>
+</body>
+</html>

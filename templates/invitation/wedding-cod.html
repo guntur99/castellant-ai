@@ -1,0 +1,1721 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anita & Zarda — CLASSIFIED: Operation Wedding</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;600;700&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&family=Black+Ops+One&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cod-green:   #4A7C2F;
+  --cod-green2:  #5D9E3A;
+  --cod-green3:  #7AB84A;
+  --cod-olive:   #6B7C3A;
+  --cod-olive2:  #8A9A4A;
+  --cod-khaki:   #B5AA7A;
+  --cod-khaki2:  #D4C88A;
+  --cod-tan:     #C8B87A;
+  --cod-gold:    #D4A820;
+  --cod-gold2:   #E8C040;
+  --cod-gold3:   #F5D860;
+  --cod-red:     #CC2200;
+  --cod-red2:    #EE3311;
+  --cod-orange:  #E87020;
+  --cod-bg:      #0A0C08;
+  --cod-bg2:     #0E100C;
+  --cod-bg3:     #141810;
+  --cod-bg4:     #1C2018;
+  --cod-card:    rgba(255,255,255,.04);
+  --cod-border:  rgba(180,170,100,.2);
+  --cod-border2: rgba(180,170,100,.45);
+  --cod-gray:    #7A8470;
+  --cod-gray2:   #4A5040;
+  --cod-white:   #E8E4D8;
+
+  --osw:  'Oswald', sans-serif;
+  --raj:  'Rajdhani', sans-serif;
+  --mono: 'Share Tech Mono', monospace;
+  --ops:  'Black Ops One', cursive;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--cod-bg);
+  color:var(--cod-white);
+  font-family:var(--raj);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ── CURSOR — TACTICAL CROSSHAIR ── */
+#cur{
+  width:24px;height:24px;
+  position:fixed;z-index:99999;
+  pointer-events:none;
+  transform:translate(-50%,-50%);
+}
+#cur::before,#cur::after{content:'';position:absolute;background:var(--cod-green3)}
+#cur::before{left:50%;top:3px;bottom:3px;width:1px;transform:translateX(-50%)}
+#cur::after{top:50%;left:3px;right:3px;height:1px;transform:translateY(-50%)}
+#cur-outer{
+  position:fixed;z-index:99998;
+  width:24px;height:24px;
+  border:1px solid rgba(90,160,50,.5);
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  transition:left .08s,top .08s;
+}
+#cur-dot{
+  position:fixed;z-index:99999;
+  width:2px;height:2px;
+  background:var(--cod-green3);
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  box-shadow:0 0 4px var(--cod-green3);
+}
+
+/* ════════════════════════════
+   OPENING — CLASSIFIED DOSSIER
+════════════════════════════ */
+#opening{
+  position:fixed;inset:0;z-index:9990;
+  background:var(--cod-bg);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:24px;
+  overflow:hidden;
+  transition:opacity .8s ease;
+}
+#opening.hide{opacity:0;pointer-events:none}
+
+/* Video bg */
+.op-vid{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;z-index:0;opacity:0;
+  transition:opacity 3s ease;
+  filter:saturate(.08) brightness(.25) contrast(1.4) sepia(.5) hue-rotate(60deg);
+}
+.op-vid.show{opacity:1}
+/* Overlays */
+.op-ov1{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 110% 110% at 50% 50%,rgba(10,12,8,.4) 0%,rgba(10,12,8,.93) 100%)}
+.op-ov2{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(180deg,rgba(10,12,8,.85) 0%,transparent 30%,transparent 70%,rgba(10,12,8,.88) 100%)}
+.op-ov-green{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:radial-gradient(ellipse 60% 35% at 50% 80%,rgba(74,124,47,.08) 0%,transparent 70%)}
+/* NVG scanlines */
+.op-scan{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:repeating-linear-gradient(
+    0deg,transparent 0,transparent 2px,
+    rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px
+  )}
+/* Static noise */
+.op-noise{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:120px}
+
+/* Sound hint */
+.op-sound{
+  position:absolute;bottom:48px;right:20px;z-index:3;
+  font-family:var(--mono);font-size:8px;letter-spacing:.2em;
+  color:rgba(90,160,50,.35);
+  display:flex;align-items:center;gap:6px;
+  opacity:0;transition:opacity .4s ease 3s;
+}
+.op-sound.show{opacity:1}
+.osb-wrap{display:flex;align-items:flex-end;gap:2px;height:12px}
+.osb{width:2px;background:rgba(90,160,50,.5);border-radius:1px;
+  animation:osbA var(--d,.5s) ease-in-out infinite alternate}
+@keyframes osbA{from{height:2px}to{height:100%}}
+
+.op-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
+
+/* CLASSIFIED stamp effect */
+.op-classified{
+  position:absolute;top:40px;right:40px;z-index:3;
+  font-family:var(--ops);font-size:clamp(18px,4vw,28px);
+  color:rgba(204,34,0,.6);
+  border:3px solid rgba(204,34,0,.4);
+  padding:6px 16px;
+  transform:rotate(-15deg);
+  letter-spacing:.1em;
+  text-shadow:0 0 20px rgba(204,34,0,.3);
+  pointer-events:none;
+}
+@media(max-width:500px){.op-classified{display:none}}
+
+/* CoD skull/emblem */
+.op-emblem{
+  width:80px;height:80px;margin:0 auto 18px;
+  opacity:0;animation:fadeUp .7s ease .2s forwards;
+}
+
+/* Rank/clearance */
+.op-clearance{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(74,124,47,.1);
+  border:1px solid rgba(74,124,47,.3);
+  padding:5px 16px;margin-bottom:14px;
+  font-family:var(--mono);font-size:9px;
+  color:var(--cod-green3);letter-spacing:.25em;text-transform:uppercase;
+  opacity:0;animation:fadeUp .5s ease .5s forwards;
+}
+.op-clearance-dot{width:6px;height:6px;border-radius:50%;background:var(--cod-green3);
+  animation:clearDot 1s step-end infinite}
+@keyframes clearDot{0%,100%{opacity:1}50%{opacity:0}}
+
+/* Title */
+.op-title{
+  font-family:var(--ops);
+  font-size:clamp(44px,12vw,88px);
+  line-height:.9;letter-spacing:.04em;margin-bottom:8px;
+  opacity:0;animation:fadeUp .7s ease .7s forwards;
+}
+.op-title .green{
+  display:block;
+  background:linear-gradient(180deg,var(--cod-green3) 0%,var(--cod-green) 60%,#2A4A18 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 16px rgba(74,124,47,.5));
+}
+.op-title .white{display:block;color:var(--cod-white)}
+.op-mission-id{
+  font-family:var(--mono);font-size:10px;letter-spacing:.28em;
+  color:var(--cod-gray);text-transform:uppercase;margin-bottom:28px;
+  opacity:0;animation:fadeUp .5s ease .9s forwards;
+}
+
+/* Dossier box */
+.op-dossier{
+  background:rgba(180,170,100,.06);
+  border:1px solid var(--cod-border2);
+  padding:18px 28px;max-width:420px;width:100%;
+  margin-bottom:28px;position:relative;text-align:left;
+  opacity:0;animation:fadeUp .6s ease 1.1s forwards;
+}
+.op-dossier::before{content:'';position:absolute;top:4px;left:4px;width:12px;height:12px;
+  border-top:2px solid var(--cod-tan);border-left:2px solid var(--cod-tan)}
+.op-dossier::after{content:'';position:absolute;bottom:4px;right:4px;width:12px;height:12px;
+  border-bottom:2px solid var(--cod-tan);border-right:2px solid var(--cod-tan)}
+.op-dossier-row{display:flex;gap:12px;margin-bottom:8px;align-items:baseline}
+.op-dossier-row:last-child{margin-bottom:0}
+.op-dossier-key{font-family:var(--mono);font-size:8px;letter-spacing:.2em;
+  color:var(--cod-tan);text-transform:uppercase;white-space:nowrap;min-width:90px}
+.op-dossier-val{font-family:var(--osw);font-size:clamp(13px,3vw,16px);
+  color:var(--cod-white);font-weight:400;letter-spacing:.06em}
+
+/* Deploy button */
+.op-deploy{
+  display:inline-flex;align-items:center;gap:12px;
+  background:linear-gradient(135deg,#2A4A18,var(--cod-green),#2A4A18);
+  border:none;color:var(--cod-bg);
+  font-family:var(--osw);font-size:18px;font-weight:700;letter-spacing:.15em;
+  text-transform:uppercase;padding:14px 44px;cursor:none;
+  clip-path:polygon(12px 0,calc(100% - 12px) 0,100% 12px,100% calc(100% - 12px),calc(100% - 12px) 100%,12px 100%,0 calc(100% - 12px),0 12px);
+  box-shadow:0 0 28px rgba(74,124,47,.4);
+  transition:box-shadow .2s,transform .1s;
+  opacity:0;animation:fadeUp .6s ease 1.4s forwards;
+}
+.op-deploy:hover{box-shadow:0 0 48px rgba(74,124,47,.65);transform:scale(1.03)}
+.op-deploy:active{transform:scale(.97)}
+.op-deploy-blink{
+  width:10px;height:10px;border-radius:50%;background:var(--cod-bg);
+  animation:deployBlink 1s ease-in-out infinite;
+}
+@keyframes deployBlink{0%,100%{opacity:1;box-shadow:0 0 0 0 rgba(0,0,0,.4)}50%{opacity:.5;box-shadow:0 0 0 4px rgba(0,0,0,0)}}
+
+/* Loading bar */
+.op-loading{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.04);z-index:3}
+.op-loading-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--cod-green),var(--cod-green3));
+  transition:width 2s ease 1.6s;
+  box-shadow:0 0 8px var(--cod-green3);
+}
+.op-loading-fill.go{width:100%}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ════════════════════
+   MAIN
+════════════════════ */
+#main{opacity:0;transition:opacity .8s}
+#main.show{opacity:1}
+
+/* ════════════════════
+   HERO — TACTICAL OPS
+════════════════════ */
+.hero{
+  min-height:100svh;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;background:var(--cod-bg2);
+}
+/* Terrain */
+.hero-terrain{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 45% 30% at 20% 55%,rgba(40,60,20,.8) 0%,transparent 100%),
+    radial-gradient(ellipse 30% 20% at 80% 40%,rgba(30,50,15,.7) 0%,transparent 100%),
+    radial-gradient(ellipse 50% 40% at 60% 85%,rgba(20,35,10,.6) 0%,transparent 100%);
+}
+/* Camo pattern */
+.hero-camo{
+  position:absolute;inset:0;
+  background-image:
+    radial-gradient(ellipse 80px 50px at 10% 20%,rgba(74,124,47,.06) 0%,transparent 100%),
+    radial-gradient(ellipse 100px 60px at 75% 10%,rgba(50,80,25,.05) 0%,transparent 100%),
+    radial-gradient(ellipse 60px 40px at 50% 60%,rgba(90,110,50,.04) 0%,transparent 100%),
+    radial-gradient(ellipse 120px 70px at 90% 75%,rgba(60,90,30,.06) 0%,transparent 100%),
+    linear-gradient(rgba(180,170,100,.012) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(180,170,100,.012) 1px,transparent 1px);
+  background-size:auto,auto,auto,auto,60px 60px,60px 60px;
+}
+.hero-vid{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:0;transition:opacity 1.5s ease;
+  filter:saturate(.12) brightness(.3) contrast(1.2) sepia(.5) hue-rotate(60deg);z-index:1;
+}
+.hero-vid.show{opacity:1}
+.hero-ov{
+  position:absolute;inset:0;z-index:2;
+  background:
+    linear-gradient(180deg,rgba(10,12,8,.8) 0%,rgba(10,12,8,.15) 25%,rgba(10,12,8,.1) 65%,rgba(10,12,8,.92) 100%),
+    linear-gradient(90deg,rgba(10,12,8,.7) 0%,transparent 55%);
+}
+/* NVG scanline on hero */
+.hero-scan{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:repeating-linear-gradient(
+    0deg,transparent 0,transparent 3px,rgba(0,0,0,.04) 3px,rgba(0,0,0,.04) 4px
+  );
+}
+
+/* Helicopter fly-over */
+.heli-wrap{
+  position:absolute;top:80px;z-index:8;pointer-events:none;
+  opacity:0;animation:heliPass 10s linear 1.5s forwards;
+}
+@keyframes heliPass{
+  0%{left:-160px;opacity:0}10%{opacity:1}
+  90%{opacity:1}100%{left:calc(100% + 160px);opacity:0}
+}
+
+/* Smoke grenades */
+.smoke{
+  position:absolute;z-index:3;pointer-events:none;
+  border-radius:50%;
+  animation:smokeBilllow 4s ease-out forwards;opacity:0;
+}
+@keyframes smokeBilllow{
+  0%{opacity:0;transform:scale(.3)}
+  20%{opacity:.4}
+  100%{opacity:0;transform:scale(2.5)}
+}
+
+/* Tactical marker */
+.tac-marker{
+  position:absolute;z-index:7;pointer-events:none;
+}
+.tm-box{
+  border:1px solid;padding:2px 8px;
+  font-family:var(--mono);font-size:8px;letter-spacing:.12em;
+  text-transform:uppercase;
+}
+.tm-line{width:1px;height:20px;margin:0 auto}
+
+/* Minimap */
+.hero-minimap{
+  position:absolute;top:80px;right:44px;z-index:10;
+  width:190px;border:1px solid rgba(180,170,100,.3);
+  background:rgba(10,12,8,.88);
+  backdrop-filter:blur(8px);
+}
+@media(max-width:700px){.hero-minimap{display:none}}
+.mm-header{
+  background:rgba(74,124,47,.15);
+  border-bottom:1px solid rgba(180,170,100,.2);
+  padding:5px 10px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.mm-header-lbl{font-family:var(--mono);font-size:8px;letter-spacing:.2em;color:var(--cod-green3);text-transform:uppercase}
+.mm-header-coord{font-family:var(--mono);font-size:8px;color:var(--cod-gray);letter-spacing:.08em}
+.mm-body{position:relative;height:160px;overflow:hidden}
+.mm-bg-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(180,170,100,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(180,170,100,.04) 1px,transparent 1px);
+  background-size:20px 20px;
+}
+.mm-terrain-patch{position:absolute;border-radius:40% 60% 55% 45%;background:rgba(40,60,20,.6)}
+.mm-road{position:absolute;background:rgba(100,90,60,.35)}
+.mm-obj{
+  position:absolute;
+  width:8px;height:8px;
+  border:1px solid;
+  transform:translate(-50%,-50%);
+}
+.mm-player-dot{
+  position:absolute;
+  width:8px;height:8px;border-radius:50%;
+  border:1px solid rgba(0,0,0,.8);
+  transform:translate(-50%,-50%);
+}
+.mm-footer{
+  border-top:1px solid rgba(180,170,100,.15);
+  padding:5px 10px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.mm-footer-txt{font-family:var(--mono);font-size:7px;color:var(--cod-gray2);letter-spacing:.1em}
+.mm-footer-live{font-family:var(--mono);font-size:7px;color:var(--cod-green3);letter-spacing:.1em;
+  display:flex;align-items:center;gap:4px}
+.mm-live-dot{width:4px;height:4px;border-radius:50%;background:var(--cod-green3);
+  animation:livePulse 1s step-end infinite}
+@keyframes livePulse{0%,100%{opacity:1}50%{opacity:0}}
+
+/* Hero content */
+.hero-content{
+  position:relative;z-index:10;flex:1;
+  display:flex;align-items:flex-end;padding:0 44px 80px;
+}
+@media(max-width:640px){.hero-content{padding:0 20px 96px}}
+.hero-main{max-width:680px;width:100%}
+
+.hm-threat{
+  display:inline-flex;align-items:center;gap:7px;
+  background:rgba(204,34,0,.12);border:1px solid rgba(204,34,0,.3);
+  font-family:var(--mono);font-size:9px;
+  color:#FF4422;letter-spacing:.18em;text-transform:uppercase;
+  padding:5px 14px;margin-bottom:14px;width:fit-content;
+}
+.hm-threat-blink{width:5px;height:5px;border-radius:50%;background:#FF4422;
+  animation:threatBlink .6s step-end infinite}
+@keyframes threatBlink{0%,100%{opacity:1}50%{opacity:0}}
+
+.hm-title{
+  font-family:var(--ops);
+  font-size:clamp(44px,9vw,88px);
+  line-height:.9;letter-spacing:.03em;margin-bottom:8px;
+}
+.hm-title .green{
+  display:block;
+  background:linear-gradient(180deg,var(--cod-green3) 0%,var(--cod-green) 55%,#1A3010 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 14px rgba(74,124,47,.5));
+}
+.hm-title .white{display:block;color:var(--cod-white)}
+
+.hm-tags{display:flex;flex-wrap:wrap;gap:7px;margin:16px 0 24px}
+.hm-tag{
+  font-family:var(--mono);font-size:9px;letter-spacing:.12em;
+  padding:5px 12px;border:1px solid;
+}
+.hm-tag.green{color:var(--cod-green3);border-color:rgba(74,124,47,.3);background:rgba(74,124,47,.07)}
+.hm-tag.tan{color:var(--cod-tan);border-color:var(--cod-border);background:rgba(180,170,100,.06)}
+.hm-tag.gray{color:var(--cod-gray);border-color:var(--cod-gray2);background:rgba(255,255,255,.03)}
+
+.hm-actions{display:flex;gap:12px;flex-wrap:wrap}
+.cod-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--osw);font-size:15px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;
+  padding:12px 28px;border:none;cursor:none;
+  transition:all .15s;text-decoration:none;
+}
+.cod-btn-primary{
+  background:linear-gradient(135deg,#2A4A18,var(--cod-green),#2A4A18);color:var(--cod-bg);
+  clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
+  box-shadow:0 4px 20px rgba(74,124,47,.35);
+}
+.cod-btn-primary:hover{box-shadow:0 6px 32px rgba(74,124,47,.55);transform:translateY(-2px)}
+.cod-btn-secondary{
+  background:rgba(255,255,255,.06);color:var(--cod-white);
+  border:1px solid rgba(180,170,100,.25);
+  clip-path:polygon(10px 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
+}
+.cod-btn-secondary:hover{background:rgba(255,255,255,.11);transform:translateY(-2px)}
+
+/* Info bar */
+.hero-bar{
+  position:absolute;bottom:0;left:0;right:0;z-index:10;
+  background:rgba(10,12,8,.9);backdrop-filter:blur(12px);
+  border-top:1px solid var(--cod-border);
+  display:flex;overflow-x:auto;scrollbar-width:none;
+}
+.hero-bar::-webkit-scrollbar{display:none}
+.hbar{flex-shrink:0;padding:12px 22px;border-right:1px solid rgba(180,170,100,.07);position:relative}
+.hbar::before{content:'';position:absolute;left:0;top:25%;bottom:25%;width:2px;background:var(--cod-green)}
+.hbar-lbl{font-family:var(--mono);font-size:8px;color:var(--cod-green3);letter-spacing:.2em;text-transform:uppercase;margin-bottom:3px}
+.hbar-val{font-family:var(--osw);font-size:16px;font-weight:600;color:var(--cod-white);letter-spacing:.04em}
+.hbar-sub{font-size:10px;color:var(--cod-gray2);margin-top:1px}
+
+/* ════════════════════
+   INTEL BAND
+════════════════════ */
+.intel-band{
+  background:rgba(74,124,47,.08);
+  border-top:1px solid rgba(74,124,47,.2);
+  border-bottom:1px solid rgba(74,124,47,.2);
+  overflow:hidden;height:36px;display:flex;align-items:center;
+}
+.intel-lbl{
+  background:var(--cod-green);color:var(--cod-bg);
+  font-family:var(--osw);font-size:14px;font-weight:700;letter-spacing:.12em;
+  padding:0 18px;height:100%;display:flex;align-items:center;
+  flex-shrink:0;white-space:nowrap;text-transform:uppercase;
+}
+.intel-txt{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  color:rgba(90,160,50,.8);white-space:nowrap;
+  animation:intelScroll 28s linear infinite;
+}
+@keyframes intelScroll{0%{transform:translateX(100vw)}100%{transform:translateX(-200%)}}
+
+/* ════════════════════
+   COUNTDOWN — OPS TIMER
+════════════════════ */
+.cd-section{
+  background:var(--cod-bg3);padding:72px 24px;text-align:center;
+  border-top:1px solid var(--cod-border);position:relative;overflow:hidden;
+}
+.cd-section::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 70% 50% at 50% 120%,rgba(74,124,47,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.cd-eyebrow{
+  font-family:var(--mono);font-size:9px;letter-spacing:.35em;
+  color:var(--cod-green3);text-transform:uppercase;margin-bottom:8px;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.cd-eyebrow::before,.cd-eyebrow::after{content:'';width:20px;height:1px;background:var(--cod-green)}
+.cd-title{
+  font-family:var(--osw);font-size:clamp(18px,4vw,26px);font-weight:600;
+  color:var(--cod-white);margin-bottom:44px;letter-spacing:.08em;text-transform:uppercase;
+}
+.cd-grid{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+.cd-box{
+  background:rgba(74,124,47,.06);border:1px solid var(--cod-border2);
+  padding:22px 18px 16px;min-width:96px;
+  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
+  position:relative;
+}
+.cd-box::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--cod-green),var(--cod-green3),transparent)}
+.cd-n{
+  font-family:var(--ops);font-size:clamp(44px,9vw,62px);letter-spacing:.03em;
+  background:linear-gradient(180deg,var(--cod-green3) 0%,var(--cod-green) 65%,#1A3010 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 10px rgba(74,124,47,.4));
+  line-height:1;margin-bottom:8px;
+}
+.cd-u{font-family:var(--mono);font-size:8px;letter-spacing:.25em;color:var(--cod-gray2);text-transform:uppercase}
+@media(max-width:480px){.cd-box{min-width:80px;padding:18px 12px 14px}}
+
+/* ════════════════════
+   OPERATOR CARDS — COUPLE
+════════════════════ */
+.op-section{
+  background:var(--cod-bg2);padding:76px 24px;
+  position:relative;overflow:hidden;
+}
+.op-section::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 100% 70% at 50% 100%,rgba(74,124,47,.04) 0%,transparent 70%);
+  pointer-events:none;
+}
+.op-grid{
+  display:grid;grid-template-columns:1fr auto 1fr;
+  gap:20px;align-items:center;max-width:840px;margin:40px auto 0;
+}
+@media(max-width:660px){.op-grid{grid-template-columns:1fr;max-width:360px}}
+
+.operator-card{
+  background:var(--cod-bg3);border:1px solid var(--cod-border);
+  clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,18px 100%,0 calc(100% - 18px));
+  overflow:hidden;transition:transform .2s,border-color .2s,box-shadow .2s;
+}
+.operator-card:hover{transform:translateY(-6px);border-color:var(--cod-border2);
+  box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 0 1px rgba(180,170,100,.15)}
+
+.oc-art{height:180px;overflow:hidden;position:relative;background:var(--cod-bg4)}
+.oc-art img{
+  width:100%;height:100%;object-fit:cover;object-position:top;
+  filter:saturate(.55) brightness(.65) contrast(1.08) sepia(.2);
+  transition:transform .5s,filter .3s;
+}
+.operator-card:hover .oc-art img{transform:scale(1.06);filter:saturate(.75) brightness(.75)}
+.oc-art-ov{
+  position:absolute;inset:0;
+  background:linear-gradient(0deg,var(--cod-bg3) 0%,transparent 45%),
+             linear-gradient(135deg,rgba(74,124,47,.2),transparent 50%);
+}
+/* Operator callsign */
+.oc-callsign{
+  position:absolute;top:10px;left:10px;
+  background:rgba(0,0,0,.75);backdrop-filter:blur(6px);
+  border:1px solid var(--cod-border);
+  font-family:var(--mono);font-size:8px;color:var(--cod-green3);
+  padding:3px 10px;letter-spacing:.15em;text-transform:uppercase;
+}
+/* Faction badge */
+.oc-faction{
+  position:absolute;top:10px;right:10px;
+  background:linear-gradient(135deg,#2A4A18,var(--cod-green));color:var(--cod-bg);
+  font-family:var(--osw);font-size:11px;font-weight:700;letter-spacing:.1em;
+  padding:3px 10px;
+}
+
+.oc-body{padding:16px 18px 20px}
+.oc-role{font-family:var(--mono);font-size:8px;letter-spacing:.22em;
+  color:var(--cod-tan);text-transform:uppercase;margin-bottom:4px}
+.oc-name{
+  font-family:var(--osw);font-size:clamp(16px,3.5vw,20px);font-weight:600;
+  letter-spacing:.06em;color:var(--cod-white);margin-bottom:6px;
+  line-height:1.1;text-transform:uppercase;
+}
+.oc-parents{font-size:11px;color:var(--cod-gray2);font-weight:500;line-height:1.7}
+
+/* Perk row */
+.oc-perks{
+  display:flex;gap:6px;margin-top:14px;padding-top:12px;
+  border-top:1px solid var(--cod-border);
+}
+.oc-perk{
+  width:34px;height:34px;border-radius:3px;
+  background:rgba(180,170,100,.07);border:1px solid var(--cod-border);
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+  transition:background .15s;cursor:none;
+}
+.oc-perk:hover{background:rgba(180,170,100,.15)}
+.oc-rank-badge{
+  margin-left:auto;font-family:var(--mono);font-size:8px;
+  color:var(--cod-gold2);letter-spacing:.1em;
+  align-self:flex-end;
+}
+
+/* BRAVO vs */
+.vs-ops{
+  text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.vs-txt{
+  font-family:var(--ops);font-size:clamp(32px,7vw,54px);
+  background:linear-gradient(180deg,var(--cod-tan),var(--cod-khaki),var(--cod-gray2));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  user-select:none;letter-spacing:.06em;
+}
+.vs-sub{font-family:var(--mono);font-size:8px;color:var(--cod-gray2);letter-spacing:.2em;text-transform:uppercase}
+@media(max-width:660px){.vs-txt{font-size:44px}}
+
+/* ════════════════════
+   KILLSTREAK / TROPHY TIMELINE
+════════════════════ */
+.ks-section{
+  background:var(--cod-bg);padding:76px 24px;
+  border-top:1px solid var(--cod-border);position:relative;overflow:hidden;
+}
+.ks-section::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 50% 40% at 0% 50%,rgba(74,124,47,.04) 0%,transparent 70%),
+    radial-gradient(ellipse 50% 40% at 100% 50%,rgba(180,170,100,.02) 0%,transparent 70%);
+  pointer-events:none;
+}
+
+.ks-list{max-width:680px;margin:40px auto 0;display:flex;flex-direction:column;gap:12px}
+.ks-card{
+  display:flex;gap:18px;align-items:flex-start;
+  background:rgba(180,170,100,.04);border:1px solid var(--cod-border);
+  border-left:3px solid var(--cod-green);
+  padding:18px 20px;
+  opacity:0;transform:translateX(-16px);
+  transition:opacity .6s,transform .6s,background .2s;
+}
+.ks-card.visible{opacity:1;transform:translateX(0)}
+.ks-card:hover{background:rgba(180,170,100,.07)}
+.ks-icon{
+  width:52px;height:52px;flex-shrink:0;
+  background:rgba(74,124,47,.1);border:1px solid var(--cod-border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;
+  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
+}
+.ks-content{flex:1;min-width:0}
+.ks-chapter{font-family:var(--mono);font-size:8px;color:var(--cod-green3);
+  letter-spacing:.2em;text-transform:uppercase;margin-bottom:4px}
+.ks-title{
+  font-family:var(--osw);font-size:clamp(16px,3.5vw,22px);font-weight:600;
+  letter-spacing:.06em;color:var(--cod-white);text-transform:uppercase;
+  margin-bottom:6px;
+}
+.ks-desc{font-size:13px;color:var(--cod-gray);font-weight:400;line-height:1.75}
+.ks-date{
+  font-family:var(--mono);font-size:9px;color:var(--cod-gray2);
+  letter-spacing:.1em;white-space:nowrap;align-self:flex-start;
+  margin-top:2px;
+}
+
+/* ════════════════════
+   EVENTS — SITREP
+════════════════════ */
+.event-section{
+  background:var(--cod-bg2);padding:76px 24px;
+  border-top:1px solid var(--cod-border);
+}
+.sitrep-cards{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:16px;max-width:840px;margin:40px auto 0;
+}
+@media(max-width:560px){.sitrep-cards{grid-template-columns:1fr}}
+.sitrep-card{
+  background:var(--cod-bg3);border:1px solid var(--cod-border);
+  clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));
+  overflow:hidden;transition:transform .2s,border-color .2s;
+}
+.sitrep-card:hover{transform:translateY(-4px);border-color:var(--cod-border2)}
+.sc-img{height:130px;overflow:hidden;position:relative;background:var(--cod-bg4)}
+.sc-img img{
+  width:100%;height:100%;object-fit:cover;
+  filter:saturate(.4) brightness(.55) contrast(1.1) sepia(.3);
+  transition:transform .5s;
+}
+.sitrep-card:hover .sc-img img{transform:scale(1.06)}
+.sc-img-ov{
+  position:absolute;inset:0;
+  background:linear-gradient(0deg,var(--cod-bg3) 0%,transparent 50%),
+             linear-gradient(135deg,rgba(74,124,47,.15),transparent 50%);
+}
+.sc-obj-tag{
+  position:absolute;top:10px;left:10px;
+  background:rgba(0,0,0,.75);backdrop-filter:blur(6px);
+  border:1px solid var(--cod-border);
+  font-family:var(--mono);font-size:8px;color:var(--cod-green3);
+  padding:3px 10px;letter-spacing:.15em;text-transform:uppercase;
+}
+.sc-body{padding:18px 20px 22px}
+.sc-title{
+  font-family:var(--osw);font-size:clamp(18px,4vw,26px);font-weight:600;
+  letter-spacing:.05em;color:var(--cod-white);text-transform:uppercase;
+  margin-bottom:14px;line-height:1.1;
+}
+.sc-row{display:flex;align-items:flex-start;gap:8px;margin-bottom:10px}
+.sc-ico{color:var(--cod-green3);flex-shrink:0;margin-top:2px;width:14px;height:14px}
+.sc-txt{font-size:12px;color:var(--cod-gray);font-weight:500;line-height:1.6}
+.sc-maps{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:14px;background:rgba(74,124,47,.1);
+  border:1px solid rgba(74,124,47,.3);color:var(--cod-green3);
+  font-family:var(--mono);font-size:9px;letter-spacing:.15em;text-transform:uppercase;
+  padding:9px 18px;text-decoration:none;cursor:none;
+  clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,7px 100%,0 calc(100% - 7px));
+  transition:background .15s;
+}
+.sc-maps:hover{background:rgba(74,124,47,.18)}
+
+/* ════════════════════
+   GALLERY — FIELD PHOTOS
+════════════════════ */
+.gal-section{
+  background:var(--cod-bg);padding:76px 0;
+  border-top:1px solid var(--cod-border);
+}
+.gal-head{
+  max-width:1040px;margin:0 auto 28px;padding:0 40px;
+  display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:16px;
+}
+@media(max-width:640px){.gal-head{padding:0 20px}}
+.gal-sub{font-family:var(--mono);font-size:9px;color:var(--cod-gray2);letter-spacing:.2em;text-transform:uppercase}
+.gal-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:3px;
+  max-width:1040px;margin:0 auto;padding:0 40px;
+}
+@media(max-width:720px){.gal-grid{grid-template-columns:repeat(2,1fr);padding:0 20px}}
+.gal-item{position:relative;overflow:hidden;aspect-ratio:16/9;cursor:none;background:var(--cod-bg3)}
+.gal-item:nth-child(1){grid-column:span 2;grid-row:span 2;aspect-ratio:auto}
+@media(max-width:720px){.gal-item:nth-child(1){grid-column:span 2;aspect-ratio:16/9}}
+.gal-item img{
+  width:100%;height:100%;object-fit:cover;
+  filter:saturate(.6) contrast(1.08) brightness(.82) sepia(.15);
+  transition:transform .5s,filter .3s;
+}
+.gal-item:hover img{transform:scale(1.06);filter:saturate(.85) contrast(1.12) brightness(.9)}
+.gal-ov{position:absolute;inset:0;background:linear-gradient(0deg,rgba(10,12,8,.8) 0%,transparent 50%);opacity:0;transition:opacity .3s}
+.gal-item:hover .gal-ov{opacity:1}
+.gal-cap{
+  position:absolute;bottom:0;left:0;right:0;padding:10px 12px;
+  font-family:var(--osw);font-size:13px;font-weight:600;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--cod-white);
+  transform:translateY(6px);opacity:0;transition:transform .3s,opacity .3s;
+}
+.gal-item:hover .gal-cap{transform:translateY(0);opacity:1}
+.gal-badge{
+  position:absolute;top:8px;left:8px;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(6px);
+  border:1px solid var(--cod-border);
+  font-family:var(--mono);font-size:8px;color:var(--cod-green3);padding:3px 8px;letter-spacing:.1em;
+}
+.gal-classified{
+  position:absolute;top:8px;right:8px;
+  background:rgba(0,0,0,.7);border:1px solid rgba(204,34,0,.3);
+  color:rgba(204,34,0,.7);font-family:var(--ops);font-size:9px;
+  padding:2px 8px;letter-spacing:.1em;display:none;
+}
+.gal-item:hover .gal-classified{display:block}
+
+/* ════════════════════
+   GIFT — SUPPLY DROP
+════════════════════ */
+.gift-section{
+  background:var(--cod-bg2);padding:76px 24px;text-align:center;
+  border-top:1px solid var(--cod-border);
+}
+.drop-cards{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:16px;max-width:580px;margin:40px auto 0;
+}
+@media(max-width:480px){.drop-cards{grid-template-columns:1fr}}
+.drop-card{
+  background:var(--cod-bg3);border:1px solid var(--cod-border);
+  clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));
+  padding:28px 22px;position:relative;overflow:hidden;
+  transition:transform .2s,border-color .2s;
+}
+.drop-card:hover{transform:translateY(-4px);border-color:var(--cod-border2)}
+.drop-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--cod-green),var(--cod-green3),transparent)}
+/* Ammo crate icon */
+.dc-crate{
+  margin:0 auto 16px;
+  width:44px;height:28px;
+  background:linear-gradient(180deg,var(--cod-olive),var(--cod-olive2));
+  border:1.5px solid var(--cod-tan);position:relative;
+}
+.dc-crate::after{
+  content:'';position:absolute;
+  left:8px;right:8px;top:50%;transform:translateY(-50%);
+  height:2px;background:rgba(0,0,0,.3);
+}
+.dc-bank{
+  font-family:var(--ops);font-size:clamp(26px,6vw,34px);letter-spacing:.04em;
+  background:linear-gradient(180deg,var(--cod-tan),var(--cod-khaki));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  margin-bottom:4px;
+}
+.dc-holder{font-family:var(--mono);font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.08em;margin-bottom:14px}
+.dc-number{
+  font-family:var(--mono);font-size:15px;letter-spacing:.15em;color:var(--cod-white);
+  background:rgba(0,0,0,.3);border:1px solid var(--cod-border);
+  padding:9px 12px;margin-bottom:14px;display:block;
+}
+.dc-copy{
+  background:rgba(74,124,47,.1);border:1px solid rgba(74,124,47,.3);
+  color:var(--cod-green3);font-family:var(--mono);font-size:9px;
+  letter-spacing:.15em;text-transform:uppercase;
+  padding:10px 20px;cursor:none;
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+  transition:background .15s;
+}
+.dc-copy:hover{background:rgba(74,124,47,.2)}
+.dc-copy.copied{background:rgba(180,170,100,.12);border-color:rgba(180,170,100,.35);color:var(--cod-tan)}
+
+/* ════════════════════
+   RSVP — MISSION ENROLL
+════════════════════ */
+.rsvp-section{
+  background:var(--cod-bg);padding:76px 24px;
+  border-top:1px solid var(--cod-border);position:relative;
+}
+.rsvp-section::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(180,170,100,.01) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(180,170,100,.01) 1px,transparent 1px);
+  background-size:50px 50px;pointer-events:none;
+}
+.rsvp-inner{max-width:560px;margin:0 auto;position:relative}
+.rsvp-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:36px}
+.rs{
+  background:rgba(74,124,47,.06);border:1px solid var(--cod-border);
+  padding:16px 12px;text-align:center;
+  clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,7px 100%,0 calc(100% - 7px));
+}
+.rs-n{
+  font-family:var(--ops);font-size:34px;
+  background:linear-gradient(180deg,var(--cod-green3),var(--cod-green));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 8px rgba(74,124,47,.3));
+  line-height:1;margin-bottom:4px;
+}
+.rs-l{font-family:var(--mono);font-size:8px;letter-spacing:.2em;text-transform:uppercase;color:var(--cod-gray2)}
+.fg{margin-bottom:18px}
+.fl{display:block;font-family:var(--mono);font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--cod-green3);margin-bottom:8px}
+.fi{
+  width:100%;background:rgba(180,170,100,.04);
+  border:1px solid var(--cod-border);border-bottom:2px solid var(--cod-green);
+  padding:12px 14px;color:var(--cod-white);font-family:var(--raj);font-size:15px;
+  outline:none;-webkit-appearance:none;border-radius:0;
+  transition:border-color .2s,background .2s;
+  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%);
+}
+.fi:focus{background:rgba(74,124,47,.06);border-bottom-color:var(--cod-green3)}
+.fi::placeholder{color:var(--cod-gray2)}
+textarea.fi{min-height:96px;resize:vertical;clip-path:none;border:1px solid var(--cod-border);border-bottom:2px solid var(--cod-green)}
+.fs{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%234A7C2F' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;
+  padding-right:38px;cursor:none;
+}
+option{font-family:sans-serif}
+.guest-row{display:flex;gap:8px}
+.gst-btn{
+  flex:1;background:rgba(180,170,100,.05);
+  border:1px solid var(--cod-border);color:var(--cod-gray);
+  font-family:var(--osw);font-size:15px;font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:12px;cursor:none;
+  clip-path:polygon(0 0,calc(100% - 7px) 0,100% 7px,100% 100%,7px 100%,0 calc(100% - 7px));
+  transition:all .15s;
+}
+.gst-btn.active{background:rgba(74,124,47,.15);border-color:rgba(74,124,47,.4);color:var(--cod-green3)}
+.rsvp-btn{
+  width:100%;
+  background:linear-gradient(135deg,#1A3010,var(--cod-green),#1A3010);color:var(--cod-bg);
+  font-family:var(--ops);font-size:18px;letter-spacing:.12em;
+  padding:16px;border:none;cursor:none;margin-top:12px;
+  clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));
+  box-shadow:0 4px 20px rgba(74,124,47,.35);
+  transition:box-shadow .15s,transform .1s;
+}
+.rsvp-btn:hover{box-shadow:0 6px 32px rgba(74,124,47,.55);transform:translateY(-2px)}
+.rsvp-btn:active{transform:scale(.98)}
+
+/* ════════════════════
+   WISHES — COMMS LOG
+════════════════════ */
+.wishes-section{background:var(--cod-bg2);padding:76px 24px;border-top:1px solid var(--cod-border)}
+.wishes-inner{max-width:660px;margin:0 auto}
+.wishes-list{margin-top:32px;display:flex;flex-direction:column;gap:10px}
+.wish-card{
+  display:flex;align-items:flex-start;gap:12px;
+  background:rgba(180,170,100,.03);border:1px solid var(--cod-border);
+  border-left:3px solid var(--cod-green);padding:14px 18px;
+  opacity:0;transform:translateX(-14px);transition:opacity .5s,transform .5s;
+}
+.wish-card.visible{opacity:1;transform:translateX(0)}
+.wa{
+  width:38px;height:38px;
+  background:linear-gradient(135deg,var(--cod-green),#1A3010);color:var(--cod-white);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--osw);font-size:14px;font-weight:700;flex-shrink:0;letter-spacing:.04em;
+  clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
+}
+.wn{font-family:var(--osw);font-size:15px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--cod-white)}
+.ws{font-family:var(--mono);font-size:8px;color:var(--cod-green3);letter-spacing:.12em;text-transform:uppercase;margin-top:2px}
+.wt{font-size:13px;color:var(--cod-gray);font-weight:400;line-height:1.7;margin-top:6px}
+
+/* ════════════════════
+   FOOTER
+════════════════════ */
+.footer{
+  background:var(--cod-bg);padding:100px 24px 56px;
+  text-align:center;border-top:1px solid var(--cod-border);
+  position:relative;overflow:hidden;
+}
+.footer::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(74,124,47,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+/* CLASSIFIED watermark */
+.footer-wm{
+  position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);
+  font-family:var(--ops);font-size:clamp(60px,14vw,130px);
+  color:rgba(74,124,47,.025);white-space:nowrap;
+  pointer-events:none;user-select:none;letter-spacing:.06em;
+}
+.footer-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(74,124,47,.1);border:1px solid rgba(74,124,47,.3);
+  padding:6px 20px;margin-bottom:24px;
+  font-family:var(--mono);font-size:10px;
+  color:var(--cod-green3);letter-spacing:.2em;text-transform:uppercase;
+}
+.footer-badge::before,.footer-badge::after{content:'[ ]';font-size:9px;color:var(--cod-green)}
+.footer-title{
+  font-family:var(--ops);font-size:clamp(44px,11vw,96px);
+  line-height:.9;letter-spacing:.04em;margin-bottom:12px;
+}
+.footer-title .green{
+  display:block;
+  background:linear-gradient(180deg,var(--cod-green3) 0%,var(--cod-green) 55%,#1A3010 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 16px rgba(74,124,47,.35));
+}
+.footer-title .white{display:block;color:var(--cod-white)}
+.footer-sub{
+  font-size:clamp(13px,2vw,15px);color:var(--cod-gray2);
+  font-weight:500;max-width:440px;margin:0 auto 36px;line-height:1.8;
+}
+.footer-div{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:20px}
+.fdl{width:48px;height:1px;background:var(--cod-border)}
+.fdd{
+  width:8px;height:8px;
+  background:var(--cod-green3);
+  clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+  box-shadow:0 0 8px rgba(74,124,47,.5);
+}
+.footer-brand{font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+  color:rgba(255,255,255,.1);text-transform:uppercase}
+.footer-brand a{color:var(--cod-green3);text-decoration:none}
+
+/* ════════════════════
+   BOTTOM NAV — TACTICAL HUD
+════════════════════ */
+.tac-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(10,12,8,.93);backdrop-filter:blur(20px);
+  border-top:1px solid var(--cod-border);
+  border-top-width:2px;
+  display:flex;justify-content:space-around;
+  padding:10px 0 max(10px,env(safe-area-inset-bottom));
+  z-index:500;transform:translateY(100%);
+  transition:transform .7s cubic-bezier(.16,1,.3,1) 1s;
+}
+.tac-nav.show{transform:translateY(0)}
+.nav-a{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  color:rgba(74,124,47,.3);text-decoration:none;cursor:none;
+  font-family:var(--mono);font-size:7px;letter-spacing:.12em;text-transform:uppercase;
+  padding:4px 14px;transition:color .2s;
+}
+.nav-a svg{width:18px;height:18px}
+.nav-a:hover,.nav-a.active{color:var(--cod-green3)}
+.nav-a.active svg{filter:drop-shadow(0 0 4px var(--cod-green))}
+
+/* SECTION HEADER */
+.cod-eyebrow{
+  font-family:var(--mono);font-size:9px;letter-spacing:.35em;
+  color:var(--cod-green3);text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;margin-bottom:10px;
+}
+.cod-eyebrow::before{content:'';width:20px;height:1px;background:var(--cod-green)}
+.cod-heading{
+  font-family:var(--osw);font-size:clamp(26px,5vw,42px);
+  font-weight:600;letter-spacing:.06em;color:var(--cod-white);
+  text-transform:uppercase;line-height:1;
+}
+.cod-heading .green{
+  background:linear-gradient(135deg,var(--cod-green3),var(--cod-green));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+/* LIGHTBOX + TOAST */
+.lbox{position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:9000;display:none;align-items:center;justify-content:center}
+.lbox.open{display:flex}
+.lbox-img{max-width:88vw;max-height:86vh;object-fit:contain;border:2px solid var(--cod-border2)}
+.lbox-close{position:absolute;top:16px;right:20px;background:rgba(74,124,47,.12);border:1px solid rgba(74,124,47,.3);color:var(--cod-green3);font-family:var(--mono);font-size:11px;letter-spacing:.1em;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:none;clip-path:polygon(0 0,calc(100% - 4px) 0,100% 4px,100% 100%,4px 100%,0 calc(100% - 4px));transition:background .15s}
+.lbox-close:hover{background:rgba(74,124,47,.22)}
+.lbox-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(74,124,47,.1);border:1px solid var(--cod-border);color:var(--cod-green3);font-size:28px;width:48px;height:64px;display:flex;align-items:center;justify-content:center;cursor:none;transition:background .15s}
+.lbox-nav:hover{background:rgba(74,124,47,.2)}
+.lbox-prev{left:12px}.lbox-next{right:12px}
+.lbox-ctr{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:rgba(74,124,47,.4)}
+.toast{
+  position:fixed;bottom:80px;left:50%;
+  transform:translateX(-50%) translateY(14px);
+  background:rgba(10,12,8,.97);border:1px solid var(--cod-border2);
+  border-left:3px solid var(--cod-green);
+  color:var(--cod-white);font-family:var(--mono);font-size:11px;
+  letter-spacing:.1em;padding:11px 22px;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;z-index:9999;
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .8s,transform .8s}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.rd1{transition-delay:.1s}.rd2{transition-delay:.2s}.rd3{transition-delay:.3s}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-outer"></div>
+<div id="cur-dot"></div>
+
+<!-- ════ OPENING ════ -->
+<div id="opening">
+  <video class="op-vid" id="opVid"
+    src="https://www.w3schools.com/html/mov_bbb.mp4"
+    loop muted playsinline preload="auto"
+    poster="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=1400&q=60">
+  </video>
+  <div class="op-ov1"></div><div class="op-ov2"></div>
+  <div class="op-ov-green"></div>
+  <div class="op-scan"></div><div class="op-noise"></div>
+
+  <div class="op-classified">CLASSIFIED</div>
+
+  <div class="op-sound" id="opSound">
+    <div class="osb-wrap">
+      <div class="osb" style="--d:.45s"></div>
+      <div class="osb" style="--d:.6s;animation-delay:.1s"></div>
+      <div class="osb" style="--d:.5s;animation-delay:.2s"></div>
+      <div class="osb" style="--d:.7s;animation-delay:.05s"></div>
+    </div>MUTED
+  </div>
+
+  <div class="op-content">
+    <!-- CoD skull emblem -->
+    <div class="op-emblem">
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Hexagon border -->
+        <polygon points="40,4 74,22 74,58 40,76 6,58 6,22"
+          stroke="url(#codGrad)" stroke-width="2" fill="rgba(74,124,47,.06)"/>
+        <polygon points="40,12 66,26 66,54 40,68 14,54 14,26"
+          stroke="rgba(74,124,47,.3)" stroke-width="1" fill="none"/>
+        <!-- Skull simplified -->
+        <ellipse cx="40" cy="34" rx="14" ry="16" fill="none" stroke="#7AB84A" stroke-width="1.5"/>
+        <circle cx="33" cy="32" r="4" fill="rgba(10,12,8,.8)" stroke="#4A7C2F" stroke-width="1"/>
+        <circle cx="47" cy="32" r="4" fill="rgba(10,12,8,.8)" stroke="#4A7C2F" stroke-width="1"/>
+        <!-- Nose -->
+        <path d="M38 37 L42 37 L40 40Z" fill="#4A7C2F" opacity=".6"/>
+        <!-- Teeth -->
+        <path d="M34 47 L34 43 L37 43 L37 47 L40 47 L40 43 L43 43 L43 47 L46 47 L46 43"
+          stroke="#4A7C2F" stroke-width="1.2" fill="none"/>
+        <!-- Cross bones -->
+        <line x1="12" y1="68" x2="68" y2="68" stroke="rgba(74,124,47,.4)" stroke-width="1.5"/>
+        <defs>
+          <linearGradient id="codGrad" x1="0" y1="0" x2="80" y2="80">
+            <stop offset="0%" stop-color="#7AB84A"/>
+            <stop offset="50%" stop-color="#4A7C2F"/>
+            <stop offset="100%" stop-color="#7AB84A"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <div class="op-clearance">
+      <div class="op-clearance-dot"></div>
+      TOP SECRET · OPERATION WEDDING
+    </div>
+
+    <h1 class="op-title">
+      <div class="green">ANITA</div>
+      <div class="white">&amp; ZARDA</div>
+    </h1>
+
+    <p class="op-mission-id">MISSION ID: WED-240526 · CLASSIFICATION: ALPHA</p>
+
+    <!-- Dossier -->
+    <div class="op-dossier">
+      <div class="op-dossier-row">
+        <span class="op-dossier-key">OPERATOR</span>
+        <span class="op-dossier-val">Ade Guntur Fitridullah &amp; Partner</span>
+      </div>
+      <div class="op-dossier-row">
+        <span class="op-dossier-key">OBJECTIVE</span>
+        <span class="op-dossier-val">Attend Wedding Ceremony</span>
+      </div>
+      <div class="op-dossier-row">
+        <span class="op-dossier-key">DATE</span>
+        <span class="op-dossier-val">24 MAY 2026 · 08:00 HRS</span>
+      </div>
+    </div>
+
+    <button class="op-deploy" onclick="deploy()">
+      <div class="op-deploy-blink"></div>
+      DEPLOY — BUKA UNDANGAN
+    </button>
+  </div>
+
+  <div class="op-loading"><div class="op-loading-fill" id="loadFill"></div></div>
+</div>
+
+<!-- ════ MAIN ════ -->
+<div id="main">
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-terrain"></div>
+  <div class="hero-camo"></div>
+  <video class="hero-vid" id="heroBgVid"
+    src="https://www.w3schools.com/html/movie.mp4"
+    loop muted playsinline preload="none"
+    poster="https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&q=60">
+  </video>
+  <div class="hero-ov"></div>
+  <div class="hero-scan"></div>
+
+  <!-- Helicopter -->
+  <div class="heli-wrap" id="heliEl">
+    <svg width="80" height="40" viewBox="0 0 80 40" fill="none">
+      <!-- Heli body -->
+      <ellipse cx="35" cy="22" rx="22" ry="9" fill="rgba(60,80,40,.8)" stroke="rgba(90,120,50,.5)" stroke-width="1"/>
+      <rect x="13" y="16" width="44" height="12" rx="3" fill="rgba(50,70,30,.7)"/>
+      <!-- Tail boom -->
+      <path d="M57 22 L78 20 L78 24 L57 25Z" fill="rgba(50,70,30,.7)"/>
+      <!-- Tail rotor -->
+      <line x1="78" y1="14" x2="78" y2="30" stroke="rgba(90,120,50,.5)" stroke-width="2"/>
+      <!-- Main rotor -->
+      <line x1="10" y1="14" x2="60" y2="14" stroke="rgba(90,120,50,.6)" stroke-width="2"/>
+      <line x1="18" y1="8" x2="52" y2="20" stroke="rgba(90,120,50,.4)" stroke-width="1.5"/>
+      <!-- Skids -->
+      <line x1="20" y1="31" x2="50" y2="31" stroke="rgba(90,120,50,.4)" stroke-width="2"/>
+      <line x1="22" y1="28" x2="22" y2="31" stroke="rgba(90,120,50,.4)" stroke-width="1.5"/>
+      <line x1="48" y1="28" x2="48" y2="31" stroke="rgba(90,120,50,.4)" stroke-width="1.5"/>
+    </svg>
+  </div>
+
+  <!-- Smoke effects -->
+  <div class="smoke" style="width:120px;height:120px;left:20%;top:50%;background:radial-gradient(ellipse,rgba(180,170,100,.08),transparent 70%);animation-delay:.5s"></div>
+  <div class="smoke" style="width:80px;height:80px;right:25%;top:40%;background:radial-gradient(ellipse,rgba(74,124,47,.06),transparent 70%);animation-delay:1.5s"></div>
+
+  <!-- Tactical markers -->
+  <div class="tac-marker" style="left:42%;top:44%">
+    <div class="tm-box" style="color:var(--cod-green3);border-color:rgba(74,124,47,.5)">ANITA</div>
+    <div class="tm-line" style="background:rgba(74,124,47,.4)"></div>
+    <div style="width:6px;height:6px;border-radius:50%;background:var(--cod-green3);margin:0 auto;box-shadow:0 0 6px var(--cod-green3)"></div>
+  </div>
+  <div class="tac-marker" style="left:56%;top:50%">
+    <div class="tm-box" style="color:var(--cod-tan);border-color:rgba(180,170,100,.4)">ZARDA</div>
+    <div class="tm-line" style="background:rgba(180,170,100,.35)"></div>
+    <div style="width:6px;height:6px;border-radius:50%;background:var(--cod-tan);margin:0 auto;box-shadow:0 0 6px rgba(180,170,100,.6)"></div>
+  </div>
+
+  <!-- Minimap -->
+  <div class="hero-minimap">
+    <div class="mm-header">
+      <div class="mm-header-lbl">TACTICAL MAP</div>
+      <div class="mm-header-coord">D4-E5</div>
+    </div>
+    <div class="mm-body">
+      <div class="mm-bg-grid"></div>
+      <div class="mm-terrain-patch" style="width:55px;height:35px;left:10px;top:15px"></div>
+      <div class="mm-terrain-patch" style="width:40px;height:28px;right:15px;top:45px;background:rgba(30,50,15,.5)"></div>
+      <div class="mm-terrain-patch" style="width:50px;height:32px;left:55px;bottom:30px;background:rgba(45,65,22,.5)"></div>
+      <div class="mm-road" style="left:0;right:0;top:45%;height:2px;transform:rotate(-3deg)"></div>
+      <div class="mm-road" style="top:0;bottom:0;left:40%;width:2px;transform:rotate(2deg)"></div>
+      <!-- Objective marker -->
+      <div class="mm-obj" style="left:49%;top:47%;color:var(--cod-gold2);border-color:var(--cod-gold2)">▲</div>
+      <!-- Players -->
+      <div class="mm-player-dot" style="left:42%;top:44%;background:var(--cod-green3);box-shadow:0 0 5px var(--cod-green)"></div>
+      <div class="mm-player-dot" style="left:56%;top:50%;background:var(--cod-tan);box-shadow:0 0 5px rgba(180,170,100,.6)"></div>
+    </div>
+    <div class="mm-footer">
+      <div class="mm-footer-txt">SECTOR 4</div>
+      <div class="mm-footer-live"><div class="mm-live-dot"></div>LIVE</div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="hero-content">
+    <div class="hero-main">
+      <div class="hm-threat"><div class="hm-threat-blink"></div>MISSION ACTIVE</div>
+      <h1 class="hm-title">
+        <span class="green">ANITA</span>
+        <span class="white">&amp; ZARDA</span>
+      </h1>
+      <div class="hm-tags">
+        <span class="hm-tag green">📅 24 MEI 2026</span>
+        <span class="hm-tag tan">📍 TANGERANG</span>
+        <span class="hm-tag gray">🕗 08:00 HRS</span>
+        <span class="hm-tag gray">SQUAD INVITED</span>
+      </div>
+      <div class="hm-actions">
+        <button class="cod-btn cod-btn-primary" onclick="document.getElementById('rsvp').scrollIntoView({behavior:'smooth'})">
+          ▶ RSVP — ENROLL NOW
+        </button>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="cod-btn cod-btn-secondary">
+          📍 VIEW LOCATION
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Info bar -->
+  <div class="hero-bar">
+    <div class="hbar"><div class="hbar-lbl">Date</div><div class="hbar-val">24 MEI 2026</div><div class="hbar-sub">Minggu · 0800 HRS</div></div>
+    <div class="hbar"><div class="hbar-lbl">Location</div><div class="hbar-val">Graha Yadika</div><div class="hbar-sub">Tangerang, Banten</div></div>
+    <div class="hbar"><div class="hbar-lbl">OBJ Alpha</div><div class="hbar-val">Akad Nikah</div><div class="hbar-sub">08:00 WIB</div></div>
+    <div class="hbar"><div class="hbar-lbl">OBJ Bravo</div><div class="hbar-val">Resepsi</div><div class="hbar-sub">11:00–13:00 WIB</div></div>
+    <div class="hbar"><div class="hbar-lbl">Operators</div><div class="hbar-val">13 Active</div><div class="hbar-sub">7 confirmed</div></div>
+  </div>
+</section>
+
+<!-- INTEL BAND -->
+<div class="intel-band">
+  <div class="intel-lbl">[ INTEL ]</div>
+  <div class="intel-txt">
+    ▸ &nbsp; OPERATION WEDDING · ANITA &amp; ZARDA · 24 MAY 2026 &nbsp; ◆ &nbsp;
+    OBJ ALPHA: AKAD NIKAH 08:00 WIB · GRAHA YADIKA, TANGERANG &nbsp; ◆ &nbsp;
+    OBJ BRAVO: RESEPSI 11:00–13:00 WIB · SAME LOCATION &nbsp; ◆ &nbsp;
+    CONFIRM ATTENDANCE BEFORE MISSION START &nbsp; ◆ &nbsp;
+    WHISKEY TANGO FOXTROT — WEDDING TIME FOXTROT &nbsp; ▸
+  </div>
+</div>
+
+<!-- COUNTDOWN -->
+<div class="cd-section">
+  <p class="cd-eyebrow reveal">Mission Countdown</p>
+  <h2 class="cd-title reveal">Time Until Deployment</h2>
+  <div class="cd-grid">
+    <div class="cd-box reveal rd1"><span class="cd-n" id="cdD">00</span><span class="cd-u">Days</span></div>
+    <div class="cd-box reveal rd2"><span class="cd-n" id="cdH">00</span><span class="cd-u">Hours</span></div>
+    <div class="cd-box reveal rd3"><span class="cd-n" id="cdM">00</span><span class="cd-u">Minutes</span></div>
+    <div class="cd-box reveal" style="transition-delay:.4s"><span class="cd-n" id="cdS">00</span><span class="cd-u">Seconds</span></div>
+  </div>
+</div>
+
+<!-- OPERATOR CARDS / COUPLE -->
+<section id="couple" class="op-section">
+  <div style="max-width:840px;margin:0 auto" class="reveal">
+    <p class="cod-eyebrow">Operator Profiles</p>
+    <h2 class="cod-heading">Mempelai <span class="green">Kami</span></h2>
+  </div>
+  <div class="op-grid">
+    <div class="operator-card reveal">
+      <div class="oc-art">
+        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=300&fit=crop&q=80" alt="Anita">
+        <div class="oc-art-ov"></div>
+        <div class="oc-callsign">CALLSIGN: ANITA</div>
+        <div class="oc-faction">ALPHA</div>
+      </div>
+      <div class="oc-body">
+        <p class="oc-role">Operator · Support Class</p>
+        <h3 class="oc-name">Anita Pangestuti,<br>S.Kom</h3>
+        <p class="oc-parents">Putri Pertama dari<br>Bpk. Taryono &amp; Ibu Wiwit Jayanti</p>
+        <div class="oc-perks">
+          <div class="oc-perk" title="Perk 1">💫</div>
+          <div class="oc-perk" title="Perk 2">🌸</div>
+          <div class="oc-perk" title="Perk 3">❤️</div>
+          <div class="oc-rank-badge">PRESTIGE ★</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vs-ops">
+      <div class="vs-txt">VS</div>
+      <div class="vs-sub">BRAVO TEAM</div>
+    </div>
+
+    <div class="operator-card reveal rd2">
+      <div class="oc-art">
+        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop&q=80" alt="Zarda">
+        <div class="oc-art-ov"></div>
+        <div class="oc-callsign">CALLSIGN: ZARDA</div>
+        <div class="oc-faction">BRAVO</div>
+      </div>
+      <div class="oc-body">
+        <p class="oc-role">Operator · Assault Class</p>
+        <h3 class="oc-name">Zardarian Ahadika N,<br>S.Kom</h3>
+        <p class="oc-parents">Putra Kedua dari<br>Bpk. Wan Sabran, M.MAR &amp;<br>Ibu Titik Sundari, M.Si</p>
+        <div class="oc-perks">
+          <div class="oc-perk" title="Perk 1">⚔️</div>
+          <div class="oc-perk" title="Perk 2">🛡️</div>
+          <div class="oc-perk" title="Perk 3">💪</div>
+          <div class="oc-rank-badge">PRESTIGE ★</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- KILLSTREAK TIMELINE -->
+<section class="ks-section">
+  <div style="max-width:680px;margin:0 auto" class="reveal">
+    <p class="cod-eyebrow">After Action Report</p>
+    <h2 class="cod-heading">Kisah <span class="green">Cinta Kami</span></h2>
+  </div>
+  <div class="ks-list">
+    <div class="ks-card">
+      <div class="ks-icon">🎯</div>
+      <div class="ks-content">
+        <p class="ks-chapter">Operation 01 · Taaruf</p>
+        <h3 class="ks-title">First Contact — Awal Pertemuan</h3>
+        <p class="ks-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</p>
+      </div>
+      <div class="ks-date">JUN 2025</div>
+    </div>
+    <div class="ks-card">
+      <div class="ks-icon">💍</div>
+      <div class="ks-content">
+        <p class="ks-chapter">Operation 02 · Alliance</p>
+        <h3 class="ks-title">Secure Objective — Lamaran</h3>
+        <p class="ks-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</p>
+      </div>
+      <div class="ks-date">NOV 2025</div>
+    </div>
+    <div class="ks-card" style="border-left-color:var(--cod-gold2)">
+      <div class="ks-icon">⭐</div>
+      <div class="ks-content">
+        <p class="ks-chapter">Operation 03 · FINAL · CLASSIFIED</p>
+        <h3 class="ks-title">Mission Complete — Pernikahan</h3>
+        <p class="ks-desc">Kini kami melangkah lebih jauh. Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya. Mission Accomplished.</p>
+      </div>
+      <div class="ks-date">MEI 2026</div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS / SITREP -->
+<section id="event" class="event-section">
+  <div class="reveal" style="max-width:840px;margin:0 auto">
+    <p class="cod-eyebrow">SITREP — Situation Report</p>
+    <h2 class="cod-heading">Waktu &amp; <span class="green">Lokasi</span></h2>
+  </div>
+  <div class="sitrep-cards">
+    <div class="sitrep-card reveal rd1">
+      <div class="sc-img">
+        <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=260&fit=crop&q=80" alt="">
+        <div class="sc-img-ov"></div>
+        <div class="sc-obj-tag">[ OBJ ALPHA ] AKAD</div>
+      </div>
+      <div class="sc-body">
+        <h3 class="sc-title">Minggu,<br>24 Mei 2026</h3>
+        <div class="sc-row"><svg class="sc-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 17.5v-2h-1v2C8.41 19.25 5.75 16.59 5.5 13.5h2v-1h-2C5.75 9.41 8.41 6.75 11.5 6.5v2h1v-2c3.09.25 5.75 2.91 6 6h-2v1h2c-.25 3.09-2.91 5.75-6 6z"/></svg><span class="sc-txt">08.00 WIB — Selesai</span></div>
+        <div class="sc-row"><svg class="sc-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span class="sc-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="sc-maps">▸ OPEN INTEL MAP</a>
+      </div>
+    </div>
+    <div class="sitrep-card reveal rd2">
+      <div class="sc-img">
+        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=260&fit=crop&q=80" alt="">
+        <div class="sc-img-ov"></div>
+        <div class="sc-obj-tag">[ OBJ BRAVO ] RESEPSI</div>
+      </div>
+      <div class="sc-body">
+        <h3 class="sc-title">Minggu,<br>24 Mei 2026</h3>
+        <div class="sc-row"><svg class="sc-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 17.5v-2h-1v2C8.41 19.25 5.75 16.59 5.5 13.5h2v-1h-2C5.75 9.41 8.41 6.75 11.5 6.5v2h1v-2c3.09.25 5.75 2.91 6 6h-2v1h2c-.25 3.09-2.91 5.75-6 6z"/></svg><span class="sc-txt">11.00 — 13.00 WIB</span></div>
+        <div class="sc-row"><svg class="sc-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span class="sc-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="sc-maps">▸ OPEN INTEL MAP</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gal-section">
+  <div class="gal-head reveal">
+    <div>
+      <p class="cod-eyebrow" style="margin-bottom:8px">Field Photos</p>
+      <h2 class="cod-heading" style="font-size:clamp(22px,4vw,34px)">Galeri <span class="green">Foto</span></h2>
+    </div>
+    <p class="gal-sub">CLICK TO ENLARGE</p>
+  </div>
+  <div class="gal-grid" id="galGrid"></div>
+</section>
+
+<!-- GIFT / SUPPLY DROP -->
+<section id="gift" class="gift-section">
+  <div class="reveal">
+    <p class="cod-eyebrow" style="justify-content:center">Supply Drop</p>
+    <h2 class="cod-heading" style="text-align:center">Amplop <span class="green">Digital</span></h2>
+  </div>
+  <p class="reveal" style="font-family:var(--mono);font-size:9px;color:var(--cod-gray2);letter-spacing:.12em;text-align:center;margin-top:12px;line-height:2.4;text-transform:uppercase">
+    DOA RESTU SUDAH LEBIH DARI CUKUP.<br>
+    NAMUN JIKA BERKENAN, KAMI MENERIMA DENGAN SENANG HATI.
+  </p>
+  <div class="drop-cards">
+    <div class="drop-card reveal rd1">
+      <div class="dc-crate"></div>
+      <div class="dc-bank">BCA</div>
+      <div class="dc-holder">Zardarian Ahadika N</div>
+      <div class="dc-number">8210 3705 61</div>
+      <button class="dc-copy" onclick="copyNum('8210370561',this)">▸ COPY ACCOUNT</button>
+    </div>
+    <div class="drop-card reveal rd2">
+      <div class="dc-crate"></div>
+      <div class="dc-bank">BNI</div>
+      <div class="dc-holder">Anita Pangestuti</div>
+      <div class="dc-number">1192 9784 03</div>
+      <button class="dc-copy" onclick="copyNum('1192978403',this)">▸ COPY ACCOUNT</button>
+    </div>
+  </div>
+</section>
+
+<!-- RSVP -->
+<section id="rsvp" class="rsvp-section">
+  <div class="rsvp-inner">
+    <div class="reveal">
+      <p class="cod-eyebrow">Mission Enrollment</p>
+      <h2 class="cod-heading" style="margin-bottom:32px">Konfirmasi <span class="green">Kehadiran</span></h2>
+    </div>
+    <div class="rsvp-stats reveal">
+      <div class="rs"><div class="rs-n">7</div><div class="rs-l">Enrolled</div></div>
+      <div class="rs"><div class="rs-n">7</div><div class="rs-l">Confirmed</div></div>
+      <div class="rs"><div class="rs-n">13</div><div class="rs-l">Operators</div></div>
+    </div>
+    <div class="fg"><label class="fl">▸ Operator Name</label><input class="fi" id="rName" type="text" placeholder="Nama Anda..."></div>
+    <div class="fg"><label class="fl">▸ Status</label>
+      <select class="fi fs" id="rStatus">
+        <option value="">Select...</option>
+        <option value="hadir">✔ Hadir</option>
+        <option value="tidak">✘ Tidak Hadir</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">▸ Squad Size</label>
+      <div class="guest-row">
+        <button class="gst-btn active" onclick="setGuest(1,this)">SOLO (1)</button>
+        <button class="gst-btn" onclick="setGuest(2,this)">PARTNER (2)</button>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">▸ Message &amp; Prayers</label><textarea class="fi" id="rMsg" placeholder="Tulis ucapan..."></textarea></div>
+    <button class="rsvp-btn" onclick="submitRSVP()">▶ CONFIRM — MISSION ACCEPTED</button>
+  </div>
+</section>
+
+<!-- WISHES / COMMS LOG -->
+<section class="wishes-section">
+  <div class="wishes-inner">
+    <div class="reveal">
+      <p class="cod-eyebrow">Comms Log</p>
+      <h2 class="cod-heading">Ucapan &amp; <span class="green">Doa</span></h2>
+    </div>
+    <div class="wishes-list" id="wishesList">
+      <div class="wish-card visible">
+        <div class="wa">AY</div>
+        <div><div class="wn">Ayu Rahmawati</div><div class="ws">✔ Confirmed · 2 Operators</div><p class="wt">Selamat menempuh hidup baru! Semoga sakinah, mawaddah, wa rahmah. Bahagia selalu Anita &amp; Zarda! 🎖️</p></div>
+      </div>
+      <div class="wish-card visible">
+        <div class="wa" style="background:linear-gradient(135deg,var(--cod-olive),var(--cod-olive2))">RZ</div>
+        <div><div class="wn">Reza Firmansyah</div><div class="ws">✔ Confirmed · 1 Operator</div><p class="wt">Alhamdulillah! Semoga pernikahannya membawa keberkahan tiada henti. Aamiin ya Rabbal Alamin!</p></div>
+      </div>
+      <div class="wish-card visible">
+        <div class="wa" style="background:linear-gradient(135deg,var(--cod-red),#660000)">ST</div>
+        <div><div class="wn">Sinta Dewi</div><div class="ws">✔ Confirmed · 2 Operators</div><p class="wt">Wishing you both a lifetime of love! Semoga selalu diberkahi Allah SWT. Mission Accomplished! 🎖️</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-wm">CLASSIFIED</div>
+  <div class="footer-badge">[ OPERATION ] WEDDING [ CLASSIFIED ]</div>
+  <div class="footer-title">
+    <div class="green">ANITA</div>
+    <div class="white">&amp; ZARDA</div>
+  </div>
+  <p class="footer-sub">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu kepada kami yang berbahagia.</p>
+  <div class="footer-div">
+    <div class="fdl"></div><div class="fdd"></div><div class="fdl"></div>
+    <div class="fdd" style="background:var(--cod-tan);box-shadow:0 0 8px rgba(180,170,100,.4)"></div>
+    <div class="fdl"></div>
+  </div>
+  <p class="footer-brand">Digital Invitation by <a href="#">BridesSpace</a></p>
+</footer>
+
+</div><!-- /main -->
+
+<!-- NAV -->
+<nav class="tac-nav" id="tacNav">
+  <a href="#home" class="nav-a active"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home</a>
+  <a href="#couple" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Ops</a>
+  <a href="#event" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>Sitrep</a>
+  <a href="#gift" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2.18c.07-.23.18-.46.18-.71C18 3.47 16.53 2 14.71 2c-.87 0-1.65.36-2.22.93L12 3.4l-.49-.47C10.94 2.36 10.16 2 9.29 2 7.47 2 6 3.47 6 5.29c0 .25.11.48.18.71H4c-1.11 0-2 .89-2 2v13c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/></svg>Supply</a>
+  <a href="#rsvp" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>Enroll</a>
+</nav>
+
+<div class="lbox" id="lbox">
+  <button class="lbox-close" onclick="closeLbox()">[ X ]</button>
+  <button class="lbox-nav lbox-prev" onclick="lboxPrev()">‹</button>
+  <img class="lbox-img" id="lboxImg" src="" alt="">
+  <button class="lbox-nav lbox-next" onclick="lboxNext()">›</button>
+  <div class="lbox-ctr" id="lboxCtr"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const IMGS=[
+  {src:"https://images.unsplash.com/photo-1519741497674-611481863552?w=800&fit=crop&q=80",cap:"First Contact"},
+  {src:"https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&fit=crop&q=80",cap:"Allied Ops"},
+  {src:"https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&fit=crop&q=80",cap:"Field Intel"},
+  {src:"https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&fit=crop&q=80",cap:"Extraction"},
+  {src:"https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=800&fit=crop&q=80",cap:"Recon"},
+  {src:"https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=800&fit=crop&q=80",cap:"Secure Zone"},
+  {src:"https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=800&fit=crop&q=80",cap:"Mission Brief"},
+  {src:"https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&fit=crop&q=80",cap:"Victory"},
+];
+let lboxIdx=0,guestN=1;
+
+/* CURSOR */
+document.addEventListener('mousemove',e=>{
+  const c=document.getElementById('cur');
+  const o=document.getElementById('cur-outer');
+  const d=document.getElementById('cur-dot');
+  if(c){c.style.left=e.clientX+'px';c.style.top=e.clientY+'px';}
+  if(o){o.style.left=e.clientX+'px';o.style.top=e.clientY+'px';}
+  if(d){d.style.left=e.clientX+'px';d.style.top=e.clientY+'px';}
+});
+
+/* OPENING VIDEO */
+(function(){
+  const vid=document.getElementById('opVid');
+  const hint=document.getElementById('opSound');
+  if(!vid)return;
+  vid.addEventListener('canplay',function once(){
+    vid.removeEventListener('canplay',once);
+    vid.play().then(()=>{
+      requestAnimationFrame(()=>vid.classList.add('show'));
+      if(hint)setTimeout(()=>hint.classList.add('show'),3000);
+    }).catch(()=>{});
+  });
+  new MutationObserver(()=>{
+    if(document.getElementById('opening').classList.contains('hide'))vid.pause();
+  }).observe(document.getElementById('opening'),{attributes:true,attributeFilter:['class']});
+})();
+
+/* DEPLOY */
+function deploy(){
+  document.getElementById('loadFill').classList.add('go');
+  setTimeout(()=>{
+    document.getElementById('opening').classList.add('hide');
+    setTimeout(()=>{
+      document.getElementById('main').classList.add('show');
+      document.getElementById('tacNav').classList.add('show');
+      buildGalGrid();
+      startCountdown();
+      initReveal();
+      initNav();
+      startHeroVid();
+    },300);
+  },2000);
+}
+setTimeout(()=>document.getElementById('loadFill')?.classList.add('go'),200);
+
+/* HERO VIDEO */
+function startHeroVid(){
+  const vid=document.getElementById('heroBgVid');
+  if(!vid)return;
+  vid.muted=true;vid.load();
+  vid.play().then(()=>setTimeout(()=>vid.classList.add('show'),200)).catch(()=>{});
+}
+
+/* GALLERY */
+function buildGalGrid(){
+  const g=document.getElementById('galGrid');
+  if(!g)return;
+  IMGS.forEach((img,i)=>{
+    const item=document.createElement('div');
+    item.className='gal-item';
+    item.innerHTML=`
+      <img src="${img.src}" alt="${img.cap}" loading="lazy">
+      <div class="gal-ov"></div>
+      <div class="gal-cap">${img.cap}</div>
+      <div class="gal-badge">FIELD-${String(i+1).padStart(2,'0')}</div>
+      <div class="gal-classified">CLASSIFIED</div>
+    `;
+    item.addEventListener('click',()=>openLbox(i));
+    g.appendChild(item);
+  });
+}
+
+/* LIGHTBOX */
+function openLbox(i){lboxIdx=i;updateLbox();document.getElementById('lbox').classList.add('open');document.body.style.overflow='hidden';}
+function closeLbox(){document.getElementById('lbox').classList.remove('open');document.body.style.overflow='';}
+function lboxPrev(){lboxIdx=(lboxIdx-1+IMGS.length)%IMGS.length;updateLbox();}
+function lboxNext(){lboxIdx=(lboxIdx+1)%IMGS.length;updateLbox();}
+function updateLbox(){
+  document.getElementById('lboxImg').src=IMGS[lboxIdx].src;
+  document.getElementById('lboxCtr').textContent=`${lboxIdx+1} / ${IMGS.length}`;
+}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lbox').classList.contains('open'))return;
+  if(e.key==='Escape')closeLbox();
+  if(e.key==='ArrowLeft')lboxPrev();
+  if(e.key==='ArrowRight')lboxNext();
+});
+
+/* COUNTDOWN */
+function startCountdown(){
+  const T=new Date('2026-05-24T08:00:00');
+  function tick(){
+    const d=T-new Date();if(d<=0)return;
+    document.getElementById('cdD').textContent=String(Math.floor(d/86400000)).padStart(2,'0');
+    document.getElementById('cdH').textContent=String(Math.floor((d%86400000)/3600000)).padStart(2,'0');
+    document.getElementById('cdM').textContent=String(Math.floor((d%3600000)/60000)).padStart(2,'0');
+    document.getElementById('cdS').textContent=String(Math.floor((d%60000)/1000)).padStart(2,'0');
+  }
+  tick();setInterval(tick,1000);
+}
+
+/* REVEAL */
+function initReveal(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+  },{threshold:.1});
+  document.querySelectorAll('.reveal,.ks-card,.wish-card').forEach(el=>obs.observe(el));
+}
+
+/* NAV */
+function initNav(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        document.querySelectorAll('.nav-a').forEach(n=>n.classList.remove('active'));
+        const a=document.querySelector(`.nav-a[href="#${e.target.id}"]`);
+        if(a)a.classList.add('active');
+      }
+    });
+  },{rootMargin:'-40% 0px -40% 0px'});
+  ['home','couple','event','gift','rsvp'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el);});
+}
+
+/* RSVP */
+function setGuest(n,btn){
+  guestN=n;
+  document.querySelectorAll('.gst-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function submitRSVP(){
+  const nm=document.getElementById('rName').value.trim();
+  const st=document.getElementById('rStatus').value;
+  const msg=document.getElementById('rMsg').value.trim();
+  if(!nm||!st){showToast('▸ FILL NAME & STATUS FIRST');return;}
+  const init=nm.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const bgs=[
+    'linear-gradient(135deg,var(--cod-green),#1A3010)',
+    'linear-gradient(135deg,var(--cod-olive),var(--cod-olive2))',
+    'linear-gradient(135deg,var(--cod-red),#660000)',
+    'linear-gradient(135deg,var(--cod-gold),#7A5A00)',
+    'linear-gradient(135deg,#2A3A50,#1A2A40)',
+  ];
+  const bg=bgs[Math.floor(Math.random()*bgs.length)];
+  const stTxt=st==='hadir'?`✔ Confirmed · ${guestN} Operator${guestN>1?'s':''}`:'✘ Unable to attend';
+  const card=document.createElement('div');
+  card.className='wish-card';
+  card.innerHTML=`<div class="wa" style="background:${bg};color:var(--cod-white)">${init}</div><div><div class="wn">${nm}</div><div class="ws">${stTxt}</div><p class="wt">${msg||'Mission Acknowledged. Selamat & bahagia selalu! 🎖️'}</p></div>`;
+  document.getElementById('wishesList').prepend(card);
+  setTimeout(()=>card.classList.add('visible'),50);
+  document.getElementById('rName').value='';document.getElementById('rStatus').value='';document.getElementById('rMsg').value='';
+  showToast('▸ MISSION ACCEPTED — TERIMA KASIH ✓');
+  setTimeout(()=>document.querySelector('.wishes-section').scrollIntoView({behavior:'smooth',block:'start'}),500);
+}
+
+/* COPY */
+function copyNum(txt,btn){
+  navigator.clipboard.writeText(txt).then(()=>{
+    btn.classList.add('copied');btn.textContent='✔ COPIED';
+    showToast('▸ ACCOUNT NUMBER COPIED');
+    setTimeout(()=>{btn.classList.remove('copied');btn.textContent='▸ COPY ACCOUNT';},2500);
+  }).catch(()=>showToast('Copy: '+txt));
+}
+
+/* TOAST */
+let tt;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2800);
+}
+</script>
+</body>
+</html>

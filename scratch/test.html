@@ -1,0 +1,176 @@
+{% extends "site_base.html" %}
+
+{% block site_content %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<section class="section" style="padding: 140px 0 100px;">
+    <div class="container" style="max-width: 900px;">
+        <div class="create-header text-center" style="margin-bottom: 5rem;">
+            <span class="hero-subtitle" 
+                style="color: var(--color-accent-rose); letter-spacing: 4px; font-weight: 700; text-transform: uppercase; margin-bottom: 1rem; display: inline-block; text-shadow: 0 0 20px rgba(212, 48, 48, 0.3);">Bespoke Creation</span>
+            <h1 class="serif" style="font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.1; margin-top: 1rem; font-weight: 800; letter-spacing: -1px; text-shadow: 0 15px 35px rgba(0,0,0,0.1);">
+                Craft Your <em style="background: linear-gradient(135deg, var(--color-accent-red), #ff758c); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-style: italic; display: inline-block; filter: drop-shadow(0 5px 15px rgba(212, 48, 48, 0.2));">Digital Keepsake</em>
+            </h1>
+        </div>
+
+        <div class="creation-container paper-bg"
+            style="border-radius: 40px; box-shadow: var(--shadow-large); overflow: hidden; border: 1px solid rgba(0,0,0,0.05); background: white;">
+            <!-- Progress Tracker -->
+            <div class="progress-steps"
+                style="margin-left: 1rem; display: flex; background: #fdfdfd; border-bottom: 1px solid #f0f0f0; padding: 1.5rem 1rem; overflow-x: auto; white-space: nowrap;">
+                <div class="step-item active" id="step-1-indicator" onclick="nextStep(1)">
+                    <span class="step-num">01</span>
+                    <span class="step-label" data-i18n="create.basic">Basic</span>
+                </div>
+                <div class="step-divider"></div>
+                <div class="step-item" id="step-2-indicator" onclick="nextStep(2)">
+                    <span class="step-num">02</span>
+                    <span class="step-label" data-i18n="create.couple">Couple</span>
+                </div>
+                <div class="step-divider"></div>
+                <div class="step-item" id="step-3-indicator" onclick="nextStep(3)">
+                    <span class="step-num">03</span>
+                    <span class="step-label" data-i18n="create.details">Event</span>
+                </div>
+                <div class="step-divider"></div>
+                <div class="step-item" id="step-4-indicator" onclick="nextStep(4)">
+                    <span class="step-num">04</span>
+                    <span class="step-label" data-i18n="create.preview">Preview</span>
+                </div>
+                <div class="step-divider"></div>
+                <div class="step-item" id="step-5-indicator" onclick="nextStep(5)">
+                    <span class="step-num">05</span>
+                    <span class="step-label" data-i18n="create.payment">Payment</span>
+                </div>
+            </div>
+
+            <form action="/api/invitation" method="POST" enctype="multipart/form-data" id="multistep-form">
+                <!-- Step 1: Base Info -->
+                <div class="form-step active" id="step-1">
+                    <div style="padding: 3rem;">
+                        <h3 class="serif accent-title">Informasi Dasar</h3>
+                        
+                        <!-- AI Onboarding Assistant Banner -->
+                        <div class="ai-onboarding-promo" style="background: linear-gradient(135deg, #2A1E14 0%, #4A3728 100%); padding: 1.5rem; border-radius: 20px; color: white; margin-top: 1.5rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.5rem; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                            <div style="font-size: 2.5rem;">🤖</div>
+                            <div style="flex: 1;">
+                                <h4 style="margin: 0; font-weight: 800; font-size: 1.1rem;">Malas isi form satu-satu?</h4>
+                                <p style="margin: 5px 0 0; opacity: 0.8; font-size: 0.85rem;">Ceritakan saja detail pernikahanmu, AI akan mengisi form ini untukmu secara otomatis!</p>
+                            </div>
+                            <button type="button" class="btn-ai-magic" onclick="openAiAssistant()" style="position:static; background: white; color: #2A1E14; padding: 0.7rem 1.2rem; font-size: 0.85rem;">
+                                <span class="wand-icon">✨</span>
+                                <span>Mulai Chat AI</span>
+                            </button>
+                        </div>
+                        <div class="input-group" style="margin-top: 1.5rem;">
+                            <label>Couple Name (Short Version)</label>
+                            <input type="text" name="couple_name_short" id="in-name" placeholder="Romeo & Julia"
+                                required oninput="autoSlug()">
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="input-group">
+                                <label>Custom URL Slug</label>
+                                <input type="text" name="slug" id="in-slug" placeholder="romeo-julia" required
+                                    oninput="isSlugManuallyEdited = true">
+                            </div>
+                            <div class="input-group">
+                                <label>Wedding Date</label>
+                                <input type="text" name="event_date" id="in-date" placeholder="October 24, 2026"
+                                    required oninput="syncReception()">
+                            </div>
+                        </div>
+                        <div class="form-grid" style="margin-top: 1rem;">
+                            <div class="input-group">
+                                <label>Waktu Akad</label>
+                                <input type="text" name="ceremony_time" id="in-time" placeholder="09:00 - 11:00 WIB"
+                                    required oninput="syncReception()">
+                            </div>
+                        </div>
+
+                        <div class="input-group" style="margin-top: 2rem;">
+                                <div style="display: flex; flex-direction: column; gap: 1rem; width: 100%;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <label style="margin-bottom: 0;">Select Aesthetic Template</label>
+                                        <div style="position: relative; width: 220px;">
+                                            <input type="text" id="template-search" placeholder="Cari template..."
+                                                style="width: 100%; padding: 0.6rem 1rem 0.6rem 2.2rem; border-radius: 50px; border: 1px solid #eee; background: #fafafa; font-size: 0.8rem;"
+                                                oninput="filterTemplates()">
+                                            <span
+                                                style="position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); font-size: 0.8rem; opacity: 0.4;">🔍</span>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;" id="category-filters">
+                                        <button type="button" class="mini-filter-chip active" onclick="setCategoryFilter('all', this)">All</button>
+                                        <button type="button" class="mini-filter-chip" onclick="setCategoryFilter('entertainment', this)">Entertainment</button>
+                                        <button type="button" class="mini-filter-chip" onclick="setCategoryFilter('e-commerce', this)">E-Commerce</button>
+                                        <button type="button" class="mini-filter-chip" onclick="setCategoryFilter('on-demand', this)">On-Demand</button>
+                                        <button type="button" class="mini-filter-chip" onclick="setCategoryFilter('social', this)">Social</button>
+                                        <button type="button" class="mini-filter-chip" onclick="setCategoryFilter('productivity', this)">Productivity</button>
+                                    </div>
+                                </div>
+                            <div class="template-selector">
+                                <label class="tpl-card" data-category="social">
+                                    <input type="checkbox" name="template_name" value="trendvibe" checked onchange="validateTemplateSelection()">
+                                    <div class="tpl-content">
+                                        <div class="tpl-image"
+                                            style="background-image: url('/static/img/trendvibe_preview.png');"></div>
+                                        <div class="tpl-info">
+                                            <div class="tpl-indicator"></div>
+                                            <span class="serif">Toktik</span>
+                                            <p>POV: Wedding kamu masuk fyp. Desain vertikal yang dinamis buat kamu yang selalu up-to-date.</p>
+                                            <a href="/invitation/trendvibe-sample" target="_blank" class="preview-link"
+                                                onclick="event.stopPropagation();">Live Preview ↗</a>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class="tpl-card" data-category="entertainment">
+                                    <input type="checkbox" name="template_name" value="loveanthem" onchange="validateTemplateSelection()">
+                                    <div class="tpl-content">
+                                        <div class="tpl-image"
+                                            style="background-image: url('/static/img/loveanthem_preview.png');"></div>
+                                        <div class="tpl-info">
+                                            <div class="tpl-indicator"></div>
+                                            <span class="serif">Spitapy</span>
+                                            <p>Spotify-inspired interface buat nge-track perjalanan cinta kalian. Definisi 'Our Song'.</p>
+                                            <a href="/invitation/loveanthem-sample" target="_blank" class="preview-link"
+                                                onclick="event.stopPropagation();">Live Preview ↗</a>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class="tpl-card" data-category="entertainment">
+                                    <input type="checkbox" name="template_name" value="cinemarry" onchange="validateTemplateSelection()">
+                                    <div class="tpl-content">
+                                        <div class="tpl-image"
+                                            style="background-image: url('/static/img/cinemarry_preview.png');"></div>
+                                        <div class="tpl-info">
+                                            <div class="tpl-indicator"></div>
+                                            <span class="serif">Nitflax</span>
+                                            <p>Kisah cinta kalian adalah Netflix Original Series terbaik tahun ini. Visual sinematik.</p>
+                                            <a href="/invitation/cinemarry-sample" target="_blank" class="preview-link"
+                                                onclick="event.stopPropagation();">Live Preview ↗</a>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class="tpl-card" data-category="on-demand">
+                                    <input type="checkbox" name="template_name" value="cairide" onchange="validateTemplateSelection()">
+                                    <div class="tpl-content">
+                                        <div class="tpl-image"
+                                            style="background-image: url('/static/img/cairide_preview.png');"></div>
+                                        <div class="tpl-info">
+                                            <div class="tpl-indicator"></div>
+                                            <span class="serif">GoJack</span>
+                                            <p>Otw pelaminan! Antarmuka dinamis aplikasi transportasi yang bikin perjalanan seru.</p>
+                                            <a href="/invitation/cairide-sample" target="_blank" class="preview-link"
+                                                onclick="event.stopPropagation();">Live Preview ↗</a>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class="tpl-card" data-category="social">
+                                    <input type="checkbox" name="template_name" value="pinterlove" onchange="validateTemplateSelection()">
+                                    <div class="tpl-content">
+                                        <div class="tpl-image"
+                                            style="background-image: url('https://gemini-apps-media.googleusercontent.com/pinterlove_preview_mockup_1777474920141.png');"></div>
+                                        <div class="tpl-info">
+                                            <div class="tpl-indicator"></div>
+                                            <span class="serif">Pinteres</span>
+                                            <div style="margin-top: 4px;">

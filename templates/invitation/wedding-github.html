@@ -1,0 +1,1175 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>anita-zarda/wedding · GitHub</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;0,700;1,300&family=Mona+Sans:ital,wght@0,200;0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0D1117;
+  --surface:   #161B22;
+  --surface2:  #21262D;
+  --surface3:  #30363D;
+  --border:    #30363D;
+  --border2:   #21262D;
+  --text:      #E6EDF3;
+  --muted:     #8B949E;
+  --dim:       #484F58;
+  --gh-blue:   #58A6FF;
+  --gh-green:  #3FB950;
+  --gh-purple: #BC8CFF;
+  --gh-orange: #F0883E;
+  --gh-red:    #F85149;
+  --gh-yellow: #D29922;
+  --sans:  'Mona Sans', -apple-system, sans-serif;
+  --mono:  'JetBrains Mono', 'Courier New', monospace;
+}
+
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);overflow-x:hidden;cursor:none;min-height:100vh}
+
+/* ── CURSOR ── */
+.cursor{position:fixed;width:10px;height:10px;background:var(--gh-blue);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:width .18s,height .18s;top:-40px;left:-40px;mix-blend-mode:screen}
+.cursor-ring{position:fixed;width:28px;height:28px;border:1.5px solid rgba(88,166,255,.3);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:all .16s ease;top:-40px;left:-40px}
+body.hov .cursor{width:18px;height:18px}
+body.hov .cursor-ring{width:44px;height:44px;border-color:rgba(88,166,255,.5)}
+
+/* ══════════════════════════════════════
+   OPENING — GitHub Login / Landing
+══════════════════════════════════════ */
+#opening{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-start;
+  padding:40px 20px 32px;
+  overflow-y:auto;scrollbar-width:none;
+  transition:opacity .7s ease,transform .6s ease;
+}
+#opening::-webkit-scrollbar{display:none}
+#opening.hide{opacity:0;transform:translateY(-8px);pointer-events:none}
+.op-center{display:flex;flex-direction:column;align-items:center;width:100%;min-height:100%;justify-content:center;padding:16px 0 24px}
+
+/* Octocat / GitHub logo */
+.op-logo{margin-bottom:24px;animation:logo-pop .6s cubic-bezier(.34,1.56,.64,1) .2s both}
+@keyframes logo-pop{from{opacity:0;transform:scale(.7)}to{opacity:1;transform:scale(1)}}
+.op-logo svg{width:56px;height:56px;fill:var(--text)}
+
+.op-tagline{font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--muted);text-transform:uppercase;margin-bottom:14px;animation:fade-up .6s ease .4s both}
+.op-headline{font-size:clamp(24px,6vw,44px);font-weight:600;letter-spacing:-.03em;text-align:center;line-height:1.1;margin-bottom:8px;animation:fade-up .6s ease .5s both}
+.op-headline .blue{color:var(--gh-blue)}
+.op-sub{font-size:14px;color:var(--muted);text-align:center;margin-bottom:32px;font-weight:300;max-width:460px;line-height:1.6;animation:fade-up .6s ease .6s both}
+@keyframes fade-up{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* Repo card preview */
+.op-repo-card{
+  width:100%;max-width:480px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;padding:20px;margin-bottom:24px;
+  animation:fade-up .6s ease .7s both;
+}
+.op-repo-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.op-repo-icon{font-size:16px;flex-shrink:0}
+.op-repo-path{font-size:14px;color:var(--gh-blue);font-weight:500;letter-spacing:-.01em}
+.op-repo-path span{color:var(--muted)}
+.op-repo-desc{font-size:13px;color:var(--muted);margin-bottom:14px;font-weight:300;line-height:1.5}
+.op-repo-meta{display:flex;gap:16px;flex-wrap:wrap}
+.op-meta-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
+.op-meta-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.op-badge{background:rgba(63,185,80,.15);border:1px solid rgba(63,185,80,.4);color:var(--gh-green);border-radius:20px;padding:2px 10px;font-size:11px;font-family:var(--mono);font-weight:500}
+
+/* star/fork buttons */
+.op-actions{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px;animation:fade-up .6s ease .8s both}
+.op-action-btn{
+  display:flex;align-items:center;gap:6px;
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:6px;padding:6px 16px;font-size:13px;font-weight:500;
+  color:var(--text);cursor:none;transition:all .2s;font-family:var(--sans);
+}
+.op-action-btn:hover{background:var(--surface3);border-color:var(--muted)}
+.op-action-btn.primary{background:var(--gh-green);color:#000;border-color:rgba(63,185,80,.6)}
+.op-action-btn.primary:hover{background:#3dba4e}
+.op-action-count{background:var(--surface3);border-radius:10px;padding:0 7px;font-size:11px;color:var(--muted);font-family:var(--mono)}
+
+.op-dear{text-align:center;animation:fade-up .6s ease .9s both}
+.op-dear-label{font-family:var(--mono);font-size:10px;color:var(--dim);letter-spacing:.2em;margin-bottom:4px}
+.op-dear-name{font-size:18px;font-weight:500;color:var(--gh-blue);letter-spacing:-.01em}
+
+/* ══════════════════════════════════════
+   MAIN — GitHub Repository Page
+══════════════════════════════════════ */
+#main{opacity:0;transition:opacity .5s ease .2s;min-height:100vh}
+#main.show{opacity:1}
+
+/* ── GITHUB HEADER ── */
+.gh-header{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:0 16px;position:sticky;top:0;z-index:100;
+}
+.gh-header-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:16px;height:56px}
+.gh-logo{flex-shrink:0;cursor:none}
+.gh-logo svg{width:28px;height:28px;fill:var(--text)}
+.gh-search{
+  flex:1;max-width:260px;
+  background:var(--bg);border:1px solid var(--border);border-radius:6px;
+  padding:5px 12px;display:flex;align-items:center;gap:8px;cursor:text;
+  transition:border-color .2s,box-shadow .2s;
+}
+.gh-search:hover{border-color:var(--gh-blue);box-shadow:0 0 0 3px rgba(88,166,255,.1)}
+.gh-search-icon{color:var(--dim);font-size:14px;flex-shrink:0}
+.gh-search-text{font-size:13px;color:var(--muted);font-family:var(--sans);flex:1}
+.gh-search-slash{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:1px 6px;font-family:var(--mono);font-size:11px;color:var(--dim)}
+.gh-nav{display:flex;align-items:center;gap:16px;margin-left:auto}
+.gh-nav a{font-size:14px;color:var(--text);font-weight:500;cursor:none;text-decoration:none;transition:color .15s}
+.gh-nav a:hover{color:var(--gh-blue)}
+
+/* Music mini header */
+.gh-music{
+  display:flex;align-items:center;gap:7px;cursor:none;
+  background:rgba(88,166,255,.08);border:1px solid rgba(88,166,255,.2);
+  border-radius:20px;padding:5px 12px;transition:all .2s;flex-shrink:0;
+}
+.gh-music:hover{background:rgba(88,166,255,.14)}
+.gh-vinyl{width:18px;height:18px;border-radius:50%;position:relative;flex-shrink:0;animation:spin 5s linear infinite paused}
+.gh-vinyl.on{animation-play-state:running}
+.gh-vinyl::after{content:'';position:absolute;width:5px;height:5px;background:var(--surface);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
+.gh-music-title{font-size:11px;color:var(--gh-blue);font-weight:500;max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:var(--mono)}
+.gh-play-btn{width:18px;height:18px;border-radius:50%;border:none;background:var(--gh-blue);color:#000;font-size:9px;cursor:none;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:transform .15s}
+.gh-play-btn:hover{transform:scale(1.1)}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+.gh-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#58A6FF,#BC8CFF);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;cursor:none;flex-shrink:0}
+
+/* ── REPO BREADCRUMB ── */
+.repo-breadcrumb{background:var(--bg);border-bottom:1px solid var(--border);padding:12px 16px}
+.repo-breadcrumb-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.repo-bc-icon{font-size:16px;flex-shrink:0;opacity:.6}
+.repo-bc-user{font-size:16px;color:var(--gh-blue);font-weight:400;cursor:none}
+.repo-bc-user:hover{text-decoration:underline}
+.repo-bc-sep{color:var(--muted);font-size:16px}
+.repo-bc-name{font-size:16px;font-weight:600;color:var(--gh-blue);cursor:none}
+.repo-bc-name:hover{text-decoration:underline}
+.repo-visibility{background:rgba(88,166,255,.1);border:1px solid rgba(88,166,255,.25);color:var(--gh-blue);border-radius:20px;padding:1px 8px;font-size:11px;font-weight:500}
+
+/* ── REPO TABS ── */
+.repo-tabs{border-bottom:1px solid var(--border);padding:0 16px}
+.repo-tabs-inner{max-width:1280px;margin:0 auto;display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.repo-tabs-inner::-webkit-scrollbar{display:none}
+.repo-tab{display:flex;align-items:center;gap:6px;padding:12px 14px;font-size:14px;color:var(--muted);cursor:none;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;text-decoration:none;font-weight:400}
+.repo-tab:hover{color:var(--text);background:rgba(255,255,255,.04)}
+.repo-tab.active{color:var(--text);border-bottom-color:var(--gh-orange);font-weight:500}
+.repo-tab-count{background:var(--surface2);border-radius:20px;padding:0 6px;font-size:11px;color:var(--muted);font-family:var(--mono)}
+
+/* ── REPO BODY ── */
+.repo-body{max-width:1280px;margin:0 auto;padding:20px 16px;display:grid;grid-template-columns:1fr 296px;gap:24px}
+@media(max-width:900px){.repo-body{grid-template-columns:1fr}}
+
+/* ── FILE TREE + CONTENT ── */
+.repo-main{}
+
+/* Branch/clone bar */
+.repo-bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.branch-btn{display:flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:13px;color:var(--text);cursor:none;transition:all .2s}
+.branch-btn:hover{background:var(--surface3);border-color:var(--muted)}
+.commits-link{font-size:13px;color:var(--gh-blue);cursor:none;margin-left:auto}
+.commits-link:hover{text-decoration:underline}
+
+/* File explorer */
+.file-tree{border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:16px}
+.file-tree-header{background:var(--surface2);padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.commit-ava{width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#58A6FF,#BC8CFF);flex-shrink:0}
+.commit-msg{font-size:13px;color:var(--text);flex:1}
+.commit-hash{font-family:var(--mono);font-size:11px;color:var(--gh-blue);background:rgba(88,166,255,.1);border:1px solid rgba(88,166,255,.2);border-radius:4px;padding:1px 6px;cursor:none}
+.commit-hash:hover{text-decoration:underline}
+.commit-time{font-size:11px;color:var(--muted);flex-shrink:0}
+.file-row{display:flex;align-items:center;gap:10px;padding:8px 16px;border-bottom:1px solid var(--border2);cursor:none;transition:background .12s}
+.file-row:hover{background:rgba(255,255,255,.03)}
+.file-row:last-child{border-bottom:none}
+.file-icon{font-size:14px;flex-shrink:0;width:16px;text-align:center}
+.file-name{font-size:13px;color:var(--gh-blue);flex:1}
+.file-name:hover{text-decoration:underline}
+.file-name.folder{color:var(--gh-blue)}
+.file-commit{font-size:12px;color:var(--muted);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-time{font-size:12px;color:var(--muted);flex-shrink:0;white-space:nowrap}
+
+/* ── README ── */
+.readme{border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.readme-header{background:var(--surface2);padding:10px 16px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.readme-icon{font-size:14px}
+.readme-label{font-size:13px;font-weight:600;color:var(--text);flex:1}
+.readme-edit-btn{font-size:12px;color:var(--muted);background:none;border:none;cursor:none;padding:4px 8px;border-radius:4px;transition:all .15s}
+.readme-edit-btn:hover{background:var(--surface3);color:var(--text)}
+.readme-body{padding:24px 32px}
+@media(max-width:640px){.readme-body{padding:16px}}
+
+/* README Markdown */
+.md-h1{font-size:clamp(22px,4vw,32px);font-weight:600;letter-spacing:-.03em;padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:16px}
+.md-h1 span{color:var(--gh-blue)}
+.md-h2{font-size:clamp(18px,3vw,22px);font-weight:600;letter-spacing:-.02em;padding-bottom:8px;border-bottom:1px solid var(--border2);margin:24px 0 12px}
+.md-h3{font-size:16px;font-weight:600;margin:18px 0 8px}
+.md-p{font-size:14px;color:#C9D1D9;line-height:1.75;margin-bottom:12px;font-weight:300}
+.md-p strong{color:var(--text);font-weight:600}
+.md-p em{color:var(--gh-blue);font-style:normal}
+.md-p a{color:var(--gh-blue);text-decoration:none}
+.md-p a:hover{text-decoration:underline}
+.md-ul{margin:0 0 12px 20px}
+.md-ul li{font-size:14px;color:#C9D1D9;margin-bottom:6px;line-height:1.6;font-weight:300}
+.md-ul li strong{color:var(--text);font-weight:600}
+.md-blockquote{border-left:3px solid var(--gh-orange);padding:8px 16px;margin:14px 0;color:var(--muted);font-style:italic;font-size:14px;background:rgba(240,136,62,.04);border-radius:0 6px 6px 0}
+.md-hr{border:none;border-top:1px solid var(--border);margin:20px 0}
+
+/* Shields / badges */
+.md-badges{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.md-badge{display:inline-flex;align-items:center;gap:0;border-radius:4px;overflow:hidden;font-family:var(--mono);font-size:11px;font-weight:500}
+.md-badge-left{background:#555;padding:3px 7px;color:#fff}
+.md-badge-right{padding:3px 7px;color:#fff}
+.badge-green{background:#3FB950}
+.badge-blue{background:#58A6FF;color:#000}
+.badge-purple{background:#BC8CFF;color:#000}
+.badge-orange{background:#F0883E}
+.badge-red{background:#F85149}
+
+/* Code block */
+.code-block{background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin:14px 0}
+.code-block-header{display:flex;align-items:center;justify-content:space-between;padding:8px 14px;border-bottom:1px solid var(--border);background:var(--surface2)}
+.code-block-lang{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.05em}
+.code-block-copy{background:none;border:none;color:var(--muted);font-size:12px;cursor:none;padding:2px 8px;border-radius:4px;transition:all .15s;font-family:var(--mono)}
+.code-block-copy:hover{background:var(--surface3);color:var(--text)}
+.code-block-copy.copied{color:var(--gh-green)}
+.code-body{padding:14px;font-family:var(--mono);font-size:13px;line-height:1.7;overflow-x:auto}
+.ck{color:#79C0FF}.cv{color:#56D364}.cs{color:#F8C555}.co{color:#8B949E;font-style:italic}.ce{color:#FF7B72}
+
+/* Countdown as GH widget */
+.gh-countdown{display:flex;border:1px solid var(--border);border-radius:6px;overflow:hidden;margin:14px 0}
+.ghcd-cell{flex:1;text-align:center;padding:14px 8px;border-right:1px solid var(--border2);background:var(--surface)}
+.ghcd-cell:last-child{border-right:none}
+.ghcd-num{font-family:var(--mono);font-size:clamp(24px,5vw,36px);font-weight:700;color:var(--gh-blue);line-height:1;margin-bottom:4px}
+.ghcd-unit{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+
+/* Gallery — image grid */
+.gh-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border-radius:6px;overflow:hidden;margin:14px 0;border:1px solid var(--border)}
+.gh-gal-cell{overflow:hidden;position:relative;background:var(--surface2);cursor:none;aspect-ratio:1}
+.gh-gal-cell:first-child{grid-column:span 2;aspect-ratio:auto;min-height:170px}
+.gh-gal-cell img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s,filter .3s}
+.gh-gal-cell:hover img{transform:scale(1.06);filter:brightness(.75)}
+.gh-gal-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;transition:opacity .3s;display:flex;align-items:center;justify-content:center}
+.gh-gal-cell:hover .gh-gal-overlay{opacity:1}
+.gh-gal-zoom{color:#fff;font-size:20px}
+
+/* Video */
+.gh-video{border:1px solid var(--border);border-radius:6px;overflow:hidden;margin:14px 0;background:#000}
+video.ghv{width:100%;display:block;max-height:300px;object-fit:cover}
+.ghv-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);cursor:none;transition:opacity .25s}
+.ghv-overlay.gone{opacity:0;pointer-events:none}
+.ghv-play{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;font-size:20px;transition:transform .2s}
+.ghv-play:hover{transform:scale(1.08)}
+.ghv-bar{background:rgba(13,17,23,.9);padding:8px 12px;display:flex;align-items:center;gap:8px;border-top:1px solid var(--border2)}
+.ghv-btn{width:26px;height:26px;border-radius:5px;border:none;background:rgba(255,255,255,.06);color:var(--text);font-size:11px;cursor:none;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.ghv-btn:hover{background:rgba(255,255,255,.12)}
+.ghv-prog{flex:1;height:3px;background:rgba(255,255,255,.12);border-radius:2px;cursor:pointer;position:relative}
+.ghv-fill{height:100%;background:var(--gh-blue);border-radius:2px;width:0%;transition:width .5s linear}
+.ghv-time{font-family:var(--mono);font-size:10px;color:var(--muted);flex-shrink:0}
+
+/* Music player as GH widget */
+.gh-music-card{border:1px solid var(--border);border-radius:6px;overflow:hidden;margin:14px 0}
+.gmc-header{background:var(--surface2);padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+.gmc-body{padding:14px}
+.gmc-vinyl-row{display:flex;gap:14px;align-items:center;margin-bottom:14px}
+.gmc-vinyl{width:52px;height:52px;border-radius:50%;flex-shrink:0;position:relative;animation:spin 5s linear infinite paused;box-shadow:0 4px 16px rgba(0,0,0,.4)}
+.gmc-vinyl.on{animation-play-state:running}
+.gmc-vinyl::after{content:'';position:absolute;width:13px;height:13px;background:var(--surface);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%);z-index:2}
+.gmc-info{flex:1;min-width:0}
+.gmc-track{font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.gmc-artist{font-size:12px;color:var(--muted);font-weight:300}
+.gmc-badge{display:inline-flex;align-items:center;gap:4px;background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.2);border-radius:20px;padding:2px 8px;font-size:9px;color:var(--gh-green);font-family:var(--mono);margin-top:4px}
+.gmc-eq{display:flex;align-items:flex-end;gap:1.5px;height:10px}
+.gmc-eq-bar{width:2px;background:var(--gh-green);border-radius:1px;animation:eq .5s ease-in-out infinite alternate paused}
+.gmc-eq-bar:nth-child(2){animation-delay:.15s}.gmc-eq-bar:nth-child(3){animation-delay:.3s}.gmc-eq-bar:nth-child(4){animation-delay:.1s}
+.gmc-eq.on .gmc-eq-bar{animation-play-state:running}
+@keyframes eq{from{height:2px}to{height:10px}}
+.gmc-prog{height:3px;background:rgba(255,255,255,.08);border-radius:2px;cursor:pointer;margin-bottom:5px}
+.gmc-prog-fill{height:100%;background:var(--gh-blue);border-radius:2px;width:0%;transition:width .5s linear}
+.gmc-times{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9px;color:var(--dim);margin-bottom:12px}
+.gmc-controls{display:flex;align-items:center;justify-content:center;gap:7px}
+.gmc-ctrl{width:32px;height:32px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:14px;cursor:none;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.gmc-ctrl:hover{background:var(--surface3);color:var(--text)}
+.gmc-ctrl.main{width:40px;height:40px;background:var(--gh-green);color:#000;border:none;border-radius:8px;font-size:16px;box-shadow:0 3px 12px rgba(63,185,80,.3)}
+.gmc-ctrl.main:hover{background:#4dcc5c;transform:scale(1.04)}
+.gmc-ctrl.active-c{color:var(--gh-blue);border-color:rgba(88,166,255,.4)}
+.gmc-tracklist{border-top:1px solid var(--border2);margin-top:2px;padding-top:2px}
+.gmc-ti{display:flex;align-items:center;gap:10px;padding:8px 4px;cursor:none;border-radius:4px;transition:background .12s}
+.gmc-ti:hover{background:rgba(255,255,255,.04)}
+.gmc-ti.active{background:rgba(88,166,255,.07)}
+.gmc-ti-num{font-family:var(--mono);font-size:10px;color:var(--dim);width:14px;text-align:center;flex-shrink:0}
+.gmc-ti.active .gmc-ti-num{color:var(--gh-blue)}
+.gmc-ti-thumb{width:30px;height:30px;border-radius:4px;flex-shrink:0;position:relative;overflow:hidden}
+.gmc-ti-thumb::after{content:'';position:absolute;width:8px;height:8px;background:var(--surface);border-radius:50%;top:50%;left:50%;transform:translate(-50%,-50%)}
+.gmc-ti-t{font-size:12px;color:var(--text);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gmc-ti.active .gmc-ti-t{color:var(--gh-blue)}
+.gmc-ti-a{font-size:10px;color:var(--muted)}
+.gmc-ti-dur{font-family:var(--mono);font-size:10px;color:var(--dim);flex-shrink:0}
+
+/* RSVP as GH Issue form */
+.gh-issue{border:1px solid var(--border);border-radius:6px;overflow:hidden;margin:14px 0}
+.gh-issue-header{background:var(--surface2);padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.gh-issue-icon{font-size:15px}
+.gh-issue-title{font-size:13px;font-weight:600;color:var(--text);flex:1}
+.gh-issue-open{background:rgba(63,185,80,.15);border:1px solid rgba(63,185,80,.4);color:var(--gh-green);border-radius:20px;padding:2px 10px;font-size:11px;font-weight:500}
+.gh-issue-body{padding:16px}
+.gh-stats-row{display:flex;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:14px}
+.gh-stat{flex:1;padding:10px 8px;text-align:center;border-right:1px solid var(--border2)}
+.gh-stat:last-child{border-right:none}
+.gh-stat-num{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--gh-blue);line-height:1;margin-bottom:3px}
+.gh-stat-label{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--dim)}
+.gh-form-group{margin-bottom:12px}
+.gh-form-label{font-size:12px;font-weight:600;color:var(--text);margin-bottom:5px;display:block}
+.gh-form-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;color:var(--text);font-family:var(--sans);font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s;font-weight:300}
+.gh-form-input:focus{border-color:var(--gh-blue);box-shadow:0 0 0 3px rgba(88,166,255,.1)}
+.gh-form-input::placeholder{color:var(--dim)}
+textarea.gh-form-input{min-height:80px;resize:vertical;font-family:var(--mono);font-size:13px}
+select.gh-form-input{appearance:none;cursor:none}
+.gh-guests{display:flex;gap:6px}
+.gh-guest-btn{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px;font-size:13px;color:var(--muted);cursor:none;font-family:var(--mono);transition:all .15s}
+.gh-guest-btn.active{border-color:var(--gh-blue);color:var(--gh-blue);background:rgba(88,166,255,.08)}
+.gh-submit{background:var(--gh-green);color:#000;border:none;border-radius:6px;padding:10px 20px;font-size:14px;font-weight:600;cursor:none;font-family:var(--sans);transition:all .2s;display:flex;align-items:center;gap:6px}
+.gh-submit:hover{background:#4dcc5c;transform:translateY(-1px)}
+
+/* Comments / wishes */
+.gh-comments{margin-top:16px}
+.gh-comment{display:flex;gap:10px;margin-bottom:12px;opacity:0;transform:translateY(6px);transition:.4s ease}
+.gh-comment.in{opacity:1;transform:translateY(0)}
+.gh-comment-ava{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#fff;flex-shrink:0;border:2px solid var(--border)}
+.gh-comment-body{flex:1;border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.gh-comment-hdr{display:flex;align-items:center;gap:8px;padding:7px 12px;background:var(--surface2);border-bottom:1px solid var(--border2)}
+.gh-comment-user{font-size:13px;font-weight:600;color:var(--text)}
+.gh-comment-status{font-size:11px;color:var(--gh-green);font-family:var(--mono)}
+.gh-comment-time{font-size:11px;color:var(--muted);margin-left:auto}
+.gh-comment-content{padding:10px 14px;font-size:13px;color:#C9D1D9;line-height:1.6;font-weight:300}
+.gh-comment-reactions{padding:6px 14px 10px;display:flex;gap:6px}
+.gh-reaction{display:inline-flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:2px 8px;font-size:11px;color:var(--muted);cursor:none;transition:all .15s}
+.gh-reaction:hover{border-color:var(--gh-blue);color:var(--gh-blue);background:rgba(88,166,255,.08)}
+.gh-reaction.active{border-color:var(--gh-blue);color:var(--gh-blue);background:rgba(88,166,255,.1)}
+
+/* ── RIGHT SIDEBAR ── */
+.repo-sidebar{display:flex;flex-direction:column;gap:16px}
+@media(max-width:900px){.repo-sidebar{display:none}}
+
+.gh-widget{border:1px solid var(--border);border-radius:6px;overflow:hidden}
+.gh-widget-header{padding:10px 16px;border-bottom:1px solid var(--border2);font-size:12px;font-weight:600;color:var(--text);display:flex;align-items:center;justify-content:space-between}
+.gh-widget-body{padding:14px 16px}
+.gh-widget-item{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;font-size:13px}
+.gh-widget-item:last-child{margin-bottom:0}
+.gh-widget-label{color:var(--muted);font-weight:300;display:flex;align-items:center;gap:6px}
+.gh-widget-val{color:var(--text);font-weight:500;font-family:var(--mono);font-size:12px}
+.gh-widget-val.green{color:var(--gh-green)}
+.gh-widget-val.blue{color:var(--gh-blue)}
+.gh-widget-val.orange{color:var(--gh-orange)}
+
+/* Contribution graph */
+.contrib-graph{display:grid;grid-template-columns:repeat(12,1fr);gap:3px;margin-top:8px}
+.contrib-cell{aspect-ratio:1;border-radius:2px;background:var(--surface2);transition:background .15s;cursor:none}
+.contrib-cell.l1{background:rgba(63,185,80,.2)}
+.contrib-cell.l2{background:rgba(63,185,80,.4)}
+.contrib-cell.l3{background:rgba(63,185,80,.65)}
+.contrib-cell.l4{background:rgba(63,185,80,.9)}
+.contrib-cell:hover{filter:brightness(1.3)}
+
+/* Language bar */
+.lang-bar{display:flex;height:8px;border-radius:4px;overflow:hidden;margin-bottom:10px}
+.lang-seg{transition:opacity .2s}
+.lang-seg:hover{opacity:.8}
+.lang-list{display:flex;flex-wrap:wrap;gap:8px}
+.lang-item{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
+.lang-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+/* Stars/forks widgets */
+.gh-star-btn{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 14px;font-size:13px;color:var(--text);cursor:none;font-family:var(--sans);transition:all .2s;display:flex;align-items:center;gap:7px;justify-content:center;font-weight:500;margin-top:8px}
+.gh-star-btn:hover{background:var(--surface3);border-color:var(--muted)}
+.gh-star-btn.starred{color:var(--gh-yellow);border-color:rgba(210,153,34,.4);background:rgba(210,153,34,.08)}
+
+/* Topics */
+.gh-topics{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.gh-topic{background:rgba(88,166,255,.1);border:1px solid rgba(88,166,255,.2);color:var(--gh-blue);border-radius:20px;padding:3px 10px;font-size:11px;font-weight:500;cursor:none;transition:all .15s}
+.gh-topic:hover{background:rgba(88,166,255,.2)}
+
+/* ── FOOTER ── */
+.gh-footer{border-top:1px solid var(--border);padding:24px 16px;margin-top:40px}
+.gh-footer-inner{max-width:1280px;margin:0 auto;display:flex;align-items:center;flex-wrap:wrap;gap:12px}
+.gh-footer-logo{font-size:20px;flex-shrink:0}
+.gh-footer-links{display:flex;gap:14px;flex-wrap:wrap}
+.gh-footer-link{font-size:12px;color:var(--muted);cursor:none;transition:color .15s}
+.gh-footer-link:hover{color:var(--gh-blue)}
+.gh-footer-copy{font-size:12px;color:var(--dim);margin-left:auto}
+
+/* Lightbox */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:99999;display:none;align-items:center;justify-content:center;flex-direction:column}
+.lightbox.open{display:flex}
+.lb-close{position:fixed;top:14px;right:14px;width:36px;height:36px;border-radius:7px;border:1px solid var(--border);background:rgba(255,255,255,.06);color:var(--text);font-size:16px;cursor:none;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.lb-close:hover{background:rgba(88,166,255,.15);border-color:rgba(88,166,255,.4)}
+.lb-img{max-width:88vw;max-height:74vh;object-fit:contain;border-radius:6px;display:block}
+.lb-cap{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:12px;text-align:center;letter-spacing:.1em}
+.lb-nav{display:flex;gap:8px;margin-top:12px}
+.lb-btn{background:rgba(255,255,255,.06);border:1px solid var(--border);color:var(--text);padding:7px 20px;border-radius:6px;cursor:none;font-family:var(--sans);font-size:12px;transition:all .2s}
+.lb-btn:hover{background:rgba(88,166,255,.12);border-color:rgba(88,166,255,.4)}
+.lb-cnt{font-family:var(--mono);font-size:9px;color:var(--dim);margin-top:8px;letter-spacing:.2em}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(8px);background:var(--surface2);border:1px solid rgba(88,166,255,.3);color:var(--text);font-size:13px;padding:10px 20px;border-radius:8px;z-index:9999;opacity:0;transition:all .25s;pointer-events:none;white-space:nowrap;font-family:var(--sans);box-shadow:0 6px 24px rgba(0,0,0,.4)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Reveal */
+.reveal{opacity:0;transform:translateY(12px);transition:.6s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- ══════════════════════════════════════
+     OPENING
+══════════════════════════════════════ -->
+<div id="opening">
+  <div class="op-center">
+
+    <div class="op-logo">
+      <svg viewBox="0 0 98 96" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.926-16.42-5.884-16.42-5.884-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z"/>
+      </svg>
+    </div>
+
+    <p class="op-tagline">// repository · wedding · 2026</p>
+    <h1 class="op-headline"><span class="blue">anita-zarda</span> / wedding</h1>
+    <p class="op-sub">Undangan pernikahan dikemas sebagai sebuah GitHub repository — dengan README, file tree, commit history, dan semua yang Anda butuhkan.</p>
+
+    <div class="op-repo-card">
+      <div class="op-repo-header">
+        <span class="op-repo-icon">📦</span>
+        <span class="op-repo-path"><span>anita-zarda</span> / wedding</span>
+        <span class="op-badge">Public</span>
+      </div>
+      <div class="op-repo-desc">💍 Official wedding invitation repository for Anita Pangestuti &amp; Zardarian Ahadika N · 24 Mei 2026 · Tangerang</div>
+      <div class="op-repo-meta">
+        <div class="op-meta-item"><div class="op-meta-dot" style="background:#F0883E"></div>HTML</div>
+        <div class="op-meta-item">⭐ <strong>2.4k</strong> stars</div>
+        <div class="op-meta-item">🍴 <strong>142</strong> forks</div>
+        <div class="op-meta-item">👁 <strong>381</strong> watching</div>
+      </div>
+    </div>
+
+    <div class="op-actions">
+      <div class="op-action-btn" onclick="openRepo()">👁 Watch <span class="op-action-count">381</span></div>
+      <div class="op-action-btn" id="starBtn" onclick="toggleStar()">⭐ Star <span class="op-action-count" id="starCount">2.4k</span></div>
+      <div class="op-action-btn" onclick="showToast('🍴 Forked!')">🍴 Fork <span class="op-action-count">142</span></div>
+      <div class="op-action-btn primary" onclick="openRepo()">Clone / Open →</div>
+    </div>
+
+    <div class="op-dear">
+      <div class="op-dear-label">// @tamu-undangan</div>
+      <div class="op-dear-name">You are invited to collaborate 🎉</div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MAIN — GitHub Repo
+══════════════════════════════════════ -->
+<div id="main">
+
+  <!-- GH HEADER -->
+  <header class="gh-header">
+    <div class="gh-header-inner">
+      <div class="gh-logo">
+        <svg viewBox="0 0 98 96" width="28" height="28" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.926-16.42-5.884-16.42-5.884-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z" fill="currentColor"/></svg>
+      </div>
+      <div class="gh-search">
+        <span class="gh-search-icon">🔍</span>
+        <span class="gh-search-text">Search or jump to…</span>
+        <span class="gh-search-slash">/</span>
+      </div>
+      <nav class="gh-nav">
+        <a href="#">Pull requests</a>
+        <a href="#">Issues</a>
+        <a href="#">Marketplace</a>
+        <a href="#">Explore</a>
+      </nav>
+      <div class="gh-music" onclick="toggleMusic()">
+        <div class="gh-vinyl" id="ghVinyl" style="background:conic-gradient(#58A6FF,#BC8CFF,#3FB950,#58A6FF)"></div>
+        <span class="gh-music-title" id="ghMusicTitle">A Thousand Years</span>
+        <button class="gh-play-btn" id="ghPlayBtn">▶</button>
+      </div>
+      <div class="gh-avatar">AZ</div>
+    </div>
+  </header>
+
+  <!-- REPO BREADCRUMB -->
+  <div class="repo-breadcrumb">
+    <div class="repo-breadcrumb-inner">
+      <span class="repo-bc-icon">📦</span>
+      <span class="repo-bc-user">anita-zarda</span>
+      <span class="repo-bc-sep">/</span>
+      <span class="repo-bc-name">wedding</span>
+      <span class="repo-visibility">Public</span>
+    </div>
+  </div>
+
+  <!-- REPO TABS -->
+  <div class="repo-tabs">
+    <div class="repo-tabs-inner">
+      <a class="repo-tab active" href="#">💻 Code</a>
+      <a class="repo-tab" href="#rsvp-section">🔴 Issues <span class="repo-tab-count">1</span></a>
+      <a class="repo-tab" href="#">🔀 Pull requests <span class="repo-tab-count">3</span></a>
+      <a class="repo-tab" href="#video-section">▶️ Actions</a>
+      <a class="repo-tab" href="#music-section">🎵 Projects</a>
+      <a class="repo-tab" href="#gallery-section">📸 Wiki</a>
+      <a class="repo-tab" href="#gift-section">🔒 Security</a>
+      <a class="repo-tab" href="#">📊 Insights</a>
+    </div>
+  </div>
+
+  <!-- REPO BODY -->
+  <div class="repo-body">
+
+    <!-- LEFT: Main content -->
+    <div class="repo-main">
+
+      <!-- Branch bar -->
+      <div class="repo-bar">
+        <div class="branch-btn">🌿 main <span style="color:var(--muted);font-size:11px">▾</span></div>
+        <div class="branch-btn">🌿 3 branches</div>
+        <div class="branch-btn">🏷 2 tags</div>
+        <span class="commits-link">⏱ 47 commits</span>
+      </div>
+
+      <!-- File Tree -->
+      <div class="file-tree reveal">
+        <div class="file-tree-header">
+          <div class="commit-ava"></div>
+          <span class="commit-msg">💍 feat: add wedding ceremony details and RSVP form</span>
+          <span class="commit-hash">a1b2c3d</span>
+          <span class="commit-time">2 days ago</span>
+        </div>
+        <div class="file-row"><span class="file-icon">📁</span><span class="file-name folder">gallery/</span><span class="file-commit">📸 add prewedding photo assets</span><span class="file-time">3 days ago</span></div>
+        <div class="file-row"><span class="file-icon">📁</span><span class="file-name folder">music/</span><span class="file-commit">🎵 add wedding playlist mp3 files</span><span class="file-time">3 days ago</span></div>
+        <div class="file-row"><span class="file-icon">📁</span><span class="file-name folder">video/</span><span class="file-commit">🎬 add prewedding video footage</span><span class="file-time">2 days ago</span></div>
+        <div class="file-row"><span class="file-icon">📁</span><span class="file-name folder">src/</span><span class="file-commit">💻 add invitation page components</span><span class="file-time">2 days ago</span></div>
+        <div class="file-row"><span class="file-icon">📄</span><span class="file-name">.gitignore</span><span class="file-commit">🔧 initial project setup</span><span class="file-time">5 days ago</span></div>
+        <div class="file-row"><span class="file-icon">📄</span><span class="file-name">LICENSE</span><span class="file-commit">⚖️ add MIT license</span><span class="file-time">5 days ago</span></div>
+        <div class="file-row"><span class="file-icon">📖</span><span class="file-name">README.md</span><span class="file-commit">📝 update wedding details and countdown</span><span class="file-time">just now</span></div>
+        <div class="file-row"><span class="file-icon">📄</span><span class="file-name">package.json</span><span class="file-commit">📦 add dependencies for wedding app</span><span class="file-time">4 days ago</span></div>
+      </div>
+
+      <!-- README -->
+      <div class="readme reveal">
+        <div class="readme-header">
+          <span class="readme-icon">📖</span>
+          <span class="readme-label">README.md</span>
+          <button class="readme-edit-btn">✏ Edit</button>
+        </div>
+        <div class="readme-body">
+
+          <!-- Badges -->
+          <div class="md-badges">
+            <div class="md-badge"><span class="md-badge-left">status</span><span class="md-badge-right badge-green">active</span></div>
+            <div class="md-badge"><span class="md-badge-left">date</span><span class="md-badge-right badge-blue">24 Mei 2026</span></div>
+            <div class="md-badge"><span class="md-badge-left">location</span><span class="md-badge-right badge-purple">Tangerang</span></div>
+            <div class="md-badge"><span class="md-badge-left">stars</span><span class="md-badge-right badge-orange">2.4k</span></div>
+            <div class="md-badge"><span class="md-badge-left">RSVP</span><span class="md-badge-right badge-green">open</span></div>
+          </div>
+
+          <h1 class="md-h1">💍 <span>anita-zarda</span>/wedding</h1>
+          <p class="md-p">Selamat datang di repository resmi pernikahan <strong>Anita Pangestuti</strong> dan <strong>Zardarian Ahadika N</strong>. Repository ini berisi semua informasi yang Anda butuhkan sebagai tamu undangan kami.</p>
+
+          <div class="md-blockquote">"Ada momen kecil yang tampak biasa, namun diam-diam mengubah segalanya."</div>
+
+          <h2 class="md-h2">📋 Table of Contents</h2>
+          <ul class="md-ul">
+            <li><a class="md-p">About</a></li>
+            <li><a class="md-p">Love Story</a></li>
+            <li><a class="md-p">Event Details</a></li>
+            <li><a class="md-p">Gallery</a></li>
+            <li><a class="md-p">Wedding Playlist</a></li>
+            <li><a class="md-p">RSVP</a></li>
+            <li><a class="md-p">Digital Gift</a></li>
+          </ul>
+
+          <h2 class="md-h2">🧑‍💻 About</h2>
+          <p class="md-p">Repository ini diinisialisasi pada <em>Juni 2025</em> ketika <strong>Anita</strong> dan <strong>Zarda</strong> pertama kali bertemu. Dikelola bersama hingga akhirnya di-merge ke dalam satu kehidupan pada <em>24 Mei 2026</em>.</p>
+
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">bash</span>
+              <button class="code-block-copy" onclick="copyText('git clone https://github.com/anita-zarda/wedding', this)">Copy</button>
+            </div>
+            <div class="code-body">
+              <span class="co"># Clone repository undangan ini</span><br>
+              <span class="ck">git</span> clone https://github.com/<span class="cv">anita-zarda</span>/wedding<br><br>
+              <span class="co"># Checkout ke branch pernikahan</span><br>
+              <span class="ck">git</span> checkout <span class="cs">wedding-day-24-05-2026</span><br><br>
+              <span class="co"># Install semua doa dan restu</span><br>
+              <span class="ck">npm</span> install <span class="cv">--save</span> love prayers blessings
+            </div>
+          </div>
+
+          <h2 class="md-h2">💌 Love Story</h2>
+          <h3 class="md-h3">🎳 v0.1.0 — Initial Commit (Juni 2025)</h3>
+          <p class="md-p">Di hari pertama bertemu, tawa tercipta di antara lemparan <strong>bowling</strong>, cerita mengalir di sela santapan <strong>sushi</strong>, dan manisnya <strong>es krim</strong> menjadi saksi awal kisah mereka yang indah.</p>
+          <h3 class="md-h3">💍 v0.9.0 — Pre-release: Lamaran (November 2025)</h3>
+          <p class="md-p">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga tercinta, Zarda resmi melamar Anita. <em>Release candidate</em> yang dinantikan.</p>
+          <h3 class="md-h3">🕊️ v1.0.0 — Stable Release: Pernikahan (24 Mei 2026)</h3>
+          <p class="md-p">Kini keduanya siap melangkah lebih jauh bersama. Dalam ikatan suci pernikahan, mereka berjanji saling menjaga, mencintai, dan tumbuh bersama selamanya. <strong>Production ready.</strong></p>
+
+          <div class="md-hr"></div>
+
+          <h2 class="md-h2">📅 Event Details</h2>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">json</span>
+              <button class="code-block-copy" onclick="copyText('Graha Yadika, Jl. Palem Ganda Asri, Tangerang',this)">Copy</button>
+            </div>
+            <div class="code-body">
+{<br>
+&nbsp;&nbsp;<span class="ck">"akad_nikah"</span>: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">"date"</span>: <span class="cs">"2026-05-24"</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">"time"</span>: <span class="cs">"08:00 - 10:00 WIB"</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">"venue"</span>: <span class="cs">"Graha Yadika, Tangerang"</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">"dresscode"</span>: <span class="cs">"Formal / Semi-formal"</span><br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;<span class="ck">"resepsi"</span>: {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">"date"</span>: <span class="cs">"2026-05-24"</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">"time"</span>: <span class="cs">"11:00 - 13:00 WIB"</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">"venue"</span>: <span class="cs">"Graha Yadika, Tangerang"</span>,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="ck">"catering"</span>: <span class="ce">true</span><br>
+&nbsp;&nbsp;},<br>
+&nbsp;&nbsp;<span class="ck">"location_url"</span>: <span class="cs">"https://maps.app.goo.gl/mxac1yXcYLrYQmvA6"</span><br>
+}
+            </div>
+          </div>
+
+          <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+            <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" style="display:inline-flex;align-items:center;gap:6px;background:var(--gh-blue);color:#000;border:none;border-radius:6px;padding:7px 16px;font-size:13px;font-weight:600;text-decoration:none;transition:all .2s">🗺 Buka di Maps</a>
+            <button onclick="copyText('Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang', this)" style="display:inline-flex;align-items:center;gap:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:7px 16px;font-size:13px;cursor:none;font-family:var(--sans);transition:all .2s">📋 Salin Alamat</button>
+          </div>
+
+          <h3 class="md-h3" style="margin-top:20px">⏱ Live Countdown</h3>
+          <div class="gh-countdown">
+            <div class="ghcd-cell"><div class="ghcd-num" id="cdD">00</div><div class="ghcd-unit">Days</div></div>
+            <div class="ghcd-cell"><div class="ghcd-num" id="cdH">00</div><div class="ghcd-unit">Hours</div></div>
+            <div class="ghcd-cell"><div class="ghcd-num" id="cdM">00</div><div class="ghcd-unit">Minutes</div></div>
+            <div class="ghcd-cell"><div class="ghcd-num" id="cdS">00</div><div class="ghcd-unit">Seconds</div></div>
+          </div>
+
+          <div class="md-hr"></div>
+
+          <!-- VIDEO -->
+          <h2 class="md-h2" id="video-section">🎬 Pre-Wedding Video</h2>
+          <p class="md-p">File: <code>video/prewedding-anita-zarda-2025.mp4</code></p>
+          <div class="gh-video reveal" style="position:relative">
+            <video id="ghVid" playsinline preload="metadata" poster="https://images.unsplash.com/photo-1519741497674-611481863552?w=900&auto=format&fit=crop&q=60">
+              <source src="https://assets.mixkit.co/videos/preview/mixkit-couple-holding-hands-during-sunset-42795-large.mp4" type="video/mp4">
+            </video>
+            <div class="ghv-overlay" id="ghvOverlay" onclick="toggleVid()"><div class="ghv-play">▶</div></div>
+            <div class="ghv-bar">
+              <button class="ghv-btn" id="ghvBtn" onclick="toggleVid()">▶</button>
+              <div class="ghv-prog" id="ghvProg" onclick="seekVid(event)"><div class="ghv-fill" id="ghvFill"></div></div>
+              <span class="ghv-time" id="ghvTime">0:00 / 0:00</span>
+              <button class="ghv-btn" id="ghvMute" onclick="muteVid()">🔊</button>
+            </div>
+          </div>
+
+          <div class="md-hr"></div>
+
+          <!-- GALLERY -->
+          <h2 class="md-h2" id="gallery-section">📸 Gallery</h2>
+          <p class="md-p">Directory: <code>gallery/</code> · <em>6 files</em> · Klik untuk preview fullscreen</p>
+          <div class="gh-gallery reveal" id="ghGallery">
+            <!-- filled by JS -->
+          </div>
+
+          <div class="md-hr"></div>
+
+          <!-- MUSIC -->
+          <h2 class="md-h2" id="music-section">🎵 Wedding Playlist</h2>
+          <p class="md-p">Directory: <code>music/</code> · <em>4 tracks</em></p>
+          <div class="gh-music-card reveal">
+            <div class="gmc-header">▶️ music/wedding-playlist.json · 4 songs</div>
+            <div class="gmc-body">
+              <div class="gmc-vinyl-row">
+                <div class="gmc-vinyl" id="gmcVinyl" style="background:conic-gradient(#58A6FF,#BC8CFF,#3FB950,#58A6FF)"></div>
+                <div class="gmc-info">
+                  <div class="gmc-track" id="gmcTrack">A Thousand Years</div>
+                  <div class="gmc-artist" id="gmcArtist">Christina Perri</div>
+                  <div class="gmc-badge"><div class="gmc-eq" id="gmcEq"><div class="gmc-eq-bar"></div><div class="gmc-eq-bar"></div><div class="gmc-eq-bar"></div><div class="gmc-eq-bar"></div></div>&nbsp;▶ playing</div>
+                </div>
+              </div>
+              <div class="gmc-prog" id="gmcProg" onclick="seekAudio(event)"><div class="gmc-prog-fill" id="gmcFill"></div></div>
+              <div class="gmc-times"><span id="gmcCur">0:00</span><span id="gmcDur">0:00</span></div>
+              <div class="gmc-controls">
+                <button class="gmc-ctrl" onclick="prevTrack()">⏮</button>
+                <button class="gmc-ctrl" id="shuffleBtn" onclick="shuffleTrack()">🔀</button>
+                <button class="gmc-ctrl main" id="mainPlayBtn" onclick="toggleMusic()">▶</button>
+                <button class="gmc-ctrl" onclick="nextTrack()">⏭</button>
+                <button class="gmc-ctrl" id="repeatBtn" onclick="toggleRepeat()">🔁</button>
+              </div>
+              <div class="gmc-tracklist" id="gmcTracklist"><!-- filled by JS --></div>
+            </div>
+          </div>
+
+          <div class="md-hr"></div>
+
+          <!-- GIFT -->
+          <h2 class="md-h2" id="gift-section">🎁 Digital Gift (Amplop Digital)</h2>
+          <p class="md-p">Doa restu Anda sudah sangat berarti. Namun jika berkenan memberikan tanda kasih:</p>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">payment.bca</span>
+              <button class="code-block-copy" onclick="copyText('8210370561',this)">Copy</button>
+            </div>
+            <div class="code-body">
+<span class="ck">bank</span>      = <span class="cs">"Bank Central Asia (BCA)"</span><br>
+<span class="ck">atas_nama</span> = <span class="cs">"Zardarian Ahadika N"</span><br>
+<span class="ck">nomor</span>     = <span class="cv">"8210 3705 61"</span>
+            </div>
+          </div>
+          <div class="code-block">
+            <div class="code-block-header">
+              <span class="code-block-lang">payment.bni</span>
+              <button class="code-block-copy" onclick="copyText('1192978403',this)">Copy</button>
+            </div>
+            <div class="code-body">
+<span class="ck">bank</span>      = <span class="cs">"Bank Negara Indonesia (BNI)"</span><br>
+<span class="ck">atas_nama</span> = <span class="cs">"Anita Pangestuti"</span><br>
+<span class="ck">nomor</span>     = <span class="cv">"1192 9784 03"</span>
+            </div>
+          </div>
+
+          <div class="md-hr"></div>
+
+          <!-- RSVP as GitHub Issue -->
+          <h2 class="md-h2" id="rsvp-section">✅ RSVP — Open an Issue</h2>
+          <p class="md-p">Konfirmasi kehadiran Anda dengan membuka <em>issue</em> baru di repository ini 😄</p>
+
+          <div class="gh-issue reveal">
+            <div class="gh-issue-header">
+              <span class="gh-issue-icon">🟢</span>
+              <span class="gh-issue-title">💍 Wedding RSVP — Konfirmasi Kehadiran</span>
+              <span class="gh-issue-open">Open</span>
+            </div>
+            <div class="gh-issue-body">
+              <div class="gh-stats-row">
+                <div class="gh-stat"><div class="gh-stat-num" id="stH">0</div><div class="gh-stat-label">Hadir</div></div>
+                <div class="gh-stat"><div class="gh-stat-num" id="stT">0</div><div class="gh-stat-label">Tamu</div></div>
+                <div class="gh-stat"><div class="gh-stat-num" id="stW">2</div><div class="gh-stat-label">Comments</div></div>
+              </div>
+              <div class="gh-form-group">
+                <label class="gh-form-label">Your username / Nama Lengkap</label>
+                <input type="text" class="gh-form-input" id="rName" placeholder="@username atau nama lengkap Anda">
+              </div>
+              <div class="gh-form-group">
+                <label class="gh-form-label">Status Kehadiran</label>
+                <select class="gh-form-input" id="rStatus">
+                  <option value="" disabled selected>Pilih label...</option>
+                  <option value="hadir">✅ Insya Allah Hadir</option>
+                  <option value="tidak">❌ Tidak Dapat Hadir</option>
+                </select>
+              </div>
+              <div class="gh-form-group">
+                <label class="gh-form-label">Jumlah Tamu</label>
+                <div class="gh-guests">
+                  <button class="gh-guest-btn active" onclick="selGuest(1,this)">1</button>
+                  <button class="gh-guest-btn" onclick="selGuest(2,this)">2</button>
+                  <button class="gh-guest-btn" onclick="selGuest(3,this)">3</button>
+                  <button class="gh-guest-btn" onclick="selGuest(4,this)">4+</button>
+                </div>
+              </div>
+              <div class="gh-form-group">
+                <label class="gh-form-label">Leave a comment (Ucapan & Doa)</label>
+                <textarea class="gh-form-input" id="rMsg" placeholder="Write your blessings here..."></textarea>
+              </div>
+              <button class="gh-submit" onclick="submitRSVP()">
+                💬 Submit Comment
+              </button>
+            </div>
+          </div>
+
+          <!-- Comments -->
+          <div class="gh-comments" id="ghComments">
+            <div class="gh-comment in">
+              <div class="gh-comment-ava" style="background:linear-gradient(135deg,#58A6FF,#BC8CFF)">SK</div>
+              <div class="gh-comment-body">
+                <div class="gh-comment-hdr">
+                  <span class="gh-comment-user">@siti-khadijah</span>
+                  <span class="gh-comment-status">✅ hadir · 2 tamu</span>
+                  <span class="gh-comment-time">2 hours ago</span>
+                </div>
+                <div class="gh-comment-content">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, warahmah. Bahagia selalu ya! 💕</div>
+                <div class="gh-comment-reactions">
+                  <div class="gh-reaction active" onclick="this.classList.toggle('active')">❤️ 12</div>
+                  <div class="gh-reaction" onclick="this.classList.toggle('active')">🎉 8</div>
+                  <div class="gh-reaction" onclick="this.classList.toggle('active')">👀 3</div>
+                </div>
+              </div>
+            </div>
+            <div class="gh-comment in">
+              <div class="gh-comment-ava" style="background:linear-gradient(135deg,#3FB950,#238636)">BR</div>
+              <div class="gh-comment-body">
+                <div class="gh-comment-hdr">
+                  <span class="gh-comment-user">@budi-raharjo</span>
+                  <span class="gh-comment-status">✅ hadir · 1 tamu</span>
+                  <span class="gh-comment-time">5 hours ago</span>
+                </div>
+                <div class="gh-comment-content">Alhamdulillah akhirnya! Selamat untuk kalian berdua. Semoga langkah ini membawa kebahagiaan yang tak terhingga. 🤍</div>
+                <div class="gh-comment-reactions">
+                  <div class="gh-reaction active" onclick="this.classList.toggle('active')">❤️ 9</div>
+                  <div class="gh-reaction" onclick="this.classList.toggle('active')">🎊 5</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="md-hr"></div>
+
+          <h2 class="md-h2">📜 License</h2>
+          <p class="md-p">This wedding is licensed under the <em>Love & Commitment License (LCL v1.0)</em> — valid for a <strong>lifetime</strong>, non-revocable, and blessed by family &amp; friends.</p>
+          <p class="md-p" style="font-size:12px;color:var(--dim)">Made with ❤️ by <strong>Anita &amp; Zarda</strong> · 24 Mei 2026 · Tangerang</p>
+
+        </div><!-- /readme-body -->
+      </div><!-- /readme -->
+    </div><!-- /repo-main -->
+
+    <!-- RIGHT SIDEBAR -->
+    <div class="repo-sidebar">
+
+      <!-- About widget -->
+      <div class="gh-widget reveal">
+        <div class="gh-widget-header">About</div>
+        <div class="gh-widget-body">
+          <p style="font-size:13px;color:var(--muted);margin-bottom:12px;font-weight:300;line-height:1.5">💍 Official wedding invitation for Anita &amp; Zarda · 24 Mei 2026 · Tangerang</p>
+          <div class="gh-topics">
+            <div class="gh-topic">wedding</div>
+            <div class="gh-topic">invitation</div>
+            <div class="gh-topic">love-story</div>
+            <div class="gh-topic">tangerang</div>
+            <div class="gh-topic">2026</div>
+            <div class="gh-topic">nikah</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stars/Forks -->
+      <div class="gh-widget reveal">
+        <div class="gh-widget-header">Repository Stats</div>
+        <div class="gh-widget-body">
+          <div class="gh-widget-item"><span class="gh-widget-label">⭐ Stars</span><span class="gh-widget-val blue" id="sideStars">2,481</span></div>
+          <div class="gh-widget-item"><span class="gh-widget-label">🍴 Forks</span><span class="gh-widget-val">142</span></div>
+          <div class="gh-widget-item"><span class="gh-widget-label">👁 Watching</span><span class="gh-widget-val">381</span></div>
+          <div class="gh-widget-item"><span class="gh-widget-label">🔴 Issues</span><span class="gh-widget-val green">1 open</span></div>
+          <div class="gh-widget-item"><span class="gh-widget-label">🔀 Pull Reqs</span><span class="gh-widget-val orange">3 open</span></div>
+          <button class="gh-star-btn" id="sideStarBtn" onclick="toggleStar()">⭐ Star this repo</button>
+        </div>
+      </div>
+
+      <!-- Languages -->
+      <div class="gh-widget reveal">
+        <div class="gh-widget-header">Languages</div>
+        <div class="gh-widget-body">
+          <div class="lang-bar">
+            <div class="lang-seg" style="width:45%;background:#F0883E" title="Love 45%"></div>
+            <div class="lang-seg" style="width:28%;background:#58A6FF" title="HTML 28%"></div>
+            <div class="lang-seg" style="width:15%;background:#BC8CFF" title="CSS 15%"></div>
+            <div class="lang-seg" style="width:12%;background:#3FB950" title="JS 12%"></div>
+          </div>
+          <div class="lang-list">
+            <div class="lang-item"><div class="lang-dot" style="background:#F0883E"></div>Love 45%</div>
+            <div class="lang-item"><div class="lang-dot" style="background:#58A6FF"></div>HTML 28%</div>
+            <div class="lang-item"><div class="lang-dot" style="background:#BC8CFF"></div>CSS 15%</div>
+            <div class="lang-item"><div class="lang-dot" style="background:#3FB950"></div>JS 12%</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contribution graph -->
+      <div class="gh-widget reveal">
+        <div class="gh-widget-header">Contributions</div>
+        <div class="gh-widget-body">
+          <p style="font-size:11px;color:var(--muted);margin-bottom:8px;font-family:var(--mono)">love contributions in the last year</p>
+          <div class="contrib-graph" id="contribGraph"><!-- filled by JS --></div>
+        </div>
+      </div>
+
+      <!-- Event summary card -->
+      <div class="gh-widget reveal">
+        <div class="gh-widget-header">Event Details</div>
+        <div class="gh-widget-body">
+          <div class="gh-widget-item"><span class="gh-widget-label">📅 Date</span><span class="gh-widget-val">24 Mei 2026</span></div>
+          <div class="gh-widget-item"><span class="gh-widget-label">🕗 Akad</span><span class="gh-widget-val green">08:00 WIB</span></div>
+          <div class="gh-widget-item"><span class="gh-widget-label">🕚 Resepsi</span><span class="gh-widget-val blue">11:00 WIB</span></div>
+          <div class="gh-widget-item"><span class="gh-widget-label">📍 Venue</span><span class="gh-widget-val orange">Graha Yadika</span></div>
+          <div style="margin-top:10px">
+            <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:6px;background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:6px;padding:7px 14px;font-size:12px;text-decoration:none;transition:all .2s;font-family:var(--sans)">🗺 Open in Maps</a>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /repo-sidebar -->
+
+  </div><!-- /repo-body -->
+
+  <!-- FOOTER -->
+  <footer class="gh-footer">
+    <div class="gh-footer-inner">
+      <span class="gh-footer-logo">🐙</span>
+      <div class="gh-footer-links">
+        <span class="gh-footer-link">© 2026 Anita &amp; Zarda</span>
+        <span class="gh-footer-link">Privacy</span>
+        <span class="gh-footer-link">Terms</span>
+        <span class="gh-footer-link">Security</span>
+        <span class="gh-footer-link">Status</span>
+        <span class="gh-footer-link">Contact</span>
+      </div>
+      <span class="gh-footer-copy">Made with ❤️ in Tangerang</span>
+    </div>
+  </footer>
+
+</div><!-- /main -->
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLBOut(event)">
+  <button class="lb-close" onclick="closeLB()">✕</button>
+  <img class="lb-img" id="lbImg" src="" alt="">
+  <div class="lb-cap" id="lbCap"></div>
+  <div class="lb-nav">
+    <button class="lb-btn" onclick="lbPrev()">← Prev</button>
+    <button class="lb-btn" onclick="lbNext()">Next →</button>
+  </div>
+  <div class="lb-cnt" id="lbCnt"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+<audio id="audio" preload="none"></audio>
+
+<script>
+/* ── DATA ── */
+const TRACKS=[
+  {title:'A Thousand Years',artist:'Christina Perri',src:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3',grad:'conic-gradient(#58A6FF,#BC8CFF,#3FB950,#58A6FF)',dur:'4:45'},
+  {title:'Perfect',artist:'Ed Sheeran',src:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3',grad:'conic-gradient(#BC8CFF,#3FB950,#58A6FF,#BC8CFF)',dur:'4:23'},
+  {title:"Can't Help Falling in Love",artist:'Elvis Presley',src:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',grad:'conic-gradient(#3FB950,#58A6FF,#BC8CFF,#3FB950)',dur:'3:00'},
+  {title:'All of Me',artist:'John Legend',src:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',grad:'conic-gradient(#F0883E,#58A6FF,#3FB950,#F0883E)',dur:'4:29'},
+];
+const GALLERY=[
+  {url:'https://images.unsplash.com/photo-1519741497674-611481863552?w=900&auto=format&fit=crop&q=70',label:'The Couple'},
+  {url:'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&auto=format&fit=crop&q=70',label:'Wedding Rings'},
+  {url:'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&auto=format&fit=crop&q=70',label:'Bouquet'},
+  {url:'https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=600&auto=format&fit=crop&q=70',label:'Together'},
+  {url:'https://images.unsplash.com/photo-1583939411023-14783179e581?w=600&auto=format&fit=crop&q=70',label:'The Kiss'},
+  {url:'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&auto=format&fit=crop&q=70',label:'Celebration'},
+];
+
+/* ── CURSOR ── */
+const cur=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function ar(){rx+=(mx-rx)*.15;ry+=(my-ry)*.15;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(ar)})();
+document.querySelectorAll('a,button,select,input,textarea,.op-prompt-card,.sb-conv,.gh-reaction,.file-row,.lang-seg,.contrib-cell').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+});
+
+/* ── STAR BUTTON ── */
+let starred=false,starCount=2481;
+function toggleStar(){
+  starred=!starred;
+  starCount+=starred?1:-1;
+  document.getElementById('starBtn').innerHTML=`${starred?'⭐':'☆'} Star <span class="op-action-count">${(starCount/1000).toFixed(1)}k</span>`;
+  if(starred){document.getElementById('starBtn').style.borderColor='rgba(210,153,34,.5)';document.getElementById('starBtn').style.color='var(--gh-yellow)'}
+  else{document.getElementById('starBtn').style.borderColor='';document.getElementById('starBtn').style.color=''}
+  // side star
+  const sideBtn=document.getElementById('sideStarBtn');
+  if(sideBtn){sideBtn.classList.toggle('starred',starred);sideBtn.textContent=starred?'⭐ Starred':'⭐ Star this repo'}
+  const sideStars=document.getElementById('sideStars');
+  if(sideStars) sideStars.textContent=starCount.toLocaleString();
+  showToast(starred?'⭐ Starred! Terima kasih!':'Star dihapus.');
+}
+
+/* ── OPEN ── */
+function openRepo(){
+  document.getElementById('opening').classList.add('hide');
+  document.getElementById('main').classList.add('show');
+  startCountdown();
+  buildGallery();
+  buildTracklist();
+  buildContrib();
+  initReveal();
+  initVid();
+}
+
+/* ── COUNTDOWN ── */
+let cdInt=null;
+function startCountdown(){
+  if(cdInt)return;
+  const T=new Date('2026-05-24T08:00:00');
+  function tick(){
+    const d=T-new Date();if(d<=0)return;
+    ['cdD','cdH','cdM','cdS'].forEach((id,i)=>{
+      const v=[Math.floor(d/86400000),Math.floor((d%86400000)/3600000),Math.floor((d%3600000)/60000),Math.floor((d%60000)/1000)];
+      const el=document.getElementById(id);if(el)el.textContent=String(v[i]).padStart(2,'0');
+    });
+  }
+  tick();cdInt=setInterval(tick,1000);
+}
+
+/* ── GALLERY ── */
+function buildGallery(){
+  const g=document.getElementById('ghGallery');if(!g)return;
+  GALLERY.forEach((img,i)=>{
+    const cell=document.createElement('div');cell.className='gh-gal-cell';
+    if(i===0)cell.style.gridColumn='span 2';
+    cell.innerHTML=`<img src="${img.url}" alt="${img.label}" loading="lazy"><div class="gh-gal-overlay"><span class="gh-gal-zoom">⊕</span></div>`;
+    cell.addEventListener('click',()=>openLB(i));
+    g.appendChild(cell);
+  });
+}
+
+/* ── CONTRIBUTION GRAPH ── */
+function buildContrib(){
+  const g=document.getElementById('contribGraph');if(!g)return;
+  const levels=['','l1','l2','l3','l4'];
+  for(let i=0;i<60;i++){
+    const cell=document.createElement('div');
+    cell.className='contrib-cell';
+    if(Math.random()>.4) cell.classList.add(levels[Math.floor(Math.random()*4)+1]);
+    g.appendChild(cell);
+  }
+}
+
+/* ── TRACKLIST ── */
+function buildTracklist(){
+  const list=document.getElementById('gmcTracklist');if(!list)return;
+  TRACKS.forEach((t,i)=>{
+    const item=document.createElement('div');
+    item.className='gmc-ti'+(i===0?' active':'');item.id='gti'+i;
+    item.innerHTML=`<span class="gmc-ti-num">${i===0?'▶':i+1}</span><div class="gmc-ti-thumb" style="background:${t.grad}"></div><div style="flex:1;min-width:0"><div class="gmc-ti-t">${t.title}</div><div class="gmc-ti-a">${t.artist}</div></div><span class="gmc-ti-dur">${t.dur}</span>`;
+    item.addEventListener('click',()=>loadTrack(i,true));
+    list.appendChild(item);
+  });
+}
+
+/* ── REVEAL ── */
+function initReveal(){
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.08});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+}
+
+/* ── LIGHTBOX ── */
+let lbIdx=0;
+function openLB(i){lbIdx=i;updateLB();document.getElementById('lightbox').classList.add('open');document.body.style.overflow='hidden'}
+function updateLB(){
+  document.getElementById('lbImg').src=GALLERY[lbIdx].url.replace('w=600','w=1200').replace('w=900','w=1200');
+  document.getElementById('lbCap').textContent=GALLERY[lbIdx].label+' — Anita & Zarda · gallery/';
+  document.getElementById('lbCnt').textContent=`${lbIdx+1} / ${GALLERY.length}`;
+}
+function closeLB(){document.getElementById('lightbox').classList.remove('open');document.body.style.overflow=''}
+function closeLBOut(e){if(e.target===document.getElementById('lightbox'))closeLB()}
+function lbPrev(){lbIdx=(lbIdx-1+GALLERY.length)%GALLERY.length;updateLB()}
+function lbNext(){lbIdx=(lbIdx+1)%GALLERY.length;updateLB()}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lightbox').classList.contains('open'))return;
+  if(e.key==='Escape')closeLB();if(e.key==='ArrowLeft')lbPrev();if(e.key==='ArrowRight')lbNext();
+});
+
+/* ── VIDEO ── */
+let vidOn=false;
+function initVid(){
+  const v=document.getElementById('ghVid');if(!v)return;
+  v.addEventListener('timeupdate',()=>{
+    if(!v.duration)return;
+    const f=document.getElementById('ghvFill'),t=document.getElementById('ghvTime');
+    if(f)f.style.width=(v.currentTime/v.duration*100)+'%';
+    if(t)t.textContent=`${fmt(v.currentTime)} / ${fmt(v.duration)}`;
+  });
+  v.addEventListener('ended',()=>{vidOn=false;document.getElementById('ghvOverlay').classList.remove('gone');document.getElementById('ghvBtn').textContent='▶'});
+}
+function toggleVid(){
+  const v=document.getElementById('ghVid');if(!v)return;vidOn=!vidOn;
+  if(vidOn){v.play();document.getElementById('ghvOverlay').classList.add('gone');document.getElementById('ghvBtn').textContent='⏸'}
+  else{v.pause();document.getElementById('ghvOverlay').classList.remove('gone');document.getElementById('ghvBtn').textContent='▶'}
+}
+function seekVid(e){const v=document.getElementById('ghVid');if(!v)return;const r=document.getElementById('ghvProg').getBoundingClientRect();v.currentTime=((e.clientX-r.left)/r.width)*v.duration}
+function muteVid(){const v=document.getElementById('ghVid');if(!v)return;v.muted=!v.muted;document.getElementById('ghvMute').textContent=v.muted?'🔇':'🔊'}
+
+/* ── MUSIC ── */
+const audio=document.getElementById('audio');
+let curT=0,playing=false,repeat=false;
+function loadTrack(idx,play=false){
+  curT=idx;const t=TRACKS[idx];audio.src=t.src;
+  ['gmcTrack','ghMusicTitle'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=t.title});
+  const ga=document.getElementById('gmcArtist');if(ga)ga.textContent=t.artist;
+  ['gmcVinyl','ghVinyl'].forEach(id=>{const el=document.getElementById(id);if(el)el.style.background=t.grad});
+  document.querySelectorAll('.gmc-ti').forEach((el,i)=>{el.classList.toggle('active',i===idx);const n=el.querySelector('.gmc-ti-num');if(n)n.textContent=i===idx?'▶':i+1});
+  if(play)playAudio();
+}
+function playAudio(){audio.play().then(()=>{playing=true;setPlay(true)}).catch(()=>{playing=false;setPlay(false)})}
+function pauseAudio(){audio.pause();playing=false;setPlay(false)}
+function setPlay(on){
+  ['mainPlayBtn','ghPlayBtn'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=on?'⏸':'▶'});
+  ['gmcVinyl','ghVinyl'].forEach(id=>{const el=document.getElementById(id);if(el)el.classList.toggle('on',on)});
+  const eq=document.getElementById('gmcEq');if(eq)eq.classList.toggle('on',on);
+}
+function toggleMusic(){if(!audio.src||audio.src===window.location.href){loadTrack(0,true);return}playing?pauseAudio():playAudio()}
+function nextTrack(){loadTrack((curT+1)%TRACKS.length,playing||true)}
+function prevTrack(){loadTrack((curT-1+TRACKS.length)%TRACKS.length,playing||true)}
+function shuffleTrack(){loadTrack(Math.floor(Math.random()*TRACKS.length),playing||true);showToast('🔀 Shuffle aktif')}
+function toggleRepeat(){repeat=!repeat;const b=document.getElementById('repeatBtn');if(b)b.classList.toggle('active-c',repeat);showToast(repeat?'🔁 Repeat aktif':'🔁 Repeat nonaktif')}
+audio.addEventListener('timeupdate',()=>{
+  if(!audio.duration)return;
+  const p=audio.currentTime/audio.duration*100;
+  const f=document.getElementById('gmcFill'),c=document.getElementById('gmcCur'),d=document.getElementById('gmcDur');
+  if(f)f.style.width=p+'%';if(c)c.textContent=fmt(audio.currentTime);if(d)d.textContent=fmt(audio.duration);
+});
+audio.addEventListener('ended',()=>repeat?(audio.currentTime=0,audio.play()):nextTrack());
+function seekAudio(e){const r=document.getElementById('gmcProg');if(!r)return;const rect=r.getBoundingClientRect();audio.currentTime=((e.clientX-rect.left)/rect.width)*audio.duration}
+function fmt(s){if(isNaN(s))return'0:00';return`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`}
+
+/* ── RSVP ── */
+let gCount=1,totalH=0,totalT=0,totalW=2;
+function selGuest(n,btn){gCount=n;document.querySelectorAll('.gh-guest-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
+function submitRSVP(){
+  const name=document.getElementById('rName')?.value.trim();
+  const status=document.getElementById('rStatus')?.value;
+  const msg=document.getElementById('rMsg')?.value.trim();
+  if(!name||!status){showToast('⚠️ Mohon isi username dan status kehadiran');return}
+  const displayName=name.startsWith('@')?name:'@'+name.toLowerCase().replace(/\s+/g,'-');
+  const avaBg=['linear-gradient(135deg,#58A6FF,#BC8CFF)','linear-gradient(135deg,#3FB950,#238636)','linear-gradient(135deg,#F0883E,#D97706)','linear-gradient(135deg,#BC8CFF,#8250DF)'];
+  const bg=avaBg[Math.floor(Math.random()*avaBg.length)];
+  const initials=name.replace('@','').split(/[\s-]/).map(w=>w[0]).join('').toUpperCase().slice(0,2)||'?';
+  const stTxt=status==='hadir'?`✅ hadir · ${gCount} tamu`:'❌ tidak hadir';
+  const comment=document.createElement('div');comment.className='gh-comment';
+  comment.innerHTML=`<div class="gh-comment-ava" style="background:${bg}">${initials}</div><div class="gh-comment-body"><div class="gh-comment-hdr"><span class="gh-comment-user">${displayName}</span><span class="gh-comment-status">${stTxt}</span><span class="gh-comment-time">just now</span></div><div class="gh-comment-content">${msg||'Selamat dan semoga bahagia selalu! 🎉'}</div><div class="gh-comment-reactions"><div class="gh-reaction" onclick="this.classList.toggle('active')">❤️ 0</div><div class="gh-reaction" onclick="this.classList.toggle('active')">🎉 0</div></div></div>`;
+  const list=document.getElementById('ghComments');if(list){list.prepend(comment);setTimeout(()=>comment.classList.add('in'),50)}
+  if(status==='hadir'){totalH++;totalT+=gCount}
+  totalW++;
+  ['stH','stT','stW'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=[totalH,totalT,totalW][i]});
+  if(document.getElementById('rName'))document.getElementById('rName').value='';
+  if(document.getElementById('rStatus'))document.getElementById('rStatus').value='';
+  if(document.getElementById('rMsg'))document.getElementById('rMsg').value='';
+  showToast('✅ Comment submitted! Terima kasih.');
+}
+
+/* ── COPY ── */
+function copyText(text,btn){
+  navigator.clipboard.writeText(text).then(()=>{
+    if(btn&&btn.classList){btn.classList.add('copied');const orig=btn.textContent;btn.textContent='✓ Copied';showToast('✓ Tersalin!');setTimeout(()=>{btn.classList.remove('copied');btn.textContent=orig},2500)}
+    else showToast('✓ Tersalin!');
+  }).catch(()=>showToast('Salin: '+text));
+}
+
+/* ── TOAST ── */
+let toastT;
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3000)}
+</script>
+</body>
+</html>

@@ -1,0 +1,2094 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anita & Zarda — Wedding Royale</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Barlow:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --pb-orange:   #FF8C00;
+  --pb-orange2:  #FFA500;
+  --pb-orange3:  #FFD080;
+  --pb-yellow:   #FFE033;
+  --pb-red:      #CC2200;
+  --pb-red2:     #FF3311;
+  --pb-blue:     #1A6FCC;
+  --pb-blue2:    #2288FF;
+  --pb-blue3:    #55AAFF;
+  --pb-cyan:     #00DDFF;
+  --pb-green:    #3A7A1A;
+  --pb-green2:   #4CAF50;
+  --pb-bg:       #0D0F0A;
+  --pb-bg2:      #141810;
+  --pb-bg3:      #1C2218;
+  --pb-map:      #2A3020;
+  --pb-card:     rgba(255,255,255,.05);
+  --pb-border:   rgba(255,140,0,.2);
+  --pb-border2:  rgba(255,140,0,.4);
+  --pb-gray:     #A0A890;
+  --pb-gray2:    #606858;
+  --pb-white:    #F5F0E8;
+  --pb-camo1:    #4A5A30;
+  --pb-camo2:    #3A4A28;
+  --pb-camo3:    #5A6840;
+  --pb-camo4:    #2A3018;
+
+  --bc: 'Barlow Condensed', sans-serif;
+  --br: 'Barlow', sans-serif;
+  --mono: 'Share Tech Mono', monospace;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--pb-bg);
+  color:var(--pb-white);
+  font-family:var(--br);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ── CUSTOM CURSOR — CROSSHAIR ── */
+#cur{
+  width:20px;height:20px;
+  position:fixed;z-index:99999;
+  pointer-events:none;
+  transform:translate(-50%,-50%);
+}
+#cur::before,#cur::after{
+  content:'';position:absolute;background:var(--pb-orange);
+}
+#cur::before{
+  left:50%;top:0;bottom:0;width:1.5px;
+  transform:translateX(-50%);
+}
+#cur::after{
+  top:50%;left:0;right:0;height:1.5px;
+  transform:translateY(-50%);
+}
+/* Center dot */
+#cur-dot{
+  position:fixed;z-index:99999;
+  width:4px;height:4px;
+  background:var(--pb-orange);
+  border-radius:50%;
+  transform:translate(-50%,-50%);
+  pointer-events:none;
+  box-shadow:0 0 6px var(--pb-orange);
+}
+
+/* ── CAMO PATTERN BG ── */
+.camo-bg{
+  background-color:var(--pb-bg2);
+  background-image:
+    polygon(20% 20%,30% 10%,45% 18%,40% 30%),
+    radial-gradient(ellipse 60px 30px at 15% 20%, var(--pb-camo1) 0%, transparent 100%),
+    radial-gradient(ellipse 80px 40px at 70% 15%, var(--pb-camo2) 0%, transparent 100%),
+    radial-gradient(ellipse 50px 25px at 40% 60%, var(--pb-camo3) 0%, transparent 100%),
+    radial-gradient(ellipse 70px 35px at 85% 70%, var(--pb-camo1) 0%, transparent 100%),
+    radial-gradient(ellipse 90px 45px at 25% 80%, var(--pb-camo4) 0%, transparent 100%);
+}
+
+/* ════════════════════════════════════
+   OPENING — LOADING SCREEN / LOBBY
+════════════════════════════════════ */
+#opening{
+  position:fixed;inset:0;z-index:9990;
+  background:var(--pb-bg);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:24px;
+  overflow:hidden;
+  transition:opacity .8s ease;
+}
+#opening.hide{opacity:0;pointer-events:none}
+
+/* Opening video */
+.op-video{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;z-index:0;
+  opacity:0;transition:opacity 2.5s ease;
+  filter:saturate(.15) brightness(.35) contrast(1.2);
+}
+.op-video.show{opacity:1}
+/* Overlays */
+.op-ov1{
+  position:absolute;inset:0;z-index:1;
+  background:
+    radial-gradient(ellipse 100% 100% at 50% 50%,rgba(13,15,10,.5) 0%,rgba(13,15,10,.88) 100%),
+    linear-gradient(180deg,rgba(13,15,10,.8) 0%,rgba(13,15,10,.3) 35%,rgba(13,15,10,.3) 65%,rgba(13,15,10,.85) 100%);
+  pointer-events:none;
+}
+.op-ov2{
+  position:absolute;inset:0;z-index:1;
+  background:radial-gradient(ellipse 80% 50% at 50% 100%,rgba(255,140,0,.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+/* Scanlines */
+.op-scan{
+  position:absolute;inset:0;z-index:1;
+  background:repeating-linear-gradient(
+    0deg,transparent 0,transparent 3px,
+    rgba(0,0,0,.06) 3px,rgba(0,0,0,.06) 4px
+  );
+  pointer-events:none;
+}
+
+/* Map grid overlay */
+.op-grid{
+  position:absolute;inset:0;z-index:1;
+  background-image:
+    linear-gradient(rgba(255,140,0,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,140,0,.03) 1px,transparent 1px);
+  background-size:60px 60px;
+  pointer-events:none;
+}
+
+.op-content{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;
+  align-items:center;
+}
+
+/* Sound hint */
+.op-sound{
+  position:absolute;bottom:52px;right:20px;z-index:3;
+  display:flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:9px;
+  color:rgba(255,140,0,.4);
+  opacity:0;transition:opacity .4s ease 3s;
+}
+.op-sound.show{opacity:1}
+.op-sound-bars{display:flex;align-items:flex-end;gap:2px;height:12px}
+.osb{width:2px;background:rgba(255,140,0,.5);border-radius:1px;
+  animation:osbAnim var(--d,.5s) ease-in-out infinite alternate}
+@keyframes osbAnim{from{height:2px}to{height:100%}}
+
+/* Rank badge top */
+.op-rank{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid var(--pb-border);
+  padding:6px 16px;margin-bottom:20px;
+  font-family:var(--mono);font-size:9px;
+  color:var(--pb-orange);letter-spacing:.2em;
+  text-transform:uppercase;
+  opacity:0;animation:fadeUp .6s ease .2s forwards;
+}
+.op-rank::before,.op-rank::after{
+  content:'';width:6px;height:6px;
+  background:var(--pb-orange);
+  clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+}
+
+/* Main title */
+.op-title{
+  font-family:var(--bc);
+  font-size:clamp(48px,13vw,96px);
+  font-weight:900;line-height:.9;
+  letter-spacing:.02em;
+  margin-bottom:6px;
+  opacity:0;animation:fadeUp .7s ease .4s forwards;
+}
+.op-title .orange{
+  background:linear-gradient(180deg,var(--pb-orange2) 0%,var(--pb-orange) 60%,#AA5500 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 20px rgba(255,140,0,.4));
+}
+.op-title .white{
+  color:var(--pb-white);
+  text-shadow:0 2px 20px rgba(0,0,0,.8);
+}
+
+.op-mode{
+  font-family:var(--mono);font-size:11px;
+  letter-spacing:.3em;color:var(--pb-gray);
+  margin-bottom:28px;text-transform:uppercase;
+  opacity:0;animation:fadeUp .6s ease .6s forwards;
+}
+
+/* Dear box */
+.op-dear{
+  background:rgba(255,140,0,.06);
+  border:1px solid var(--pb-border);
+  padding:16px 28px;
+  max-width:380px;width:100%;
+  margin-bottom:28px;
+  text-align:left;
+  position:relative;
+  opacity:0;animation:fadeUp .7s ease .8s forwards;
+}
+/* Corner brackets */
+.op-dear::before,.op-dear::after{
+  content:'';position:absolute;
+  width:10px;height:10px;
+}
+.op-dear::before{top:4px;left:4px;border-top:2px solid var(--pb-orange);border-left:2px solid var(--pb-orange)}
+.op-dear::after{bottom:4px;right:4px;border-bottom:2px solid var(--pb-orange);border-right:2px solid var(--pb-orange)}
+.op-dear-label{
+  font-family:var(--mono);font-size:9px;
+  color:var(--pb-orange);letter-spacing:.25em;
+  text-transform:uppercase;margin-bottom:6px;
+}
+.op-dear-name{
+  font-family:var(--bc);font-size:clamp(16px,4vw,20px);
+  font-weight:700;color:var(--pb-white);
+  letter-spacing:.04em;
+}
+
+/* Play button */
+.op-play{
+  display:flex;align-items:center;gap:10px;
+  opacity:0;animation:fadeUp .6s ease 1.1s forwards;
+  cursor:none;
+}
+.op-play-btn{
+  width:48px;height:48px;
+  background:var(--pb-orange);
+  clip-path:polygon(0 0,100% 50%,0 100%);
+  border:none;cursor:none;
+  animation:playPulse 2s ease-in-out infinite;
+  flex-shrink:0;
+}
+@keyframes playPulse{
+  0%,100%{filter:drop-shadow(0 0 0 rgba(255,140,0,0))}
+  50%{filter:drop-shadow(0 0 12px rgba(255,140,0,.6))}
+}
+.op-play-text{
+  font-family:var(--bc);font-size:18px;font-weight:700;
+  letter-spacing:.12em;color:var(--pb-white);
+  text-transform:uppercase;
+}
+.op-play-sub{
+  font-family:var(--mono);font-size:9px;
+  color:var(--pb-gray);letter-spacing:.15em;
+  margin-top:2px;
+}
+
+/* Ping dots */
+.op-ping{
+  position:absolute;z-index:2;
+  pointer-events:none;
+}
+.ping-dot{
+  position:absolute;
+  width:8px;height:8px;
+  border-radius:50%;
+  background:var(--pb-orange);
+  opacity:.6;
+}
+.ping-dot::after{
+  content:'';
+  position:absolute;
+  inset:-4px;border-radius:50%;
+  border:1px solid var(--pb-orange);
+  animation:pingRing 2s ease-out infinite;
+}
+@keyframes pingRing{
+  0%{transform:scale(1);opacity:.6}
+  100%{transform:scale(3);opacity:0}
+}
+
+/* Loading bar */
+.op-loading{
+  position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:rgba(255,255,255,.04);z-index:3;
+}
+.op-loading-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--pb-orange),var(--pb-yellow));
+  transition:width 2s ease 1.3s;
+  box-shadow:0 0 8px var(--pb-orange);
+}
+.op-loading-fill.go{width:100%}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ════════════════════════════════════
+   MAIN
+════════════════════════════════════ */
+#main{opacity:0;transition:opacity .8s ease}
+#main.show{opacity:1}
+
+/* ════════════════════════════════════
+   HERO — DROP ZONE
+════════════════════════════════════ */
+.hero{
+  min-height:100svh;
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+  background:var(--pb-bg);
+}
+
+/* Map background */
+.hero-map-bg{
+  position:absolute;inset:0;
+  background-color:var(--pb-map);
+  background-image:
+    linear-gradient(rgba(255,140,0,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,140,0,.025) 1px,transparent 1px),
+    linear-gradient(rgba(255,140,0,.01) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,140,0,.01) 1px,transparent 1px);
+  background-size:120px 120px,120px 120px,30px 30px,30px 30px;
+  opacity:.6;
+}
+
+/* Hero bg video */
+.hero-video{
+  position:absolute;inset:0;
+  width:100%;height:100%;object-fit:cover;
+  opacity:0;transition:opacity 1.5s ease;
+  filter:saturate(.2) brightness(.4) contrast(1.1);
+  z-index:1;
+}
+.hero-video.show{opacity:1}
+
+/* Terrain patches */
+.hero-terrain{
+  position:absolute;inset:0;z-index:1;
+  background-image:
+    radial-gradient(ellipse 40% 25% at 15% 40%,rgba(40,60,20,.8) 0%,transparent 100%),
+    radial-gradient(ellipse 30% 20% at 80% 60%,rgba(30,50,15,.7) 0%,transparent 100%),
+    radial-gradient(ellipse 25% 15% at 55% 80%,rgba(50,70,25,.6) 0%,transparent 100%),
+    radial-gradient(ellipse 20% 10% at 90% 20%,rgba(35,55,18,.5) 0%,transparent 100%);
+}
+.hero-overlay{
+  position:absolute;inset:0;z-index:2;
+  background:
+    linear-gradient(180deg,rgba(13,15,10,.7) 0%,rgba(13,15,10,.2) 30%,rgba(13,15,10,.1) 60%,rgba(13,15,10,.85) 100%),
+    linear-gradient(90deg,rgba(13,15,10,.6) 0%,transparent 50%);
+}
+
+/* Plane drop animation */
+.plane-wrap{
+  position:absolute;top:60px;left:0;z-index:10;
+  pointer-events:none;
+  animation:planefly 14s linear infinite;
+  opacity:0;
+}
+.plane-wrap.show{opacity:1}
+@keyframes planefly{
+  0%{transform:translateX(-120px) translateY(0)}
+  100%{transform:translateX(calc(100vw + 120px)) translateY(40px)}
+}
+
+/* Safe zone circle */
+.safe-zone{
+  position:absolute;z-index:3;
+  border:2px solid rgba(0,180,255,.35);
+  border-radius:50%;
+  pointer-events:none;
+  box-shadow:inset 0 0 60px rgba(0,180,255,.04),0 0 20px rgba(0,180,255,.1);
+  animation:safePulse 4s ease-in-out infinite;
+}
+@keyframes safePulse{
+  0%,100%{border-color:rgba(0,180,255,.3)}
+  50%{border-color:rgba(0,180,255,.6)}
+}
+
+/* Red zone danger circle */
+.red-zone{
+  position:absolute;z-index:3;
+  border:1px dashed rgba(255,50,0,.25);
+  border-radius:50%;pointer-events:none;
+  animation:redPulse 3s ease-in-out infinite;
+}
+@keyframes redPulse{
+  0%,100%{border-color:rgba(255,50,0,.2)}
+  50%{border-color:rgba(255,50,0,.5)}
+}
+
+/* Player location markers */
+.map-marker{
+  position:absolute;z-index:8;
+  pointer-events:none;
+}
+.mm-dot{
+  width:10px;height:10px;
+  background:var(--pb-orange);
+  border:2px solid #000;
+  border-radius:50%;
+  position:relative;
+  box-shadow:0 0 8px var(--pb-orange);
+}
+.mm-dot::after{
+  content:'';
+  position:absolute;inset:-4px;
+  border-radius:50%;
+  border:1px solid rgba(255,140,0,.4);
+  animation:markerPing 2s ease-out infinite;
+}
+@keyframes markerPing{0%{transform:scale(1);opacity:.6}100%{transform:scale(2.5);opacity:0}}
+.mm-label{
+  font-family:var(--mono);font-size:9px;
+  color:var(--pb-orange);
+  position:absolute;top:14px;left:50%;
+  transform:translateX(-50%);
+  white-space:nowrap;
+  text-shadow:0 1px 4px rgba(0,0,0,.8);
+  letter-spacing:.08em;
+}
+
+/* Airdrop box */
+.airdrop{
+  position:absolute;z-index:8;
+  pointer-events:none;
+  animation:airdropFall 3s ease-out forwards;
+  opacity:0;
+}
+.airdrop.landed{animation:none;opacity:1}
+@keyframes airdropFall{
+  0%{transform:translateY(-100px);opacity:0}
+  60%{opacity:1}
+  100%{transform:translateY(0);opacity:1}
+}
+.airdrop-box{
+  width:28px;height:20px;
+  background:linear-gradient(180deg,#8B6914,#5A4010);
+  border:1px solid #AA8822;
+  position:relative;
+}
+.airdrop-chute{
+  position:absolute;bottom:100%;left:50%;
+  transform:translateX(-50%);
+  width:0;height:0;
+  border-left:20px solid transparent;
+  border-right:20px solid transparent;
+  border-bottom:24px solid rgba(80,80,200,.5);
+  margin-bottom:2px;
+}
+.airdrop-glow{
+  position:absolute;bottom:-8px;left:50%;
+  transform:translateX(-50%);
+  width:60px;height:8px;
+  background:radial-gradient(ellipse,rgba(0,180,255,.4),transparent 70%);
+}
+
+/* Main HUD content */
+.hero-hud{
+  position:relative;z-index:10;
+  flex:1;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:stretch;
+  min-height:calc(100svh - 0px);
+}
+@media(max-width:700px){.hero-hud{grid-template-columns:1fr}}
+
+/* Left panel */
+.hud-left{
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:40px;padding-bottom:80px;
+  position:relative;
+}
+@media(max-width:700px){.hud-left{padding:24px;padding-bottom:96px}}
+
+.hud-zone-label{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,50,0,.15);
+  border:1px solid rgba(255,50,0,.3);
+  border-radius:2px;
+  padding:5px 14px;
+  font-family:var(--mono);font-size:10px;
+  color:#FF6644;letter-spacing:.15em;
+  text-transform:uppercase;margin-bottom:16px;
+  width:fit-content;
+}
+.hud-zone-label::before{
+  content:'';width:6px;height:6px;
+  background:#FF6644;border-radius:50%;
+  animation:blinkDot .8s step-end infinite;
+}
+@keyframes blinkDot{0%,100%{opacity:1}50%{opacity:0}}
+
+.hud-title{
+  font-family:var(--bc);
+  font-size:clamp(44px,8vw,80px);
+  font-weight:900;line-height:.9;
+  letter-spacing:.02em;margin-bottom:8px;
+}
+.hud-title .name{
+  display:block;
+  background:linear-gradient(180deg,#fff 0%,rgba(255,255,255,.75) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.hud-title .amp{
+  display:block;
+  background:linear-gradient(180deg,var(--pb-orange2),var(--pb-orange));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  font-size:clamp(24px,5vw,44px);
+  margin:2px 0;
+}
+
+.hud-meta{
+  display:flex;flex-wrap:wrap;gap:8px;margin:20px 0;
+}
+.hud-tag{
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:.15em;text-transform:uppercase;
+  padding:5px 12px;border-radius:2px;border:1px solid;
+}
+.hud-tag.orange{color:var(--pb-orange);border-color:rgba(255,140,0,.3);background:rgba(255,140,0,.08)}
+.hud-tag.blue{color:var(--pb-blue3);border-color:rgba(0,150,255,.3);background:rgba(0,150,255,.08)}
+.hud-tag.gray{color:var(--pb-gray);border-color:var(--pb-gray2);background:rgba(255,255,255,.04)}
+
+.hud-actions{display:flex;gap:12px;flex-wrap:wrap}
+.pb-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:var(--bc);font-weight:700;
+  font-size:15px;letter-spacing:.08em;text-transform:uppercase;
+  padding:12px 28px;border:none;
+  cursor:none;transition:all .15s;text-decoration:none;
+}
+.pb-btn-primary{
+  background:var(--pb-orange);color:#000;
+  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
+  box-shadow:0 4px 20px rgba(255,140,0,.3);
+}
+.pb-btn-primary:hover{background:var(--pb-orange2);box-shadow:0 6px 28px rgba(255,140,0,.5)}
+.pb-btn-secondary{
+  background:rgba(255,255,255,.08);color:var(--pb-white);
+  border:1px solid rgba(255,255,255,.2);
+  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
+}
+.pb-btn-secondary:hover{background:rgba(255,255,255,.14)}
+
+/* Right panel — minimap style */
+.hud-right{
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+@media(max-width:700px){.hud-right{display:none}}
+
+.minimap{
+  width:300px;height:300px;
+  border:2px solid rgba(255,140,0,.3);
+  background:var(--pb-map);
+  position:relative;overflow:hidden;
+  box-shadow:0 0 40px rgba(0,0,0,.5),inset 0 0 20px rgba(0,0,0,.3);
+}
+.mm-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,140,0,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,140,0,.04) 1px,transparent 1px);
+  background-size:30px 30px;
+}
+/* Terrain patches on minimap */
+.mm-terrain{
+  position:absolute;
+  border-radius:40% 60% 55% 45%;
+  background:rgba(40,70,20,.7);
+}
+/* Roads */
+.mm-road{
+  position:absolute;
+  background:rgba(100,90,70,.4);
+}
+.mm-label-coord{
+  position:absolute;
+  font-family:var(--mono);font-size:8px;
+  color:rgba(255,140,0,.3);
+}
+/* Safe zone on minimap */
+.mm-safe{
+  position:absolute;
+  border:1px solid rgba(0,180,255,.5);
+  border-radius:50%;
+  background:rgba(0,180,255,.04);
+}
+/* Player on minimap */
+.mm-player{
+  position:absolute;
+  width:8px;height:8px;
+  background:var(--pb-orange);
+  border:1px solid #000;
+  border-radius:50%;
+  box-shadow:0 0 6px var(--pb-orange);
+  transform:translate(-50%,-50%);
+}
+.mm-player-arrow{
+  position:absolute;
+  width:0;height:0;
+  border-left:4px solid transparent;
+  border-right:4px solid transparent;
+  border-bottom:8px solid var(--pb-orange);
+  transform:translate(-50%,-200%) rotate(35deg);
+}
+/* Minimap border coords */
+.minimap-wrap{
+  position:relative;
+  display:inline-block;
+}
+.mm-coord-x,.mm-coord-y{
+  position:absolute;
+  font-family:var(--mono);font-size:8px;
+  color:rgba(255,140,0,.4);
+}
+.mm-coord-x{top:-16px;left:0;right:0;display:flex;justify-content:space-between}
+.mm-coord-y{left:-24px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:space-between;writing-mode:vertical-rl;text-orientation:mixed}
+
+/* HUD info bar */
+.hud-info-bar{
+  position:absolute;bottom:0;left:0;right:0;z-index:10;
+  background:rgba(13,15,10,.85);
+  backdrop-filter:blur(12px);
+  border-top:1px solid var(--pb-border);
+  display:flex;
+  overflow-x:auto;scrollbar-width:none;
+}
+.hud-info-bar::-webkit-scrollbar{display:none}
+.hib-item{
+  flex-shrink:0;
+  padding:12px 24px;
+  border-right:1px solid rgba(255,140,0,.1);
+  position:relative;
+}
+.hib-item::before{
+  content:'';
+  position:absolute;left:0;top:25%;bottom:25%;
+  width:2px;background:var(--pb-orange);
+}
+.hib-label{
+  font-family:var(--mono);font-size:8px;
+  color:var(--pb-orange);letter-spacing:.2em;
+  text-transform:uppercase;margin-bottom:4px;
+}
+.hib-value{
+  font-family:var(--bc);font-size:16px;
+  font-weight:700;color:var(--pb-white);
+  letter-spacing:.03em;
+}
+.hib-sub{
+  font-size:10px;color:var(--pb-gray2);font-weight:400;margin-top:1px;
+}
+
+/* ════════════════════════════════════
+   ZONE ALERT BAND
+════════════════════════════════════ */
+.zone-band{
+  background:rgba(200,30,0,.12);
+  border-top:1px solid rgba(200,30,0,.3);
+  border-bottom:1px solid rgba(200,30,0,.3);
+  overflow:hidden;height:36px;
+  display:flex;align-items:center;
+  position:relative;
+}
+.zone-band-label{
+  background:var(--pb-red);color:#fff;
+  font-family:var(--bc);font-size:14px;
+  font-weight:700;letter-spacing:.15em;
+  padding:0 20px;height:100%;
+  display:flex;align-items:center;
+  flex-shrink:0;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.zone-band-scroll{
+  font-family:var(--mono);font-size:12px;
+  letter-spacing:.1em;color:rgba(255,80,40,.8);
+  white-space:nowrap;
+  animation:zoneScroll 24s linear infinite;
+}
+@keyframes zoneScroll{
+  0%{transform:translateX(100vw)}
+  100%{transform:translateX(-200%)}
+}
+
+/* ════════════════════════════════════
+   COUNTDOWN — ZONE TIMER
+════════════════════════════════════ */
+.cd-section{
+  background:var(--pb-bg2);
+  padding:72px 24px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.cd-section::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,140,0,.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,140,0,.02) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;
+}
+.cd-eyebrow{
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.35em;color:var(--pb-orange);
+  text-transform:uppercase;margin-bottom:8px;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.cd-eyebrow::before,.cd-eyebrow::after{
+  content:'';width:20px;height:1px;background:var(--pb-orange);
+}
+.cd-title{
+  font-family:var(--bc);
+  font-size:clamp(20px,4vw,28px);font-weight:700;
+  color:var(--pb-white);margin-bottom:48px;
+  letter-spacing:.04em;text-transform:uppercase;
+}
+.cd-grid{
+  display:flex;justify-content:center;gap:8px;flex-wrap:wrap;
+}
+.cd-box{
+  background:rgba(255,140,0,.06);
+  border:1px solid var(--pb-border);
+  padding:24px 20px 16px;min-width:100px;
+  position:relative;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
+}
+.cd-box::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--pb-orange),var(--pb-yellow));
+}
+.cd-n{
+  font-family:var(--bc);
+  font-size:clamp(44px,9vw,64px);
+  font-weight:900;color:var(--pb-orange);
+  line-height:1;margin-bottom:8px;
+  text-shadow:0 0 30px rgba(255,140,0,.4);
+  letter-spacing:.02em;
+}
+.cd-u{
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:.25em;color:var(--pb-gray2);
+  text-transform:uppercase;
+}
+@media(max-width:480px){.cd-box{min-width:82px;padding:18px 14px 12px}}
+
+/* ════════════════════════════════════
+   SQUAD — PLAYER CARDS
+════════════════════════════════════ */
+.squad-section{
+  background:var(--pb-bg);
+  padding:72px 24px;
+}
+.pb-section-header{margin-bottom:40px}
+.pb-eyebrow{
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.35em;color:var(--pb-orange);
+  text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;margin-bottom:10px;
+}
+.pb-eyebrow::before{content:'';width:20px;height:1px;background:var(--pb-orange)}
+.pb-heading{
+  font-family:var(--bc);
+  font-size:clamp(28px,5vw,44px);
+  font-weight:900;letter-spacing:.03em;
+  color:var(--pb-white);text-transform:uppercase;
+  line-height:1;
+}
+
+.squad-grid{
+  display:grid;grid-template-columns:1fr auto 1fr;
+  gap:20px;align-items:center;max-width:820px;margin:0 auto;
+}
+@media(max-width:640px){.squad-grid{grid-template-columns:1fr;max-width:360px}}
+
+.player-card{
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--pb-border);
+  clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));
+  overflow:hidden;
+  transition:transform .2s,border-color .2s;
+}
+.player-card:hover{transform:translateY(-4px);border-color:var(--pb-border2)}
+
+.pc-banner{
+  height:72px;overflow:hidden;position:relative;
+  background:linear-gradient(135deg,var(--pb-camo1),var(--pb-camo2));
+}
+.pc-banner img{
+  width:100%;height:100%;object-fit:cover;
+  filter:saturate(.4) brightness(.5);
+}
+.pc-banner-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,140,0,.2),rgba(0,0,0,.4));
+}
+/* Rank badge */
+.pc-rank-badge{
+  position:absolute;top:8px;right:10px;
+  background:var(--pb-orange);color:#000;
+  font-family:var(--bc);font-size:11px;font-weight:800;
+  padding:3px 10px;letter-spacing:.08em;
+  clip-path:polygon(0 0,calc(100% - 4px) 0,100% 4px,100% 100%,4px 100%,0 calc(100% - 4px));
+}
+
+.pc-body{padding:16px}
+.pc-avatar-row{
+  display:flex;gap:12px;align-items:flex-end;
+  margin-top:-28px;margin-bottom:12px;
+}
+.pc-avatar{
+  width:56px;height:56px;border-radius:3px;
+  border:2px solid var(--pb-orange);
+  overflow:hidden;flex-shrink:0;
+  box-shadow:0 4px 16px rgba(0,0,0,.5);
+}
+.pc-avatar img{width:100%;height:100%;object-fit:cover}
+.pc-status{
+  font-family:var(--mono);font-size:9px;
+  color:var(--pb-green2);letter-spacing:.1em;
+  margin-bottom:2px;
+  display:flex;align-items:center;gap:5px;
+}
+.pc-status::before{
+  content:'';width:6px;height:6px;border-radius:50%;
+  background:var(--pb-green2);
+  box-shadow:0 0 6px var(--pb-green2);
+}
+
+.pc-role{
+  font-family:var(--mono);font-size:9px;
+  letter-spacing:.2em;color:var(--pb-orange);
+  text-transform:uppercase;margin-bottom:4px;
+}
+.pc-name{
+  font-family:var(--bc);
+  font-size:clamp(14px,3vw,18px);
+  font-weight:800;letter-spacing:.04em;
+  color:var(--pb-white);margin-bottom:6px;
+  text-transform:uppercase;line-height:1.1;
+}
+.pc-parents{
+  font-size:11px;color:var(--pb-gray2);
+  font-weight:400;line-height:1.6;
+}
+
+.pc-stats{
+  display:flex;gap:0;
+  border-top:1px solid var(--pb-border);
+  margin-top:14px;padding-top:12px;
+}
+.pc-stat{flex:1;text-align:center}
+.pc-stat+.pc-stat{border-left:1px solid var(--pb-border)}
+.pc-stat-n{
+  font-family:var(--bc);font-size:18px;font-weight:800;
+  color:var(--pb-orange);letter-spacing:.04em;
+}
+.pc-stat-l{
+  font-family:var(--mono);font-size:7px;
+  color:var(--pb-gray2);letter-spacing:.15em;
+  text-transform:uppercase;margin-top:2px;
+}
+
+.vs-text{
+  font-family:var(--bc);
+  font-size:clamp(36px,7vw,56px);
+  font-weight:900;letter-spacing:.06em;
+  color:var(--pb-gray2);text-align:center;
+  text-shadow:2px 2px 0 rgba(0,0,0,.5);
+  user-select:none;
+}
+@media(max-width:640px){.vs-text{font-size:44px}}
+
+/* ════════════════════════════════════
+   EVENT — MISSION BRIEFING
+════════════════════════════════════ */
+.event-section{
+  background:var(--pb-bg2);
+  padding:72px 24px;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 50% 50%,rgba(255,140,0,.03) 0%,transparent 70%);
+}
+.mission-cards{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:16px;max-width:820px;margin:40px auto 0;
+}
+@media(max-width:560px){.mission-cards{grid-template-columns:1fr}}
+.mission-card{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--pb-border);
+  clip-path:polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,0 100%);
+  padding:28px 24px;
+  position:relative;overflow:hidden;
+  transition:transform .2s,border-color .2s;
+}
+.mission-card:hover{transform:translateY(-3px);border-color:var(--pb-border2)}
+/* Top accent line */
+.mission-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--pb-orange),transparent);
+}
+.mc-mission-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  background:rgba(255,140,0,.12);
+  border:1px solid var(--pb-border);
+  font-family:var(--mono);font-size:9px;
+  color:var(--pb-orange);letter-spacing:.2em;
+  text-transform:uppercase;
+  padding:4px 12px;margin-bottom:16px;
+}
+.mc-mission-tag::before{content:'▶';font-size:7px}
+.mc-title{
+  font-family:var(--bc);
+  font-size:clamp(22px,4vw,30px);
+  font-weight:800;letter-spacing:.04em;
+  color:var(--pb-white);text-transform:uppercase;
+  margin-bottom:20px;line-height:1.1;
+}
+.mc-row{
+  display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;
+}
+.mc-ico{color:var(--pb-orange);flex-shrink:0;margin-top:2px;width:14px;height:14px}
+.mc-txt{
+  font-size:12px;color:var(--pb-gray);
+  font-weight:400;line-height:1.6;
+}
+.mc-maps{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:16px;
+  background:rgba(255,140,0,.1);
+  border:1px solid var(--pb-border2);
+  color:var(--pb-orange);
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.12em;text-transform:uppercase;
+  padding:9px 18px;text-decoration:none;
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+  transition:background .15s;cursor:none;
+}
+.mc-maps:hover{background:rgba(255,140,0,.18)}
+
+/* ════════════════════════════════════
+   TIMELINE — BATTLE LOG
+════════════════════════════════════ */
+.tl-section{
+  background:var(--pb-bg3);
+  padding:72px 24px;
+  border-top:1px solid var(--pb-border);
+}
+.tl-list{
+  max-width:660px;margin:40px auto 0;
+  position:relative;
+}
+.tl-list::before{
+  content:'';position:absolute;
+  left:18px;top:0;bottom:0;width:2px;
+  background:repeating-linear-gradient(
+    180deg,
+    var(--pb-orange) 0,var(--pb-orange) 6px,
+    transparent 6px,transparent 12px
+  );
+  opacity:.4;
+}
+.tl-item{
+  display:flex;gap:28px;
+  padding-left:56px;margin-bottom:52px;
+  position:relative;
+  opacity:0;transform:translateX(-16px);
+  transition:opacity .7s,transform .7s;
+}
+.tl-item.visible{opacity:1;transform:translateX(0)}
+.tl-node{
+  position:absolute;left:8px;top:4px;
+  width:22px;height:22px;
+  background:var(--pb-orange);
+  clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--mono);font-size:8px;color:#000;
+  font-weight:700;
+  box-shadow:0 0 12px rgba(255,140,0,.4);
+}
+.tl-chapter{
+  font-family:var(--mono);font-size:9px;
+  color:var(--pb-orange);letter-spacing:.2em;
+  text-transform:uppercase;margin-bottom:6px;
+}
+.tl-date{
+  font-family:var(--mono);font-size:10px;
+  color:var(--pb-gray2);margin-bottom:8px;letter-spacing:.08em;
+}
+.tl-title{
+  font-family:var(--bc);
+  font-size:clamp(20px,4vw,28px);
+  font-weight:800;letter-spacing:.04em;
+  color:var(--pb-white);text-transform:uppercase;
+  margin-bottom:8px;
+}
+.tl-desc{
+  font-size:13px;color:var(--pb-gray);
+  font-weight:400;line-height:1.7;
+}
+
+/* ════════════════════════════════════
+   GALLERY — KILLCAM / SCREENSHOTS
+════════════════════════════════════ */
+.gallery-section{
+  background:var(--pb-bg);
+  padding:72px 0;
+}
+.gallery-head{
+  max-width:1060px;margin:0 auto 28px;
+  padding:0 24px;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  flex-wrap:wrap;gap:16px;
+}
+.gallery-sub{
+  font-family:var(--mono);font-size:10px;
+  color:var(--pb-gray2);letter-spacing:.2em;text-transform:uppercase;
+}
+.gallery-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-auto-rows:auto;
+  gap:3px;
+  max-width:1060px;margin:0 auto;
+  padding:0 24px;
+}
+@media(max-width:720px){.gallery-grid{grid-template-columns:repeat(2,1fr);padding:0 16px}}
+.gal-item{
+  position:relative;overflow:hidden;
+  aspect-ratio:16/9;cursor:none;
+  background:var(--pb-bg2);
+}
+.gal-item:nth-child(1){grid-column:span 2;grid-row:span 2;aspect-ratio:auto}
+@media(max-width:720px){.gal-item:nth-child(1){grid-column:span 2;aspect-ratio:16/9}}
+.gal-item img{
+  width:100%;height:100%;object-fit:cover;
+  filter:saturate(.75) contrast(1.08) brightness(.88);
+  transition:transform .5s,filter .3s;
+}
+.gal-item:hover img{transform:scale(1.06);filter:saturate(1.05) contrast(1.12) brightness(.95)}
+.gal-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(0deg,rgba(13,15,10,.8) 0%,transparent 50%);
+  opacity:0;transition:opacity .3s;
+}
+.gal-item:hover .gal-overlay{opacity:1}
+.gal-caption{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:12px;
+  font-family:var(--bc);font-size:13px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+  color:var(--pb-white);
+  transform:translateY(6px);opacity:0;
+  transition:transform .3s,opacity .3s;
+}
+.gal-item:hover .gal-caption{transform:translateY(0);opacity:1}
+.gal-badge{
+  position:absolute;top:8px;left:8px;
+  background:rgba(0,0,0,.6);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,140,0,.3);
+  font-family:var(--mono);font-size:8px;
+  color:var(--pb-orange);padding:3px 8px;letter-spacing:.12em;
+}
+/* Kill feed style badge */
+.gal-kill{
+  position:absolute;top:8px;right:8px;
+  background:rgba(200,30,0,.7);
+  font-family:var(--mono);font-size:8px;
+  color:#fff;padding:2px 6px;
+  display:none;
+}
+.gal-item:hover .gal-kill{display:block}
+
+/* ════════════════════════════════════
+   GIFT — AIRDROP CRATE
+════════════════════════════════════ */
+.gift-section{
+  background:var(--pb-bg2);
+  padding:72px 24px;text-align:center;
+  border-top:1px solid var(--pb-border);
+}
+.airdrop-cards{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:16px;max-width:580px;margin:40px auto 0;
+}
+@media(max-width:480px){.airdrop-cards{grid-template-columns:1fr}}
+.airdrop-card{
+  background:linear-gradient(135deg,rgba(139,105,20,.25),rgba(90,64,16,.2));
+  border:1px solid rgba(180,140,30,.35);
+  clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));
+  padding:28px 22px;
+  position:relative;overflow:hidden;
+  transition:transform .2s;
+}
+.airdrop-card:hover{transform:translateY(-4px)}
+.airdrop-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,rgba(180,140,30,.8),transparent);
+}
+/* Blue glow at bottom (airdrop beacon) */
+.airdrop-card::after{
+  content:'';
+  position:absolute;bottom:-20px;left:50%;
+  transform:translateX(-50%);
+  width:80px;height:40px;
+  background:radial-gradient(ellipse,rgba(0,180,255,.2),transparent 70%);
+  pointer-events:none;
+}
+.ac-crate{
+  width:36px;height:26px;
+  background:linear-gradient(180deg,#9A7A24,#6A4A10);
+  border:1px solid #AA8822;
+  margin:0 auto 16px;position:relative;
+}
+.ac-crate::before{
+  content:'';
+  position:absolute;bottom:100%;left:50%;
+  transform:translateX(-50%);
+  width:0;height:0;
+  border-left:18px solid transparent;
+  border-right:18px solid transparent;
+  border-bottom:20px solid rgba(100,120,255,.35);
+  margin-bottom:2px;
+}
+.ac-bank{
+  font-family:var(--bc);
+  font-size:clamp(28px,6vw,38px);
+  font-weight:900;letter-spacing:.04em;
+  color:var(--pb-orange3);
+  text-shadow:0 0 20px rgba(255,140,0,.3);
+  margin-bottom:4px;
+}
+.ac-holder{
+  font-family:var(--mono);font-size:10px;
+  color:rgba(255,255,255,.35);letter-spacing:.08em;
+  margin-bottom:14px;
+}
+.ac-number{
+  font-family:var(--mono);
+  font-size:16px;letter-spacing:.15em;
+  color:var(--pb-white);
+  background:rgba(0,0,0,.3);
+  border:1px solid rgba(255,140,0,.15);
+  padding:9px 12px;margin-bottom:14px;
+  display:block;
+}
+.ac-copy{
+  background:rgba(255,140,0,.15);
+  border:1px solid var(--pb-border2);
+  color:var(--pb-orange);
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.15em;text-transform:uppercase;
+  padding:10px 20px;cursor:none;
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+  transition:background .15s;
+}
+.ac-copy:hover{background:rgba(255,140,0,.25)}
+.ac-copy.copied{background:rgba(0,180,80,.15);border-color:var(--pb-green2);color:var(--pb-green2)}
+
+/* ════════════════════════════════════
+   RSVP — JOIN SQUAD FORM
+════════════════════════════════════ */
+.rsvp-section{
+  background:var(--pb-bg);
+  padding:72px 24px;
+  position:relative;
+}
+.rsvp-section::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(255,140,0,.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,140,0,.015) 1px,transparent 1px);
+  background-size:50px 50px;
+  pointer-events:none;
+}
+.rsvp-inner{max-width:560px;margin:0 auto;position:relative;}
+.rsvp-stats{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:8px;margin-bottom:36px;
+}
+.rs{
+  background:rgba(255,140,0,.06);
+  border:1px solid var(--pb-border);
+  padding:16px 12px;text-align:center;
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+}
+.rs-n{
+  font-family:var(--bc);font-size:36px;font-weight:900;
+  color:var(--pb-orange);line-height:1;margin-bottom:4px;
+  letter-spacing:.04em;
+  text-shadow:0 0 20px rgba(255,140,0,.3);
+}
+.rs-l{
+  font-family:var(--mono);font-size:8px;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--pb-gray2);
+}
+.fg{margin-bottom:18px}
+.fl{
+  display:block;font-family:var(--mono);font-size:9px;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:var(--pb-orange);margin-bottom:8px;
+}
+.fi{
+  width:100%;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--pb-border);
+  border-bottom:2px solid var(--pb-orange);
+  padding:12px 14px;color:var(--pb-white);
+  font-family:var(--br);font-size:15px;
+  outline:none;letter-spacing:.02em;
+  -webkit-appearance:none;border-radius:0;
+  transition:border-color .2s,background .2s;
+  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,0 100%);
+}
+.fi:focus{background:rgba(255,140,0,.05);border-bottom-color:var(--pb-orange2)}
+.fi::placeholder{color:var(--pb-gray2)}
+textarea.fi{min-height:96px;resize:vertical;clip-path:none;border:1px solid var(--pb-border);border-bottom:2px solid var(--pb-orange)}
+.fs{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23FF8C00' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 12px center;
+  padding-right:38px;cursor:none;
+}
+option{font-family:sans-serif}
+.guest-row{display:flex;gap:8px}
+.gst-btn{
+  flex:1;background:rgba(255,255,255,.04);
+  border:1px solid var(--pb-border);
+  color:var(--pb-gray);
+  font-family:var(--bc);font-size:15px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+  padding:12px;cursor:none;transition:all .15s;
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+}
+.gst-btn.active{
+  background:rgba(255,140,0,.15);
+  border-color:var(--pb-orange);color:var(--pb-orange);
+}
+.rsvp-btn{
+  width:100%;background:var(--pb-orange);color:#000;
+  font-family:var(--bc);font-size:18px;font-weight:900;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:16px;border:none;cursor:none;margin-top:12px;
+  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
+  box-shadow:0 4px 20px rgba(255,140,0,.3);
+  transition:background .15s,box-shadow .15s,transform .1s;
+}
+.rsvp-btn:hover{background:var(--pb-orange2);box-shadow:0 6px 28px rgba(255,140,0,.5)}
+.rsvp-btn:active{transform:scale(.98)}
+
+/* ════════════════════════════════════
+   WISHES — KILL FEED STYLE
+════════════════════════════════════ */
+.wishes-section{
+  background:var(--pb-bg2);
+  padding:72px 24px;
+  border-top:1px solid var(--pb-border);
+}
+.wishes-inner{max-width:660px;margin:0 auto}
+.wishes-list{margin-top:32px;display:flex;flex-direction:column;gap:10px}
+.wish-card{
+  display:flex;align-items:flex-start;gap:12px;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--pb-border);
+  border-left:3px solid var(--pb-orange);
+  padding:14px 18px;
+  opacity:0;transform:translateX(-14px);
+  transition:opacity .5s,transform .5s;
+}
+.wish-card.visible{opacity:1;transform:translateX(0)}
+.wa{
+  width:36px;height:36px;
+  background:var(--pb-orange);color:#000;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--bc);font-size:14px;font-weight:800;
+  flex-shrink:0;letter-spacing:.04em;
+  clip-path:polygon(0 0,calc(100% - 4px) 0,100% 4px,100% 100%,4px 100%,0 calc(100% - 4px));
+}
+.wn{font-family:var(--bc);font-size:15px;font-weight:700;letter-spacing:.04em;color:var(--pb-white);text-transform:uppercase}
+.ws{font-family:var(--mono);font-size:9px;color:var(--pb-green2);letter-spacing:.12em;text-transform:uppercase;margin-top:2px}
+.wt{font-size:13px;color:var(--pb-gray);font-weight:400;line-height:1.65;margin-top:6px}
+
+/* ════════════════════════════════════
+   FOOTER
+════════════════════════════════════ */
+.footer{
+  background:var(--pb-bg);
+  padding:80px 24px 48px;
+  text-align:center;
+  border-top:1px solid var(--pb-border);
+  position:relative;overflow:hidden;
+}
+.footer::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 100%,rgba(255,140,0,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.footer-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,140,0,.1);
+  border:1px solid var(--pb-border2);
+  padding:6px 20px;margin-bottom:24px;
+  font-family:var(--mono);font-size:10px;
+  color:var(--pb-orange);letter-spacing:.2em;text-transform:uppercase;
+}
+.footer-badge::before,.footer-badge::after{
+  content:'';width:6px;height:6px;
+  background:var(--pb-orange);
+  clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+}
+.footer-title{
+  font-family:var(--bc);
+  font-size:clamp(44px,11vw,88px);
+  font-weight:900;letter-spacing:.02em;
+  line-height:.9;margin-bottom:16px;
+  text-transform:uppercase;
+}
+.footer-title .orange{
+  background:linear-gradient(180deg,var(--pb-orange2) 0%,var(--pb-orange) 60%,#884400 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  filter:drop-shadow(0 0 16px rgba(255,140,0,.3));
+}
+.footer-title .white{color:var(--pb-white)}
+.footer-sub{
+  font-size:clamp(13px,2vw,15px);color:var(--pb-gray2);
+  font-weight:400;max-width:440px;margin:0 auto 36px;
+  line-height:1.8;
+}
+.footer-divider{
+  display:flex;align-items:center;justify-content:center;
+  gap:12px;margin-bottom:20px;
+}
+.fd-diamond{
+  width:8px;height:8px;
+  background:var(--pb-orange);
+  clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+  box-shadow:0 0 8px rgba(255,140,0,.4);
+}
+.fd-line{width:48px;height:1px;background:var(--pb-border)}
+.footer-brand{
+  font-family:var(--mono);font-size:10px;
+  letter-spacing:.2em;color:rgba(255,255,255,.12);
+  text-transform:uppercase;
+}
+.footer-brand a{color:var(--pb-orange);text-decoration:none}
+
+/* ════════════════════════════════════
+   BOTTOM NAV — HUD BAR
+════════════════════════════════════ */
+.hud-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(13,15,10,.92);
+  backdrop-filter:blur(20px);
+  border-top:1px solid var(--pb-border);
+  border-top-width:2px;
+  display:flex;justify-content:space-around;
+  padding:10px 0 max(10px,env(safe-area-inset-bottom));
+  z-index:500;
+  transform:translateY(100%);
+  transition:transform .7s cubic-bezier(.16,1,.3,1) 1s;
+}
+.hud-nav.show{transform:translateY(0)}
+.nav-a{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  color:rgba(255,140,0,.3);text-decoration:none;cursor:none;
+  font-family:var(--mono);font-size:8px;letter-spacing:.1em;text-transform:uppercase;
+  font-weight:400;padding:4px 14px;transition:color .2s;
+}
+.nav-a svg{width:18px;height:18px}
+.nav-a:hover,.nav-a.active{color:var(--pb-orange)}
+.nav-a.active svg{filter:drop-shadow(0 0 4px var(--pb-orange))}
+
+/* LIGHTBOX + TOAST */
+.lbox{position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:9000;display:none;align-items:center;justify-content:center}
+.lbox.open{display:flex}
+.lbox-img{max-width:88vw;max-height:86vh;object-fit:contain;border:2px solid var(--pb-border2)}
+.lbox-close{position:absolute;top:16px;right:20px;background:rgba(255,140,0,.15);border:1px solid var(--pb-border2);color:var(--pb-orange);font-family:var(--mono);font-size:11px;letter-spacing:.1em;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:none;clip-path:polygon(0 0,calc(100% - 4px) 0,100% 4px,100% 100%,4px 100%,0 calc(100% - 4px));transition:background .15s}
+.lbox-close:hover{background:rgba(255,140,0,.25)}
+.lbox-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,140,0,.1);border:1px solid var(--pb-border);color:var(--pb-orange);font-size:28px;width:48px;height:64px;display:flex;align-items:center;justify-content:center;cursor:none;transition:background .15s}
+.lbox-nav:hover{background:rgba(255,140,0,.2)}
+.lbox-prev{left:12px}
+.lbox-next{right:12px}
+.lbox-ctr{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:rgba(255,140,0,.4)}
+
+.toast{
+  position:fixed;bottom:80px;left:50%;
+  transform:translateX(-50%) translateY(14px);
+  background:rgba(13,15,10,.96);
+  border:1px solid var(--pb-border2);
+  border-left:3px solid var(--pb-orange);
+  color:var(--pb-white);font-family:var(--mono);font-size:11px;
+  letter-spacing:.1em;padding:11px 22px;
+  white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity .3s,transform .3s;z-index:9999;
+  clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .8s,transform .8s}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.rd1{transition-delay:.1s}
+.rd2{transition-delay:.2s}
+.rd3{transition-delay:.3s}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur-dot"></div>
+
+<!-- ════ OPENING ════ -->
+<div id="opening">
+  <!-- Video background -->
+  <video class="op-video" id="opVideo"
+    src="https://www.w3schools.com/html/mov_bbb.mp4"
+    loop muted playsinline preload="auto"
+    poster="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=1400&q=60">
+  </video>
+  <div class="op-ov1"></div>
+  <div class="op-ov2"></div>
+  <div class="op-scan"></div>
+  <div class="op-grid"></div>
+
+  <!-- Ping dots on map -->
+  <div class="op-ping">
+    <div class="ping-dot" style="left:15vw;top:25vh"></div>
+    <div class="ping-dot" style="right:20vw;top:35vh;animation-delay:.8s"></div>
+    <div class="ping-dot" style="left:30vw;bottom:30vh;animation-delay:1.4s"></div>
+    <div class="ping-dot" style="right:15vw;bottom:20vh;animation-delay:.4s"></div>
+  </div>
+
+  <!-- Sound hint -->
+  <div class="op-sound" id="opSound">
+    <div class="op-sound-bars">
+      <div class="osb" style="--d:.4s"></div>
+      <div class="osb" style="--d:.6s;animation-delay:.1s"></div>
+      <div class="osb" style="--d:.5s;animation-delay:.2s"></div>
+      <div class="osb" style="--d:.7s;animation-delay:.05s"></div>
+    </div>
+    MUTED
+  </div>
+
+  <!-- Content -->
+  <div class="op-content">
+    <div class="op-rank">◆ &nbsp;WEDDING ROYALE&nbsp; ◆</div>
+    <h1 class="op-title">
+      <span class="orange">ANITA</span><br>
+      <span class="white">&amp; ZARDA</span>
+    </h1>
+    <p class="op-mode">Solo Wedding · Erangel Map · 24.05.2026</p>
+
+    <div class="op-dear">
+      <div class="op-dear-label">◈ Invited Player</div>
+      <div class="op-dear-name">Ade Guntur Fitridullah &amp; Partner</div>
+    </div>
+
+    <div class="op-play" onclick="jumpIn()">
+      <div class="op-play-btn"></div>
+      <div>
+        <div class="op-play-text">Buka Undangan</div>
+        <div class="op-play-sub">Tap to jump · Parachute ready</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="op-loading">
+    <div class="op-loading-fill" id="loadingFill"></div>
+  </div>
+</div>
+
+<!-- ════ MAIN ════ -->
+<div id="main">
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-map-bg"></div>
+  <div class="hero-terrain"></div>
+  <!-- Hero bg video -->
+  <video class="hero-video" id="heroBgVideo"
+    src="https://www.w3schools.com/html/movie.mp4"
+    loop muted playsinline preload="none"
+    poster="https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&q=60">
+  </video>
+  <div class="hero-overlay"></div>
+
+  <!-- Plane -->
+  <div class="plane-wrap" id="planeEl">
+    <svg width="80" height="28" viewBox="0 0 80 28" fill="none">
+      <path d="M70 14L10 4L8 10L40 14L8 18L10 24L70 14Z" fill="rgba(255,255,255,.7)"/>
+      <path d="M40 14L25 8L22 14L25 20L40 14Z" fill="rgba(255,255,255,.5)"/>
+    </svg>
+  </div>
+
+  <!-- Safe zone circle -->
+  <div class="safe-zone" style="width:360px;height:360px;top:50%;left:55%;transform:translate(-50%,-50%)"></div>
+  <div class="red-zone" style="width:200px;height:200px;top:30%;left:20%;transform:translate(-50%,-50%)"></div>
+
+  <!-- Player markers -->
+  <div class="map-marker" style="left:44%;top:48%">
+    <div class="mm-dot"></div>
+    <div class="mm-label">ANITA</div>
+  </div>
+  <div class="map-marker" style="left:56%;top:52%">
+    <div class="mm-dot" style="background:var(--pb-blue2);box-shadow:0 0 8px var(--pb-blue2)"></div>
+    <div class="mm-label" style="color:var(--pb-blue2)">ZARDA</div>
+  </div>
+
+  <!-- Airdrop -->
+  <div class="airdrop landed" style="right:25%;top:40%">
+    <div class="airdrop-chute"></div>
+    <div class="airdrop-box"></div>
+    <div class="airdrop-glow"></div>
+  </div>
+
+  <!-- Main HUD content -->
+  <div class="hero-hud">
+    <div class="hud-left">
+      <div class="hud-zone-label">● ZONE CLOSING</div>
+      <h1 class="hud-title">
+        <span class="name">ANITA</span>
+        <span class="amp">&amp;</span>
+        <span class="name">ZARDA</span>
+      </h1>
+      <div class="hud-meta">
+        <span class="hud-tag orange">📅 24 MEI 2026</span>
+        <span class="hud-tag blue">📍 TANGERANG</span>
+        <span class="hud-tag gray">🕗 08:00 WIB</span>
+        <span class="hud-tag gray">SQUAD INVITED</span>
+      </div>
+      <div class="hud-actions">
+        <button class="pb-btn pb-btn-primary" onclick="document.getElementById('rsvp').scrollIntoView({behavior:'smooth'})">
+          ▶ RSVP — JOIN SQUAD
+        </button>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="pb-btn pb-btn-secondary">
+          📍 LIHAT LOKASI
+        </a>
+      </div>
+    </div>
+
+    <!-- Minimap -->
+    <div class="hud-right">
+      <div class="minimap-wrap">
+        <div class="minimap">
+          <div class="mm-grid"></div>
+          <!-- Terrain -->
+          <div class="mm-terrain" style="width:80px;height:50px;left:20px;top:40px"></div>
+          <div class="mm-terrain" style="width:60px;height:40px;right:30px;top:60px;background:rgba(35,55,18,.6)"></div>
+          <div class="mm-terrain" style="width:70px;height:35px;left:60px;bottom:40px;background:rgba(45,65,22,.5)"></div>
+          <!-- Roads -->
+          <div class="mm-road" style="left:0;right:0;top:45%;height:3px;transform:rotate(-5deg)"></div>
+          <div class="mm-road" style="top:0;bottom:0;left:35%;width:3px;transform:rotate(3deg)"></div>
+          <!-- Safe zone -->
+          <div class="mm-safe" style="width:160px;height:160px;top:50%;left:50%;transform:translate(-50%,-50%)"></div>
+          <!-- Players -->
+          <div class="mm-player" style="left:44%;top:48%;background:var(--pb-orange)">
+            <div class="mm-player-arrow" style="border-bottom-color:var(--pb-orange)"></div>
+          </div>
+          <div class="mm-player" style="left:56%;top:52%;background:var(--pb-blue2)">
+            <div class="mm-player-arrow" style="border-bottom-color:var(--pb-blue2);transform:translate(-50%,-200%) rotate(-20deg)"></div>
+          </div>
+          <!-- Coords -->
+          <div class="mm-label-coord" style="top:4px;left:4px">A1</div>
+          <div class="mm-label-coord" style="top:4px;right:4px">H1</div>
+          <div class="mm-label-coord" style="bottom:4px;left:4px">A8</div>
+          <div class="mm-label-coord" style="bottom:4px;right:4px">H8</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HUD Info Bar -->
+  <div class="hud-info-bar">
+    <div class="hib-item">
+      <div class="hib-label">Tanggal</div>
+      <div class="hib-value">24 MEI 2026</div>
+      <div class="hib-sub">Minggu · Erangel</div>
+    </div>
+    <div class="hib-item">
+      <div class="hib-label">Lokasi</div>
+      <div class="hib-value">Graha Yadika</div>
+      <div class="hib-sub">Tangerang, Banten</div>
+    </div>
+    <div class="hib-item">
+      <div class="hib-label">Akad</div>
+      <div class="hib-value">08:00 WIB</div>
+      <div class="hib-sub">Drop Zone Alpha</div>
+    </div>
+    <div class="hib-item">
+      <div class="hib-label">Resepsi</div>
+      <div class="hib-value">11:00–13:00</div>
+      <div class="hib-sub">Drop Zone Bravo</div>
+    </div>
+    <div class="hib-item">
+      <div class="hib-label">Players</div>
+      <div class="hib-value">13 Alive</div>
+      <div class="hib-sub">7 confirmed</div>
+    </div>
+  </div>
+</section>
+
+<!-- ZONE ALERT BAND -->
+<div class="zone-band">
+  <div class="zone-band-label">⚠ ZONE ALERT</div>
+  <div class="zone-band-scroll">
+    ◆ &nbsp; UNDANGAN PERNIKAHAN ANITA & ZARDA &nbsp; ▸ &nbsp;
+    AKAD: 24 MEI 2026 · 08:00 WIB · GRAHA YADIKA, TANGERANG &nbsp; ▸ &nbsp;
+    RESEPSI: 11:00–13:00 WIB · SAME LOCATION &nbsp; ▸ &nbsp;
+    KONFIRMASI KEHADIRAN SEBELUM ZONE MENUTUP! &nbsp; ▸ &nbsp;
+    WINNER WINNER WEDDING DINNER &nbsp; ◆
+  </div>
+</div>
+
+<!-- COUNTDOWN -->
+<div class="cd-section">
+  <p class="cd-eyebrow reveal">Zone Closing In</p>
+  <h2 class="cd-title reveal">WAKTU MENUJU HARI H</h2>
+  <div class="cd-grid">
+    <div class="cd-box reveal rd1"><span class="cd-n" id="cdD">00</span><span class="cd-u">Hari</span></div>
+    <div class="cd-box reveal rd2"><span class="cd-n" id="cdH">00</span><span class="cd-u">Jam</span></div>
+    <div class="cd-box reveal rd3"><span class="cd-n" id="cdM">00</span><span class="cd-u">Menit</span></div>
+    <div class="cd-box reveal" style="transition-delay:.4s"><span class="cd-n" id="cdS">00</span><span class="cd-u">Detik</span></div>
+  </div>
+</div>
+
+<!-- SQUAD / COUPLE -->
+<section id="couple" class="squad-section">
+  <div class="pb-section-header reveal">
+    <p class="pb-eyebrow">Squad Members</p>
+    <h2 class="pb-heading">Mempelai Kami</h2>
+  </div>
+  <div class="squad-grid">
+    <div class="player-card reveal">
+      <div class="pc-banner">
+        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=150&fit=crop&q=80" alt="">
+        <div class="pc-banner-overlay"></div>
+        <div class="pc-rank-badge">DIAMOND</div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-avatar-row">
+          <div class="pc-avatar">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita">
+          </div>
+          <div>
+            <div class="pc-status">Online</div>
+          </div>
+        </div>
+        <p class="pc-role">Mempelai Wanita</p>
+        <h3 class="pc-name">Anita Pangestuti,<br>S.Kom</h3>
+        <p class="pc-parents">Putri Pertama dari<br>Bpk. Taryono & Ibu Wiwit Jayanti</p>
+        <div class="pc-stats">
+          <div class="pc-stat"><div class="pc-stat-n">24</div><div class="pc-stat-l">Level</div></div>
+          <div class="pc-stat"><div class="pc-stat-n">∞</div><div class="pc-stat-l">Loyalty</div></div>
+          <div class="pc-stat"><div class="pc-stat-n">#1</div><div class="pc-stat-l">Rank</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="vs-text">VS</div>
+
+    <div class="player-card reveal rd2">
+      <div class="pc-banner">
+        <img src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&h=150&fit=crop&q=80" alt="">
+        <div class="pc-banner-overlay"></div>
+        <div class="pc-rank-badge">CONQUEROR</div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-avatar-row">
+          <div class="pc-avatar">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda">
+          </div>
+          <div>
+            <div class="pc-status">Online</div>
+          </div>
+        </div>
+        <p class="pc-role">Mempelai Pria</p>
+        <h3 class="pc-name">Zardarian Ahadika N,<br>S.Kom</h3>
+        <p class="pc-parents">Putra Kedua dari<br>Bpk. Wan Sabran, M.MAR &<br>Ibu Titik Sundari, M.Si</p>
+        <div class="pc-stats">
+          <div class="pc-stat"><div class="pc-stat-n">26</div><div class="pc-stat-l">Level</div></div>
+          <div class="pc-stat"><div class="pc-stat-n">∞</div><div class="pc-stat-l">Loyalty</div></div>
+          <div class="pc-stat"><div class="pc-stat-n">#1</div><div class="pc-stat-l">Rank</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS -->
+<section id="event" class="event-section">
+  <div class="pb-section-header reveal">
+    <p class="pb-eyebrow">Mission Briefing</p>
+    <h2 class="pb-heading">Waktu &amp; Tempat</h2>
+  </div>
+  <div class="mission-cards">
+    <div class="mission-card reveal rd1">
+      <div class="mc-mission-tag">MISSION ALPHA</div>
+      <h3 class="mc-title">Minggu,<br>24 Mei 2026</h3>
+      <div class="mc-row">
+        <svg class="mc-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 17.5v-2h-1v2C8.41 19.25 5.75 16.59 5.5 13.5h2v-1h-2C5.75 9.41 8.41 6.75 11.5 6.5v2h1v-2c3.09.25 5.75 2.91 6 6h-2v1h2c-.25 3.09-2.91 5.75-6 6z"/></svg>
+        <span class="mc-txt">Akad Nikah · 08.00 WIB</span>
+      </div>
+      <div class="mc-row">
+        <svg class="mc-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+        <span class="mc-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span>
+      </div>
+      <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="mc-maps">▶ BUKA MAPS</a>
+    </div>
+    <div class="mission-card reveal rd2">
+      <div class="mc-mission-tag">MISSION BRAVO</div>
+      <h3 class="mc-title">Minggu,<br>24 Mei 2026</h3>
+      <div class="mc-row">
+        <svg class="mc-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 17.5v-2h-1v2C8.41 19.25 5.75 16.59 5.5 13.5h2v-1h-2C5.75 9.41 8.41 6.75 11.5 6.5v2h1v-2c3.09.25 5.75 2.91 6 6h-2v1h2c-.25 3.09-2.91 5.75-6 6z"/></svg>
+        <span class="mc-txt">Resepsi · 11.00 – 13.00 WIB</span>
+      </div>
+      <div class="mc-row">
+        <svg class="mc-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+        <span class="mc-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span>
+      </div>
+      <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="mc-maps">▶ BUKA MAPS</a>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<div class="tl-section">
+  <div style="max-width:660px;margin:0 auto">
+    <p class="pb-eyebrow reveal">Battle Log</p>
+    <h2 class="pb-heading reveal">Kisah Cinta Kami</h2>
+  </div>
+  <div class="tl-list">
+    <div class="tl-item">
+      <div class="tl-node">1</div>
+      <div>
+        <p class="tl-chapter">Chapter 01 · Erangel</p>
+        <p class="tl-date">Juni 2025</p>
+        <h3 class="tl-title">First Drop — Awal Pertemuan</h3>
+        <p class="tl-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-node">2</div>
+      <div>
+        <p class="tl-chapter">Chapter 02 · Miramar</p>
+        <p class="tl-date">November 2025</p>
+        <h3 class="tl-title">Squad Up — Lamaran</h3>
+        <p class="tl-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</p>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-node">★</div>
+      <div>
+        <p class="tl-chapter">Chapter 03 · Final Circle</p>
+        <p class="tl-date">Mei 2026</p>
+        <h3 class="tl-title">Winner Winner — Pernikahan</h3>
+        <p class="tl-desc">Kini kami melangkah lebih jauh. Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GALLERY -->
+<section class="gallery-section">
+  <div class="gallery-head reveal">
+    <div>
+      <p class="pb-eyebrow" style="margin-bottom:8px">Killcam Gallery</p>
+      <h2 class="pb-heading" style="font-size:clamp(22px,4vw,34px)">Galeri Foto</h2>
+    </div>
+    <p class="gallery-sub">Tap to Fullscreen</p>
+  </div>
+  <div class="gallery-grid" id="galGrid"></div>
+</section>
+
+<!-- GIFT -->
+<section id="gift" class="gift-section">
+  <div class="reveal">
+    <p class="pb-eyebrow" style="justify-content:center">Airdrop Loot</p>
+    <h2 class="pb-heading" style="text-align:center">Amplop Digital</h2>
+  </div>
+  <p class="reveal" style="font-family:var(--mono);font-size:10px;color:var(--pb-gray2);letter-spacing:.12em;text-align:center;margin-top:12px;line-height:2">
+    DOA RESTU SUDAH LEBIH DARI CUKUP.<br>
+    NAMUN JIKA BERKENAN, KAMI MENERIMA DENGAN SENANG HATI.
+  </p>
+  <div class="airdrop-cards">
+    <div class="airdrop-card reveal rd1">
+      <div class="ac-crate"></div>
+      <div class="ac-bank">BCA</div>
+      <div class="ac-holder">Zardarian Ahadika N</div>
+      <div class="ac-number">8210 3705 61</div>
+      <button class="ac-copy" onclick="copyNum('8210370561',this)">▶ SALIN NOMOR</button>
+    </div>
+    <div class="airdrop-card reveal rd2">
+      <div class="ac-crate"></div>
+      <div class="ac-bank">BNI</div>
+      <div class="ac-holder">Anita Pangestuti</div>
+      <div class="ac-number">1192 9784 03</div>
+      <button class="ac-copy" onclick="copyNum('1192978403',this)">▶ SALIN NOMOR</button>
+    </div>
+  </div>
+</section>
+
+<!-- RSVP -->
+<section id="rsvp" class="rsvp-section">
+  <div class="rsvp-inner">
+    <div class="pb-section-header reveal">
+      <p class="pb-eyebrow">Join Squad</p>
+      <h2 class="pb-heading">Konfirmasi Kehadiran</h2>
+    </div>
+    <div class="rsvp-stats reveal">
+      <div class="rs"><div class="rs-n">7</div><div class="rs-l">Respons</div></div>
+      <div class="rs"><div class="rs-n">7</div><div class="rs-l">Hadir</div></div>
+      <div class="rs"><div class="rs-n">13</div><div class="rs-l">Players</div></div>
+    </div>
+    <div class="fg"><label class="fl">▸ Player Name</label><input class="fi" id="rName" type="text" placeholder="Masukkan nama..."></div>
+    <div class="fg"><label class="fl">▸ Status</label>
+      <select class="fi fs" id="rStatus">
+        <option value="">Select status...</option>
+        <option value="hadir">✓ Hadir</option>
+        <option value="tidak">✗ Tidak Hadir</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">▸ Squad Size</label>
+      <div class="guest-row">
+        <button class="gst-btn active" onclick="setGuest(1,this)">Solo (1)</button>
+        <button class="gst-btn" onclick="setGuest(2,this)">Duo (2)</button>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">▸ Message</label><textarea class="fi" id="rMsg" placeholder="Tulis ucapan..."></textarea></div>
+    <button class="rsvp-btn" onclick="submitRSVP()">▶ CONFIRM — JOIN THE SQUAD</button>
+  </div>
+</section>
+
+<!-- WISHES -->
+<section class="wishes-section">
+  <div class="wishes-inner">
+    <div class="pb-section-header reveal">
+      <p class="pb-eyebrow">Kill Feed</p>
+      <h2 class="pb-heading">Ucapan &amp; Doa</h2>
+    </div>
+    <div class="wishes-list" id="wishesList">
+      <div class="wish-card visible">
+        <div class="wa">AY</div>
+        <div><div class="wn">Ayu Rahmawati</div><div class="ws">✓ Hadir · 2 players</div><p class="wt">Selamat menempuh hidup baru! Semoga sakinah, mawaddah, wa rahmah. GG Anita & Zarda!</p></div>
+      </div>
+      <div class="wish-card visible">
+        <div class="wa" style="background:var(--pb-blue2);color:#fff">RZ</div>
+        <div><div class="wn">Reza Firmansyah</div><div class="ws">✓ Hadir · 1 player</div><p class="wt">Alhamdulillah! Semoga pernikahannya membawa keberkahan tiada henti. Aamiin ya Rabbal Alamin.</p></div>
+      </div>
+      <div class="wish-card visible">
+        <div class="wa" style="background:var(--pb-green);color:#fff">ST</div>
+        <div><div class="wn">Sinta Dewi</div><div class="ws">✓ Hadir · 2 players</div><p class="wt">Wishing you both a lifetime of love! Semoga selalu diberkahi Allah SWT. Winner winner!</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-badge">◆ WEDDING ROYALE ◆</div>
+  <div class="footer-title">
+    <div class="orange">ANITA</div>
+    <div class="white">&amp; ZARDA</div>
+  </div>
+  <p class="footer-sub">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu kepada kami yang berbahagia.</p>
+  <div class="footer-divider">
+    <div class="fd-line"></div>
+    <div class="fd-diamond"></div>
+    <div class="fd-line"></div>
+    <div class="fd-diamond" style="background:var(--pb-blue2);box-shadow:0 0 8px rgba(0,150,255,.4)"></div>
+    <div class="fd-line"></div>
+  </div>
+  <p class="footer-brand">Digital Invitation by <a href="#">BridesSpace</a></p>
+</footer>
+
+</div><!-- /main -->
+
+<!-- HUD NAV -->
+<nav class="hud-nav" id="hudNav">
+  <a href="#home" class="nav-a active"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home</a>
+  <a href="#couple" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Squad</a>
+  <a href="#event" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>Mission</a>
+  <a href="#gift" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2.18c.07-.23.18-.46.18-.71C18 3.47 16.53 2 14.71 2c-.87 0-1.65.36-2.22.93L12 3.4l-.49-.47C10.94 2.36 10.16 2 9.29 2 7.47 2 6 3.47 6 5.29c0 .25.11.48.18.71H4c-1.11 0-2 .89-2 2v13c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/></svg>Loot</a>
+  <a href="#rsvp" class="nav-a"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>RSVP</a>
+</nav>
+
+<div class="lbox" id="lbox">
+  <button class="lbox-close" onclick="closeLbox()">[ X ]</button>
+  <button class="lbox-nav lbox-prev" onclick="lboxPrev()">‹</button>
+  <img class="lbox-img" id="lboxImg" src="" alt="">
+  <button class="lbox-nav lbox-next" onclick="lboxNext()">›</button>
+  <div class="lbox-ctr" id="lboxCtr"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const IMGS=[
+  {src:"https://images.unsplash.com/photo-1519741497674-611481863552?w=800&fit=crop&q=80",cap:"Awal Kisah"},
+  {src:"https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&fit=crop&q=80",cap:"Bersama"},
+  {src:"https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&fit=crop&q=80",cap:"Kebahagiaan"},
+  {src:"https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&fit=crop&q=80",cap:"Cinta Abadi"},
+  {src:"https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=800&fit=crop&q=80",cap:"Detail"},
+  {src:"https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=800&fit=crop&q=80",cap:"Momen"},
+  {src:"https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=800&fit=crop&q=80",cap:"Kenangan"},
+  {src:"https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&fit=crop&q=80",cap:"Hari Istimewa"},
+];
+let lboxIdx=0,guestN=1;
+
+/* ── CURSOR ── */
+document.addEventListener('mousemove',e=>{
+  const c=document.getElementById('cur');
+  const d=document.getElementById('cur-dot');
+  if(c){c.style.left=e.clientX+'px';c.style.top=e.clientY+'px';}
+  if(d){d.style.left=e.clientX+'px';d.style.top=e.clientY+'px';}
+});
+
+/* ── OPENING VIDEO ── */
+(function(){
+  const vid=document.getElementById('opVideo');
+  const hint=document.getElementById('opSound');
+  if(!vid)return;
+  vid.addEventListener('canplay',function once(){
+    vid.removeEventListener('canplay',once);
+    vid.play().then(()=>{
+      requestAnimationFrame(()=>vid.classList.add('show'));
+      if(hint)setTimeout(()=>hint.classList.add('show'),3000);
+    }).catch(()=>{});
+  });
+  // Pause when opening hides
+  new MutationObserver(()=>{
+    if(document.getElementById('opening').classList.contains('hide')) vid.pause();
+  }).observe(document.getElementById('opening'),{attributes:true,attributeFilter:['class']});
+})();
+
+/* ── JUMP IN ── */
+function jumpIn(){
+  document.getElementById('loadingFill').classList.add('go');
+  setTimeout(()=>{
+    document.getElementById('opening').classList.add('hide');
+    setTimeout(()=>{
+      document.getElementById('main').classList.add('show');
+      document.getElementById('hudNav').classList.add('show');
+      buildGalGrid();
+      startCountdown();
+      initReveal();
+      initNav();
+      // Start hero video + plane
+      startHeroVideo();
+      setTimeout(()=>document.getElementById('planeEl')?.classList.add('show'),800);
+    },300);
+  },2000);
+}
+// Auto trigger loading bar
+setTimeout(()=>document.getElementById('loadingFill')?.classList.add('go'),200);
+
+/* ── HERO VIDEO ── */
+function startHeroVideo(){
+  const vid=document.getElementById('heroBgVideo');
+  if(!vid)return;
+  vid.muted=true;vid.load();
+  vid.play().then(()=>{ setTimeout(()=>vid.classList.add('show'),200); }).catch(()=>{});
+}
+
+/* ── GALLERY ── */
+function buildGalGrid(){
+  const g=document.getElementById('galGrid');
+  if(!g)return;
+  IMGS.forEach((img,i)=>{
+    const item=document.createElement('div');
+    item.className='gal-item';
+    item.innerHTML=`
+      <img src="${img.src}" alt="${img.cap}" loading="lazy">
+      <div class="gal-overlay"></div>
+      <div class="gal-caption">${img.cap}</div>
+      <div class="gal-badge">SS-0${i+1}</div>
+      <div class="gal-kill">♥ Loved</div>
+    `;
+    item.addEventListener('click',()=>openLbox(i));
+    g.appendChild(item);
+  });
+}
+
+/* ── LIGHTBOX ── */
+function openLbox(i){lboxIdx=i;updateLbox();document.getElementById('lbox').classList.add('open');document.body.style.overflow='hidden';}
+function closeLbox(){document.getElementById('lbox').classList.remove('open');document.body.style.overflow='';}
+function lboxPrev(){lboxIdx=(lboxIdx-1+IMGS.length)%IMGS.length;updateLbox();}
+function lboxNext(){lboxIdx=(lboxIdx+1)%IMGS.length;updateLbox();}
+function updateLbox(){
+  document.getElementById('lboxImg').src=IMGS[lboxIdx].src;
+  document.getElementById('lboxCtr').textContent=`${lboxIdx+1} / ${IMGS.length}`;
+}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lbox').classList.contains('open'))return;
+  if(e.key==='Escape')closeLbox();
+  if(e.key==='ArrowLeft')lboxPrev();
+  if(e.key==='ArrowRight')lboxNext();
+});
+
+/* ── COUNTDOWN ── */
+function startCountdown(){
+  const T=new Date('2026-05-24T08:00:00');
+  function tick(){
+    const d=T-new Date();if(d<=0)return;
+    document.getElementById('cdD').textContent=String(Math.floor(d/86400000)).padStart(2,'0');
+    document.getElementById('cdH').textContent=String(Math.floor((d%86400000)/3600000)).padStart(2,'0');
+    document.getElementById('cdM').textContent=String(Math.floor((d%3600000)/60000)).padStart(2,'0');
+    document.getElementById('cdS').textContent=String(Math.floor((d%60000)/1000)).padStart(2,'0');
+  }
+  tick();setInterval(tick,1000);
+}
+
+/* ── REVEAL ── */
+function initReveal(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+  },{threshold:.1});
+  document.querySelectorAll('.reveal,.tl-item,.wish-card').forEach(el=>obs.observe(el));
+}
+
+/* ── NAV ── */
+function initNav(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        document.querySelectorAll('.nav-a').forEach(n=>n.classList.remove('active'));
+        const a=document.querySelector(`.nav-a[href="#${e.target.id}"]`);
+        if(a)a.classList.add('active');
+      }
+    });
+  },{rootMargin:'-40% 0px -40% 0px'});
+  ['home','couple','event','gift','rsvp'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el);});
+}
+
+/* ── RSVP ── */
+function setGuest(n,btn){
+  guestN=n;
+  document.querySelectorAll('.gst-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function submitRSVP(){
+  const nm=document.getElementById('rName').value.trim();
+  const st=document.getElementById('rStatus').value;
+  const msg=document.getElementById('rMsg').value.trim();
+  if(!nm||!st){showToast('▸ ISI NAMA DAN STATUS DULU!');return;}
+  const init=nm.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const bgs=['var(--pb-orange)','var(--pb-blue2)','var(--pb-green)','#AA4400','#6600AA'];
+  const bg=bgs[Math.floor(Math.random()*bgs.length)];
+  const stTxt=st==='hadir'?`✓ Hadir · ${guestN} player${guestN>1?'s':''}`:'✗ Tidak Hadir';
+  const card=document.createElement('div');
+  card.className='wish-card';
+  card.innerHTML=`<div class="wa" style="background:${bg};color:${bg==='var(--pb-orange)'?'#000':'#fff'}">${init}</div><div><div class="wn">${nm}</div><div class="ws">${stTxt}</div><p class="wt">${msg||'Selamat dan bahagia selalu! GG WP!'}</p></div>`;
+  document.getElementById('wishesList').prepend(card);
+  setTimeout(()=>card.classList.add('visible'),50);
+  document.getElementById('rName').value='';
+  document.getElementById('rStatus').value='';
+  document.getElementById('rMsg').value='';
+  showToast('▸ SQUAD JOINED! TERIMA KASIH ✓');
+  setTimeout(()=>document.querySelector('.wishes-section').scrollIntoView({behavior:'smooth',block:'start'}),500);
+}
+
+/* ── COPY ── */
+function copyNum(txt,btn){
+  navigator.clipboard.writeText(txt).then(()=>{
+    btn.classList.add('copied');btn.textContent='✓ LOOTED!';
+    showToast('▸ NOMOR REKENING TERSALIN!');
+    setTimeout(()=>{btn.classList.remove('copied');btn.textContent='▶ SALIN NOMOR';},2500);
+  }).catch(()=>showToast('Salin: '+txt));
+}
+
+/* ── TOAST ── */
+let tt;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2800);
+}
+</script>
+</body>
+</html>

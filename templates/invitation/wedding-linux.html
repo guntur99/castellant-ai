@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>wedding@localhost: ~/invitation — Linux</title>
+<link href="https://fonts.googleapis.com/css2?family=Cantarell:ital,wght@0,400;0,700;1,400&family=Ubuntu+Mono:wght@400;700&family=Cormorant+SC:wght@300;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════════
+   LINUX UBUNTU GNOME — DESIGN SYSTEM
+══════════════════════════════════════════════════ */
+:root {
+  /* Ubuntu/GNOME colors */
+  --ub-orange:     #e95420;
+  --ub-orange-dk:  #c34113;
+  --ub-orange-lt:  #f38158;
+  --ub-panel:      #2c001e;   /* Ubuntu purple-black top bar */
+  --ub-panel2:     #3d0030;
+  --ub-desktop:    #300a24;   /* Ubuntu Aubergine desktop */
+  --ub-desk2:      #1a0018;
+  --gnome-surface: #1e1e2e;
+  --gnome-card:    #27273a;
+  --gnome-card2:   #313244;
+  --gnome-border:  rgba(255,255,255,.1);
+  --gnome-accent:  #89b4fa;   /* GNOME blue accent */
+  --gnome-green:   #a6e3a1;
+  --gnome-red:     #f38ba8;
+  --gnome-yellow:  #f9e2af;
+  --gnome-mauve:   #cba6f7;
+  --gnome-text:    #cdd6f4;
+  --gnome-subtext: #a6adc8;
+  --gnome-overlay: rgba(30,30,46,.92);
+  /* Terminal */
+  --term-bg:       #0d0d0d;
+  --term-green:    #39ff14;   /* neon green */
+  --term-prompt:   #e95420;
+  --term-white:    #e0e0e0;
+  --term-gray:     #888;
+  --term-blue:     #569cd6;
+  --term-yellow:   #dcdcaa;
+  --term-cyan:     #4ec9b0;
+  --term-magenta:  #c586c0;
+  /* Layout */
+  --panel-h:       32px;
+  --dock-w:        60px;
+  --font-ui:       'Cantarell', 'Segoe UI', sans-serif;
+  --font-mono:     'Ubuntu Mono', 'Courier New', monospace;
+  --font-display:  'Cormorant SC', Georgia, serif;
+  --r:             8px;
+  --r-lg:          14px;
+  --r-xl:          20px;
+  --shadow:        0 4px 24px rgba(0,0,0,.5), 0 1px 4px rgba(0,0,0,.3);
+  --shadow-lg:     0 12px 48px rgba(0,0,0,.6), 0 4px 16px rgba(0,0,0,.4);
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html, body { width:100%; height:100%; overflow:hidden; }
+body {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  background: var(--ub-desktop);
+  color: var(--gnome-text);
+  cursor: default;
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ══════════════════════════════════════════════════
+   TERMINAL BOOT SCREEN
+══════════════════════════════════════════════════ */
+#termBoot {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--term-bg);
+  font-family: var(--font-mono);
+  font-size: clamp(11px, 1.4vw, 13px);
+  color: var(--term-white);
+  padding: 16px; overflow: hidden;
+  display: flex; flex-direction: column;
+  transition: opacity .6s ease;
+}
+#termBoot.hide { opacity: 0; pointer-events: none; }
+
+.boot-line {
+  margin-bottom: 2px; line-height: 1.5;
+  opacity: 0; animation: boot-line-in .05s ease forwards;
+}
+@keyframes boot-line-in { to { opacity: 1; } }
+.boot-ok { color: var(--term-green); font-weight: 700; }
+.boot-fail { color: var(--gnome-red); font-weight: 700; }
+.boot-warn { color: var(--term-yellow); }
+.boot-info { color: var(--gnome-accent); }
+.boot-dim { color: var(--term-gray); }
+.boot-blink { animation: cur-blink .7s step-end infinite; }
+@keyframes cur-blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+.boot-progress-bar {
+  display: inline-block; color: var(--term-green);
+  font-family: var(--font-mono);
+}
+.boot-penguin {
+  color: var(--term-white);
+  font-size: clamp(9px,1.2vw,11px);
+  line-height: 1.3; margin: 8px 0;
+  display: inline-block;
+}
+
+/* ══════════════════════════════════════════════════
+   DESKTOP — Ubuntu Aubergine
+══════════════════════════════════════════════════ */
+#desktop {
+  position: fixed;
+  top: var(--panel-h); left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 80%, rgba(233,84,32,.15) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 20%, rgba(137,180,250,.08) 0%, transparent 60%),
+    linear-gradient(135deg, var(--ub-panel) 0%, var(--ub-desktop) 40%, var(--ub-desk2) 100%);
+  display: none; overflow: hidden;
+}
+
+/* Ubuntu logo watermark */
+#desktop::after {
+  content: '🐧';
+  position: absolute; bottom: 20px; right: 20px;
+  font-size: 80px; opacity: .05; pointer-events: none;
+}
+
+/* ══════════════════════════════════════════════════
+   GNOME TOP PANEL
+══════════════════════════════════════════════════ */
+#gnomePanel {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--panel-h); z-index: 9000;
+  background: rgba(28,0,18,.96);
+  backdrop-filter: blur(20px);
+  display: none;
+  align-items: center; padding: 0 8px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.panel-left { display: flex; align-items: center; gap: 2px; }
+.panel-center { flex: 1; display: flex; align-items: center; justify-content: center; }
+.panel-right { display: flex; align-items: center; gap: 6px; }
+
+/* Activities button */
+.activities-btn {
+  padding: 4px 12px; border-radius: var(--r);
+  font-family: var(--font-ui); font-size: 13px; font-weight: 700;
+  color: white; cursor: pointer;
+  transition: background .2s;
+}
+.activities-btn:hover { background: rgba(255,255,255,.1); }
+.activities-btn.active { background: rgba(255,255,255,.15); }
+
+/* App menu items */
+.panel-app-name {
+  font-size: 13px; font-weight: 700; color: white;
+  padding: 4px 8px; cursor: pointer; border-radius: var(--r);
+}
+.panel-app-name:hover { background: rgba(255,255,255,.08); }
+
+/* Clock center */
+.panel-clock {
+  font-size: 13px; color: white; cursor: pointer;
+  padding: 4px 12px; border-radius: var(--r);
+}
+.panel-clock:hover { background: rgba(255,255,255,.08); }
+
+/* System tray icons */
+.panel-tray-icon {
+  font-size: 14px; cursor: pointer; padding: 4px 6px;
+  border-radius: var(--r); color: white;
+}
+.panel-tray-icon:hover { background: rgba(255,255,255,.1); }
+
+/* ══════════════════════════════════════════════════
+   DOCK — Left side
+══════════════════════════════════════════════════ */
+#gnomeDock {
+  position: fixed;
+  top: var(--panel-h); left: 0; bottom: 0;
+  width: var(--dock-w); z-index: 200;
+  background: rgba(20,0,14,.85);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255,255,255,.06);
+  display: none;
+  flex-direction: column; align-items: center;
+  padding: 12px 0; gap: 4px;
+}
+.dock-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; cursor: pointer;
+  transition: transform .2s, background .2s;
+  position: relative;
+}
+.dock-icon:hover { transform: scale(1.15); background: rgba(255,255,255,.08); }
+.dock-icon.active::after {
+  content: '';
+  position: absolute; left: -8px; top: 50%; transform: translateY(-50%);
+  width: 4px; height: 18px; border-radius: 2px;
+  background: var(--ub-orange);
+}
+.dock-icon[title]:hover::before {
+  content: attr(title);
+  position: absolute; left: 52px; top: 50%; transform: translateY(-50%);
+  background: rgba(0,0,0,.85); color: white;
+  font-family: var(--font-ui); font-size: 12px;
+  padding: 4px 10px; border-radius: var(--r);
+  white-space: nowrap; z-index: 9999;
+  pointer-events: none;
+}
+.dock-sep { width: 32px; height: 1px; background: rgba(255,255,255,.1); margin: 4px 0; }
+
+/* ══════════════════════════════════════════════════
+   ACTIVITIES OVERVIEW
+══════════════════════════════════════════════════ */
+#activitiesOverview {
+  position: fixed; inset: 0; z-index: 8000;
+  background: rgba(28,0,18,.95);
+  backdrop-filter: blur(16px);
+  display: none; flex-direction: column;
+  align-items: center; padding: 60px 20px 20px;
+}
+#activitiesOverview.open { display: flex; }
+.activities-search {
+  width: min(480px,90vw); margin-bottom: 32px;
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 30px; padding: 10px 20px;
+  font-family: var(--font-ui); font-size: 15px;
+  color: white; outline: none;
+}
+.activities-search::placeholder { color: rgba(255,255,255,.5); }
+.activities-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 16px; width: min(700px,96vw); max-height: 60vh; overflow-y: auto;
+}
+.activities-app {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 8px; padding: 16px 8px; cursor: pointer; border-radius: var(--r-lg);
+  transition: background .2s;
+}
+.activities-app:hover { background: rgba(255,255,255,.1); }
+.activities-app-icon { font-size: 40px; }
+.activities-app-name { font-size: 12px; color: white; text-align: center; line-height: 1.3; }
+
+/* ══════════════════════════════════════════════════
+   GTK WINDOWS
+══════════════════════════════════════════════════ */
+.gtk-window {
+  position: absolute;
+  background: var(--gnome-surface);
+  border-radius: var(--r-xl) var(--r-xl) var(--r) var(--r);
+  border: 1px solid rgba(255,255,255,.08);
+  box-shadow: var(--shadow-lg);
+  display: flex; flex-direction: column;
+  min-width: 220px; z-index: 10; overflow: hidden;
+}
+.gtk-window.focused { z-index: 100; box-shadow: 0 20px 60px rgba(0,0,0,.7), 0 0 0 1px rgba(255,255,255,.12); }
+.gtk-window.minimized, .gtk-window.winhidden { display: none !important; }
+
+/* GTK Header bar */
+.gtk-headerbar {
+  background: var(--gnome-card);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  padding: 0 12px;
+  height: 48px; flex-shrink: 0;
+  display: flex; align-items: center; gap: 10px;
+  cursor: move;
+  position: relative;
+}
+.gtk-window:not(.focused) .gtk-headerbar { background: rgba(27,27,40,.9); }
+
+/* Window controls — left side (GNOME style) */
+.gtk-wm-btns { display: flex; gap: 6px; flex-shrink: 0; }
+.gtk-wm-btn {
+  width: 14px; height: 14px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 7px; transition: filter .2s;
+  border: none; outline: none;
+}
+.gtk-wm-btn:hover { filter: brightness(1.3); }
+.gtk-wm-btn.close { background: #ff5f57; }
+.gtk-wm-btn.min   { background: #ffbd2e; }
+.gtk-wm-btn.max   { background: #28c941; }
+.gtk-wm-btn .gtk-btn-icon { opacity: 0; font-size: 8px; color: rgba(0,0,0,.6); }
+.gtk-wm-btn:hover .gtk-btn-icon { opacity: 1; }
+
+.gtk-title {
+  flex: 1; text-align: center; font-size: 14px; font-weight: 700;
+  color: var(--gnome-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.gtk-window:not(.focused) .gtk-title { color: var(--gnome-subtext); }
+
+/* Header bar right buttons */
+.gtk-hb-btns { display: flex; gap: 4px; }
+.gtk-hb-btn {
+  width: 32px; height: 32px; border-radius: var(--r);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px; cursor: pointer; color: var(--gnome-subtext);
+  transition: background .2s, color .2s;
+}
+.gtk-hb-btn:hover { background: rgba(255,255,255,.08); color: var(--gnome-text); }
+
+/* Sidebar (Nautilus style) */
+.gtk-layout { display: flex; flex: 1; overflow: hidden; min-height: 0; }
+.gtk-sidebar {
+  width: 160px; flex-shrink: 0;
+  background: var(--gnome-card);
+  border-right: 1px solid rgba(255,255,255,.06);
+  overflow-y: auto; padding: 8px 0;
+}
+.gtk-sidebar-section { margin-bottom: 4px; }
+.gtk-sidebar-label {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--gnome-subtext);
+  padding: 6px 16px 3px;
+}
+.gtk-sidebar-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 16px; font-size: 13px; color: var(--gnome-text);
+  cursor: pointer; border-radius: var(--r); margin: 1px 6px;
+  transition: background .15s;
+}
+.gtk-sidebar-item:hover { background: rgba(255,255,255,.06); }
+.gtk-sidebar-item.active { background: rgba(137,180,250,.15); color: var(--gnome-accent); }
+.gtk-sidebar-icon { font-size: 14px; flex-shrink: 0; }
+
+/* Content */
+.gtk-content {
+  flex: 1; overflow-y: auto; background: var(--gnome-surface);
+  scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.15) transparent;
+}
+.gtk-content::-webkit-scrollbar { width: 6px; }
+.gtk-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 3px; }
+
+/* Nautilus icon grid */
+.nautilus-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: 4px; padding: 12px;
+}
+.nautilus-file {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 5px; padding: 10px 6px; cursor: pointer; border-radius: var(--r-lg);
+  transition: background .15s; text-align: center;
+}
+.nautilus-file:hover { background: rgba(255,255,255,.06); }
+.nautilus-file.selected { background: rgba(137,180,250,.2); }
+.nautilus-file-icon { font-size: 38px; }
+.nautilus-file-name { font-size: 12px; color: var(--gnome-text); line-height: 1.2; word-break: break-word; }
+
+/* Status bar */
+.gtk-statusbar {
+  background: var(--gnome-card);
+  border-top: 1px solid rgba(255,255,255,.06);
+  padding: 6px 16px; font-size: 12px; color: var(--gnome-subtext);
+  display: flex; gap: 12px; flex-shrink: 0;
+}
+
+/* ══════════════════════════════════════════════════
+   GTK WIDGETS / CONTENT STYLES
+══════════════════════════════════════════════════ */
+
+/* Section title */
+.gnome-section-title {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--gnome-subtext);
+  padding: 12px 16px 6px;
+}
+
+/* Cards */
+.gnome-card {
+  background: var(--gnome-card2); border-radius: var(--r-lg);
+  border: 1px solid rgba(255,255,255,.06); overflow: hidden;
+  transition: border-color .2s;
+}
+.gnome-card:hover { border-color: rgba(255,255,255,.12); }
+
+/* Couple cards */
+.gnome-couple-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
+@media(max-width:480px){ .gnome-couple-grid{grid-template-columns:1fr;} }
+.gnome-couple-card { background: var(--gnome-card2); border-radius: var(--r-lg); overflow: hidden; border: 1px solid rgba(255,255,255,.06); }
+.gnome-couple-card img { width: 100%; height: 130px; object-fit: cover; display: block; filter: brightness(.9) saturate(1.1); }
+.gnome-couple-body { padding: 10px; }
+.gnome-couple-role { font-size: 10px; letter-spacing: .15em; text-transform: uppercase; color: var(--ub-orange); font-weight: 700; margin-bottom: 3px; }
+.gnome-couple-name { font-family: var(--font-display); font-size: 16px; letter-spacing: .05em; margin-bottom: 4px; color: var(--gnome-text); }
+.gnome-couple-parents { font-size: 11px; color: var(--gnome-subtext); line-height: 1.55; }
+
+/* Event cards */
+.gnome-event-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px; }
+@media(max-width:480px){ .gnome-event-grid{grid-template-columns:1fr;} }
+.gnome-event-card { background: var(--gnome-card2); border-radius: var(--r-lg); padding: 14px; border: 1px solid rgba(255,255,255,.06); position: relative; overflow: hidden; }
+.gnome-event-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--ub-orange), var(--ub-orange-lt)); }
+.gnome-event-badge { display: inline-block; background: rgba(233,84,32,.2); color: var(--ub-orange); font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: 2px 8px; border-radius: 20px; margin-bottom: 8px; }
+.gnome-event-name { font-family: var(--font-display); font-size: 18px; margin-bottom: 8px; color: var(--gnome-text); }
+.gnome-event-row { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 4px; font-size: 12px; color: var(--gnome-subtext); }
+.gnome-event-map { display: inline-flex; align-items: center; gap: 4px; margin-top: 10px; background: var(--ub-orange); color: white; font-size: 12px; font-weight: 700; padding: 5px 12px; border-radius: 20px; cursor: pointer; transition: background .2s; }
+.gnome-event-map:hover { background: var(--ub-orange-dk); }
+
+/* Countdown */
+.gnome-countdown { display: flex; gap: 8px; flex-wrap: wrap; padding: 10px; justify-content: center; }
+.gnome-cd-cell { background: var(--gnome-card2); border: 1px solid rgba(255,255,255,.08); border-radius: var(--r-lg); padding: 12px 14px; text-align: center; min-width: 70px; }
+.gnome-cd-num { font-family: var(--font-display); font-size: 32px; color: var(--ub-orange); line-height: 1; }
+.gnome-cd-unit { font-size: 10px; color: var(--gnome-subtext); text-transform: uppercase; letter-spacing: .15em; margin-top: 2px; }
+
+/* Gallery */
+.gnome-gallery-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 4px; padding: 10px; }
+@media(max-width:400px){ .gnome-gallery-grid{grid-template-columns:repeat(2,1fr);} }
+.gnome-gallery-item { aspect-ratio:1; overflow:hidden; cursor:pointer; border-radius: var(--r); position:relative; }
+.gnome-gallery-item img { width:100%; height:100%; object-fit:cover; display:block; filter: brightness(.9) saturate(1.1); transition: transform .3s, filter .3s; }
+.gnome-gallery-item:hover img { transform: scale(1.06); filter: brightness(1.05) saturate(1.2); }
+.gnome-gallery-item-overlay { position:absolute; inset:0; background:linear-gradient(to bottom,transparent 50%,rgba(0,0,0,.5) 100%); opacity:0; transition:opacity .3s; }
+.gnome-gallery-item:hover .gnome-gallery-item-overlay { opacity:1; }
+
+/* Gallery big view */
+.gnome-gallery-big { background: #000; position:relative; height:220px; flex-shrink:0; cursor:pointer; overflow:hidden; }
+.gnome-gallery-big img { width:100%; height:100%; object-fit:contain; display:block; }
+.gnome-gallery-thumbstrip { background: var(--gnome-card); border-top:1px solid rgba(255,255,255,.06); padding:6px; display:flex; gap:5px; overflow-x:auto; flex-shrink:0; scrollbar-width:none; }
+.gnome-gallery-thumbstrip::-webkit-scrollbar { display:none; }
+.gnome-gallery-thumb { width:56px; height:42px; object-fit:cover; cursor:pointer; border-radius:4px; border:2px solid transparent; flex-shrink:0; display:block; transition:border-color .2s; }
+.gnome-gallery-thumb.active { border-color: var(--ub-orange); }
+.gnome-gallery-thumb:hover { border-color: rgba(255,255,255,.4); }
+
+/* Timeline */
+.gnome-timeline { padding: 10px 10px 10px 20px; position: relative; }
+.gnome-timeline::before { content:''; position:absolute; left:24px; top:16px; bottom:16px; width:2px; background:linear-gradient(to bottom,var(--ub-orange),rgba(233,84,32,.1)); border-radius:1px; }
+.gnome-tl-item { display:flex; gap:18px; margin-bottom:26px; opacity:0; transform:translateX(-12px); transition:opacity .5s,transform .5s; }
+.gnome-tl-item.vis { opacity:1; transform:translateX(0); }
+.gnome-tl-dot { width:28px; height:28px; border-radius:50%; flex-shrink:0; background:linear-gradient(135deg,var(--ub-orange),var(--ub-orange-lt)); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:white; z-index:1; position:relative; box-shadow:0 0 0 4px rgba(233,84,32,.15); }
+.gnome-tl-body { padding-top:4px; }
+.gnome-tl-track { font-size:10px; letter-spacing:.2em; text-transform:uppercase; color:var(--ub-orange); font-weight:700; margin-bottom:2px; }
+.gnome-tl-month { font-size:11px; color:var(--gnome-subtext); margin-bottom:3px; }
+.gnome-tl-title { font-family:var(--font-display); font-size:16px; letter-spacing:.04em; margin-bottom:4px; color:var(--gnome-text); }
+.gnome-tl-desc { font-size:12px; color:var(--gnome-subtext); line-height:1.65; }
+
+/* Gift */
+.gnome-gift-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:10px; }
+@media(max-width:480px){ .gnome-gift-grid{grid-template-columns:1fr;} }
+.gnome-gift-card { background:var(--gnome-card2); border:1px solid rgba(255,255,255,.06); border-radius:var(--r-lg); padding:16px; text-align:center; }
+.gnome-gift-bank { font-family:var(--font-display); font-size:22px; letter-spacing:.08em; color:var(--gnome-text); margin:4px 0 2px; }
+.gnome-gift-holder { font-size:11px; color:var(--gnome-subtext); margin-bottom:8px; }
+.gnome-gift-num { font-family:var(--font-mono); font-size:15px; letter-spacing:.08em; background:rgba(0,0,0,.3); border:1px solid rgba(255,255,255,.08); border-radius:var(--r); padding:6px 10px; margin-bottom:10px; color:var(--gnome-text); display:block; }
+.gnome-gift-copy { background:var(--ub-orange); color:white; font-size:12px; font-weight:700; padding:6px 16px; border-radius:20px; cursor:pointer; border:none; transition:background .2s; font-family:var(--font-ui); }
+.gnome-gift-copy:hover { background:var(--ub-orange-dk); }
+.gnome-gift-copy.copied { background:var(--gnome-green); color:#000; }
+
+/* RSVP */
+.gnome-rsvp-stats { display:flex; gap:8px; flex-wrap:wrap; padding:10px 10px 0; }
+.gnome-rsvp-stat { flex:1; background:var(--gnome-card2); border:1px solid rgba(255,255,255,.06); border-radius:var(--r-lg); padding:10px 8px; text-align:center; min-width:72px; }
+.gnome-rsvp-stat-num { font-family:var(--font-display); font-size:28px; color:var(--ub-orange); line-height:1; }
+.gnome-rsvp-stat-label { font-size:10px; color:var(--gnome-subtext); letter-spacing:.1em; text-transform:uppercase; }
+.gnome-form { padding:10px; }
+.gnome-form-group { margin-bottom:10px; }
+.gnome-form-label { display:block; font-size:12px; font-weight:700; color:var(--gnome-text); margin-bottom:4px; }
+.gnome-form-input { width:100%; padding:8px 12px; background:var(--gnome-card2); border:1px solid rgba(255,255,255,.1); border-radius:var(--r); color:var(--gnome-text); font-family:var(--font-ui); font-size:13px; outline:none; transition:border-color .2s; }
+.gnome-form-input:focus { border-color:var(--ub-orange); box-shadow:0 0 0 2px rgba(233,84,32,.2); }
+.gnome-form-input::placeholder { color:var(--gnome-subtext); }
+textarea.gnome-form-input { min-height:72px; resize:vertical; }
+.gnome-form-select { width:100%; padding:8px 12px; background:var(--gnome-card2); border:1px solid rgba(255,255,255,.1); border-radius:var(--r); color:var(--gnome-text); font-family:var(--font-ui); font-size:13px; cursor:pointer; appearance:none; }
+.gnome-radio-group { display:flex; flex-direction:column; gap:6px; }
+.gnome-radio-item { display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px; padding:6px 8px; border-radius:var(--r); transition:background .15s; }
+.gnome-radio-item:hover { background:rgba(255,255,255,.04); }
+.gnome-radio-dot { width:16px; height:16px; border-radius:50%; border:2px solid rgba(255,255,255,.3); background:transparent; flex-shrink:0; display:flex; align-items:center; justify-content:center; transition:border-color .2s; }
+.gnome-radio-dot.checked { border-color:var(--ub-orange); }
+.gnome-radio-dot.checked::after { content:''; width:8px; height:8px; border-radius:50%; background:var(--ub-orange); display:block; }
+.gnome-rsvp-submit { width:100%; background:var(--ub-orange); color:white; font-size:14px; font-weight:700; padding:10px; border-radius:var(--r-lg); border:none; cursor:pointer; transition:background .2s; margin-top:4px; font-family:var(--font-ui); }
+.gnome-rsvp-submit:hover { background:var(--ub-orange-dk); }
+.gnome-wish-list { padding:0 10px 10px; display:flex; flex-direction:column; gap:6px; }
+.gnome-wish { background:var(--gnome-card2); border:1px solid rgba(255,255,255,.06); border-radius:var(--r-lg); padding:10px 12px; opacity:0; transform:translateY(8px); transition:opacity .4s,transform .4s; }
+.gnome-wish.vis { opacity:1; transform:translateY(0); }
+.gnome-wish-hdr { display:flex; align-items:center; gap:8px; margin-bottom:5px; }
+.gnome-wish-ava { width:28px; height:28px; border-radius:var(--r); background:var(--ub-orange); display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; color:white; flex-shrink:0; }
+.gnome-wish-name { font-size:12px; font-weight:700; color:var(--gnome-text); }
+.gnome-wish-status { font-size:10px; color:var(--gnome-green); margin-left:auto; }
+.gnome-wish-text { font-size:12px; color:var(--gnome-subtext); line-height:1.6; }
+
+/* Video grid */
+.gnome-video-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; padding:10px; }
+.gnome-video-item { position:relative; aspect-ratio:16/9; background:#000; cursor:pointer; border-radius:var(--r-lg); overflow:hidden; border:1px solid rgba(255,255,255,.06); }
+.gnome-video-item video { width:100%; height:100%; object-fit:cover; display:block; opacity:.8; }
+.gnome-video-overlay { position:absolute; inset:0; background:linear-gradient(to bottom,transparent 40%,rgba(0,0,0,.6) 100%); display:flex; align-items:flex-end; padding:8px; }
+.gnome-video-label { color:white; font-size:12px; font-weight:700; }
+.gnome-video-play { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:40px; height:40px; border-radius:50%; background:rgba(233,84,32,.85); display:flex; align-items:center; justify-content:center; color:white; font-size:16px; transition:transform .2s; }
+.gnome-video-item:hover .gnome-video-play { transform:translate(-50%,-50%) scale(1.12); }
+
+/* Verse */
+.gnome-verse { background:rgba(233,84,32,.08); border-left:3px solid var(--ub-orange); border-radius:0 var(--r-lg) var(--r-lg) 0; padding:14px 16px; margin:10px; }
+.gnome-verse-text { font-family:var(--font-display); font-size:14px; font-style:italic; line-height:1.75; color:var(--gnome-text); margin-bottom:6px; font-weight:300; letter-spacing:.03em; }
+.gnome-verse-ref { font-size:11px; color:var(--gnome-subtext); font-weight:700; }
+
+/* Notepad (gedit style) */
+.gnome-gedit { background:var(--gnome-surface); font-family:var(--font-mono); font-size:12px; padding:12px; line-height:1.7; white-space:pre-wrap; color:var(--gnome-text); height:100%; overflow:auto; }
+.gedit-ln { color:var(--gnome-subtext); margin-right:16px; opacity:.5; text-align:right; min-width:24px; display:inline-block; }
+
+/* ══════════════════════════════════════════════════
+   TERMINAL WINDOW
+══════════════════════════════════════════════════ */
+.term-window { background: var(--term-bg) !important; }
+.term-window .gtk-headerbar { background: #1a1a1a !important; }
+.term-body {
+  flex: 1; background: var(--term-bg); overflow-y: auto;
+  padding: 10px 14px; font-family: var(--font-mono); font-size: 13px;
+  color: var(--term-white); line-height: 1.55;
+}
+.term-line { margin-bottom: 2px; }
+.term-prompt-user { color: var(--term-green); font-weight: 700; }
+.term-prompt-at { color: var(--term-white); }
+.term-prompt-host { color: var(--gnome-accent); font-weight: 700; }
+.term-prompt-path { color: var(--ub-orange); font-weight: 700; }
+.term-prompt-dollar { color: var(--term-white); }
+.term-cmd { color: var(--term-white); }
+.term-output { color: var(--gnome-subtext); }
+.term-success { color: var(--term-green); }
+.term-error { color: var(--gnome-red); }
+.term-input-row { display: flex; align-items: center; gap: 6px; margin-top: 4px; }
+.term-input {
+  flex: 1; background: transparent; border: none; outline: none;
+  font-family: var(--font-mono); font-size: 13px; color: var(--term-white);
+  caret-color: var(--term-green);
+}
+
+/* ══════════════════════════════════════════════════
+   NOTIFICATION
+══════════════════════════════════════════════════ */
+.gnome-notif {
+  position: fixed; top: 40px; right: 12px; z-index: 9999;
+  background: var(--gnome-card);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow);
+  width: 300px; padding: 14px 16px;
+  display: none; animation: notif-slide .3s ease;
+}
+.gnome-notif.show { display: block; }
+@keyframes notif-slide { from{transform:translateX(120%);opacity:0} to{transform:translateX(0);opacity:1} }
+.notif-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.notif-icon { font-size: 18px; }
+.notif-app { font-size: 11px; font-weight: 700; color: var(--gnome-subtext); flex: 1; }
+.notif-time { font-size: 10px; color: var(--gnome-subtext); }
+.notif-title { font-size: 13px; font-weight: 700; color: var(--gnome-text); margin-bottom: 2px; }
+.notif-body { font-size: 12px; color: var(--gnome-subtext); line-height: 1.45; }
+
+/* ══════════════════════════════════════════════════
+   DIALOGS
+══════════════════════════════════════════════════ */
+.gnome-dialog {
+  position: fixed; z-index: 8500;
+  background: var(--gnome-card);
+  border-radius: var(--r-xl);
+  border: 1px solid rgba(255,255,255,.1);
+  box-shadow: var(--shadow-lg);
+  min-width: 280px; max-width: 420px;
+  display: none; flex-direction: column; overflow: hidden;
+}
+.gnome-dialog.open { display: flex; }
+.gnome-dialog-header {
+  background: var(--gnome-card2);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  padding: 0 16px; height: 46px;
+  display: flex; align-items: center; gap: 10px; cursor: move;
+}
+.gnome-dialog-icon { font-size: 20px; }
+.gnome-dialog-title { flex: 1; font-size: 14px; font-weight: 700; color: var(--gnome-text); }
+.gnome-dialog-body { padding: 20px; font-size: 13px; color: var(--gnome-subtext); line-height: 1.6; }
+.gnome-dialog-btns { display: flex; justify-content: flex-end; gap: 8px; padding: 0 16px 16px; }
+.gnome-btn {
+  font-family: var(--font-ui); font-size: 13px; font-weight: 700;
+  padding: 7px 20px; border-radius: var(--r-lg); cursor: pointer;
+  border: none; transition: all .15s;
+}
+.gnome-btn-secondary { background: rgba(255,255,255,.08); color: var(--gnome-text); }
+.gnome-btn-secondary:hover { background: rgba(255,255,255,.12); }
+.gnome-btn-primary { background: var(--ub-orange); color: white; }
+.gnome-btn-primary:hover { background: var(--ub-orange-dk); }
+.gnome-btn-destructive { background: rgba(243,139,168,.15); color: var(--gnome-red); border: 1px solid rgba(243,139,168,.25); }
+.gnome-btn-destructive:hover { background: rgba(243,139,168,.25); }
+
+/* Lightbox */
+.lb-gnome { position:fixed; inset:0; z-index:9998; background:rgba(0,0,0,.92); display:none; align-items:center; justify-content:center; }
+.lb-gnome.open { display:flex; }
+.lb-gnome-win { background:var(--gnome-card); border-radius:var(--r-xl); box-shadow:var(--shadow-lg); overflow:hidden; max-width:92vw; }
+.lb-gnome-img { max-width:80vw; max-height:70vh; display:block; border-radius:0; }
+.lb-gnome-controls { display:flex; gap:8px; padding:10px; justify-content:center; background:var(--gnome-card); }
+
+/* VM */
+.vm-gnome { position:fixed; inset:0; z-index:9998; background:rgba(0,0,0,.92); display:none; align-items:center; justify-content:center; }
+.vm-gnome.open { display:flex; }
+
+/* Responsive */
+@media(max-width:600px) {
+  :root { --dock-w: 52px; }
+  .gtk-window { min-width:260px!important; max-width:98vw!important; }
+  .gtk-sidebar { display:none; }
+  .gnome-couple-grid,.gnome-event-grid,.gnome-gift-grid { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ TERMINAL BOOT ═══ -->
+<div id="termBoot">
+  <div id="bootLines"></div>
+</div>
+
+<!-- ═══ GNOME TOP PANEL ═══ -->
+<div id="gnomePanel">
+  <div class="panel-left">
+    <div class="activities-btn" id="activitiesBtn" onclick="toggleActivities()">Activities</div>
+    <div class="panel-app-name" id="panelAppName">Files</div>
+  </div>
+  <div class="panel-center">
+    <div class="panel-clock" id="panelClock" onclick="showGnomeDlg('dlgCalendar','📅','Today','24 Mei 2026 — Wedding Day!\n\nAkad Nikah: 08.00 WIB\nResepsi: 11.00–13.00 WIB')">
+      <span id="panelTime">12:00</span> <span id="panelDate"></span>
+    </div>
+  </div>
+  <div class="panel-right">
+    <div class="panel-tray-icon" title="Volume" onclick="showGnomeNotif('🔊','System','Volume: 80%')">🔊</div>
+    <div class="panel-tray-icon" title="WiFi" onclick="showGnomeNotif('📶','Network','Connected: WeddingNet — Signal: Excellent')">📶</div>
+    <div class="panel-tray-icon" title="Battery" onclick="showGnomeNotif('🔋','Power','Battery: 92% — Plugged In')">🔋</div>
+    <div class="panel-tray-icon" title="User" onclick="toggleUserMenu()">👤</div>
+  </div>
+</div>
+
+<!-- ═══ DOCK ═══ -->
+<div id="gnomeDock">
+  <div class="dock-icon active" title="Files" onclick="openGtk('winFiles')">📁</div>
+  <div class="dock-icon" title="Wedding App" onclick="openGtk('winWedding')">💒</div>
+  <div class="dock-icon" title="Photos" onclick="openGtk('winGallery')">🖼️</div>
+  <div class="dock-icon" title="Videos" onclick="openGtk('winVideo')">🎬</div>
+  <div class="dock-icon" title="Text Editor" onclick="openGtk('winCouple')">📝</div>
+  <div class="dock-icon" title="Calendar" onclick="openGtk('winEvent')">📅</div>
+  <div class="dock-icon" title="RSVP" onclick="openGtk('winRsvp')">📋</div>
+  <div class="dock-icon" title="Gift" onclick="openGtk('winGift')">🎁</div>
+  <div class="dock-sep"></div>
+  <div class="dock-icon" title="Terminal" onclick="openGtk('winTerminal')">🖥️</div>
+  <div class="dock-sep"></div>
+  <div class="dock-icon" title="Settings" onclick="showGnomeDlg('dlgAbout','⚙️','Settings','System: Ubuntu 24.04 LTS\nKernel: 6.8.0-wedding\nWM: GNOME Shell 46\nTheme: Yaru Orange\n\nLicensed to: Anita & Zarda 💍')">⚙️</div>
+</div>
+
+<!-- ═══ DESKTOP ═══ -->
+<div id="desktop">
+
+  <!-- Desktop right-click icons -->
+  <div style="position:absolute;top:16px;right:16px;display:flex;flex-direction:column;gap:4px;align-items:center">
+    <div class="nautilus-file" onclick="openGtk('winFiles')" style="background:rgba(0,0,0,.3);border-radius:12px">
+      <div class="nautilus-file-icon">💾</div>
+      <div class="nautilus-file-name" style="color:white;text-shadow:1px 1px 3px #000">Wedding Disk</div>
+    </div>
+    <div class="nautilus-file" onclick="openGtk('winFiles')" style="background:rgba(0,0,0,.3);border-radius:12px">
+      <div class="nautilus-file-icon">🏠</div>
+      <div class="nautilus-file-name" style="color:white;text-shadow:1px 1px 3px #000">Home</div>
+    </div>
+  </div>
+
+  <!-- ══ FILES / NAUTILUS ══ -->
+  <div class="gtk-window focused" id="winFiles" style="width:min(560px,96vw);left:70px;top:10px" onmousedown="focusGtk('winFiles')">
+    <div class="gtk-headerbar" onmousedown="startGtkDrag(event,'winFiles')" ontouchstart="startGtkDragT(event,'winFiles')">
+      <div class="gtk-wm-btns">
+        <div class="gtk-wm-btn close" onclick="closeGtk('winFiles')"><span class="gtk-btn-icon">✕</span></div>
+        <div class="gtk-wm-btn min" onclick="minGtk('winFiles')"><span class="gtk-btn-icon">−</span></div>
+        <div class="gtk-wm-btn max"><span class="gtk-btn-icon">□</span></div>
+      </div>
+      <div class="gtk-title">Files — ~/Wedding</div>
+      <div class="gtk-hb-btns">
+        <div class="gtk-hb-btn" onclick="openGtk('winTerminal')" title="Terminal">🖥️</div>
+        <div class="gtk-hb-btn" onclick="openAllGtk()" title="Open All">🪟</div>
+        <div class="gtk-hb-btn" onclick="toggleActivities()" title="Search">🔍</div>
+      </div>
+    </div>
+    <!-- Path bar -->
+    <div style="background:var(--gnome-card2);border-bottom:1px solid rgba(255,255,255,.06);padding:4px 12px;display:flex;gap:4px;align-items:center;flex-shrink:0">
+      <div style="display:flex;gap:2px;align-items:center;background:rgba(255,255,255,.06);border-radius:20px;padding:4px 12px;font-size:12px;color:var(--gnome-subtext)">
+        <span>🏠</span><span style="margin:0 4px">/</span><span style="color:var(--ub-orange);font-weight:700">Wedding</span>
+      </div>
+    </div>
+    <div class="gtk-layout" style="min-height:240px">
+      <div class="gtk-sidebar">
+        <div class="gtk-sidebar-section">
+          <div class="gtk-sidebar-label">Bookmarks</div>
+          <div class="gtk-sidebar-item active" onclick="openGtk('winFiles')"><span class="gtk-sidebar-icon">🏠</span>Home</div>
+          <div class="gtk-sidebar-item" onclick="openGtk('winFiles')"><span class="gtk-sidebar-icon">💒</span>Wedding</div>
+          <div class="gtk-sidebar-item" onclick="openGtk('winGallery')"><span class="gtk-sidebar-icon">🖼️</span>Photos</div>
+          <div class="gtk-sidebar-item" onclick="openGtk('winVideo')"><span class="gtk-sidebar-icon">🎬</span>Videos</div>
+        </div>
+        <div class="gtk-sidebar-section">
+          <div class="gtk-sidebar-label">Devices</div>
+          <div class="gtk-sidebar-item" onclick="openGtk('winFiles')"><span class="gtk-sidebar-icon">💾</span>Wedding Disk</div>
+        </div>
+        <div class="gtk-sidebar-section">
+          <div class="gtk-sidebar-label">Network</div>
+          <div class="gtk-sidebar-item"><span class="gtk-sidebar-icon">🌐</span>WeddingNet</div>
+        </div>
+      </div>
+      <div class="gtk-content">
+        <div class="nautilus-grid">
+          <div class="nautilus-file" onclick="openGtk('winWedding')"><div class="nautilus-file-icon">💒</div><div class="nautilus-file-name">wedding.app</div></div>
+          <div class="nautilus-file" onclick="openGtk('winCouple')"><div class="nautilus-file-icon">📝</div><div class="nautilus-file-name">couple.txt</div></div>
+          <div class="nautilus-file" onclick="openGtk('winEvent')"><div class="nautilus-file-icon">📅</div><div class="nautilus-file-name">event.ics</div></div>
+          <div class="nautilus-file" onclick="openGtk('winGallery')"><div class="nautilus-file-icon">🖼️</div><div class="nautilus-file-name">photos/</div></div>
+          <div class="nautilus-file" onclick="openGtk('winVideo')"><div class="nautilus-file-icon">🎬</div><div class="nautilus-file-name">videos/</div></div>
+          <div class="nautilus-file" onclick="openGtk('winGift')"><div class="nautilus-file-icon">🎁</div><div class="nautilus-file-name">gift.dat</div></div>
+          <div class="nautilus-file" onclick="openGtk('winRsvp')"><div class="nautilus-file-icon">📋</div><div class="nautilus-file-name">rsvp.form</div></div>
+          <div class="nautilus-file" onclick="openGtk('winTerminal')"><div class="nautilus-file-icon">🖥️</div><div class="nautilus-file-name">terminal</div></div>
+          <div class="nautilus-file" onclick="openAllGtk()"><div class="nautilus-file-icon">🪟</div><div class="nautilus-file-name">open-all.sh</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="gtk-statusbar"><span>9 items</span><span style="margin-left:auto">~/Wedding — 2.46 GB free</span></div>
+  </div>
+
+  <!-- ══ WEDDING APP ══ -->
+  <div class="gtk-window" id="winWedding" style="width:min(580px,96vw);left:110px;top:30px;display:none" onmousedown="focusGtk('winWedding')">
+    <div class="gtk-headerbar" onmousedown="startGtkDrag(event,'winWedding')" ontouchstart="startGtkDragT(event,'winWedding')">
+      <div class="gtk-wm-btns">
+        <div class="gtk-wm-btn close" onclick="closeGtk('winWedding')"><span class="gtk-btn-icon">✕</span></div>
+        <div class="gtk-wm-btn min" onclick="minGtk('winWedding')"><span class="gtk-btn-icon">−</span></div>
+        <div class="gtk-wm-btn max"><span class="gtk-btn-icon">□</span></div>
+      </div>
+      <div class="gtk-title">💍 Wedding of Anita & Zarda</div>
+      <div class="gtk-hb-btns">
+        <div class="gtk-hb-btn" onclick="openGtk('winGallery')">🖼️</div>
+        <div class="gtk-hb-btn" onclick="openGtk('winRsvp')">📋</div>
+        <div class="gtk-hb-btn" onclick="openAllGtk()">🪟</div>
+      </div>
+    </div>
+    <!-- Tab bar -->
+    <div style="background:var(--gnome-card2);border-bottom:1px solid rgba(255,255,255,.06);display:flex;padding:0 8px;flex-shrink:0">
+      <div id="gtab-home" onclick="switchGtab('home')" style="padding:10px 14px;font-size:13px;cursor:pointer;border-bottom:2px solid var(--ub-orange);color:var(--ub-orange);font-weight:700">🏠 Home</div>
+      <div id="gtab-couple" onclick="switchGtab('couple')" style="padding:10px 14px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:var(--gnome-subtext)">💑 Couple</div>
+      <div id="gtab-event" onclick="switchGtab('event')" style="padding:10px 14px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:var(--gnome-subtext)">📅 Event</div>
+      <div id="gtab-story" onclick="switchGtab('story')" style="padding:10px 14px;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:var(--gnome-subtext)">📖 Story</div>
+    </div>
+    <div class="gtk-content" style="min-height:280px">
+      <!-- Home -->
+      <div id="gtc-home">
+        <div style="padding:20px;text-align:center">
+          <div style="font-size:52px;margin-bottom:10px">💒</div>
+          <div style="font-family:var(--font-display);font-size:32px;letter-spacing:.1em;margin-bottom:4px;color:var(--gnome-text)">Anita & Zarda</div>
+          <div style="font-size:12px;color:var(--gnome-subtext);margin-bottom:16px;font-family:var(--font-mono)">wedding@localhost:~/invitation v1.0.0</div>
+        </div>
+        <div class="gnome-verse">
+          <div class="gnome-verse-text">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya."</div>
+          <div class="gnome-verse-ref">— Surah Ar-Rum : 21</div>
+        </div>
+        <div class="gnome-section-title">⏳ Countdown to Wedding Day</div>
+        <div class="gnome-countdown">
+          <div class="gnome-cd-cell"><div class="gnome-cd-num" id="cdD">--</div><div class="gnome-cd-unit">Hari</div></div>
+          <div class="gnome-cd-cell"><div class="gnome-cd-num" id="cdH">--</div><div class="gnome-cd-unit">Jam</div></div>
+          <div class="gnome-cd-cell"><div class="gnome-cd-num" id="cdM">--</div><div class="gnome-cd-unit">Menit</div></div>
+          <div class="gnome-cd-cell"><div class="gnome-cd-num" id="cdS">--</div><div class="gnome-cd-unit">Detik</div></div>
+        </div>
+        <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:12px">
+          <button class="gnome-btn gnome-btn-primary" onclick="openGtk('winCouple')">💑 Couple</button>
+          <button class="gnome-btn gnome-btn-primary" onclick="openGtk('winEvent')">📅 Event</button>
+          <button class="gnome-btn gnome-btn-primary" onclick="openGtk('winGallery')">🖼️ Galeri</button>
+          <button class="gnome-btn gnome-btn-primary" onclick="openGtk('winRsvp')">📋 RSVP</button>
+          <button class="gnome-btn gnome-btn-primary" onclick="openGtk('winGift')">🎁 Gift</button>
+        </div>
+      </div>
+      <!-- Couple -->
+      <div id="gtc-couple" style="display:none">
+        <div class="gnome-section-title">💑 Pasangan Kami</div>
+        <div class="gnome-couple-grid">
+          <div class="gnome-couple-card"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=260&fit=crop&q=80" alt="Anita"><div class="gnome-couple-body"><div class="gnome-couple-role">Mempelai Wanita</div><div class="gnome-couple-name">Anita Pangestuti</div><div class="gnome-couple-parents">Putri Pertama dari<br><b style="color:var(--gnome-text)">Bpk. Taryono & Ibu Wiwit Jayanti</b></div></div></div>
+          <div class="gnome-couple-card"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=260&fit=crop&q=80" alt="Zarda"><div class="gnome-couple-body"><div class="gnome-couple-role">Mempelai Pria</div><div class="gnome-couple-name">Zardarian Ahadika N</div><div class="gnome-couple-parents">Putra Kedua dari<br><b style="color:var(--gnome-text)">Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</b></div></div></div>
+        </div>
+      </div>
+      <!-- Event -->
+      <div id="gtc-event" style="display:none">
+        <div class="gnome-section-title">📅 Jadwal Acara</div>
+        <div class="gnome-countdown" style="margin-bottom:4px">
+          <div class="gnome-cd-cell"><div class="gnome-cd-num" data-gcd="D">--</div><div class="gnome-cd-unit">Hari</div></div>
+          <div class="gnome-cd-cell"><div class="gnome-cd-num" data-gcd="H">--</div><div class="gnome-cd-unit">Jam</div></div>
+          <div class="gnome-cd-cell"><div class="gnome-cd-num" data-gcd="M">--</div><div class="gnome-cd-unit">Menit</div></div>
+          <div class="gnome-cd-cell"><div class="gnome-cd-num" data-gcd="S">--</div><div class="gnome-cd-unit">Detik</div></div>
+        </div>
+        <div class="gnome-event-grid">
+          <div class="gnome-event-card"><div class="gnome-event-badge">Akad Nikah</div><div class="gnome-event-name">Minggu, 24 Mei 2026</div><div class="gnome-event-row"><span>🕗</span><span>08.00 WIB</span></div><div class="gnome-event-row"><span>📍</span><span>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div><a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank"><div class="gnome-event-map">📍 Maps</div></a></div>
+          <div class="gnome-event-card"><div class="gnome-event-badge">Resepsi</div><div class="gnome-event-name">Minggu, 24 Mei 2026</div><div class="gnome-event-row"><span>🕙</span><span>11.00–13.00 WIB</span></div><div class="gnome-event-row"><span>📍</span><span>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div><a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank"><div class="gnome-event-map">📍 Maps</div></a></div>
+        </div>
+      </div>
+      <!-- Story -->
+      <div id="gtc-story" style="display:none">
+        <div class="gnome-section-title">📖 Our Love Story</div>
+        <div class="gnome-timeline" id="gMainTl">
+          <div class="gnome-tl-item"><div class="gnome-tl-dot">1</div><div class="gnome-tl-body"><div class="gnome-tl-track">Track 01</div><div class="gnome-tl-month">Juni 2025</div><div class="gnome-tl-title">Awal Pertemuan</div><div class="gnome-tl-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</div></div></div>
+          <div class="gnome-tl-item"><div class="gnome-tl-dot">2</div><div class="gnome-tl-body"><div class="gnome-tl-track">Track 02</div><div class="gnome-tl-month">November 2025</div><div class="gnome-tl-title">Lamaran</div><div class="gnome-tl-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div></div></div>
+          <div class="gnome-tl-item"><div class="gnome-tl-dot">3</div><div class="gnome-tl-body"><div class="gnome-tl-track">Track 03</div><div class="gnome-tl-month">Mei 2026</div><div class="gnome-tl-title">Pernikahan 💍</div><div class="gnome-tl-desc">Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div class="gtk-statusbar"><span>Wedding.app — Ready</span><span style="margin-left:auto" id="gMainStatus">Loading...</span></div>
+  </div>
+
+  <!-- ══ GALLERY ══ -->
+  <div class="gtk-window" id="winGallery" style="width:min(500px,96vw);left:160px;top:50px;display:none" onmousedown="focusGtk('winGallery')">
+    <div class="gtk-headerbar" onmousedown="startGtkDrag(event,'winGallery')" ontouchstart="startGtkDragT(event,'winGallery')">
+      <div class="gtk-wm-btns">
+        <div class="gtk-wm-btn close" onclick="closeGtk('winGallery')"><span class="gtk-btn-icon">✕</span></div>
+        <div class="gtk-wm-btn min" onclick="minGtk('winGallery')"><span class="gtk-btn-icon">−</span></div>
+        <div class="gtk-wm-btn max"><span class="gtk-btn-icon">□</span></div>
+      </div>
+      <div class="gtk-title">📸 Photos — Galeri Pernikahan</div>
+      <div class="gtk-hb-btns">
+        <div class="gtk-hb-btn" onclick="prevGGal()">◀</div>
+        <div class="gtk-hb-btn" onclick="nextGGal()">▶</div>
+        <div class="gtk-hb-btn" onclick="openGnomeLb(gGalIdx)">🔍</div>
+      </div>
+    </div>
+    <div class="gnome-gallery-big" onclick="openGnomeLb(gGalIdx)">
+      <img id="gGalBig" src="https://images.unsplash.com/photo-1519741497674-611481863552?w=700&h=440&fit=crop&q=80" alt="">
+    </div>
+    <div class="gnome-gallery-thumbstrip" id="gGalThumbs"></div>
+    <div class="gtk-statusbar"><span id="gGalStatus">Photo 1 of 9</span><span style="margin-left:auto">Click to zoom</span></div>
+  </div>
+
+  <!-- ══ VIDEO ══ -->
+  <div class="gtk-window" id="winVideo" style="width:min(460px,96vw);left:200px;top:80px;display:none" onmousedown="focusGtk('winVideo')">
+    <div class="gtk-headerbar" onmousedown="startGtkDrag(event,'winVideo')" ontouchstart="startGtkDragT(event,'winVideo')">
+      <div class="gtk-wm-btns">
+        <div class="gtk-wm-btn close" onclick="closeGtk('winVideo')"><span class="gtk-btn-icon">✕</span></div>
+        <div class="gtk-wm-btn min" onclick="minGtk('winVideo')"><span class="gtk-btn-icon">−</span></div>
+        <div class="gtk-wm-btn max"><span class="gtk-btn-icon">□</span></div>
+      </div>
+      <div class="gtk-title">🎬 Videos — Wedding Stories</div>
+    </div>
+    <div class="gtk-content">
+      <div class="gnome-section-title">🎬 Cinematic Wedding Stories</div>
+      <div class="gnome-video-grid" id="gVidGrid"></div>
+    </div>
+    <div class="gtk-statusbar"><span>4 videos • Click to play fullscreen</span></div>
+  </div>
+
+  <!-- ══ TEXT EDITOR (Couple) ══ -->
+  <div class="gtk-window" id="winCouple" style="width:min(400px,96vw);left:240px;top:100px;display:none" onmousedown="focusGtk('winCouple')">
+    <div class="gtk-headerbar" onmousedown="startGtkDrag(event,'winCouple')" ontouchstart="startGtkDragT(event,'winCouple')">
+      <div class="gtk-wm-btns">
+        <div class="gtk-wm-btn close" onclick="closeGtk('winCouple')"><span class="gtk-btn-icon">✕</span></div>
+        <div class="gtk-wm-btn min" onclick="minGtk('winCouple')"><span class="gtk-btn-icon">−</span></div>
+        <div class="gtk-wm-btn max"><span class="gtk-btn-icon">□</span></div>
+      </div>
+      <div class="gtk-title">📝 couple.txt — Text Editor</div>
+      <div class="gtk-hb-btns">
+        <div class="gtk-hb-btn" onclick="openGtk('winWedding')">💒</div>
+      </div>
+    </div>
+    <div class="gnome-gedit" style="height:340px">
+span style="color:var(--ub-orange);font-weight:700"># Wedding of Anita & Zarda</span>
+<span style="color:var(--gnome-subtext)"># ubuntu@wedding:~/invitation $ cat couple.txt</span>
+
+<span style="color:var(--gnome-green)">MEMPELAI_WANITA</span> = {
+  <span style="color:var(--gnome-accent)">"name"</span>:    <span style="color:var(--term-yellow)">"Anita Pangestuti, S.Kom"</span>,
+  <span style="color:var(--gnome-accent)">"role"</span>:    <span style="color:var(--term-yellow)">"Putri Pertama"</span>,
+  <span style="color:var(--gnome-accent)">"father"</span>: <span style="color:var(--term-yellow)">"Bpk. Taryono"</span>,
+  <span style="color:var(--gnome-accent)">"mother"</span>: <span style="color:var(--term-yellow)">"Ibu Wiwit Jayanti"</span>,
+}
+
+<span style="color:var(--gnome-green)">MEMPELAI_PRIA</span> = {
+  <span style="color:var(--gnome-accent)">"name"</span>:    <span style="color:var(--term-yellow)">"Zardarian Ahadika N, S.Kom"</span>,
+  <span style="color:var(--gnome-accent)">"role"</span>:    <span style="color:var(--term-yellow)">"Putra Kedua"</span>,
+  <span style="color:var(--gnome-accent)">"father"</span>: <span style="color:var(--term-yellow)">"Bpk. Wan Sabran, M.MAR"</span>,
+  <span style="color:var(--gnome-accent)">"mother"</span>: <span style="color:var(--term-yellow)">"Ibu Titik Sundari, M.Si"</span>,
+}
+
+<span style="color:var(--gnome-green)">LOVE_STORY</span> = [
+  { <span style="color:var(--gnome-accent)">"date"</span>: <span style="color:var(--term-yellow)">"Juni 2025"</span>,    <span style="color:var(--gnome-accent)">"event"</span>: <span style="color:var(--term-yellow)">"Awal Pertemuan"</span> },
+  { <span style="color:var(--gnome-accent)">"date"</span>: <span style="color:var(--term-yellow)">"Nov 2025"</span>,     <span style="color:var(--gnome-accent)">"event"</span>: <span style="color:var(--term-yellow)">"Lamaran 💍"</span> },
+  { <span style="color:var(--gnome-accent)">"date"</span>: <span style="color:var(--term-yellow)">"Mei 2026"</span>,     <span style="color:var(--gnome-accent)">"event"</span>: <span style="color:var(--term-yellow)">"Pernikahan ❤️"</span> },
+]
+
+<span style="color:var(--gnome-subtext)"># Ar-Rum: 21 — "...so that you may find tranquility in them"</span>
+<span style="color:var(--ub-orange)">print</span>(<span style="color:var(--term-yellow)">"Semoga Bahagia Selalu! 🙏"</span>)
+    </div>
+    <div class="gtk-statusbar"><span>Python • UTF-8 • Ln 1, Col 1</span></div>
+  </div>
+
+  <!-- ══ EVENT CALENDAR ══ -->
+  <div class="gtk-window" id="winEvent" style="width:min(420px,96vw);left:280px;top:120px;display:none" onmousedown="focusGtk('winEvent')">
+    <div class="gtk-headerbar" onmousedown="startGtkDrag(event,'winEvent')" ontouchstart="startGtkDragT(event,'winEvent')">
+      <div class="gtk-wm-btns">
+        <div class="gtk-wm-btn close" onclick="closeGtk('winEvent')"><span class="gtk-btn-icon">✕</span></div>
+        <div class="gtk-wm-btn min" onclick="minGtk('winEvent')"><span class="gtk-btn-icon">−</span></div>
+        <div class="gtk-wm-btn max"><span class="gtk-btn-icon">□</span></div>
+      </div>
+      <div class="gtk-title">📅 GNOME Calendar — Wedding</div>
+    </div>
+    <div class="gtk-content">
+      <div class="gnome-section-title">⏳ Countdown</div>
+      <div class="gnome-countdown" style="margin-bottom:4px">
+        <div class="gnome-cd-cell"><div class="gnome-cd-num" data-gcd="D">--</div><div class="gnome-cd-unit">Hari</div></div>
+        <div class="gnome-cd-cell"><div class="gnome-cd-num" data-gcd="H">--</div><div class="gnome-cd-unit">Jam</div></div>
+        <div class="gnome-cd-cell"><div class="gnome-cd-num" data-gcd="M">--</div><div class="gnome-cd-unit">Menit</div></div>
+        <div class="gnome-cd-cell"><div class="gnome-cd-num" data-gcd="S">--</div><div class="gnome-cd-unit">Detik</div></div>
+      </div>
+      <div class="gnome-section-title">📅 Jadwal Acara</div>
+      <div class="gnome-event-grid">
+        <div class="gnome-event-card"><div class="gnome-event-badge">Akad Nikah</div><div class="gnome-event-name">Minggu, 24 Mei 2026</div><div class="gnome-event-row"><span>🕗</span><span>08.00 WIB</span></div><div class="gnome-event-row"><span>📍</span><span>Graha Yadika, Ciledug, Tangerang</span></div><a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank"><div class="gnome-event-map">📍 Maps</div></a></div>
+        <div class="gnome-event-card"><div class="gnome-event-badge">Resepsi</div><div class="gnome-event-name">Minggu, 24 Mei 2026</div><div class="gnome-event-row"><span>🕙</span><span>11.00–13.00 WIB</span></div><div class="gnome-event-row"><span>📍</span><span>Graha Yadika, Ciledug, Tangerang</span></div><a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank"><div class="gnome-event-map">📍 Maps</div></a></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ GIFT ══ -->
+  <div class="gtk-window" id="winGift" style="width:min(360px,96vw);left:320px;top:140px;display:none" onmousedown="focusGtk('winGift')">
+    <div class="gtk-headerbar" onmousedown="startGtkDrag(event,'winGift')" ontouchstart="startGtkDragT(event,'winGift')">
+      <div class="gtk-wm-btns">
+        <div class="gtk-wm-btn close" onclick="closeGtk('winGift')"><span class="gtk-btn-icon">✕</span></div>
+        <div class="gtk-wm-btn min" onclick="minGtk('winGift')"><span class="gtk-btn-icon">−</span></div>
+        <div class="gtk-wm-btn max"><span class="gtk-btn-icon">□</span></div>
+      </div>
+      <div class="gtk-title">🎁 Amplop Digital</div>
+    </div>
+    <div class="gtk-content">
+      <div class="gnome-section-title">🎁 Digital Gift</div>
+      <div style="padding:8px 10px;font-size:12px;color:var(--gnome-subtext);line-height:1.6">Doa restu sudah sangat cukup, namun jika memberi merupakan tanda kasih, kami dengan senang hati menerimanya. 🙏</div>
+      <div class="gnome-gift-grid">
+        <div class="gnome-gift-card"><div style="font-size:22px">🏦</div><div class="gnome-gift-bank">BCA</div><div class="gnome-gift-holder">Zardarian Ahadika N</div><div class="gnome-gift-num">8210 3705 61</div><button class="gnome-gift-copy" onclick="copyGnomeGift('8210370561',this)">📋 Salin</button></div>
+        <div class="gnome-gift-card"><div style="font-size:22px">🏦</div><div class="gnome-gift-bank">BNI</div><div class="gnome-gift-holder">Anita Pangestuti</div><div class="gnome-gift-num">1192 9784 03</div><button class="gnome-gift-copy" onclick="copyGnomeGift('1192978403',this)">📋 Salin</button></div>
+      </div>
+    </div>
+    <div class="gtk-statusbar"><span>2 accounts available</span></div>
+  </div>
+
+  <!-- ══ RSVP ══ -->
+  <div class="gtk-window" id="winRsvp" style="width:min(440px,96vw);left:120px;top:60px;display:none" onmousedown="focusGtk('winRsvp')">
+    <div class="gtk-headerbar" onmousedown="startGtkDrag(event,'winRsvp')" ontouchstart="startGtkDragT(event,'winRsvp')">
+      <div class="gtk-wm-btns">
+        <div class="gtk-wm-btn close" onclick="closeGtk('winRsvp')"><span class="gtk-btn-icon">✕</span></div>
+        <div class="gtk-wm-btn min" onclick="minGtk('winRsvp')"><span class="gtk-btn-icon">−</span></div>
+        <div class="gtk-wm-btn max"><span class="gtk-btn-icon">□</span></div>
+      </div>
+      <div class="gtk-title">📋 RSVP — Konfirmasi Kehadiran</div>
+    </div>
+    <div class="gtk-content">
+      <div class="gnome-section-title">📋 RSVP</div>
+      <div class="gnome-rsvp-stats">
+        <div class="gnome-rsvp-stat"><div class="gnome-rsvp-stat-num" id="gstR">7</div><div class="gnome-rsvp-stat-label">Respons</div></div>
+        <div class="gnome-rsvp-stat"><div class="gnome-rsvp-stat-num" id="gstH">7</div><div class="gnome-rsvp-stat-label">Hadir</div></div>
+        <div class="gnome-rsvp-stat"><div class="gnome-rsvp-stat-num" id="gstT">13</div><div class="gnome-rsvp-stat-label">Total</div></div>
+      </div>
+      <div class="gnome-form">
+        <div class="gnome-form-group"><label class="gnome-form-label">Nama Lengkap</label><input type="text" class="gnome-form-input" id="grName" placeholder="Masukkan nama Anda"></div>
+        <div class="gnome-form-group"><label class="gnome-form-label">Status Kehadiran</label><div class="gnome-radio-group"><div class="gnome-radio-item" onclick="selGnomeRsvp('hadir',this)"><div class="gnome-radio-dot" id="grad-hadir"></div><span>✅ Hadir</span></div><div class="gnome-radio-item" onclick="selGnomeRsvp('tidak',this)"><div class="gnome-radio-dot" id="grad-tidak"></div><span>😔 Tidak Hadir</span></div></div></div>
+        <div class="gnome-form-group"><label class="gnome-form-label">Jumlah Tamu</label><select class="gnome-form-select" id="gguestSel"><option value="1">👤 1 Tamu</option><option value="2">👥 2 Tamu</option></select></div>
+        <div class="gnome-form-group"><label class="gnome-form-label">Ucapan & Doa</label><textarea class="gnome-form-input" id="grMsg" placeholder="Tulis ucapan untuk Anita & Zarda..."></textarea></div>
+        <button class="gnome-rsvp-submit" onclick="submitGnomeRsvp()">✅ Konfirmasi Kehadiran</button>
+      </div>
+      <div class="gnome-section-title">💬 Ucapan & Doa</div>
+      <div class="gnome-wish-list" id="gWishesList">
+        <div class="gnome-wish vis"><div class="gnome-wish-hdr"><div class="gnome-wish-ava">A</div><div class="gnome-wish-name">Ayu Rahmawati</div><div class="gnome-wish-status">✓ Hadir · 2</div></div><div class="gnome-wish-text">Selamat menempuh hidup baru! Sakinah mawaddah wa rahmah 🌿</div></div>
+        <div class="gnome-wish vis"><div class="gnome-wish-hdr"><div class="gnome-wish-ava" style="background:var(--gnome-accent);color:#000">R</div><div class="gnome-wish-name">Reza Firmansyah</div><div class="gnome-wish-status">✓ Hadir · 1</div></div><div class="gnome-wish-text">Alhamdulillah! Semoga berkah dan bahagia selalu. Aamiin! 🤲</div></div>
+        <div class="gnome-wish vis"><div class="gnome-wish-hdr"><div class="gnome-wish-ava" style="background:var(--gnome-mauve);color:#000">S</div><div class="gnome-wish-name">Sinta Dewi</div><div class="gnome-wish-status">✓ Hadir · 2</div></div><div class="gnome-wish-text">Semoga langkah kalian selalu diberkahi Allah SWT 💚</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ TERMINAL ══ -->
+  <div class="gtk-window term-window" id="winTerminal" style="width:min(560px,96vw);left:150px;top:60px;display:none" onmousedown="focusGtk('winTerminal')">
+    <div class="gtk-headerbar" onmousedown="startGtkDrag(event,'winTerminal')" ontouchstart="startGtkDragT(event,'winTerminal')">
+      <div class="gtk-wm-btns">
+        <div class="gtk-wm-btn close" onclick="closeGtk('winTerminal')"><span class="gtk-btn-icon">✕</span></div>
+        <div class="gtk-wm-btn min" onclick="minGtk('winTerminal')"><span class="gtk-btn-icon">−</span></div>
+        <div class="gtk-wm-btn max"><span class="gtk-btn-icon">□</span></div>
+      </div>
+      <div class="gtk-title" style="color:var(--term-white)">wedding@localhost: ~/invitation</div>
+    </div>
+    <div class="term-body" id="termBody" style="height:320px">
+      <div class="term-line"><span class="term-success">Welcome to Ubuntu 24.04 LTS (GNU/Linux 6.8.0-wedding)</span></div>
+      <div class="term-line" style="color:var(--gnome-subtext)">System information as of Sat May 2 2026</div>
+      <div class="term-line">&nbsp;</div>
+      <div class="term-line"><span class="term-prompt-user">anita</span><span class="term-prompt-at">@</span><span class="term-prompt-host">wedding</span><span class="term-prompt-at">:</span><span class="term-prompt-path">~/invitation</span><span class="term-prompt-dollar">$ </span><span class="term-cmd">cat rsvp.txt</span></div>
+      <div class="term-line term-output">Selamat datang di Undangan Pernikahan Anita &amp; Zarda!</div>
+      <div class="term-line term-output">Tanggal: Minggu, 24 Mei 2026</div>
+      <div class="term-line term-output">Lokasi: Graha Yadika, Ciledug, Tangerang</div>
+      <div class="term-line">&nbsp;</div>
+      <div class="term-line"><span class="term-prompt-user">anita</span><span class="term-prompt-at">@</span><span class="term-prompt-host">wedding</span><span class="term-prompt-at">:</span><span class="term-prompt-path">~/invitation</span><span class="term-prompt-dollar">$ </span><span class="term-cmd">./wedding.sh --open-all</span></div>
+      <div class="term-line term-success">[  OK  ] Opening all wedding programs...</div>
+      <div class="term-line term-success">[  OK  ] Loading couple.txt... done</div>
+      <div class="term-line term-success">[  OK  ] Mounting gallery.img... done</div>
+      <div class="term-line term-success">[  OK  ] Starting rsvp.service... done</div>
+      <div class="term-line">&nbsp;</div>
+    </div>
+    <div style="background:var(--term-bg);border-top:1px solid rgba(255,255,255,.06);padding:6px 14px;display:flex;align-items:center;gap:6px;flex-shrink:0">
+      <span class="term-prompt-user">anita</span><span class="term-prompt-at">@</span><span class="term-prompt-host">wedding</span><span class="term-prompt-at">:</span><span class="term-prompt-path">~/invitation</span><span class="term-prompt-dollar">$</span>
+      <input class="term-input" id="termInput" placeholder="Type a command..." onkeydown="handleTermInput(event)">
+    </div>
+    <div class="gtk-statusbar" style="background:var(--term-bg);border-top:1px solid rgba(255,255,255,.06)">
+      <span style="color:var(--term-green)">●</span><span style="color:var(--gnome-subtext)">bash • UTF-8 • 80×24</span>
+      <span style="margin-left:auto;color:var(--gnome-subtext)">anita@wedding</span>
+    </div>
+  </div>
+
+</div><!-- /desktop -->
+
+<!-- ═══ ACTIVITIES OVERVIEW ═══ -->
+<div id="activitiesOverview">
+  <input class="activities-search" placeholder="🔍 Type to search..." onkeydown="if(event.key==='Escape')closeActivities()">
+  <div class="activities-grid">
+    <div class="activities-app" onclick="openGtk('winFiles');closeActivities()"><div class="activities-app-icon">📁</div><div class="activities-app-name">Files</div></div>
+    <div class="activities-app" onclick="openGtk('winWedding');closeActivities()"><div class="activities-app-icon">💒</div><div class="activities-app-name">Wedding App</div></div>
+    <div class="activities-app" onclick="openGtk('winGallery');closeActivities()"><div class="activities-app-icon">🖼️</div><div class="activities-app-name">Photos</div></div>
+    <div class="activities-app" onclick="openGtk('winVideo');closeActivities()"><div class="activities-app-icon">🎬</div><div class="activities-app-name">Videos</div></div>
+    <div class="activities-app" onclick="openGtk('winCouple');closeActivities()"><div class="activities-app-icon">📝</div><div class="activities-app-name">Text Editor</div></div>
+    <div class="activities-app" onclick="openGtk('winEvent');closeActivities()"><div class="activities-app-icon">📅</div><div class="activities-app-name">Calendar</div></div>
+    <div class="activities-app" onclick="openGtk('winGift');closeActivities()"><div class="activities-app-icon">🎁</div><div class="activities-app-name">Gift</div></div>
+    <div class="activities-app" onclick="openGtk('winRsvp');closeActivities()"><div class="activities-app-icon">📋</div><div class="activities-app-name">RSVP Form</div></div>
+    <div class="activities-app" onclick="openGtk('winTerminal');closeActivities()"><div class="activities-app-icon">🖥️</div><div class="activities-app-name">Terminal</div></div>
+    <div class="activities-app" onclick="openAllGtk();closeActivities()"><div class="activities-app-icon">🪟</div><div class="activities-app-name">Open All</div></div>
+    <div class="activities-app" onclick="showGnomeDlg('dlgAbout','⚙️','Settings','System: Ubuntu 24.04 LTS\nKernel: 6.8.0-wedding\nWM: GNOME Shell 46\nTheme: Yaru Orange\n\nLicensed to: Anita & Zarda 💍');closeActivities()"><div class="activities-app-icon">⚙️</div><div class="activities-app-name">Settings</div></div>
+    <div class="activities-app" onclick="showGnomeShutdown();closeActivities()"><div class="activities-app-icon">🔴</div><div class="activities-app-name">Power Off</div></div>
+  </div>
+</div>
+
+<!-- ═══ DIALOGS ═══ -->
+<!-- Welcome -->
+<div class="gnome-dialog open" id="dlgGnomeWelcome" style="top:20%;left:50%;transform:translateX(-50%);width:380px">
+  <div class="gnome-dialog-header" onmousedown="startGtkDrag(event,'dlgGnomeWelcome')">
+    <span class="gnome-dialog-icon">🐧</span>
+    <span class="gnome-dialog-title">Welcome to Ubuntu Wedding Edition</span>
+  </div>
+  <div class="gnome-dialog-body">
+    <div style="font-size:24px;text-align:center;margin-bottom:12px">💒</div>
+    <p><b>Kepada Yth,</b><br>Ade Guntur Fitridullah & Partner</p><br>
+    <p>Anda diundang ke:<br><b style="color:var(--gnome-text)">The Wedding of Anita & Zarda</b><br>📅 Minggu, 24 Mei 2026<br>📍 Graha Yadika, Tangerang</p><br>
+    <p>Klik <b>Open Invitation</b> untuk melanjutkan.</p>
+  </div>
+  <div class="gnome-dialog-btns">
+    <button class="gnome-btn gnome-btn-secondary" onclick="closeGnomeDlg('dlgGnomeWelcome')">Cancel</button>
+    <button class="gnome-btn gnome-btn-primary" onclick="openGnomeWelcome()">💍 Open Invitation</button>
+  </div>
+</div>
+
+<!-- Generic dialog -->
+<div class="gnome-dialog" id="dlgAbout" style="top:25%;left:50%;transform:translateX(-50%);width:360px">
+  <div class="gnome-dialog-header" onmousedown="startGtkDrag(event,'dlgAbout')">
+    <span class="gnome-dialog-icon" id="gDlgIcon">ℹ️</span>
+    <span class="gnome-dialog-title" id="gDlgTitle">About</span>
+  </div>
+  <div class="gnome-dialog-body" id="gDlgBody" style="white-space:pre-wrap"></div>
+  <div class="gnome-dialog-btns">
+    <button class="gnome-btn gnome-btn-primary" onclick="closeGnomeDlg('dlgAbout')">OK</button>
+  </div>
+</div>
+
+<!-- Calendar dialog -->
+<div class="gnome-dialog" id="dlgCalendar" style="top:35px;right:12px;left:auto;transform:none;width:280px">
+  <div class="gnome-dialog-header">
+    <span class="gnome-dialog-icon" id="calDlgIcon">📅</span>
+    <span class="gnome-dialog-title" id="calDlgTitle">Calendar</span>
+  </div>
+  <div class="gnome-dialog-body" id="calDlgBody" style="white-space:pre-wrap"></div>
+  <div class="gnome-dialog-btns">
+    <button class="gnome-btn gnome-btn-primary" onclick="closeGnomeDlg('dlgCalendar')">Close</button>
+  </div>
+</div>
+
+<!-- RSVP Ok -->
+<div class="gnome-dialog" id="dlgGnomeRsvpOk" style="top:30%;left:50%;transform:translateX(-50%);width:320px">
+  <div class="gnome-dialog-header">
+    <span class="gnome-dialog-icon">✅</span>
+    <span class="gnome-dialog-title">RSVP Berhasil</span>
+  </div>
+  <div class="gnome-dialog-body" id="gnomeRsvpOkMsg">RSVP berhasil!</div>
+  <div class="gnome-dialog-btns">
+    <button class="gnome-btn gnome-btn-primary" onclick="closeGnomeDlg('dlgGnomeRsvpOk')">OK</button>
+  </div>
+</div>
+
+<!-- Shutdown -->
+<div class="gnome-dialog" id="dlgGnomeShutdown" style="top:30%;left:50%;transform:translateX(-50%);width:340px">
+  <div class="gnome-dialog-header">
+    <span class="gnome-dialog-icon">🔴</span>
+    <span class="gnome-dialog-title">Power Off</span>
+  </div>
+  <div class="gnome-dialog-body">The system will power off in 60 seconds unless you decide otherwise.<br><br>Your wedding invitation session will end.</div>
+  <div class="gnome-dialog-btns">
+    <button class="gnome-btn gnome-btn-secondary" onclick="closeGnomeDlg('dlgGnomeShutdown')">Cancel</button>
+    <button class="gnome-btn gnome-btn-secondary" onclick="closeGnomeDlg('dlgGnomeShutdown')">🔄 Restart</button>
+    <button class="gnome-btn gnome-btn-destructive" onclick="closeGnomeDlg('dlgGnomeShutdown')">🔴 Power Off</button>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lb-gnome" id="lbGnome">
+  <div class="lb-gnome-win">
+    <div class="gnome-dialog-header" style="border-radius:var(--r-xl) var(--r-xl) 0 0">
+      <span class="gnome-dialog-icon">🖼️</span>
+      <span class="gnome-dialog-title" id="lbGnomeTitle">Photo Viewer</span>
+      <button class="gnome-btn gnome-btn-secondary" onclick="closeGnomeLb()" style="padding:4px 10px;font-size:12px;margin-left:auto">✕</button>
+    </div>
+    <div style="background:#000;padding:4px;text-align:center">
+      <img class="lb-gnome-img" id="lbGnomeImg" src="" alt="" style="max-width:80vw;max-height:68vh;border-radius:4px">
+    </div>
+    <div class="lb-gnome-controls">
+      <button class="gnome-btn gnome-btn-secondary" onclick="gnomeLbMv(-1)">◀ Prev</button>
+      <span id="lbGnomeCount" style="font-size:12px;color:var(--gnome-subtext);padding:0 12px"></span>
+      <button class="gnome-btn gnome-btn-secondary" onclick="gnomeLbMv(1)">Next ▶</button>
+    </div>
+  </div>
+</div>
+
+<!-- VM -->
+<div class="vm-gnome" id="vmGnome">
+  <div class="lb-gnome-win">
+    <div class="gnome-dialog-header" style="border-radius:var(--r-xl) var(--r-xl) 0 0">
+      <span class="gnome-dialog-icon">🎬</span>
+      <span class="gnome-dialog-title">Videos</span>
+      <button class="gnome-btn gnome-btn-secondary" onclick="closeGnomeVm()" style="padding:4px 10px;font-size:12px;margin-left:auto">✕</button>
+    </div>
+    <div style="background:#000;padding:4px">
+      <video id="gnomeVmVid" controls style="max-width:88vw;max-height:76vh;display:block;border-radius:var(--r)">
+        <source id="gnomeVmSrc" src="" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</div>
+
+<!-- Notification -->
+<div class="gnome-notif" id="gnomeNotif">
+  <div class="notif-header">
+    <span class="notif-icon" id="nIcon">💍</span>
+    <span class="notif-app" id="nApp">Wedding</span>
+    <span class="notif-time" id="nTime">now</span>
+  </div>
+  <div class="notif-title" id="nTitle">Notification</div>
+  <div class="notif-body" id="nBody">Message</div>
+</div>
+
+<script>
+/* ═══ DATA ═══ */
+const G_GALLERY=[
+  "https://images.unsplash.com/photo-1519741497674-611481863552?w=700&h=500&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=700&h=500&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=700&h=500&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=700&h=500&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=700&h=500&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=700&h=500&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=700&h=500&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=700&h=500&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=700&h=500&fit=crop&q=80",
+];
+const G_VIDEOS=[
+  {src:"https://www.w3schools.com/html/mov_bbb.mp4",label:"Awal Pertemuan 💑"},
+  {src:"https://www.w3schools.com/html/movie.mp4",label:"Lamaran 💍"},
+  {src:"https://www.w3schools.com/html/mov_bbb.mp4",label:"Prewedding ✨"},
+  {src:"https://www.w3schools.com/html/movie.mp4",label:"Wedding Day 🎊"},
+];
+
+/* ═══ STATE ═══ */
+let gDragId=null,gDragOX=0,gDragOY=0;
+let gOpenWins=[],gZCtr=10;
+let gGalIdx=0,gLbIdx=0;
+let gRsvpSt='';
+
+/* ═══ TERMINAL BOOT ═══ */
+const BOOT_SCRIPT=[
+  {t:0,   txt:'',cls:''},
+  {t:100, txt:'[    0.000000] Linux version 6.8.0-wedding (wedding@localhost) (gcc 13.2.0) #1 SMP',cls:'boot-dim'},
+  {t:150, txt:'[    0.000000] BIOS-provided physical RAM map:',cls:'boot-dim'},
+  {t:200, txt:'[    0.248130] Wedding kernel initializing...',cls:'boot-info'},
+  {t:300, txt:'',cls:''},
+  {t:350, txt:'         ████████╗ ██╗   ██╗██████╗ ██╗   ██╗███╗   ██╗████████╗██╗   ██╗',cls:'boot-info'},
+  {t:400, txt:'            ╚══██╔══╝ ██║   ██║██╔══██╗██║   ██║████╗  ██║╚══██╔══╝██║   ██║',cls:'boot-info'},
+  {t:450, txt:'               ██║    ██║   ██║██████╔╝██║   ██║██╔██╗ ██║   ██║   ██║   ██║',cls:'boot-info'},
+  {t:500, txt:'               ██║    ██║   ██║██╔══██╗██║   ██║██║╚██╗██║   ██║   ██║   ██║',cls:'boot-info'},
+  {t:550, txt:'               ██║    ╚██████╔╝██████╔╝╚██████╔╝██║ ╚████║   ██║   ╚██████╔╝',cls:'boot-info'},
+  {t:600, txt:'               ╚═╝     ╚═════╝ ╚═════╝  ╚═════╝ ╚═╝  ╚═══╝   ╚═╝    ╚═════╝',cls:'boot-info'},
+  {t:650, txt:'',cls:''},
+  {t:700, txt:'            🐧  Ubuntu 24.04 LTS — WEDDING EDITION 💍',cls:'boot-ok'},
+  {t:750, txt:'',cls:''},
+  {t:800, txt:'[  OK  ] Started LOVE.service - Wedding System Services',cls:'boot-ok'},
+  {t:900, txt:'[  OK  ] Reached target Wedding Prerequisites',cls:'boot-ok'},
+  {t:1000,txt:'[  OK  ] Mounted /home/anita/invitation',cls:'boot-ok'},
+  {t:1100,txt:'[  OK  ] Started gallery.service - Photo Album Daemon',cls:'boot-ok'},
+  {t:1200,txt:'[  OK  ] Started rsvp.service - Guest Confirmation Service',cls:'boot-ok'},
+  {t:1300,txt:'[  OK  ] Started gift.service - Digital Envelope Service',cls:'boot-ok'},
+  {t:1400,txt:'[ WARN ] Detected elevated happiness levels — this is expected',cls:'boot-warn'},
+  {t:1500,txt:'[  OK  ] Started gdm.service - GNOME Display Manager',cls:'boot-ok'},
+  {t:1600,txt:'[  OK  ] Reached target Wedding Day',cls:'boot-ok'},
+  {t:1700,txt:'',cls:''},
+  {t:1800,txt:'Ubuntu 24.04 LTS wedding tty1',cls:'boot-dim'},
+  {t:1900,txt:'',cls:''},
+  {t:2000,txt:'wedding login: anita (automatic login)',cls:'boot-dim'},
+  {t:2100,txt:'',cls:''},
+  {t:2200,txt:'Last login: Sun May 24 08:00:00 2026 on tty1',cls:'boot-dim'},
+  {t:2300,txt:'wedding@localhost:~$ startx',cls:'boot-ok'},
+  {t:2400,txt:'',cls:''},
+  {t:2500,txt:'Starting GNOME Shell... 💍',cls:'boot-success'},
+];
+
+function runLinuxBoot(){
+  const wrap=document.getElementById('bootLines');
+  BOOT_SCRIPT.forEach((line,i)=>{
+    setTimeout(()=>{
+      const div=document.createElement('div');
+      div.className='boot-line '+(line.cls||'');
+      div.innerHTML=line.txt||'&nbsp;';
+      div.style.animationDelay='0s';
+      wrap.appendChild(div);
+      wrap.scrollTop=wrap.scrollHeight;
+      if(i===BOOT_SCRIPT.length-1){
+        setTimeout(finishLinuxBoot,600);
+      }
+    },line.t);
+  });
+}
+
+function finishLinuxBoot(){
+  document.getElementById('termBoot').classList.add('hide');
+  document.getElementById('gnomePanel').style.display='flex';
+  document.getElementById('gnomeDock').style.display='flex';
+  document.getElementById('desktop').style.display='block';
+  updateGnomeClock(); setInterval(updateGnomeClock,1000);
+  startGnomeCountdown(); buildGGallery(); buildGVideos(); initGTimelines();
+  setTimeout(()=>showGnomeNotif('🐧','Ubuntu 24.04 LTS','System ready! Klik ikon di Dock untuk membuka program. 💍'),800);
+}
+
+runLinuxBoot();
+
+/* ═══ CLOCK ═══ */
+function updateGnomeClock(){
+  const d=new Date();
+  const h=String(d.getHours()).padStart(2,'0'),m=String(d.getMinutes()).padStart(2,'0');
+  const days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('panelTime').textContent=`${h}:${m}`;
+  document.getElementById('panelDate').textContent=`${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]}`;
+}
+
+/* ═══ COUNTDOWN ═══ */
+function startGnomeCountdown(){
+  const target=new Date('2026-05-24T08:00:00');
+  function tick(){
+    const diff=target-new Date(); if(diff<=0) return;
+    const D=Math.floor(diff/86400000),H=Math.floor((diff%86400000)/3600000);
+    const M=Math.floor((diff%3600000)/60000),S=Math.floor((diff%60000)/1000);
+    ['cdD','cdH','cdM','cdS'].forEach((id,i)=>{
+      const vals=[D,H,M,S]; const el=document.getElementById(id);
+      if(el) el.textContent=String(vals[i]).padStart(2,'0');
+    });
+    document.querySelectorAll('[data-gcd]').forEach(el=>{
+      const u=el.getAttribute('data-gcd'); const map={D,H,M,S};
+      el.textContent=String(map[u]).padStart(2,'0');
+    });
+    const sb=document.getElementById('gMainStatus');
+    if(sb) sb.textContent=`${D}d ${H}h ${M}m until wedding`;
+  }
+  tick(); setInterval(tick,1000);
+}
+
+/* ═══ WINDOW MANAGEMENT ═══ */
+function openGtk(id){
+  const w=document.getElementById(id); if(!w) return;
+  w.classList.remove('minimized','winhidden');
+  w.style.display='flex';
+  focusGtk(id);
+  if(!gOpenWins.includes(id)) gOpenWins.push(id);
+  document.getElementById('panelAppName').textContent=
+    w.querySelector('.gtk-title')?.textContent?.slice(0,20)||'Files';
+}
+function closeGtk(id){
+  const w=document.getElementById(id); if(w){ w.style.display='none'; w.classList.add('winhidden'); }
+  gOpenWins=gOpenWins.filter(x=>x!==id);
+}
+function minGtk(id){
+  const w=document.getElementById(id); if(w){ w.style.display='none'; w.classList.add('minimized'); }
+}
+function focusGtk(id){
+  document.querySelectorAll('.gtk-window,.gnome-dialog').forEach(w=>w.classList.remove('focused'));
+  const w=document.getElementById(id); if(w){ w.classList.add('focused'); gZCtr++; w.style.zIndex=gZCtr; }
+  document.querySelectorAll('.dock-icon').forEach(d=>d.classList.remove('active'));
+}
+function openAllGtk(){
+  const ids=['winFiles','winWedding','winCouple','winEvent','winGallery','winVideo','winGift','winRsvp'];
+  const pos=[[70,10],[460,20],[140,240],[580,50],[210,290],[640,200],[100,180],[380,130]];
+  ids.forEach((id,i)=>{
+    const w=document.getElementById(id);
+    if(w){ w.style.left=pos[i][0]+'px'; w.style.top=pos[i][1]+'px'; openGtk(id); }
+  });
+}
+
+/* ═══ DRAG ═══ */
+function startGtkDrag(e,id){
+  gDragId=id; focusGtk(id);
+  const w=document.getElementById(id); if(!w) return;
+  const r=w.getBoundingClientRect();
+  gDragOX=e.clientX-r.left; gDragOY=e.clientY-r.top;
+  e.preventDefault();
+}
+function startGtkDragT(e,id){
+  const t=e.touches[0]; gDragId=id; focusGtk(id);
+  const w=document.getElementById(id); if(!w) return;
+  const r=w.getBoundingClientRect();
+  gDragOX=t.clientX-r.left; gDragOY=t.clientY-r.top;
+}
+document.addEventListener('mousemove',e=>{
+  if(!gDragId) return;
+  const w=document.getElementById(gDragId); if(!w) return;
+  const x=Math.max(0,Math.min(window.innerWidth-60,e.clientX-gDragOX));
+  const y=Math.max(32,Math.min(window.innerHeight-40,e.clientY-gDragOY));
+  w.style.left=x+'px'; w.style.top=y+'px';
+});
+document.addEventListener('mouseup',()=>gDragId=null);
+document.addEventListener('touchmove',e=>{
+  if(!gDragId) return;
+  const t=e.touches[0]; const w=document.getElementById(gDragId); if(!w) return;
+  const x=Math.max(0,Math.min(window.innerWidth-60,t.clientX-gDragOX));
+  const y=Math.max(32,Math.min(window.innerHeight-40,t.clientY-gDragOY));
+  w.style.left=x+'px'; w.style.top=y+'px'; e.preventDefault();
+},{passive:false});
+document.addEventListener('touchend',()=>gDragId=null);
+
+/* ═══ ACTIVITIES ═══ */
+function toggleActivities(){
+  const ov=document.getElementById('activitiesOverview');
+  const btn=document.getElementById('activitiesBtn');
+  ov.classList.toggle('open'); btn.classList.toggle('active');
+  if(ov.classList.contains('open')) setTimeout(()=>ov.querySelector('.activities-search')?.focus(),100);
+}
+function closeActivities(){ document.getElementById('activitiesOverview').classList.remove('open'); document.getElementById('activitiesBtn').classList.remove('active'); }
+
+/* ═══ TABS ═══ */
+const G_TABS=['home','couple','event','story'];
+function switchGtab(tab){
+  G_TABS.forEach(t=>{
+    const el=document.getElementById('gtab-'+t);
+    if(el){ el.style.borderBottomColor=t===tab?'var(--ub-orange)':'transparent'; el.style.color=t===tab?'var(--ub-orange)':'var(--gnome-subtext)'; el.style.fontWeight=t===tab?'700':'400'; }
+    const tc=document.getElementById('gtc-'+t); if(tc) tc.style.display=t===tab?'block':'none';
+  });
+  if(tab==='story') initGTimelines();
+}
+
+/* ═══ GALLERY ═══ */
+function buildGGallery(){
+  const thumbs=document.getElementById('gGalThumbs'); if(!thumbs) return;
+  G_GALLERY.forEach((src,i)=>{
+    const img=document.createElement('img'); img.className='gnome-gallery-thumb'+(i===0?' active':'');
+    img.src=src.replace('w=700&h=500','w=80&h=60');
+    img.onclick=()=>{ gGalIdx=i; updGGalBig(); document.querySelectorAll('.gnome-gallery-thumb').forEach((im,ii)=>im.classList.toggle('active',ii===i)); };
+    thumbs.appendChild(img);
+  });
+  updGGalBig();
+}
+function updGGalBig(){
+  document.getElementById('gGalBig').src=G_GALLERY[gGalIdx];
+  document.getElementById('gGalStatus').textContent=`Photo ${gGalIdx+1} of ${G_GALLERY.length}`;
+}
+function prevGGal(){ gGalIdx=(gGalIdx-1+G_GALLERY.length)%G_GALLERY.length; updGGalBig(); document.querySelectorAll('.gnome-gallery-thumb').forEach((im,ii)=>im.classList.toggle('active',ii===gGalIdx)); }
+function nextGGal(){ gGalIdx=(gGalIdx+1)%G_GALLERY.length; updGGalBig(); document.querySelectorAll('.gnome-gallery-thumb').forEach((im,ii)=>im.classList.toggle('active',ii===gGalIdx)); }
+
+/* ═══ VIDEOS ═══ */
+function buildGVideos(){
+  const grid=document.getElementById('gVidGrid'); if(!grid) return;
+  G_VIDEOS.forEach(v=>{
+    const div=document.createElement('div'); div.className='gnome-video-item';
+    div.innerHTML=`<video muted autoplay loop playsinline><source src="${v.src}" type="video/mp4"></video><div class="gnome-video-overlay"><span class="gnome-video-label">${v.label}</span></div><div class="gnome-video-play">▶</div>`;
+    div.onclick=()=>openGnomeVm(v.src);
+    grid.appendChild(div);
+  });
+}
+
+/* ═══ LIGHTBOX ═══ */
+function openGnomeLb(i){ gLbIdx=i; updGnomeLb(); document.getElementById('lbGnome').classList.add('open'); }
+function closeGnomeLb(){ document.getElementById('lbGnome').classList.remove('open'); }
+function gnomeLbMv(d){ gLbIdx=(gLbIdx+d+G_GALLERY.length)%G_GALLERY.length; updGnomeLb(); }
+function updGnomeLb(){ document.getElementById('lbGnomeImg').src=G_GALLERY[gLbIdx]; document.getElementById('lbGnomeCount').textContent=`${gLbIdx+1} / ${G_GALLERY.length}`; document.getElementById('lbGnomeTitle').textContent=`Photo ${gLbIdx+1} — Wedding Gallery`; }
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('lbGnome').classList.contains('open')){ if(e.key==='Escape')closeGnomeLb(); if(e.key==='ArrowLeft')gnomeLbMv(-1); if(e.key==='ArrowRight')gnomeLbMv(1); }
+  if(document.getElementById('vmGnome').classList.contains('open')&&e.key==='Escape')closeGnomeVm();
+  if(e.key==='Escape'&&document.getElementById('activitiesOverview').classList.contains('open'))closeActivities();
+});
+
+/* ═══ VM ═══ */
+function openGnomeVm(src){ document.getElementById('gnomeVmSrc').src=src; document.getElementById('gnomeVmVid').load(); document.getElementById('gnomeVmVid').play().catch(()=>{}); document.getElementById('vmGnome').classList.add('open'); }
+function closeGnomeVm(){ document.getElementById('gnomeVmVid').pause(); document.getElementById('vmGnome').classList.remove('open'); }
+
+/* ═══ DIALOGS ═══ */
+function closeGnomeDlg(id){ document.getElementById(id).classList.remove('open'); }
+function showGnomeDlg(dlgId,icon,title,body){ document.getElementById('gDlgIcon').textContent=icon; document.getElementById('gDlgTitle').textContent=title; document.getElementById('gDlgBody').textContent=body; document.getElementById(dlgId).classList.add('open'); }
+function showGnomeShutdown(){ document.getElementById('dlgGnomeShutdown').classList.add('open'); }
+function openGnomeWelcome(){ closeGnomeDlg('dlgGnomeWelcome'); openGtk('winFiles'); openGtk('winWedding'); }
+
+/* ═══ NOTIFICATION ═══ */
+let notifTimer;
+function showGnomeNotif(icon,app,body){
+  const n=document.getElementById('gnomeNotif');
+  document.getElementById('nIcon').textContent=icon;
+  document.getElementById('nApp').textContent=app;
+  document.getElementById('nBody').textContent=body;
+  document.getElementById('nTitle').textContent=body.split('\n')[0];
+  document.getElementById('nBody').textContent=body.split('\n').slice(1).join('\n')||body;
+  const d=new Date(); document.getElementById('nTime').textContent=`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+  n.classList.add('show'); clearTimeout(notifTimer);
+  notifTimer=setTimeout(()=>n.classList.remove('show'),3500);
+}
+
+/* ═══ RSVP ═══ */
+function selGnomeRsvp(s){ gRsvpSt=s; document.getElementById('grad-hadir').classList.toggle('checked',s==='hadir'); document.getElementById('grad-tidak').classList.toggle('checked',s==='tidak'); }
+function submitGnomeRsvp(){
+  const name=document.getElementById('grName')?.value.trim();
+  const msg=document.getElementById('grMsg')?.value.trim();
+  if(!name){ showGnomeNotif('⚠️','RSVP','Error: Nama tidak boleh kosong!'); return; }
+  if(!gRsvpSt){ showGnomeNotif('⚠️','RSVP','Error: Pilih status kehadiran!'); return; }
+  const gc=parseInt(document.getElementById('gguestSel')?.value||1);
+  const st=gRsvpSt==='hadir'?`✓ Hadir · ${gc}`:'✗ Tidak Hadir';
+  const colors=['var(--ub-orange)','var(--gnome-accent)','var(--gnome-green)','var(--gnome-mauve)','var(--gnome-yellow)'];
+  const col=colors[Math.floor(Math.random()*colors.length)];
+  const init=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const item=document.createElement('div'); item.className='gnome-wish vis';
+  item.innerHTML=`<div class="gnome-wish-hdr"><div class="gnome-wish-ava" style="background:${col};color:#000">${init}</div><div class="gnome-wish-name">${name}</div><div class="gnome-wish-status">${st}</div></div><div class="gnome-wish-text">${msg||'Selamat dan bahagia selalu! 💍'}</div>`;
+  document.getElementById('gWishesList')?.prepend(item);
+  const r=document.getElementById('gstR'); if(r) r.textContent=parseInt(r.textContent)+1;
+  if(gRsvpSt==='hadir'){ const h=document.getElementById('gstH'); if(h) h.textContent=parseInt(h.textContent)+1; const t=document.getElementById('gstT'); if(t) t.textContent=parseInt(t.textContent)+gc; }
+  if(document.getElementById('grName')) document.getElementById('grName').value='';
+  if(document.getElementById('grMsg')) document.getElementById('grMsg').value='';
+  gRsvpSt='';
+  document.getElementById('grad-hadir')?.classList.remove('checked');
+  document.getElementById('grad-tidak')?.classList.remove('checked');
+  document.getElementById('gnomeRsvpOkMsg').innerHTML=`<b>${name}</b> — ${st}<br><br>Terima kasih! 🎉`;
+  document.getElementById('dlgGnomeRsvpOk').classList.add('open');
+  showGnomeNotif('✅','RSVP Service',`${name} telah konfirmasi kehadiran!`);
+}
+
+/* ═══ GIFT ═══ */
+function copyGnomeGift(text,btn){
+  navigator.clipboard.writeText(text).then(()=>{
+    if(btn){ btn.classList.add('copied'); btn.textContent='✅ Copied!'; setTimeout(()=>{ btn.classList.remove('copied'); btn.textContent='📋 Salin'; },2500); }
+    showGnomeNotif('📋','Clipboard','Nomor rekening berhasil disalin ke clipboard!');
+  }).catch(()=>showGnomeNotif('⚠️','Clipboard','Salin manual: '+text));
+}
+
+/* ═══ TIMELINE ═══ */
+function initGTimelines(){
+  const obs=new IntersectionObserver(entries=>entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('vis'); }),{threshold:.1});
+  document.querySelectorAll('.gnome-tl-item').forEach(el=>obs.observe(el));
+  document.querySelectorAll('.gnome-tl-item').forEach(el=>{ const r=el.getBoundingClientRect(); if(r.top<window.innerHeight) el.classList.add('vis'); });
+}
+
+/* ═══ TERMINAL INPUT ═══ */
+const TERM_CMDS={
+  'ls': '<span style="color:var(--gnome-accent)">wedding.app  couple.txt  event.ics  photos/  videos/  gift.dat  rsvp.form</span>',
+  'pwd': '<span style="color:var(--gnome-subtext)">/home/anita/invitation</span>',
+  'whoami': '<span style="color:var(--term-green)">anita</span>',
+  'uname -a': '<span style="color:var(--gnome-subtext)">Linux wedding 6.8.0-wedding #1 SMP Ubuntu 24.04 LTS x86_64 GNU/Linux</span>',
+  'cat couple.txt': '<span style="color:var(--ub-orange)">Anita Pangestuti & Zardarian Ahadika N</span>\n<span style="color:var(--gnome-subtext)">Wedding: 24 Mei 2026 | Graha Yadika, Tangerang</span>',
+  'cat rsvp.txt': '<span style="color:var(--term-green)">Status: OPEN | Respons: 7 | Hadir: 7 | Total Tamu: 13</span>',
+  'date': ()=>`<span style="color:var(--gnome-subtext)">${new Date().toString()}</span>`,
+  'uptime': '<span style="color:var(--gnome-subtext)"> 08:00:00 up 24 days, love always running</span>',
+  'open wedding.app': ()=>{ openGtk('winWedding'); return '<span style="color:var(--term-green)">[  OK  ] Opening Wedding.app...</span>'; },
+  'open gallery': ()=>{ openGtk('winGallery'); return '<span style="color:var(--term-green)">[  OK  ] Opening Photos...</span>'; },
+  'open rsvp': ()=>{ openGtk('winRsvp'); return '<span style="color:var(--term-green)">[  OK  ] Opening RSVP Form...</span>'; },
+  'open gift': ()=>{ openGtk('winGift'); return '<span style="color:var(--term-green)">[  OK  ] Opening Gift.dat...</span>'; },
+  './wedding.sh --open-all': ()=>{ openAllGtk(); return '<span style="color:var(--term-green)">[  OK  ] All wedding programs opened!</span>'; },
+  'help': '<span style="color:var(--term-yellow)">Available commands:</span>\n<span style="color:var(--gnome-subtext)">ls, pwd, whoami, uname -a, date, uptime\ncat couple.txt, cat rsvp.txt\nopen wedding.app, open gallery, open rsvp, open gift\n./wedding.sh --open-all</span>',
+  'clear': 'CLEAR',
+};
+function handleTermInput(e){
+  if(e.key!=='Enter') return;
+  const inp=document.getElementById('termInput');
+  const cmd=inp.value.trim(); inp.value='';
+  const body=document.getElementById('termBody');
+  // echo command
+  const cmdLine=document.createElement('div'); cmdLine.className='term-line';
+  cmdLine.innerHTML=`<span class="term-prompt-user">anita</span><span class="term-prompt-at">@</span><span class="term-prompt-host">wedding</span><span class="term-prompt-at">:</span><span class="term-prompt-path">~/invitation</span><span class="term-prompt-dollar">$ </span><span class="term-cmd">${cmd}</span>`;
+  body.appendChild(cmdLine);
+  // output
+  if(cmd){
+    let out=TERM_CMDS[cmd.toLowerCase()];
+    if(typeof out==='function') out=out();
+    if(out==='CLEAR'){ body.innerHTML=''; return; }
+    if(!out) out=`<span class="term-error">bash: ${cmd}: command not found</span>\n<span style="color:var(--gnome-subtext)">Type 'help' for available commands.</span>`;
+    out.split('\n').forEach(line=>{
+      const div=document.createElement('div'); div.className='term-line';
+      div.innerHTML=line||'&nbsp;'; body.appendChild(div);
+    });
+  }
+  body.scrollTop=body.scrollHeight;
+}
+
+/* ═══ USER MENU ═══ */
+function toggleUserMenu(){
+  showGnomeDlg('dlgAbout','👤','User Settings',
+    'Name: Ade Guntur Fitridullah\nEmail: ade@wedding.local\nGroup: guests\n\nSystem: Ubuntu 24.04 LTS\nKernel: 6.8.0-wedding\nDE: GNOME 46\nTheme: Yaru Orange Dark\n\n$ sudo apt install happiness\n[  OK  ] Happiness installed! 💍');
+}
+</script>
+</body>
+</html>

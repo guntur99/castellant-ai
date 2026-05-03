@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wedding Invitation — Google Calendar</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Display:wght@400;500;700&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  /* Google / Material You palette */
+  --g-blue:    #1a73e8;
+  --g-blue2:   #4285f4;
+  --g-blue3:   #d2e3fc;
+  --g-red:     #ea4335;
+  --g-green:   #34a853;
+  --g-yellow:  #fbbc04;
+  --g-bg:      #f1f3f4;
+  --g-surface: #ffffff;
+  --g-dark:    #202124;
+  --g-mid:     #5f6368;
+  --g-light:   #dadce0;
+  --g-chip:    #e8f0fe;
+  --g-chip2:   #fce8e6;
+  --g-chip3:   #e6f4ea;
+  --g-chip4:   #fef7e0;
+  /* Calendar event colors */
+  --ev-blue:   #4285f4;
+  --ev-red:    #d50000;
+  --ev-green:  #0f9d58;
+  --ev-teal:   #009688;
+  --ev-grape:  #7986cb;
+  --ev-banana: #f6bf26;
+  --ev-sage:   #33b679;
+  --ev-peacock:#039be5;
+  --ev-graphite:#616161;
+  --ev-flamingo:#e67c73;
+
+  --fG: 'Google Sans', 'Roboto', sans-serif;
+  --fD: 'Google Sans Display', 'Google Sans', sans-serif;
+  --fR: 'Roboto', sans-serif;
+  --fM: 'Roboto Mono', monospace;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.1), 0 1px 3px rgba(0,0,0,.06);
+  --shadow-md: 0 1px 3px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.08);
+  --shadow-lg: 0 2px 6px rgba(0,0,0,.15), 0 8px 24px rgba(0,0,0,.1);
+  --shadow-xl: 0 4px 12px rgba(0,0,0,.15), 0 16px 48px rgba(0,0,0,.12);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--g-bg);
+  color:var(--g-dark);
+  font-family:var(--fR);
+  overflow-x:hidden;
+  padding-bottom:72px;
+}
+
+/* ══════════════════════════
+   OPENING — Google Calendar invite
+══════════════════════════ */
+#opening{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--g-bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:20px;
+  transition:opacity .5s ease, transform .5s ease;
+}
+#opening.hide{opacity:0;transform:scale(1.02);pointer-events:none;visibility:hidden}
+
+/* Google bar at top of opening */
+.op-gbar{
+  position:absolute;top:0;left:0;right:0;
+  height:4px;
+  background:linear-gradient(90deg,var(--g-blue) 0%,var(--g-red) 25%,var(--g-yellow) 50%,var(--g-green) 75%,var(--g-blue) 100%);
+}
+
+.op-card{
+  background:var(--g-surface);
+  border-radius:var(--radius-xl);
+  box-shadow:var(--shadow-xl);
+  width:min(480px,100%);
+  overflow:hidden;
+}
+
+/* Calendar header strip */
+.op-cal-header{
+  background:var(--g-blue);
+  padding:20px 24px 16px;
+  position:relative;overflow:hidden;
+}
+.op-cal-header::before{
+  content:'';position:absolute;top:-30px;right:-30px;
+  width:120px;height:120px;border-radius:50%;
+  background:rgba(255,255,255,.06);
+}
+.op-cal-header::after{
+  content:'';position:absolute;bottom:-20px;left:-20px;
+  width:80px;height:80px;border-radius:50%;
+  background:rgba(255,255,255,.04);
+}
+.op-cal-month{font-family:var(--fG);font-size:13px;font-weight:500;color:rgba(255,255,255,.8);letter-spacing:.04em;margin-bottom:4px;text-transform:uppercase}
+.op-cal-date{font-family:var(--fD);font-size:42px;font-weight:400;color:var(--g-surface);line-height:1;margin-bottom:6px}
+.op-cal-day{font-family:var(--fG);font-size:14px;font-weight:400;color:rgba(255,255,255,.8)}
+/* Google products icons row */
+.op-g-icons{
+  display:flex;align-items:center;gap:8px;margin-top:12px;
+  position:relative;z-index:1;
+}
+.op-g-icon{width:20px;height:20px;border-radius:4px;flex-shrink:0}
+
+/* Event invite body */
+.op-body{padding:24px}
+.op-event-title{font-family:var(--fD);font-size:22px;font-weight:500;color:var(--g-dark);margin-bottom:16px;line-height:1.3}
+/* Colored dot + label */
+.op-color-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--g-chip);border-radius:var(--radius-full);
+  padding:4px 10px;margin-bottom:16px;
+}
+.op-dot{width:10px;height:10px;border-radius:50%;background:var(--g-blue);flex-shrink:0}
+.op-chip-label{font-family:var(--fG);font-size:12px;font-weight:500;color:var(--g-blue)}
+
+/* Guest / organizer rows */
+.op-meta-row{display:flex;align-items:flex-start;gap:12px;margin-bottom:14px}
+.op-meta-icon{width:20px;height:20px;flex-shrink:0;margin-top:1px;fill:var(--g-mid);opacity:.7}
+.op-meta-label{font-family:var(--fR);font-size:13px;font-weight:400;color:var(--g-mid);margin-bottom:1px}
+.op-meta-value{font-family:var(--fR);font-size:14px;font-weight:500;color:var(--g-dark)}
+
+/* Dear name chip */
+.op-guest-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--g-bg);border:1px solid var(--g-light);
+  border-radius:var(--radius-full);padding:6px 14px 6px 8px;
+}
+.op-avatar{
+  width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,#4285f4,#34a853);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fG);font-size:12px;font-weight:700;color:white;
+  flex-shrink:0;
+}
+.op-guest-name{font-family:var(--fG);font-size:13px;font-weight:500;color:var(--g-dark)}
+
+/* RSVP buttons */
+.op-rsvp-label{font-family:var(--fR);font-size:12px;font-weight:500;color:var(--g-mid);letter-spacing:.04em;text-transform:uppercase;margin:18px 0 10px}
+.op-rsvp-row{display:flex;gap:8px;margin-bottom:20px}
+.op-rsvp-btn{
+  flex:1;border:1px solid var(--g-light);border-radius:var(--radius-full);
+  padding:10px 0;font-family:var(--fG);font-size:13px;font-weight:500;
+  cursor:pointer;transition:all .15s;background:var(--g-surface);color:var(--g-mid);
+  display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.op-rsvp-btn:hover{background:var(--g-bg);border-color:var(--g-mid)}
+.op-rsvp-btn.yes{border-color:var(--g-blue);color:var(--g-blue)}
+.op-rsvp-btn.yes:hover{background:var(--g-chip)}
+
+.op-open-btn{
+  width:100%;background:var(--g-blue);color:white;border:none;
+  border-radius:var(--radius-full);padding:14px;
+  font-family:var(--fG);font-size:14px;font-weight:500;letter-spacing:.02em;
+  cursor:pointer;transition:background .15s,box-shadow .15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.op-open-btn:hover{background:#1557b0;box-shadow:0 2px 8px rgba(26,115,232,.4)}
+.op-open-btn svg{width:18px;height:18px;fill:white}
+
+/* ══════════════════════════
+   MAIN
+══════════════════════════ */
+#main{opacity:0;transition:opacity .5s ease .1s}
+#main.show{opacity:1}
+
+/* ══════════════════════════
+   GOOGLE TOPBAR
+══════════════════════════ */
+.g-topbar{
+  position:sticky;top:0;z-index:150;
+  background:var(--g-surface);
+  border-bottom:1px solid var(--g-light);
+  box-shadow:var(--shadow-sm);
+  padding:0 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:56px;
+}
+/* Scroll padding so sticky topbar doesn't hide anchor targets */
+html{scroll-padding-top:56px}
+.gtb-left{display:flex;align-items:center;gap:10px}
+.gtb-menu{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s;border:none;background:transparent}
+.gtb-menu:hover{background:var(--g-bg)}
+.gtb-menu svg{width:20px;height:20px;fill:var(--g-mid)}
+.gtb-logo{display:flex;align-items:center;gap:2px}
+.gtb-logo-text{font-family:var(--fG);font-size:22px;font-weight:400;color:var(--g-dark);letter-spacing:-.5px}
+.gtb-logo-text span{font-weight:700}
+.gtb-product{font-family:var(--fR);font-size:20px;font-weight:300;color:var(--g-mid);margin-left:2px}
+.gtb-right{display:flex;align-items:center;gap:6px}
+.gtb-icon-btn{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:background .15s;border:none;background:transparent}
+.gtb-icon-btn:hover{background:var(--g-bg)}
+.gtb-icon-btn svg{width:20px;height:20px;fill:var(--g-mid)}
+/* Google account avatar */
+.gtb-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--g-blue),var(--g-green));display:flex;align-items:center;justify-content:center;font-family:var(--fG);font-size:13px;font-weight:700;color:white;cursor:pointer;box-shadow:var(--shadow-sm)}
+
+/* ══════════════════════════
+   CALENDAR MINI + HERO EVENT
+══════════════════════════ */
+#home{padding:0}
+
+/* Month view mini calendar */
+.cal-month-view{
+  background:var(--g-surface);
+  border-bottom:1px solid var(--g-light);
+  padding:16px;
+}
+.cmv-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.cmv-month{font-family:var(--fG);font-size:16px;font-weight:500;color:var(--g-dark)}
+.cmv-nav{display:flex;gap:4px}
+.cmv-nav-btn{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;background:transparent;transition:background .15s}
+.cmv-nav-btn:hover{background:var(--g-bg)}
+.cmv-nav-btn svg{width:18px;height:18px;fill:var(--g-mid)}
+/* Day grid */
+.cmv-days-head{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px}
+.cmv-day-head{font-family:var(--fR);font-size:11px;font-weight:500;color:var(--g-mid);text-align:center;padding:4px 0;text-transform:uppercase}
+.cmv-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cmv-day{
+  aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+  font-family:var(--fR);font-size:12px;font-weight:400;color:var(--g-dark);
+  border-radius:50%;cursor:default;position:relative;
+  transition:background .1s;
+}
+.cmv-day.other-month{color:var(--g-light)}
+.cmv-day.today{background:var(--g-blue);color:white;font-weight:700}
+.cmv-day.event-day{font-weight:700;color:var(--g-blue)}
+.cmv-day.event-day::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--g-blue)}
+.cmv-day.wedding-day{background:var(--g-red);color:white;font-weight:700}
+.cmv-day.wedding-day::after{display:none}
+
+/* Hero EVENT CARD */
+.hero-event{
+  background:var(--g-surface);
+  margin:0;
+  border-bottom:1px solid var(--g-light);
+  position:relative;overflow:hidden;
+}
+/* Big photo behind event */
+.hero-photo-wrap{position:relative;overflow:hidden}
+.hero-photo{
+  width:100%;height:clamp(200px,50vw,360px);
+  object-fit:cover;display:block;
+  transition:transform 8s ease;
+}
+/* Color overlay — Google blue wash */
+.hero-photo-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(26,115,232,.12) 0%,rgba(26,115,232,.04) 40%,rgba(255,255,255,.8) 85%,rgba(255,255,255,1) 100%);
+}
+/* Event banner over photo */
+.hero-event-banner{
+  position:absolute;top:16px;left:16px;
+  background:var(--g-red);color:white;
+  border-radius:var(--radius-sm);
+  padding:6px 12px;
+  font-family:var(--fG);font-size:12px;font-weight:700;letter-spacing:.04em;
+  text-transform:uppercase;
+  box-shadow:var(--shadow-md);
+}
+.hero-event-content{padding:16px 16px 20px}
+/* Color dot row */
+.event-color-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.ev-color-dot{
+  width:12px;height:12px;border-radius:50%;flex-shrink:0;
+}
+.ev-label{font-family:var(--fG);font-size:12px;font-weight:500;color:var(--g-mid)}
+.hero-event-title{font-family:var(--fD);font-size:clamp(22px,6vw,34px);font-weight:500;color:var(--g-dark);line-height:1.2;margin-bottom:14px}
+/* Event meta chips */
+.event-meta-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.ev-chip{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--g-bg);border:1px solid var(--g-light);
+  border-radius:var(--radius-full);padding:5px 12px;
+  font-family:var(--fG);font-size:12px;font-weight:500;color:var(--g-mid);
+}
+.ev-chip svg{width:14px;height:14px;fill:var(--g-mid);flex-shrink:0}
+/* Player strip */
+.player-card{
+  background:var(--g-bg);border:1px solid var(--g-light);border-radius:var(--radius-lg);
+  padding:12px 14px;display:flex;align-items:center;gap:10px;
+  margin-top:16px;
+}
+.pl-play{
+  width:40px;height:40px;border-radius:50%;border:none;cursor:pointer;
+  background:var(--g-blue);color:white;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 8px rgba(26,115,232,.3);transition:all .15s;
+}
+.pl-play:hover{background:#1557b0;box-shadow:0 4px 12px rgba(26,115,232,.4);transform:scale(1.04)}
+.pl-play svg{width:16px;height:16px;fill:white}
+.pl-info{flex:1;min-width:0}
+.pl-title{font-family:var(--fG);font-size:13px;font-weight:500;color:var(--g-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.pl-artist{font-family:var(--fR);font-size:11px;color:var(--g-mid)}
+.pl-prog-wrap{flex:2;min-width:0}
+.pl-times{display:flex;justify-content:space-between;font-family:var(--fM);font-size:10px;color:var(--g-mid);margin-bottom:4px}
+.pl-track{height:4px;background:var(--g-light);border-radius:var(--radius-full);cursor:pointer;position:relative}
+.pl-fill{height:100%;background:var(--g-blue);border-radius:var(--radius-full);width:0%;transition:width .5s linear;position:relative}
+.pl-fill::after{content:'';position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:12px;height:12px;border-radius:50%;background:var(--g-blue);box-shadow:0 0 0 3px rgba(26,115,232,.2)}
+/* Track pills */
+.track-pills{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.t-pill{
+  background:var(--g-surface);border:1px solid var(--g-light);
+  border-radius:var(--radius-full);padding:5px 12px;
+  font-family:var(--fG);font-size:11px;font-weight:500;color:var(--g-mid);
+  cursor:pointer;transition:all .15s;
+}
+.t-pill.active{background:var(--g-chip);border-color:var(--g-blue);color:var(--g-blue)}
+/* EQ */
+.eq{display:inline-flex;align-items:flex-end;gap:2px;height:12px;vertical-align:middle;margin-left:5px}
+.eq-b{width:3px;background:var(--g-blue);border-radius:1px;animation:eqA var(--s,.5s) ease-in-out infinite alternate}
+.eq-b:nth-child(2){--s:.75s;animation-delay:.1s}
+.eq-b:nth-child(3){--s:.55s;animation-delay:.2s}
+@keyframes eqA{from{height:2px}to{height:12px}}
+.eq.paused .eq-b{animation-play-state:paused;height:2px}
+
+/* ══════════════════════════
+   SECTION SHELL
+══════════════════════════ */
+.g-section{background:var(--g-bg);padding:16px}
+.g-card{
+  background:var(--g-surface);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);overflow:hidden;
+  margin-bottom:12px;
+}
+.g-card-header{
+  padding:16px 16px 12px;
+  border-bottom:1px solid var(--g-bg);
+  display:flex;align-items:center;gap:10px;
+}
+.g-card-icon{width:36px;height:36px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.g-card-title{font-family:var(--fG);font-size:14px;font-weight:500;color:var(--g-dark)}
+.g-card-sub{font-family:var(--fR);font-size:12px;color:var(--g-mid);margin-top:1px}
+
+/* ══════════════════════════
+   COUNTDOWN — Google countdown widget
+══════════════════════════ */
+.countdown-card{
+  background:var(--g-surface);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:12px;
+}
+.cd-header{
+  background:linear-gradient(135deg,var(--g-blue),#1557b0);
+  padding:16px;display:flex;align-items:center;gap:10px;
+}
+.cd-header-icon{width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center}
+.cd-header-icon svg{width:20px;height:20px;fill:white}
+.cd-header-text{font-family:var(--fG);font-size:14px;font-weight:500;color:white}
+.cd-header-sub{font-family:var(--fR);font-size:12px;color:rgba(255,255,255,.7);margin-top:1px}
+.cd-body{padding:16px}
+.cd-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.cd-item{
+  background:var(--g-bg);border-radius:var(--radius-md);
+  padding:14px 8px 10px;text-align:center;position:relative;overflow:hidden;
+}
+/* color strip top */
+.cd-item::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.cd-item:nth-child(1)::before{background:var(--g-blue)}
+.cd-item:nth-child(2)::before{background:var(--g-red)}
+.cd-item:nth-child(3)::before{background:var(--g-yellow)}
+.cd-item:nth-child(4)::before{background:var(--g-green)}
+.cd-n{font-family:var(--fD);font-size:clamp(24px,6vw,36px);font-weight:500;line-height:1;color:var(--g-dark);margin-bottom:3px}
+.cd-u{font-family:var(--fR);font-size:10px;font-weight:500;color:var(--g-mid);text-transform:uppercase;letter-spacing:.06em}
+
+/* ══════════════════════════
+   VERSE — Google card
+══════════════════════════ */
+.verse-card{
+  background:var(--g-surface);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);margin-bottom:12px;overflow:hidden;
+}
+.verse-photo-strip{width:100%;height:120px;object-fit:cover;display:block;filter:brightness(.85) saturate(.9)}
+.verse-body{padding:16px;text-align:center}
+.verse-text{
+  font-family:var(--fG);font-size:clamp(13px,3.3vw,16px);font-weight:400;
+  color:var(--g-mid);line-height:1.75;margin-bottom:10px;font-style:italic;
+}
+.verse-ref{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--g-chip);border-radius:var(--radius-full);
+  padding:4px 12px;font-family:var(--fG);font-size:12px;font-weight:500;color:var(--g-blue);
+}
+
+/* ══════════════════════════
+   COUPLE — Google contacts style
+══════════════════════════ */
+.contacts-card{
+  background:var(--g-surface);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);margin-bottom:12px;overflow:hidden;
+}
+.contacts-header{padding:14px 16px;border-bottom:1px solid var(--g-bg);display:flex;align-items:center;gap:8px}
+.ch-icon{width:32px;height:32px;background:var(--g-chip);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center}
+.ch-icon svg{width:18px;height:18px;fill:var(--g-blue)}
+.ch-label{font-family:var(--fG);font-size:14px;font-weight:500;color:var(--g-dark)}
+.contact-row{
+  display:flex;align-items:center;gap:14px;padding:14px 16px;
+  border-bottom:1px solid var(--g-bg);position:relative;
+  transition:background .15s;cursor:default;
+}
+.contact-row:last-child{border-bottom:none}
+.contact-row:hover{background:var(--g-bg)}
+/* Photo */
+.contact-photo{width:52px;height:52px;border-radius:50%;overflow:hidden;flex-shrink:0;position:relative}
+.contact-photo img{width:100%;height:100%;object-fit:cover}
+/* Colored border */
+.contact-photo.female{box-shadow:0 0 0 2px var(--g-red)}
+.contact-photo.male{box-shadow:0 0 0 2px var(--g-blue)}
+.contact-info{flex:1;min-width:0}
+.contact-name{font-family:var(--fG);font-size:15px;font-weight:500;color:var(--g-dark);margin-bottom:2px}
+.contact-role{font-family:var(--fR);font-size:12px;color:var(--g-mid);margin-bottom:4px}
+.contact-parents{font-family:var(--fR);font-size:11px;color:var(--g-mid);line-height:1.6}
+.contact-parents strong{color:var(--g-dark);font-weight:500}
+/* Action icons */
+.contact-actions{display:flex;gap:2px;flex-shrink:0}
+.c-act-btn{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:none;background:transparent;cursor:pointer;transition:background .15s}
+.c-act-btn:hover{background:var(--g-bg)}
+.c-act-btn svg{width:18px;height:18px;fill:var(--g-mid)}
+
+/* ══════════════════════════
+   EVENT DETAILS — Google Maps style cards
+══════════════════════════ */
+.event-details-card{
+  background:var(--g-surface);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);margin-bottom:12px;overflow:hidden;
+}
+.ed-map-preview{width:100%;height:100px;object-fit:cover;display:block;filter:saturate(.8)}
+.ed-body{padding:14px 16px}
+.ed-event-strip{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;background:var(--g-bg);border-radius:var(--radius-md);margin-bottom:10px;
+}
+.ed-color-bar{width:4px;height:40px;border-radius:2px;flex-shrink:0}
+.ed-event-title{font-family:var(--fG);font-size:14px;font-weight:500;color:var(--g-dark);margin-bottom:2px}
+.ed-event-time{font-family:var(--fR);font-size:12px;color:var(--g-mid)}
+.ed-location{display:flex;align-items:flex-start;gap:8px;margin-top:10px;padding-top:10px;border-top:1px solid var(--g-bg)}
+.ed-loc-icon{width:20px;height:20px;fill:var(--g-mid);flex-shrink:0;margin-top:1px}
+.ed-loc-text{font-family:var(--fR);font-size:13px;color:var(--g-mid);line-height:1.6}
+.ed-maps-btn{
+  display:inline-flex;align-items:center;gap:5px;margin-top:10px;
+  background:var(--g-chip);border:none;border-radius:var(--radius-full);
+  padding:8px 16px;font-family:var(--fG);font-size:12px;font-weight:500;color:var(--g-blue);
+  cursor:pointer;text-decoration:none;transition:background .15s;
+}
+.ed-maps-btn:hover{background:#c5d9fc}
+.ed-maps-btn svg{width:14px;height:14px;fill:var(--g-blue)}
+
+/* ══════════════════════════
+   TIMELINE — Google Calendar Agenda view
+══════════════════════════ */
+.agenda-card{
+  background:var(--g-surface);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);margin-bottom:12px;overflow:hidden;
+}
+.agenda-header{padding:14px 16px;border-bottom:1px solid var(--g-bg);display:flex;align-items:center;gap:8px}
+.agenda-item{
+  display:flex;gap:0;border-bottom:1px solid var(--g-bg);
+  opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s;
+}
+.agenda-item.visible{opacity:1;transform:translateY(0)}
+.agenda-item:last-child{border-bottom:none}
+.agenda-date-col{
+  width:56px;flex-shrink:0;padding:14px 0 14px 14px;
+  display:flex;flex-direction:column;align-items:center;
+}
+.agenda-date-num{font-family:var(--fD);font-size:22px;font-weight:400;color:var(--g-dark);line-height:1}
+.agenda-date-day{font-family:var(--fR);font-size:10px;font-weight:500;color:var(--g-mid);text-transform:uppercase;letter-spacing:.04em;margin-top:2px}
+.agenda-events-col{flex:1;padding:10px 14px;border-left:1px solid var(--g-bg)}
+.agenda-event-item{
+  display:flex;align-items:flex-start;gap:10px;padding:8px 10px;
+  border-radius:var(--radius-md);margin-bottom:6px;cursor:default;
+  transition:background .15s;
+}
+.agenda-event-item:last-child{margin-bottom:0}
+.agenda-event-item:hover{background:var(--g-bg)}
+.aei-color{width:4px;height:100%;border-radius:2px;flex-shrink:0;min-height:40px}
+.aei-content{flex:1;min-width:0}
+.aei-title{font-family:var(--fG);font-size:13px;font-weight:500;color:var(--g-dark);margin-bottom:2px}
+.aei-time{font-family:var(--fR);font-size:11px;color:var(--g-mid)}
+.aei-photo{width:50px;height:50px;border-radius:var(--radius-sm);object-fit:cover;flex-shrink:0;border:1px solid var(--g-light)}
+
+/* ══════════════════════════
+   GALLERY — Google Photos style
+══════════════════════════ */
+.photos-card{
+  background:var(--g-surface);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);margin-bottom:12px;overflow:hidden;
+}
+.photos-header{padding:14px 16px;border-bottom:1px solid var(--g-bg);display:flex;align-items:center;justify-content:space-between}
+.photos-header-left{display:flex;align-items:center;gap:8px}
+.ph-icon{width:32px;height:32px;background:var(--g-chip4);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center}
+.ph-icon svg{width:18px;height:18px;fill:var(--ev-banana)}
+.ph-label{font-family:var(--fG);font-size:14px;font-weight:500;color:var(--g-dark)}
+.ph-view-all{font-family:var(--fG);font-size:12px;font-weight:500;color:var(--g-blue);cursor:pointer;text-decoration:none}
+/* Gallery runners */
+.gal-runner{overflow:hidden;position:relative;padding:8px 0}
+.gal-runner:first-of-type{border-bottom:1px solid var(--g-bg)}
+.gal-runner::before,.gal-runner::after{content:'';position:absolute;top:0;bottom:0;width:40px;z-index:10;pointer-events:none}
+.gal-runner::before{left:0;background:linear-gradient(90deg,var(--g-surface),transparent)}
+.gal-runner::after{right:0;background:linear-gradient(270deg,var(--g-surface),transparent)}
+.gal-track{display:flex;gap:4px;width:max-content;will-change:transform;padding:0 8px}
+.g-item{
+  flex-shrink:0;overflow:hidden;position:relative;cursor:pointer;
+  border-radius:var(--radius-md);background:var(--g-bg);
+  transition:transform .2s,box-shadow .2s;
+}
+.g-item:hover{transform:scale(1.04);box-shadow:var(--shadow-md);z-index:5}
+.g-item.sz1{width:clamp(120px,28vw,180px);height:clamp(140px,32vw,210px)}
+.g-item.sz2{width:clamp(100px,24vw,155px);height:clamp(120px,28vw,185px)}
+.g-item img{width:100%;height:100%;object-fit:cover;display:block;transition:filter .3s}
+.g-item:hover img{filter:brightness(1.05)}
+/* Selection overlay */
+.g-item::before{
+  content:'';position:absolute;top:6px;left:6px;
+  width:22px;height:22px;border-radius:50%;
+  background:white;border:2px solid rgba(255,255,255,.8);
+  opacity:0;transition:opacity .2s;z-index:2;
+  box-shadow:0 1px 4px rgba(0,0,0,.2);
+}
+.g-item:hover::before{opacity:1}
+
+/* ══════════════════════════
+   GIFT — Google Pay style
+══════════════════════════ */
+.gpay-card{
+  background:var(--g-surface);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);margin-bottom:12px;overflow:hidden;
+}
+.gpay-header{
+  background:linear-gradient(135deg,#34a853,#1e7e34);
+  padding:16px;display:flex;align-items:center;gap:10px;
+}
+.gpay-icon{width:36px;height:36px;background:rgba(255,255,255,.15);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center}
+.gpay-icon svg{width:20px;height:20px;fill:white}
+.gpay-title{font-family:var(--fG);font-size:14px;font-weight:500;color:white}
+.gpay-sub{font-family:var(--fR);font-size:12px;color:rgba(255,255,255,.7);margin-top:1px}
+.gpay-body{padding:12px}
+.gpay-desc{font-family:var(--fR);font-size:13px;color:var(--g-mid);line-height:1.7;padding:0 4px 12px}
+.gpay-accounts{display:flex;flex-direction:column;gap:8px}
+.gpay-account{
+  background:var(--g-bg);border-radius:var(--radius-md);
+  padding:14px;display:flex;align-items:center;gap:12px;
+  border:1px solid var(--g-light);transition:border-color .15s;
+}
+.gpay-account:hover{border-color:var(--g-blue)}
+.gpay-bank-logo{
+  width:44px;height:44px;border-radius:var(--radius-md);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fG);font-size:11px;font-weight:700;color:white;
+  flex-shrink:0;box-shadow:var(--shadow-sm);
+}
+.gpay-bank-info{flex:1;min-width:0}
+.gpay-bank-name{font-family:var(--fG);font-size:14px;font-weight:600;color:var(--g-dark);margin-bottom:2px}
+.gpay-holder{font-family:var(--fR);font-size:11px;color:var(--g-mid);margin-bottom:4px}
+.gpay-number{font-family:var(--fM);font-size:13px;font-weight:500;color:var(--g-dark);letter-spacing:.08em}
+.gpay-copy-btn{
+  background:var(--g-chip3);border:none;border-radius:var(--radius-full);
+  padding:8px 14px;font-family:var(--fG);font-size:11px;font-weight:500;
+  color:var(--g-green);cursor:pointer;transition:all .15s;flex-shrink:0;
+  display:flex;align-items:center;gap:4px;
+}
+.gpay-copy-btn:hover{background:#b7e1cd}
+.gpay-copy-btn.copied{background:var(--g-chip3);color:var(--g-green)}
+.gpay-copy-btn svg{width:14px;height:14px;fill:currentColor}
+
+/* ══════════════════════════
+   RSVP — Google Forms style
+══════════════════════════ */
+.gform-card{
+  background:var(--g-surface);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);margin-bottom:12px;overflow:hidden;
+}
+/* Forms header strip */
+.gform-header-strip{height:10px;background:linear-gradient(90deg,var(--g-blue),var(--ev-grape))}
+.gform-header{padding:20px 16px 16px;border-bottom:1px solid var(--g-bg)}
+.gform-icon{width:40px;height:40px;background:var(--g-chip);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.gform-icon svg{width:22px;height:22px;fill:var(--g-blue)}
+.gform-title{font-family:var(--fD);font-size:20px;font-weight:500;color:var(--g-dark);margin-bottom:4px}
+.gform-sub{font-family:var(--fR);font-size:13px;color:var(--g-mid)}
+/* Stats row */
+.gform-stats{display:flex;gap:8px;padding:12px 16px;border-bottom:1px solid var(--g-bg);flex-wrap:wrap}
+.gf-stat{display:flex;align-items:center;gap:6px;background:var(--g-bg);border-radius:var(--radius-full);padding:5px 12px}
+.gf-stat-dot{width:8px;height:8px;border-radius:50%}
+.gf-stat-label{font-family:var(--fG);font-size:11px;font-weight:500;color:var(--g-mid)}
+.gf-stat-num{font-family:var(--fG);font-size:11px;font-weight:700;color:var(--g-dark)}
+/* Form questions */
+.gform-body{padding:16px}
+.gf-question{
+  background:var(--g-surface);border:1px solid var(--g-light);border-radius:var(--radius-lg);
+  padding:16px;margin-bottom:10px;
+}
+.gf-question:focus-within{border-color:var(--g-blue);box-shadow:0 0 0 2px rgba(26,115,232,.12)}
+.gf-q-label{font-family:var(--fG);font-size:14px;font-weight:500;color:var(--g-dark);margin-bottom:10px;display:flex;align-items:center;gap:4px}
+.gf-required{color:var(--g-red);font-size:14px}
+.gf-input{
+  width:100%;border:none;border-bottom:2px solid var(--g-light);
+  padding:6px 0;font-family:var(--fR);font-size:14px;color:var(--g-dark);
+  outline:none;background:transparent;transition:border-color .2s;
+}
+.gf-input:focus{border-bottom-color:var(--g-blue)}
+.gf-input::placeholder{color:var(--g-light)}
+textarea.gf-input{resize:vertical;min-height:72px;border:none;border-bottom:2px solid var(--g-light)}
+/* Radio options */
+.gf-options{display:flex;flex-direction:column;gap:6px}
+.gf-option{display:flex;align-items:center;gap:10px;cursor:pointer;padding:4px 0}
+.gf-radio{
+  width:18px;height:18px;border-radius:50%;border:2px solid var(--g-light);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:border-color .15s;
+}
+.gf-radio.selected{border-color:var(--g-blue)}
+.gf-radio.selected::before{content:'';width:8px;height:8px;border-radius:50%;background:var(--g-blue)}
+.gf-option-label{font-family:var(--fR);font-size:14px;color:var(--g-dark)}
+/* Guest count */
+.gf-counter{display:flex;align-items:center;gap:12px}
+.gf-counter-btn{
+  width:32px;height:32px;border-radius:50%;border:1px solid var(--g-light);
+  background:var(--g-surface);display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all .15s;font-size:18px;color:var(--g-mid);
+}
+.gf-counter-btn:hover{background:var(--g-bg);border-color:var(--g-blue);color:var(--g-blue)}
+.gf-counter-num{font-family:var(--fD);font-size:18px;font-weight:500;color:var(--g-dark);min-width:24px;text-align:center}
+/* Submit button */
+.gform-submit{
+  background:var(--g-blue);color:white;border:none;
+  border-radius:var(--radius-full);padding:12px 28px;
+  font-family:var(--fG);font-size:14px;font-weight:500;
+  cursor:pointer;transition:all .15s;box-shadow:0 2px 8px rgba(26,115,232,.3);
+  display:inline-flex;align-items:center;gap:6px;
+}
+.gform-submit:hover{background:#1557b0;box-shadow:0 4px 12px rgba(26,115,232,.4)}
+.gform-submit svg{width:16px;height:16px;fill:white}
+
+/* ══════════════════════════
+   WISHES — Google Reviews style
+══════════════════════════ */
+.reviews-card{
+  background:var(--g-surface);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-sm);margin-bottom:12px;overflow:hidden;
+}
+.reviews-header{padding:14px 16px;border-bottom:1px solid var(--g-bg);display:flex;align-items:center;gap:8px}
+.rv-icon{width:32px;height:32px;background:var(--g-chip2);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center}
+.rv-icon svg{width:18px;height:18px;fill:var(--g-red)}
+.rv-label{font-family:var(--fG);font-size:14px;font-weight:500;color:var(--g-dark)}
+.review-list{display:flex;flex-direction:column}
+.review-item{
+  padding:14px 16px;border-bottom:1px solid var(--g-bg);
+  opacity:0;transform:translateY(8px);transition:opacity .4s,transform .4s;
+}
+.review-item:last-child{border-bottom:none}
+.review-item.visible{opacity:1;transform:translateY(0)}
+.rv-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.rv-avatar{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--fG);font-size:14px;font-weight:700;color:white;
+  flex-shrink:0;
+}
+.rv-name{font-family:var(--fG);font-size:13px;font-weight:500;color:var(--g-dark)}
+.rv-status{font-family:var(--fR);font-size:11px;color:var(--g-mid);margin-top:1px}
+/* Stars */
+.rv-stars{display:flex;gap:1px;margin-bottom:6px}
+.rv-star{font-size:14px}
+.rv-text{font-family:var(--fR);font-size:13px;color:var(--g-mid);line-height:1.65}
+/* Helpful row */
+.rv-helpful{display:flex;align-items:center;gap:6px;margin-top:8px}
+.rv-helpful-label{font-family:var(--fR);font-size:11px;color:var(--g-mid)}
+.rv-helpful-btn{
+  border:1px solid var(--g-light);border-radius:var(--radius-full);
+  padding:3px 10px;font-family:var(--fG);font-size:11px;font-weight:500;color:var(--g-mid);
+  cursor:pointer;background:transparent;transition:all .15s;
+  display:flex;align-items:center;gap:4px;
+}
+.rv-helpful-btn:hover{background:var(--g-bg);border-color:var(--g-mid)}
+.rv-helpful-btn svg{width:12px;height:12px;fill:currentColor}
+
+/* ══════════════════════════
+   FOOTER — Google style
+══════════════════════════ */
+.g-footer{
+  background:var(--g-surface);
+  border-top:1px solid var(--g-light);
+  padding:24px 16px 40px;text-align:center;
+}
+.gf-logo-row{display:flex;align-items:center;justify-content:center;gap:4px;margin-bottom:16px}
+.gf-logo-g{font-family:var(--fD);font-size:28px;font-weight:400;color:var(--g-blue)}
+.gf-logo-g span:nth-child(1){color:var(--g-blue)}
+.gf-logo-g span:nth-child(2){color:var(--g-red)}
+.gf-logo-g span:nth-child(3){color:var(--g-yellow)}
+.gf-logo-g span:nth-child(4){color:var(--g-blue)}
+.gf-logo-g span:nth-child(5){color:var(--g-green)}
+.gf-logo-g span:nth-child(6){color:var(--g-red)}
+.gf-product-name{font-family:var(--fR);font-size:16px;font-weight:300;color:var(--g-mid);margin-left:4px}
+.gf-title{font-family:var(--fD);font-size:clamp(22px,6vw,34px);font-weight:500;color:var(--g-dark);margin-bottom:8px}
+.gf-sub{font-family:var(--fR);font-size:13px;color:var(--g-mid);line-height:1.75;max-width:380px;margin:0 auto 20px}
+.gf-sig{font-family:var(--fG);font-size:14px;color:var(--g-mid);margin-bottom:24px}
+/* Color bar */
+.gf-color-bar{height:4px;background:linear-gradient(90deg,var(--g-blue),var(--g-red),var(--g-yellow),var(--g-green));border-radius:var(--radius-full);max-width:120px;margin:0 auto 20px}
+.gf-brand{font-family:var(--fR);font-size:11px;color:var(--g-mid)}
+.gf-brand a{color:var(--g-blue);text-decoration:none}
+
+/* ══════════════════════════
+   BOTTOM NAV — Google style
+══════════════════════════ */
+.bnav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--g-surface);
+  border-top:1px solid var(--g-light);
+  box-shadow:0 -2px 8px rgba(0,0,0,.06);
+  display:flex;justify-content:space-around;
+  padding:8px 0 max(8px,env(safe-area-inset-bottom));
+  z-index:200;transform:translateY(100%);transition:transform .4s ease 1s;
+  pointer-events:none;
+}
+.bnav.show{transform:translateY(0);pointer-events:auto}
+.n-item{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  cursor:pointer;text-decoration:none;
+  font-family:var(--fR);font-size:10px;font-weight:500;
+  color:var(--g-mid);padding:4px 12px;
+  border-radius:var(--radius-lg);transition:all .15s;
+  position:relative;min-width:56px;
+  -webkit-tap-highlight-color:transparent;
+}
+.n-item:hover{background:var(--g-bg)}
+.n-item.active{color:var(--g-blue)}
+/* Active pill indicator */
+.n-item.active::before{
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:32px;height:3px;background:var(--g-blue);border-radius:0 0 3px 3px;
+}
+.n-item svg{width:20px;height:20px;fill:currentColor}
+.n-item.active svg{fill:var(--g-blue)}
+
+/* ══════════════════════════
+   LIGHTBOX
+══════════════════════════ */
+.lb{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9998;display:none;align-items:center;justify-content:center}
+.lb.open{display:flex}
+.lb-img{max-width:92vw;max-height:88vh;border-radius:var(--radius-md);object-fit:contain;box-shadow:var(--shadow-xl)}
+.lb-x{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.12);border:none;color:white;cursor:pointer;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;transition:background .15s}
+.lb-x:hover{background:rgba(255,255,255,.2)}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.1);border:none;color:white;cursor:pointer;width:44px;height:56px;border-radius:var(--radius-lg);display:flex;align-items:center;justify-content:center;font-size:22px;transition:background .15s}
+.lb-nav:hover{background:rgba(255,255,255,.2)}
+.lb-p{left:12px}.lb-n{right:12px}
+.lb-c{position:absolute;bottom:16px;left:50%;transform:translateX(-50%);font-family:var(--fG);font-size:12px;font-weight:500;color:rgba(255,255,255,.5);letter-spacing:.08em}
+
+/* ══════════════════════════
+   TOAST — Google Snackbar
+══════════════════════════ */
+.toast{
+  position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(12px);
+  background:var(--g-dark);color:white;
+  padding:10px 20px;border-radius:var(--radius-sm);
+  font-family:var(--fG);font-size:13px;font-weight:500;
+  opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;z-index:9999;
+  box-shadow:var(--shadow-lg);
+  display:flex;align-items:center;gap:8px;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ══════════════════════════
+   CALENDAR MINI DATA
+══════════════════════════ */
+.cal-event-preview{
+  margin:8px 0 4px;
+  background:var(--g-chip);border-left:3px solid var(--g-blue);
+  border-radius:0 var(--radius-sm) var(--radius-sm) 0;
+  padding:4px 8px;font-family:var(--fG);font-size:11px;font-weight:500;color:var(--g-blue);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+</style>
+</head>
+<body>
+
+<!-- ══ OPENING — Google Calendar invite popup ══ -->
+<div id="opening">
+  <div class="op-gbar"></div>
+  <div class="op-card">
+    <!-- Calendar header -->
+    <div class="op-cal-header">
+      <div class="op-cal-month">Mei 2026</div>
+      <div class="op-cal-date">24</div>
+      <div class="op-cal-day">Minggu · Wedding Day</div>
+      <!-- Google product icons row -->
+      <div class="op-g-icons">
+        <!-- Calendar icon -->
+        <svg class="op-g-icon" viewBox="0 0 20 20" fill="none"><rect width="20" height="20" rx="4" fill="rgba(255,255,255,.15)"/><rect x="6" y="3" width="1.5" height="4" rx=".75" fill="white"/><rect x="12.5" y="3" width="1.5" height="4" rx=".75" fill="white"/><rect x="3" y="8" width="14" height="1" fill="rgba(255,255,255,.5)"/></svg>
+        <!-- Meet icon -->
+        <svg class="op-g-icon" viewBox="0 0 20 20" fill="none"><rect width="20" height="20" rx="4" fill="rgba(255,255,255,.15)"/><rect x="3" y="6" width="9" height="8" rx="2" fill="white" opacity=".8"/><path d="M13 8l4-2v8l-4-2V8z" fill="white" opacity=".8"/></svg>
+        <!-- Gmail icon -->
+        <svg class="op-g-icon" viewBox="0 0 20 20" fill="none"><rect width="20" height="20" rx="4" fill="rgba(255,255,255,.15)"/><path d="M3 6h14v9H3V6zm7 5l6-4H4l6 4z" fill="white" opacity=".8"/></svg>
+      </div>
+    </div>
+    <!-- Invite body -->
+    <div class="op-body">
+      <div class="op-color-chip">
+        <div class="op-dot"></div>
+        <span class="op-chip-label">Wedding · Personal</span>
+      </div>
+      <div class="op-event-title">💍 The Wedding of Anita & Zarda</div>
+
+      <div class="op-meta-row">
+        <svg class="op-meta-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+        <div>
+          <div class="op-meta-label">Undangan untuk</div>
+          <div style="margin-top:6px">
+            <div class="op-guest-chip">
+              <div class="op-avatar">AG</div>
+              <span class="op-guest-name">Ade Guntur Fitridullah & Partner</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="op-meta-row">
+        <svg class="op-meta-icon" viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/></svg>
+        <div>
+          <div class="op-meta-label">Waktu</div>
+          <div class="op-meta-value">Minggu, 24 Mei 2026</div>
+          <div style="font-family:var(--fR);font-size:13px;color:var(--g-mid)">08:00 – 13:00 WIB</div>
+        </div>
+      </div>
+
+      <div class="op-rsvp-label">Going?</div>
+      <div class="op-rsvp-row">
+        <button class="op-rsvp-btn yes" onclick="openInvitation()">✓ Yes</button>
+        <button class="op-rsvp-btn" onclick="openInvitation()">? Maybe</button>
+        <button class="op-rsvp-btn" onclick="openInvitation()">✕ No</button>
+      </div>
+
+      <button class="op-open-btn" onclick="openInvitation()">
+        <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+        Open Invitation
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div id="main">
+
+<!-- TOPBAR -->
+<div class="g-topbar">
+  <div class="gtb-left">
+    <button class="gtb-menu"><svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg></button>
+    <div class="gtb-logo">
+      <span class="gtb-logo-text">
+        <span style="color:var(--g-blue)">G</span><span style="color:var(--g-red)">o</span><span style="color:var(--g-yellow)">o</span><span style="color:var(--g-blue)">g</span><span style="color:var(--g-green)">l</span><span style="color:var(--g-red)">e</span>
+      </span>
+      <span class="gtb-product">Calendar</span>
+    </div>
+  </div>
+  <div class="gtb-right">
+    <button class="gtb-icon-btn"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></button>
+    <button class="gtb-icon-btn"><svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg></button>
+    <div class="gtb-avatar">A</div>
+  </div>
+</div>
+
+<!-- MINI CALENDAR + HERO -->
+<section id="home">
+  <!-- Mini month calendar -->
+  <div class="cal-month-view">
+    <div class="cmv-header">
+      <span class="cmv-month">Mei 2026</span>
+      <div class="cmv-nav">
+        <button class="cmv-nav-btn"><svg viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg></button>
+        <button class="cmv-nav-btn"><svg viewBox="0 0 24 24"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg></button>
+      </div>
+    </div>
+    <div class="cmv-days-head">
+      <div class="cmv-day-head">Min</div>
+      <div class="cmv-day-head">Sen</div>
+      <div class="cmv-day-head">Sel</div>
+      <div class="cmv-day-head">Rab</div>
+      <div class="cmv-day-head">Kam</div>
+      <div class="cmv-day-head">Jum</div>
+      <div class="cmv-day-head">Sab</div>
+    </div>
+    <div class="cmv-grid" id="calGrid"></div>
+    <!-- Event preview strip -->
+    <div class="cal-event-preview">💍 The Wedding of Anita & Zarda — All day</div>
+  </div>
+
+  <!-- HERO event detail -->
+  <div class="hero-event">
+    <div class="hero-photo-wrap">
+      <img class="hero-photo" src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1000&h=500&fit=crop&q=85" alt="Wedding">
+      <div class="hero-photo-overlay"></div>
+      <div class="hero-event-banner">Wedding Day 💍</div>
+    </div>
+    <div class="hero-event-content">
+      <div class="event-color-row">
+        <div class="ev-color-dot" style="background:var(--ev-red)"></div>
+        <span class="ev-label">Akad Nikah</span>
+        <div class="ev-color-dot" style="background:var(--ev-sage)"></div>
+        <span class="ev-label">Resepsi</span>
+        <div class="ev-color-dot" style="background:var(--ev-grape)"></div>
+        <span class="ev-label">Wedding</span>
+      </div>
+      <h1 class="hero-event-title">💍 The Wedding of<br>Anita &amp; Zarda</h1>
+      <div class="event-meta-chips">
+        <div class="ev-chip">
+          <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>
+          24 Mei 2026
+        </div>
+        <div class="ev-chip">
+          <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
+          08:00 – 13:00
+        </div>
+        <div class="ev-chip">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Tangerang
+        </div>
+      </div>
+
+      <!-- Track pills + player -->
+      <div class="track-pills">
+        <div class="t-pill active" onclick="sw(0,this)">Wedding Song</div>
+        <div class="t-pill" onclick="sw(1,this)">First Look</div>
+        <div class="t-pill" onclick="sw(2,this)">Lamaran</div>
+      </div>
+      <div class="player-card">
+        <button class="pl-play" id="playBtn" onclick="togglePlay()">
+          <svg id="pIco" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="pauseIco" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+        <div class="pl-info">
+          <div class="pl-title" id="pTitle">Wedding Day <span class="eq paused" id="eqB"><span class="eq-b"></span><span class="eq-b"></span><span class="eq-b"></span></span></div>
+          <div class="pl-artist" id="pArtist">Anita & Zarda · Wedding Playlist</div>
+        </div>
+        <div class="pl-prog-wrap">
+          <div class="pl-times"><span id="curT">0:00</span><span id="totT">3:24</span></div>
+          <div class="pl-track" id="pTrack"><div class="pl-fill" id="pFill"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COUNTDOWN -->
+<div class="g-section">
+  <div class="countdown-card">
+    <div class="cd-header">
+      <div class="cd-header-icon">
+        <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
+      </div>
+      <div>
+        <div class="cd-header-text">Countdown to Wedding Day</div>
+        <div class="cd-header-sub">Minggu, 24 Mei 2026 · 08:00 WIB</div>
+      </div>
+    </div>
+    <div class="cd-body">
+      <div class="cd-grid">
+        <div class="cd-item"><div class="cd-n" id="cdD">00</div><div class="cd-u">Hari</div></div>
+        <div class="cd-item"><div class="cd-n" id="cdH">00</div><div class="cd-u">Jam</div></div>
+        <div class="cd-item"><div class="cd-n" id="cdM">00</div><div class="cd-u">Menit</div></div>
+        <div class="cd-item"><div class="cd-n" id="cdS">00</div><div class="cd-u">Detik</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VERSE -->
+  <div class="verse-card">
+    <img class="verse-photo-strip" src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&h=120&fit=crop&q=80" alt="" loading="lazy">
+    <div class="verse-body">
+      <p class="verse-text">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya..."</p>
+      <div class="verse-ref">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+        Surah Ar-Rum : 21
+      </div>
+    </div>
+  </div>
+
+  <!-- COUPLE — Contacts style -->
+  <div class="contacts-card" id="couple">
+    <div class="contacts-header">
+      <div class="ch-icon">
+        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+      </div>
+      <div class="ch-label">People — Pasangan Kami</div>
+    </div>
+    <div class="contact-row">
+      <div class="contact-photo female">
+        <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&h=200&fit=crop&q=80" alt="Anita" loading="lazy">
+      </div>
+      <div class="contact-info">
+        <div class="contact-name">Anita Pangestuti, S.Kom</div>
+        <div class="contact-role">💐 Mempelai Wanita</div>
+        <div class="contact-parents">Putri Pertama dari<br><strong>Bpk. Taryono & Ibu Wiwit Jayanti</strong></div>
+      </div>
+      <div class="contact-actions">
+        <button class="c-act-btn"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></button>
+      </div>
+    </div>
+    <div class="contact-row">
+      <div class="contact-photo male">
+        <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop&q=80" alt="Zarda" loading="lazy">
+      </div>
+      <div class="contact-info">
+        <div class="contact-name">Zardarian Ahadika N, S.Kom</div>
+        <div class="contact-role">💍 Mempelai Pria</div>
+        <div class="contact-parents">Putra Kedua dari<br><strong>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</strong></div>
+      </div>
+      <div class="contact-actions">
+        <button class="c-act-btn"><svg viewBox="0 0 24 24"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EVENT DETAILS -->
+  <div id="event">
+    <!-- Akad -->
+    <div class="event-details-card">
+      <img class="ed-map-preview" src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800&h=100&fit=crop&q=80" alt="" loading="lazy">
+      <div class="ed-body">
+        <div class="ed-event-strip">
+          <div class="ed-color-bar" style="background:var(--ev-red)"></div>
+          <div>
+            <div class="ed-event-title">Akad Nikah</div>
+            <div class="ed-event-time">Minggu, 24 Mei 2026 · 08:00 WIB</div>
+          </div>
+        </div>
+        <div class="ed-location">
+          <svg class="ed-loc-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          <span class="ed-loc-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span>
+        </div>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ed-maps-btn">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Buka di Google Maps
+        </a>
+      </div>
+    </div>
+    <!-- Resepsi -->
+    <div class="event-details-card">
+      <img class="ed-map-preview" src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&h=100&fit=crop&q=80" alt="" loading="lazy">
+      <div class="ed-body">
+        <div class="ed-event-strip">
+          <div class="ed-color-bar" style="background:var(--ev-sage)"></div>
+          <div>
+            <div class="ed-event-title">Resepsi Pernikahan</div>
+            <div class="ed-event-time">Minggu, 24 Mei 2026 · 11:00 – 13:00 WIB</div>
+          </div>
+        </div>
+        <div class="ed-location">
+          <svg class="ed-loc-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          <span class="ed-loc-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span>
+        </div>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ed-maps-btn">
+          <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Buka di Google Maps
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- AGENDA VIEW — Love Story -->
+  <div class="agenda-card">
+    <div class="agenda-header">
+      <div class="ch-icon" style="background:var(--g-chip)"><svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:var(--g-blue)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>
+      <div class="ch-label">Agenda View — Love Story</div>
+    </div>
+    <div class="agenda-item">
+      <div class="agenda-date-col">
+        <div class="agenda-date-num">Jun</div>
+        <div class="agenda-date-day">2025</div>
+      </div>
+      <div class="agenda-events-col">
+        <div class="agenda-event-item">
+          <div class="aei-color" style="background:var(--ev-flamingo)"></div>
+          <div class="aei-content">
+            <div class="aei-title">💫 Awal Pertemuan</div>
+            <div class="aei-time">Bowling · Sushi · Es Krim bersama</div>
+            <div style="font-family:var(--fR);font-size:11px;color:var(--g-mid);margin-top:4px;line-height:1.6">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi.</div>
+          </div>
+          <img class="aei-photo" src="https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=100&h=100&fit=crop&q=80" alt="" loading="lazy">
+        </div>
+      </div>
+    </div>
+    <div class="agenda-item">
+      <div class="agenda-date-col">
+        <div class="agenda-date-num">Nov</div>
+        <div class="agenda-date-day">2025</div>
+      </div>
+      <div class="agenda-events-col">
+        <div class="agenda-event-item">
+          <div class="aei-color" style="background:var(--ev-grape)"></div>
+          <div class="aei-content">
+            <div class="aei-title">💍 Lamaran</div>
+            <div class="aei-time">Di hadapan kedua keluarga</div>
+            <div style="font-family:var(--fR);font-size:11px;color:var(--g-mid);margin-top:4px;line-height:1.6">Rasa itu tumbuh menjadi keyakinan. Kami mengikat janji menuju masa depan bersama.</div>
+          </div>
+          <img class="aei-photo" src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=100&h=100&fit=crop&q=80" alt="" loading="lazy">
+        </div>
+      </div>
+    </div>
+    <div class="agenda-item">
+      <div class="agenda-date-col">
+        <div class="agenda-date-num" style="color:var(--g-red)">24</div>
+        <div class="agenda-date-day">MEI '26</div>
+      </div>
+      <div class="agenda-events-col">
+        <div class="agenda-event-item" style="background:rgba(26,115,232,.04)">
+          <div class="aei-color" style="background:var(--ev-red)"></div>
+          <div class="aei-content">
+            <div class="aei-title">💒 Pernikahan</div>
+            <div class="aei-time">08:00 WIB · Graha Yadika, Tangerang</div>
+            <div style="font-family:var(--fR);font-size:11px;color:var(--g-mid);margin-top:4px;line-height:1.6">Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga dan mencintai selamanya.</div>
+          </div>
+          <img class="aei-photo" src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=100&h=100&fit=crop&q=80" alt="" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOOGLE PHOTOS — Gallery -->
+  <div class="photos-card">
+    <div class="photos-header">
+      <div class="photos-header-left">
+        <div class="ph-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 3H3C2 3 1 4 1 5v3h2V5h18v14h-7v2h7c1 0 2-1 2-2V5c0-1-1-2-2-2zM1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11z"/></svg>
+        </div>
+        <div class="ph-label">Google Photos — Galeri Foto</div>
+      </div>
+      <span class="ph-view-all">Lihat Semua</span>
+    </div>
+    <div class="gal-runner" id="gr1"><div class="gal-track" id="gt1"></div></div>
+    <div class="gal-runner" id="gr2"><div class="gal-track" id="gt2"></div></div>
+  </div>
+
+  <!-- GOOGLE PAY — Gift -->
+  <div class="gpay-card" id="gift">
+    <div class="gpay-header">
+      <div class="gpay-icon">
+        <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z" fill="white"/></svg>
+      </div>
+      <div>
+        <div class="gpay-title">Google Pay — Amplop Digital</div>
+        <div class="gpay-sub">Transfer via rekening bank</div>
+      </div>
+    </div>
+    <div class="gpay-body">
+      <div class="gpay-desc">Doa restu sudah sangat cukup, namun jika memberi merupakan tanda kasih, kami dengan senang hati menerimanya.</div>
+      <div class="gpay-accounts">
+        <div class="gpay-account">
+          <div class="gpay-bank-logo" style="background:#005cac">BCA</div>
+          <div class="gpay-bank-info">
+            <div class="gpay-bank-name">Bank BCA</div>
+            <div class="gpay-holder">Zardarian Ahadika N</div>
+            <div class="gpay-number">8210 3705 61</div>
+          </div>
+          <button class="gpay-copy-btn" onclick="cp('8210370561',this)">
+            <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            Salin
+          </button>
+        </div>
+        <div class="gpay-account">
+          <div class="gpay-bank-logo" style="background:#ff6200">BNI</div>
+          <div class="gpay-bank-info">
+            <div class="gpay-bank-name">Bank BNI</div>
+            <div class="gpay-holder">Anita Pangestuti</div>
+            <div class="gpay-number">1192 9784 03</div>
+          </div>
+          <button class="gpay-copy-btn" onclick="cp('1192978403',this)">
+            <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            Salin
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GOOGLE FORMS — RSVP -->
+  <div class="gform-card" id="rsvp">
+    <div class="gform-header-strip"></div>
+    <div class="gform-header">
+      <div class="gform-icon">
+        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>
+      </div>
+      <div class="gform-title">Wedding RSVP Form</div>
+      <div class="gform-sub">The Wedding of Anita & Zarda · 24 Mei 2026</div>
+    </div>
+    <!-- Stats -->
+    <div class="gform-stats">
+      <div class="gf-stat"><div class="gf-stat-dot" style="background:var(--g-blue)"></div><span class="gf-stat-label">Respons</span><span class="gf-stat-num">7</span></div>
+      <div class="gf-stat"><div class="gf-stat-dot" style="background:var(--g-green)"></div><span class="gf-stat-label">Hadir</span><span class="gf-stat-num">7</span></div>
+      <div class="gf-stat"><div class="gf-stat-dot" style="background:var(--g-yellow)"></div><span class="gf-stat-label">Total Tamu</span><span class="gf-stat-num">13</span></div>
+    </div>
+    <div class="gform-body">
+      <!-- Q1 Nama -->
+      <div class="gf-question">
+        <div class="gf-q-label">Nama Lengkap <span class="gf-required">*</span></div>
+        <input type="text" class="gf-input" placeholder="Jawaban Anda" id="rN">
+      </div>
+      <!-- Q2 Hadir -->
+      <div class="gf-question">
+        <div class="gf-q-label">Konfirmasi Kehadiran <span class="gf-required">*</span></div>
+        <div class="gf-options">
+          <label class="gf-option" onclick="setAttend('hadir',this)">
+            <div class="gf-radio" id="radioHadir"></div>
+            <span class="gf-option-label">✓ Hadir</span>
+          </label>
+          <label class="gf-option" onclick="setAttend('tidak',this)">
+            <div class="gf-radio" id="radioTidak"></div>
+            <span class="gf-option-label">✕ Tidak Hadir</span>
+          </label>
+        </div>
+      </div>
+      <!-- Q3 Jumlah -->
+      <div class="gf-question">
+        <div class="gf-q-label">Jumlah Tamu</div>
+        <div class="gf-counter">
+          <button class="gf-counter-btn" onclick="adjustGuest(-1)">−</button>
+          <div class="gf-counter-num" id="guestNum">1</div>
+          <button class="gf-counter-btn" onclick="adjustGuest(1)">+</button>
+          <span style="font-family:var(--fR);font-size:13px;color:var(--g-mid)">orang</span>
+        </div>
+      </div>
+      <!-- Q4 Pesan -->
+      <div class="gf-question">
+        <div class="gf-q-label">Ucapan & Pesan</div>
+        <textarea class="gf-input" placeholder="Tuliskan ucapan untuk Anita & Zarda..." id="rM"></textarea>
+      </div>
+      <button class="gform-submit" onclick="submitR()">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        Submit
+      </button>
+    </div>
+  </div>
+
+  <!-- GOOGLE REVIEWS — Wishes -->
+  <div class="reviews-card">
+    <div class="reviews-header">
+      <div class="rv-icon">
+        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+      </div>
+      <div class="rv-label">Reviews — Ucapan & Doa</div>
+    </div>
+    <div class="review-list" id="wList">
+      <div class="review-item visible">
+        <div class="rv-header">
+          <div class="rv-avatar" style="background:#4285f4">A</div>
+          <div><div class="rv-name">Ayu Rahmawati</div><div class="rv-status">✓ Hadir · 2 tamu</div></div>
+        </div>
+        <div class="rv-stars">⭐⭐⭐⭐⭐</div>
+        <div class="rv-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu Anita & Zarda! 🌿</div>
+        <div class="rv-helpful">
+          <span class="rv-helpful-label">Helpful?</span>
+          <button class="rv-helpful-btn"><svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg> Ya</button>
+        </div>
+      </div>
+      <div class="review-item visible">
+        <div class="rv-header">
+          <div class="rv-avatar" style="background:#34a853">R</div>
+          <div><div class="rv-name">Reza Firmansyah</div><div class="rv-status">✓ Hadir · 1 tamu</div></div>
+        </div>
+        <div class="rv-stars">⭐⭐⭐⭐⭐</div>
+        <div class="rv-text">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan kebahagiaan yang tidak pernah habis. Aamiin!</div>
+        <div class="rv-helpful"><span class="rv-helpful-label">Helpful?</span><button class="rv-helpful-btn"><svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg> Ya</button></div>
+      </div>
+      <div class="review-item visible">
+        <div class="rv-header">
+          <div class="rv-avatar" style="background:#ea4335">S</div>
+          <div><div class="rv-name">Sinta Dewi</div><div class="rv-status">✓ Hadir · 2 tamu</div></div>
+        </div>
+        <div class="rv-stars">⭐⭐⭐⭐⭐</div>
+        <div class="rv-text">Wishing you both a lifetime of love and laughter. Semoga langkah kalian selalu diberkahi Allah SWT 💚</div>
+        <div class="rv-helpful"><span class="rv-helpful-label">Helpful?</span><button class="rv-helpful-btn"><svg viewBox="0 0 24 24"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg> Ya</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="g-footer">
+    <div class="gf-logo-row">
+      <div style="font-family:var(--fD);font-size:26px;font-weight:400">
+        <span style="color:var(--g-blue)">G</span><span style="color:var(--g-red)">o</span><span style="color:var(--g-yellow)">o</span><span style="color:var(--g-blue)">g</span><span style="color:var(--g-green)">l</span><span style="color:var(--g-red)">e</span>
+      </div>
+      <span class="gf-product-name">Calendar</span>
+    </div>
+    <div class="gf-color-bar"></div>
+    <h2 class="gf-title">Anita &amp; Zarda</h2>
+    <p class="gf-sub">Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu kepada kami.</p>
+    <p class="gf-sig">Kami yang berbahagia, <strong>Anita & Zarda</strong> 💍</p>
+    <p class="gf-brand">Digital Invitation by <a href="#">BridesSpace</a> · Google Calendar Theme</p>
+  </div>
+</div><!-- /g-section -->
+</div><!-- /main -->
+
+<!-- BOTTOM NAV -->
+<nav class="bnav" id="bnav">
+  <a href="#home" class="n-item active"><svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"/></svg>Calendar</a>
+  <a href="#couple" class="n-item"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>People</a>
+  <a href="#event" class="n-item"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>Maps</a>
+  <a href="#gift" class="n-item"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>Pay</a>
+  <a href="#rsvp" class="n-item"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>Forms</a>
+</nav>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lb">
+  <button class="lb-x" onclick="closeLb()">✕</button>
+  <button class="lb-nav lb-p" onclick="lbPrev()">‹</button>
+  <img class="lb-img" id="lbI" src="" alt="">
+  <button class="lb-nav lb-n" onclick="lbNext()">›</button>
+  <div class="lb-c" id="lbC"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const TRACKS=[
+  {title:"Wedding Day",artist:"Anita & Zarda · Wedding Playlist",dur:"3:24",secs:204},
+  {title:"First Look",artist:"Anita & Zarda · Wedding Playlist",dur:"2:58",secs:178},
+  {title:"Lamaran",artist:"Anita & Zarda · Wedding Playlist",dur:"4:12",secs:252},
+];
+const IMGS=[
+  "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=650&fit=crop&q=80",
+];
+
+let tIdx=0,isPlaying=false,prog=0,pTimer=null,lbIdx=0,guestCount=1,attendStatus='';
+
+/* ── CALENDAR GRID ── */
+(function buildCal(){
+  const grid=document.getElementById('calGrid');
+  if(!grid) return;
+  // May 2026 starts on Friday (day 5, 0=Sun)
+  const firstDay=5; // May 1 2026 = Friday
+  const daysInMonth=31;
+  const today=new Date();
+  const isCurrentMonth=(today.getMonth()===4&&today.getFullYear()===2026);
+
+  // Prev month padding
+  const prevDays=[27,28,29,30]; // April days
+  for(let i=0;i<firstDay;i++){
+    const d=document.createElement('div');
+    d.className='cmv-day other-month';
+    d.textContent=prevDays[prevDays.length-firstDay+i]||'';
+    grid.appendChild(d);
+  }
+  for(let d=1;d<=daysInMonth;d++){
+    const el=document.createElement('div');
+    let cls='cmv-day';
+    if(isCurrentMonth&&d===today.getDate()) cls+=' today';
+    else if(d===24) cls+=' wedding-day';
+    else if(d===21||d===22||d===23) cls+=' event-day';
+    el.className=cls;
+    el.textContent=d;
+    grid.appendChild(el);
+  }
+  // Next month
+  const remaining=42-(firstDay+daysInMonth);
+  for(let i=1;i<=remaining;i++){
+    const el=document.createElement('div');
+    el.className='cmv-day other-month';
+    el.textContent=i;
+    grid.appendChild(el);
+  }
+})();
+
+/* ── OPEN ── */
+function openInvitation(){
+  document.getElementById('opening').classList.add('hide');
+  setTimeout(()=>document.getElementById('main').classList.add('show'),100);
+  document.getElementById('bnav').classList.add('show');
+  setTimeout(init,400);
+}
+function init(){countdown();buildGallery();scrollAnims();navHL()}
+
+/* ── PLAYER ── */
+function togglePlay(){isPlaying?pause():play()}
+function play(){setPlay(true)}
+function pause(){clearInterval(pTimer);setPlay(false)}
+function setPlay(p){
+  isPlaying=p;
+  document.getElementById('pIco').style.display=p?'none':'block';
+  document.getElementById('pauseIco').style.display=p?'block':'none';
+  const eq=document.getElementById('eqB');if(eq)eq.classList.toggle('paused',!p);
+  if(p){const t=TRACKS[tIdx];pTimer=setInterval(()=>{prog=Math.min(prog+(100/t.secs),100);updProg();if(prog>=100)nextTrack()},1000)}
+}
+function updProg(){
+  document.getElementById('pFill').style.width=prog+'%';
+  const t=TRACKS[tIdx],e=Math.round((prog/100)*t.secs);
+  document.getElementById('curT').textContent=Math.floor(e/60)+':'+String(e%60).padStart(2,'0');
+}
+function sw(idx,btn){
+  document.querySelectorAll('.t-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');tIdx=idx;clearInterval(pTimer);prog=0;
+  const t=TRACKS[idx];
+  document.getElementById('pTitle').innerHTML=`${t.title} <span class="eq ${isPlaying?'':'paused'}" id="eqB"><span class="eq-b"></span><span class="eq-b"></span><span class="eq-b"></span></span>`;
+  document.getElementById('pArtist').textContent=t.artist;
+  document.getElementById('totT').textContent=t.dur;
+  updProg();
+  if(isPlaying){pTimer=setInterval(()=>{prog=Math.min(prog+(100/t.secs),100);updProg();if(prog>=100)nextTrack()},1000)}
+}
+function nextTrack(){const n=(tIdx+1)%TRACKS.length;const pill=document.querySelectorAll('.t-pill')[n];if(pill)sw(n,pill)}
+document.addEventListener('click',e=>{const tr=document.getElementById('pTrack');if(tr&&tr.contains(e.target)){const r=tr.getBoundingClientRect();prog=Math.max(0,Math.min(100,((e.clientX-r.left)/r.width)*100));updProg()}});
+
+/* ── COUNTDOWN ── */
+function countdown(){
+  const t=new Date('2026-05-24T08:00:00');
+  function tick(){
+    const d=t-new Date();
+    if(d<=0){['cdD','cdH','cdM','cdS'].forEach(id=>document.getElementById(id).textContent='00');return}
+    document.getElementById('cdD').textContent=String(Math.floor(d/86400000)).padStart(2,'0');
+    document.getElementById('cdH').textContent=String(Math.floor((d%86400000)/3600000)).padStart(2,'0');
+    document.getElementById('cdM').textContent=String(Math.floor((d%3600000)/60000)).padStart(2,'0');
+    document.getElementById('cdS').textContent=String(Math.floor((d%60000)/1000)).padStart(2,'0');
+  }
+  tick();setInterval(tick,1000);
+}
+
+/* ── GALLERY ── */
+function buildGallery(){
+  buildRow('gt1','gr1',IMGS,.5,'sz1');
+  buildRow('gt2','gr2',[...IMGS].reverse(),-.42,'sz2');
+}
+function buildRow(tId,wId,imgs,spd,cls){
+  const track=document.getElementById(tId),wrap=document.getElementById(wId);
+  const all=[...imgs,...imgs,...imgs];
+  all.forEach((src,i)=>{
+    const ri=i%imgs.length;
+    const el=document.createElement('div');el.className=`g-item ${cls}`;
+    el.innerHTML=`<img src="${src}" alt="G${ri+1}" loading="lazy">`;
+    el.addEventListener('click',()=>openLb(ri));
+    track.appendChild(el);
+  });
+  requestAnimationFrame(()=>{
+    const item=track.querySelector('.g-item');if(!item)return;
+    const iw=item.offsetWidth+4,total=imgs.length*iw;
+    let off=total,paused=false,drag=false,dS=0,sS=0;
+    function tick(){
+      if(!paused){off+=spd;if(spd>0){if(off>=total*2)off-=total;if(off<total)off+=total}else{if(off<=0)off+=total;if(off>total)off-=total}}
+      track.style.transform=`translateX(-${off}px)`;requestAnimationFrame(tick);
+    }
+    track.style.transform=`translateX(-${off}px)`;requestAnimationFrame(tick);
+    wrap.addEventListener('mousedown',e=>{drag=true;dS=e.clientX;sS=off;paused=true});
+    window.addEventListener('mousemove',e=>{if(!drag)return;off=sS-(e.clientX-dS)});
+    window.addEventListener('mouseup',()=>{drag=false;paused=false});
+    wrap.addEventListener('touchstart',e=>{dS=e.touches[0].clientX;sS=off;paused=true},{passive:true});
+    wrap.addEventListener('touchmove',e=>{off=sS-(e.touches[0].clientX-dS)},{passive:true});
+    wrap.addEventListener('touchend',()=>{paused=false});
+    wrap.addEventListener('mouseenter',()=>{if(!drag)paused=true});
+    wrap.addEventListener('mouseleave',()=>{drag=false;paused=false});
+  });
+}
+
+/* ── LIGHTBOX ── */
+function openLb(idx){lbIdx=idx;updLb();document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden'}
+function closeLb(){document.getElementById('lb').classList.remove('open');document.body.style.overflow=''}
+function lbPrev(){lbIdx=(lbIdx-1+IMGS.length)%IMGS.length;updLb()}
+function lbNext(){lbIdx=(lbIdx+1)%IMGS.length;updLb()}
+function updLb(){document.getElementById('lbI').src=IMGS[lbIdx];document.getElementById('lbC').textContent=`${lbIdx+1} / ${IMGS.length}`}
+document.addEventListener('keydown',e=>{if(!document.getElementById('lb').classList.contains('open'))return;if(e.key==='Escape')closeLb();if(e.key==='ArrowLeft')lbPrev();if(e.key==='ArrowRight')lbNext()});
+
+/* ── RSVP form ── */
+function setAttend(val,el){
+  attendStatus=val;
+  document.getElementById('radioHadir').classList.toggle('selected',val==='hadir');
+  document.getElementById('radioTidak').classList.toggle('selected',val==='tidak');
+}
+function adjustGuest(delta){
+  guestCount=Math.max(1,Math.min(5,guestCount+delta));
+  document.getElementById('guestNum').textContent=guestCount;
+}
+function submitR(){
+  const name=document.getElementById('rN').value.trim();
+  const msg=document.getElementById('rM').value.trim();
+  if(!name||!attendStatus){showT('Mohon isi nama dan status kehadiran');return}
+  const init=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const colors=['#4285f4','#34a853','#ea4335','#fbbc04','#7986cb','#009688'];
+  const color=colors[Math.floor(Math.random()*colors.length)];
+  const stxt=attendStatus==='hadir'?`✓ Hadir · ${guestCount} tamu`:'✕ Tidak Hadir';
+  const stars='⭐'.repeat(attendStatus==='hadir'?5:3);
+  const item=document.createElement('div');item.className='review-item';
+  item.innerHTML=`<div class="rv-header"><div class="rv-avatar" style="background:${color}">${init}</div><div><div class="rv-name">${name}</div><div class="rv-status">${stxt}</div></div></div><div class="rv-stars">${stars}</div><div class="rv-text">${msg||'Selamat dan semoga bahagia selalu! 🎉'}</div><div class="rv-helpful"><span class="rv-helpful-label">Helpful?</span><button class="rv-helpful-btn"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/></svg> Ya</button></div>`;
+  document.getElementById('wList').prepend(item);
+  setTimeout(()=>item.classList.add('visible'),50);
+  document.getElementById('rN').value='';document.getElementById('rM').value='';
+  attendStatus='';
+  document.getElementById('radioHadir').classList.remove('selected');
+  document.getElementById('radioTidak').classList.remove('selected');
+  guestCount=1;document.getElementById('guestNum').textContent='1';
+  showT('Response submitted ✓');
+  setTimeout(()=>document.querySelector('.reviews-card').scrollIntoView({behavior:'smooth',block:'start'}),300);
+}
+
+/* ── COPY ── */
+function cp(txt,btn){
+  navigator.clipboard.writeText(txt).then(()=>{
+    const orig=btn.innerHTML;
+    btn.classList.add('copied');btn.innerHTML='<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Tersalin';
+    showT('Nomor rekening tersalin ✓');
+    setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=orig},2500);
+  }).catch(()=>showT('Salin manual: '+txt));
+}
+
+/* ── SCROLL ANIMS ── */
+function scrollAnims(){
+  const obs=new IntersectionObserver(en=>en.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.08});
+  document.querySelectorAll('.agenda-item,.review-item').forEach(el=>obs.observe(el));
+}
+
+/* ── NAV ── */
+function navHL(){
+  const obs=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.n-item').forEach(n=>n.classList.remove('active'));const a=document.querySelector(`.n-item[href="#${e.target.id}"]`);if(a)a.classList.add('active')}})},{rootMargin:'-40% 0px -40% 0px'});
+  ['home','couple','event','gift','rsvp'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el)});
+}
+
+/* ── TOAST ── */
+let tT;
+function showT(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2800)}
+</script>
+</body>
+</html>

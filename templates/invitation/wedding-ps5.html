@@ -1,0 +1,2059 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anita & Zarda — PS5 Wedding</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+/* ═══════════════════════════════════════
+   PS5 DESIGN TOKENS
+═══════════════════════════════════════ */
+:root {
+  --ps-white:    #FFFFFF;
+  --ps-offwhite: #F0F0F0;
+  --ps-bg:       #0A0A0F;
+  --ps-bg2:      #0E0E18;
+  --ps-bg3:      #12121E;
+  --ps-card:     rgba(255,255,255,0.06);
+  --ps-card2:    rgba(255,255,255,0.09);
+  --ps-border:   rgba(255,255,255,0.10);
+  --ps-border2:  rgba(255,255,255,0.16);
+  --ps-blue:     #0070D1;
+  --ps-blue2:    #0096FF;
+  --ps-blue3:    #33AAFF;
+  --ps-blue-glow:rgba(0,150,255,0.35);
+  --ps-cyan:     #00D4FF;
+  --ps-gray:     #A0A0B0;
+  --ps-gray2:    #6A6A80;
+  --ps-gray3:    #3A3A50;
+  --ps-trophy-g: #CD7F32;  /* bronze */
+  --ps-trophy-s: #C0C0C0;  /* silver */
+  --ps-trophy-go:#FFD700;  /* gold */
+  --ps-trophy-p: #B44FE8;  /* platinum */
+
+  /* DualSense button colors */
+  --ps-cross:    #6CB4E4;
+  --ps-circle:   #E44C5E;
+  --ps-square:   #E478A8;
+  --ps-triangle: #4CBFA4;
+
+  --font: 'Inter', sans-serif;
+}
+
+/* ═══════════════════════════════════════
+   BASE
+═══════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ps-bg);
+  color:var(--ps-white);
+  font-family:var(--font);
+  overflow-x:hidden;
+  cursor:none;
+}
+
+/* ── Custom Cursor — PS circle ── */
+#cursor{
+  width:12px;height:12px;
+  background:var(--ps-blue2);
+  border-radius:50%;
+  position:fixed;z-index:99999;
+  pointer-events:none;
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s,opacity .2s;
+  box-shadow:0 0 12px var(--ps-blue-glow);
+}
+#cursor-ring{
+  width:36px;height:36px;
+  border:1.5px solid rgba(0,150,255,.5);
+  border-radius:50%;
+  position:fixed;z-index:99998;
+  pointer-events:none;
+  transform:translate(-50%,-50%);
+  transition:left .1s ease,top .1s ease,width .25s,height .25s;
+}
+
+/* ═══════════════════════════════════════
+   ANIMATED BG — PS5 WAVES
+═══════════════════════════════════════ */
+.ps-bg-canvas{
+  position:fixed;inset:0;z-index:0;
+  pointer-events:none;overflow:hidden;
+}
+.ps-wave{
+  position:absolute;
+  border-radius:50%;
+  filter:blur(80px);
+  opacity:0;
+  animation:waveFloat linear infinite;
+}
+@keyframes waveFloat{
+  0%{opacity:0;transform:translateY(20px) scale(.9)}
+  20%{opacity:1}
+  80%{opacity:.8}
+  100%{opacity:0;transform:translateY(-40px) scale(1.1)}
+}
+
+/* ═══════════════════════════════════════
+   OPENING — PS5 BOOT SCREEN
+═══════════════════════════════════════ */
+#opening{
+  position:fixed;inset:0;z-index:9990;
+  background:var(--ps-bg);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  text-align:center;padding:24px;
+  transition:opacity 1s ease;
+  overflow:hidden;
+}
+#opening.hide{opacity:0;pointer-events:none}
+
+/* Opening video background */
+.op-video{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  opacity:0;
+  transition:opacity 2s ease;
+  filter:saturate(.2) brightness(.45) contrast(1.1);
+  z-index:0;
+}
+.op-video.show{opacity:1}
+
+/* Layered cinematic overlays on top of video */
+.op-overlay-grad{
+  position:absolute;inset:0;z-index:1;
+  background:
+    radial-gradient(ellipse 100% 100% at 50% 50%, rgba(10,10,30,.55) 0%, rgba(10,10,20,.82) 100%),
+    linear-gradient(180deg, rgba(10,10,20,.7) 0%, rgba(10,10,20,.3) 40%, rgba(10,10,20,.3) 60%, rgba(10,10,20,.75) 100%);
+  pointer-events:none;
+}
+/* Blue PS5 glow at bottom */
+.op-overlay-glow{
+  position:absolute;bottom:0;left:0;right:0;
+  height:40%;z-index:1;
+  background:radial-gradient(ellipse 80% 100% at 50% 100%, rgba(0,100,220,.22) 0%, transparent 70%);
+  pointer-events:none;
+}
+/* Scanline subtle effect */
+.op-overlay-scan{
+  position:absolute;inset:0;z-index:1;
+  background:repeating-linear-gradient(
+    0deg,
+    transparent 0px,transparent 3px,
+    rgba(0,0,0,.04) 3px,rgba(0,0,0,.04) 4px
+  );
+  pointer-events:none;
+}
+/* Vignette corners */
+.op-overlay-vignette{
+  position:absolute;inset:0;z-index:1;
+  background:radial-gradient(ellipse 90% 90% at 50% 50%, transparent 50%, rgba(0,0,0,.55) 100%);
+  pointer-events:none;
+}
+
+/* All opening content sits above overlays */
+.op-content{
+  position:relative;z-index:2;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  width:100%;
+}
+
+/* Video sound badge — bottom right of opening */
+.op-sound-hint{
+  position:absolute;bottom:52px;right:24px;z-index:3;
+  display:flex;align-items:center;gap:6px;
+  font-size:10px;font-weight:500;letter-spacing:.1em;
+  text-transform:uppercase;
+  color:rgba(255,255,255,.3);
+  opacity:0;transition:opacity .5s ease 2.5s;
+}
+.op-sound-hint.show{opacity:1}
+.op-sound-wave{
+  display:flex;align-items:flex-end;gap:2px;height:12px;
+}
+.osw-bar{
+  width:2px;background:rgba(0,150,255,.5);border-radius:1px;
+  animation:soundWave var(--d,.5s) ease-in-out infinite alternate;
+}
+@keyframes soundWave{from{height:2px}to{height:100%}}
+
+/* PS logo pulse */
+.ps-logo-wrap{
+  margin-bottom:32px;
+  opacity:0;animation:fadeUp .7s ease .3s forwards;
+}
+.ps-logo{
+  width:72px;height:72px;
+  margin:0 auto;
+  position:relative;
+}
+.ps-logo-ring{
+  position:absolute;inset:0;
+  border-radius:50%;
+  border:2px solid rgba(0,150,255,.3);
+  animation:psSpin 8s linear infinite;
+}
+.ps-logo-ring:nth-child(2){
+  border-color:rgba(0,212,255,.2);
+  animation-duration:12s;animation-direction:reverse;
+  inset:6px;
+}
+@keyframes psSpin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+.ps-logo-icon{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.ps-logo-icon svg{width:40px;height:40px}
+
+/* Boot text */
+.op-system{
+  font-size:11px;letter-spacing:.5em;text-transform:uppercase;
+  color:var(--ps-gray2);font-weight:500;
+  margin-bottom:8px;
+  opacity:0;animation:fadeUp .6s ease .6s forwards;
+}
+.op-title{
+  font-size:clamp(28px,7vw,52px);
+  font-weight:800;letter-spacing:-.02em;
+  color:var(--ps-white);
+  margin-bottom:4px;line-height:1;
+  opacity:0;animation:fadeUp .7s ease .8s forwards;
+}
+.op-title .blue{
+  background:linear-gradient(135deg,var(--ps-blue2),var(--ps-cyan));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.op-subtitle{
+  font-size:clamp(11px,2.5vw,15px);
+  color:var(--ps-gray);font-weight:300;
+  letter-spacing:.04em;margin-bottom:40px;
+  opacity:0;animation:fadeUp .6s ease 1s forwards;
+}
+
+/* Notification card */
+.op-notif{
+  background:rgba(255,255,255,.07);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border:1px solid var(--ps-border2);
+  border-radius:12px;
+  padding:20px 28px;
+  max-width:400px;width:100%;
+  text-align:left;
+  margin-bottom:32px;
+  display:flex;align-items:center;gap:16px;
+  opacity:0;animation:fadeUp .7s ease 1.2s forwards;
+}
+.op-notif-icon{
+  width:48px;height:48px;border-radius:10px;
+  background:linear-gradient(135deg,var(--ps-blue),var(--ps-cyan));
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;
+}
+.op-notif-text{}
+.op-notif-title{
+  font-size:12px;font-weight:600;
+  color:var(--ps-white);letter-spacing:.02em;margin-bottom:4px;
+}
+.op-notif-sub{
+  font-size:11px;color:var(--ps-gray);font-weight:400;
+}
+
+/* Start button */
+.op-start{
+  display:flex;align-items:center;gap:8px;
+  font-size:13px;color:var(--ps-gray);font-weight:500;
+  letter-spacing:.08em;
+  opacity:0;animation:fadeUp .6s ease 1.5s forwards;
+  cursor:none;
+}
+.op-start-btn{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--ps-blue2);
+  display:flex;align-items:center;justify-content:center;
+  animation:startPulse 2s ease-in-out infinite;
+  cursor:none;border:none;
+}
+@keyframes startPulse{0%,100%{box-shadow:0 0 0 0 rgba(0,150,255,.5)}50%{box-shadow:0 0 0 8px rgba(0,150,255,0)}}
+.op-start-btn svg{width:16px;height:16px;fill:#fff}
+
+/* Loading bar */
+.op-loading{
+  position:absolute;bottom:0;left:0;right:0;height:3px;
+  background:rgba(255,255,255,.06);
+}
+.op-loading-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--ps-blue),var(--ps-cyan));
+  transition:width 1.8s ease 1.6s;
+}
+.op-loading-fill.go{width:100%}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══════════════════════════════════════
+   MAIN
+═══════════════════════════════════════ */
+#main{opacity:0;transition:opacity .8s ease}
+#main.show{opacity:1}
+
+/* ═══════════════════════════════════════
+   HERO — GAME SPLASH SCREEN
+═══════════════════════════════════════ */
+.hero{
+  min-height:100svh;
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+
+/* Hero BG — blurred bokeh */
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 50%, rgba(0,80,200,.25) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 30%, rgba(0,180,255,.15) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 60% 80%, rgba(80,0,200,.12) 0%, transparent 50%),
+    var(--ps-bg);
+}
+.hero-bg-img{
+  position:absolute;inset:0;
+  opacity:.08;filter:saturate(.3);
+}
+/* Video background */
+.hero-bg-video{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;
+  opacity:0;
+  filter:saturate(.25) brightness(.6) contrast(1.1);
+  transition:opacity 1.4s ease;
+  z-index:1;
+}
+.hero-bg-video.playing{opacity:.32}
+/* Keep gradient overlays above video */
+.hero-bg{z-index:2}
+.hero-bg-video-overlay{
+  position:absolute;inset:0;z-index:3;
+  background:
+    linear-gradient(180deg,rgba(10,10,20,.65) 0%,transparent 30%,transparent 60%,rgba(10,10,20,.8) 100%),
+    radial-gradient(ellipse 80% 60% at 20% 50%,rgba(0,60,160,.35) 0%,transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 30%,rgba(0,120,200,.18) 0%,transparent 60%);
+  pointer-events:none;
+}
+/* Mute btn */
+.video-mute-btn{
+  position:absolute;bottom:32px;left:40px;z-index:15;
+  background:rgba(255,255,255,.08);
+  backdrop-filter:blur(12px);
+  border:1px solid var(--ps-border2);
+  border-radius:8px;
+  color:rgba(255,255,255,.6);
+  font-family:var(--font);font-size:11px;font-weight:600;
+  padding:8px 14px;cursor:none;
+  display:flex;align-items:center;gap:6px;
+  letter-spacing:.06em;text-transform:uppercase;
+  transition:background .2s,color .2s;
+  opacity:0;transition:opacity .5s ease 2s,background .2s,color .2s;
+}
+.video-mute-btn.show{opacity:1}
+.video-mute-btn:hover{background:rgba(255,255,255,.14);color:#fff}
+@media(max-width:600px){.video-mute-btn{left:20px;bottom:76px}}
+
+/* Top bar — PS5 system bar */
+.ps-topbar{
+  position:relative;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 40px;
+  background:linear-gradient(180deg,rgba(10,10,15,.8) 0%,transparent 100%);
+}
+@media(max-width:600px){.ps-topbar{padding:16px 20px}}
+.topbar-left{
+  display:flex;align-items:center;gap:10px;
+}
+.ps-logo-sm{
+  font-size:13px;font-weight:700;letter-spacing:.08em;
+  color:rgba(255,255,255,.7);
+}
+.topbar-sep{width:1px;height:16px;background:var(--ps-border2)}
+.topbar-game{
+  font-size:12px;color:var(--ps-gray2);font-weight:400;letter-spacing:.04em;
+}
+.topbar-right{
+  display:flex;align-items:center;gap:16px;
+}
+.topbar-time{
+  font-size:13px;color:var(--ps-gray);font-weight:500;
+  font-variant-numeric:tabular-nums;
+}
+/* DualSense buttons */
+.ds-buttons{display:flex;gap:6px}
+.ds-btn{
+  width:18px;height:18px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:8px;font-weight:700;color:rgba(0,0,0,.7);
+  letter-spacing:0;
+}
+
+/* Hero main content */
+.hero-content{
+  flex:1;
+  display:flex;align-items:flex-end;
+  padding:0 40px 60px;
+  position:relative;z-index:5;
+}
+@media(max-width:600px){.hero-content{padding:0 20px 80px}}
+
+.hero-game-card{
+  max-width:680px;width:100%;
+}
+.hgc-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(0,150,255,.15);
+  border:1px solid rgba(0,150,255,.3);
+  border-radius:20px;
+  padding:5px 14px;
+  font-size:10px;font-weight:600;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--ps-blue3);
+  margin-bottom:16px;
+}
+.hgc-title{
+  font-size:clamp(36px,8vw,72px);
+  font-weight:900;letter-spacing:-.03em;
+  line-height:.95;
+  margin-bottom:12px;
+}
+.hgc-title .gradient{
+  background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,.6) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.hgc-title .blue-g{
+  background:linear-gradient(135deg,var(--ps-blue2) 0%,var(--ps-cyan) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.hgc-meta{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+  margin-bottom:24px;
+}
+.hgc-rating{
+  display:flex;align-items:center;gap:4px;
+  font-size:11px;color:var(--ps-gray);
+}
+.hgc-stars{color:var(--ps-trophy-go);font-size:11px}
+.hgc-sep{width:3px;height:3px;border-radius:50%;background:var(--ps-gray3)}
+.hgc-genre{
+  font-size:11px;color:var(--ps-gray2);font-weight:500;
+  letter-spacing:.08em;text-transform:uppercase;
+}
+.hgc-desc{
+  font-size:clamp(13px,2vw,15px);
+  color:rgba(255,255,255,.55);font-weight:300;
+  line-height:1.7;max-width:480px;margin-bottom:28px;
+}
+.hgc-actions{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.ps-btn-primary{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--ps-blue2);
+  border:none;border-radius:8px;
+  color:#fff;font-family:var(--font);
+  font-size:13px;font-weight:600;
+  padding:13px 28px;cursor:none;
+  letter-spacing:.02em;
+  transition:background .2s,transform .15s,box-shadow .2s;
+  box-shadow:0 4px 24px rgba(0,150,255,.35);
+}
+.ps-btn-primary:hover{background:#0088EE;transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,150,255,.45)}
+.ps-btn-secondary{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.1);
+  backdrop-filter:blur(16px);
+  border:1px solid var(--ps-border2);border-radius:8px;
+  color:var(--ps-white);font-family:var(--font);
+  font-size:13px;font-weight:500;
+  padding:13px 24px;cursor:none;
+  letter-spacing:.02em;
+  transition:background .2s,transform .15s;
+  text-decoration:none;
+}
+.ps-btn-secondary:hover{background:rgba(255,255,255,.15);transform:translateY(-2px)}
+
+/* Hint bottom-right */
+.hero-hint{
+  position:absolute;bottom:28px;right:40px;z-index:5;
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;color:var(--ps-gray2);font-weight:500;
+}
+@media(max-width:600px){.hero-hint{right:20px}}
+.hint-btn{
+  width:20px;height:20px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;
+}
+
+/* ═══════════════════════════════════════
+   SECTION BASE
+═══════════════════════════════════════ */
+.ps-section{
+  padding:80px 40px;
+  position:relative;z-index:1;
+}
+@media(max-width:600px){.ps-section{padding:64px 20px}}
+.ps-section-header{margin-bottom:40px}
+.ps-eyebrow{
+  font-size:10px;font-weight:600;letter-spacing:.35em;
+  text-transform:uppercase;color:var(--ps-blue3);
+  display:flex;align-items:center;gap:10px;margin-bottom:10px;
+}
+.ps-eyebrow::before{content:'';width:20px;height:1.5px;background:var(--ps-blue2)}
+.ps-heading{
+  font-size:clamp(24px,5vw,42px);
+  font-weight:800;letter-spacing:-.02em;
+  color:var(--ps-white);line-height:1.05;
+}
+.ps-subtext{
+  font-size:clamp(13px,2vw,15px);
+  color:var(--ps-gray);font-weight:300;
+  line-height:1.7;margin-top:12px;max-width:560px;
+}
+
+/* ═══════════════════════════════════════
+   GAME INFO STRIP — like PS5 activity cards
+═══════════════════════════════════════ */
+.activity-strip{
+  background:var(--ps-bg2);
+  border-top:1px solid var(--ps-border);
+  border-bottom:1px solid var(--ps-border);
+  padding:0;overflow:hidden;
+}
+.activity-scroll{
+  display:flex;
+  overflow-x:auto;
+  scrollbar-width:none;
+  gap:0;
+}
+.activity-scroll::-webkit-scrollbar{display:none}
+.activity-card{
+  flex-shrink:0;
+  width:280px;
+  padding:24px 28px;
+  border-right:1px solid var(--ps-border);
+  position:relative;overflow:hidden;
+  cursor:none;
+  transition:background .2s;
+}
+.activity-card:hover{background:var(--ps-card)}
+.activity-card::before{
+  content:'';
+  position:absolute;left:0;top:20%;bottom:20%;
+  width:3px;
+  background:linear-gradient(180deg,var(--ps-blue2),var(--ps-cyan));
+  border-radius:2px;
+}
+.ac-label{
+  font-size:9px;font-weight:600;letter-spacing:.25em;
+  text-transform:uppercase;color:var(--ps-blue3);margin-bottom:6px;
+}
+.ac-value{
+  font-size:16px;font-weight:700;color:var(--ps-white);
+  margin-bottom:3px;letter-spacing:.01em;
+}
+.ac-sub{font-size:11px;color:var(--ps-gray2);font-weight:400}
+
+/* ═══════════════════════════════════════
+   COUNTDOWN — TROPHY CARD STYLE
+═══════════════════════════════════════ */
+.cd-section{
+  background:var(--ps-bg2);
+  padding:80px 40px;
+  text-align:center;
+}
+@media(max-width:600px){.cd-section{padding:64px 20px}}
+.cd-label{
+  font-size:10px;font-weight:600;letter-spacing:.35em;
+  text-transform:uppercase;color:var(--ps-blue3);
+  margin-bottom:8px;
+}
+.cd-title{
+  font-size:clamp(18px,4vw,26px);font-weight:700;
+  color:var(--ps-white);margin-bottom:48px;
+  letter-spacing:-.01em;
+}
+.cd-grid{
+  display:flex;justify-content:center;gap:12px;flex-wrap:wrap;
+}
+.cd-card{
+  background:rgba(255,255,255,.05);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--ps-border2);
+  border-radius:16px;
+  padding:28px 20px 20px;
+  min-width:100px;
+  position:relative;overflow:hidden;
+}
+/* PS blue top accent */
+.cd-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--ps-blue2),var(--ps-cyan));
+}
+.cd-n{
+  font-size:clamp(44px,9vw,64px);
+  font-weight:800;letter-spacing:-.03em;
+  color:var(--ps-white);line-height:1;
+  margin-bottom:8px;
+  font-variant-numeric:tabular-nums;
+}
+.cd-u{
+  font-size:9px;font-weight:600;letter-spacing:.25em;
+  text-transform:uppercase;color:var(--ps-gray2);
+}
+@media(max-width:480px){.cd-card{min-width:80px;padding:20px 14px 16px}}
+
+/* ═══════════════════════════════════════
+   COUPLE — PLAYER PROFILE
+═══════════════════════════════════════ */
+.couple-section{
+  background:var(--ps-bg);
+  padding:80px 40px;
+}
+@media(max-width:600px){.couple-section{padding:64px 20px}}
+.profile-grid{
+  display:grid;grid-template-columns:1fr auto 1fr;
+  gap:28px;align-items:center;max-width:860px;margin:0 auto;
+}
+@media(max-width:680px){.profile-grid{grid-template-columns:1fr;max-width:380px}}
+
+.profile-card{
+  background:rgba(255,255,255,.05);
+  backdrop-filter:blur(24px);
+  border:1px solid var(--ps-border2);
+  border-radius:20px;
+  overflow:hidden;
+  transition:transform .3s,box-shadow .3s,border-color .3s;
+}
+.profile-card:hover{
+  transform:translateY(-6px);
+  border-color:rgba(0,150,255,.4);
+  box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 0 1px rgba(0,150,255,.2);
+}
+
+/* Cover image bar */
+.pc-cover{
+  height:80px;
+  position:relative;overflow:hidden;
+}
+.pc-cover img{
+  width:100%;height:100%;object-fit:cover;
+  filter:saturate(.5) brightness(.6);
+}
+.pc-cover-grad{
+  position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(0,80,200,.6),rgba(0,200,255,.3));
+}
+
+.pc-body{padding:20px}
+.pc-avatar-row{
+  display:flex;align-items:flex-end;gap:14px;
+  margin-top:-36px;margin-bottom:14px;
+}
+.pc-avatar{
+  width:64px;height:64px;border-radius:14px;
+  overflow:hidden;border:3px solid var(--ps-bg2);
+  flex-shrink:0;
+  box-shadow:0 4px 20px rgba(0,0,0,.5);
+}
+.pc-avatar img{width:100%;height:100%;object-fit:cover}
+.pc-online{
+  display:flex;align-items:center;gap:6px;
+  font-size:10px;font-weight:500;
+  color:var(--ps-blue3);letter-spacing:.05em;
+  margin-bottom:2px;
+}
+.pc-online-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--ps-blue2);
+  box-shadow:0 0 6px var(--ps-blue-glow);
+  animation:onlinePulse 2s ease-in-out infinite;
+}
+@keyframes onlinePulse{0%,100%{opacity:1}50%{opacity:.5}}
+
+.pc-role{
+  font-size:10px;font-weight:600;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--ps-blue3);margin-bottom:4px;
+}
+.pc-name{
+  font-size:clamp(15px,3vw,19px);font-weight:700;
+  color:var(--ps-white);letter-spacing:-.01em;
+  margin-bottom:6px;line-height:1.2;
+}
+.pc-parents{
+  font-size:11px;color:var(--ps-gray2);
+  font-weight:400;line-height:1.7;
+}
+
+/* Trophy row */
+.pc-trophies{
+  display:flex;gap:6px;margin-top:16px;
+  padding-top:14px;
+  border-top:1px solid var(--ps-border);
+}
+.trophy{
+  display:flex;align-items:center;gap:4px;
+  font-size:10px;font-weight:600;
+}
+.trophy-icon{font-size:12px}
+
+.profile-vs{
+  font-size:clamp(28px,6vw,44px);
+  font-weight:900;
+  background:linear-gradient(135deg,var(--ps-blue2),var(--ps-cyan));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-align:center;letter-spacing:-.02em;
+  user-select:none;
+}
+@media(max-width:680px){.profile-vs{font-size:40px}}
+
+/* ═══════════════════════════════════════
+   TROPHY SECTION
+═══════════════════════════════════════ */
+.trophy-section{
+  background:var(--ps-bg2);
+  padding:80px 40px;
+  border-top:1px solid var(--ps-border);
+}
+@media(max-width:600px){.trophy-section{padding:64px 20px}}
+
+.trophy-list{
+  max-width:680px;margin:40px auto 0;
+  display:flex;flex-direction:column;gap:12px;
+}
+.trophy-card{
+  display:flex;align-items:center;gap:20px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--ps-border);
+  border-radius:14px;
+  padding:16px 20px;
+  transition:background .2s,border-color .2s,transform .2s;
+  opacity:0;transform:translateX(-20px);
+  transition:opacity .6s,transform .6s,background .2s,border-color .2s;
+}
+.trophy-card.visible{opacity:1;transform:translateX(0)}
+.trophy-card:hover{
+  background:rgba(255,255,255,.07);
+  border-color:var(--ps-border2);
+  transform:translateX(4px);
+}
+.tc-icon{
+  width:52px;height:52px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;flex-shrink:0;
+  position:relative;
+}
+.tc-icon::after{
+  content:attr(data-type);
+  position:absolute;bottom:-4px;right:-4px;
+  width:18px;height:18px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:8px;
+}
+.tc-icon.bronze{background:rgba(205,127,50,.15);}
+.tc-icon.bronze::after{background:var(--ps-trophy-g);content:'🥉'}
+.tc-icon.silver{background:rgba(192,192,192,.1);}
+.tc-icon.silver::after{background:var(--ps-trophy-s);content:'🥈'}
+.tc-icon.gold{background:rgba(255,215,0,.1);}
+.tc-icon.gold::after{background:var(--ps-trophy-go);content:'🥇'}
+.tc-icon.platinum{background:rgba(180,79,232,.12);}
+.tc-icon.platinum::after{background:var(--ps-trophy-p);content:'💎'}
+
+.tc-info{flex:1;min-width:0}
+.tc-name{
+  font-size:clamp(12px,2.5vw,14px);font-weight:600;
+  color:var(--ps-white);margin-bottom:4px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.tc-desc{
+  font-size:11px;color:var(--ps-gray2);font-weight:400;
+  line-height:1.5;
+}
+.tc-date{
+  font-size:10px;color:var(--ps-gray2);
+  font-weight:500;white-space:nowrap;
+  letter-spacing:.02em;
+}
+
+/* ═══════════════════════════════════════
+   EVENT — GAME DETAIL CARDS
+═══════════════════════════════════════ */
+.event-section{
+  background:var(--ps-bg);
+  padding:80px 40px;
+}
+@media(max-width:600px){.event-section{padding:64px 20px}}
+
+.event-cards{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:16px;max-width:860px;margin:40px auto 0;
+}
+@media(max-width:580px){.event-cards{grid-template-columns:1fr}}
+
+.event-card{
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--ps-border);
+  border-radius:20px;
+  overflow:hidden;
+  transition:transform .3s,border-color .3s,box-shadow .3s;
+}
+.event-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(0,150,255,.3);
+  box-shadow:0 16px 48px rgba(0,0,0,.3);
+}
+.ec-img{
+  height:140px;overflow:hidden;position:relative;
+}
+.ec-img img{
+  width:100%;height:100%;object-fit:cover;
+  filter:saturate(.6) brightness(.7);
+  transition:transform .5s;
+}
+.event-card:hover .ec-img img{transform:scale(1.05)}
+.ec-img-grad{
+  position:absolute;inset:0;
+  background:linear-gradient(0deg,rgba(10,10,15,.9) 0%,transparent 60%);
+}
+.ec-img-tag{
+  position:absolute;top:12px;left:12px;
+  background:rgba(0,150,255,.2);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(0,150,255,.35);
+  border-radius:20px;
+  padding:4px 12px;
+  font-size:10px;font-weight:600;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--ps-blue3);
+}
+.ec-body{padding:20px}
+.ec-title{
+  font-size:clamp(18px,3.5vw,24px);font-weight:700;
+  color:var(--ps-white);letter-spacing:-.01em;
+  margin-bottom:14px;line-height:1.15;
+}
+.ec-row{
+  display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;
+}
+.ec-ico{
+  color:var(--ps-blue3);flex-shrink:0;margin-top:2px;
+  width:14px;height:14px;
+}
+.ec-text{
+  font-size:12px;color:var(--ps-gray);
+  font-weight:400;line-height:1.6;
+}
+.ec-maps{
+  display:inline-flex;align-items:center;gap:6px;
+  margin-top:14px;
+  background:rgba(0,150,255,.12);
+  border:1px solid rgba(0,150,255,.25);
+  border-radius:8px;
+  color:var(--ps-blue3);font-size:11px;font-weight:600;
+  padding:8px 16px;text-decoration:none;
+  letter-spacing:.06em;text-transform:uppercase;
+  transition:background .2s,border-color .2s;cursor:none;
+}
+.ec-maps:hover{background:rgba(0,150,255,.2);border-color:rgba(0,150,255,.4)}
+
+/* ═══════════════════════════════════════
+   GALLERY — GAME SCREENSHOTS
+═══════════════════════════════════════ */
+.gallery-section{
+  background:var(--ps-bg2);
+  padding:80px 0;
+  border-top:1px solid var(--ps-border);
+}
+.gallery-header{
+  padding:0 40px;max-width:1080px;margin:0 auto 32px;
+  display:flex;align-items:flex-end;justify-content:space-between;
+  flex-wrap:wrap;gap:16px;
+}
+@media(max-width:600px){.gallery-header{padding:0 20px}}
+.gallery-sub{
+  font-size:12px;color:var(--ps-gray2);font-weight:500;
+  letter-spacing:.1em;text-transform:uppercase;
+}
+
+/* Grid — 16:9 screenshots */
+.screenshot-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  grid-template-rows:auto auto;
+  gap:4px;
+  max-width:1080px;margin:0 auto;
+  padding:0 40px;
+}
+@media(max-width:720px){
+  .screenshot-grid{
+    grid-template-columns:repeat(2,1fr);
+    padding:0 20px;
+  }
+}
+.ss-item{
+  position:relative;overflow:hidden;
+  aspect-ratio:16/9;cursor:none;
+  background:var(--ps-bg3);
+}
+/* Special large item */
+.ss-item:nth-child(1){grid-column:span 2;grid-row:span 2;aspect-ratio:auto}
+@media(max-width:720px){.ss-item:nth-child(1){grid-column:span 2;aspect-ratio:16/9}}
+
+.ss-item img{
+  width:100%;height:100%;object-fit:cover;
+  filter:saturate(.8) brightness(.85);
+  transition:transform .5s,filter .3s;
+}
+.ss-item:hover img{transform:scale(1.05);filter:saturate(1) brightness(.95)}
+.ss-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(0deg,rgba(10,10,15,.7) 0%,transparent 50%);
+  opacity:0;transition:opacity .3s;
+}
+.ss-item:hover .ss-overlay{opacity:1}
+.ss-caption{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:12px 14px;
+  font-size:11px;font-weight:500;color:var(--ps-white);
+  letter-spacing:.04em;
+  transform:translateY(6px);opacity:0;
+  transition:transform .3s,opacity .3s;
+}
+.ss-item:hover .ss-caption{transform:translateY(0);opacity:1}
+.ss-num{
+  position:absolute;top:10px;left:10px;
+  background:rgba(0,0,0,.5);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:6px;
+  padding:3px 8px;
+  font-size:10px;font-weight:600;color:rgba(255,255,255,.6);
+  letter-spacing:.08em;
+}
+
+/* ═══════════════════════════════════════
+   GIFT — WALLET / STORE CARD
+═══════════════════════════════════════ */
+.gift-section{
+  background:var(--ps-bg);
+  padding:80px 40px;
+}
+@media(max-width:600px){.gift-section{padding:64px 20px}}
+.gift-cards{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:20px;max-width:620px;margin:40px auto 0;
+}
+@media(max-width:500px){.gift-cards{grid-template-columns:1fr}}
+
+.wallet-card{
+  background:linear-gradient(135deg,rgba(0,80,180,.3) 0%,rgba(0,20,60,.5) 100%);
+  border:1px solid rgba(0,150,255,.25);
+  border-radius:18px;
+  padding:28px 24px;
+  position:relative;overflow:hidden;
+  transition:transform .3s,box-shadow .3s;
+  backdrop-filter:blur(20px);
+}
+.wallet-card:hover{transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,80,200,.2)}
+/* Shine sweep */
+.wallet-card::before{
+  content:'';
+  position:absolute;top:-50%;left:-50%;
+  width:200%;height:200%;
+  background:linear-gradient(45deg,transparent 30%,rgba(255,255,255,.04) 50%,transparent 70%);
+  transform:translateX(-100%);
+  transition:transform .6s ease;
+}
+.wallet-card:hover::before{transform:translateX(100%)}
+/* PS logo watermark */
+.wallet-card::after{
+  content:'PS';
+  position:absolute;bottom:12px;right:16px;
+  font-size:48px;font-weight:900;
+  color:rgba(255,255,255,.03);
+  letter-spacing:-.02em;
+  pointer-events:none;
+}
+.wc-chip{
+  width:40px;height:30px;
+  background:linear-gradient(135deg,rgba(255,220,80,.4),rgba(200,160,40,.3));
+  border:1px solid rgba(255,220,80,.3);
+  border-radius:5px;
+  margin-bottom:20px;position:relative;
+}
+.wc-chip::after{
+  content:'';position:absolute;
+  top:8px;left:6px;right:6px;height:1px;
+  background:rgba(255,220,80,.3);
+  box-shadow:0 4px 0 rgba(255,220,80,.2),0 -4px 0 rgba(255,220,80,.2);
+}
+.wc-bank{
+  font-size:clamp(24px,5vw,32px);font-weight:800;
+  background:linear-gradient(135deg,#fff,rgba(255,255,255,.7));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  letter-spacing:-.01em;margin-bottom:4px;
+}
+.wc-holder{
+  font-size:11px;color:rgba(255,255,255,.35);
+  font-weight:400;margin-bottom:16px;letter-spacing:.05em;
+}
+.wc-number{
+  font-size:16px;letter-spacing:.15em;
+  color:rgba(255,255,255,.85);
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:8px;padding:10px 14px;
+  margin-bottom:16px;
+  font-variant-numeric:tabular-nums;
+  display:block;
+}
+.wc-copy{
+  background:rgba(0,150,255,.2);
+  border:1px solid rgba(0,150,255,.35);
+  border-radius:8px;
+  color:var(--ps-blue3);font-family:var(--font);
+  font-size:11px;font-weight:600;letter-spacing:.1em;
+  text-transform:uppercase;padding:10px 20px;
+  cursor:none;transition:background .2s,border-color .2s;
+}
+.wc-copy:hover{background:rgba(0,150,255,.3);border-color:rgba(0,150,255,.5)}
+.wc-copy.copied{
+  background:rgba(0,200,80,.2);border-color:rgba(0,200,80,.4);
+  color:#4AE080;
+}
+
+/* ═══════════════════════════════════════
+   RSVP — PS FORM
+═══════════════════════════════════════ */
+.rsvp-section{
+  background:var(--ps-bg2);
+  padding:80px 40px;
+  border-top:1px solid var(--ps-border);
+}
+@media(max-width:600px){.rsvp-section{padding:64px 20px}}
+.rsvp-inner{max-width:560px;margin:0 auto}
+
+.rsvp-stats{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:12px;margin-bottom:40px;
+}
+.rs{
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--ps-border);
+  border-radius:14px;padding:20px 16px;text-align:center;
+}
+.rs-n{
+  font-size:clamp(28px,5vw,38px);font-weight:800;
+  background:linear-gradient(135deg,var(--ps-blue2),var(--ps-cyan));
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  line-height:1;margin-bottom:6px;letter-spacing:-.02em;
+}
+.rs-l{font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--ps-gray2)}
+
+/* Form */
+.fg{margin-bottom:20px}
+.fl{
+  display:block;font-size:10px;font-weight:600;
+  letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ps-gray2);margin-bottom:10px;
+}
+.fi{
+  width:100%;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--ps-border2);
+  border-radius:10px;
+  padding:14px 16px;color:var(--ps-white);
+  font-family:var(--font);font-size:15px;font-weight:400;
+  outline:none;
+  transition:border-color .2s,background .2s,box-shadow .2s;
+  -webkit-appearance:none;
+}
+.fi:focus{
+  border-color:var(--ps-blue2);
+  background:rgba(0,100,200,.08);
+  box-shadow:0 0 0 3px rgba(0,150,255,.12);
+}
+.fi::placeholder{color:var(--ps-gray3)}
+textarea.fi{min-height:100px;resize:vertical}
+.fs{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%230096FF' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;
+  padding-right:42px;cursor:none;
+}
+option{font-family:sans-serif}
+.guest-row{display:flex;gap:8px}
+.gst-btn{
+  flex:1;
+  background:rgba(255,255,255,.05);
+  border:1px solid var(--ps-border2);border-radius:10px;
+  padding:14px;color:var(--ps-gray);
+  font-family:var(--font);font-size:14px;font-weight:500;
+  cursor:none;transition:all .2s;
+}
+.gst-btn.active{
+  background:rgba(0,150,255,.15);
+  border-color:var(--ps-blue2);color:var(--ps-blue3);
+}
+.rsvp-submit{
+  width:100%;
+  background:linear-gradient(135deg,var(--ps-blue),var(--ps-blue2));
+  border:none;border-radius:10px;
+  color:#fff;font-family:var(--font);
+  font-size:14px;font-weight:700;letter-spacing:.06em;
+  padding:16px;cursor:none;margin-top:12px;
+  box-shadow:0 4px 20px rgba(0,150,255,.3);
+  transition:transform .15s,box-shadow .15s;
+}
+.rsvp-submit:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,150,255,.4)}
+
+/* ═══════════════════════════════════════
+   WISHES — NOTIFICATION CARDS
+═══════════════════════════════════════ */
+.wishes-section{
+  background:var(--ps-bg);
+  padding:80px 40px;
+  border-top:1px solid var(--ps-border);
+}
+@media(max-width:600px){.wishes-section{padding:64px 20px}}
+.wishes-inner{max-width:680px;margin:0 auto}
+.wishes-list{margin-top:32px;display:flex;flex-direction:column;gap:10px}
+.wish-card{
+  display:flex;align-items:flex-start;gap:14px;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--ps-border);
+  border-radius:14px;padding:16px 20px;
+  opacity:0;transform:translateX(-16px);
+  transition:opacity .5s,transform .5s;
+}
+.wish-card.visible{opacity:1;transform:translateX(0)}
+.wa{
+  width:40px;height:40px;border-radius:10px;
+  background:linear-gradient(135deg,var(--ps-blue),var(--ps-cyan));
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;color:#fff;
+  flex-shrink:0;letter-spacing:.02em;
+}
+.wn{font-size:13px;font-weight:600;color:var(--ps-white);margin-bottom:3px}
+.ws{font-size:10px;font-weight:500;color:var(--ps-blue3);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.wt{font-size:13px;color:var(--ps-gray);font-weight:400;line-height:1.6}
+
+/* ═══════════════════════════════════════
+   FOOTER — PS5 SYSTEM SCREEN
+═══════════════════════════════════════ */
+.footer{
+  background:var(--ps-bg2);
+  padding:100px 40px 60px;
+  text-align:center;
+  border-top:1px solid var(--ps-border);
+  position:relative;overflow:hidden;
+}
+.footer-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 80%,rgba(0,80,200,.15) 0%,transparent 70%);
+  pointer-events:none;
+}
+.footer-logo{
+  display:inline-flex;align-items:center;gap:10px;
+  margin-bottom:24px;
+}
+.footer-logo-txt{
+  font-size:13px;font-weight:700;letter-spacing:.1em;
+  color:rgba(255,255,255,.3);text-transform:uppercase;
+}
+.footer-title{
+  font-size:clamp(36px,9vw,72px);font-weight:900;
+  letter-spacing:-.03em;line-height:1;margin-bottom:16px;
+}
+.footer-title .gradient{
+  background:linear-gradient(135deg,#fff 0%,rgba(255,255,255,.5) 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+.footer-sub{
+  font-size:clamp(13px,2vw,15px);color:var(--ps-gray2);
+  font-weight:300;max-width:440px;margin:0 auto 40px;
+  line-height:1.8;
+}
+.footer-divider{
+  display:flex;align-items:center;justify-content:center;
+  gap:12px;margin-bottom:24px;
+}
+.fd-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--ps-blue2);
+  box-shadow:0 0 10px var(--ps-blue-glow);
+}
+.fd-line{width:48px;height:1px;background:var(--ps-border2)}
+.footer-brand{
+  font-size:11px;letter-spacing:.2em;
+  color:rgba(255,255,255,.12);text-transform:uppercase;font-weight:500;
+}
+.footer-brand a{color:var(--ps-blue3);text-decoration:none}
+
+/* ═══════════════════════════════════════
+   PS5 CONTROLLER NAV
+═══════════════════════════════════════ */
+.ps-nav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(10,10,20,.85);
+  backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);
+  border-top:1px solid var(--ps-border);
+  display:flex;justify-content:space-around;
+  padding:10px 0 max(10px,env(safe-area-inset-bottom));
+  z-index:500;
+  transform:translateY(100%);
+  transition:transform .7s cubic-bezier(.16,1,.3,1) 1.2s;
+}
+.ps-nav.show{transform:translateY(0)}
+.nav-a{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  color:rgba(255,255,255,.3);text-decoration:none;cursor:none;
+  font-size:8px;letter-spacing:.12em;text-transform:uppercase;
+  font-weight:600;padding:4px 14px;transition:color .2s;
+}
+.nav-a svg{width:18px;height:18px}
+.nav-a:hover,.nav-a.active{color:var(--ps-blue3)}
+.nav-a.active svg{filter:drop-shadow(0 0 4px var(--ps-blue2))}
+
+/* ═══════════════════════════════════════
+   LIGHTBOX + TOAST
+═══════════════════════════════════════ */
+.lbox{position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:9000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+.lbox.open{display:flex}
+.lbox-img{max-width:88vw;max-height:86vh;object-fit:contain;border-radius:8px;box-shadow:0 0 80px rgba(0,0,0,.8)}
+.lbox-close{position:absolute;top:18px;right:22px;background:rgba(255,255,255,.1);backdrop-filter:blur(12px);border:1px solid var(--ps-border2);border-radius:8px;color:#fff;font-size:14px;font-weight:500;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:none;transition:background .2s}
+.lbox-close:hover{background:rgba(255,255,255,.2)}
+.lbox-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.08);backdrop-filter:blur(12px);border:1px solid var(--ps-border);border-radius:10px;color:#fff;font-size:26px;width:50px;height:70px;display:flex;align-items:center;justify-content:center;cursor:none;transition:background .2s}
+.lbox-nav:hover{background:rgba(0,150,255,.2)}
+.lbox-prev{left:14px}
+.lbox-next{right:14px}
+.lbox-ctr{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);font-size:11px;letter-spacing:.2em;color:rgba(255,255,255,.3);font-weight:500}
+
+.toast{
+  position:fixed;bottom:84px;left:50%;
+  transform:translateX(-50%) translateY(14px);
+  background:rgba(14,14,24,.95);
+  backdrop-filter:blur(20px);
+  border:1px solid var(--ps-border2);
+  border-radius:10px;
+  color:var(--ps-white);font-size:12px;font-weight:500;
+  letter-spacing:.06em;padding:12px 24px;
+  white-space:nowrap;opacity:0;pointer-events:none;
+  transition:opacity .3s,transform .3s;z-index:9999;
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── REVEAL ── */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .8s ease,transform .8s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.rd1{transition-delay:.1s}
+.rd2{transition-delay:.2s}
+.rd3{transition-delay:.3s}
+</style>
+</head>
+<body>
+
+<!-- BG Waves -->
+<div class="ps-bg-canvas" id="bgCanvas"></div>
+
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- ═══ OPENING ═══ -->
+<div id="opening">
+
+  <!-- ── VIDEO BACKGROUND ── -->
+  <video
+    class="op-video"
+    id="opVideo"
+    src="https://www.w3schools.com/html/mov_bbb.mp4"
+    loop muted playsinline
+    preload="auto"
+    poster="https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&q=60">
+  </video>
+
+  <!-- ── CINEMATIC OVERLAYS ── -->
+  <div class="op-overlay-grad"></div>
+  <div class="op-overlay-glow"></div>
+  <div class="op-overlay-scan"></div>
+  <div class="op-overlay-vignette"></div>
+
+  <!-- ── SOUND HINT ── -->
+  <div class="op-sound-hint" id="opSoundHint">
+    <div class="op-sound-wave">
+      <div class="osw-bar" style="--d:.4s;height:4px"></div>
+      <div class="osw-bar" style="--d:.6s;animation-delay:.1s;height:8px"></div>
+      <div class="osw-bar" style="--d:.5s;animation-delay:.2s;height:6px"></div>
+      <div class="osw-bar" style="--d:.7s;animation-delay:.05s;height:10px"></div>
+      <div class="osw-bar" style="--d:.4s;animation-delay:.15s;height:5px"></div>
+    </div>
+    Muted
+  </div>
+
+  <!-- ── ALL OPENING CONTENT ── -->
+  <div class="op-content">
+    <!-- PS logo -->
+    <div class="ps-logo-wrap">
+      <div class="ps-logo">
+        <div class="ps-logo-ring"></div>
+        <div class="ps-logo-ring"></div>
+        <div class="ps-logo-icon">
+          <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M15 28V12l3 1v10.5l8-2.5v3L15 28z" fill="white"/>
+            <path d="M26 23.5l-3 1v-3.5l3-1v3.5z" fill="rgba(255,255,255,.5)"/>
+            <circle cx="8" cy="24" r="2" fill="var(--ps-cross)"/>
+            <circle cx="14" cy="30" r="2" fill="var(--ps-circle)"/>
+            <circle cx="8" cy="30" r="2" fill="var(--ps-square)"/>
+            <circle cx="14" cy="24" r="2" fill="var(--ps-triangle)"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <p class="op-system">PlayStation Wedding System</p>
+    <h1 class="op-title">
+      <span class="blue">ANITA</span><br>
+      & ZARDA
+    </h1>
+    <p class="op-subtitle">Wedding Edition · 24 Mei 2026 · Tangerang</p>
+
+    <!-- Notification card -->
+    <div class="op-notif">
+      <div class="op-notif-icon">💌</div>
+      <div class="op-notif-text">
+        <div class="op-notif-title">Undangan Pernikahan</div>
+        <div class="op-notif-sub">Kepada: Ade Guntur Fitridullah & Partner</div>
+      </div>
+    </div>
+
+    <div class="op-start" onclick="bootUp()">
+      <button class="op-start-btn" onclick="bootUp()">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      Tekan untuk Membuka
+    </div>
+  </div><!-- /op-content -->
+
+  <div class="op-loading">
+    <div class="op-loading-fill" id="loadingFill"></div>
+  </div>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<div id="main">
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <!-- Video background -->
+  <video
+    class="hero-bg-video"
+    id="heroBgVideo"
+    src="https://www.w3schools.com/html/mov_bbb.mp4"
+    loop muted playsinline preload="none"
+    poster="https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&q=60">
+  </video>
+  <!-- Fallback image when video not loaded -->
+  <div class="hero-bg-img" style="background-image:url('https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&q=60');background-size:cover;background-position:center"></div>
+  <!-- Cinematic overlay -->
+  <div class="hero-bg-video-overlay"></div>
+  <div class="hero-bg"></div>
+
+  <!-- Mute / Unmute button -->
+  <button class="video-mute-btn" id="muteBtnEl" onclick="toggleMute()">
+    <svg id="muteIcon" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+    <svg id="muteIconOff" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>
+    <span id="muteLabelEl">Suara</span>
+  </button>
+
+  <!-- Top Bar -->
+  <div class="ps-topbar">
+    <div class="topbar-left">
+      <span class="ps-logo-sm">PS</span>
+      <div class="topbar-sep"></div>
+      <span class="topbar-game">Wedding Edition</span>
+    </div>
+    <div class="topbar-right">
+      <div class="ds-buttons">
+        <div class="ds-btn" style="background:var(--ps-cross)">✕</div>
+        <div class="ds-btn" style="background:var(--ps-circle)">○</div>
+        <div class="ds-btn" style="background:var(--ps-square)">□</div>
+        <div class="ds-btn" style="background:var(--ps-triangle)">△</div>
+      </div>
+      <div class="topbar-time" id="clockEl">--:--</div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="hero-content">
+    <div class="hero-game-card">
+      <div class="hgc-tag">
+        <span>💍</span>
+        <span>Wedding · Romance · Adventure</span>
+      </div>
+      <h1 class="hgc-title">
+        <div class="gradient">ANITA</div>
+        <div class="blue-g">& ZARDA</div>
+      </h1>
+      <div class="hgc-meta">
+        <div class="hgc-rating">
+          <span class="hgc-stars">★★★★★</span>
+          <span style="margin-left:4px">5.0</span>
+        </div>
+        <div class="hgc-sep"></div>
+        <span class="hgc-genre">Romance · Drama · Real Life</span>
+        <div class="hgc-sep"></div>
+        <span class="hgc-genre">All Ages</span>
+      </div>
+      <p class="hgc-desc">
+        Sebuah kisah cinta yang dimulai dari pertemuan sederhana, tumbuh menjadi ikatan yang abadi. Saksikan momen istimewa mereka pada 24 Mei 2026 di Graha Yadika, Tangerang.
+      </p>
+      <div class="hgc-actions">
+        <button class="ps-btn-primary" onclick="document.getElementById('rsvp').scrollIntoView({behavior:'smooth'})">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          RSVP Sekarang
+        </button>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ps-btn-secondary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Lokasi
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-hint">
+    <div class="hint-btn" style="background:var(--ps-circle);color:#fff;font-size:9px;font-weight:700">○</div>
+    Scroll untuk jelajahi
+  </div>
+</section>
+
+<!-- ACTIVITY STRIP -->
+<div class="activity-strip">
+  <div class="activity-scroll">
+    <div class="activity-card">
+      <div class="ac-label">Tanggal</div>
+      <div class="ac-value">24 Mei 2026</div>
+      <div class="ac-sub">Minggu · 08.00 WIB</div>
+    </div>
+    <div class="activity-card">
+      <div class="ac-label">Lokasi</div>
+      <div class="ac-value">Graha Yadika</div>
+      <div class="ac-sub">Tangerang, Banten</div>
+    </div>
+    <div class="activity-card">
+      <div class="ac-label">Tamu Hadir</div>
+      <div class="ac-value">13 Players</div>
+      <div class="ac-sub">7 konfirmasi · online</div>
+    </div>
+    <div class="activity-card">
+      <div class="ac-label">Dress Code</div>
+      <div class="ac-value">Formal</div>
+      <div class="ac-sub">Semi-formal welcome</div>
+    </div>
+    <div class="activity-card">
+      <div class="ac-label">Koridor</div>
+      <div class="ac-value">Akad + Resepsi</div>
+      <div class="ac-sub">Two events · one venue</div>
+    </div>
+  </div>
+</div>
+
+<!-- COUNTDOWN -->
+<div class="cd-section">
+  <p class="cd-label reveal">Loading Wedding Day</p>
+  <h2 class="cd-title reveal">Hari Istimewa Dimulai Dalam</h2>
+  <div class="cd-grid">
+    <div class="cd-card reveal rd1"><span class="cd-n" id="cdD">00</span><span class="cd-u">Hari</span></div>
+    <div class="cd-card reveal rd2"><span class="cd-n" id="cdH">00</span><span class="cd-u">Jam</span></div>
+    <div class="cd-card reveal rd3"><span class="cd-n" id="cdM">00</span><span class="cd-u">Menit</span></div>
+    <div class="cd-card reveal" style="transition-delay:.4s"><span class="cd-n" id="cdS">00</span><span class="cd-u">Detik</span></div>
+  </div>
+</div>
+
+<!-- COUPLE -->
+<section id="couple" class="couple-section">
+  <div class="ps-section-header reveal">
+    <p class="ps-eyebrow">Player Profiles</p>
+    <h2 class="ps-heading">Mempelai Kami</h2>
+  </div>
+  <div class="profile-grid">
+    <div class="profile-card reveal">
+      <div class="pc-cover">
+        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=200&fit=crop&q=80" alt="">
+        <div class="pc-cover-grad"></div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-avatar-row">
+          <div class="pc-avatar">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita">
+          </div>
+          <div>
+            <div class="pc-online"><div class="pc-online-dot"></div>Online</div>
+          </div>
+        </div>
+        <p class="pc-role">Mempelai Wanita</p>
+        <h3 class="pc-name">Anita Pangestuti, S.Kom</h3>
+        <p class="pc-parents">Putri Pertama dari<br>Bpk. Taryono & Ibu Wiwit Jayanti</p>
+        <div class="pc-trophies">
+          <div class="trophy"><span class="trophy-icon">🥇</span><span style="color:var(--ps-trophy-go);font-size:10px;font-weight:700">1</span></div>
+          <div class="trophy"><span class="trophy-icon">🥈</span><span style="color:var(--ps-trophy-s);font-size:10px;font-weight:700">3</span></div>
+          <div class="trophy"><span class="trophy-icon">🥉</span><span style="color:var(--ps-trophy-g);font-size:10px;font-weight:700">12</span></div>
+          <div style="margin-left:auto;font-size:10px;color:var(--ps-gray2);font-weight:500">Level 24</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-vs">&</div>
+
+    <div class="profile-card reveal rd2">
+      <div class="pc-cover">
+        <img src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&h=200&fit=crop&q=80" alt="">
+        <div class="pc-cover-grad"></div>
+      </div>
+      <div class="pc-body">
+        <div class="pc-avatar-row">
+          <div class="pc-avatar">
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda">
+          </div>
+          <div>
+            <div class="pc-online"><div class="pc-online-dot"></div>Online</div>
+          </div>
+        </div>
+        <p class="pc-role">Mempelai Pria</p>
+        <h3 class="pc-name">Zardarian Ahadika N, S.Kom</h3>
+        <p class="pc-parents">Putra Kedua dari<br>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</p>
+        <div class="pc-trophies">
+          <div class="trophy"><span class="trophy-icon">🥇</span><span style="color:var(--ps-trophy-go);font-size:10px;font-weight:700">2</span></div>
+          <div class="trophy"><span class="trophy-icon">🥈</span><span style="color:var(--ps-trophy-s);font-size:10px;font-weight:700">5</span></div>
+          <div class="trophy"><span class="trophy-icon">🥉</span><span style="color:var(--ps-trophy-g);font-size:10px;font-weight:700">9</span></div>
+          <div style="margin-left:auto;font-size:10px;color:var(--ps-gray2);font-weight:500">Level 26</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TROPHY / TIMELINE -->
+<section class="trophy-section">
+  <div class="ps-section-header reveal" style="max-width:680px;margin:0 auto">
+    <p class="ps-eyebrow">Trophy Log</p>
+    <h2 class="ps-heading">Kisah Perjalanan Cinta</h2>
+    <p class="ps-subtext">Setiap momen adalah trophy yang tak ternilai.</p>
+  </div>
+  <div class="trophy-list">
+    <div class="trophy-card">
+      <div class="tc-icon bronze">💘</div>
+      <div class="tc-info">
+        <div class="tc-name">First Encounter</div>
+        <div class="tc-desc">Awal pertemuan — tawa di bowling, cerita di atas sushi, kenangan manis es krim pertama bersama.</div>
+      </div>
+      <div class="tc-date">Jun 2025</div>
+    </div>
+    <div class="trophy-card">
+      <div class="tc-icon silver">💕</div>
+      <div class="tc-info">
+        <div class="tc-name">Growing Closer</div>
+        <div class="tc-desc">Rasa yang tumbuh perlahan menjadi keyakinan — saling mengenal lebih dalam setiap harinya.</div>
+      </div>
+      <div class="tc-date">Agt 2025</div>
+    </div>
+    <div class="trophy-card">
+      <div class="tc-icon gold">💍</div>
+      <div class="tc-info">
+        <div class="tc-name">The Proposal</div>
+        <div class="tc-desc">Di hadapan keluarga, sebuah janji tulus diucapkan — langkah pertama menuju kehidupan bersama.</div>
+      </div>
+      <div class="tc-date">Nov 2025</div>
+    </div>
+    <div class="trophy-card">
+      <div class="tc-icon platinum">👑</div>
+      <div class="tc-info">
+        <div class="tc-name">PLATINUM — The Wedding Day</div>
+        <div class="tc-desc">Dalam ikatan suci pernikahan, dua jiwa bersatu untuk selamanya. 24 Mei 2026.</div>
+      </div>
+      <div class="tc-date">Mei 2026</div>
+    </div>
+  </div>
+</section>
+
+<!-- EVENT -->
+<section id="event" class="event-section">
+  <div class="ps-section-header reveal">
+    <p class="ps-eyebrow">Game Schedule</p>
+    <h2 class="ps-heading">Waktu & Tempat</h2>
+  </div>
+  <div class="event-cards">
+    <div class="event-card reveal rd1">
+      <div class="ec-img">
+        <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=300&fit=crop&q=80" alt="">
+        <div class="ec-img-grad"></div>
+        <div class="ec-img-tag">Akad Nikah</div>
+      </div>
+      <div class="ec-body">
+        <h3 class="ec-title">Minggu,<br>24 Mei 2026</h3>
+        <div class="ec-row">
+          <svg class="ec-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 17.5v-2h-1v2C8.41 19.25 5.75 16.59 5.5 13.5h2v-1h-2C5.75 9.41 8.41 6.75 11.5 6.5v2h1v-2c3.09.25 5.75 2.91 6 6h-2v1h2c-.25 3.09-2.91 5.75-6 6z"/></svg>
+          <span class="ec-text">08.00 WIB — Selesai</span>
+        </div>
+        <div class="ec-row">
+          <svg class="ec-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          <span class="ec-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span>
+        </div>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ec-maps">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Buka Maps
+        </a>
+      </div>
+    </div>
+    <div class="event-card reveal rd2">
+      <div class="ec-img">
+        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=300&fit=crop&q=80" alt="">
+        <div class="ec-img-grad"></div>
+        <div class="ec-img-tag">Resepsi</div>
+      </div>
+      <div class="ec-body">
+        <h3 class="ec-title">Minggu,<br>24 Mei 2026</h3>
+        <div class="ec-row">
+          <svg class="ec-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 17.5v-2h-1v2C8.41 19.25 5.75 16.59 5.5 13.5h2v-1h-2C5.75 9.41 8.41 6.75 11.5 6.5v2h1v-2c3.09.25 5.75 2.91 6 6h-2v1h2c-.25 3.09-2.91 5.75-6 6z"/></svg>
+          <span class="ec-text">11.00 — 13.00 WIB</span>
+        </div>
+        <div class="ec-row">
+          <svg class="ec-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          <span class="ec-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span>
+        </div>
+        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ec-maps">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+          Buka Maps
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section class="gallery-section">
+  <div class="gallery-header reveal">
+    <div>
+      <p class="ps-eyebrow" style="margin-bottom:8px">Screenshots</p>
+      <h2 class="ps-heading" style="font-size:clamp(22px,4vw,34px)">Galeri Foto</h2>
+    </div>
+    <p class="gallery-sub">Klik untuk fullscreen</p>
+  </div>
+  <div class="screenshot-grid" id="ssGrid"></div>
+</section>
+
+<!-- GIFT -->
+<section id="gift" class="gift-section">
+  <div class="ps-section-header reveal" style="text-align:center">
+    <p class="ps-eyebrow" style="justify-content:center">PlayStation Store</p>
+    <h2 class="ps-heading" style="text-align:center">Amplop Digital</h2>
+    <p class="ps-subtext" style="text-align:center;margin:12px auto 0">Doa dan kehadiran Anda sudah lebih dari cukup. Namun jika berkenan, kami menerimanya dengan sepenuh hati.</p>
+  </div>
+  <div class="gift-cards">
+    <div class="wallet-card reveal rd1">
+      <div class="wc-chip"></div>
+      <div class="wc-bank">BCA</div>
+      <div class="wc-holder">Zardarian Ahadika N</div>
+      <div class="wc-number">8210 3705 61</div>
+      <button class="wc-copy" onclick="copyNum('8210370561',this)">Salin Nomor</button>
+    </div>
+    <div class="wallet-card reveal rd2">
+      <div class="wc-chip"></div>
+      <div class="wc-bank">BNI</div>
+      <div class="wc-holder">Anita Pangestuti</div>
+      <div class="wc-number">1192 9784 03</div>
+      <button class="wc-copy" onclick="copyNum('1192978403',this)">Salin Nomor</button>
+    </div>
+  </div>
+</section>
+
+<!-- RSVP -->
+<section id="rsvp" class="rsvp-section">
+  <div class="rsvp-inner">
+    <div class="ps-section-header reveal">
+      <p class="ps-eyebrow">Party Invite</p>
+      <h2 class="ps-heading">Konfirmasi Kehadiran</h2>
+    </div>
+    <div class="rsvp-stats reveal">
+      <div class="rs"><div class="rs-n">7</div><div class="rs-l">Respons</div></div>
+      <div class="rs"><div class="rs-n">7</div><div class="rs-l">Hadir</div></div>
+      <div class="rs"><div class="rs-n">13</div><div class="rs-l">Total</div></div>
+    </div>
+    <div class="fg"><label class="fl">Nama Lengkap</label><input class="fi" id="rName" type="text" placeholder="Masukkan nama Anda..."></div>
+    <div class="fg"><label class="fl">Konfirmasi Kehadiran</label>
+      <select class="fi fs" id="rStatus">
+        <option value="">Pilih status...</option>
+        <option value="hadir">✓ Hadir</option>
+        <option value="tidak">✗ Tidak Hadir</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">Jumlah Tamu</label>
+      <div class="guest-row">
+        <button class="gst-btn active" onclick="setGuest(1,this)">1 Orang</button>
+        <button class="gst-btn" onclick="setGuest(2,this)">2 Orang</button>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">Ucapan & Doa</label><textarea class="fi" id="rMsg" placeholder="Tulis ucapan tulus..."></textarea></div>
+    <button class="rsvp-submit" onclick="submitRSVP()">Konfirmasi Kehadiran</button>
+  </div>
+</section>
+
+<!-- WISHES -->
+<section class="wishes-section">
+  <div class="wishes-inner">
+    <div class="ps-section-header reveal">
+      <p class="ps-eyebrow">Activity Feed</p>
+      <h2 class="ps-heading">Ucapan & Doa</h2>
+    </div>
+    <div class="wishes-list" id="wishesList">
+      <div class="wish-card visible">
+        <div class="wa">AY</div>
+        <div><div class="wn">Ayu Rahmawati</div><div class="ws">✓ Hadir · 2 tamu</div><p class="wt">Selamat menempuh hidup baru! Semoga sakinah, mawaddah, wa rahmah. Bahagia selalu Anita & Zarda! 🎮</p></div>
+      </div>
+      <div class="wish-card visible">
+        <div class="wa" style="background:linear-gradient(135deg,#6644AA,#AA44CC)">RZ</div>
+        <div><div class="wn">Reza Firmansyah</div><div class="ws">✓ Hadir · 1 tamu</div><p class="wt">Alhamdulillah! Semoga pernikahannya membawa keberkahan tiada henti. Aamiin ya Rabbal Alamin.</p></div>
+      </div>
+      <div class="wish-card visible">
+        <div class="wa" style="background:linear-gradient(135deg,#006644,#00AA66)">ST</div>
+        <div><div class="wn">Sinta Dewi</div><div class="ws">✓ Hadir · 2 tamu</div><p class="wt">Wishing you both a lifetime of love! Semoga selalu diberkahi Allah SWT. 💙</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-bg"></div>
+  <div class="footer-logo">
+    <span class="footer-logo-txt">PlayStation Wedding</span>
+  </div>
+  <div class="footer-title">
+    <span class="gradient">ANITA<br>& ZARDA</span>
+  </div>
+  <p class="footer-sub">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu kepada kami yang berbahagia.</p>
+  <div class="footer-divider">
+    <div class="fd-line"></div>
+    <div class="fd-dot"></div>
+    <div class="fd-line"></div>
+    <div class="fd-dot" style="background:var(--ps-cyan)"></div>
+    <div class="fd-line"></div>
+  </div>
+  <p class="footer-brand">Digital Invitation by <a href="#">BridesSpace</a></p>
+</footer>
+
+</div><!-- /main -->
+
+<!-- NAV -->
+<nav class="ps-nav" id="psNav">
+  <a href="#home" class="nav-a active">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home
+  </a>
+  <a href="#couple" class="nav-a">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Couple
+  </a>
+  <a href="#event" class="nav-a">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>Event
+  </a>
+  <a href="#gift" class="nav-a">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2.18c.07-.23.18-.46.18-.71C18 3.47 16.53 2 14.71 2c-.87 0-1.65.36-2.22.93L12 3.4l-.49-.47C10.94 2.36 10.16 2 9.29 2 7.47 2 6 3.47 6 5.29c0 .25.11.48.18.71H4c-1.11 0-2 .89-2 2v13c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z"/></svg>Gift
+  </a>
+  <a href="#rsvp" class="nav-a">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>RSVP
+  </a>
+</nav>
+
+<div class="lbox" id="lbox">
+  <button class="lbox-close" onclick="closeLbox()">✕</button>
+  <button class="lbox-nav lbox-prev" onclick="lboxPrev()">‹</button>
+  <img class="lbox-img" id="lboxImg" src="" alt="">
+  <button class="lbox-nav lbox-next" onclick="lboxNext()">›</button>
+  <div class="lbox-ctr" id="lboxCtr"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const IMGS=[
+  {src:"https://images.unsplash.com/photo-1519741497674-611481863552?w=800&fit=crop&q=80",cap:"Awal Kisah"},
+  {src:"https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&fit=crop&q=80",cap:"Bersama"},
+  {src:"https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&fit=crop&q=80",cap:"Kebahagiaan"},
+  {src:"https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&fit=crop&q=80",cap:"Cinta Abadi"},
+  {src:"https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=800&fit=crop&q=80",cap:"Detail"},
+  {src:"https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=800&fit=crop&q=80",cap:"Momen"},
+  {src:"https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=800&fit=crop&q=80",cap:"Kenangan"},
+  {src:"https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&fit=crop&q=80",cap:"Hari Istimewa"},
+];
+let lboxIdx=0,guestN=1;
+
+/* ── OPENING VIDEO ── */
+(function initOpVideo(){
+  const vid = document.getElementById('opVideo');
+  const hint = document.getElementById('opSoundHint');
+  if(!vid) return;
+
+  // Try autoplay as soon as enough data is loaded
+  vid.addEventListener('canplay', function onCanPlay(){
+    vid.removeEventListener('canplay', onCanPlay);
+    vid.play().then(()=>{
+      // Success — fade in video
+      requestAnimationFrame(()=> vid.classList.add('show'));
+      // Show muted hint after 2.5s
+      if(hint) setTimeout(()=> hint.classList.add('show'), 2500);
+    }).catch(()=>{
+      // Autoplay blocked — video stays hidden, dark bg remains (graceful degradation)
+    });
+  });
+
+  // Pause video when opening is hidden (after bootUp), resume if somehow shown again
+  const observer = new MutationObserver(()=>{
+    if(document.getElementById('opening').classList.contains('hide')){
+      vid.pause();
+    }
+  });
+  observer.observe(document.getElementById('opening'), {attributes:true, attributeFilter:['class']});
+})();
+
+/* ── CURSOR ── */
+document.addEventListener('mousemove',e=>{
+  const c=document.getElementById('cursor');
+  const r=document.getElementById('cursor-ring');
+  if(c){c.style.left=e.clientX+'px';c.style.top=e.clientY+'px';}
+  if(r){r.style.left=e.clientX+'px';r.style.top=e.clientY+'px';}
+});
+
+/* ── BG WAVES ── */
+function buildWaves(){
+  const canvas=document.getElementById('bgCanvas');
+  if(!canvas)return;
+  const cols=['rgba(0,80,200,.18)','rgba(0,150,255,.12)','rgba(80,0,200,.10)','rgba(0,200,220,.08)'];
+  for(let i=0;i<6;i++){
+    const w=document.createElement('div');
+    w.className='ps-wave';
+    const size=300+Math.random()*300;
+    w.style.cssText=`
+      width:${size}px;height:${size}px;
+      background:${cols[i%cols.length]};
+      left:${Math.random()*100}%;
+      top:${Math.random()*100}%;
+      animation-duration:${8+Math.random()*8}s;
+      animation-delay:${Math.random()*4}s;
+    `;
+    canvas.appendChild(w);
+  }
+}
+buildWaves();
+
+/* ── CLOCK ── */
+function updateClock(){
+  const now=new Date();
+  const h=String(now.getHours()).padStart(2,'0');
+  const m=String(now.getMinutes()).padStart(2,'0');
+  const el=document.getElementById('clockEl');
+  if(el)el.textContent=h+':'+m;
+}
+updateClock();setInterval(updateClock,10000);
+
+/* ── BOOT UP ── */
+function bootUp(){
+  document.getElementById('loadingFill').classList.add('go');
+  setTimeout(()=>{
+    document.getElementById('opening').classList.add('hide');
+    setTimeout(()=>{
+      document.getElementById('main').classList.add('show');
+      document.getElementById('psNav').classList.add('show');
+      buildSSGrid();
+      startCountdown();
+      initReveal();
+      initNav();
+      // Start video background
+      startHeroBgVideo();
+    },300);
+  },1800);
+}
+// Trigger loading bar on open
+setTimeout(()=>document.getElementById('loadingFill')?.classList.add('go'),200);
+
+/* ── VIDEO BG ── */
+let videoMuted = true;
+function startHeroBgVideo(){
+  const vid = document.getElementById('heroBgVideo');
+  const btn = document.getElementById('muteBtnEl');
+  if(!vid) return;
+  vid.muted = true;
+  vid.load();
+  const playPromise = vid.play();
+  if(playPromise !== undefined){
+    playPromise.then(()=>{
+      // Fade in video
+      vid.classList.add('playing');
+      // Show mute button
+      if(btn) btn.classList.add('show');
+      // Hide fallback bg image once video is playing
+      const fallback = vid.nextElementSibling;
+      if(fallback && fallback.classList.contains('hero-bg-img')){
+        fallback.style.transition = 'opacity 1s ease 1s';
+        fallback.style.opacity = '0';
+      }
+    }).catch(()=>{
+      // autoplay blocked — keep fallback image visible, hide mute btn
+    });
+  }
+}
+
+/* ── TOGGLE MUTE ── */
+function toggleMute(){
+  const vid = document.getElementById('heroBgVideo');
+  const iconOn  = document.getElementById('muteIcon');
+  const iconOff = document.getElementById('muteIconOff');
+  const label   = document.getElementById('muteLabelEl');
+  if(!vid) return;
+  videoMuted = !videoMuted;
+  vid.muted = videoMuted;
+  if(videoMuted){
+    iconOn.style.display  = 'block';
+    iconOff.style.display = 'none';
+    label.textContent = 'Suara';
+  } else {
+    iconOn.style.display  = 'none';
+    iconOff.style.display = 'block';
+    label.textContent = 'Mute';
+  }
+}
+
+/* ── SCREENSHOT GRID ── */
+function buildSSGrid(){
+  const g=document.getElementById('ssGrid');
+  if(!g)return;
+  IMGS.forEach((img,i)=>{
+    const item=document.createElement('div');
+    item.className='ss-item';
+    item.innerHTML=`
+      <img src="${img.src}" alt="${img.cap}" loading="lazy">
+      <div class="ss-overlay"></div>
+      <div class="ss-caption">${img.cap}</div>
+      <div class="ss-num">SS${String(i+1).padStart(2,'0')}</div>
+    `;
+    item.addEventListener('click',()=>openLbox(i));
+    g.appendChild(item);
+  });
+}
+
+/* ── LIGHTBOX ── */
+function openLbox(i){lboxIdx=i;updateLbox();document.getElementById('lbox').classList.add('open');document.body.style.overflow='hidden';}
+function closeLbox(){document.getElementById('lbox').classList.remove('open');document.body.style.overflow='';}
+function lboxPrev(){lboxIdx=(lboxIdx-1+IMGS.length)%IMGS.length;updateLbox();}
+function lboxNext(){lboxIdx=(lboxIdx+1)%IMGS.length;updateLbox();}
+function updateLbox(){
+  document.getElementById('lboxImg').src=IMGS[lboxIdx].src;
+  document.getElementById('lboxCtr').textContent=`${lboxIdx+1} / ${IMGS.length}`;
+}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lbox').classList.contains('open'))return;
+  if(e.key==='Escape')closeLbox();
+  if(e.key==='ArrowLeft')lboxPrev();
+  if(e.key==='ArrowRight')lboxNext();
+});
+
+/* ── COUNTDOWN ── */
+function startCountdown(){
+  const T=new Date('2026-05-24T08:00:00');
+  function tick(){
+    const d=T-new Date();
+    if(d<=0)return;
+    document.getElementById('cdD').textContent=String(Math.floor(d/86400000)).padStart(2,'0');
+    document.getElementById('cdH').textContent=String(Math.floor((d%86400000)/3600000)).padStart(2,'0');
+    document.getElementById('cdM').textContent=String(Math.floor((d%3600000)/60000)).padStart(2,'0');
+    document.getElementById('cdS').textContent=String(Math.floor((d%60000)/1000)).padStart(2,'0');
+  }
+  tick();setInterval(tick,1000);
+}
+
+/* ── REVEAL ── */
+function initReveal(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+  },{threshold:.1});
+  document.querySelectorAll('.reveal,.trophy-card,.wish-card').forEach(el=>obs.observe(el));
+}
+
+/* ── NAV ── */
+function initNav(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(e.isIntersecting){
+        document.querySelectorAll('.nav-a').forEach(n=>n.classList.remove('active'));
+        const a=document.querySelector(`.nav-a[href="#${e.target.id}"]`);
+        if(a)a.classList.add('active');
+      }
+    });
+  },{rootMargin:'-40% 0px -40% 0px'});
+  ['home','couple','event','gift','rsvp'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el);});
+}
+
+/* ── RSVP ── */
+function setGuest(n,btn){
+  guestN=n;
+  document.querySelectorAll('.gst-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function submitRSVP(){
+  const nm=document.getElementById('rName').value.trim();
+  const st=document.getElementById('rStatus').value;
+  const msg=document.getElementById('rMsg').value.trim();
+  if(!nm||!st){showToast('Mohon isi nama dan status kehadiran');return;}
+  const init=nm.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const grads=[
+    'linear-gradient(135deg,var(--ps-blue),var(--ps-cyan))',
+    'linear-gradient(135deg,#6644AA,#AA44CC)',
+    'linear-gradient(135deg,#006644,#00AA66)',
+    'linear-gradient(135deg,#AA4400,#FF6622)',
+    'linear-gradient(135deg,#004488,#0088FF)',
+  ];
+  const grad=grads[Math.floor(Math.random()*grads.length)];
+  const stTxt=st==='hadir'?`✓ Hadir · ${guestN} tamu`:'✗ Tidak Hadir';
+  const card=document.createElement('div');
+  card.className='wish-card';
+  card.innerHTML=`<div class="wa" style="background:${grad}">${init}</div><div><div class="wn">${nm}</div><div class="ws">${stTxt}</div><p class="wt">${msg||'Selamat dan bahagia selalu!'}</p></div>`;
+  document.getElementById('wishesList').prepend(card);
+  setTimeout(()=>card.classList.add('visible'),50);
+  document.getElementById('rName').value='';
+  document.getElementById('rStatus').value='';
+  document.getElementById('rMsg').value='';
+  showToast('Konfirmasi berhasil! Terima kasih ✓');
+  setTimeout(()=>document.querySelector('.wishes-section').scrollIntoView({behavior:'smooth',block:'start'}),500);
+}
+
+/* ── COPY ── */
+function copyNum(txt,btn){
+  navigator.clipboard.writeText(txt).then(()=>{
+    btn.classList.add('copied');btn.textContent='✓ Tersalin';
+    showToast('Nomor rekening tersalin!');
+    setTimeout(()=>{btn.classList.remove('copied');btn.textContent='Salin Nomor';},2500);
+  }).catch(()=>showToast('Salin: '+txt));
+}
+
+/* ── TOAST ── */
+let tt;
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2800);
+}
+</script>
+</body>
+</html>

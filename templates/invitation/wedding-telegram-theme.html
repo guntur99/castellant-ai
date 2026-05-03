@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Telegram — Anita & Zarda</title>
+<link href="https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,300;0,400;0,700;1,400&family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
+<style>
+
+/* ─────────────────────────────────────────
+   TOKENS  — Telegram Dark Theme
+───────────────────────────────────────── */
+:root {
+  --tg-bg:          #212121;
+  --tg-bg2:         #181818;
+  --tg-surface:     #2b2b2b;
+  --tg-panel:       #232323;
+  --tg-header:      #1c1c1c;
+  --tg-input-bg:    #2b2b2b;
+  --tg-bubble-in:   #2b2b2b;
+  --tg-bubble-out:  #2b5278;
+  --tg-blue:        #5288c1;
+  --tg-blue-light:  #64b5f6;
+  --tg-blue-bright: #40a7e3;
+  --tg-accent:      #5288c1;
+  --tg-white:       #ffffff;
+  --tg-gray1:       #e4e4e4;
+  --tg-gray2:       #aaaaaa;
+  --tg-gray3:       #707070;
+  --tg-gray4:       #3a3a3a;
+  --tg-sep:         rgba(255,255,255,0.06);
+  --tg-read:        #4fc3f7;
+  --tg-online:      #4dcd5e;
+  --tg-reaction-bg: rgba(82,136,193,0.18);
+  --tg-wall:        #0e1621;
+
+  /* Channel purple gradient */
+  --tg-channel:     linear-gradient(135deg,#5288c1,#7b68ee);
+
+  --font:           'Lato', 'Helvetica Neue', sans-serif;
+  --font-script:    'Playfair Display', Georgia, serif;
+  --ease:           cubic-bezier(0.25,0.46,0.45,0.94);
+  --spring:         cubic-bezier(0.34,1.56,0.64,1);
+}
+
+/* ─────────────────────────────────────────
+   BASE
+───────────────────────────────────────── */
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{-webkit-font-smoothing:antialiased}
+body{
+  background:#000;
+  font-family:var(--font);
+  color:var(--tg-white);
+  overflow:hidden;
+  height:100svh;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ─────────────────────────────────────────
+   PHONE FRAME
+───────────────────────────────────────── */
+.frame{
+  width:min(430px,100vw);
+  height:min(870px,100svh);
+  position:relative;
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  background:var(--tg-wall);
+}
+
+/* Telegram wallpaper — subtle dots pattern */
+.frame::before{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:0;
+  background-image:radial-gradient(circle,rgba(82,136,193,0.07) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+
+/* ─────────────────────────────────────────
+   SPLASH  — Telegram launch
+───────────────────────────────────────── */
+#splash{
+  position:absolute;inset:0;z-index:9999;
+  background:linear-gradient(160deg,#1c3f6e 0%,#17212b 60%,#0e1621 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity .7s var(--ease),transform .7s var(--ease);
+}
+#splash.out{opacity:0;transform:scale(1.05);pointer-events:none}
+
+.splash-icon{
+  width:96px;height:96px;margin-bottom:24px;
+  animation:tg-pop .6s var(--spring) .3s both;
+}
+@keyframes tg-pop{from{transform:scale(.4) rotate(-20deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.splash-name{
+  font-size:28px;font-weight:700;letter-spacing:-.02em;color:var(--tg-white);
+  animation:fade-up .6s var(--ease) .6s both;
+}
+.splash-sub{
+  font-size:14px;color:rgba(255,255,255,.45);margin-top:6px;letter-spacing:.04em;
+  animation:fade-up .6s var(--ease) .75s both;
+}
+.splash-loader{
+  position:absolute;bottom:max(48px,env(safe-area-inset-bottom,48px));
+  width:40px;height:40px;
+  border:3px solid rgba(255,255,255,.12);
+  border-top-color:var(--tg-blue-bright);
+  border-radius:50%;
+  animation:spin 1s linear infinite, fade-up .4s var(--ease) 1s both;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fade-up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─────────────────────────────────────────
+   CHAT LIST SCREEN  (shown after splash)
+───────────────────────────────────────── */
+#chatList{
+  position:absolute;inset:0;z-index:10;
+  display:flex;flex-direction:column;
+  opacity:0;transform:translateX(0);
+  transition:opacity .35s var(--ease),transform .35s var(--ease);
+  background:var(--tg-bg2);
+}
+#chatList.show{opacity:1}
+#chatList.slide-out{transform:translateX(-100%);opacity:0}
+
+/* Search bar */
+.tg-search{
+  background:var(--tg-header);
+  padding:max(env(safe-area-inset-top,0px),12px) 12px 10px;
+  display:flex;align-items:center;gap:10px;
+  border-bottom:1px solid var(--tg-sep);
+  flex-shrink:0;
+}
+.tg-search-box{
+  flex:1;background:var(--tg-surface);border-radius:24px;
+  display:flex;align-items:center;gap:8px;padding:8px 14px;
+}
+.tg-search-box svg{width:16px;height:16px;color:var(--tg-gray3)}
+.tg-search-input{
+  background:transparent;border:none;outline:none;
+  color:var(--tg-gray1);font-family:var(--font);font-size:15px;width:100%;
+}
+.tg-search-input::placeholder{color:var(--tg-gray3)}
+.tg-compose{
+  width:36px;height:36px;border-radius:50%;border:none;background:none;
+  color:var(--tg-blue-bright);cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.tg-compose svg{width:22px;height:22px}
+
+/* Chat list items */
+.cl-list{flex:1;overflow-y:auto}
+.cl-list::-webkit-scrollbar{width:3px}
+.cl-list::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:2px}
+
+.cl-section-label{
+  font-size:12px;color:var(--tg-gray3);letter-spacing:.06em;text-transform:uppercase;
+  padding:12px 16px 6px;
+}
+.cl-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 16px;cursor:pointer;
+  transition:background .15s;position:relative;
+}
+.cl-item:hover{background:rgba(255,255,255,.04)}
+.cl-item:active{background:rgba(255,255,255,.08)}
+.cl-item::after{
+  content:'';position:absolute;left:72px;right:0;bottom:0;
+  height:1px;background:var(--tg-sep);
+}
+.cl-item:last-child::after{display:none}
+
+.cl-ava{
+  width:50px;height:50px;border-radius:50%;flex-shrink:0;
+  position:relative;overflow:hidden;
+}
+.cl-ava img{width:100%;height:100%;object-fit:cover;display:block}
+.cl-ava-grad{
+  width:100%;height:100%;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:700;color:white;
+}
+.cl-online{
+  position:absolute;bottom:2px;right:2px;
+  width:12px;height:12px;border-radius:50%;
+  background:var(--tg-online);border:2px solid var(--tg-bg2);
+}
+.cl-body{flex:1;min-width:0}
+.cl-top{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.cl-name{font-size:15px;font-weight:700;color:var(--tg-gray1);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.cl-channel-badge{
+  font-size:9px;background:var(--tg-blue);color:white;
+  border-radius:4px;padding:1px 5px;font-weight:700;flex-shrink:0;
+}
+.cl-verified{color:var(--tg-blue-bright);flex-shrink:0}
+.cl-verified svg{width:14px;height:14px}
+.cl-time{font-size:12px;color:var(--tg-gray3);flex-shrink:0}
+.cl-bottom{display:flex;align-items:center;gap:6px}
+.cl-preview{font-size:14px;color:var(--tg-gray3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.cl-preview strong{color:var(--tg-gray2)}
+.cl-unread{
+  background:var(--tg-blue);color:white;
+  font-size:11px;font-weight:700;
+  min-width:20px;height:20px;border-radius:10px;
+  padding:0 5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.cl-muted-badge{color:var(--tg-gray3);flex-shrink:0}
+.cl-muted-badge svg{width:14px;height:14px}
+.cl-pinned{color:var(--tg-gray3);flex-shrink:0}
+.cl-pinned svg{width:14px;height:14px}
+
+/* Tab bar */
+.tg-tabs{
+  display:flex;background:var(--tg-header);
+  border-top:1px solid var(--tg-sep);
+  padding:6px 0 max(6px,env(safe-area-inset-bottom,6px));
+  flex-shrink:0;
+}
+.tg-tab{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  color:var(--tg-gray3);font-size:10px;cursor:pointer;
+  padding:4px;transition:color .15s;
+  position:relative;
+}
+.tg-tab svg{width:22px;height:22px}
+.tg-tab.on{color:var(--tg-blue-bright)}
+.tg-tab .tab-badge{
+  position:absolute;top:2px;right:calc(50% - 18px);
+  background:var(--tg-blue);color:white;
+  font-size:10px;font-weight:700;min-width:18px;height:18px;
+  border-radius:9px;padding:0 4px;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ─────────────────────────────────────────
+   CHAT VIEW
+───────────────────────────────────────── */
+#chatView{
+  position:absolute;inset:0;z-index:20;
+  display:flex;flex-direction:column;
+  transform:translateX(100%);opacity:0;
+  transition:transform .3s var(--ease),opacity .3s var(--ease);
+  background:var(--tg-wall);
+}
+#chatView.show{transform:translateX(0);opacity:1}
+
+/* ─────────────────────────────────────────
+   CHAT HEADER
+───────────────────────────────────────── */
+.chat-header{
+  background:var(--tg-header);
+  padding:max(env(safe-area-inset-top,0px),10px) 10px 10px;
+  display:flex;align-items:center;gap:8px;
+  border-bottom:1px solid var(--tg-sep);
+  flex-shrink:0;z-index:5;position:relative;
+}
+.ch-back-tg{
+  background:none;border:none;color:var(--tg-blue-bright);
+  cursor:pointer;padding:6px;display:flex;align-items:center;
+  font-size:14px;font-weight:400;gap:2px;
+}
+.ch-back-tg svg{width:20px;height:20px}
+.ch-info-tg{flex:1;min-width:0;cursor:pointer}
+.ch-name-tg{
+  font-size:16px;font-weight:700;color:var(--tg-gray1);
+  display:flex;align-items:center;gap:5px;
+}
+.ch-verified-tg{color:var(--tg-blue-bright)}
+.ch-verified-tg svg{width:15px;height:15px}
+.ch-status-tg{font-size:13px;color:var(--tg-gray3);margin-top:1px}
+.ch-status-tg.online{color:var(--tg-online)}
+.ch-ava-tg{
+  width:36px;height:36px;border-radius:50%;overflow:hidden;flex-shrink:0;cursor:pointer;
+}
+.ch-ava-tg img{width:100%;height:100%;object-fit:cover}
+.ch-actions-tg{display:flex;gap:2px}
+.ch-btn-tg{
+  width:36px;height:36px;border-radius:50%;border:none;background:none;
+  color:var(--tg-gray2);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .15s;
+}
+.ch-btn-tg:hover{background:rgba(255,255,255,.06)}
+.ch-btn-tg svg{width:20px;height:20px}
+
+/* Pinned message bar */
+.pinned-bar{
+  background:var(--tg-surface);padding:8px 14px;
+  display:flex;align-items:center;gap:10px;cursor:pointer;
+  border-bottom:1px solid var(--tg-sep);
+  flex-shrink:0;
+}
+.pinned-line{width:3px;height:32px;background:var(--tg-blue);border-radius:2px;flex-shrink:0}
+.pinned-body{flex:1;min-width:0}
+.pinned-label{font-size:11px;color:var(--tg-blue-bright);font-weight:700;margin-bottom:2px}
+.pinned-text{font-size:13px;color:var(--tg-gray2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pinned-close{color:var(--tg-gray3);font-size:18px;cursor:pointer;padding:2px}
+
+/* ─────────────────────────────────────────
+   MESSAGES AREA
+───────────────────────────────────────── */
+.chat-msgs{
+  flex:1;overflow-y:auto;overflow-x:hidden;
+  padding:8px 8px 4px;
+  display:flex;flex-direction:column;gap:2px;
+  position:relative;z-index:1;
+}
+.chat-msgs::-webkit-scrollbar{width:4px}
+.chat-msgs::-webkit-scrollbar-thumb{background:rgba(255,255,255,.06);border-radius:2px}
+
+/* date chip */
+.tg-date{
+  text-align:center;margin:8px 0;
+}
+.tg-date span{
+  background:rgba(0,0,0,.4);backdrop-filter:blur(8px);
+  border-radius:10px;padding:4px 12px;
+  font-size:12px;color:rgba(255,255,255,.7);font-weight:500;
+}
+
+/* Service message */
+.tg-service{
+  text-align:center;margin:6px auto;
+  background:rgba(0,0,0,.35);backdrop-filter:blur(8px);
+  border-radius:10px;padding:6px 16px;max-width:88%;
+  font-size:12px;color:rgba(255,255,255,.65);
+}
+
+/* ─────────────────────────────────────────
+   BUBBLE ROW
+───────────────────────────────────────── */
+.brow{
+  display:flex;align-items:flex-end;gap:4px;
+  max-width:86%;
+  opacity:0;transform:translateY(10px);
+  animation:bub-in .35s var(--ease) var(--d,0s) forwards;
+}
+@keyframes bub-in{to{opacity:1;transform:translateY(0)}}
+.brow.out{margin-left:auto;flex-direction:row-reverse}
+.brow.in{margin-right:auto}
+.brow.full{max-width:92%}
+
+/* avatar */
+.brow-ava{
+  width:26px;height:26px;border-radius:50%;overflow:hidden;flex-shrink:0;align-self:flex-end;
+}
+.brow-ava img{width:100%;height:100%;object-fit:cover}
+.brow-ava-spacer{width:26px;flex-shrink:0}
+
+/* base bubble */
+.bub{
+  border-radius:12px;padding:8px 11px 6px;
+  position:relative;min-width:60px;
+  box-shadow:0 1px 3px rgba(0,0,0,.3);
+}
+.bub.in{
+  background:var(--tg-bubble-in);
+  border-radius:4px 12px 12px 12px;
+}
+.bub.out{
+  background:var(--tg-bubble-out);
+  border-radius:12px 4px 12px 12px;
+}
+.bub.channel{
+  background:linear-gradient(135deg,#1e3a5f,#162d4a);
+  border-radius:12px;border:1px solid rgba(82,136,193,.2);
+}
+.bub.noshadow{box-shadow:none}
+
+/* tail */
+.bub.in::before{
+  content:'';position:absolute;top:0;left:-6px;
+  border:6px solid transparent;
+  border-right-color:var(--tg-bubble-in);
+  border-top-color:var(--tg-bubble-in);
+}
+.bub.out::before{
+  content:'';position:absolute;top:0;right:-6px;
+  border:6px solid transparent;
+  border-left-color:var(--tg-bubble-out);
+  border-top-color:var(--tg-bubble-out);
+}
+
+/* bubble text */
+.bub-text{
+  font-size:14.5px;line-height:1.5;
+  color:var(--tg-gray1);word-break:break-word;
+  white-space:pre-wrap;
+}
+.bub-text b{font-weight:700}
+.bub-text i{font-style:italic}
+.bub-text u{text-decoration:underline}
+.bub-text code{
+  background:rgba(0,0,0,.3);border-radius:4px;
+  padding:1px 5px;font-size:13px;font-family:monospace;
+}
+.bub-text .tg-mention{color:var(--tg-blue-light)}
+.bub-text .tg-link{color:var(--tg-blue-light);text-decoration:none}
+
+/* meta row */
+.bub-meta{
+  display:flex;align-items:center;justify-content:flex-end;
+  gap:4px;margin-top:3px;
+}
+.bub-time{font-size:11px;color:rgba(255,255,255,.45)}
+.bub-ticks svg{width:16px;height:9px;fill:var(--tg-read)}
+/* views (channel) */
+.bub-views{font-size:11px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:3px}
+.bub-views svg{width:13px;height:13px;fill:rgba(255,255,255,.45)}
+
+/* ─────────────────────────────────────────
+   SPECIAL BUBBLES
+───────────────────────────────────────── */
+
+/* ── ALBUM (photo group) ── */
+.album-grid{
+  display:grid;gap:3px;border-radius:12px;overflow:hidden;
+  width:260px;
+}
+.album-grid.g2{grid-template-columns:1fr 1fr}
+.album-grid.g3{grid-template-columns:1fr 1fr;grid-template-rows:auto auto}
+.album-cell{position:relative;overflow:hidden;cursor:pointer}
+.album-cell img{width:100%;aspect-ratio:1;object-fit:cover;display:block;transition:filter .25s}
+.album-cell:hover img{filter:brightness(.75)}
+.album-cell.tall{grid-row:span 2}
+.album-cell.tall img{aspect-ratio:unset;height:100%}
+.album-play{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity .2s;
+}
+.album-cell:hover .album-play{opacity:1}
+.alb-play-circle{
+  width:40px;height:40px;border-radius:50%;background:rgba(0,0,0,.55);
+  display:flex;align-items:center;justify-content:center;
+}
+.alb-play-circle svg{width:18px;height:18px;fill:white}
+
+/* ── FORWARDED ── */
+.fwd-header{
+  border-left:3px solid var(--tg-blue);
+  padding:4px 0 4px 8px;margin-bottom:6px;
+}
+.fwd-label{font-size:11px;color:rgba(255,255,255,.45);margin-bottom:2px}
+.fwd-from{font-size:13px;color:var(--tg-blue-light);font-weight:600}
+
+/* ── REPLY ── */
+.reply-bar{
+  border-left:3px solid var(--tg-blue);
+  background:rgba(0,0,0,.2);border-radius:0 4px 4px 0;
+  padding:5px 8px;margin-bottom:6px;cursor:pointer;
+}
+.reply-sender{font-size:12px;color:var(--tg-blue-light);font-weight:600;margin-bottom:2px}
+.reply-preview{font-size:12px;color:rgba(255,255,255,.55);overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+
+/* ── VOICE ── */
+.voice-row{display:flex;align-items:center;gap:10px;min-width:220px}
+.tg-vplay{
+  width:42px;height:42px;border-radius:50%;
+  background:var(--tg-blue);border:none;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;transition:background .15s,transform .1s;
+}
+.tg-vplay:hover{background:#3d7ab8}
+.tg-vplay:active{transform:scale(.9)}
+.tg-vplay svg{width:18px;height:18px;fill:white}
+.tg-wf{flex:1;display:flex;align-items:center;gap:2px;height:30px}
+.tg-wf-bar{width:3px;border-radius:2px;background:rgba(255,255,255,.25);flex-shrink:0;transition:background .15s}
+.tg-wf-bar.lit{background:var(--tg-blue-bright)}
+.voice-dur{font-size:12px;color:rgba(255,255,255,.45);white-space:nowrap}
+
+/* ── STICKER (animated emoji) ── */
+.tg-sticker{
+  background:transparent!important;box-shadow:none!important;
+  padding:4px!important;
+}
+.tg-sticker::before{display:none!important}
+.sticker-big{font-size:68px;line-height:1;display:block;animation:stk-in .4s var(--spring) both}
+@keyframes stk-in{from{transform:scale(.4) rotate(-15deg)}to{transform:scale(1) rotate(0)}}
+
+/* ── POLL ── */
+.poll-wrap{min-width:240px}
+.poll-q{font-size:15px;font-weight:700;margin-bottom:4px}
+.poll-anon{font-size:12px;color:var(--tg-gray3);margin-bottom:12px}
+.poll-opt{
+  margin-bottom:8px;cursor:pointer;
+}
+.poll-opt-top{display:flex;justify-content:space-between;margin-bottom:4px}
+.poll-opt-label{font-size:14px;color:var(--tg-gray1)}
+.poll-opt-pct{font-size:13px;color:var(--tg-blue-light);font-weight:600}
+.poll-bar-bg{height:4px;background:rgba(255,255,255,.1);border-radius:2px}
+.poll-bar-fill{height:100%;border-radius:2px;background:var(--tg-blue);transition:width .6s var(--ease)}
+.poll-total{font-size:12px;color:var(--tg-gray3);margin-top:8px}
+.poll-vote-btn{
+  margin-top:10px;width:100%;background:none;border:1px solid var(--tg-blue);
+  color:var(--tg-blue-light);font-family:var(--font);font-size:14px;font-weight:600;
+  padding:8px;border-radius:8px;cursor:pointer;transition:background .15s;
+}
+.poll-vote-btn:hover{background:rgba(82,136,193,.12)}
+
+/* ── INVITATION CARD ── */
+.inv-card{overflow:hidden;border-radius:12px;cursor:pointer;min-width:260px}
+.inv-img{width:100%;aspect-ratio:16/9;overflow:hidden;position:relative}
+.inv-img img{width:100%;height:100%;object-fit:cover;transition:filter .25s}
+.inv-card:hover .inv-img img{filter:brightness(.8)}
+.inv-img-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(0deg,rgba(0,0,0,.6) 0%,transparent 60%);
+}
+.inv-body{padding:12px 14px 10px}
+.inv-source{font-size:11px;color:var(--tg-blue-light);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px;font-weight:600}
+.inv-title{font-family:var(--font-script);font-size:20px;font-style:italic;color:var(--tg-gray1);margin-bottom:4px}
+.inv-desc{font-size:13px;color:var(--tg-gray3);line-height:1.5}
+.inv-open{
+  margin-top:10px;display:block;text-align:center;
+  padding:9px;background:rgba(82,136,193,.15);
+  border:1px solid rgba(82,136,193,.25);border-radius:8px;
+  color:var(--tg-blue-light);font-size:14px;font-weight:600;
+  cursor:pointer;transition:background .15s;
+}
+.inv-open:hover{background:rgba(82,136,193,.25)}
+
+/* ── LOCATION ── */
+.loc-bub{overflow:hidden;border-radius:12px;min-width:240px;cursor:pointer}
+.loc-map-tg{
+  width:100%;aspect-ratio:16/9;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,#1a2a3a,#0d1a26);
+}
+.loc-map-tg-bg{position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1568667256549-094345857637?w=400&q=60') center/cover;opacity:.35}
+.loc-pin-tg{position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);font-size:28px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.5))}
+.loc-info-tg{padding:10px 13px 9px}
+.loc-name-tg{font-size:14px;font-weight:700;margin-bottom:2px}
+.loc-addr-tg{font-size:12px;color:var(--tg-gray3);line-height:1.4}
+
+/* ── COUNTDOWN BUBBLE ── */
+.cd-bub{text-align:center;min-width:240px}
+.cd-bub-label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--tg-blue-light);font-weight:700;margin-bottom:10px}
+.cd-bub-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.cd-bub-box{background:rgba(0,0,0,.25);border-radius:8px;padding:10px 6px;border:1px solid rgba(82,136,193,.15)}
+.cd-bub-num{font-size:26px;font-weight:700;color:var(--tg-white);line-height:1;font-variant-numeric:tabular-nums}
+.cd-bub-unit{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--tg-gray3);margin-top:3px}
+
+/* ── REACTIONS ── */
+.reactions-row{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.reaction{
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--tg-reaction-bg);border:1px solid rgba(82,136,193,.2);
+  border-radius:16px;padding:4px 8px;cursor:pointer;
+  font-size:14px;transition:background .15s,transform .1s;
+}
+.reaction:hover{background:rgba(82,136,193,.28)}
+.reaction:active{transform:scale(.92)}
+.reaction.mine{background:rgba(82,136,193,.28);border-color:var(--tg-blue)}
+.reaction-count{font-size:12px;color:var(--tg-blue-light);font-weight:600}
+
+/* ── CHANNEL POST ── */
+.channel-post{
+  background:linear-gradient(135deg,#1e3a5f 0%,#162d4a 100%);
+  border:1px solid rgba(82,136,193,.18);
+  border-radius:12px;overflow:hidden;max-width:290px;
+}
+.cp-header{
+  display:flex;align-items:center;gap:8px;padding:12px 14px 8px;
+}
+.cp-ava{
+  width:32px;height:32px;border-radius:50%;overflow:hidden;flex-shrink:0;
+  background:var(--tg-channel);display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:700;
+}
+.cp-name{font-size:14px;font-weight:700;color:var(--tg-blue-light)}
+.cp-verified{color:var(--tg-blue-bright)}
+.cp-verified svg{width:14px;height:14px}
+.cp-body{padding:0 14px 12px}
+.cp-text{font-size:14px;line-height:1.55;color:var(--tg-gray1)}
+.cp-btn{
+  display:block;text-align:center;padding:10px 14px;
+  background:rgba(82,136,193,.15);
+  border-top:1px solid rgba(82,136,193,.12);
+  color:var(--tg-blue-light);font-size:14px;font-weight:600;
+  cursor:pointer;transition:background .15s;
+  text-decoration:none;
+}
+.cp-btn:hover{background:rgba(82,136,193,.25)}
+
+/* ── TYPING ── */
+.tg-typing{
+  display:flex;align-items:center;gap:3px;padding:10px 12px;height:36px;
+}
+.tg-tdot{
+  width:7px;height:7px;border-radius:50%;
+  background:var(--tg-gray3);
+  animation:tdot 1.4s ease-in-out infinite;
+}
+.tg-tdot:nth-child(2){animation-delay:.2s}
+.tg-tdot:nth-child(3){animation-delay:.4s}
+@keyframes tdot{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+
+/* ─────────────────────────────────────────
+   INPUT BAR
+───────────────────────────────────────── */
+.tg-input-bar{
+  background:var(--tg-header);
+  padding:8px 10px max(8px,env(safe-area-inset-bottom,8px));
+  display:flex;align-items:flex-end;gap:8px;
+  border-top:1px solid var(--tg-sep);
+  flex-shrink:0;z-index:5;position:relative;
+}
+.tg-input-box{
+  flex:1;background:var(--tg-input-bg);border-radius:22px;
+  display:flex;align-items:center;gap:8px;
+  padding:9px 12px;min-height:42px;
+}
+.tg-inp-ico{color:var(--tg-gray3);cursor:pointer;display:flex;align-items:center;flex-shrink:0;transition:color .15s}
+.tg-inp-ico:hover{color:var(--tg-blue-bright)}
+.tg-inp-ico svg{width:22px;height:22px}
+.tg-inp-field{
+  flex:1;background:transparent;border:none;outline:none;
+  color:var(--tg-gray1);font-family:var(--font);font-size:15px;
+  resize:none;min-height:22px;max-height:120px;
+  line-height:1.4;caret-color:var(--tg-blue-bright);
+  overflow-y:auto;
+}
+.tg-inp-field::placeholder{color:var(--tg-gray3)}
+.tg-send{
+  width:42px;height:42px;border-radius:50%;
+  background:var(--tg-blue);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:background .15s,transform .1s var(--spring);
+}
+.tg-send:hover{background:#3d7ab8}
+.tg-send:active{transform:scale(.88)}
+.tg-send svg{width:20px;height:20px;fill:white}
+
+/* attach popup */
+.tg-attach-pop{
+  position:absolute;bottom:calc(100% + 6px);left:10px;
+  background:var(--tg-surface);border-radius:14px;
+  padding:8px;box-shadow:0 6px 24px rgba(0,0,0,.45);
+  border:1px solid var(--tg-sep);
+  display:grid;grid-template-columns:repeat(4,1fr);gap:4px;
+  opacity:0;transform:translateY(10px) scale(.95);
+  transition:opacity .2s var(--ease),transform .2s var(--spring);
+  pointer-events:none;
+}
+.tg-attach-pop.show{opacity:1;transform:translateY(0) scale(1);pointer-events:all}
+.tg-ap-item{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:10px 6px;border-radius:10px;cursor:pointer;
+  transition:background .15s;
+}
+.tg-ap-item:hover{background:rgba(255,255,255,.06)}
+.tg-ap-ico{
+  width:42px;height:42px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:18px;
+}
+.tg-ap-label{font-size:10px;color:var(--tg-gray2);white-space:nowrap}
+
+/* ─────────────────────────────────────────
+   RSVP SHEET
+───────────────────────────────────────── */
+.rsvp-overlay{
+  position:absolute;inset:0;z-index:30;
+  background:rgba(0,0,0,.55);backdrop-filter:blur(6px);
+  display:flex;align-items:flex-end;
+  opacity:0;pointer-events:none;transition:opacity .3s;
+}
+.rsvp-overlay.open{opacity:1;pointer-events:all}
+.rsvp-panel{
+  width:100%;background:var(--tg-surface);
+  border-radius:16px 16px 0 0;
+  padding:12px 16px max(24px,env(safe-area-inset-bottom,24px));
+  transform:translateY(100%);transition:transform .4s var(--spring);
+  max-height:90svh;overflow-y:auto;
+}
+.rsvp-overlay.open .rsvp-panel{transform:translateY(0)}
+.rsvp-handle{width:40px;height:4px;border-radius:2px;background:var(--tg-gray4);margin:0 auto 16px}
+.rsvp-title{font-size:18px;font-weight:700;margin-bottom:4px}
+.rsvp-subtitle{font-size:14px;color:var(--tg-gray3);margin-bottom:20px}
+.rsvp-field{margin-bottom:14px}
+.rsvp-label{font-size:13px;color:var(--tg-gray2);margin-bottom:6px;font-weight:600}
+.rsvp-input{
+  width:100%;background:var(--tg-bg);border:1px solid var(--tg-gray4);
+  border-radius:10px;padding:12px 14px;
+  color:var(--tg-gray1);font-family:var(--font);font-size:15px;
+  outline:none;transition:border-color .2s;caret-color:var(--tg-blue-bright);
+}
+.rsvp-input:focus{border-color:var(--tg-blue)}
+.rsvp-input::placeholder{color:var(--tg-gray3)}
+textarea.rsvp-input{min-height:80px;resize:vertical}
+.rsvp-seg{display:flex;gap:8px}
+.rsvp-seg-btn{
+  flex:1;background:var(--tg-bg);border:1px solid var(--tg-gray4);
+  border-radius:10px;padding:10px;color:var(--tg-gray3);
+  font-family:var(--font);font-size:14px;font-weight:600;
+  cursor:pointer;transition:all .15s;text-align:center;
+}
+.rsvp-seg-btn.on{
+  background:rgba(82,136,193,.15);border-color:var(--tg-blue);color:var(--tg-blue-light);
+}
+.rsvp-send{
+  width:100%;background:var(--tg-blue);color:white;
+  border:none;border-radius:12px;padding:14px;
+  font-family:var(--font);font-size:16px;font-weight:700;
+  cursor:pointer;margin-top:16px;transition:background .15s,transform .1s;
+}
+.rsvp-send:hover{background:#3d7ab8}
+.rsvp-send:active{transform:scale(.98)}
+
+/* ─────────────────────────────────────────
+   LIGHTBOX
+───────────────────────────────────────── */
+.tg-lb{
+  position:absolute;inset:0;z-index:40;
+  background:rgba(0,0,0,.97);
+  display:none;flex-direction:column;
+}
+.tg-lb.open{display:flex}
+.tg-lb-header{
+  padding:max(env(safe-area-inset-top,12px),12px) 14px 12px;
+  display:flex;align-items:center;gap:10px;
+  background:rgba(0,0,0,.5);
+}
+.tg-lb-back{background:none;border:none;color:var(--tg-blue-bright);cursor:pointer;font-size:15px;font-weight:500;display:flex;align-items:center;gap:4px}
+.tg-lb-back svg{width:20px;height:20px}
+.tg-lb-info{flex:1}
+.tg-lb-sender{font-size:15px;font-weight:700}
+.tg-lb-time{font-size:12px;color:rgba(255,255,255,.45)}
+.tg-lb-main{flex:1;display:flex;align-items:center;justify-content:center;padding:10px}
+.tg-lb-img{max-width:100%;max-height:100%;object-fit:contain;border-radius:6px}
+.tg-lb-footer{padding:12px 16px max(20px,env(safe-area-inset-bottom,20px));display:flex;justify-content:space-around}
+.tg-lb-action{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  color:rgba(255,255,255,.55);cursor:pointer;font-size:11px;
+  transition:color .15s;
+}
+.tg-lb-action:hover{color:white}
+.tg-lb-action svg{width:22px;height:22px}
+
+/* ─────────────────────────────────────────
+   TOAST
+───────────────────────────────────────── */
+#tgToast{
+  position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(10px);
+  background:rgba(30,30,30,.95);color:white;
+  padding:10px 20px;border-radius:20px;
+  font-family:var(--font);font-size:13px;font-weight:500;
+  opacity:0;transition:opacity .25s,transform .25s;
+  pointer-events:none;white-space:nowrap;z-index:9999;
+  box-shadow:0 4px 20px rgba(0,0,0,.4);
+}
+#tgToast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ─────────────────────────────────────────
+   UTILITIES
+───────────────────────────────────────── */
+.mt4{margin-top:4px}
+.mb4{margin-bottom:4px}
+</style>
+</head>
+<body>
+
+<div class="frame" id="frame">
+
+<!-- ══════════ SPLASH ══════════ -->
+<div id="splash">
+  <svg class="splash-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="tgg" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#2AABEE"/>
+        <stop offset="100%" style="stop-color:#229ED9"/>
+      </linearGradient>
+    </defs>
+    <circle cx="50" cy="50" r="50" fill="url(#tgg)"/>
+    <path d="M22 50C22 34.536 34.536 22 50 22s28 12.536 28 28S65.464 78 50 78c-4.9 0-9.5-1.33-13.44-3.64L22 78l3.68-13.8A27.84 27.84 0 0122 50zm14.88 7.6l.9.56A20.16 20.16 0 0050 61.6c11.16 0 20.2-9.04 20.2-20.2S61.16 21.2 50 21.2 29.8 30.24 29.8 41.4c0 4.52 1.48 8.7 3.98 12.1l.62.88-1.74 6.52 6.22-1.7z" fill="white"/>
+    <path d="M41.44 35.4c-.52-1.14-.98-1.16-1.74-1.2-.46-.02-.98-.02-1.5-.02-.52 0-1.36.2-2.08.96-.72.76-2.74 2.68-2.74 6.52 0 3.86 2.8 7.58 3.18 8.1.4.52 5.44 8.68 13.4 11.82 6.64 2.62 7.96 2.1 9.4 1.96 1.44-.14 4.64-1.9 5.3-3.72.64-1.82.64-3.38.44-3.72-.18-.32-.7-.52-1.48-.92-.78-.4-4.62-2.28-5.34-2.54-.72-.26-1.24-.4-1.76.4-.52.78-2 2.54-2.46 3.06-.44.52-.9.58-1.66.2-.78-.4-3.28-1.2-6.24-3.84-2.32-2.08-3.86-4.62-4.32-5.42-.46-.78-.04-1.2.34-1.58.34-.34.78-.9 1.16-1.34.4-.44.52-.76.78-1.26.26-.52.14-1-.06-1.4-.2-.4-1.72-4.26-2.42-5.84z" fill="white"/>
+  </svg>
+  <div class="splash-name">Telegram</div>
+  <div class="splash-sub">Fast. Secure. Powerful.</div>
+  <div class="splash-loader"></div>
+</div>
+
+<!-- ══════════ CHAT LIST ══════════ -->
+<div id="chatList">
+  <!-- Search -->
+  <div class="tg-search">
+    <div class="tg-search-box">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <input class="tg-search-input" placeholder="Cari" readonly>
+    </div>
+    <button class="tg-compose" onclick="toast('✏️ Chat baru')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+    </button>
+  </div>
+
+  <!-- List -->
+  <div class="cl-list">
+    <div class="cl-section-label">Disematkan</div>
+
+    <!-- Main chat -->
+    <div class="cl-item" onclick="openChat()">
+      <div class="cl-ava">
+        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=100&h=100&fit=crop&q=80" alt="">
+        <div class="cl-online"></div>
+      </div>
+      <div class="cl-body">
+        <div class="cl-top">
+          <span class="cl-name">Anita & Zarda 💍</span>
+          <span class="cl-verified" title="Terverifikasi">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          </span>
+          <span class="cl-time">09:41</span>
+        </div>
+        <div class="cl-bottom">
+          <span class="cl-preview">📎 <strong>Undangan Pernikahan</strong></span>
+          <span class="cl-unread">12</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Channel -->
+    <div class="cl-item" onclick="openChat()">
+      <div class="cl-ava">
+        <div class="cl-ava-grad" style="background:linear-gradient(135deg,#5288c1,#7b68ee)">💌</div>
+      </div>
+      <div class="cl-body">
+        <div class="cl-top">
+          <span class="cl-name">Channel Resmi — A&Z</span>
+          <span class="cl-channel-badge">CHANNEL</span>
+          <span class="cl-time">09:38</span>
+        </div>
+        <div class="cl-bottom">
+          <span class="cl-preview">📢 Akad 24 Mei 2026 · Graha Yadika</span>
+          <span class="cl-unread">5</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="cl-section-label">Semua Chat</div>
+
+    <!-- Saved -->
+    <div class="cl-item" onclick="toast('💾 Pesan Tersimpan')">
+      <div class="cl-ava">
+        <div class="cl-ava-grad" style="background:linear-gradient(135deg,#4c9af5,#2255aa)">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>
+        </div>
+      </div>
+      <div class="cl-body">
+        <div class="cl-top">
+          <span class="cl-name">Pesan Tersimpan</span>
+          <span class="cl-time">kemarin</span>
+        </div>
+        <div class="cl-bottom">
+          <span class="cl-preview">📅 Simpan detail undangan di sini</span>
+          <span class="cl-pinned">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 12V4h1V2H7v2h1v8l-2 2v2h5.2v6h1.6v-6H18v-2l-2-2z"/></svg>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bot -->
+    <div class="cl-item" onclick="toast('🤖 RSVP Bot aktif!')">
+      <div class="cl-ava">
+        <div class="cl-ava-grad" style="background:linear-gradient(135deg,#26a69a,#00796b)">🤖</div>
+      </div>
+      <div class="cl-body">
+        <div class="cl-top">
+          <span class="cl-name">RSVP Bot — A&Z</span>
+          <span class="cl-verified"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>
+          <span class="cl-time">09:30</span>
+        </div>
+        <div class="cl-bottom">
+          <span class="cl-preview">🤖 Ketik /rsvp untuk konfirmasi hadir</span>
+          <span class="cl-muted-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3.5c-4.69 0-8.5 3.81-8.5 8.5 0 4.69 3.81 8.5 8.5 8.5 4.69 0 8.5-3.81 8.5-8.5 0-4.69-3.81-8.5-8.5-8.5zM13 17h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Muted -->
+    <div class="cl-item" onclick="toast('🔇 Grup Keluarga')">
+      <div class="cl-ava">
+        <div class="cl-ava-grad" style="background:linear-gradient(135deg,#e57373,#c62828)">👨‍👩‍👧‍👦</div>
+      </div>
+      <div class="cl-body">
+        <div class="cl-top">
+          <span class="cl-name">Keluarga Besar 👨‍👩‍👧‍👦</span>
+          <span class="cl-time">Rab</span>
+        </div>
+        <div class="cl-bottom">
+          <span class="cl-preview">Mama: Selamat ya Anita sayang! 🥹</span>
+          <span class="cl-muted-badge"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab bar -->
+  <div class="tg-tabs">
+    <div class="tg-tab on" onclick="toast('💬 Chat')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+      Chat
+    </div>
+    <div class="tg-tab" onclick="toast('📢 Channel')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+      Channel
+    </div>
+    <div class="tg-tab" onclick="toast('📞 Panggilan')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+      Panggilan
+    </div>
+    <div class="tg-tab" onclick="toast('👤 Profil')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+      Profil
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ CHAT VIEW ══════════ -->
+<div id="chatView">
+
+  <!-- Header -->
+  <div class="chat-header">
+    <button class="ch-back-tg" onclick="closeChat()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+    </button>
+    <div class="ch-ava-tg" onclick="toast('👤 Profil Anita & Zarda')">
+      <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=80&h=80&fit=crop&q=80" alt="">
+    </div>
+    <div class="ch-info-tg">
+      <div class="ch-name-tg">
+        Anita & Zarda 💍
+        <span class="ch-verified-tg" title="Terverifikasi">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        </span>
+      </div>
+      <div class="ch-status-tg online" id="chStatus">online</div>
+    </div>
+    <div class="ch-actions-tg">
+      <button class="ch-btn-tg" onclick="toast('🔍 Cari pesan')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      </button>
+      <button class="ch-btn-tg" onclick="toast('📞 Panggilan suara')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+      </button>
+      <button class="ch-btn-tg" onclick="toast('⋮ Menu lainnya')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Pinned -->
+  <div class="pinned-bar" id="pinnedBar">
+    <div class="pinned-line"></div>
+    <div class="pinned-body">
+      <div class="pinned-label">Pesan Disematkan</div>
+      <div class="pinned-text">📅 Akad 08.00 · Resepsi 11.00–13.00 · 24 Mei 2026 · Graha Yadika</div>
+    </div>
+    <span class="pinned-close" onclick="document.getElementById('pinnedBar').style.display='none'">×</span>
+  </div>
+
+  <!-- Messages -->
+  <div class="chat-msgs" id="chatMsgs"></div>
+
+  <!-- Input -->
+  <div class="tg-input-bar">
+    <div class="tg-input-box">
+      <div class="tg-inp-ico" onclick="toast('😊 Emoji & Stiker')">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+      </div>
+      <textarea class="tg-inp-field" placeholder="Pesan" id="tgMsgInput" rows="1" onkeydown="handleTgKey(event)" oninput="tgAutoResize(this)"></textarea>
+      <div class="tg-inp-ico" onclick="toggleAttach()">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 6v11.5c0 2.21-1.79 4-4 4s-4-1.79-4-4V5c0-1.38 1.12-2.5 2.5-2.5s2.5 1.12 2.5 2.5v10.5c0 .55-.45 1-1 1s-1-.45-1-1V6H10v9.5c0 1.38 1.12 2.5 2.5 2.5s2.5-1.12 2.5-2.5V5c0-2.21-1.79-4-4-4S7 2.79 7 5v12.5c0 3.04 2.46 5.5 5.5 5.5s5.5-2.46 5.5-5.5V6h-1.5z"/></svg>
+      </div>
+    </div>
+    <button class="tg-send" onclick="sendTgMsg()">
+      <svg viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+    </button>
+
+    <!-- Attach popup -->
+    <div class="tg-attach-pop" id="tgAttachPop">
+      <div class="tg-ap-item" onclick="doAttach('photo')">
+        <div class="tg-ap-ico" style="background:rgba(82,136,193,.2)">🖼️</div>
+        <span class="tg-ap-label">Foto</span>
+      </div>
+      <div class="tg-ap-item" onclick="doAttach('file')">
+        <div class="tg-ap-ico" style="background:rgba(94,92,230,.2)">📄</div>
+        <span class="tg-ap-label">File</span>
+      </div>
+      <div class="tg-ap-item" onclick="doAttach('location')">
+        <div class="tg-ap-ico" style="background:rgba(76,175,80,.2)">📍</div>
+        <span class="tg-ap-label">Lokasi</span>
+      </div>
+      <div class="tg-ap-item" onclick="doAttach('poll')">
+        <div class="tg-ap-ico" style="background:rgba(255,159,10,.2)">📊</div>
+        <span class="tg-ap-label">Polling</span>
+      </div>
+      <div class="tg-ap-item" onclick="openRSVP()">
+        <div class="tg-ap-ico" style="background:rgba(229,9,20,.2)">💌</div>
+        <span class="tg-ap-label">RSVP</span>
+      </div>
+      <div class="tg-ap-item" onclick="doAttach('contact')">
+        <div class="tg-ap-ico" style="background:rgba(0,150,136,.2)">👤</div>
+        <span class="tg-ap-label">Kontak</span>
+      </div>
+      <div class="tg-ap-item" onclick="doAttach('gift')">
+        <div class="tg-ap-ico" style="background:rgba(233,30,99,.2)">🎁</div>
+        <span class="tg-ap-label">Hadiah</span>
+      </div>
+      <div class="tg-ap-item" onclick="doAttach('music')">
+        <div class="tg-ap-ico" style="background:rgba(156,39,176,.2)">🎵</div>
+        <span class="tg-ap-label">Musik</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ RSVP SHEET ══════════ -->
+<div class="rsvp-overlay" id="rsvpOverlay" onclick="closeRSVP(event)">
+  <div class="rsvp-panel">
+    <div class="rsvp-handle"></div>
+    <div class="rsvp-title">Konfirmasi Kehadiran 💌</div>
+    <div class="rsvp-subtitle">Anita & Zarda — Minggu, 24 Mei 2026</div>
+
+    <div class="rsvp-field">
+      <div class="rsvp-label">Nama Lengkap</div>
+      <input type="text" class="rsvp-input" placeholder="Masukkan nama Anda" id="rsN">
+    </div>
+    <div class="rsvp-field">
+      <div class="rsvp-label">Kehadiran</div>
+      <div class="rsvp-seg">
+        <button class="rsvp-seg-btn on" onclick="selRS('hadir',this)">✅ Hadir</button>
+        <button class="rsvp-seg-btn" onclick="selRS('tidak',this)">❌ Tidak Hadir</button>
+      </div>
+    </div>
+    <div class="rsvp-field">
+      <div class="rsvp-label">Jumlah Tamu</div>
+      <div class="rsvp-seg">
+        <button class="rsvp-seg-btn on" onclick="selG(1,this)">1 orang</button>
+        <button class="rsvp-seg-btn" onclick="selG(2,this)">2 orang</button>
+      </div>
+    </div>
+    <div class="rsvp-field">
+      <div class="rsvp-label">Ucapan & Doa</div>
+      <textarea class="rsvp-input" placeholder="Tuliskan ucapan..." id="rsM"></textarea>
+    </div>
+    <button class="rsvp-send" onclick="submitRSVP()">Kirim Konfirmasi 📨</button>
+  </div>
+</div>
+
+<!-- ══════════ LIGHTBOX ══════════ -->
+<div class="tg-lb" id="tgLb">
+  <div class="tg-lb-header">
+    <button class="tg-lb-back" onclick="closeLb()">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
+      Kembali
+    </button>
+    <div class="tg-lb-info">
+      <div class="tg-lb-sender">Anita & Zarda</div>
+      <div class="tg-lb-time" id="lbTimeTg">09:41</div>
+    </div>
+  </div>
+  <div class="tg-lb-main"><img class="tg-lb-img" id="lbImgTg" src="" alt=""></div>
+  <div class="tg-lb-footer">
+    <div class="tg-lb-action" onclick="toast('⬇️ Menyimpan foto...')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Simpan</div>
+    <div class="tg-lb-action" onclick="toast('↩️ Diteruskan!')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M14 9V5l7 7-7 7v-4.1c-5 0-8.5 1.6-11 5.1 1-5 4-10 11-11z"/></svg>Teruskan</div>
+    <div class="tg-lb-action" onclick="toast('⭐ Disimpan!')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>Simpan</div>
+    <div class="tg-lb-action" onclick="toast('🔗 Link disalin!')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>Salin Link</div>
+  </div>
+</div>
+
+</div><!-- /frame -->
+
+<!-- TOAST -->
+<div id="tgToast"></div>
+
+<script>
+/* ══ DATA ══ */
+const IMGS = [
+  {src:"https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=450&fit=crop&q=80",t:"09:36"},
+  {src:"https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&h=450&fit=crop&q=80",t:"09:36"},
+  {src:"https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=450&fit=crop&q=80",t:"09:36"},
+  {src:"https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&h=450&fit=crop&q=80",t:"09:37"},
+  {src:"https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=600&h=450&fit=crop&q=80",t:"09:37"},
+  {src:"https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=450&fit=crop&q=80",t:"09:38"},
+];
+
+/* ══ STATE ══ */
+let rsStatus='hadir', gCount=1;
+let showAttach=false;
+let vnPlaying=false, vnTimer=null, vnPct=0;
+
+/* ══ SPLASH → CHAT LIST ══ */
+async function init(){
+  await sleep(2000);
+  document.getElementById('splash').classList.add('out');
+  await sleep(300);
+  document.getElementById('chatList').classList.add('show');
+}
+init();
+
+function sleep(ms){return new Promise(r=>setTimeout(r,ms))}
+
+/* ══ OPEN / CLOSE CHAT ══ */
+function openChat(){
+  document.getElementById('chatList').classList.add('slide-out');
+  document.getElementById('chatView').classList.add('show');
+  setTimeout(renderMessages, 200);
+}
+function closeChat(){
+  document.getElementById('chatView').classList.remove('show');
+  setTimeout(()=>document.getElementById('chatList').classList.remove('slide-out'),200);
+}
+
+/* ══ MESSAGES ══ */
+const MSGS = [
+  {type:'date', text:'Minggu, 24 Mei 2026'},
+  {type:'service', text:'🔒 Pesan dienkripsi end-to-end'},
+  {type:'channel-post', delay:300},
+  {type:'text', dir:'in', t:'09:31', delay:500,
+   text:'Assalamu\'alaikum <b>Kak Ade</b> 👋\n\nDengan penuh rasa syukur kami mengundang Kakak ke hari pernikahan kami.'},
+  {type:'sticker', dir:'in', t:'09:31', delay:400, emoji:'💍'},
+  {type:'invite', dir:'in', t:'09:32', delay:600},
+  {type:'fwd', dir:'in', t:'09:33', delay:500,
+   from:'Anita 🌸', text:'_"Dari pertemuan di meja bowling hingga ke pelaminan — terima kasih sudah menjadi bagian dari perjalanan kami"_ 🤍'},
+  {type:'countdown', dir:'in', t:'09:33', delay:600},
+  {type:'voice', dir:'in', t:'09:34', delay:700, dur:'0:32'},
+  {type:'album', delay:700, t:'09:35'},
+  {type:'text', dir:'in', t:'09:36', delay:500,
+   text:'Ini beberapa foto prewedding kami 📸\n\nSelengkapnya cek Instagram kami ya Kak! ✨'},
+  {type:'location', dir:'in', t:'09:37', delay:600},
+  {type:'poll', dir:'in', t:'09:38', delay:700},
+  {type:'reply', dir:'out', t:'09:40', delay:1000,
+   quote:{sender:'Anita & Zarda 💍', text:'Ini beberapa foto prewedding kami 📸'},
+   text:'Masya Allah, cantik banget fotonya! 🥹 Insyaallah hadir ya!'},
+  {type:'sticker', dir:'out', t:'09:40', delay:300, emoji:'🎊'},
+  {type:'text', dir:'in', t:'09:41', delay:800,
+   text:'Alhamdulillah Kak! 🤲\n\nJangan lupa konfirmasi kehadiran ya lewat RSVP Bot atau klik tombol di bawah 💌'},
+  {type:'bot-btn', delay:400, t:'09:41'},
+  {type:'typing', delay:500},
+];
+
+async function renderMessages(){
+  const area = document.getElementById('chatMsgs');
+  area.innerHTML = '';
+  for(const m of MSGS){
+    await sleep(m.delay||200);
+    const el = buildMsg(m);
+    if(!el) continue;
+    const prev = area.querySelector('.typing-row');
+    if(prev && m.type!=='typing') prev.remove();
+    area.appendChild(el);
+    area.scrollTop = area.scrollHeight;
+  }
+}
+
+function buildMsg(m){
+  if(m.type==='date'){
+    const d=document.createElement('div');
+    d.className='tg-date'; d.innerHTML=`<span>${m.text}</span>`; return d;
+  }
+  if(m.type==='service'){
+    const s=document.createElement('div');
+    s.className='tg-service'; s.textContent=m.text; return s;
+  }
+
+  const wrap=document.createElement('div');
+  wrap.className=`brow ${m.dir||'in'}`;
+  wrap.style.cssText=`--d:0s`;
+
+  const avaHTML = m.dir==='in'
+    ? `<div class="brow-ava"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=60&h=60&fit=crop&q=80" alt=""></div>`
+    : `<div class="brow-ava-spacer"></div>`;
+  const meta = `<div class="bub-meta"><span class="bub-time">${m.t||'09:41'}</span>${m.dir==='out'?'<span class="bub-ticks"><svg viewBox="0 0 18 10" fill="currentColor"><path d="M17.394.601a.503.503 0 0 0-.7-.047l-8.3 7.01L5.28 4.35a.5.5 0 0 0-.656.755l3.5 3.04a.498.498 0 0 0 .652.003l8.57-7.23a.5.5 0 0 0 .048-.317zm-5.3.003a.503.503 0 0 0-.7-.047L4.1 7.567.98 4.35a.5.5 0 0 0-.656.755l3.5 3.04a.498.498 0 0 0 .652.003L12.046.921a.5.5 0 0 0 .047-.317z"/></svg></span>':''}</div>`;
+
+  const reactions = (dir='in') => `<div class="reactions-row">
+    <div class="reaction mine" onclick="this.classList.toggle('mine');toast('❤️ Reaksi diperbarui')"><span>❤️</span><span class="reaction-count">12</span></div>
+    <div class="reaction" onclick="this.classList.toggle('mine');toast('🥹 Reaksi diperbarui')"><span>🥹</span><span class="reaction-count">8</span></div>
+    <div class="reaction" onclick="this.classList.toggle('mine');toast('🎊 Reaksi diperbarui')"><span>🎊</span><span class="reaction-count">5</span></div>
+    <div class="reaction" onclick="this.classList.toggle('mine');toast('+ Tambah reaksi')">+</div>
+  </div>`;
+
+  if(m.type==='text'){
+    const fmt=m.text.replace(/\n/g,'<br>').replace(/<b>(.*?)<\/b>/g,'<b>$1</b>').replace(/_(.*?)_/g,'<i>$1</i>').replace(/`(.*?)`/g,'<code>$1</code>');
+    wrap.innerHTML=`${avaHTML}<div class="bub ${m.dir}"><div class="bub-text">${fmt}</div>${meta}${m.dir==='in'?reactions():''}</div>`;
+  }
+  else if(m.type==='sticker'){
+    wrap.innerHTML=`${avaHTML}<div class="bub ${m.dir} tg-sticker"><span class="sticker-big">${m.emoji}</span>${meta}</div>`;
+  }
+  else if(m.type==='invite'){
+    wrap.className='brow in full';
+    wrap.innerHTML=`${avaHTML}
+    <div class="bub in" style="padding:0;overflow:hidden;max-width:280px">
+      <div class="inv-card" onclick="openRSVP()">
+        <div class="inv-img">
+          <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=560&h=315&fit=crop&q=80" alt="" loading="lazy">
+          <div class="inv-img-overlay"></div>
+        </div>
+        <div class="inv-body">
+          <div class="inv-source">💌 Undangan Pernikahan</div>
+          <div class="inv-title">Anita & Zarda</div>
+          <div class="inv-desc">Minggu, 24 Mei 2026 · Graha Yadika, Tangerang</div>
+          <div class="inv-open" onclick="event.stopPropagation();openRSVP()">Buka & Konfirmasi Hadir →</div>
+        </div>
+      </div>
+      ${meta}
+    </div>`;
+  }
+  else if(m.type==='fwd'){
+    const fmt=m.text.replace(/_"(.*?)"_/g,'<i>"$1"</i>');
+    wrap.innerHTML=`${avaHTML}<div class="bub ${m.dir}">
+      <div class="fwd-header">
+        <div class="fwd-label">Diteruskan dari</div>
+        <div class="fwd-from">${m.from}</div>
+      </div>
+      <div class="bub-text">${fmt}</div>${meta}</div>`;
+  }
+  else if(m.type==='reply'){
+    const fmt=m.text.replace(/\n/g,'<br>');
+    wrap.innerHTML=`${avaHTML}<div class="bub ${m.dir}">
+      <div class="reply-bar">
+        <div class="reply-sender">${m.quote.sender}</div>
+        <div class="reply-preview">${m.quote.text}</div>
+      </div>
+      <div class="bub-text">${fmt}</div>${meta}</div>`;
+  }
+  else if(m.type==='voice'){
+    const bars=Array.from({length:30},(_,i)=>{
+      const h=Math.random()*75+15;
+      return `<div class="tg-wf-bar" style="height:${h}%" data-i="${i}"></div>`;
+    }).join('');
+    wrap.innerHTML=`${avaHTML}<div class="bub ${m.dir}">
+      <div class="voice-row">
+        <button class="tg-vplay" onclick="playVN(this)">
+          <svg id="vnP" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="vnPa" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+        <div class="tg-wf">${bars}</div>
+        <span class="voice-dur">${m.dur}</span>
+      </div>${meta}</div>`;
+  }
+  else if(m.type==='album'){
+    wrap.className='brow in full';
+    wrap.innerHTML=`${avaHTML}
+    <div style="display:flex;flex-direction:column;gap:4px;max-width:280px">
+      <div class="album-grid g3">
+        <div class="album-cell tall" onclick="openLb(0)">
+          <img src="${IMGS[0].src}" alt="" loading="lazy">
+          <div class="album-play"><div class="alb-play-circle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+        </div>
+        <div class="album-cell" onclick="openLb(1)">
+          <img src="${IMGS[1].src}" alt="" loading="lazy">
+          <div class="album-play"><div class="alb-play-circle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+        </div>
+        <div class="album-cell" onclick="openLb(2)">
+          <img src="${IMGS[2].src}" alt="" loading="lazy">
+          <div class="album-play"><div class="alb-play-circle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div>
+        </div>
+      </div>
+      <div class="album-grid g2">
+        <div class="album-cell" onclick="openLb(3)"><img src="${IMGS[3].src}" alt="" loading="lazy"><div class="album-play"><div class="alb-play-circle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+        <div class="album-cell" onclick="openLb(4)"><img src="${IMGS[4].src}" alt="" loading="lazy"><div class="album-play"><div class="alb-play-circle"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></div></div></div>
+      </div>
+      <div class="bub in" style="margin-top:0;border-radius:0 0 12px 12px">
+        ${reactions()}
+        ${meta}
+      </div>
+    </div>`;
+  }
+  else if(m.type==='location'){
+    wrap.innerHTML=`${avaHTML}<div class="bub ${m.dir}" style="padding:0;overflow:hidden;max-width:260px">
+      <div class="loc-bub" onclick="window.open('https://maps.app.goo.gl/mxac1yXcYLrYQmvA6','_blank')">
+        <div class="loc-map-tg">
+          <div class="loc-map-tg-bg"></div>
+          <div class="loc-pin-tg">📍</div>
+        </div>
+        <div class="loc-info-tg">
+          <div class="loc-name-tg">Graha Yadika</div>
+          <div class="loc-addr-tg">Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div>
+        </div>
+      </div>${meta}
+    </div>`;
+  }
+  else if(m.type==='countdown'){
+    wrap.innerHTML=`${avaHTML}<div class="bub ${m.dir}">
+      <div class="cd-bub">
+        <div class="cd-bub-label">⏳ Hitung Mundur Pernikahan</div>
+        <div class="cd-bub-grid">
+          <div class="cd-bub-box"><div class="cd-bub-num" id="tgD">--</div><div class="cd-bub-unit">Hari</div></div>
+          <div class="cd-bub-box"><div class="cd-bub-num" id="tgH">--</div><div class="cd-bub-unit">Jam</div></div>
+          <div class="cd-bub-box"><div class="cd-bub-num" id="tgM">--</div><div class="cd-bub-unit">Menit</div></div>
+          <div class="cd-bub-box"><div class="cd-bub-num" id="tgS">--</div><div class="cd-bub-unit">Detik</div></div>
+        </div>
+      </div>${meta}
+    </div>`;
+    runCd();
+  }
+  else if(m.type==='poll'){
+    wrap.innerHTML=`${avaHTML}<div class="bub ${m.dir}">
+      <div class="poll-wrap">
+        <div class="poll-q">📊 Acara mana yang akan Anda hadiri?</div>
+        <div class="poll-anon">🔒 Polling anonim · Pilih satu</div>
+        ${['Akad Nikah','Resepsi','Keduanya!'].map((o,i)=>{
+          const pcts=[38,27,35];
+          return `<div class="poll-opt" onclick="votePoll(this,${pcts[i]})">
+            <div class="poll-opt-top"><span class="poll-opt-label">${o}</span><span class="poll-opt-pct">${pcts[i]}%</span></div>
+            <div class="poll-bar-bg"><div class="poll-bar-fill" style="width:${pcts[i]}%"></div></div>
+          </div>`;
+        }).join('')}
+        <div class="poll-total">23 suara · Berakhir 23 Mei 2026</div>
+        <button class="poll-vote-btn" onclick="toast('✅ Suara tersimpan!')">Tampilkan Hasil</button>
+      </div>${meta}
+    </div>`;
+  }
+  else if(m.type==='channel-post'){
+    wrap.className='brow in full';
+    wrap.style.maxWidth='100%';
+    wrap.innerHTML=`${avaHTML}
+    <div class="channel-post">
+      <div class="cp-header">
+        <div class="cp-ava">💌</div>
+        <div>
+          <div class="cp-name">Channel Resmi A&Z
+            <span class="cp-verified"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>
+          </div>
+        </div>
+      </div>
+      <div class="cp-body">
+        <div class="cp-text">📢 <b>PENGUMUMAN RESMI</b>\n\nKami dengan penuh rasa syukur mengumumkan bahwa <b>Anita Pangestuti, S.Kom</b> & <b>Zardarian Ahadika N, S.Kom</b> akan melangsungkan pernikahan pada:\n\n📅 Minggu, 24 Mei 2026\n🕗 Akad 08.00 · Resepsi 11.00 WIB\n📍 Graha Yadika, Ciledug, Tangerang</div>
+      </div>
+      <div class="bub-meta" style="padding:4px 14px 10px">
+        <span class="bub-views"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>1.2K</span>
+        <span class="bub-time">${m.t||'09:30'}</span>
+      </div>
+      <div class="cp-btn" onclick="openRSVP()">💌 Konfirmasi Kehadiran</div>
+    </div>`;
+  }
+  else if(m.type==='bot-btn'){
+    wrap.className='brow in full';
+    wrap.innerHTML=`${avaHTML}
+    <div class="bub in" style="min-width:220px">
+      <div class="bub-text"><b>🤖 RSVP Bot</b>\n\nHalo! Klik tombol di bawah untuk konfirmasi kehadiran Anda.</div>
+      <div style="margin-top:8px;display:flex;flex-direction:column;gap:6px">
+        <button onclick="openRSVP()" style="width:100%;background:rgba(82,136,193,.15);border:1px solid rgba(82,136,193,.3);border-radius:8px;padding:10px;color:var(--tg-blue-light);font-family:var(--font);font-size:14px;font-weight:600;cursor:pointer;transition:background .15s">✅ Konfirmasi Hadir</button>
+        <button onclick="toast('❌ Tidak hadir dicatat')" style="width:100%;background:rgba(255,255,255,.05);border:1px solid var(--tg-gray4);border-radius:8px;padding:10px;color:var(--tg-gray2);font-family:var(--font);font-size:14px;cursor:pointer;transition:background .15s">❌ Tidak Hadir</button>
+      </div>
+      ${meta}
+    </div>`;
+  }
+  else if(m.type==='typing'){
+    wrap.className='brow in typing-row';
+    wrap.innerHTML=`<div class="brow-ava"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=60&h=60&fit=crop&q=80" alt=""></div>
+    <div class="bub in"><div class="tg-typing"><div class="tg-tdot"></div><div class="tg-tdot"></div><div class="tg-tdot"></div></div></div>`;
+  }
+
+  return wrap;
+}
+
+/* ══ COUNTDOWN ══ */
+function runCd(){
+  const t=new Date('2026-05-24T08:00:00');
+  function tick(){
+    const d=t-new Date();
+    if(d<=0){['tgD','tgH','tgM','tgS'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='00'});return}
+    [['tgD',86400000],['tgH',3600000],['tgM',60000],['tgS',1000]].forEach(([id,div],i,arr)=>{
+      const e=document.getElementById(id);if(!e)return;
+      const rem=i===0?Math.floor(d/div):Math.floor((d%arr[i-1][1])/div);
+      // fix: manual
+      const vals=[Math.floor(d/86400000),Math.floor((d%86400000)/3600000),Math.floor((d%3600000)/60000),Math.floor((d%60000)/1000)];
+      e.textContent=String(vals[i]).padStart(2,'0');
+    });
+  }
+  tick();setInterval(tick,1000);
+}
+
+/* ══ VOICE NOTE ══ */
+function playVN(btn){
+  const bub=btn.closest('.bub');
+  const bars=bub.querySelectorAll('.tg-wf-bar');
+  const pi=btn.querySelector('#vnP'),pa=btn.querySelector('#vnPa');
+  vnPlaying=!vnPlaying;
+  if(vnPlaying){
+    pi.style.display='none';pa.style.display='block';
+    vnPct=0;
+    vnTimer=setInterval(()=>{
+      vnPct++;
+      const idx=Math.floor((vnPct/100)*bars.length);
+      bars.forEach((b,i)=>b.classList.toggle('lit',i<idx));
+      if(vnPct>=100){clearInterval(vnTimer);vnPlaying=false;pi.style.display='block';pa.style.display='none';bars.forEach(b=>b.classList.remove('lit'));}
+    },320);
+  } else {
+    clearInterval(vnTimer);pi.style.display='block';pa.style.display='none';
+  }
+}
+
+/* ══ POLL ══ */
+function votePoll(el){
+  const opts=el.parentElement.querySelectorAll('.poll-opt');
+  opts.forEach(o=>o.style.background='');
+  el.style.background='rgba(82,136,193,.08)';
+  toast('✅ Suara tercatat!');
+}
+
+/* ══ ATTACH ══ */
+function toggleAttach(){
+  showAttach=!showAttach;
+  document.getElementById('tgAttachPop').classList.toggle('show',showAttach);
+}
+function doAttach(type){
+  toggleAttach();
+  const area=document.getElementById('chatMsgs');
+  let el=null;
+  if(type==='location'){
+    el=buildMsg({type:'location',dir:'out',t:nowT(),delay:0});
+  } else if(type==='photo'){
+    el=buildMsg({type:'album',dir:'out',t:nowT(),delay:0});
+  } else {
+    toast('📎 '+type+' siap dikirim');return;
+  }
+  if(el){area.appendChild(el);area.scrollTop=area.scrollHeight;}
+}
+
+/* ══ SEND ══ */
+function handleTgKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendTgMsg();}}
+function tgAutoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+function sendTgMsg(){
+  const inp=document.getElementById('tgMsgInput');
+  const text=inp.value.trim();if(!text)return;
+  const area=document.getElementById('chatMsgs');
+  const prev=area.querySelector('.typing-row');if(prev)prev.remove();
+  const el=buildMsg({type:'text',dir:'out',t:nowT(),text,delay:0});
+  area.appendChild(el);area.scrollTop=area.scrollHeight;
+  inp.value='';inp.style.height='auto';
+  // auto-reply
+  setTimeout(()=>{
+    const r=buildMsg({type:'text',dir:'in',t:nowT(),delay:0,
+      text:'Terima kasih pesannya! 🤍\nJangan lupa konfirmasi kehadiran ya Kak 💌'});
+    area.appendChild(r);area.scrollTop=area.scrollHeight;
+  },1200);
+}
+
+/* ══ RSVP ══ */
+function openRSVP(){document.getElementById('rsvpOverlay').classList.add('open');}
+function closeRSVP(e){if(e.target===document.getElementById('rsvpOverlay'))document.getElementById('rsvpOverlay').classList.remove('open');}
+function selRS(v,btn){rsStatus=v;document.querySelectorAll('.rsvp-seg-btn').forEach((b,i)=>{if(i<2)b.classList.toggle('on',b===btn)});}
+function selG(n,btn){gCount=n;document.querySelectorAll('.rsvp-seg-btn').forEach((b,i)=>{if(i>=2)b.classList.toggle('on',b===btn)});}
+function submitRSVP(){
+  const name=document.getElementById('rsN').value.trim();
+  const msg=document.getElementById('rsM').value.trim();
+  if(!name){toast('Mohon isi nama terlebih dahulu');return;}
+  document.getElementById('rsvpOverlay').classList.remove('open');
+  const area=document.getElementById('chatMsgs');
+  const prev=area.querySelector('.typing-row');if(prev)prev.remove();
+  const stxt=rsStatus==='hadir'?`✅ Hadir · ${gCount} orang`:'❌ Tidak Hadir';
+  const text=`<b>${name}</b>\n${stxt}${msg?'\n\n"'+msg+'"':''}`;
+  const el=buildMsg({type:'text',dir:'out',t:nowT(),text,delay:0});
+  area.appendChild(el);area.scrollTop=area.scrollHeight;
+  setTimeout(()=>{
+    const r=buildMsg({type:'text',dir:'in',t:nowT(),delay:0,
+      text:`Alhamdulillah! 🤲 Terima kasih sudah konfirmasi ya <b>${name}</b>!\nSampai jumpa di hari bahagia kami 🎊`});
+    area.appendChild(r);
+    const stk=buildMsg({type:'sticker',dir:'in',t:nowT(),delay:0,emoji:'🎉'});
+    setTimeout(()=>{area.appendChild(stk);area.scrollTop=area.scrollHeight;},700);
+    area.scrollTop=area.scrollHeight;
+  },1000);
+  document.getElementById('rsN').value='';document.getElementById('rsM').value='';
+  toast('💌 Konfirmasi terkirim!');
+}
+
+/* ══ LIGHTBOX ══ */
+function openLb(i){
+  document.getElementById('lbImgTg').src=IMGS[i].src;
+  document.getElementById('lbTimeTg').textContent=IMGS[i].t;
+  document.getElementById('tgLb').classList.add('open');
+}
+function closeLb(){document.getElementById('tgLb').classList.remove('open');}
+
+/* ══ UTILS ══ */
+function nowT(){const n=new Date();return n.getHours()+':'+String(n.getMinutes()).padStart(2,'0');}
+
+let _tt;
+function toast(msg){
+  const el=document.getElementById('tgToast');
+  el.textContent=msg;el.classList.add('on');
+  clearTimeout(_tt);_tt=setTimeout(()=>el.classList.remove('on'),2500);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Duolingo Wedding — Learn the Language of Love!</title>
+<link href="https://fonts.googleapis.com/css2?family=Feather+Bold&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --duo-green:   #58CC02;
+  --duo-green-d: #46A302;
+  --duo-green-s: #E5F9D0;
+  --duo-blue:    #1CB0F6;
+  --duo-blue-d:  #1899D6;
+  --duo-blue-s:  #DFF5FF;
+  --duo-red:     #FF4B4B;
+  --duo-red-d:   #EA2B2B;
+  --duo-red-s:   #FFE0E0;
+  --duo-orange:  #FF9600;
+  --duo-orange-s:#FFF0CC;
+  --duo-purple:  #CE82FF;
+  --duo-purple-s:#F4E0FF;
+  --duo-yellow:  #FFC800;
+  --duo-yellow-s:#FFF9CC;
+  --duo-pink:    #FF86D0;
+  --bg:          #FFFFFF;
+  --bg2:         #F7F7F7;
+  --card:        #FFFFFF;
+  --text:        #3C3C3C;
+  --text2:       #777777;
+  --text3:       #AFAFAF;
+  --border:      #E5E5E5;
+  --shadow:      0 4px 0 rgba(0,0,0,.15);
+  --shadow-sm:   0 2px 0 rgba(0,0,0,.1);
+  --r:           16px;
+  --r-xl:        24px;
+  --font:        'Nunito', sans-serif;
+  --nav-h:       72px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{
+  font-family:var(--font);
+  background:linear-gradient(180deg,#89E219 0%,#58CC02 100%);
+  display:flex;justify-content:center;align-items:center;
+  min-height:100vh;overflow:hidden;
+}
+
+/* ── PHONE ── */
+.phone{
+  width:min(390px,100vw);
+  height:min(844px,100vh);
+  background:var(--bg);
+  border-radius:44px;
+  overflow:hidden;
+  display:flex;flex-direction:column;
+  position:relative;
+  box-shadow:0 0 0 1px rgba(0,0,0,.1),0 40px 80px rgba(0,0,0,.4),0 8px 0 #46A302;
+}
+@media(max-width:400px){
+  body{background:#f7f7f7}
+  .phone{border-radius:0;height:100vh;width:100vw;box-shadow:none}
+  .notch-bar{display:none}
+}
+
+/* ── NOTCH ── */
+.notch-bar{
+  position:absolute;top:8px;left:50%;transform:translateX(-50%);
+  width:130px;height:34px;background:#000;border-radius:20px;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;padding:0 14px;
+}
+.notch-dot{width:10px;height:10px;border-radius:50%;background:#111}
+.notch-bar-pill{width:40px;height:6px;border-radius:3px;background:#111}
+
+/* ── STATUS ── */
+.status-bar{
+  height:48px;padding:14px 22px 0;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;position:relative;z-index:50;
+}
+.stime{font-size:15px;font-weight:800;color:var(--text)}
+.sright{display:flex;align-items:center;gap:4px;font-size:12px;font-weight:800;color:var(--text3)}
+
+/* ── STREAK BAR ── */
+.streak-bar{
+  height:48px;padding:0 18px;
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;background:var(--bg);
+  border-bottom:2px solid var(--border);position:relative;z-index:40;
+}
+.streak-item{
+  display:flex;align-items:center;gap:5px;font-size:13px;font-weight:800;
+  cursor:pointer;padding:4px 8px;border-radius:8px;transition:background .15s;
+}
+.streak-item:active{background:var(--bg2)}
+.streak-icon{font-size:18px}
+.streak-val{color:var(--text)}
+.xp-item{color:var(--duo-blue)}
+.hearts-item{color:var(--duo-red)}
+.gems-item{color:var(--duo-purple)}
+.streak-fire{animation:fireWobble 2s ease-in-out infinite}
+@keyframes fireWobble{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
+
+/* ── SCREENS ── */
+.screens{flex:1;overflow:hidden;position:relative;min-height:0}
+.screen{
+  position:absolute;inset:0;
+  overflow-y:auto;overflow-x:hidden;
+  display:none;flex-direction:column;
+  background:var(--bg);
+  padding-bottom:24px;
+  scrollbar-width:none;
+  -webkit-overflow-scrolling:touch;
+}
+.screen::-webkit-scrollbar{display:none}
+.screen.active{display:flex}
+.screen.pop-in{animation:popIn .35s cubic-bezier(.34,1.56,.64,1) forwards}
+@keyframes popIn{from{transform:scale(.92);opacity:.5}to{transform:scale(1);opacity:1}}
+
+/* ── BOTTOM NAV ── */
+.bnav{
+  height:var(--nav-h);
+  background:var(--bg);border-top:2px solid var(--border);
+  display:flex;align-items:flex-start;padding-top:10px;
+  flex-shrink:0;z-index:50;
+}
+.bn-item{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
+  cursor:pointer;border:none;background:none;padding:2px 0;
+  transition:transform .15s;
+}
+.bn-item:active{transform:scale(.85)}
+.bn-icon{
+  width:36px;height:36px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;transition:background .2s,transform .2s;
+}
+.bn-item.active .bn-icon{background:var(--duo-green-s);transform:scale(1.15)}
+.bn-lbl{font-size:10px;font-weight:800;color:var(--text3);transition:color .2s}
+.bn-item.active .bn-lbl{color:var(--duo-green)}
+
+/* ══════════════════════
+   SPLASH / ONBOARDING
+══════════════════════ */
+#splash{
+  position:absolute;inset:0;z-index:9999;
+  background:#58CC02;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:32px;
+  transition:opacity .5s,transform .5s;
+  overflow-y:auto;
+}
+#splash.out{opacity:0;transform:scale(1.06);pointer-events:none}
+
+/* DUO OWL */
+.duo-owl{
+  width:140px;height:140px;position:relative;margin:0 auto 20px;
+  animation:owlBounce 1.5s ease-in-out infinite;
+}
+@keyframes owlBounce{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-12px) rotate(2deg)}}
+.owl-body{
+  width:100%;height:100%;background:#58CC02;border-radius:50% 50% 45% 45%;
+  position:relative;overflow:visible;
+  border:4px solid #46A302;
+  box-shadow:0 6px 0 #46A302;
+}
+.owl-belly{
+  position:absolute;bottom:16px;left:50%;transform:translateX(-50%);
+  width:70px;height:55px;background:#fff;border-radius:50%;
+  border:3px solid rgba(70,163,2,.3);
+}
+.owl-eye-l,.owl-eye-r{
+  position:absolute;top:24px;
+  width:32px;height:32px;background:#fff;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  border:3px solid #46A302;
+}
+.owl-eye-l{left:14px}
+.owl-eye-r{right:14px}
+.owl-pupil{
+  width:16px;height:16px;background:#1A1A1A;border-radius:50%;
+  position:relative;
+}
+.owl-pupil::after{content:'';width:5px;height:5px;background:#fff;border-radius:50%;position:absolute;top:2px;right:2px}
+.owl-beak{
+  position:absolute;top:52px;left:50%;transform:translateX(-50%);
+  width:18px;height:14px;background:#FF9600;border-radius:0 0 50% 50%;
+  border:2px solid #E08000;
+}
+.owl-wing-l,.owl-wing-r{
+  position:absolute;top:40px;
+  width:28px;height:40px;background:#46A302;border-radius:50%;
+}
+.owl-wing-l{left:-16px;transform:rotate(-20deg)}
+.owl-wing-r{right:-16px;transform:rotate(20deg)}
+.owl-ear-l,.owl-ear-r{
+  position:absolute;top:-12px;
+  width:20px;height:28px;background:#46A302;border-radius:50% 50% 0 0;
+}
+.owl-ear-l{left:20px;transform:rotate(-10deg)}
+.owl-ear-r{right:20px;transform:rotate(10deg)}
+
+.splash-app-name{
+  font-size:28px;font-weight:900;color:#fff;margin-bottom:4px;letter-spacing:-.3px;
+  text-shadow:0 3px 0 #46A302;
+}
+.splash-tagline{font-size:13px;color:rgba(255,255,255,.8);font-weight:700;margin-bottom:28px}
+.splash-card{
+  width:100%;background:#fff;border-radius:22px;
+  padding:20px;border:3px solid rgba(255,255,255,.3);
+  box-shadow:0 6px 0 #46A302;margin-bottom:20px;text-align:center;
+}
+.splash-lesson-label{
+  font-size:10px;font-weight:800;color:var(--duo-blue);
+  text-transform:uppercase;letter-spacing:.1em;margin-bottom:6px;
+}
+.splash-title{font-size:22px;font-weight:900;color:var(--text);margin-bottom:4px}
+.splash-sub{font-size:13px;color:var(--text2);font-weight:600}
+.splash-hearts{display:flex;justify-content:center;gap:6px;margin-top:12px}
+.splash-heart{font-size:20px;animation:heartBeat .8s ease-in-out infinite}
+.splash-heart:nth-child(2){animation-delay:.15s}
+.splash-heart:nth-child(3){animation-delay:.3s}
+@keyframes heartBeat{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+
+.start-btn{
+  width:100%;padding:16px;
+  background:#fff;border:none;border-radius:14px;
+  font-family:var(--font);font-size:17px;font-weight:900;
+  color:var(--duo-green-d);cursor:pointer;
+  box-shadow:0 5px 0 #ccc;
+  transition:transform .1s,box-shadow .1s;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  margin-bottom:10px;
+}
+.start-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #ccc}
+
+/* ══════════════════════
+   HOME SCREEN
+══════════════════════ */
+.course-header{
+  background:var(--duo-green);
+  padding:18px 20px 44px;position:relative;overflow:hidden;
+}
+.course-header::after{
+  content:'';position:absolute;bottom:-1px;left:0;right:0;height:28px;
+  background:var(--bg);border-radius:50% 50% 0 0 / 100% 100% 0 0;
+}
+.ch-wave{position:absolute;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.1);right:-50px;top:-50px}
+.ch-title{font-size:13px;font-weight:800;color:rgba(255,255,255,.85);margin-bottom:4px}
+.ch-course{font-size:20px;font-weight:900;color:#fff;margin-bottom:14px;position:relative;z-index:1}
+.course-progress-row{display:flex;align-items:center;gap:10px;position:relative;z-index:1}
+.progress-bar-wrap{flex:1;height:12px;background:rgba(0,0,0,.15);border-radius:6px;overflow:hidden}
+.progress-bar-fill{height:100%;background:#fff;border-radius:6px;transition:width .6s cubic-bezier(.34,1.56,.64,1)}
+.progress-pct{font-size:12px;font-weight:900;color:#fff}
+
+/* Section label */
+.section-lbl{
+  display:flex;align-items:center;gap:10px;padding:16px 20px 8px;
+}
+.section-lbl-badge{
+  background:var(--duo-green);color:#fff;
+  font-size:11px;font-weight:900;padding:4px 12px;border-radius:20px;
+  text-transform:uppercase;letter-spacing:.06em;
+  box-shadow:0 3px 0 var(--duo-green-d);
+}
+.section-lbl-title{font-size:15px;font-weight:900;color:var(--text)}
+
+/* Lesson path */
+.lesson-path{padding:8px 20px;display:flex;flex-direction:column;align-items:center;gap:10px}
+.lesson-node{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  cursor:pointer;transition:transform .15s;
+  width:100%;
+}
+.lesson-node:active{transform:scale(.92)}
+/* Zigzag alignment */
+.lesson-node:nth-child(odd){align-self:flex-start;margin-left:10%}
+.lesson-node:nth-child(even){align-self:flex-end;margin-right:10%}
+.lesson-node:nth-child(3n){align-self:center}
+
+.ln-circle{
+  width:68px;height:68px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;position:relative;
+  transition:transform .2s;
+}
+.ln-circle::after{
+  content:'';position:absolute;inset:-4px;border-radius:50%;
+  border:4px solid transparent;
+  transition:border-color .2s;
+}
+.lesson-node:hover .ln-circle{transform:scale(1.08)}
+.lesson-node:hover .ln-circle::after{border-color:rgba(0,0,0,.1)}
+
+.ln-done{background:var(--duo-green);box-shadow:0 5px 0 var(--duo-green-d)}
+.ln-active{background:var(--duo-green);box-shadow:0 5px 0 var(--duo-green-d);animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 5px 0 var(--duo-green-d),0 0 0 0 rgba(88,204,2,.4)}50%{box-shadow:0 5px 0 var(--duo-green-d),0 0 0 12px rgba(88,204,2,0)}}
+.ln-locked{background:var(--border);box-shadow:0 5px 0 #ccc;cursor:default}
+.ln-special{box-shadow:0 5px 0 #E08000}
+.ln-done .checkmark{
+  position:absolute;bottom:-2px;right:-2px;
+  width:22px;height:22px;background:#fff;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;border:2px solid var(--duo-green-d);
+}
+.ln-label{font-size:12px;font-weight:800;color:var(--text2);text-align:center;max-width:90px;line-height:1.3}
+.ln-xp{font-size:10px;font-weight:800;color:var(--duo-blue);background:var(--duo-blue-s);padding:2px 8px;border-radius:10px}
+
+/* connector line */
+.ln-connector{width:3px;height:20px;background:var(--border);border-radius:2px}
+.ln-connector.done{background:var(--duo-green)}
+
+/* Daily goal */
+.daily-goal-card{
+  margin:8px 16px;background:var(--duo-orange-s);
+  border:2px solid var(--duo-orange);border-radius:var(--r);
+  padding:14px 16px;display:flex;align-items:center;gap:12px;
+  cursor:pointer;transition:transform .15s;
+  box-shadow:0 3px 0 #E08000;
+}
+.daily-goal-card:active{transform:scale(.97) translateY(2px);box-shadow:0 1px 0 #E08000}
+.goal-icon{font-size:28px}
+.goal-txt-title{font-size:14px;font-weight:900;color:var(--text)}
+.goal-txt-sub{font-size:12px;font-weight:700;color:var(--duo-orange)}
+.goal-arrow{margin-left:auto;font-size:20px;color:var(--duo-orange)}
+
+/* Leaderboard preview */
+.lb-card{
+  margin:8px 16px;background:var(--duo-purple-s);
+  border:2px solid var(--duo-purple);border-radius:var(--r);
+  padding:14px 16px;cursor:pointer;
+  box-shadow:0 3px 0 #B060E0;
+  transition:transform .15s;
+}
+.lb-card:active{transform:scale(.97) translateY(2px);box-shadow:0 1px 0 #B060E0}
+.lb-top{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.lb-title{font-size:14px;font-weight:900;color:var(--text)}
+.lb-badge{background:var(--duo-purple);color:#fff;font-size:10px;font-weight:900;padding:2px 8px;border-radius:10px}
+.lb-row{display:flex;align-items:center;gap:10px;padding:5px 0}
+.lb-rank{font-size:13px;font-weight:900;color:var(--text3);width:20px}
+.lb-av{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:900}
+.lb-name{flex:1;font-size:13px;font-weight:700;color:var(--text)}
+.lb-xp-val{font-size:13px;font-weight:900;color:var(--duo-purple)}
+
+/* Couple card */
+.couple-card-duo{
+  margin:8px 16px;background:var(--duo-pink);
+  border:2px solid #E060A8;border-radius:var(--r);
+  padding:16px;box-shadow:0 4px 0 #C040A0;
+  cursor:pointer;transition:transform .15s;
+}
+.couple-card-duo:active{transform:scale(.97) translateY(3px);box-shadow:0 1px 0 #C040A0}
+.cc-duo-title{font-size:12px;font-weight:900;color:#fff;opacity:.8;text-transform:uppercase;letter-spacing:.07em;margin-bottom:8px}
+.cc-duo-imgs{display:flex;align-items:center;justify-content:center;gap:12px}
+.cc-duo-img{width:60px;height:60px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.2)}
+.cc-duo-amp{font-size:32px;font-weight:900;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.2)}
+.cc-duo-names{text-align:center;margin-top:10px}
+.cc-duo-name{font-size:15px;font-weight:900;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.15)}
+.cc-duo-date{font-size:12px;color:rgba(255,255,255,.85);font-weight:700;margin-top:2px}
+
+/* Safe bottom */
+.safe{height:24px;flex-shrink:0}
+
+/* ══════════════════════
+   LESSON SCREEN (like a quiz)
+══════════════════════ */
+.lesson-top{
+  padding:14px 18px;display:flex;align-items:center;gap:12px;
+  border-bottom:2px solid var(--border);flex-shrink:0;position:sticky;top:0;z-index:30;background:var(--bg);
+}
+.lesson-close{
+  width:34px;height:34px;border-radius:10px;background:none;border:none;
+  font-size:22px;cursor:pointer;color:var(--text3);font-weight:900;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .15s;
+}
+.lesson-close:active{background:var(--bg2)}
+.lesson-progress-wrap{flex:1;height:14px;background:var(--border);border-radius:7px;overflow:hidden}
+.lesson-progress-fill{height:100%;border-radius:7px;transition:width .5s cubic-bezier(.34,1.56,.64,1)}
+.lesson-hearts{font-size:14px;font-weight:900;display:flex;align-items:center;gap:3px;color:var(--duo-red)}
+.lesson-body{flex:1;padding:20px 20px 0;display:flex;flex-direction:column}
+
+/* character bubble */
+.char-bubble{
+  display:flex;align-items:flex-end;gap:12px;margin-bottom:20px;
+}
+.char-avatar{
+  width:56px;height:56px;border-radius:50%;flex-shrink:0;
+  background:var(--duo-green);
+  display:flex;align-items:center;justify-content:center;font-size:24px;
+  border:3px solid var(--duo-green-d);
+  box-shadow:0 4px 0 var(--duo-green-d);
+}
+.speech-bubble{
+  background:var(--bg2);border:2px solid var(--border);
+  border-radius:16px 16px 16px 4px;
+  padding:12px 14px;flex:1;
+  font-size:14px;font-weight:700;color:var(--text);line-height:1.6;
+  position:relative;
+}
+.speech-bubble::before{
+  content:'';position:absolute;left:-10px;bottom:16px;
+  border:6px solid transparent;border-right-color:var(--border);
+}
+
+/* choice buttons */
+.choices{display:flex;flex-direction:column;gap:10px;margin-top:auto;padding:20px 0}
+.choice-btn{
+  width:100%;padding:16px 18px;
+  background:var(--card);border:2.5px solid var(--border);
+  border-radius:14px;font-family:var(--font);font-size:15px;font-weight:700;
+  color:var(--text);cursor:pointer;text-align:left;
+  display:flex;align-items:center;gap:12px;
+  transition:all .15s;
+  box-shadow:0 3px 0 var(--border);
+}
+.choice-btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--border)}
+.choice-btn.selected-correct{
+  background:var(--duo-green-s);border-color:var(--duo-green);color:var(--duo-green-d);
+  box-shadow:0 3px 0 var(--duo-green-d);
+}
+.choice-btn.selected-wrong{
+  background:var(--duo-red-s);border-color:var(--duo-red);color:var(--duo-red-d);
+  box-shadow:0 3px 0 var(--duo-red-d);
+}
+.choice-letter{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--bg2);border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:900;color:var(--text3);flex-shrink:0;
+}
+.choice-btn.selected-correct .choice-letter{background:var(--duo-green);border-color:var(--duo-green-d);color:#fff}
+.choice-btn.selected-wrong .choice-letter{background:var(--duo-red);border-color:var(--duo-red-d);color:#fff}
+
+/* check button */
+.check-btn{
+  width:100%;padding:16px;border:none;border-radius:14px;
+  font-family:var(--font);font-size:16px;font-weight:900;
+  cursor:pointer;transition:all .15s;margin-top:10px;
+  box-shadow:0 4px 0 #ccc;
+}
+.check-btn.inactive{background:var(--border);color:var(--text3);cursor:default}
+.check-btn.active-green{
+  background:var(--duo-green);color:#fff;
+  box-shadow:0 4px 0 var(--duo-green-d);
+}
+.check-btn.active-green:active{transform:translateY(3px);box-shadow:0 1px 0 var(--duo-green-d)}
+.check-btn.active-next{
+  background:var(--duo-blue);color:#fff;
+  box-shadow:0 4px 0 var(--duo-blue-d);
+}
+.check-btn.active-next:active{transform:translateY(3px);box-shadow:0 1px 0 var(--duo-blue-d)}
+
+/* Result banner */
+.result-banner{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:20px 20px 24px;border-radius:20px 20px 0 0;
+  display:none;flex-direction:column;gap:4px;z-index:10;
+}
+.result-banner.correct{background:var(--duo-green-s);border-top:3px solid var(--duo-green)}
+.result-banner.wrong{background:var(--duo-red-s);border-top:3px solid var(--duo-red)}
+.result-banner.show{display:flex}
+.rb-title{font-size:17px;font-weight:900}
+.rb-title.correct{color:var(--duo-green-d)}
+.rb-title.wrong{color:var(--duo-red-d)}
+.rb-sub{font-size:13px;font-weight:700;color:var(--text2)}
+
+/* ══════════════════════
+   EVENT SCREEN
+══════════════════════ */
+.event-hero-duo{
+  background:var(--duo-blue);padding:20px 20px 44px;
+  text-align:center;position:relative;overflow:hidden;
+}
+.event-hero-duo::after{
+  content:'';position:absolute;bottom:-1px;left:0;right:0;height:28px;
+  background:var(--bg);border-radius:50% 50% 0 0 / 100% 100% 0 0;
+}
+.event-hero-duo::before{content:'';position:absolute;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,.1);right:-40px;top:-40px}
+.ehd-emoji{font-size:44px;margin-bottom:8px;animation:bounce 1s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.ehd-title{font-size:20px;font-weight:900;color:#fff;margin-bottom:4px}
+.ehd-sub{font-size:13px;color:rgba(255,255,255,.8);font-weight:700}
+
+.event-tabs-duo{display:flex;gap:8px;padding:16px 16px 0}
+.etab-duo{
+  flex:1;padding:11px;border:2.5px solid var(--border);
+  border-radius:12px;font-family:var(--font);font-size:13px;font-weight:800;
+  cursor:pointer;background:var(--card);color:var(--text3);
+  transition:all .2s;text-align:center;box-shadow:0 3px 0 var(--border);
+}
+.etab-duo.active{
+  background:var(--duo-blue);color:#fff;border-color:var(--duo-blue-d);
+  box-shadow:0 3px 0 var(--duo-blue-d);
+}
+.etab-duo:active{transform:translateY(2px);box-shadow:0 1px 0 var(--duo-blue-d)}
+
+.event-info-card{
+  margin:12px 16px 0;background:var(--card);
+  border:2.5px solid var(--border);border-radius:var(--r);
+  overflow:hidden;box-shadow:0 4px 0 var(--border);
+}
+.eic-row{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:14px 16px;border-bottom:2px solid var(--border);
+}
+.eic-row:last-child{border-bottom:none}
+.eic-icon{
+  width:42px;height:42px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;flex-shrink:0;
+}
+.eic-lbl{font-size:11px;font-weight:800;color:var(--text3);margin-bottom:3px;text-transform:uppercase;letter-spacing:.05em}
+.eic-val{font-size:14px;font-weight:800;color:var(--text);line-height:1.4}
+.eic-note{font-size:11px;font-weight:700;color:var(--text3);margin-top:2px}
+
+.maps-duo-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin:12px 16px 0;padding:15px;
+  background:var(--duo-blue);border:none;border-radius:14px;
+  font-family:var(--font);font-size:15px;font-weight:900;color:#fff;
+  cursor:pointer;text-decoration:none;
+  box-shadow:0 4px 0 var(--duo-blue-d);
+  transition:transform .1s,box-shadow .1s;
+}
+.maps-duo-btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--duo-blue-d)}
+
+/* ══════════════════════
+   GALLERY
+══════════════════════ */
+.gallery-hero-duo{
+  background:var(--duo-purple);padding:20px 20px 44px;
+  text-align:center;position:relative;overflow:hidden;
+}
+.gallery-hero-duo::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:28px;background:var(--bg);border-radius:50% 50% 0 0 / 100% 100% 0 0;}
+.gallery-grid-duo{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:16px 16px 0}
+.gg-cell{
+  border-radius:14px;overflow:hidden;aspect-ratio:3/4;cursor:pointer;
+  border:2.5px solid var(--border);
+  transition:transform .2s,box-shadow .2s;
+  box-shadow:0 4px 0 var(--border);
+}
+.gg-cell:nth-child(3n){aspect-ratio:1/1}
+.gg-cell:active{transform:scale(.95) translateY(3px);box-shadow:0 1px 0 var(--border)}
+.gg-cell img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* ══════════════════════
+   GIFT (= "Purchase")
+══════════════════════ */
+.gift-hero-duo{
+  background:var(--duo-orange);padding:20px 20px 44px;
+  text-align:center;position:relative;overflow:hidden;
+}
+.gift-hero-duo::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:28px;background:var(--bg);border-radius:50% 50% 0 0 / 100% 100% 0 0;}
+.gift-note-duo{
+  margin:16px 16px 0;
+  background:var(--duo-orange-s);border:2.5px solid var(--duo-orange);
+  border-radius:var(--r);padding:14px;
+  display:flex;gap:10px;align-items:flex-start;
+  box-shadow:0 3px 0 #E08000;
+}
+.atm-duo{
+  margin:12px 16px 0;border-radius:20px;overflow:hidden;
+  box-shadow:0 6px 0 rgba(0,0,0,.15);border:3px solid rgba(0,0,0,.06);
+}
+.atm-duo-bg{
+  padding:20px 20px 18px;min-height:130px;position:relative;overflow:hidden;
+}
+.atm-duo-bg::before{content:'';position:absolute;width:150px;height:150px;border-radius:50%;background:rgba(255,255,255,.1);right:-30px;top:-30px}
+.atm-chip-duo{width:30px;height:22px;border-radius:5px;background:linear-gradient(135deg,#FFD700,#FFA500);margin-bottom:12px;position:relative;z-index:1}
+.atm-logo-duo{position:absolute;top:18px;right:20px;z-index:1;font-size:15px;font-weight:900;color:rgba(255,255,255,.9)}
+.atm-number-duo{font-size:19px;font-weight:900;color:#fff;letter-spacing:.12em;margin-bottom:10px;z-index:1;position:relative;font-family:'Courier New',monospace}
+.atm-bottom-duo{display:flex;align-items:flex-end;justify-content:space-between;z-index:1;position:relative}
+.atm-holder-lbl{font-size:9px;color:rgba(255,255,255,.6);font-weight:800;letter-spacing:.07em;text-transform:uppercase;margin-bottom:2px}
+.atm-holder-val{font-size:13px;font-weight:900;color:#fff}
+.atm-copy-duo{
+  background:rgba(255,255,255,.2);border:2px solid rgba(255,255,255,.4);
+  color:#fff;border-radius:10px;padding:8px 12px;
+  font-family:var(--font);font-size:11px;font-weight:900;cursor:pointer;
+  white-space:nowrap;transition:all .15s;
+  box-shadow:0 3px 0 rgba(0,0,0,.15);
+}
+.atm-copy-duo:active{transform:translateY(2px);box-shadow:0 1px 0 rgba(0,0,0,.1)}
+.atm-copy-duo.copied{background:rgba(0,200,100,.4);border-color:rgba(0,200,100,.6)}
+
+/* ══════════════════════
+   RSVP (= "Practice")
+══════════════════════ */
+.rsvp-hero-duo{
+  background:var(--duo-green);padding:20px 20px 44px;
+  text-align:center;position:relative;overflow:hidden;
+}
+.rsvp-hero-duo::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:28px;background:var(--bg);border-radius:50% 50% 0 0 / 100% 100% 0 0;}
+.rsvp-card-duo{
+  margin:16px 16px 0;background:var(--card);
+  border:2.5px solid var(--border);border-radius:var(--r);
+  padding:18px;box-shadow:0 4px 0 var(--border);
+}
+.form-lbl-duo{font-size:11px;font-weight:900;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;margin-bottom:6px;display:block}
+.form-in-duo{
+  width:100%;background:var(--bg2);border:2.5px solid var(--border);
+  border-radius:12px;padding:13px 14px;
+  font-family:var(--font);font-size:15px;font-weight:700;color:var(--text);
+  outline:none;margin-bottom:14px;
+  transition:border-color .2s,box-shadow .2s;
+  appearance:none;
+}
+.form-in-duo:focus{border-color:var(--duo-blue);box-shadow:0 0 0 3px rgba(28,176,246,.2)}
+.form-in-duo::placeholder{color:var(--text3)}
+.hadir-row{display:flex;gap:10px;margin-bottom:14px}
+.hadir-duo{
+  flex:1;padding:14px;border:2.5px solid var(--border);
+  border-radius:12px;background:var(--card);
+  font-family:var(--font);font-size:14px;font-weight:800;
+  color:var(--text3);cursor:pointer;text-align:center;
+  transition:all .15s;box-shadow:0 3px 0 var(--border);
+}
+.hadir-duo:active{transform:translateY(2px);box-shadow:0 1px 0 var(--border)}
+.hadir-duo.yes.active{background:var(--duo-green-s);border-color:var(--duo-green);color:var(--duo-green-d);box-shadow:0 3px 0 var(--duo-green-d)}
+.hadir-duo.no.active{background:var(--duo-red-s);border-color:var(--duo-red);color:var(--duo-red-d);box-shadow:0 3px 0 var(--duo-red-d)}
+.guest-row-duo{display:flex;gap:8px;margin-bottom:14px}
+.guest-duo{
+  flex:1;padding:11px;border:2.5px solid var(--border);
+  border-radius:10px;background:var(--card);
+  font-family:var(--font);font-size:13px;font-weight:800;color:var(--text3);
+  cursor:pointer;text-align:center;
+  transition:all .15s;box-shadow:0 3px 0 var(--border);
+}
+.guest-duo:active{transform:translateY(2px);box-shadow:0 1px 0 var(--border)}
+.guest-duo.active{background:var(--duo-blue-s);border-color:var(--duo-blue);color:var(--duo-blue-d);box-shadow:0 3px 0 var(--duo-blue-d)}
+.rsvp-submit-duo{
+  width:100%;padding:16px;background:var(--duo-green);
+  border:none;border-radius:14px;font-family:var(--font);
+  font-size:16px;font-weight:900;color:#fff;cursor:pointer;
+  box-shadow:0 4px 0 var(--duo-green-d);
+  transition:transform .1s,box-shadow .1s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.rsvp-submit-duo:active{transform:translateY(3px);box-shadow:0 1px 0 var(--duo-green-d)}
+
+/* ══════════════════════
+   WISHES
+══════════════════════ */
+.wish-duo{
+  margin:8px 16px 0;background:var(--card);
+  border:2.5px solid var(--border);border-radius:var(--r-sm);
+  padding:13px 14px;box-shadow:0 3px 0 var(--border);
+  display:flex;gap:11px;
+  opacity:0;transform:translateY(10px);
+  transition:opacity .4s,transform .4s;
+}
+.wish-duo.visible{opacity:1;transform:translateY(0)}
+.wish-av-duo{
+  width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:900;flex-shrink:0;border:2.5px solid;
+}
+.wish-name-duo{font-size:13px;font-weight:900;color:var(--text);margin-bottom:2px}
+.wish-xp{font-size:10px;font-weight:900;color:var(--duo-blue);background:var(--duo-blue-s);padding:1px 7px;border-radius:10px;display:inline-block;margin-bottom:4px}
+.wish-status-duo{font-size:11px;font-weight:800;margin-bottom:5px}
+.wish-msg-duo{font-size:12px;font-weight:600;color:var(--text2);line-height:1.6}
+
+/* ══════════════════════
+   VIDEO
+══════════════════════ */
+.video-hero-duo{
+  background:var(--text);padding:20px 20px 44px;
+  text-align:center;position:relative;overflow:hidden;
+}
+.video-hero-duo::after{content:'';position:absolute;bottom:-1px;left:0;right:0;height:28px;background:var(--bg);border-radius:50% 50% 0 0 / 100% 100% 0 0;}
+
+/* ═══ XP CELEBRATION ═══ */
+.xp-popup{
+  position:absolute;inset:0;z-index:9990;background:rgba(0,0,0,.7);
+  display:none;align-items:center;justify-content:center;
+  flex-direction:column;gap:0;
+}
+.xp-popup.show{display:flex}
+.xp-popup-card{
+  background:var(--card);border-radius:24px;
+  padding:32px 28px;text-align:center;
+  box-shadow:0 8px 0 rgba(0,0,0,.3);
+  max-width:280px;width:90%;
+  animation:celebPop .5s cubic-bezier(.34,1.56,.64,1) forwards;
+}
+@keyframes celebPop{from{transform:scale(.5);opacity:0}to{transform:scale(1);opacity:1}}
+.xp-owl{font-size:64px;animation:owlDance .5s ease-in-out infinite alternate}
+@keyframes owlDance{from{transform:rotate(-15deg) scale(.9)}to{transform:rotate(15deg) scale(1.1)}}
+.xp-title{font-size:26px;font-weight:900;color:var(--duo-green);margin:10px 0 4px}
+.xp-sub{font-size:14px;font-weight:700;color:var(--text2);margin-bottom:16px}
+.xp-badge{
+  display:inline-block;background:var(--duo-yellow);border:3px solid #E0A000;
+  color:var(--text);font-size:18px;font-weight:900;
+  padding:8px 20px;border-radius:30px;
+  box-shadow:0 4px 0 #E0A000;margin-bottom:20px;
+}
+.xp-continue{
+  width:100%;padding:14px;background:var(--duo-green);border:none;border-radius:14px;
+  font-family:var(--font);font-size:16px;font-weight:900;color:#fff;cursor:pointer;
+  box-shadow:0 4px 0 var(--duo-green-d);
+  transition:transform .1s,box-shadow .1s;
+}
+.xp-continue:active{transform:translateY(3px);box-shadow:0 1px 0 var(--duo-green-d)}
+.confetti-wrap{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.confetti-piece{
+  position:absolute;width:10px;height:10px;border-radius:2px;
+  animation:confettiFall var(--dur) ease-in var(--delay) forwards;
+  top:-20px;opacity:0;
+}
+@keyframes confettiFall{
+  0%{opacity:1;transform:translateY(0) rotate(0deg)}
+  100%{opacity:0;transform:translateY(100vh) rotate(720deg)}
+}
+
+/* ── TOAST ── */
+.toast-duo{
+  position:absolute;bottom:calc(var(--nav-h) + 12px);left:50%;
+  transform:translateX(-50%) translateY(16px);
+  background:var(--text);color:#fff;
+  padding:11px 20px;border-radius:50px;
+  font-size:13px;font-weight:800;white-space:nowrap;
+  box-shadow:0 4px 0 rgba(0,0,0,.3);z-index:9999;pointer-events:none;
+  opacity:0;transition:opacity .25s,transform .25s;
+}
+.toast-duo.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── LIGHTBOX ── */
+.lightbox{position:absolute;inset:0;background:rgba(0,0,0,.92);display:none;align-items:center;justify-content:center;z-index:9998}
+.lightbox.open{display:flex}
+.lightbox img{max-width:90vw;max-height:88vh;border-radius:10px;object-fit:contain;border:3px solid var(--duo-green)}
+.lb-x{position:absolute;top:14px;right:14px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.1);border:none;color:#fff;width:40px;height:58px;border-radius:10px;cursor:pointer;font-size:22px;display:flex;align-items:center;justify-content:center;transition:background .2s;box-shadow:0 3px 0 rgba(0,0,0,.3)}
+.lb-nav:hover{background:rgba(255,255,255,.25)}
+.lb-prev{left:10px}.lb-next{right:10px}
+.lb-dots{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);display:flex;gap:6px}
+.lb-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.4);transition:all .2s}
+.lb-dot.active{background:var(--duo-green);width:20px;border-radius:4px}
+
+/* stagger */
+.stagger > *{opacity:0;animation:fadeUp .45s ease forwards}
+.stagger > *:nth-child(1){animation-delay:.04s}
+.stagger > *:nth-child(2){animation-delay:.08s}
+.stagger > *:nth-child(3){animation-delay:.12s}
+.stagger > *:nth-child(4){animation-delay:.16s}
+.stagger > *:nth-child(5){animation-delay:.20s}
+.stagger > *:nth-child(6){animation-delay:.24s}
+.stagger > *:nth-child(7){animation-delay:.28s}
+.stagger > *:nth-child(8){animation-delay:.32s}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="notch-bar">
+    <div class="notch-dot"></div>
+    <div class="notch-bar-pill"></div>
+    <div class="notch-dot"></div>
+  </div>
+
+  <!-- STATUS -->
+  <div class="status-bar">
+    <div class="stime" id="stime">09:41</div>
+    <div class="sright">●●● WiFi 🔋</div>
+  </div>
+
+  <!-- STREAK BAR -->
+  <div class="streak-bar">
+    <div class="streak-item" onclick="showToast('🔥 7 hari streak! Luar biasa!')">
+      <span class="streak-icon streak-fire">🔥</span>
+      <span class="streak-val">7</span>
+    </div>
+    <div class="streak-item xp-item" onclick="showToast('⚡ 520 XP terkumpul!')">
+      <span class="streak-icon">⚡</span>
+      <span class="streak-val" style="color:var(--duo-blue)">520</span>
+    </div>
+    <div class="streak-item hearts-item" onclick="showToast('❤️ 5 nyawa tersisa!')">
+      <span class="streak-icon">❤️</span>
+      <span class="streak-val" style="color:var(--duo-red)">5</span>
+    </div>
+    <div class="streak-item gems-item" onclick="showToast('💎 38 gems tersisa!')">
+      <span class="streak-icon">💎</span>
+      <span class="streak-val" style="color:var(--duo-purple)">38</span>
+    </div>
+  </div>
+
+  <!-- SCREENS -->
+  <div class="screens">
+
+    <!-- ══ HOME ══ -->
+    <div class="screen active" id="sc-home">
+      <div class="course-header">
+        <div class="ch-wave"></div>
+        <div class="ch-title">KURSUS SAAT INI</div>
+        <div class="ch-course">💍 Language of Love</div>
+        <div class="course-progress-row">
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:60%"></div></div>
+          <span class="progress-pct">60%</span>
+        </div>
+      </div>
+
+      <!-- Daily goal -->
+      <div class="daily-goal-card" onclick="goSc('rsvp')">
+        <div class="goal-icon">🎯</div>
+        <div>
+          <div class="goal-txt-title">Goal Harian</div>
+          <div class="goal-txt-sub">RSVP sebelum 17 Mei 2026!</div>
+        </div>
+        <div class="goal-arrow">›</div>
+      </div>
+
+      <!-- Couple card -->
+      <div class="couple-card-duo" onclick="goSc('couple')">
+        <div class="cc-duo-title">🎓 Profil Mempelai</div>
+        <div class="cc-duo-imgs">
+          <img class="cc-duo-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita">
+          <div class="cc-duo-amp">&</div>
+          <img class="cc-duo-img" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda">
+        </div>
+        <div class="cc-duo-names">
+          <div class="cc-duo-name">Anita Pangestuti × Zardarian Ahadika N</div>
+          <div class="cc-duo-date">📅 Minggu, 24 Mei 2026</div>
+        </div>
+      </div>
+
+      <!-- Lesson path -->
+      <div class="section-lbl">
+        <div class="section-lbl-badge">Unit 1</div>
+        <div class="section-lbl-title">Perjalanan Cinta</div>
+      </div>
+      <div class="lesson-path stagger" id="lessonPath">
+        <div class="ln-connector done"></div>
+        <div class="lesson-node" onclick="goSc('story')">
+          <div class="ln-circle ln-done">📖<div class="checkmark">✓</div></div>
+          <div class="ln-label">Our Story</div>
+          <div class="ln-xp">+20 XP</div>
+        </div>
+        <div class="ln-connector done"></div>
+        <div class="lesson-node" onclick="goSc('couple')">
+          <div class="ln-circle ln-done">💑<div class="checkmark">✓</div></div>
+          <div class="ln-label">Profil Mempelai</div>
+          <div class="ln-xp">+20 XP</div>
+        </div>
+        <div class="ln-connector done"></div>
+        <div class="lesson-node" onclick="goSc('event')">
+          <div class="ln-circle ln-active">📅</div>
+          <div class="ln-label">Jadwal Acara</div>
+          <div class="ln-xp">+20 XP</div>
+        </div>
+        <div class="ln-connector"></div>
+        <div class="lesson-node" onclick="goSc('gallery')">
+          <div class="ln-circle ln-locked" style="opacity:.5">📸</div>
+          <div class="ln-label" style="opacity:.5">Galeri Foto</div>
+          <div class="ln-xp" style="opacity:.5">+20 XP</div>
+        </div>
+        <div class="ln-connector"></div>
+        <div class="lesson-node" onclick="goSc('quiz')">
+          <div class="ln-circle ln-locked" style="background:var(--duo-orange-s);box-shadow:0 5px 0 #E08000;opacity:.7">🧠</div>
+          <div class="ln-label" style="opacity:.7">Mini Quiz!</div>
+          <div class="ln-xp" style="color:var(--duo-orange);opacity:.7">+50 XP</div>
+        </div>
+      </div>
+
+      <div class="section-lbl" style="margin-top:8px">
+        <div class="section-lbl-badge" style="background:var(--duo-blue);box-shadow:0 3px 0 var(--duo-blue-d)">Unit 2</div>
+        <div class="section-lbl-title">Hari Bahagia</div>
+      </div>
+      <div class="lesson-path stagger">
+        <div class="ln-connector"></div>
+        <div class="lesson-node" onclick="goSc('rsvp')">
+          <div class="ln-circle" style="background:var(--duo-blue);box-shadow:0 5px 0 var(--duo-blue-d);animation:pulse 1.5s ease-in-out infinite">✅</div>
+          <div class="ln-label">RSVP Sekarang</div>
+          <div class="ln-xp" style="color:var(--duo-blue);background:var(--duo-blue-s)">+30 XP</div>
+        </div>
+        <div class="ln-connector"></div>
+        <div class="lesson-node" onclick="goSc('gift')">
+          <div class="ln-circle ln-locked" style="opacity:.5">💝</div>
+          <div class="ln-label" style="opacity:.5">Transfer Doa</div>
+          <div class="ln-xp" style="opacity:.5">+20 XP</div>
+        </div>
+        <div class="ln-connector"></div>
+        <div class="lesson-node" onclick="goSc('video')">
+          <div class="ln-circle" style="background:var(--duo-yellow);box-shadow:0 5px 0 #E0A000;opacity:.8">🎬</div>
+          <div class="ln-label">Video</div>
+          <div class="ln-xp" style="color:var(--duo-orange);background:var(--duo-orange-s)">+20 XP</div>
+        </div>
+        <div class="ln-connector"></div>
+        <div class="lesson-node" onclick="goSc('wishes')">
+          <div class="ln-circle" style="background:var(--duo-pink);box-shadow:0 5px 0 #C040A0;opacity:.8">💬</div>
+          <div class="ln-label">Ucapan & Doa</div>
+          <div class="ln-xp" style="color:#C040A0;background:var(--duo-purple-s)">+10 XP</div>
+        </div>
+      </div>
+
+      <!-- Leaderboard -->
+      <div class="lb-card" onclick="showToast('👑 Kamu ada di posisi #1 di hati kami!')">
+        <div class="lb-top">
+          <div class="lb-title">🏆 Papan Tamu</div>
+          <div class="lb-badge">TOP 10</div>
+        </div>
+        <div class="lb-row"><div class="lb-rank">1</div><div class="lb-av" style="background:#FFF0CC">👑</div><div class="lb-name">Anita & Zarda</div><div class="lb-xp-val">∞ XP</div></div>
+        <div class="lb-row"><div class="lb-rank">2</div><div class="lb-av" style="background:#E8F1FF">🦸</div><div class="lb-name">Tamu Undangan</div><div class="lb-xp-val">520 XP</div></div>
+        <div class="lb-row"><div class="lb-rank">3</div><div class="lb-av" style="background:#DCFCE7">🌟</div><div class="lb-name">Keluarga Besar</div><div class="lb-xp-val">380 XP</div></div>
+      </div>
+      <div class="safe"></div>
+    </div>
+
+    <!-- ══ COUPLE ══ -->
+    <div class="screen" id="sc-couple">
+      <div class="page-header-duo">
+        <button class="back-duo" onclick="goBack()">✕</button>
+        <div class="pdtitle">Profil Mempelai</div>
+        <div style="width:36px"></div>
+      </div>
+      <!-- mini lesson format -->
+      <div style="padding:16px 16px 0">
+        <div class="char-bubble">
+          <div class="char-avatar">🦉</div>
+          <div class="speech-bubble">Kenalan yuk! Ini adalah dua orang yang akan menyatukan hati mereka di hari bahagia! 💕</div>
+        </div>
+        <!-- Bride card -->
+        <div style="background:var(--duo-pink);border:2.5px solid #E060A8;border-radius:var(--r);padding:18px;box-shadow:0 4px 0 #C040A0;margin-bottom:12px;text-align:center">
+          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.2);margin:0 auto 10px;display:block" alt="Anita">
+          <div style="font-size:10px;font-weight:900;color:rgba(255,255,255,.85);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">👰 Mempelai Wanita</div>
+          <div style="font-size:17px;font-weight:900;color:#fff;margin-bottom:8px">Anita Pangestuti, S.Kom</div>
+          <div style="background:rgba(255,255,255,.2);border-radius:10px;padding:10px;font-size:12px;font-weight:700;color:#fff;line-height:1.7;text-align:left">
+            <div>👨‍👩‍👧 Orang Tua:</div>
+            <div>Bpk. Taryono & Ibu Wiwit Jayanti</div>
+            <div style="margin-top:4px">⭐ Putri Pertama</div>
+          </div>
+        </div>
+        <!-- Groom card -->
+        <div style="background:var(--duo-blue);border:2.5px solid var(--duo-blue-d);border-radius:var(--r);padding:18px;box-shadow:0 4px 0 var(--duo-blue-d);margin-bottom:12px;text-align:center">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.2);margin:0 auto 10px;display:block" alt="Zarda">
+          <div style="font-size:10px;font-weight:900;color:rgba(255,255,255,.85);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">🤵 Mempelai Pria</div>
+          <div style="font-size:17px;font-weight:900;color:#fff;margin-bottom:8px">Zardarian Ahadika N, S.Kom</div>
+          <div style="background:rgba(255,255,255,.2);border-radius:10px;padding:10px;font-size:12px;font-weight:700;color:#fff;line-height:1.7;text-align:left">
+            <div>👨‍👩‍👦 Orang Tua:</div>
+            <div>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</div>
+            <div style="margin-top:4px">⭐ Putra Kedua</div>
+          </div>
+        </div>
+        <button class="check-btn active-next" style="margin-bottom:16px" onclick="giveXP(20,'couple');goBack()">Lanjut +20 XP ›</button>
+      </div>
+      <div class="safe"></div>
+    </div>
+
+    <!-- ══ STORY ══ -->
+    <div class="screen" id="sc-story">
+      <div class="page-header-duo">
+        <button class="back-duo" onclick="goBack()">✕</button>
+        <div class="pdtitle">Our Story</div>
+        <div style="width:36px"></div>
+      </div>
+      <div style="padding:16px 16px 0">
+        <div class="char-bubble">
+          <div class="char-avatar">🦉</div>
+          <div class="speech-bubble">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu…" — Ar-Rum:21 🌿</div>
+        </div>
+
+        <!-- Timeline as lesson cards -->
+        <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:16px">
+          <div style="background:var(--duo-green-s);border:2.5px solid var(--duo-green);border-radius:var(--r);padding:14px;box-shadow:0 3px 0 var(--duo-green-d)">
+            <div style="font-size:10px;font-weight:900;color:var(--duo-green-d);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Chapter 1 · Juni 2025</div>
+            <div style="font-size:16px;font-weight:900;color:var(--text);margin-bottom:6px">🎳 First Meet!</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text2);line-height:1.6">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami. 🍣🍦</div>
+          </div>
+          <div style="background:var(--duo-blue-s);border:2.5px solid var(--duo-blue);border-radius:var(--r);padding:14px;box-shadow:0 3px 0 var(--duo-blue-d)">
+            <div style="font-size:10px;font-weight:900;color:var(--duo-blue-d);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Chapter 2 · November 2025</div>
+            <div style="font-size:16px;font-weight:900;color:var(--text);margin-bottom:6px">💍 The Proposal!</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text2);line-height:1.6">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama. ❤️</div>
+          </div>
+          <div style="background:var(--duo-orange-s);border:2.5px solid var(--duo-orange);border-radius:var(--r);padding:14px;box-shadow:0 3px 0 #E08000">
+            <div style="font-size:10px;font-weight:900;color:#E08000;text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">Chapter 3 · FINAL · Mei 2026</div>
+            <div style="font-size:16px;font-weight:900;color:var(--text);margin-bottom:6px">🎊 Happily Ever After!</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text2);line-height:1.6">Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya. 🌹🥰</div>
+          </div>
+        </div>
+        <button class="check-btn active-next" style="margin-bottom:16px" onclick="giveXP(20,'story');goBack()">Lanjut +20 XP ›</button>
+      </div>
+      <div class="safe"></div>
+    </div>
+
+    <!-- ══ QUIZ ══ -->
+    <div class="screen" id="sc-quiz">
+      <div class="lesson-top">
+        <button class="lesson-close" onclick="goBack()">✕</button>
+        <div class="lesson-progress-wrap"><div class="lesson-progress-fill" id="quizProg" style="width:0%;background:var(--duo-green)"></div></div>
+        <div class="lesson-hearts">❤️ <span id="quizHearts">5</span></div>
+      </div>
+      <div class="lesson-body" id="quizBody">
+        <!-- filled by JS -->
+      </div>
+      <div class="result-banner" id="resultBanner"></div>
+    </div>
+
+    <!-- ══ EVENT ══ -->
+    <div class="screen" id="sc-event">
+      <div class="page-header-duo">
+        <button class="back-duo" onclick="goBack()">✕</button>
+        <div class="pdtitle">Jadwal Acara</div>
+        <div style="width:36px"></div>
+      </div>
+      <div class="event-hero-duo">
+        <div class="ehd-emoji">💒</div>
+        <div class="ehd-title">Pernikahan Anita & Zarda</div>
+        <div class="ehd-sub">Minggu, 24 Mei 2026 · Graha Yadika</div>
+      </div>
+      <div class="event-tabs-duo">
+        <button class="etab-duo active" id="etab-akad" onclick="switchETab('akad')">💍 Akad Nikah</button>
+        <button class="etab-duo" id="etab-resepsi" onclick="switchETab('resepsi')">🎊 Resepsi</button>
+      </div>
+      <div id="ecard-akad" class="event-info-card">
+        <div style="background:var(--duo-blue);padding:14px 16px;display:flex;align-items:center;gap:10px">
+          <div class="event-live-dot" style="width:8px;height:8px;border-radius:50%;background:var(--duo-green);box-shadow:0 0 8px var(--duo-green);animation:livePulse 1.5s ease-in-out infinite;flex-shrink:0"></div>
+          <div><div style="font-size:13px;font-weight:900;color:#fff">Akad Nikah</div><div style="font-size:11px;color:rgba(255,255,255,.7);font-weight:700;margin-top:1px">Prosesi pernikahan resmi</div></div>
+        </div>
+        <div class="eic-row"><div class="eic-icon" style="background:var(--duo-blue-s)">📅</div><div><div class="eic-lbl">Tanggal</div><div class="eic-val">Minggu, 24 Mei 2026</div></div></div>
+        <div class="eic-row"><div class="eic-icon" style="background:var(--duo-green-s)">🕗</div><div><div class="eic-lbl">Waktu</div><div class="eic-val">08.00 WIB</div><div class="eic-note">Harap hadir 30 menit lebih awal</div></div></div>
+        <div class="eic-row"><div class="eic-icon" style="background:var(--duo-orange-s)">📍</div><div><div class="eic-lbl">Lokasi</div><div class="eic-val">Graha Yadika</div><div class="eic-note">Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div></div></div>
+        <div class="eic-row"><div class="eic-icon" style="background:var(--duo-purple-s)">👔</div><div><div class="eic-lbl">Dress Code</div><div class="eic-val">Formal & Sopan</div></div></div>
+      </div>
+      <div id="ecard-resepsi" class="event-info-card" style="display:none">
+        <div style="background:var(--duo-purple);padding:14px 16px;display:flex;align-items:center;gap:10px">
+          <div style="width:8px;height:8px;border-radius:50%;background:var(--duo-yellow);box-shadow:0 0 8px var(--duo-yellow);flex-shrink:0;animation:livePulse 1.5s ease-in-out infinite"></div>
+          <div><div style="font-size:13px;font-weight:900;color:#fff">Resepsi</div><div style="font-size:11px;color:rgba(255,255,255,.7);font-weight:700;margin-top:1px">Pesta perayaan bersama</div></div>
+        </div>
+        <div class="eic-row"><div class="eic-icon" style="background:var(--duo-blue-s)">📅</div><div><div class="eic-lbl">Tanggal</div><div class="eic-val">Minggu, 24 Mei 2026</div></div></div>
+        <div class="eic-row"><div class="eic-icon" style="background:var(--duo-green-s)">🕗</div><div><div class="eic-lbl">Waktu</div><div class="eic-val">11.00 – 13.00 WIB</div></div></div>
+        <div class="eic-row"><div class="eic-icon" style="background:var(--duo-orange-s)">📍</div><div><div class="eic-lbl">Lokasi</div><div class="eic-val">Graha Yadika</div><div class="eic-note">Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div></div></div>
+        <div class="eic-row"><div class="eic-icon" style="background:var(--duo-purple-s)">👗</div><div><div class="eic-lbl">Dress Code</div><div class="eic-val">Semi Formal · Bebas Rapi</div></div></div>
+      </div>
+      <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="maps-duo-btn">📍 Buka di Google Maps</a>
+      <button class="check-btn active-next" style="margin:10px 16px 0;width:calc(100% - 32px)" onclick="giveXP(20,'event');goBack()">Selesai +20 XP ›</button>
+      <div class="safe"></div>
+    </div>
+
+    <!-- ══ GALLERY ══ -->
+    <div class="screen" id="sc-gallery">
+      <div class="page-header-duo">
+        <button class="back-duo" onclick="goBack()">✕</button>
+        <div class="pdtitle">Galeri Foto</div>
+        <div style="width:36px"></div>
+      </div>
+      <div class="gallery-hero-duo">
+        <div style="font-size:40px;margin-bottom:8px;animation:bounce 1s ease-in-out infinite">📸</div>
+        <div style="font-size:18px;font-weight:900;color:#fff;margin-bottom:4px">Momen Bahagia Kami</div>
+        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.8)">Tap foto untuk memperbesar</div>
+      </div>
+      <div class="gallery-grid-duo" id="galleryGrid"></div>
+      <button class="check-btn active-next" style="margin:16px 16px 0;width:calc(100% - 32px)" onclick="giveXP(20,'gallery');goBack()">Keren! +20 XP ›</button>
+      <div class="safe"></div>
+    </div>
+
+    <!-- ══ GIFT ══ -->
+    <div class="screen" id="sc-gift">
+      <div class="page-header-duo">
+        <button class="back-duo" onclick="goBack()">✕</button>
+        <div class="pdtitle">Amplop Digital</div>
+        <div style="width:36px"></div>
+      </div>
+      <div class="gift-hero-duo">
+        <div style="font-size:40px;margin-bottom:8px;animation:bounce 1s ease-in-out infinite">💝</div>
+        <div style="font-size:18px;font-weight:900;color:#fff;margin-bottom:4px">Transfer Doa & Kasih</div>
+        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.8)">Doa restu sudah sangat cukup</div>
+      </div>
+      <div class="gift-note-duo">
+        <div style="font-size:18px;flex-shrink:0">💛</div>
+        <div style="font-size:12px;font-weight:700;color:var(--text2);line-height:1.6">Jika ingin memberi sebagai tanda kasih, kami dengan senang hati menerimanya. Tap <b>Salin</b> untuk menyalin nomor rekening.</div>
+      </div>
+
+      <!-- BCA -->
+      <div class="atm-duo">
+        <div class="atm-duo-bg" style="background:linear-gradient(145deg,#003D9C,#0050C8,#0062F5)">
+          <div class="atm-chip-duo"></div>
+          <div class="atm-logo-duo">BCA</div>
+          <div class="atm-number-duo">8210 3705 61</div>
+          <div class="atm-bottom-duo">
+            <div><div class="atm-holder-lbl">Pemilik</div><div class="atm-holder-val">Zardarian Ahadika N</div></div>
+            <button class="atm-copy-duo" id="cpBCA" onclick="copyNum('8210370561','cpBCA')">📋 Salin</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BNI -->
+      <div class="atm-duo" style="margin-bottom:4px">
+        <div class="atm-duo-bg" style="background:linear-gradient(145deg,#CC5000,#FF6B00)">
+          <div class="atm-chip-duo" style="background:linear-gradient(135deg,#eee,#ccc)"></div>
+          <div class="atm-logo-duo">BNI</div>
+          <div class="atm-number-duo">1192 9784 03</div>
+          <div class="atm-bottom-duo">
+            <div><div class="atm-holder-lbl">Pemilik</div><div class="atm-holder-val">Anita Pangestuti</div></div>
+            <button class="atm-copy-duo" id="cpBNI" onclick="copyNum('1192978403','cpBNI')">📋 Salin</button>
+          </div>
+        </div>
+      </div>
+      <div class="safe"></div>
+    </div>
+
+    <!-- ══ RSVP ══ -->
+    <div class="screen" id="sc-rsvp">
+      <div class="page-header-duo">
+        <button class="back-duo" onclick="goBack()">✕</button>
+        <div class="pdtitle">Konfirmasi Hadir</div>
+        <div style="width:36px"></div>
+      </div>
+      <div class="rsvp-hero-duo">
+        <div style="font-size:36px;margin-bottom:8px;animation:bounce 1s ease-in-out infinite">✉️</div>
+        <div style="font-size:18px;font-weight:900;color:#fff;margin-bottom:4px">Latihan: RSVP!</div>
+        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.8)">+30 XP setelah konfirmasi</div>
+      </div>
+      <div class="char-bubble" style="padding:16px 16px 0">
+        <div class="char-avatar">🦉</div>
+        <div class="speech-bubble">Ayo konfirmasi kehadiranmu! Anita & Zarda sudah menunggu jawabanmu! 🎉</div>
+      </div>
+      <div class="rsvp-card-duo">
+        <label class="form-lbl-duo">Nama Lengkap</label>
+        <input class="form-in-duo" id="rsvpName" placeholder="Ketik nama kamu...">
+        <label class="form-lbl-duo">Apakah kamu hadir?</label>
+        <div class="hadir-row">
+          <button class="hadir-duo yes active" id="hY" onclick="setHadir('yes')">✅ Hadir</button>
+          <button class="hadir-duo no" id="hN" onclick="setHadir('no')">❌ Tidak</button>
+        </div>
+        <label class="form-lbl-duo">Berapa orang?</label>
+        <div class="guest-row-duo" id="guestRow">
+          <button class="guest-duo active" onclick="setGuest(1,this)">1 orang</button>
+          <button class="guest-duo" onclick="setGuest(2,this)">2 orang</button>
+          <button class="guest-duo" onclick="setGuest(3,this)">3 orang</button>
+          <button class="guest-duo" onclick="setGuest(4,this)">4+</button>
+        </div>
+        <label class="form-lbl-duo">Ucapan & Doa</label>
+        <textarea class="form-in-duo" id="rsvpMsg" rows="3" placeholder="Tulis ucapan untuk mereka..."></textarea>
+        <button class="rsvp-submit-duo" onclick="submitRSVP()">
+          Kirim & Raih +30 XP 🎯
+        </button>
+      </div>
+      <div class="safe"></div>
+    </div>
+
+    <!-- ══ WISHES ══ -->
+    <div class="screen" id="sc-wishes">
+      <div class="page-header-duo">
+        <button class="back-duo" onclick="goBack()">✕</button>
+        <div class="pdtitle">Ucapan & Doa</div>
+        <div style="width:36px"></div>
+      </div>
+      <div style="background:var(--duo-pink);padding:20px 20px 44px;text-align:center;position:relative;overflow:hidden">
+        <div style="position:absolute;bottom:-1px;left:0;right:0;height:28px;background:var(--bg);border-radius:50% 50% 0 0 / 100% 100% 0 0"></div>
+        <div style="font-size:38px;margin-bottom:8px;animation:bounce 1s ease-in-out infinite">🤲</div>
+        <div style="font-size:18px;font-weight:900;color:#fff;margin-bottom:4px">Doa Para Tamu</div>
+        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.85)">Setiap ucapan adalah berkah</div>
+      </div>
+      <div id="wishesList">
+        <div class="wish-duo visible">
+          <div class="wish-av-duo" style="background:var(--duo-green-s);border-color:var(--duo-green);color:var(--duo-green-d)">RA</div>
+          <div>
+            <div class="wish-name-duo">Rina Ayu</div>
+            <div class="wish-xp">+30 XP</div>
+            <div class="wish-status-duo" style="color:var(--duo-green-d)">✅ Hadir · 2 tamu</div>
+            <div class="wish-msg-duo">Selamat menempuh hidup baru! Semoga sakinah, mawaddah, warahmah 🌹</div>
+          </div>
+        </div>
+        <div class="wish-duo visible" style="transition-delay:.1s">
+          <div class="wish-av-duo" style="background:var(--duo-blue-s);border-color:var(--duo-blue);color:var(--duo-blue-d)">BN</div>
+          <div>
+            <div class="wish-name-duo">Budi Nugraha</div>
+            <div class="wish-xp">+30 XP</div>
+            <div class="wish-status-duo" style="color:var(--duo-green-d)">✅ Hadir · 1 tamu</div>
+            <div class="wish-msg-duo">Barakallahu laka wa baraka alayk! Bahagia selalu! 🎉</div>
+          </div>
+        </div>
+      </div>
+      <div class="safe"></div>
+    </div>
+
+    <!-- ══ VIDEO ══ -->
+    <div class="screen" id="sc-video">
+      <div class="page-header-duo">
+        <button class="back-duo" onclick="goBack()">✕</button>
+        <div class="pdtitle">Video Undangan</div>
+        <div style="width:36px"></div>
+      </div>
+      <div class="video-hero-duo">
+        <div style="position:absolute;bottom:-1px;left:0;right:0;height:28px;background:var(--bg);border-radius:50% 50% 0 0 / 100% 100% 0 0"></div>
+        <div style="font-size:40px;margin-bottom:8px;animation:bounce 1s ease-in-out infinite;position:relative;z-index:1">🎬</div>
+        <div style="font-size:18px;font-weight:900;color:#fff;margin-bottom:4px;position:relative;z-index:1">Video Pernikahan</div>
+        <div style="font-size:12px;font-weight:700;color:rgba(255,255,255,.7);position:relative;z-index:1">Anita & Zarda · 24 Mei 2026</div>
+      </div>
+      <div style="margin:16px 16px 0;background:var(--card);border:2.5px solid var(--border);border-radius:var(--r);overflow:hidden;box-shadow:0 4px 0 var(--border)">
+        <div style="display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:2px solid var(--border);background:var(--bg2)">
+          <div style="width:10px;height:10px;border-radius:50%;background:#FF4B4B"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#FF9600"></div>
+          <div style="width:10px;height:10px;border-radius:50%;background:#58CC02"></div>
+          <div style="flex:1;background:var(--border);border-radius:6px;height:22px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--text3)">video_undangan.mp4</div>
+        </div>
+        <div style="position:relative;padding-bottom:56.25%;height:0;background:#000">
+          <iframe id="videoFrame" src="https://www.youtube.com/embed/dQw4w9WgXcQ" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+      <div style="margin:10px 16px 0;background:var(--bg2);border:2.5px solid var(--border);border-radius:var(--r);padding:14px;box-shadow:0 3px 0 var(--border)">
+        <div class="form-lbl-duo" style="margin-bottom:8px">Ganti URL Video</div>
+        <div style="display:flex;gap:8px">
+          <input class="form-in-duo" id="videoUrl" style="margin:0;flex:1;font-size:13px" placeholder="YouTube URL...">
+          <button onclick="applyVid()" style="background:var(--duo-green);color:#fff;border:none;border-radius:10px;padding:0 14px;font-family:var(--font);font-size:13px;font-weight:900;cursor:pointer;box-shadow:0 3px 0 var(--duo-green-d);white-space:nowrap;transition:transform .1s;min-height:42px">Apply</button>
+        </div>
+      </div>
+      <button class="check-btn active-next" style="margin:10px 16px 0;width:calc(100% - 32px)" onclick="giveXP(20,'video');goBack()">Lanjut +20 XP ›</button>
+      <div class="safe"></div>
+    </div>
+
+  </div><!-- /screens -->
+
+  <!-- BOTTOM NAV -->
+  <div class="bnav">
+    <button class="bn-item active" id="bn-home" onclick="goSc('home')">
+      <div class="bn-icon">🏠</div><div class="bn-lbl">Pelajaran</div>
+    </button>
+    <button class="bn-item" id="bn-event" onclick="goSc('event')">
+      <div class="bn-icon">📅</div><div class="bn-lbl">Acara</div>
+    </button>
+    <button class="bn-item" id="bn-quiz" onclick="startQuiz()">
+      <div class="bn-icon">🧠</div><div class="bn-lbl">Kuis</div>
+    </button>
+    <button class="bn-item" id="bn-gallery" onclick="goSc('gallery')">
+      <div class="bn-icon">📸</div><div class="bn-lbl">Galeri</div>
+    </button>
+    <button class="bn-item" id="bn-rsvp" onclick="goSc('rsvp')">
+      <div class="bn-icon">✅</div><div class="bn-lbl">RSVP</div>
+    </button>
+  </div>
+
+
+<!-- XP POPUP -->
+<div class="xp-popup" id="xpPopup">
+  <div class="confetti-wrap" id="confettiWrap"></div>
+  <div class="xp-popup-card">
+    <div class="xp-owl">🦉</div>
+    <div class="xp-title">Luar Biasa!</div>
+    <div class="xp-sub" id="xpSub">Kamu telah menyelesaikan pelajaran!</div>
+    <div class="xp-badge" id="xpBadge">+20 XP</div>
+    <button class="xp-continue" onclick="closeXP()">Lanjut!</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-duo" id="toast"></div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-x" onclick="closeLb()">✕</button>
+  <button class="lb-nav lb-prev" onclick="lbPrev()">‹</button>
+  <img id="lbImg" src="" alt="">
+  <button class="lb-nav lb-next" onclick="lbNext()">›</button>
+  <div class="lb-dots" id="lbDots"></div>
+</div>
+
+<!-- Page header style inject -->
+<style>
+.page-header-duo{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;border-bottom:2px solid var(--border);
+  flex-shrink:0;position:sticky;top:0;z-index:30;background:var(--bg);
+}
+.back-duo{
+  width:34px;height:34px;border-radius:10px;background:none;border:none;
+  font-size:20px;cursor:pointer;color:var(--text3);font-weight:900;
+  display:flex;align-items:center;justify-content:center;transition:background .15s;
+}
+.back-duo:active{background:var(--bg2)}
+.pdtitle{font-size:16px;font-weight:900;color:var(--text)}
+@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(1.5)}}
+</style>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="duo-owl">
+    <div class="owl-body">
+      <div class="owl-ear-l"></div><div class="owl-ear-r"></div>
+      <div class="owl-wing-l"></div><div class="owl-wing-r"></div>
+      <div class="owl-eye-l"><div class="owl-pupil"></div></div>
+      <div class="owl-eye-r"><div class="owl-pupil"></div></div>
+      <div class="owl-beak"></div>
+      <div class="owl-belly"></div>
+    </div>
+  </div>
+  <div class="splash-app-name">duolingo</div>
+  <div class="splash-tagline">💍 Wedding Edition — Learn the Language of Love!</div>
+  <div class="splash-card">
+    <div class="splash-lesson-label">📚 Lesson Ready</div>
+    <div class="splash-title">Anita & Zarda</div>
+    <div class="splash-sub">Minggu, 24 Mei 2026 · Graha Yadika</div>
+    <div class="splash-hearts">
+      <span class="splash-heart">❤️</span>
+      <span class="splash-heart">❤️</span>
+      <span class="splash-heart">❤️</span>
+    </div>
+  </div>
+  <button class="start-btn" onclick="openApp()">
+    <span>🦉</span> Mulai Belajar!
+  </button>
+  <div class="splash-ver">duolingo wedding v2026.5.24 • 7 🔥 streak</div>
+</div>
+
+</div>
+
+
+
+<script>
+/* ── TIME ── */
+function upTime(){const n=new Date();document.getElementById('stime').textContent=n.getHours().toString().padStart(2,'0')+':'+n.getMinutes().toString().padStart(2,'0');}
+upTime();setInterval(upTime,10000);
+
+/* ── IMGS ── */
+const IMGS=[
+  'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=600&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=600&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&h=600&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=600&h=800&fit=crop&q=80',
+  'https://images.unsplash.com/photo-1521543902036-4a8e4c4e7e3b?w=600&h=800&fit=crop&q=80',
+];
+function buildGallery(){
+  const g=document.getElementById('galleryGrid');
+  if(g.children.length)return;
+  IMGS.forEach((s,i)=>{
+    const d=document.createElement('div');d.className='gg-cell';d.onclick=()=>openLb(i);
+    d.innerHTML=`<img src="${s}" alt="" loading="lazy">`;g.appendChild(d);
+  });
+}
+
+/* ── OPEN APP ── */
+function openApp(){
+  document.getElementById('splash').classList.add('out');
+  setTimeout(()=>document.getElementById('splash').style.display='none',500);
+  buildGallery();initObs();startQuizData();
+}
+
+/* ── NAV ── */
+let cur='home',hist=[];
+const BN_MAP={home:'bn-home',event:'bn-event',gallery:'bn-gallery',rsvp:'bn-rsvp',quiz:'bn-quiz'};
+function goSc(name){
+  if(cur===name)return;
+  hist.push(cur);
+  document.getElementById('sc-'+cur).classList.remove('active');
+  const next=document.getElementById('sc-'+name);
+  next.classList.add('active','pop-in');
+  setTimeout(()=>next.classList.remove('pop-in'),350);
+  next.scrollTop=0;cur=name;
+  document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('active'));
+  if(BN_MAP[name])document.getElementById(BN_MAP[name]).classList.add('active');
+}
+function goBack(){
+  if(!hist.length){goSc('home');return;}
+  const p=hist.pop();
+  document.getElementById('sc-'+cur).classList.remove('active');
+  document.getElementById('sc-'+p).classList.add('active');
+  document.getElementById('sc-'+p).scrollTop=0;cur=p;
+  document.querySelectorAll('.bn-item').forEach(b=>b.classList.remove('active'));
+  if(BN_MAP[p])document.getElementById(BN_MAP[p]).classList.add('active');
+}
+
+/* ── EVENT TABS ── */
+function switchETab(t){
+  document.getElementById('etab-akad').classList.toggle('active',t==='akad');
+  document.getElementById('etab-resepsi').classList.toggle('active',t==='resepsi');
+  document.getElementById('ecard-akad').style.display=t==='akad'?'':'none';
+  document.getElementById('ecard-resepsi').style.display=t==='resepsi'?'':'none';
+}
+
+/* ── RSVP ── */
+let hV='yes',gN=1;
+function setHadir(v){hV=v;document.getElementById('hY').classList.toggle('active',v==='yes');document.getElementById('hN').classList.toggle('active',v==='no');}
+function setGuest(n,btn){gN=n;document.querySelectorAll('.guest-duo').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function submitRSVP(){
+  const name=document.getElementById('rsvpName').value.trim();
+  const msg=document.getElementById('rsvpMsg').value.trim();
+  if(!name){showToast('⚠️ Tulis nama kamu dulu!');return;}
+  const ini=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const pals=[
+    {bg:'#E5F9D0',bc:'#58CC02',c:'#46A302'},
+    {bg:'#DFF5FF',bc:'#1CB0F6',c:'#1899D6'},
+    {bg:'#F4E0FF',bc:'#CE82FF',c:'#A040D0'},
+    {bg:'#FFE0E0',bc:'#FF4B4B',c:'#CC2020'},
+    {bg:'#FFF0CC',bc:'#FFC800',c:'#B08000'},
+  ];
+  const p=pals[Math.floor(Math.random()*pals.length)];
+  const xp=30;
+  const el=document.createElement('div');el.className='wish-duo';
+  el.innerHTML=`
+    <div class="wish-av-duo" style="background:${p.bg};border-color:${p.bc};color:${p.c}">${ini}</div>
+    <div>
+      <div class="wish-name-duo">${name}</div>
+      <div class="wish-xp">+${xp} XP</div>
+      <div class="wish-status-duo" style="color:${hV==='yes'?'#46A302':'#CC2020'}">${hV==='yes'?'✅ Hadir · '+gN+' tamu':'❌ Tidak Hadir'}</div>
+      <div class="wish-msg-duo">${msg||'Selamat dan semoga bahagia selalu! 💍'}</div>
+    </div>`;
+  document.getElementById('wishesList').prepend(el);
+  setTimeout(()=>el.classList.add('visible'),50);
+  document.getElementById('rsvpName').value='';document.getElementById('rsvpMsg').value='';
+  giveXP(xp,'rsvp');
+  setTimeout(()=>goSc('wishes'),1200);
+}
+
+/* ── XP SYSTEM ── */
+let totalXP=520;
+const completed={};
+function giveXP(amount,key){
+  if(completed[key])return;
+  completed[key]=true;
+  totalXP+=amount;
+  document.querySelector('.xp-item .streak-val').textContent=totalXP;
+  document.getElementById('xpSub').textContent='Pelajaran '+key+' selesai!';
+  document.getElementById('xpBadge').textContent='+'+amount+' XP';
+  spawnConfetti();
+  document.getElementById('xpPopup').classList.add('show');
+}
+function closeXP(){document.getElementById('xpPopup').classList.remove('show');}
+
+/* ── CONFETTI ── */
+function spawnConfetti(){
+  const wrap=document.getElementById('confettiWrap');wrap.innerHTML='';
+  const colors=['#58CC02','#1CB0F6','#FF4B4B','#FFC800','#CE82FF','#FF9600','#FF86D0'];
+  for(let i=0;i<40;i++){
+    const d=document.createElement('div');d.className='confetti-piece';
+    d.style.cssText=`left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};--dur:${1+Math.random()*1.5}s;--delay:${Math.random()*.5}s;width:${6+Math.random()*10}px;height:${6+Math.random()*10}px;border-radius:${Math.random()>0.5?'50%':'2px'}`;
+    wrap.appendChild(d);
+  }
+}
+
+/* ── QUIZ ── */
+const QUESTIONS=[
+  {q:'Kapan hari pernikahan Anita & Zarda?',choices:['23 Mei 2026','24 Mei 2026','25 Mei 2026','26 Mei 2026'],correct:1,emoji:'📅'},
+  {q:'Di mana lokasi resepsi pernikahan?',choices:['Graha Nusantara','Graha Yadika','Graha Mandiri','Graha Sakura'],correct:1,emoji:'📍'},
+  {q:'Jam berapa Akad Nikah dimulai?',choices:['07.00 WIB','08.00 WIB','09.00 WIB','10.00 WIB'],correct:1,emoji:'🕗'},
+  {q:'Siapakah mempelai wanita?',choices:['Anita Rahmawati','Anita Kurniasari','Anita Pangestuti','Anita Pertiwi'],correct:2,emoji:'👰'},
+  {q:'Surah apakah yang menjadi landasan cinta mereka?',choices:['Ar-Rahman : 13','Ar-Rum : 21','Al-Baqarah : 187','Yasin : 36'],correct:1,emoji:'📖'},
+];
+let qIdx=0,lives=5,selected=-1,answered=false;
+function startQuizData(){qIdx=0;lives=5;renderQ();}
+function startQuiz(){qIdx=0;lives=5;selected=-1;answered=false;renderQ();goSc('quiz');}
+function renderQ(){
+  if(qIdx>=QUESTIONS.length){quizComplete();return;}
+  const q=QUESTIONS[qIdx];selected=-1;answered=false;
+  document.getElementById('quizProg').style.width=((qIdx/QUESTIONS.length)*100)+'%';
+  document.getElementById('quizHearts').textContent=lives;
+  document.getElementById('resultBanner').className='result-banner';
+  const body=document.getElementById('quizBody');
+  body.innerHTML=`
+    <div class="char-bubble">
+      <div class="char-avatar">${q.emoji}</div>
+      <div class="speech-bubble">${q.q}</div>
+    </div>
+    <div class="choices" id="choicesWrap">
+      ${q.choices.map((c,i)=>`
+        <button class="choice-btn" onclick="selectChoice(${i})" id="ch${i}">
+          <div class="choice-letter">${String.fromCharCode(65+i)}</div>
+          <span>${c}</span>
+        </button>`).join('')}
+    </div>
+    <button class="check-btn inactive" id="checkBtn" onclick="checkAnswer()">Periksa</button>
+  `;
+}
+function selectChoice(i){
+  if(answered)return;
+  selected=i;
+  document.querySelectorAll('.choice-btn').forEach(b=>b.classList.remove('selected-correct','selected-wrong'));
+  document.getElementById('ch'+i).classList.add('selected-correct');
+  document.getElementById('checkBtn').className='check-btn active-green';
+}
+function checkAnswer(){
+  if(selected<0||answered)return;
+  answered=true;
+  const q=QUESTIONS[qIdx];
+  const correct=selected===q.correct;
+  document.querySelectorAll('.choice-btn').forEach((b,i)=>{
+    b.classList.remove('selected-correct','selected-wrong');
+    if(i===q.correct)b.classList.add('selected-correct');
+    else if(i===selected&&!correct)b.classList.add('selected-wrong');
+  });
+  const banner=document.getElementById('resultBanner');
+  if(correct){
+    banner.innerHTML=`<div class="rb-title correct">✅ Benar!</div><div class="rb-sub">Luar biasa! Kamu tahu tentang mereka!</div>`;
+    banner.className='result-banner correct show';
+    document.getElementById('checkBtn').className='check-btn active-next';
+    document.getElementById('checkBtn').textContent='Lanjut →';
+    document.getElementById('checkBtn').onclick=nextQ;
+  } else {
+    lives--;document.getElementById('quizHearts').textContent=lives;
+    banner.innerHTML=`<div class="rb-title wrong">❌ Salah!</div><div class="rb-sub">Jawaban benar: ${q.choices[q.correct]}</div>`;
+    banner.className='result-banner wrong show';
+    document.getElementById('checkBtn').className='check-btn active-next';
+    document.getElementById('checkBtn').textContent='Lanjut →';
+    document.getElementById('checkBtn').onclick=nextQ;
+    if(lives<=0){setTimeout(()=>showToast('💔 Nyawa habis! Quiz diulang'),500);setTimeout(startQuiz,2000);}
+  }
+}
+function nextQ(){qIdx++;renderQ();}
+function quizComplete(){
+  document.getElementById('quizBody').innerHTML=`
+    <div style="text-align:center;padding:20px 0">
+      <div style="font-size:64px;animation:owlDance .5s ease-in-out infinite alternate">🦉</div>
+      <div style="font-size:24px;font-weight:900;color:var(--duo-green);margin:12px 0 4px">QUIZ SELESAI!</div>
+      <div style="font-size:14px;color:var(--text2);font-weight:700;margin-bottom:20px">Kamu adalah pakar pernikahan Anita & Zarda! 🎉</div>
+      <div style="display:inline-block;background:var(--duo-yellow);border:3px solid #E0A000;color:var(--text);font-size:20px;font-weight:900;padding:10px 24px;border-radius:30px;box-shadow:0 4px 0 #E0A000;margin-bottom:20px">+50 XP 🏆</div>
+      <br>
+      <button class="check-btn active-green" style="margin:0" onclick="giveXP(50,'quiz');goSc('home')">Kembali ke Pelajaran!</button>
+    </div>`;
+  document.getElementById('resultBanner').className='result-banner';
+}
+
+/* ── COPY ── */
+function copyNum(num,id){
+  navigator.clipboard.writeText(num).then(()=>{
+    const b=document.getElementById(id);const o=b.innerHTML;
+    b.classList.add('copied');b.innerHTML='✓ Tersalin!';
+    showToast('✅ Nomor tersalin!');
+    setTimeout(()=>{b.classList.remove('copied');b.innerHTML=o;},2500);
+  }).catch(()=>showToast('Salin: '+num));
+}
+
+/* ── VIDEO ── */
+function applyVid(){
+  let u=document.getElementById('videoUrl').value.trim();
+  const m=u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]+)/);
+  if(m)u='https://www.youtube.com/embed/'+m[1];
+  if(u){document.getElementById('videoFrame').src=u;showToast('🎬 Video diperbarui!');}
+}
+
+/* ── LIGHTBOX ── */
+let lbI=0;
+function openLb(i){lbI=i;updLb();document.getElementById('lightbox').classList.add('open');document.body.style.overflow='hidden';}
+function closeLb(){document.getElementById('lightbox').classList.remove('open');document.body.style.overflow='';}
+function lbPrev(){lbI=(lbI-1+IMGS.length)%IMGS.length;updLb();}
+function lbNext(){lbI=(lbI+1)%IMGS.length;updLb();}
+function updLb(){
+  document.getElementById('lbImg').src=IMGS[lbI];
+  document.getElementById('lbDots').innerHTML=IMGS.map((_,i)=>`<div class="lb-dot ${i===lbI?'active':''}"></div>`).join('');
+}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lightbox').classList.contains('open'))return;
+  if(e.key==='Escape')closeLb();
+  if(e.key==='ArrowLeft')lbPrev();
+  if(e.key==='ArrowRight')lbNext();
+});
+
+/* ── TOAST ── */
+let tT;
+function showToast(m){
+  const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');
+  clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+/* ── OBSERVER ── */
+function initObs(){
+  const obs=new IntersectionObserver(e=>{e.forEach(i=>{if(i.isIntersecting)i.target.classList.add('visible');});},{threshold:.2});
+  document.querySelectorAll('.wish-duo').forEach(el=>obs.observe(el));
+}
+
+/* ── SWIPE ── */
+let tx=0;
+document.querySelector('.screens').addEventListener('touchstart',e=>{tx=e.touches[0].clientX;},{passive:true});
+document.querySelector('.screens').addEventListener('touchend',e=>{if(e.changedTouches[0].clientX-tx>80&&cur!=='home')goBack();},{passive:true});
+</script>
+</body>
+</html>
