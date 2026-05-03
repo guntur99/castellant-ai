@@ -28,6 +28,7 @@ pub struct InvitationRow {
     pub ceremony_data: serde_json::Value,
     pub reception_data: serde_json::Value,
     pub quote_data: serde_json::Value,
+    pub plan_name: Option<String>,
     pub created_at: DateTime<Utc>,
 }
 
@@ -46,6 +47,7 @@ pub struct Invitation {
     pub gallery_images: Vec<String>,
     pub gift_accounts: Vec<GiftAccount>,
     pub song_url: String,
+    pub plan_name: String,
 }
 
 impl Invitation {
@@ -110,4 +112,25 @@ pub struct AiSession {
     pub chat_history: serde_json::Value,
     pub form_state: serde_json::Value,
     pub updated_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, FromRow, Default)]
+pub struct Guest {
+    pub id: Uuid,
+    pub invitation_id: Uuid,
+    pub name: String,
+    pub category: Option<String>,
+    pub template_override: Option<String>,
+    pub slug: String,
+    pub is_sent: bool,
+    pub created_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, FromRow, Default)]
+pub struct GuestGroup {
+    pub id: Uuid,
+    pub invitation_id: Uuid,
+    pub name: String,
+    pub template_name: String,
+    pub created_at: DateTime<Utc>,
 }

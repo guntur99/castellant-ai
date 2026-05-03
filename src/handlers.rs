@@ -6,7 +6,7 @@ use axum::{
     Json,
 };
 use askama::Template;
-use crate::models::{Invitation, Person, EventDetails, Quote, GiftAccount, RsvpForm, InvitationRow, Song, User, AiSession};
+use crate::models::{Invitation, Person, EventDetails, Quote, GiftAccount, RsvpForm, InvitationRow, Song, User, AiSession, Guest, GuestGroup};
 use crate::AppState;
 use serde_json::{from_value, json};
 use sqlx::Row;
@@ -631,8 +631,12 @@ pub async fn create_invitation(
         "source": fields.get("quote_source").cloned().unwrap_or_else(|| "Ali Imran: 190".to_string())
     });
 
-    let plan_name = "essential".to_string(); // Force essential for now
-    let amount = 50000;
+    let plan_name = fields.get("plan_name").cloned().unwrap_or_else(|| "BASIC".to_string());
+    let amount = match plan_name.as_str() {
+        "PRO" => 100000,
+        "ULTIMATE" => 300000,
+        _ => 50000,
+    };
 
     let user_row = sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
         .bind(user_id)
@@ -1189,6 +1193,8 @@ pub struct ManageInvitationTemplate {
     pub all_templates: Vec<TemplateMetadata>,
     pub is_dev: bool,
     pub user: Option<User>,
+    pub guests: Vec<Guest>,
+    pub groups: Vec<GuestGroup>,
 }
 
 #[derive(Template)]
@@ -1249,6 +1255,7 @@ pub async fn dashboard(
                 gallery_images: Vec::new(),
                 gift_accounts: Vec::new(),
                 song_url: String::new(),
+                plan_name: r.plan_name.unwrap_or_else(|| "BASIC".to_string()),
             })
             .collect();
 
@@ -1348,6 +1355,7 @@ pub async fn home(
 
 pub async fn invitation_detail(
     Path(slug): Path<String>,
+    Query(params): Query<HashMap<String, String>>,
     State(state): State<AppState>,
 ) -> impl IntoResponse {
     // 1. Fetch active song from DB (global fallback)
@@ -1393,22 +1401,64 @@ pub async fn invitation_detail(
                 .map(|p| p.get::<String, _>("url"))
                 .collect();
 
+            let mut template_name = row.template_name.clone();
+            
+            // Override with preview_theme if provided
+            if let Some(preview) = params.get("preview_theme") {
+                template_name = preview.clone();
+            } else if let Some(gs) = params.get("to") {
+                let guest = sqlx::query_as::<_, Guest>("SELECT * FROM guests WHERE invitation_id = $1 AND (slug = $2 OR name = $2)")
+                    .bind(row.id)
+                    .bind(gs)
+                    .fetch_optional(&state.db)
+                    .await
+                    .unwrap_or_default();
+                
+                if let Some(g) = guest {
+                    let mut found_override = false;
+                    
+                    // 1. Check individual override
+                    if let Some(t_override) = g.template_override {
+                        if !t_override.is_empty() {
+                            template_name = t_override;
+                            found_override = true;
+                        }
+                    }
+                    
+                    // 2. Check group template if no individual override
+                    if !found_override {
+                        if let Some(cat) = g.category {
+                            let group = sqlx::query_as::<_, GuestGroup>("SELECT * FROM invitation_groups WHERE invitation_id = $1 AND name = $2")
+                                .bind(row.id)
+                                .bind(cat)
+                                .fetch_optional(&state.db)
+                                .await
+                                .unwrap_or_default();
+                            if let Some(grp) = group {
+                                template_name = grp.template_name;
+                            }
+                        }
+                    }
+                }
+            }
+
             let invitation = Invitation {
                 slug: row.slug.clone(),
-                template_name: row.template_name.clone(),
+                template_name: template_name.clone(),
                 couple_name_short: row.couple_name_short,
-                bride: from_value(row.bride_data).unwrap(),
-                groom: from_value(row.groom_data).unwrap(),
+                bride: from_value(row.bride_data).unwrap_or_default(),
+                groom: from_value(row.groom_data).unwrap_or_default(),
                 event_date: row.event_date,
-                ceremony: from_value(row.ceremony_data).unwrap(),
-                reception: from_value(row.reception_data).unwrap(),
-                quote: from_value(row.quote_data).unwrap(),
+                ceremony: from_value(row.ceremony_data).unwrap_or_default(),
+                reception: from_value(row.reception_data).unwrap_or_default(),
+                quote: from_value(row.quote_data).unwrap_or_default(),
                 gallery_images,
                 gift_accounts,
                 song_url,
+                plan_name: row.plan_name.unwrap_or_else(|| "BASIC".to_string()),
             };
 
-            match row.template_name.as_str() {
+            match template_name.as_str() {
                 "loveanthem" => HtmlTemplate(LoveAnthemTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "cinemarry" => HtmlTemplate(CineMarryTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "cairide" => HtmlTemplate(CaiRideTemplate { invitation, is_dev: state.is_dev }).into_response(),
@@ -1542,6 +1592,7 @@ pub async fn invitation_detail(
                         },
                     ],
                     song_url,
+                    plan_name: "BASIC".to_string(),
                 };
                 
                 match template_name {
@@ -1630,6 +1681,7 @@ pub async fn manage_invitation(
                 gallery_images: Vec::new(),
                 gift_accounts: Vec::new(),
                 song_url: String::new(),
+                plan_name: row.plan_name.unwrap_or_else(|| "BASIC".to_string()),
             };
 
             let user = if let Some(cookie) = jar.get("user_id") {
@@ -1643,11 +1695,25 @@ pub async fn manage_invitation(
             } else { None };
 
             let all_templates = get_all_templates();
+            let guests = sqlx::query_as::<_, Guest>("SELECT * FROM guests WHERE invitation_id = $1 ORDER BY created_at DESC")
+                .bind(row.id)
+                .fetch_all(&state.db)
+                .await
+                .unwrap_or_default();
+            
+            let groups = sqlx::query_as::<_, GuestGroup>("SELECT * FROM invitation_groups WHERE invitation_id = $1 ORDER BY name ASC")
+                .bind(row.id)
+                .fetch_all(&state.db)
+                .await
+                .unwrap_or_default();
+
             HtmlTemplate(ManageInvitationTemplate { 
                 invitation, 
                 all_templates, 
                 is_dev: state.is_dev,
                 user,
+                guests,
+                groups,
             }).into_response()
         },
         None => (StatusCode::NOT_FOUND, "Invitation not found or unauthorized").into_response(),
@@ -1658,7 +1724,7 @@ pub async fn update_invitation(
     Path(slug): Path<String>,
     State(state): State<AppState>,
     jar: PrivateCookieJar,
-    Form(fields): Form<HashMap<String, String>>,
+    mut multipart: Multipart,
 ) -> impl IntoResponse {
     let mut user_id = None;
     if let Some(cookie) = jar.get("user_id") {
@@ -1684,35 +1750,102 @@ pub async fn update_invitation(
         return (StatusCode::NOT_FOUND, "Invitation not found").into_response();
     }
 
-    let mut row = row.unwrap();
-    
-    if let Some(val) = fields.get("couple_name_short") {
-        row.couple_name_short = val.clone();
+    let row = row.unwrap();
+    let mut fields = HashMap::new();
+    let mut photo_paths = HashMap::new();
+    let mut gallery_paths = Vec::new();
+
+    while let Some(field) = multipart.next_field().await.unwrap() {
+        let name = field.name().unwrap().to_string();
+        
+        if name == "gallery[]" {
+            let filename = Uuid::new_v4().to_string() + ".jpg";
+            let path = format!("static/uploads/{}", filename);
+            let data = field.bytes().await.unwrap();
+            if !data.is_empty() {
+                std::fs::create_dir_all("static/uploads").unwrap();
+                std::fs::write(&path, data).unwrap();
+                gallery_paths.push(format!("/{}", path));
+            }
+        } else if name.ends_with("_photo") {
+            let filename = Uuid::new_v4().to_string() + ".jpg";
+            let path = format!("static/uploads/{}", filename);
+            let data = field.bytes().await.unwrap();
+            if !data.is_empty() {
+                std::fs::create_dir_all("static/uploads").unwrap();
+                std::fs::write(&path, data).unwrap();
+                photo_paths.insert(name, format!("/{}", path));
+            }
+        } else {
+            let value = field.text().await.unwrap();
+            fields.insert(name, value);
+        }
     }
-    if let Some(val) = fields.get("event_date") {
-        row.event_date = val.clone();
-    }
-    
+
     // Update JSON Data
-    let mut bride: Person = from_value(row.bride_data).unwrap();
+    let mut bride: Person = from_value(row.bride_data).unwrap_or_default();
     if let Some(val) = fields.get("bride_name") { bride.name = val.clone(); }
     if let Some(val) = fields.get("bride_full_name") { bride.full_name = val.clone(); }
+    if let Some(val) = fields.get("bride_father") { bride.father_name = val.clone(); }
+    if let Some(val) = fields.get("bride_mother") { bride.mother_name = val.clone(); }
+    if let Some(val) = photo_paths.get("bride_photo") { bride.image_url = val.clone(); }
 
-    let mut groom: Person = from_value(row.groom_data).unwrap();
+    let mut groom: Person = from_value(row.groom_data).unwrap_or_default();
     if let Some(val) = fields.get("groom_name") { groom.name = val.clone(); }
     if let Some(val) = fields.get("groom_full_name") { groom.full_name = val.clone(); }
+    if let Some(val) = fields.get("groom_father") { groom.father_name = val.clone(); }
+    if let Some(val) = fields.get("groom_mother") { groom.mother_name = val.clone(); }
+    if let Some(val) = photo_paths.get("groom_photo") { groom.image_url = val.clone(); }
+
+    let mut ceremony: EventDetails = from_value(row.ceremony_data).unwrap_or_default();
+    if let Some(val) = fields.get("ceremony_time") { ceremony.time = val.clone(); }
+    if let Some(val) = fields.get("ceremony_venue") { ceremony.venue = val.clone(); }
+    if let Some(val) = fields.get("ceremony_address") { ceremony.address = val.clone(); }
+    if let Some(val) = fields.get("ceremony_maps") { ceremony.maps_url = val.clone(); }
+
+    let mut reception: EventDetails = from_value(row.reception_data).unwrap_or_default();
+    if let Some(val) = fields.get("reception_date") { reception.date = val.clone(); }
+    if let Some(val) = fields.get("reception_time") { reception.time = val.clone(); }
+    if let Some(val) = fields.get("reception_venue") { reception.venue = val.clone(); }
+    if let Some(val) = fields.get("reception_address") { reception.address = val.clone(); }
+    if let Some(val) = fields.get("reception_maps") { reception.maps_url = val.clone(); }
+
+    let mut quote: Quote = from_value(row.quote_data).unwrap_or_default();
+    if let Some(val) = fields.get("quote_text") { quote.text = val.clone(); }
+    if let Some(val) = fields.get("quote_source") { quote.source = val.clone(); }
+
+    let couple_name_short = fields.get("couple_name_short").cloned().unwrap_or(row.couple_name_short);
+    let event_date = fields.get("event_date").cloned().unwrap_or(row.event_date);
 
     sqlx::query(
-        "UPDATE invitations SET couple_name_short = $1, event_date = $2, bride_data = $3, groom_data = $4 WHERE id = $5"
+        "UPDATE invitations SET couple_name_short = $1, event_date = $2, bride_data = $3, groom_data = $4, ceremony_data = $5, reception_data = $6, quote_data = $7 WHERE id = $8"
     )
-    .bind(&row.couple_name_short)
-    .bind(&row.event_date)
+    .bind(couple_name_short)
+    .bind(event_date)
     .bind(json!(bride))
     .bind(json!(groom))
+    .bind(json!(ceremony))
+    .bind(json!(reception))
+    .bind(json!(quote))
     .bind(row.id)
     .execute(&state.db)
     .await
     .unwrap();
+
+    // Handle Gallery
+    if !gallery_paths.is_empty() {
+        for (i, path) in gallery_paths.into_iter().enumerate() {
+            sqlx::query(
+                "INSERT INTO invitation_photos (invitation_id, url, \"order\") VALUES ($1, $2, $3)"
+            )
+            .bind(row.id)
+            .bind(path)
+            .bind(i as i32)
+            .execute(&state.db)
+            .await
+            .unwrap();
+        }
+    }
 
     Redirect::to(&format!("/invitation/{}/manage", slug)).into_response()
 }
@@ -1879,6 +2012,7 @@ pub async fn preview(
             },
         ],
         song_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3".to_string(),
+        plan_name: "BASIC".to_string(),
     };
 
     match payload.template_name.as_str() {
@@ -2177,4 +2311,155 @@ pub async fn get_ai_session(
         Ok(None) => (StatusCode::NOT_FOUND, "Session not found").into_response(),
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("DB error: {}", e)).into_response(),
     }
+}
+
+#[derive(Deserialize)]
+pub struct AddGuestRequest {
+    pub name: String,
+    pub category: Option<String>,
+    pub template_override: Option<String>,
+}
+
+pub async fn add_guest(
+    Path(slug): Path<String>,
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+    Form(payload): Form<AddGuestRequest>,
+) -> impl IntoResponse {
+    let user_id = if let Some(cookie) = jar.get("user_id") {
+        Uuid::parse_str(cookie.value()).ok()
+    } else { None };
+
+    if user_id.is_none() { return Redirect::to("/").into_response(); }
+
+    let invitation = sqlx::query!("SELECT id FROM invitations WHERE slug = $1 AND user_id = $2", slug, user_id.unwrap())
+        .fetch_one(&state.db)
+        .await
+        .unwrap();
+
+    let guest_slug = payload.name.to_lowercase()
+        .chars()
+        .filter(|c| c.is_alphanumeric() || c.is_whitespace())
+        .collect::<String>()
+        .replace(" ", "-");
+    
+    sqlx::query(
+        "INSERT INTO guests (invitation_id, name, category, slug, template_override) VALUES ($1, $2, $3, $4, $5)"
+    )
+    .bind(invitation.id)
+    .bind(&payload.name)
+    .bind(&payload.category)
+    .bind(&guest_slug)
+    .bind(&payload.template_override)
+    .execute(&state.db)
+    .await
+    .unwrap();
+
+    Redirect::to(&format!("/invitation/{}/manage#guests", slug)).into_response()
+}
+
+#[derive(Deserialize)]
+pub struct UpdateGuestTemplateRequest {
+    pub template_override: String,
+}
+
+pub async fn update_guest_template(
+    Path((slug, guest_id)): Path<(String, Uuid)>,
+    State(state): State<AppState>,
+    Form(payload): Form<UpdateGuestTemplateRequest>,
+) -> impl IntoResponse {
+    sqlx::query(
+        "UPDATE guests SET template_override = $1 WHERE id = $2"
+    )
+    .bind(&payload.template_override)
+    .bind(guest_id)
+    .execute(&state.db)
+    .await
+    .unwrap();
+
+    Redirect::to(&format!("/invitation/{}/manage#guests", slug)).into_response()
+}
+
+pub async fn delete_guest(
+    Path((slug, guest_id)): Path<(String, Uuid)>,
+    State(state): State<AppState>,
+) -> impl IntoResponse {
+    sqlx::query("DELETE FROM guests WHERE id = $1").bind(guest_id).execute(&state.db).await.unwrap();
+    Redirect::to(&format!("/invitation/{}/manage#guests", slug)).into_response()
+}
+
+#[derive(Deserialize)]
+pub struct AddGroupRequest {
+    pub name: String,
+    pub template_name: String,
+}
+
+pub async fn add_group(
+    Path(slug): Path<String>,
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+    Form(payload): Form<AddGroupRequest>,
+) -> impl IntoResponse {
+    let user_id = if let Some(cookie) = jar.get("user_id") {
+        Uuid::parse_str(cookie.value()).ok()
+    } else { None };
+
+    if user_id.is_none() { return Redirect::to("/").into_response(); }
+
+    let (invitation_id, plan_name): (Uuid, Option<String>) = sqlx::query_as(
+        "SELECT id, plan_name FROM invitations WHERE slug = $1 AND user_id = $2"
+    )
+    .bind(&slug)
+    .bind(user_id.unwrap())
+    .fetch_one(&state.db)
+    .await
+    .unwrap();
+
+    let plan_name = plan_name.unwrap_or_else(|| "BASIC".to_string());
+
+    // Check if group already exists (for updates)
+    let existing = sqlx::query!("SELECT id FROM invitation_groups WHERE invitation_id = $1 AND name = $2", invitation_id, payload.name)
+        .fetch_optional(&state.db)
+        .await
+        .unwrap();
+
+    if existing.is_none() {
+        // Only check limit for NEW groups
+        let count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM invitation_groups WHERE invitation_id = $1")
+            .bind(invitation_id)
+            .fetch_one(&state.db)
+            .await
+            .unwrap();
+
+        let limit = match plan_name.as_str() {
+            "PRO" => 7,
+            "ULTIMATE" => 999,
+            _ => 3, // BASIC or default
+        };
+
+        if count >= limit as i64 {
+            return (StatusCode::FORBIDDEN, "Plan limit reached. Please upgrade to add more groups.").into_response();
+        }
+    }
+
+    sqlx::query(
+        "INSERT INTO invitation_groups (invitation_id, name, template_name) VALUES ($1, $2, $3)
+         ON CONFLICT (invitation_id, name) DO UPDATE SET template_name = $3"
+    )
+    .bind(invitation_id)
+    .bind(&payload.name)
+    .bind(&payload.template_name)
+    .execute(&state.db)
+    .await
+    .unwrap();
+
+    Redirect::to(&format!("/invitation/{}/manage#groups", slug)).into_response()
+}
+
+pub async fn delete_group(
+    Path((slug, group_id)): Path<(String, Uuid)>,
+    State(state): State<AppState>,
+) -> impl IntoResponse {
+    sqlx::query("DELETE FROM invitation_groups WHERE id = $1").bind(group_id).execute(&state.db).await.unwrap();
+    Redirect::to(&format!("/invitation/{}/manage#groups", slug)).into_response()
 }

@@ -2,13 +2,670 @@
 
 {% block title %}Manage Invitation - {{ invitation.couple_name_short }} | Castellant{% endblock %}
 
+{% block head_extra %}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style>
+    /* Select2 Glassmorphism */
+    .select2-container--default .select2-selection--single {
+        background: rgba(255, 255, 255, 0.8) !important;
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        border-radius: 12px !important;
+        height: 48px !important;
+        display: flex !important;
+        align-items: center !important;
+        backdrop-filter: blur(10px);
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 48px !important;
+        padding-left: 15px !important;
+        color: var(--color-text-primary) !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 46px !important;
+    }
+
+    .select2-dropdown {
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(20px);
+        border-radius: 15px !important;
+        border: 1px solid rgba(0, 0, 0, 0.05) !important;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1) !important;
+        overflow: hidden;
+        z-index: 9999;
+    }
+
+    .group-badge {
+        background: #f0f2f5;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        color: var(--color-accent-red);
+        border: 1px solid rgba(255, 71, 87, 0.1);
+    }
+
+    /* Page Layout Styles */
+    .manage-dashboard {
+        padding: 120px 0 60px;
+        background: var(--color-bg-primary);
+    }
+
+    .dashboard-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-upgrade-pill {
+        background: linear-gradient(135deg, var(--color-accent-red), #ff758c);
+        color: white;
+        border: none;
+        padding: 6px 16px;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        cursor: pointer !important;
+        transition: all 0.3s;
+        box-shadow: 0 5px 15px rgba(212, 48, 48, 0.2);
+        position: relative;
+        z-index: 100;
+    }
+
+    .btn-upgrade-pill:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(212, 48, 48, 0.3);
+    }
+
+    .dashboard-main {
+        width: 100%;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .form-section {
+        margin-bottom: 3rem;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--color-accent-rose);
+        display: inline-block;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1.5rem;
+    }
+
+    @media (max-width: 576px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 0.85rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--color-text-muted);
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        border-radius: 12px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        background: rgba(255, 255, 255, 0.8);
+        font-family: inherit;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+        background: var(--color-accent-red);
+        color: white;
+        border: none;
+        padding: 1rem 3rem;
+        border-radius: 100px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 10px 20px rgba(255, 71, 87, 0.2);
+    }
+
+    .glass {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+        border-radius: 40px;
+        padding: 3rem;
+    }
+
+    .mt-5 {
+        margin-top: 3rem;
+    }
+
+    /* Visual Group Pairing Styles */
+    .group-setup-container {
+        margin-top: 1rem;
+    }
+
+    .visual-group-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .group-visual-card {
+        background: white;
+        border-radius: 24px;
+        padding: 1rem;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        position: relative;
+    }
+
+    .group-visual-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+    }
+
+    .group-visual-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .group-visual-preview {
+        width: 100%;
+        aspect-ratio: 16/9;
+        border-radius: 16px;
+        overflow: hidden;
+        position: relative;
+        background: #f0f0f0;
+    }
+
+    .group-visual-preview img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .group-visual-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+    }
+
+    .template-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: var(--color-text-primary);
+    }
+
+    .group-actions-row {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: auto;
+    }
+
+    .btn-preview-small {
+        flex: 1;
+        background: #f8fafc;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        padding: 0.6rem;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-align: center;
+        color: #64748b;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+    .btn-preview-small:hover {
+        background: #f1f5f9;
+        color: var(--color-accent-red);
+    }
+
+    /* Form Styles */
+    .add-group-horizontal {
+        background: #f8fafc;
+        padding: 1.5rem;
+        border-radius: 24px;
+        display: flex;
+        gap: 1rem;
+        align-items: flex-end;
+        border: 2px dashed rgba(0, 0, 0, 0.05);
+    }
+
+    .add-group-horizontal .form-group {
+        margin-bottom: 0;
+        flex: 1;
+    }
+
+    /* Guest Table */
+    /* Guest Table */
+    .guest-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .guest-table th {
+        text-align: left;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        padding: 1rem;
+        color: #94a3b8;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .guest-table td {
+        padding: 1.2rem 1rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.03);
+        vertical-align: middle;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s;
+    }
+
+    .modal-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .modal-content {
+        width: 90%;
+        max-width: 600px;
+        transform: translateY(20px);
+        transition: all 0.3s;
+        padding: 2.5rem;
+    }
+
+    .modal-overlay.active .modal-content {
+        transform: translateY(0);
+    }
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+
+    .close-modal {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        color: #999;
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .btn-outline {
+        background: transparent;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        padding: 0.8rem 1.5rem;
+        border-radius: 100px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    /* Search & Filter Bar */
+    .table-controls {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+        margin-bottom: 2.5rem;
+        align-items: center;
+        flex-wrap: wrap;
+    }
+
+    .search-wrapper {
+        flex: 1;
+        min-width: 250px;
+        position: relative;
+    }
+
+    .search-wrapper input {
+        width: 100%;
+        padding: 0.8rem 1rem 0.8rem 2.5rem;
+        border-radius: 12px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        background: rgba(255, 255, 255, 0.5);
+    }
+
+    .search-wrapper i {
+        position: absolute;
+        left: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+    }
+
+    .filter-wrapper {
+        min-width: 180px;
+    }
+
+    /* Pagination */
+    .pagination-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .pagination-info {
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+
+    .pagination-buttons {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .page-btn {
+        width: 36px;
+        height: 36px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        background: white;
+        font-size: 0.85rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .page-btn.active {
+        background: var(--color-accent-red);
+        color: white;
+        border-color: var(--color-accent-red);
+    }
+
+    .photo-preview-small {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        object-fit: cover;
+        border: 1px solid rgba(0,0,0,0.05);
+        display: block;
+        margin-bottom: 0.5rem;
+    }
+    .gallery-preview-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+    .gallery-item-preview {
+        width: 100%;
+        aspect-ratio: 1/1;
+        border-radius: 8px;
+        object-fit: cover;
+    }
+
+    /* Stepper Styling */
+    .progress-steps {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        padding: 1.5rem;
+        background: rgba(255,255,255,0.3);
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+        overflow-x: auto;
+    }
+    .step-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        opacity: 0.3;
+        transition: all 0.3s;
+        cursor: pointer;
+        flex-shrink: 0;
+    }
+    .step-item.active {
+        opacity: 1;
+    }
+    .step-num {
+        font-weight: 800;
+        font-family: var(--font-serif);
+        color: var(--color-accent-red);
+    }
+    .step-label {
+        font-size: 0.7rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+        color: #666;
+    }
+    .step-divider {
+        width: 20px;
+        height: 1px;
+        background: rgba(0,0,0,0.1);
+    }
+    .form-step {
+        display: none;
+        padding: 3rem;
+        animation: fadeIn 0.4s ease-out;
+    }
+    .form-step.active {
+        display: block;
+    }
+    .step-actions {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(0,0,0,0.05);
+    }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Create Page Styles Mirror */
+    .creation-container {
+        border-radius: 40px;
+        box-shadow: var(--shadow-large);
+        overflow: hidden;
+        border: 1px solid rgba(0,0,0,0.05);
+        background: white;
+    }
+    .accent-title {
+        color: var(--color-accent-red);
+        font-size: 1.4rem;
+        border-bottom: 1px solid #fce8e8;
+        padding-bottom: 0.8rem;
+        margin-bottom: 1.5rem;
+    }
+    .ai-onboarding-promo {
+        background: linear-gradient(135deg, #2A1E14 0%, #4A3728 100%);
+        padding: 1.5rem;
+        border-radius: 20px;
+        color: white;
+        margin-top: 1.5rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+    .btn-ai-magic {
+        background: white;
+        color: #2A1E14;
+        padding: 0.7rem 1.2rem;
+        font-size: 0.85rem;
+        border-radius: 50px;
+        border: none;
+        font-weight: 700;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        transition: all 0.3s;
+    }
+    .btn-ai-magic:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    .btn-elegant {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: white;
+        color: #333;
+        border: 1px solid #eee;
+        padding: 1.2rem 3rem;
+        border-radius: 50px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        font-size: 0.8rem;
+    }
+    .btn-elegant:hover {
+        background: #333;
+        color: white;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    .btn-elegant.primary {
+        background: linear-gradient(135deg, #4A3728, #2A1E14);
+        color: white;
+        border: none;
+    }
+    .btn-back {
+        background: transparent;
+        border: none;
+        color: #999;
+        font-weight: 600;
+        cursor: pointer;
+        padding: 1rem;
+        transition: 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .btn-back:hover {
+        color: #333;
+        transform: translateX(-5px);
+    }
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+    .template-selector {
+        display: flex;
+        overflow-x: auto;
+        gap: 2rem;
+        margin-top: 2rem;
+        padding: 1rem 0.5rem 3rem;
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-accent-rose) transparent;
+    }
+    .tpl-card {
+        min-width: 260px;
+        width: 260px;
+        flex-shrink: 0;
+        cursor: pointer;
+        transition: all 0.4s;
+    }
+    .tpl-card input { display: none; }
+    .tpl-content {
+        border-radius: 25px;
+        border: 1px solid #f0f0f0;
+        background: white;
+        transition: all 0.4s;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    }
+    .tpl-image {
+        height: 180px;
+        background-size: cover;
+        background-position: center;
+    }
+    .tpl-info { padding: 1.5rem; text-align: center; }
+    .tpl-card input:checked + .tpl-content {
+        border-color: #8E6E53;
+        box-shadow: 0 15px 35px rgba(142, 110, 83, 0.15);
+    }
+    .tpl-price {
+        display: inline-block;
+        font-size: 0.7rem;
+        font-weight: 800;
+        color: white;
+        background: linear-gradient(135deg, #8E6E53, #4A3728);
+        padding: 4px 14px;
+        border-radius: 50px;
+        margin-bottom: 0.8rem;
+    }
+</style>
+{% endblock %}
+
 {% block site_content %}
 <div class="manage-dashboard animate__animated animate__fadeIn">
     <div class="container">
         <header class="dashboard-header">
             <div class="header-content">
                 <h1 class="serif">Manage Your Invitation</h1>
-                <p class="text-muted">Customize your digital invitation and choose your preferred theme.</p>
+                <div style="display: flex; align-items: center; gap: 10px; margin-top: 5px;">
+                    <p class="text-muted" style="margin: 0;">Customize details and assign themes to your guest groups.</p>
+                    <span style="background: rgba(142, 110, 83, 0.1); color: #8E6E53; padding: 4px 12px; border-radius: 50px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; border: 1px solid rgba(142, 110, 83, 0.2);">
+                        {% if invitation.plan_name == "BASIC" %}Noble{% else if invitation.plan_name == "PRO" %}Royal{% else %}Dynasty{% endif %} Collection
+                    </span>
+                    {% if invitation.plan_name != "ULTIMATE" %}
+                    <button type="button" class="btn-upgrade-pill" onclick="showUpgradeOptions()">
+                        Upgrade ✨
+                    </button>
+                    {% endif %}
+                </div>
             </div>
             <div class="header-actions">
                 <a href="/invitation/{{ invitation.slug }}" class="btn btn-outline" target="_blank">
@@ -22,290 +679,961 @@
             </div>
         </header>
 
-        <div class="dashboard-grid">
-            <!-- Sidebar: Theme Selection -->
-            <aside class="dashboard-sidebar">
-                <div class="card glass">
-                    <h3 class="serif mb-4">Choose Theme</h3>
-                    <div class="theme-selector-grid">
-                        {% for template in all_templates %}
-                        <div class="theme-option {% if template.id == invitation.template_name %}active{% endif %}" 
-                             hx-post="/invitation/{{ invitation.slug }}/update-theme" 
-                             hx-vals='{"template_name": "{{ template.id }}"}'
-                             hx-target="body"
-                             hx-swap="none">
-                            <div class="theme-preview">
-                                <img src="{{ template.preview_img }}" alt="{{ template.title }}">
-                                <div class="theme-overlay">
-                                    <span class="btn-select">Select</span>
+        <div class="dashboard-main">
+            <!-- Details Card -->
+            <div class="creation-container">
+                <div class="progress-steps" style="background: #fdfdfd; border-bottom: 1px solid #f0f0f0;">
+                    <div class="step-item active" id="step-1-indicator" onclick="goToStep(1)">
+                        <span class="step-num">01</span>
+                        <span class="step-label">General</span>
+                    </div>
+                    <div class="step-divider"></div>
+                    <div class="step-item" id="step-2-indicator" onclick="goToStep(2)">
+                        <span class="step-num">02</span>
+                        <span class="step-label">Couple</span>
+                    </div>
+                    <div class="step-divider"></div>
+                    <div class="step-item" id="step-3-indicator" onclick="goToStep(3)">
+                        <span class="step-num">03</span>
+                        <span class="step-label">Details</span>
+                    </div>
+                    <div class="step-divider"></div>
+                    <div class="step-item" id="step-4-indicator" onclick="goToStep(4)">
+                        <span class="step-num">04</span>
+                        <span class="step-label">Preview</span>
+                    </div>
+                </div>
+
+                <form action="/invitation/{{ invitation.slug }}/manage" method="POST" class="manage-form" enctype="multipart/form-data">
+                    <!-- Step 1: General -->
+                    <div class="form-step active" id="step-1">
+                        <h3 class="serif accent-title">Informasi Dasar</h3>
+                        
+                        <div class="ai-onboarding-promo">
+                            <div style="font-size: 2.5rem;">🤖</div>
+                            <div style="flex: 1;">
+                                <h4 style="margin: 0; font-weight: 800; font-size: 1.1rem;">Butuh Bantuan AI?</h4>
+                                <p style="margin: 5px 0 0; opacity: 0.8; font-size: 0.85rem;">Ceritakan detail baru atau biarkan AI membantu merapikan kata-kata Anda!</p>
+                            </div>
+                            <button type="button" class="btn-ai-magic" onclick="toggleAiAssistant()">
+                                <span>✨ Mulai Chat AI</span>
+                            </button>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 1.5rem;">
+                            <label>Couple Name (Short Version)</label>
+                            <input type="text" name="couple_name_short" value="{{ invitation.couple_name_short }}" required>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Custom URL Slug</label>
+                                <input type="text" name="slug" value="{{ invitation.slug }}" readonly style="background: #f5f5f5; cursor: not-allowed;">
+                            </div>
+                            <div class="form-group">
+                                <label>Wedding Date (Display)</label>
+                                <input type="text" name="event_date" value="{{ invitation.event_date }}" required>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 3rem; display: flex; justify-content: flex-end;">
+                            <button type="button" class="btn-elegant primary" onclick="goToStep(2)">
+                                <span>Lanjut ke Couple</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Couple -->
+                    <div class="form-step" id="step-2">
+                        <h3 class="serif accent-title">The Couple Details</h3>
+                        <div class="form-grid" style="gap: 4rem;">
+                            <!-- Bride -->
+                            <div>
+                                <h4 class="serif mb-4" style="color: #8E6E53;">The Bride</h4>
+                                <div class="form-group">
+                                    <label>Nickname</label>
+                                    <input type="text" name="bride_name" value="{{ invitation.bride.name }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" name="bride_full_name" value="{{ invitation.bride.full_name }}" required>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>Father's Name</label>
+                                        <input type="text" name="bride_father" value="{{ invitation.bride.father_name }}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Mother's Name</label>
+                                        <input type="text" name="bride_mother" value="{{ invitation.bride.mother_name }}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Profile Photo</label>
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <img src="{{ invitation.bride.image_url }}" class="photo-preview-small" style="width: 80px; height: 80px;" alt="Bride">
+                                        <input type="file" name="bride_photo" accept="image/*">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="theme-info">
-                                <span class="theme-title">{{ template.title }}</span>
-                                <span class="theme-badge">{{ template.plan }}</span>
+                            <!-- Groom -->
+                            <div>
+                                <h4 class="serif mb-4" style="color: #8E6E53;">The Groom</h4>
+                                <div class="form-group">
+                                    <label>Nickname</label>
+                                    <input type="text" name="groom_name" value="{{ invitation.groom.name }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Full Name</label>
+                                    <input type="text" name="groom_full_name" value="{{ invitation.groom.full_name }}" required>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>Father's Name</label>
+                                        <input type="text" name="groom_father" value="{{ invitation.groom.father_name }}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Mother's Name</label>
+                                        <input type="text" name="groom_mother" value="{{ invitation.groom.mother_name }}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Profile Photo</label>
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <img src="{{ invitation.groom.image_url }}" class="photo-preview-small" style="width: 80px; height: 80px;" alt="Groom">
+                                        <input type="file" name="groom_photo" accept="image/*">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
+                            <button type="button" class="btn-back" onclick="goToStep(1)">← Back</button>
+                            <button type="button" class="btn-elegant primary" onclick="goToStep(3)">
+                                <span>Lanjut ke Event</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Event & Gallery -->
+                    <div class="form-step" id="step-3">
+                        <h3 class="serif accent-title">Events & Gallery</h3>
+                        <div class="form-grid" style="gap: 4rem;">
+                            <!-- Left: Event Details -->
+                            <div>
+                                <h4 class="serif mb-4" style="color: #8E6E53;">Ceremony & Reception</h4>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>Ceremony Time</label>
+                                        <input type="text" name="ceremony_time" value="{{ invitation.ceremony.time }}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Ceremony Venue</label>
+                                        <input type="text" name="ceremony_venue" value="{{ invitation.ceremony.venue }}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Ceremony Address</label>
+                                    <textarea name="ceremony_address" rows="2">{{ invitation.ceremony.address }}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Ceremony Google Maps URL</label>
+                                    <input type="text" name="ceremony_maps" value="{{ invitation.ceremony.maps_url }}">
+                                </div>
+
+                                <div style="height: 1px; background: #eee; margin: 2rem 0;"></div>
+
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>Reception Date</label>
+                                        <input type="text" name="reception_date" value="{{ invitation.reception.date }}">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Reception Time</label>
+                                        <input type="text" name="reception_time" value="{{ invitation.reception.time }}">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Reception Venue</label>
+                                    <input type="text" name="reception_venue" value="{{ invitation.reception.venue }}">
+                                </div>
+                                <div class="form-group">
+                                    <label>Reception Address</label>
+                                    <textarea name="reception_address" rows="2">{{ invitation.reception.address }}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Reception Google Maps URL</label>
+                                    <input type="text" name="reception_maps" value="{{ invitation.reception.maps_url }}">
+                                </div>
+                            </div>
+
+                            <!-- Right: Gallery & Quote -->
+                            <div>
+                                <h4 class="serif mb-4" style="color: #8E6E53;">Media & Memories</h4>
+                                <div class="form-group">
+                                    <label>Wedding Quote</label>
+                                    <textarea name="quote_text" rows="3" style="background: #fffbf8; border: 1px solid #fdf0e5; font-style: italic; text-align: center;">{{ invitation.quote.text }}</textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Quote Source</label>
+                                    <input type="text" name="quote_source" value="{{ invitation.quote.source }}" style="text-align: center;">
+                                </div>
+
+                                <div style="height: 1px; background: #eee; margin: 2rem 0;"></div>
+
+                                <div class="form-group">
+                                    <label>Gallery Photos</label>
+                                    <div class="upload-zone" style="border: 2px dashed #e0e0e0; background: #fafafa; border-radius: 20px; padding: 2rem;">
+                                        <div style="font-size: 2rem;">🖼️</div>
+                                        <p style="font-size: 0.8rem; color: #999;">Tambah foto baru ke galeri Anda</p>
+                                        <input type="file" name="gallery[]" accept="image/*" multiple>
+                                    </div>
+                                    <div class="gallery-preview-grid">
+                                        {% for img in invitation.gallery_images %}
+                                        <img src="{{ img }}" class="gallery-item-preview" alt="Gallery">
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
+                            <button type="button" class="btn-back" onclick="goToStep(2)">← Back</button>
+                            <button type="button" class="btn-elegant primary" onclick="goToStep(4)">
+                                <span>Preview Draft</span>
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Preview -->
+                    <div class="form-step" id="step-4">
+                        <h3 class="serif accent-title text-center">Summary Preview</h3>
+                        <div style="display: flex; flex-direction: column; align-items: center; gap: 3rem; margin-top: 2rem;">
+                            <div class="phone-mockup-container">
+                                <div style="width: 300px; height: 600px; background: #111; border-radius: 40px; padding: 10px; position: relative; border: 4px solid #222; box-shadow: 0 30px 60px rgba(0,0,0,0.2);">
+                                    <div style="width: 100%; height: 100%; background: #fff; border-radius: 30px; overflow: hidden;">
+                                        <iframe src="/invitation/{{ invitation.slug }}" style="width: 100%; height: 100%; border: none;"></iframe>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="width: 100%; max-width: 600px; background: #fdf6f0; border-radius: 30px; padding: 2.5rem; border: 1px dashed #d4c4b5;">
+                                <h4 class="serif mb-4" style="color: #4A3728;">Ready to Publish?</h4>
+                                <p style="font-size: 0.9rem; line-height: 1.6; color: #666; margin-bottom: 2rem;">
+                                    Tinjau kembali semua detail di atas. Anda dapat menyimpan perubahan ini kapan saja dan undangan akan langsung terupdate untuk tamu Anda.
+                                </p>
+                                <button type="submit" class="btn-elegant primary" style="width: 100%; justify-content: center; padding: 1.5rem;">
+                                    <span>SIMPAN SEMUA PERUBAHAN ✨</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
+                            <button type="button" class="btn-back" onclick="goToStep(3)">← Back</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Visual Group Setup Section -->
+            <div id="groups" class="card glass mt-5">
+                <div class="section-header mb-4 d-flex justify-content-between align-items-end">
+                    <div>
+                        <h3 class="serif">Group Theme Assignment</h3>
+                        <p class="text-muted small">Pair your guest groups with visual themes. Every guest in the group will inherit this look.</p>
+                    </div>
+                    <div class="plan-status-badge">
+                        <div class="plan-label">{{ invitation.plan_name }} PLAN</div>
+                        <div class="usage-text">
+                            {% set count = groups.len() %}
+                            {% set limit = 3 %}
+                            {% if invitation.plan_name == "PRO" %}{% set limit = 7 %}{% endif %}
+                            {% if invitation.plan_name == "ULTIMATE" %}{% set limit = 999 %}{% endif %}
+                            
+                            {% if invitation.plan_name == "ULTIMATE" %}
+                                <span class="count">{{ count }}</span> groups created
+                            {% else %}
+                                <span class="count {% if count >= limit %}limit-reached{% endif %}">{{ count }}/{{ limit }}</span> slots used
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <style>
+                    .plan-status-badge {
+                        text-align: right;
+                        background: rgba(0,0,0,0.03);
+                        padding: 0.8rem 1.2rem;
+                        border-radius: 15px;
+                        border: 1px solid rgba(0,0,0,0.05);
+                    }
+                    .plan-label {
+                        font-size: 0.6rem;
+                        font-weight: 800;
+                        letter-spacing: 1px;
+                        color: var(--color-accent-red);
+                        margin-bottom: 2px;
+                    }
+                    .usage-text {
+                        font-size: 0.85rem;
+                        font-weight: 600;
+                        color: #444;
+                    }
+                    .usage-text .count {
+                        font-family: var(--font-serif);
+                        font-weight: 800;
+                        color: #000;
+                    }
+                    .usage-text .count.limit-reached {
+                        color: var(--color-accent-red);
+                    }
+                    .upgrade-cta {
+                        display: block;
+                        margin-top: 1rem;
+                        padding: 1rem;
+                        background: #fff5f5;
+                        border: 1px dashed var(--color-accent-red);
+                        border-radius: 12px;
+                        text-align: center;
+                        color: var(--color-accent-red);
+                        font-size: 0.8rem;
+                        font-weight: 700;
+                        text-decoration: none;
+                        transition: 0.3s;
+                        cursor: pointer !important;
+                        position: relative;
+                        z-index: 10;
+                    }
+                    .upgrade-cta:hover {
+                        background: var(--color-accent-red);
+                        color: white;
+                    }
+                    .btn-disabled {
+                        opacity: 0.5;
+                        cursor: not-allowed !important;
+                        filter: grayscale(1);
+                    }
+                </style>
+
+                <div class="group-setup-container">
+                    <div class="visual-group-grid">
+                        {% for group in groups %}
+                        <div class="group-visual-card">
+                            <div class="group-visual-header">
+                                <span class="group-badge">{{ group.name }}</span>
+                                <form action="/invitation/{{ invitation.slug }}/groups/{{ group.id }}/delete"
+                                    method="POST">
+                                    <button type="submit" class="btn-icon delete"
+                                        style="border:none; background:transparent;">
+                                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2">
+                                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
+
+                            <div class="group-visual-preview">
+                                {% for t in all_templates %}
+                                {% if t.id == group.template_name %}
+                                <img src="{{ t.preview_img }}" alt="{{ t.title }}">
+                                {% endif %}
+                                {% endfor %}
+                            </div>
+
+                            <div class="group-visual-info">
+                                <span class="template-label">{{ group.template_name }}</span>
+                            </div>
+
+                            <div class="group-actions-row">
+                                <a href="/invitation/{{ invitation.slug }}?preview_theme={{ group.template_name }}"
+                                    target="_blank" class="btn-preview-small">
+                                    <i class="fas fa-eye"></i> Preview
+                                </a>
                             </div>
                         </div>
                         {% endfor %}
                     </div>
-                </div>
-            </aside>
 
-            <!-- Main Content: Edit Details -->
-            <main class="dashboard-main">
-                <div class="card glass">
-                    <h3 class="serif mb-4">Invitation Details</h3>
-                    <form action="/invitation/{{ invitation.slug }}/manage" method="POST" class="manage-form">
-                        <div class="form-section">
-                            <h4 class="section-title">General Info</h4>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="couple_name_short">Couple Name (Short)</label>
-                                    <input type="text" id="couple_name_short" name="couple_name_short" value="{{ invitation.couple_name_short }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="event_date">Event Date</label>
-                                    <input type="text" id="event_date" name="event_date" value="{{ invitation.event_date }}" placeholder="e.g. 12 Desember 2026" required>
-                                </div>
-                            </div>
-                        </div>
+                    {% set count = groups.len() %}
+                    {% set limit = 3 %}
+                    {% if invitation.plan_name == "PRO" %}{% set limit = 7 %}{% endif %}
+                    {% if invitation.plan_name == "ULTIMATE" %}{% set limit = 999 %}{% endif %}
 
-                        <div class="form-section">
-                            <h4 class="section-title">The Bride</h4>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="bride_name">Nickname</label>
-                                    <input type="text" id="bride_name" name="bride_name" value="{{ invitation.bride.name }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="bride_full_name">Full Name</label>
-                                    <input type="text" id="bride_full_name" name="bride_full_name" value="{{ invitation.bride.full_name }}" required>
-                                </div>
-                            </div>
+                    {% if count < limit %}
+                    <form action="/invitation/{{ invitation.slug }}/groups" method="POST" class="add-group-horizontal">
+                        <div class="form-group">
+                            <label>Group Name</label>
+                            <input type="text" name="name" placeholder="e.g. VIP" required>
                         </div>
-
-                        <div class="form-section">
-                            <h4 class="section-title">The Groom</h4>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="groom_name">Nickname</label>
-                                    <input type="text" id="groom_name" name="groom_name" value="{{ invitation.groom.name }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="groom_full_name">Full Name</label>
-                                    <input type="text" id="groom_full_name" name="groom_full_name" value="{{ invitation.groom.full_name }}" required>
-                                </div>
-                            </div>
+                        <div class="form-group" style="flex: 1.5;">
+                            <label>Assigned Theme</label>
+                            <select name="template_name" class="select2-enable" required>
+                                <option value="" disabled selected>Select a visual theme...</option>
+                                {% for t in all_templates %}
+                                <option value="{{ t.id }}">{{ t.title }} ({{ t.plan }})</option>
+                                {% endfor %}
+                            </select>
                         </div>
-
-                        <div class="form-actions">
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                        </div>
+                        <button type="submit" class="btn btn-primary" style="padding: 0.8rem 2rem;">Add Pair</button>
                     </form>
+                    {% else %}
+                    <div class="limit-reached-wrapper">
+                        <div class="add-group-horizontal btn-disabled" style="pointer-events: none;">
+                            <div class="form-group"><label>Group Name</label><input type="text" disabled></div>
+                            <div class="form-group" style="flex: 1.5;"><label>Assigned Theme</label><select disabled><option>Limit Reached</option></select></div>
+                            <button class="btn btn-primary">Add Pair</button>
+                        </div>
+                        <a href="javascript:void(0)" onclick="showUpgradeOptions()" class="upgrade-cta">
+                            {% if invitation.plan_name == "BASIC" %}
+                            🏰 Limit Koleksi NOBLE tercapai (Maks 3 Grup). Upgrade ke ROYAL untuk menambah lebih banyak!
+                            {% else if invitation.plan_name == "PRO" %}
+                            🏰 Limit Koleksi ROYAL tercapai (Maks 7 Grup). Upgrade ke DYNASTY untuk akses tak terbatas!
+                            {% else %}
+                            Limit tercapai.
+                            {% endif %}
+                        </a>
+                    </div>
+                    {% endif %}
                 </div>
-            </main>
+            </div>
+
+            <!-- Guest Management -->
+            <div id="guests" class="card glass mt-5">
+                <div class="section-header d-flex justify-content-between align-items-center mb-5">
+                    <div>
+                        <h3 class="serif">Guest Management</h3>
+                        <p class="text-muted small">Personalize links and overrides for each individual guest.</p>
+                    </div>
+                    <button class="btn btn-primary" onclick="toggleAddGuestModal()">+ Add Guest</button>
+                </div>
+
+                <!-- Table Controls -->
+                <div class="table-controls">
+                    <div class="search-wrapper">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="guestSearch" placeholder="Search by name or slug...">
+                    </div>
+                    <div class="filter-wrapper">
+                        <select id="groupFilter" class="select2-enable">
+                            <option value="all">All Groups</option>
+                            <option value="General">General</option>
+                            {% for group in groups %}
+                            <option value="{{ group.name }}">{{ group.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="guest-table" id="guestTable">
+                        <thead>
+                            <tr>
+                                <th>Guest Name</th>
+                                <th>Group</th>
+                                <th>Visual Theme</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guestTableBody">
+                            {% for guest in guests %}
+                            <tr class="guest-row" data-name="{{ guest.name|lower }}" data-slug="{{ guest.slug|lower }}"
+                                data-group="{{ guest.category.as_deref().unwrap_or(" General") }}">
+                                <td>
+                                    <div class="guest-name-cell">
+                                        <span class="font-bold">{{ guest.name }}</span>
+                                        <div class="guest-slug-hint">slug: {{ guest.slug }}</div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="group-badge">{{ guest.category.as_deref().unwrap_or("General")
+                                        }}</span>
+                                </td>
+                                <td>
+                                    <form
+                                        action="/invitation/{{ invitation.slug }}/guests/{{ guest.id }}/update-template"
+                                        method="POST">
+                                        <select name="template_override" onchange="this.form.submit()"
+                                            class="select2-enable">
+                                            <option value="">Inherit from Group</option>
+                                            {% for t in all_templates %}
+                                            <option value="{{ t.id }}" {% if
+                                                guest.template_override.as_deref()==Some(t.id.as_str()) %}selected{%
+                                                endif %}>{{ t.title }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </form>
+                                </td>
+                                <td>
+                                    <div class="guest-actions">
+                                        <button class="btn-icon"
+                                            onclick="copyGuestLink('{{ invitation.slug }}', '{{ guest.slug }}')"
+                                            title="Copy Link">
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2">
+                                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1">
+                                                </path>
+                                            </svg>
+                                        </button>
+                                        <form action="/invitation/{{ invitation.slug }}/guests/{{ guest.id }}/delete"
+                                            method="POST" style="display:inline;">
+                                            <button type="submit" class="btn-icon delete"
+                                                onclick="return confirm('Delete guest?')">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2">
+                                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                                    <path
+                                                        d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
+                                                    </path>
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination Footer -->
+                <div class="pagination-container">
+                    <div class="pagination-info">
+                        Showing <span id="startRange">0</span> to <span id="endRange">0</span> of <span
+                            id="totalItems">0</span> guests
+                    </div>
+                    <div class="pagination-buttons" id="paginationBtns">
+                        <!-- Dynamic buttons -->
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
-<style>
-.manage-dashboard {
-    padding: 120px 0 60px;
-    background: var(--color-bg-primary);
-}
+<!-- Modal -->
+<div id="add-guest-modal" class="modal-overlay">
+    <div class="modal-content glass">
+        <div class="modal-header mb-4">
+            <h3 class="serif">Add Guest</h3>
+            <button class="close-modal" onclick="toggleAddGuestModal()">&times;</button>
+        </div>
+        <form action="/invitation/{{ invitation.slug }}/guests" method="POST" class="modal-form">
+            <div class="form-group">
+                <label>Guest Name</label>
+                <input type="text" name="name" placeholder="e.g. Budi & Partner" required>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Group</label>
+                    <select name="category" class="select2-modal">
+                        <option value="">General</option>
+                        {% for group in groups %}
+                        <option value="{{ group.name }}">{{ group.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Initial Theme Override (Optional)</label>
+                <select name="template_override" class="select2-modal">
+                    <option value="">Inherit from Group</option>
+                    {% for t in all_templates %}
+                    <option value="{{ t.id }}">{{ t.title }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="toggleAddGuestModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary" style="padding: 0.8rem 2rem;">Create Guest Link</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
 
-.dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 3rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-}
+{% block scripts_extra %}
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.select2-enable').select2({ width: '100%' });
 
-.dashboard-grid {
-    display: grid;
-    grid-template-columns: 350px 1fr;
-    gap: 2rem;
-}
+        // Modal Select2 needs dropdownParent to work inside fixed overlay
+        $('.select2-modal').select2({
+            width: '100%',
+            dropdownParent: $('#add-guest-modal')
+        });
 
-@media (max-width: 992px) {
-    .dashboard-grid {
-        grid-template-columns: 1fr;
+        // Client-side Table Logic
+        const rowsPerPage = 10;
+        let currentPage = 1;
+        let filteredRows = [];
+
+        function updateTable() {
+            const searchTerm = $('#guestSearch').val().toLowerCase();
+            const groupFilter = $('#groupFilter').val();
+
+            const allRows = $('.guest-row').toArray();
+            filteredRows = allRows.filter(row => {
+                const name = $(row).data('name');
+                const slug = $(row).data('slug');
+                const group = $(row).data('group');
+
+                const matchesSearch = name.includes(searchTerm) || slug.includes(searchTerm);
+                const matchesGroup = groupFilter === 'all' || group === groupFilter;
+
+                return matchesSearch && matchesGroup;
+            });
+
+            const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+            if (currentPage > totalPages) currentPage = Math.max(1, totalPages);
+
+            // Hide all rows
+            $('.guest-row').hide();
+
+            // Show current page rows
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const pageRows = filteredRows.slice(start, end);
+            $(pageRows).show();
+
+            // Update info
+            $('#totalItems').text(filteredRows.length);
+            $('#startRange').text(filteredRows.length > 0 ? start + 1 : 0);
+            $('#endRange').text(Math.min(end, filteredRows.length));
+
+            // Update buttons
+            renderPagination(totalPages);
+        }
+
+        function renderPagination(totalPages) {
+            const container = $('#paginationBtns');
+            container.empty();
+
+            if (totalPages <= 1) return;
+
+            // Prev
+            container.append(`<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} onclick="changePage(${currentPage - 1})"><i class="fas fa-chevron-left"></i></button>`);
+
+            for (let i = 1; i <= totalPages; i++) {
+                if (i === 1 || i === totalPages || (i >= currentPage - 1 && i <= currentPage + 1)) {
+                    container.append(`<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="changePage(${i})">${i}</button>`);
+                } else if (i === currentPage - 2 || i === currentPage + 2) {
+                    container.append(`<span class="px-2">...</span>`);
+                }
+            }
+
+            // Next
+            container.append(`<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} onclick="changePage(${currentPage + 1})"><i class="fas fa-chevron-right"></i></button>`);
+        }
+
+        window.changePage = function (page) {
+            currentPage = page;
+            updateTable();
+        };
+
+        $('#guestSearch').on('input', function () { currentPage = 1; updateTable(); });
+        $('#groupFilter').on('change', function () { currentPage = 1; updateTable(); });
+
+        // Initial run
+        updateTable();
+    });
+    window.goToStep = function(n) {
+        $('.form-step').removeClass('active');
+        $(`#step-${n}`).addClass('active');
+        $('.step-item').removeClass('active');
+        $(`#step-${n}-indicator`).addClass('active');
+        
+        // Scroll to top of card smoothly
+        const card = document.querySelector('.card.glass');
+        if (card) {
+            card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
     }
-}
-
-.dashboard-sidebar .card {
-    position: sticky;
-    top: 100px;
-}
-
-.theme-selector-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    max-height: 600px;
-    overflow-y: auto;
-    padding-right: 10px;
-}
-
-.theme-option {
-    cursor: pointer;
-    border-radius: 12px;
-    overflow: hidden;
-    border: 2px solid transparent;
-    transition: all 0.3s ease;
-}
-
-.theme-option:hover {
-    transform: translateY(-4px);
-}
-
-.theme-option.active {
-    border-color: var(--color-accent-red);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-
-.theme-preview {
-    position: relative;
-    aspect-ratio: 9/16;
-}
-
-.theme-preview img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.theme-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(0,0,0,0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.theme-option:hover .theme-overlay {
-    opacity: 1;
-}
-
-.btn-select {
-    background: white;
-    color: black;
-    padding: 6px 16px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 600;
-}
-
-.theme-info {
-    padding: 8px;
-    background: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.theme-title {
-    font-size: 0.75rem;
-    font-weight: 700;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.theme-badge {
-    font-size: 0.6rem;
-    text-transform: uppercase;
-    background: #f0f0f0;
-    padding: 2px 6px;
-    border-radius: 4px;
-}
-
-.form-section {
-    margin-bottom: 3rem;
-}
-
-.section-title {
-    font-size: 1.1rem;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--color-accent-rose);
-    display: inline-block;
-}
-
-.form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
-}
-
-@media (max-width: 576px) {
-    .form-row {
-        grid-template-columns: 1fr;
+    function toggleAddGuestModal() {
+        document.getElementById('add-guest-modal').classList.toggle('active');
     }
-}
+    function toggleAiAssistant() {
+        $('#aiAssistantModal').fadeToggle();
+    }
+    function copyGuestLink(slug, guest) {
+        const link = `${window.location.origin}/invitation/${slug}?to=${guest}`;
+        navigator.clipboard.writeText(link).then(() => alert('Copied!'));
+    }
+    window.onclick = function (e) {
+        if (e.target == document.getElementById('add-guest-modal')) toggleAddGuestModal();
+        if (e.target == document.getElementById('aiAssistantModal')) toggleAiAssistant();
+    }
 
-.form-group {
-    margin-bottom: 1.5rem;
-}
+    function showUpgradeOptions() {
+        const currentPlan = "{{ invitation.plan_name }}";
+        
+        let optionsHtml = '';
+        if (currentPlan === 'BASIC') {
+            optionsHtml = `
+                <div class="upgrade-grid-royal">
+                    <div class="upgrade-card-lux featured" onclick="processUpgrade('PRO')">
+                        <div class="lux-badge">Enhanced</div>
+                        <div class="lux-tier">ROYAL</div>
+                        <div class="lux-price">Rp 100k</div>
+                        <div class="lux-divider"></div>
+                        <ul class="lux-features">
+                            <li><i class="fas fa-crown"></i> <span><strong>7 Template</strong> Pairings</span></li>
+                            <li><i class="fas fa-users"></i> <span><strong>Unlimited</strong> Groups</span></li>
+                            <li><i class="fas fa-star"></i> <span>Premium Support</span></li>
+                        </ul>
+                        <button class="lux-btn">Claim Royal</button>
+                    </div>
+                    <div class="upgrade-card-lux ultimate" onclick="processUpgrade('ULTIMATE')">
+                        <div class="lux-badge">Prestige</div>
+                        <div class="lux-tier">DYNASTY</div>
+                        <div class="lux-price">Rp 300k</div>
+                        <div class="lux-divider"></div>
+                        <ul class="lux-features">
+                            <li><i class="fas fa-gem"></i> <span><strong>Unlimited</strong> Everything</span></li>
+                            <li><i class="fas fa-shield-alt"></i> <span>Exclusive Themes</span></li>
+                            <li><i class="fas fa-magic"></i> <span>Concierge Care</span></li>
+                        </ul>
+                        <button class="lux-btn dark">Claim Dynasty</button>
+                    </div>
+                </div>
+            `;
+        } else if (currentPlan === 'PRO') {
+            optionsHtml = `
+                <div class="upgrade-grid-royal single">
+                    <div class="upgrade-card-lux ultimate" onclick="processUpgrade('ULTIMATE')">
+                        <div class="lux-badge">Prestige</div>
+                        <div class="lux-tier">DYNASTY</div>
+                        <div class="lux-price">Rp 300k</div>
+                        <div class="lux-divider"></div>
+                        <ul class="lux-features">
+                            <li><i class="fas fa-gem"></i> <span><strong>Unlimited</strong> Everything</span></li>
+                            <li><i class="fas fa-shield-alt"></i> <span>Exclusive Themes</span></li>
+                            <li><i class="fas fa-magic"></i> <span>Concierge Care</span></li>
+                        </ul>
+                        <button class="lux-btn dark">Claim Dynasty</button>
+                    </div>
+                </div>
+            `;
+        }
 
-.form-group label {
-    display: block;
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: var(--color-text-muted);
-}
+        Swal.fire({
+            title: '<span class="serif" style="font-size: 2.2rem; color: #2A1E14;">Upgrade Koleksi Anda</span>',
+            html: `
+                <div class="lux-modal-container">
+                    <p class="text-muted mb-5" style="font-size: 1rem; font-style: italic;">Pilih level kemegahan baru untuk undangan Anda.</p>
+                    ${optionsHtml}
+                </div>
+                <style>
+                    .swal2-popup {
+                        border-radius: 40px !important;
+                        padding: 2rem !important;
+                        width: 900px !important;
+                        max-width: 95vw !important;
+                    }
+                    .lux-modal-container { text-align: center; }
+                    .upgrade-grid-royal {
+                        display: grid;
+                        grid-template-columns: 1fr 1fr;
+                        gap: 2rem;
+                        margin-top: 1rem;
+                    }
+                    .upgrade-grid-royal.single {
+                        grid-template-columns: 1fr;
+                        max-width: 450px;
+                        margin: 0 auto;
+                    }
+                    .upgrade-card-lux {
+                        background: #fff;
+                        border-radius: 30px;
+                        padding: 3rem 2rem;
+                        border: 1px solid rgba(0,0,0,0.06);
+                        cursor: pointer;
+                        transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        position: relative;
+                        box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+                    }
+                    .upgrade-card-lux:hover {
+                        transform: translateY(-15px);
+                        box-shadow: 0 30px 60px rgba(212, 48, 48, 0.1);
+                        border-color: var(--color-accent-red);
+                    }
+                    .upgrade-card-lux.featured {
+                        background: linear-gradient(145deg, #ffffff 0%, #fffafa 100%);
+                        border: 2px solid var(--color-accent-red);
+                    }
+                    .upgrade-card-lux.ultimate {
+                        background: #111;
+                        color: white;
+                        border: none;
+                    }
+                    .upgrade-card-lux.ultimate .lux-tier, .upgrade-card-lux.ultimate .lux-price {
+                        color: white;
+                    }
+                    .upgrade-card-lux.ultimate .lux-features {
+                        color: rgba(255,255,255,0.7);
+                    }
+                    .lux-badge {
+                        font-size: 0.65rem;
+                        font-weight: 900;
+                        text-transform: uppercase;
+                        letter-spacing: 3px;
+                        margin-bottom: 1.5rem;
+                        color: #888;
+                    }
+                    .featured .lux-badge { color: var(--color-accent-red); }
+                    .ultimate .lux-badge { color: #aaa; }
+                    
+                    .lux-tier {
+                        font-family: var(--font-serif);
+                        font-size: 1.8rem;
+                        font-weight: 800;
+                        margin-bottom: 0.5rem;
+                        color: #2A1E14;
+                    }
+                    .lux-price {
+                        font-size: 2.8rem;
+                        font-weight: 900;
+                        margin-bottom: 1.5rem;
+                        color: var(--color-text-primary);
+                    }
+                    .ultimate .lux-price {
+                        background: linear-gradient(135deg, #fff 0%, #aaa 100%);
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                    }
+                    .featured .lux-price {
+                        background: linear-gradient(135deg, var(--color-accent-red), #ff758c);
+                        -webkit-background-clip: text;
+                        -webkit-text-fill-color: transparent;
+                    }
+                    .lux-divider {
+                        width: 50px;
+                        height: 2px;
+                        background: #eee;
+                        margin-bottom: 2rem;
+                    }
+                    .ultimate .lux-divider { background: rgba(255,255,255,0.1); }
+                    
+                    .lux-features {
+                        list-style: none;
+                        padding: 0;
+                        margin-bottom: 2.5rem;
+                        text-align: left;
+                        width: 100%;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 15px;
+                        font-size: 0.95rem;
+                    }
+                    .lux-features li {
+                        display: flex;
+                        align-items: center;
+                        gap: 12px;
+                    }
+                    .lux-features i { font-size: 1rem; color: #2ecc71; width: 20px; text-align: center; }
+                    .featured .lux-features i { color: var(--color-accent-red); }
+                    .ultimate .lux-features i { color: #9b59b6; }
+                    
+                    .lux-btn {
+                        width: 100%;
+                        padding: 1.2rem;
+                        border-radius: 50px;
+                        border: none;
+                        background: #222;
+                        color: white;
+                        font-weight: 800;
+                        text-transform: uppercase;
+                        letter-spacing: 2px;
+                        font-size: 0.85rem;
+                        cursor: pointer;
+                        transition: all 0.3s;
+                        margin-top: auto;
+                    }
+                    .lux-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+                    .featured .lux-btn { background: var(--color-accent-red); box-shadow: 0 10px 20px rgba(212,48,48,0.2); }
+                    .ultimate .lux-btn { background: linear-gradient(135deg, #8e44ad, #9b59b6); box-shadow: 0 10px 20px rgba(142,68,173,0.3); }
 
-.form-group input {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    border-radius: 12px;
-    border: 1px solid rgba(0,0,0,0.1);
-    background: rgba(255,255,255,0.8);
-    font-family: inherit;
-    transition: all 0.3s ease;
-}
+                    @media (max-width: 768px) {
+                        .upgrade-grid-royal {
+                            grid-template-columns: 1fr;
+                        }
+                        .swal2-popup {
+                            padding: 1rem !important;
+                            border-radius: 30px !important;
+                        }
+                        .lux-tier { font-size: 1.5rem; }
+                        .lux-price { font-size: 2.2rem; }
+                    }
+                </style>
+            `,
+            showConfirmButton: false,
+            showCloseButton: true,
+            background: '#fff'
+        });
+    }
 
-.form-group input:focus {
-    outline: none;
-    border-color: var(--color-accent-rose);
-    box-shadow: 0 0 0 4px rgba(255, 127, 127, 0.1);
-}
+    function processUpgrade(plan) {
+        Swal.fire({
+            title: '<span class="serif">Memproses Upgrade...</span>',
+            text: `Anda akan dialihkan ke halaman pembayaran untuk paket ${plan}.`,
+            icon: 'info',
+            timer: 2000,
+            showConfirmButton: false,
+            background: '#fff',
+            borderRadius: '30px'
+        }).then(() => {
+            Swal.fire({
+                title: '<span class="serif">Coming Soon</span>',
+                text: 'Fitur pembayaran akan segera hadir! Hubungi admin untuk upgrade manual.',
+                icon: 'success',
+                background: '#fff',
+                borderRadius: '30px',
+                confirmButtonColor: '#8E6E53'
+            });
+        });
+    }
+</script>
 
-.form-actions {
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid rgba(0,0,0,0.05);
-}
-
-.btn-primary {
-    background: var(--color-accent-red);
-    color: white;
-    border: none;
-    padding: 1rem 3rem;
-    border-radius: 100px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 10px 20px rgba(255, 71, 87, 0.2);
-}
-
-.btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 30px rgba(255, 71, 87, 0.3);
-}
-
-.glass {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.05);
-    border-radius: 40px;
-    padding: 3rem;
-}
-</style>
+<!-- AI ASSISTANT MODAL MIRROR -->
+<div class="ai-chat-modal" id="aiAssistantModal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 10000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(8px);">
+    <div class="ai-chat-content" style="background: white; width: 100%; max-width: 500px; height: 80vh; border-radius: 35px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 40px 120px rgba(0,0,0,0.3); margin: auto;">
+        <!-- Header -->
+        <div class="ai-chat-header" style="background: linear-gradient(135deg, #2A1E14 0%, #4A3728 100%); padding: 1.5rem 2rem; display: flex; align-items: center; justify-content: space-between; color: white;">
+            <div style="display:flex; align-items:center; gap:12px">
+                <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px;">🤖</div>
+                <div>
+                    <div style="font-weight:800; font-size:0.9rem; letter-spacing:0.5px;">Castellant AI</div>
+                    <div style="font-size: 0.7rem; opacity: 0.7;">Online Assistant</div>
+                </div>
+            </div>
+            <button onclick="toggleAiAssistant()" style="background:transparent; border:none; color:white; font-size: 1.5rem; cursor:pointer;">&times;</button>
+        </div>
+        <!-- Body -->
+        <div id="aiChatBody" style="background: #fafafa; padding: 2rem; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem;">
+            <div style="display: flex; gap: 12px; align-self: flex-start; max-width: 85%;">
+                <div style="width: 32px; height: 32px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">🤖</div>
+                <div style="background: white; padding: 1rem; border-radius: 20px; font-size: 0.9rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
+                    Halo! Saya asisten AI Castellant. Mau bantu apa hari ini? Saya bisa bantu update detail undangan Anda atau merapikan kutipan pernikahan. ✨
+                </div>
+            </div>
+        </div>
+        <!-- Footer -->
+        <div style="padding: 1.5rem; background: white; border-top: 1px solid #f0f0f0;">
+            <div style="display: flex; gap: 10px;">
+                <textarea id="aiAssistantInput" placeholder="Ketik pesan..." style="flex: 1; height:45px; border: 1.5px solid #eee; border-radius: 20px; padding: 0.7rem 1.2rem; font-size: 0.9rem; resize: none; outline: none;"></textarea>
+                <button class="btn btn-primary" style="border-radius: 50%; width: 45px; height: 45px; padding: 0; display: flex; align-items: center; justify-content: center;">🚀</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

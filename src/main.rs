@@ -120,6 +120,11 @@ async fn main() {
         .route("/api/ai/session/{id}", get(handlers::get_ai_session))
         .route("/invitation/{slug}/manage", get(handlers::manage_invitation).post(handlers::update_invitation))
         .route("/invitation/{slug}/update-theme", post(handlers::update_theme))
+        .route("/invitation/{slug}/guests", post(handlers::add_guest))
+        .route("/invitation/{slug}/guests/{guest_id}/delete", post(handlers::delete_guest))
+        .route("/invitation/{slug}/guests/{guest_id}/update-template", post(handlers::update_guest_template))
+        .route("/invitation/{slug}/groups", post(handlers::add_group))
+        .route("/invitation/{slug}/groups/{group_id}/delete", post(handlers::delete_group))
         .route("/sitemap.xml", get(handlers::sitemap))
         .route("/robots.txt", get(|| async { 
             tokio::fs::read_to_string("static/robots.txt").await.unwrap_or_else(|_| "".to_string()) 
