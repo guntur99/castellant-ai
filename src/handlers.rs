@@ -387,7 +387,7 @@ pub async fn create_invitation(
         amount,
         description: format!("Digital Invitation - {} Plan ({})", plan_name.to_uppercase(), fields.get("couple_name_short").unwrap()),
         mobile: "08123456789".to_string(), // Fallback mobile
-        redirect_url: format!("{}/invitation/{}/manage", std::env::var("APP_BASE_URL").unwrap_or_else(|_| "http://localhost:3000".to_string()), slug),
+        redirect_url: format!("{}/invitation/{}/manage", std::env::var("REDIRECT_APP_BASE_URL").unwrap_or_else(|_| "http://localhost:3000".to_string()), slug),
         items,
         extra_data,
     };
@@ -3107,7 +3107,7 @@ pub async fn create_upgrade_payment(
         amount: final_amount,
         description: format!("Upgrade to {} Plan - {}", payload.target_plan, invitation.couple_name_short),
         mobile: "08123456789".to_string(),
-        redirect_url: format!("{}/invitation/{}/manage", std::env::var("APP_BASE_URL").unwrap_or_else(|_| "http://localhost:3000".to_string()), slug),
+        redirect_url: format!("{}/invitation/{}/manage", std::env::var("REDIRECT_APP_BASE_URL").unwrap_or_else(|_| "http://localhost:3000".to_string()), slug),
         items,
         extra_data,
     };
