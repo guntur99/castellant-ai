@@ -3206,14 +3206,20 @@ pub async fn mayar_webhook(
                 let plan = ed.get("target_plan").and_then(|p| p.as_str());
 
                 if let (Some(slug), Some(plan)) = (slug, plan) {
-                    sqlx::query("UPDATE invitations SET plan_name = $1, payment_link = NULL, payment_invoice_id = NULL WHERE slug = $2")
+                    // Update Invitation Plan and Status
+                    let _ = sqlx::query("UPDATE invitations SET plan_name = $1, payment_status = 'SUCCESS' WHERE slug = $2")
                         .bind(plan)
                         .bind(slug)
                         .execute(&state.db)
-                        .await
-                        .ok();
+                        .await;
                     
                     tracing::info!("Payment success for {}: Plan upgraded to {}", slug, plan);
+
+                    // Also try to update booking status using slug as fallback if ID fails later
+                    let _ = sqlx::query("UPDATE bookings SET status = 'SUCCESS', updated_at = NOW() WHERE invitation_id = (SELECT id FROM invitations WHERE slug = $1)")
+                        .bind(slug)
+                        .execute(&state.db)
+                        .await;
 
                     // Send Email Notification
                     let user_info = sqlx::query!(
@@ -3261,16 +3267,18 @@ pub async fn mayar_webhook(
         };
         
         if status != "PENDING" {
-            let result = sqlx::query("UPDATE bookings SET status = $1, updated_at = NOW() WHERE invoice_id = $2")
+            // Match by invoice_id OR try to find by payment_link if it contains the ID
+            let result = sqlx::query("UPDATE bookings SET status = $1, updated_at = NOW() WHERE invoice_id = $2 OR payment_link LIKE $3")
                 .bind(status)
                 .bind(id)
+                .bind(format!("%{}%", id))
                 .execute(&state.db)
                 .await;
             
             match result {
                 Ok(res) => {
                     if res.rows_affected() == 0 {
-                        tracing::warn!("Webhook received for invoice_id {} but no matching booking found to update", id);
+                        tracing::warn!("Webhook received for invoice_id {} but no matching booking found to update via ID", id);
                         
                         // Failsafe: Create a late-booking record if it's missing
                         if status == "SUCCESS" {
