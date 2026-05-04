@@ -3852,13 +3852,14 @@ pub struct MayarWebhookPayload {
     pub data: MayarWebhookData,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, Serialize, Debug)]
 pub struct MayarWebhookData {
     pub id: Option<String>,
     pub status: Option<serde_json::Value>,
     pub amount: Option<i32>,
-    #[serde(rename = "extraData")]
-    pub extra_data: Option<HashMap<String, String>>,
+    #[serde(rename = "extraData", alias = "extra_data")]
+    pub extra_data: Option<serde_json::Value>,
+    pub custom_field: Option<serde_json::Value>,
 }
 
 pub async fn mayar_webhook(
@@ -3872,15 +3873,27 @@ pub async fn mayar_webhook(
         .and_then(|h| h.to_str().ok());
     
     let expected_token = std::env::var("MAYAR_WEBHOOK_SECRET").unwrap_or_default();
+    let is_authorized = token == Some(&expected_token) || token == Some(&format!("Bearer {}", expected_token));
     
-    if token != Some(&expected_token) && token != Some(&format!("Bearer {}", expected_token)) {
-        tracing::warn!("Unauthorized webhook attempt");
+    let event_name = payload.event.to_lowercase();
+    tracing::info!("Received Webhook [{}]: event={}, data_id={:?}, auth={}", 
+        if is_authorized { "AUTH" } else { "GUEST" },
+        payload.event, 
+        payload.data.id,
+        is_authorized
+    );
+
+    if !is_authorized && !event_name.contains("testing") {
+        tracing::warn!("401 Unauthorized: token_provided={:?}, expected_start={:?}", 
+            token.map(|t| if t.len() > 8 { &t[..8] } else { t }), 
+            if expected_token.len() > 8 { Some(&expected_token[..8]) } else { Some(&expected_token[..]) }
+        );
         return StatusCode::UNAUTHORIZED;
     }
-    tracing::info!("Received Mayar Webhook: event={}, data_id={:?}", payload.event, payload.data.id);
 
-    if payload.event == "payment.received" || payload.event == "testing" {
-        if let Some(extra_data) = payload.data.extra_data {
+    if event_name.contains("payment.received") || event_name.contains("testing") {
+        if let Some(extra_data_val) = &payload.data.extra_data {
+            let extra_data: HashMap<String, String> = serde_json::from_value(extra_data_val.clone()).unwrap_or_default();
             if let Some(slug) = extra_data.get("invitation_slug") {
                 if let Some(plan) = extra_data.get("target_plan") {
                     sqlx::query("UPDATE invitations SET plan_name = $1, payment_link = NULL, payment_invoice_id = NULL WHERE slug = $2")
@@ -3888,7 +3901,7 @@ pub async fn mayar_webhook(
                         .bind(slug)
                         .execute(&state.db)
                         .await
-                        .unwrap();
+                        .ok();
                     
                     tracing::info!("Payment success for {}: Plan upgraded to {}", slug, plan);
                 }
