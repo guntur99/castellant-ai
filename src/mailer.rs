@@ -1,0 +1,44 @@
+use lettre::transport::smtp::authentication::Credentials;
+use lettre::{Message, AsyncSmtpTransport, AsyncTransport, Tokio1Executor};
+use askama::Template;
+use std::env;
+
+#[derive(Template)]
+#[template(path = "email/payment_success.html")]
+pub struct PaymentSuccessEmail {
+    pub name: String,
+    pub plan_name: String,
+    pub slug: String,
+    pub amount: i32,
+}
+
+pub async fn send_payment_success_email(to_email: &str, template: PaymentSuccessEmail) -> Result<(), String> {
+    let smtp_host = env::var("MAIL_HOST").unwrap_or_else(|_| "localhost".to_string());
+    let smtp_port = env::var("MAIL_PORT").unwrap_or_else(|_| "2525".to_string()).parse::<u16>().unwrap_or(2525);
+    let smtp_user = env::var("MAIL_USERNAME").unwrap_or_default();
+    let smtp_pass = env::var("MAIL_PASSWORD").unwrap_or_default();
+    let from_email = env::var("MAIL_FROM_ADDRESS").unwrap_or_else(|_| "team@castellant.biz.id".to_string());
+    let from_name = env::var("MAIL_FROM_NAME").unwrap_or_else(|_| "Castellant Team".to_string());
+
+    let email_body = template.render().map_err(|e| format!("Failed to render email: {}", e))?;
+
+    let email = Message::builder()
+        .from(format!("{} <{}>", from_name, from_email).parse().unwrap())
+        .to(to_email.parse().unwrap())
+        .subject("Payment Confirmed! Your Invitation is Ready ✨")
+        .header(lettre::message::header::ContentType::TEXT_HTML)
+        .body(email_body)
+        .map_err(|e| format!("Failed to build email: {}", e))?;
+
+    let creds = Credentials::new(smtp_user, smtp_pass);
+
+    let mailer: AsyncSmtpTransport<Tokio1Executor> = AsyncSmtpTransport::<Tokio1Executor>::relay(&smtp_host)
+        .map_err(|e| format!("Failed to create mailer: {}", e))?
+        .port(smtp_port)
+        .credentials(creds)
+        .build();
+
+    mailer.send(email).await.map_err(|e| format!("Failed to send email: {}", e))?;
+
+    Ok(())
+}

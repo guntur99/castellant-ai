@@ -8,6 +8,7 @@ use axum::{
 use askama::Template;
 use crate::models::{Invitation, Person, EventDetails, Quote, GiftAccount, RsvpForm, InvitationRow, Song, User, AiSession, Guest, GuestGroup, Booking, Voucher};
 use crate::AppState;
+use crate::mailer::{self, PaymentSuccessEmail};
 use serde_json::{from_value, json};
 use sqlx::Row;
 use oauth2::{AuthorizationCode, TokenResponse, CsrfToken, Scope};
@@ -421,9 +422,9 @@ pub async fn create_invitation(
     .bind(ceremony_data)
     .bind(reception_data)
     .bind(quote_data)
-    .bind(plan_name)
-    .bind(&payment_link)
-    .bind(invoice_id)
+    .bind(plan_name.clone())
+    .bind(payment_link.clone())
+    .bind(invoice_id.clone())
     .fetch_one(&state.db)
     .await
     .unwrap();
@@ -440,6 +441,25 @@ pub async fn create_invitation(
         .execute(&state.db)
         .await
         .unwrap();
+    }
+
+    // Insert into Bookings Table for tracking
+    if let Some(inv_id) = invoice_id {
+        if let Err(e) = sqlx::query(
+            "INSERT INTO bookings (user_id, invitation_id, target_plan, amount, invoice_id, payment_link, status) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7)"
+        )
+        .bind(user_id)
+        .bind(invitation_id)
+        .bind(&plan_name)
+        .bind(amount)
+        .bind(inv_id)
+        .bind(&payment_link)
+        .bind("PENDING")
+        .execute(&state.db)
+        .await {
+            eprintln!("Failed to create booking record: {}", e);
+        }
     }
 
     if let Some(link) = payment_link {
@@ -3151,6 +3171,36 @@ pub async fn mayar_webhook(
                         .ok();
                     
                     tracing::info!("Payment success for {}: Plan upgraded to {}", slug, plan);
+
+                    // Send Email Notification
+                    let user_info = sqlx::query!(
+                        "SELECT u.email, u.name as user_name, i.couple_name_short 
+                         FROM invitations i 
+                         JOIN users u ON i.user_id = u.id 
+                         WHERE i.slug = $1",
+                        slug
+                    )
+                    .fetch_optional(&state.db)
+                    .await
+                    .ok()
+                    .flatten();
+
+                    if let Some(info) = user_info {
+                        let amount = payload.data.amount.unwrap_or(0);
+                        let email_template = PaymentSuccessEmail {
+                            name: info.user_name.unwrap_or_else(|| "Customer".to_string()),
+                            plan_name: plan.to_uppercase(),
+                            slug: slug.clone(),
+                            amount,
+                        };
+
+                        let to_email = info.email.clone();
+                        tokio::spawn(async move {
+                            if let Err(e) = mailer::send_payment_success_email(&to_email, email_template).await {
+                                eprintln!("Failed to send payment success email: {}", e);
+                            }
+                        });
+                    }
                 }
             }
         }
@@ -3165,12 +3215,41 @@ pub async fn mayar_webhook(
         };
         
         if status != "PENDING" {
-            sqlx::query("UPDATE bookings SET status = $1 WHERE invoice_id = $2")
+            let result = sqlx::query("UPDATE bookings SET status = $1, updated_at = NOW() WHERE invoice_id = $2")
                 .bind(status)
                 .bind(invoice_id)
                 .execute(&state.db)
-                .await
-                .ok();
+                .await;
+            
+            match result {
+                Ok(res) => {
+                    if res.rows_affected() == 0 {
+                        tracing::warn!("Webhook received for invoice_id {} but no matching booking found to update", invoice_id);
+                        
+                        // Optional: Create a late-booking record if it's missing (failsafe)
+                        if status == "SUCCESS" {
+                             if let Some(extra_data_val) = &payload.data.extra_data {
+                                let extra_data: HashMap<String, String> = serde_json::from_value(extra_data_val.clone()).unwrap_or_default();
+                                if let (Some(slug), Some(plan)) = (extra_data.get("invitation_slug"), extra_data.get("target_plan")) {
+                                    sqlx::query("INSERT INTO bookings (invitation_id, target_plan, amount, invoice_id, status, created_at, updated_at) 
+                                                 SELECT id, $1, $2, $3, $4, NOW(), NOW() FROM invitations WHERE slug = $5")
+                                        .bind(plan)
+                                        .bind(payload.data.amount.unwrap_or(0))
+                                        .bind(invoice_id)
+                                        .bind(status)
+                                        .bind(slug)
+                                        .execute(&state.db)
+                                        .await
+                                        .ok();
+                                }
+                             }
+                        }
+                    } else {
+                        tracing::info!("Successfully updated booking status to {} for invoice_id {}", status, invoice_id);
+                    }
+                },
+                Err(e) => tracing::error!("Database error updating booking status: {}", e),
+            }
         }
     }
 

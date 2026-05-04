@@ -1,5 +1,6 @@
 mod handlers;
 mod models;
+mod mailer;
 
 use axum::{
     routing::{get, post},
