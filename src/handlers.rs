@@ -45,7 +45,7 @@ struct MayarData {
 #[template(path = "invitation/create.html")]
 pub struct CreateInvitationTemplate {
     pub user: Option<User>,
-    #[allow(dead_code)]
+    pub all_templates: Vec<TemplateMetadata>,
     pub is_dev: bool,
 }
 
@@ -88,15 +88,17 @@ pub struct AiGenerateResponse {
     pub session_id: Option<Uuid>,
 }
 
-#[derive(Serialize, Clone)]
+#[derive(Serialize, Clone, sqlx::FromRow, Debug)]
 pub struct TemplateMetadata {
     pub id: String,
+    pub slug: String,
     pub title: String,
+    #[sqlx(rename = "description")]
     pub desc: String,
     pub category: String,
-    pub price: i32,
     pub preview_img: String,
-    pub plan: String,
+    pub status: String,
+    pub is_featured: bool,
 }
 
 #[derive(Template)]
@@ -111,846 +113,16 @@ pub struct TemplatesListTemplate {
     pub is_dev: bool,
 }
 
-pub fn get_all_templates() -> Vec<TemplateMetadata> {
-    vec![
-        TemplateMetadata {
-            id: "trendvibe".to_string(),
-            title: "Toktik".to_string(),
-            desc: "POV: Wedding kamu masuk fyp. Desain vertikal yang dinamis buat kamu yang selalu up-to-date sama tren kekinian.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/trendvibe_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "loveanthem".to_string(),
-            title: "Spitapy".to_string(),
-            desc: "Spotify-inspired interface buat nge-track perjalanan cinta kalian. Definisi 'Our Song' yang dijadiin undangan digital premium.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/loveanthem_preview.png".to_string(),
-            category: "entertainment".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "cinemarry".to_string(),
-            title: "Nitflax".to_string(),
-            desc: "Kisah cinta kalian adalah Netflix Original Series terbaik tahun ini. Visual sinematik yang bikin tamu gak sabar buat klik play.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/cinemarry_preview.png".to_string(),
-            category: "entertainment".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "shopee-live-wedding".to_string(),
-            title: "Shoopi".to_string(),
-            desc: "Lagi live nih! Undangan interaktif ala Shopee Live buat kamu yang mau tampil beda, ceria, dan penuh energi flash sale kebahagiaan.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/shopee-live-wedding_preview.png".to_string(),
-            category: "e-commerce".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "tiktok-live-wedding".to_string(),
-            title: "Toktik Live".to_string(),
-            desc: "Sensasi viral TikTok Live di hari pernikahanmu. Tamu bisa tap-tap layar dan kasih gift cinta secara digital di undanganmu.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/tiktok-live-wedding_preview.png".to_string(),
-            category: "entertainment".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-uber".to_string(),
-            title: "Ubar".to_string(),
-            desc: "Perjalanan cinta yang clean dan efisien ala Uber interface. Minimalis, modern, dan pastinya gak bakal bikin tamu nyasar.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-uber_preview.png".to_string(),
-            category: "on-demand".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-disney".to_string(),
-            title: "Disni".to_string(),
-            desc: "Main character energy! Wujudkan dongeng impian kamu dengan sentuhan magis yang bikin momen pernikahan kerasa kaya di kerajaan.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-disney_preview.png".to_string(),
-            category: "entertainment".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-facebook".to_string(),
-            title: "Pesbuk".to_string(),
-            desc: "Bernostalgia dengan interface sosial media yang personal. Bagikan status 'Married' kamu dengan cara yang paling akrab.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-facebook_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-iphone-theme".to_string(),
-            title: "iPon".to_string(),
-            desc: "Luxury tech vibes. Antarmuka iOS yang clean dan premium buat kamu yang pengen undangan terlihat high-end dan eksklusif.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-iphone-theme_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-netflix-v2".to_string(),
-            title: "Nitflax 2.0".to_string(),
-            desc: "Version 2.0 dari seri sinematik kita. Lebih tajam, lebih deep, dan pastinya lebih bikin tamu ketagihan buat scroll sampai habis.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-netflix-v2_preview.png".to_string(),
-            category: "entertainment".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-prime".to_string(),
-            title: "Primi".to_string(),
-            desc: "Fast delivery of happiness! Estetika premium Amazon Prime yang menjanjikan pengalaman undangan yang sleek dan anti-ribet.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-prime_preview.png".to_string(),
-            category: "e-commerce".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-wrath-v2".to_string(),
-            title: "Wreth".to_string(),
-            desc: "God mode on! Desain dramatis dan megah buat kalian yang pengen momen pernikahannya kerasa kaya epic fantasy legend.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-wrath-v2_preview.png".to_string(),
-            category: "entertainment".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "cairide".to_string(),
-            title: "GoJack".to_string(),
-            desc: "Otw pelaminan! Antarmuka dinamis aplikasi transportasi yang bikin perjalanan cinta kalian kerasa seru dan penuh petualangan.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/cairide_preview.png".to_string(),
-            category: "on-demand".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "pinterlove".to_string(),
-            title: "Pinteres".to_string(),
-            desc: "Pinterest-perfect wedding. Tata letak masonry yang memukau buat kamu yang memuja estetika visual di setiap detailnya.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/pinterlove_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-applemusic".to_string(),
-            title: "Apel Musik".to_string(),
-            desc: "Love in stereo. Estetika Apple Music yang minimalis, fokus ke album art foto kalian dan lirik cerita cinta yang mengalir syahdu.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-applemusic_preview.png".to_string(),
-            category: "entertainment".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-capcut".to_string(),
-            title: "Kepket".to_string(),
-            desc: "Trust the process! Desain dinamis ala timeline video editor buat kamu yang ngeliat perjalanan cinta sebagai mahakarya kreatif.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-capcut_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "bereal-wedding".to_string(),
-            title: "BiRil".to_string(),
-            desc: "Real moments only. Undangan autentik bergaya BeReal dengan dual kamera, buat kamu yang suka tampil apa adanya dan jujur.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/bereal-wedding_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "instagram-live-wedding".to_string(),
-            title: "Instagrem".to_string(),
-            desc: "Rayakan momen spesialmu ala Instagram Live. Interaktif, kekinian, dan bikin tamu merasa benar-benar hadir di sana.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/instagram-live-wedding_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "qris-wedding".to_string(),
-            title: "Kris Love".to_string(),
-            desc: "Scan untuk kebahagiaan! Undangan unik dengan tema sistem pembayaran digital yang pastinya bikin tamu senyum-senyum sendiri.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/qris-wedding_preview.png".to_string(),
-            category: "e-commerce".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-grab".to_string(),
-            title: "Greb".to_string(),
-            desc: "Otw pelaminan dengan gaya! Antarmuka Grab yang familiar untuk memudahkan tamu menemukan lokasi dan detail pernikahanmu.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-grab_preview.png".to_string(),
-            category: "on-demand".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "figma-wedding".to_string(),
-            title: "Pegma".to_string(),
-            desc: "Dibuat dengan presisi pixel-perfect. Untuk pasangan desainer atau tech-enthusiast yang menghargai setiap detail elemen desain.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/figma-wedding_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-manga".to_string(),
-            title: "Mengu".to_string(),
-            desc: "Komik strip cinta kalian dimulai di sini! Estetika panel manga hitam putih yang dramatis dan penuh ekspresi cinta.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-manga_preview.png".to_string(),
-            category: "comic".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-nintendo-switch".to_string(),
-            title: "Switch Love".to_string(),
-            desc: "Level up your wedding! Antarmuka konsol favorit sejuta umat yang interaktif, ceria, dan penuh warna kegembiraan.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-nintendo-switch_preview.png".to_string(),
-            category: "game".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-kai-v2".to_string(),
-            title: "KAI Access 2.0".to_string(),
-            desc: "Tiket menuju masa depan bersama! Versi upgrade dari tema kereta api yang lebih modern, detail, dan pastinya on-time.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-kai-v2_preview.png".to_string(),
-            category: "on-demand".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-minecraft".to_string(),
-            title: "Maincreft".to_string(),
-            desc: "Membangun rumah tangga blok demi blok. Estetika pixel art yang ikonik buat pasangan gamer yang kreatif dan adventurous.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-minecraft_preview.png".to_string(),
-            category: "game".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-zoom-v2".to_string(),
-            title: "Zoomy 2.0".to_string(),
-            desc: "You're not on mute! Versi terbaru tema video call yang lebih interaktif, bikin semua tamu merasa di satu meeting yang sama.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-zoom-v2_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-vscode".to_string(),
-            title: "Code Love".to_string(),
-            desc: "Commit to a lifetime of happiness! Antarmuka VS Code yang ikonik buat pasangan developer yang pengen undangannya terlihat geeky namun tetap premium.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-vscode_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-discord".to_string(),
-            title: "Diskort".to_string(),
-            desc: "Join the server! Undangan bertema Discord untuk komunitas gamer atau tech-enthusiast yang ingin merayakan cinta dalam mode 'Online'.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-discord_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-webtoon".to_string(),
-            title: "Wibton".to_string(),
-            desc: "Baca kisah cinta kalian episode demi episode. Format vertikal ala komik digital yang unik dan menarik untuk diikuti.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-webtoon_preview.png".to_string(),
-            category: "comic".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-whatsapp-theme".to_string(),
-            title: "Watsap".to_string(),
-            desc: "Dari chat jadi akad. Interface WhatsApp yang sangat akrab untuk membagikan kabar bahagia kalian secara personal.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-whatsapp-theme_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-mixue".to_string(),
-            title: "Miksu".to_string(),
-            desc: "Manisnya cinta ala Mixue! Undangan ceria dengan maskot Snowman yang bikin suasana pernikahan jadi makin 'fresh' dan 'sweet'.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-mixue_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-playstation".to_string(),
-            title: "Plesetesi".to_string(),
-            desc: "Achievement Unlocked: Married! Tema PlayStation untuk pasangan gamers yang siap memulai petualangan baru di level kehidupan selanjutnya.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-playstation_preview.png".to_string(),
-            category: "game".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-threads-app".to_string(),
-            title: "Treds".to_string(),
-            desc: "Utas cinta yang tak terputus. Desain minimalis ala Threads untuk kamu yang ingin membagikan momen sakral dalam format teks yang intim.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-threads-app_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-alfamart".to_string(),
-            title: "Alpamart".to_string(),
-            desc: "Belanja kebahagiaan di sini! Undangan unik bertema aplikasi minimarket favorit Indonesia, lengkap dengan poin cinta tanpa batas.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-alfamart_preview.png".to_string(),
-            category: "e-commerce".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-kai".to_string(),
-            title: "KAI Akss".to_string(),
-            desc: "Tiket menuju kebahagiaan. Antarmuka KAI Access yang familiar untuk mengantar tamu ke stasiun pelaminan kalian tepat waktu.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-kai_preview.png".to_string(),
-            category: "on-demand".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-medium".to_string(),
-            title: "Medyum".to_string(),
-            desc: "Tuliskan narasi cinta kalian dalam format artikel Medium yang elegan. Untuk pasangan yang punya banyak cerita indah untuk dibagikan.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-medium_preview.png".to_string(),
-            category: "entertainment".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-transjakarta".to_string(),
-            title: "TransJak".to_string(),
-            desc: "Pemberhentian terakhir: Pelaminan! Tema TransJakarta yang ikonik untuk memandu tamu menyusuri rute kebahagiaan kalian.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-transjakarta_preview.png".to_string(),
-            category: "on-demand".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "gmail-wedding".to_string(),
-            title: "G-Match".to_string(),
-            desc: "You've got mail! Surat cinta paling penting dalam hidupmu, dikemas dalam estetika inbox yang clean dan produktif.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/gmail-wedding_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-behance".to_string(),
-            title: "BeLoved".to_string(),
-            desc: "Showcase mahakarya cinta kalian. Desain portfolio yang artistik buat pasangan yang menghargai proses kreatif.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-behance_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-chatime".to_string(),
-            title: "TeaDate".to_string(),
-            desc: "Segarnya momen pernikahan! Tema minuman kekinian yang ceria dan penuh warna, bikin tamu merasa 'fresh' sejak pertama melihat.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-chatime_preview.png".to_string(),
-            category: "entertainment".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-dribbble".to_string(),
-            title: "Driblove".to_string(),
-            desc: "Shot on Love! Estetika komunitas desainer global yang fokus pada visual memukau and detail yang presisi.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-dribbble_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-hm".to_string(),
-            title: "H&W".to_string(),
-            desc: "Husband & Wife! Gaya minimalis brand fashion ternama yang bikin undanganmu terlihat chic dan selalu on-trend.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-hm_preview.png".to_string(),
-            category: "e-commerce".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-janjijiwa".to_string(),
-            title: "JanjiSuci".to_string(),
-            desc: "Dari kopi turun ke hati. Tema kedai kopi lokal yang hangat dan familiar, cocok buat pasangan yang dipertemukan oleh hobi nongkrong.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-janjijiwa_preview.png".to_string(),
-            category: "entertainment".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-kopikenangan".to_string(),
-            title: "KopiMasaDepan".to_string(),
-            desc: "Melupakan kenangan lama, membangun masa depan baru. Tema kopi yang ikonik untuk merayakan komitmen seumur hidup.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-kopikenangan_preview.png".to_string(),
-            category: "entertainment".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-powerpoint".to_string(),
-            title: "PowerLove".to_string(),
-            desc: "Next slide: Akad! Presentasikan kisah cinta kalian dengan cara yang paling terstruktur, informatif, dan menghibur.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-powerpoint_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-talenta".to_string(),
-            title: "Talove".to_string(),
-            desc: "Manajemen hati yang efisien. Tema aplikasi HR yang unik untuk mencatat kehadiran tamu di hari paling bersejarah kalian.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-talenta_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-animal-crossing".to_string(),
-            title: "LoveCrossing".to_string(),
-            desc: "Welcome to our island of love! Estetika cozy dan menggemaskan buat kalian yang pengen undangan yang relax dan penuh keceriaan.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-animal-crossing_preview.png".to_string(),
-            category: "game".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-claude".to_string(),
-            title: "Cloud9".to_string(),
-            desc: "Cinta yang cerdas dan intuitif. Estetika AI assistant yang modern dan canggih buat pasangan tech-savvy.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-claude_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-cod".to_string(),
-            title: "CallOfLove".to_string(),
-            desc: "Mission: Marriage! Tema game action yang intens dan penuh semangat buat pasangan gamer yang siap tempur di medan rumah tangga.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-cod_preview.png".to_string(),
-            category: "game".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-danamon".to_string(),
-            title: "Danalove".to_string(),
-            desc: "Investasi cinta jangka panjang. Tema perbankan yang solid dan terpercaya untuk mengumumkan kemitraan hidup kalian.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-danamon_preview.png".to_string(),
-            category: "entertainment".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-excel-theme".to_string(),
-            title: "LoveSheet".to_string(),
-            desc: "Data cinta yang akurat! Rumus kebahagiaan kalian sudah terhitung di sini, lengkap dengan grafik perjalanan yang terus naik.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-excel-theme_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-freefire".to_string(),
-            title: "FreeLove".to_string(),
-            desc: "Booyah Pelaminan! Rayakan kemenangan cinta kalian dengan semangat survivor yang pantang menyerah sampai garis akhir.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-freefire_preview.png".to_string(),
-            category: "game".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-github".to_string(),
-            title: "CommitLove".to_string(),
-            desc: "Initial commit: Wedding! Bagikan repositori kebahagiaan kalian dalam format kolaboratif yang paling geeky dan keren.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-github_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-jenius-v2".to_string(),
-            title: "GenieLove".to_string(),
-            desc: "Cara lebih cerdas buat nikah! Antarmuka digital banking yang progresif dan dinamis buat pasangan yang visioner.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-jenius-v2_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-linux".to_string(),
-            title: "LoveNux".to_string(),
-            desc: "Open source love! Kebebasan untuk mencintai dan memodifikasi masa depan bersama dalam sistem yang stabil dan tangguh.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-linux_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-word-theme".to_string(),
-            title: "LoveWord".to_string(),
-            desc: "Draft cinta yang sempurna. Tuliskan kisah kalian dalam format dokumen yang rapi, profesional, dan penuh makna.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-word-theme_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "canva-elegant-wedding".to_string(),
-            title: "CanLove".to_string(),
-            desc: "Cinta yang didesain dengan mudah dan indah. Estetika alat desain populer yang bikin semua orang bisa jadi artist cinta.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/canva-elegant-wedding_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "elegant-wedding".to_string(),
-            title: "Majesty".to_string(),
-            desc: "Kemewahan kerajaan yang tak lekang oleh waktu. Desain megah and elegan untuk momen paling sakral dalam hidup Anda.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/majesty_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "mrt-wedding".to_string(),
-            title: "LoveRail".to_string(),
-            desc: "Laju cepat menuju pelaminan! Tema transportasi modern yang efisien dan tepat waktu untuk momen sakral kalian.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/mrt-wedding_preview.png".to_string(),
-            category: "on-demand".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-brimo".to_string(),
-            title: "BriLove".to_string(),
-            desc: "Setulus hati melayani cinta. Tema perbankan yang inklusif dan merakyat untuk merayakan kebersamaan kalian.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-brimo_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-duolingo".to_string(),
-            title: "DuoLove".to_string(),
-            desc: "Belajar bahasa cinta setiap hari! Jangan lewatkan 'streak' kebahagiaan kalian dengan tema pendidikan yang fun dan adiktif.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-duolingo_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-google-calendar".to_string(),
-            title: "G-Date".to_string(),
-            desc: "Block jadwalmu buat cinta! Sinkronisasi hati yang sempurna dalam format kalender yang rapi dan terorganisir.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-google-calendar_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-livin".to_string(),
-            title: "LivinLove".to_string(),
-            desc: "Hidupkan cinta setiap hari. Tema finansial modern yang dinamis untuk mendukung gaya hidup baru kalian berdua.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-livin_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-manhua".to_string(),
-            title: "LoveManhua".to_string(),
-            desc: "Kisah cinta ala komik Mandarin yang megah dan penuh intrik manis. Visual yang artistik dan bercerita.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-manhua_preview.png".to_string(),
-            category: "comic".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-manhwa".to_string(),
-            title: "LoveManhwa".to_string(),
-            desc: "Gaya webtoon Korea yang stylish dan romantis. Jadikan pernikahanmu episode paling dinantikan oleh semua pembaca.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-manhwa_preview.png".to_string(),
-            category: "comic".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-momoyo".to_string(),
-            title: "MoMoLove".to_string(),
-            desc: "Manis dan segar seperti es krim favorit. Tema ceria yang bikin siapa pun yang melihat merasa bahagia seketika.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-momoyo_preview.png".to_string(),
-            category: "entertainment".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-steam-store".to_string(),
-            title: "LoveStore".to_string(),
-            desc: "Game of the Year: Your Wedding! Download kebahagiaan kalian sekarang dalam format store yang paling ikonik.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-steam-store_preview.png".to_string(),
-            category: "game".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-uniqlo".to_string(),
-            title: "UniLove".to_string(),
-            desc: "Simple made better. Estetika Lifewear yang nyaman, berkualitas, dan abadi untuk kalian yang suka gaya minimalis fungsional.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-uniqlo_preview.png".to_string(),
-            category: "e-commerce".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-zara".to_string(),
-            title: "ZaLove".to_string(),
-            desc: "High fashion wedding. Desain yang bold, elegan, dan selalu di depan dalam tren mode global.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-zara_preview.png".to_string(),
-            category: "e-commerce".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-bpjs".to_string(),
-            title: "LoveCare".to_string(),
-            desc: "Jaminan kesehatan hati. Tema layanan publik yang unik dan penuh perhatian untuk memastikan semua tamu merasa terlindungi.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-bpjs_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-chatgpt".to_string(),
-            title: "AskLove".to_string(),
-            desc: "Generate love instantly! Antarmuka AI yang intuitif dan membantu untuk merancang masa depan kalian dalam sekejap.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-chatgpt_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-familymart".to_string(),
-            title: "FamilyLove".to_string(),
-            desc: "Hangat seperti kopi di pagi hari. Tema convenience store yang ramah dan bikin tamu merasa seperti di rumah sendiri.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-familymart_preview.png".to_string(),
-            category: "entertainment".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-gemini".to_string(),
-            title: "GeminiLove".to_string(),
-            desc: "Dua hati dalam satu harmoni AI. Estetika teknologi masa depan yang clean, cerdas, dan penuh potensi luar biasa.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-gemini_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-genshin-theme".to_string(),
-            title: "GenshinLove".to_string(),
-            desc: "Adventure across Teyvat... to your wedding! Tema open-world yang megah dan penuh keajaiban buat para Traveler sejati.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-genshin-theme_preview.png".to_string(),
-            category: "game".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-indomaret".to_string(),
-            title: "IndoLove".to_string(),
-            desc: "Mudah dan dekat di hati. Tema minimarket ikonik yang familiar bagi seluruh masyarakat Indonesia.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-indomaret_preview.png".to_string(),
-            category: "entertainment".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-jago".to_string(),
-            title: "JagoLove".to_string(),
-            desc: "Jago dalam mengelola cinta. Tema finansial yang berani dan penuh energi untuk memulai lembaran baru kalian.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-jago_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-macintosh".to_string(),
-            title: "MacLove".to_string(),
-            desc: "Think Different, Love More. Estetika komputer klasik yang retro namun tetap terasa revolusioner dan elegan.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-macintosh_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-mlbb".to_string(),
-            title: "MobileLove".to_string(),
-            desc: "Welcome to the Wedding of Legends! Kumpulkan squad kalian dan rayakan kemenangan telak di land of dawn pelaminan.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-mlbb_preview.png".to_string(),
-            category: "game".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-ps5".to_string(),
-            title: "PlayLove".to_string(),
-            desc: "Play has no limits... and so does our love! Estetika konsol next-gen yang futuristik dan penuh performa maksimal.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-ps5_preview.png".to_string(),
-            category: "game".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-pubg".to_string(),
-            title: "PubLove".to_string(),
-            desc: "Winner Winner Wedding Dinner! Survive bersama sampai akhir dan rayakan kemenangan cinta di safe zone pelaminan.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-pubg_preview.png".to_string(),
-            category: "game".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-telegram-theme".to_string(),
-            title: "TeleLove".to_string(),
-            desc: "Cepat, aman, dan penuh cinta. Bagikan kabar bahagia kalian melalui kanal yang paling privasi dan eksklusif.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-telegram-theme_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-wa-channel".to_string(),
-            title: "WaLove".to_string(),
-            desc: "Saluran cinta terbaru! Ikuti terus perkembangan kisah kalian melalui antarmuka pesan instan yang paling populer.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-wa-channel_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-windows95".to_string(),
-            title: "Win95".to_string(),
-            desc: "Start with Love. Bernostalgia dengan sistem operasi legendaris yang membawa kita kembali ke masa-masa indah yang simpel.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-windows95_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-windowsxp".to_string(),
-            title: "WinXP".to_string(),
-            desc: "Bliss in every moment. Wallpaper padang hijau yang ikonik kini menjadi latar belakang kisah cinta kalian yang indah.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-windowsxp_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "whoosh-wedding".to_string(),
-            title: "WhooshLove".to_string(),
-            desc: "Cinta secepat kilat! Rasakan sensasi kegembiraan yang melesat tinggi dengan tema kereta cepat kebanggaan bangsa.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/whoosh-wedding_preview.png".to_string(),
-            category: "on-demand".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "absensi-wedding".to_string(),
-            title: "LoveHadir".to_string(),
-            desc: "Presensi cinta yang sempurna. Tema buku tamu digital yang rapi dan elegan untuk memastikan setiap saksi kebahagiaan kalian tercatat dengan indah.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/absensi-wedding_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-asana".to_string(),
-            title: "Asmara".to_string(),
-            desc: "Manage your love project! Antarmuka manajemen tugas yang terorganisir untuk memastikan setiap milestone kebahagiaan kalian tercapai tepat waktu.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-asana_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-kopijago".to_string(),
-            title: "BankJodoh".to_string(),
-            desc: "Jago dalam urusan hati! Tema perbankan digital yang ceria dan futuristik untuk mengelola investasi kebahagiaan masa depan kalian.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-kopijago_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-linktree".to_string(),
-            title: "LinkLove".to_string(),
-            desc: "Satu tautan untuk semua cerita cinta. Antarmuka landing page yang clean dan mobile-friendly untuk membagikan setiap detail penting pernikahanmu.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-linktree_preview.png".to_string(),
-            category: "social".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "we-upwork".to_string(),
-            title: "LoveWork".to_string(),
-            desc: "Contract: Forever. Antarmuka platform profesional buat pasangan yang memandang pernikahan sebagai kemitraan strategis yang paling sukses.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/we-upwork_preview.png".to_string(),
-            category: "productivity".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-danantara".to_string(),
-            title: "DanaAsmara".to_string(),
-            desc: "Investasi negara... eh, investasi cinta! Tema agensi investasi yang megah dan formal untuk meresmikan kemitraan agung kalian.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-danantara_preview.png".to_string(),
-            category: "entertainment".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-dota2".to_string(),
-            title: "DotaLove".to_string(),
-            desc: "Match Found: The One! Tema MOBA legendaris buat pasangan gamer yang siap defend high ground pelaminan bersama-sama.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-dota2_preview.png".to_string(),
-            category: "game".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-        TemplateMetadata {
-            id: "wedding-indomie-goreng".to_string(),
-            title: "IndoLover".to_string(),
-            desc: "Sajian istimewa dari hati. Tema mie instan paling ikonik yang hangat, familiar, dan pastinya bikin siapa pun yang melihat ketagihan rasa cinta kalian.".to_string(),
-            price: 50000,
-            preview_img: "/static/img/wedding-indomie-goreng_preview.png".to_string(),
-            category: "entertainment".to_string(),
-            plan: "NOBLE".to_string(),
-        },
-    ]
+pub async fn get_all_templates(db: &sqlx::PgPool, only_published: bool) -> Vec<TemplateMetadata> {
+    let query = if only_published {
+        "SELECT * FROM templates WHERE status = 'PUBLISHED' ORDER BY id ASC"
+    } else {
+        "SELECT * FROM templates ORDER BY id ASC"
+    };
+    sqlx::query_as::<_, TemplateMetadata>(query)
+        .fetch_all(db)
+        .await
+        .unwrap_or_default()
 }
 
 pub async fn templates_list(
@@ -958,7 +130,7 @@ pub async fn templates_list(
     Query(params): Query<HashMap<String, String>>,
     jar: PrivateCookieJar,
 ) -> impl IntoResponse {
-    let templates_data = get_all_templates();
+    let templates_data = get_all_templates(&state.db, true).await;
     let user = match jar.get("user_id") {
         Some(cookie) => {
             let uid = Uuid::parse_str(cookie.value()).ok();
@@ -1038,7 +210,13 @@ pub async fn create_invitation_page(
         }
     }
 
-    HtmlTemplate(CreateInvitationTemplate { user, is_dev: state.is_dev }).into_response()
+    let all_templates = get_all_templates(&state.db, true).await;
+
+    HtmlTemplate(CreateInvitationTemplate { 
+        user, 
+        all_templates,
+        is_dev: state.is_dev 
+    }).into_response()
 }
 
 pub async fn create_invitation(
@@ -2254,6 +1432,7 @@ pub struct SettingsTemplate {
     pub is_dev: bool,
 }
 
+
 pub async fn dashboard(
     State(state): State<AppState>,
     jar: PrivateCookieJar,
@@ -2383,7 +1562,12 @@ pub async fn home(
         }
     }
 
-    let templates = get_all_templates().into_iter().take(6).collect();
+    let templates = sqlx::query_as::<_, TemplateMetadata>(
+        "SELECT * FROM templates WHERE status = 'PUBLISHED' AND is_featured = TRUE ORDER BY id ASC"
+    )
+    .fetch_all(&state.db)
+    .await
+    .unwrap_or_default();
 
     HtmlTemplate(HomeTemplate { user, invitations, templates, is_dev: state.is_dev }).into_response()
 }
@@ -2809,7 +1993,7 @@ pub async fn manage_invitation(
                 } else { None }
             } else { None };
 
-            let all_templates = get_all_templates();
+            let all_templates = get_all_templates(&state.db, false).await;
             let guests = sqlx::query_as::<_, Guest>("SELECT * FROM guests WHERE invitation_id = $1 ORDER BY created_at DESC")
                 .bind(row.id)
                 .fetch_all(&state.db)
@@ -3618,6 +2802,8 @@ pub struct CreateUpgradePaymentRequest {
 pub struct TemplateLeaderboardEntry {
     pub template_name: String,
     #[sqlx(default)]
+    pub slug: String,
+    #[sqlx(default)]
     pub friendly_title: String,
     #[sqlx(default)]
     pub preview_url: String,
@@ -3681,15 +2867,17 @@ pub async fn admin_revenue(
         .await
         .unwrap_or_default();
 
-    // Map technical names to friendly titles and previews
-    let all_templates = get_all_templates();
+    // Map technical names to friendly titles, previews, and slugs
+    let all_templates = get_all_templates(&state.db, false).await;
     for entry in leaderboard.iter_mut() {
         if let Some(meta) = all_templates.iter().find(|t| t.id == entry.template_name) {
             entry.friendly_title = meta.title.clone();
             entry.preview_url = meta.preview_img.clone();
+            entry.slug = meta.slug.clone();
         } else {
             entry.friendly_title = entry.template_name.clone();
             entry.preview_url = "/static/img/placeholder.png".to_string();
+            entry.slug = entry.template_name.clone();
         }
     }
 
