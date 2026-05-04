@@ -3274,14 +3274,14 @@ pub async fn mayar_webhook(
             let extra_data_val = d.get("extraData").or_else(|| d.get("extra_data"));
             
             if let Some(ed) = extra_data_val {
-                let slug = ed.get("invitation_slug").and_then(|s| s.as_str());
-                let plan = ed.get("target_plan").and_then(|p| p.as_str());
+                let slug = ed.get("invitation_slug").and_then(|s| s.as_str().map(|v| v.to_string()));
+                let plan = ed.get("target_plan").and_then(|p| p.as_str().map(|v| v.to_string()));
 
                 if let (Some(slug), Some(plan)) = (slug, plan) {
                     // Update Invitation Plan and Status
                     let _ = sqlx::query("UPDATE invitations SET plan_name = $1, payment_status = 'SUCCESS' WHERE slug = $2")
-                        .bind(plan)
-                        .bind(slug)
+                        .bind(&plan)
+                        .bind(&slug)
                         .execute(&state.db)
                         .await;
                     
@@ -3289,7 +3289,7 @@ pub async fn mayar_webhook(
 
                     // Also try to update booking status using slug as fallback if ID fails later
                     let _ = sqlx::query("UPDATE bookings SET status = 'SUCCESS', updated_at = NOW() WHERE invitation_id = (SELECT id FROM invitations WHERE slug = $1)")
-                        .bind(slug)
+                        .bind(&slug)
                         .execute(&state.db)
                         .await;
 
@@ -3299,7 +3299,7 @@ pub async fn mayar_webhook(
                           FROM invitations i 
                           JOIN users u ON i.user_id = u.id 
                           WHERE i.slug = $1",
-                         slug
+                         &slug
                     )
                     .fetch_optional(&state.db)
                     .await
@@ -3311,15 +3311,35 @@ pub async fn mayar_webhook(
                         let email_template = PaymentSuccessEmail {
                             name: info.user_name.unwrap_or_else(|| "Customer".to_string()),
                             plan_name: plan.to_uppercase(),
-                            slug: slug.to_string(),
+                            slug: slug.clone(),
                             amount,
                             language: info.language.unwrap_or_else(|| "id".to_string()),
                         };
 
                         let to_email = info.email.clone();
+                        let slug_clone = slug.clone();
                         tokio::spawn(async move {
-                            if let Err(e) = mailer::send_payment_success_email(&to_email, email_template).await {
-                                eprintln!("Failed to send payment success email: {}", e);
+                            let mut success = false;
+                            let mut last_err = String::new();
+                            
+                            for i in 0..3 {
+                                match mailer::send_payment_success_email(&to_email, email_template.clone()).await {
+                                    Ok(_) => {
+                                        success = true;
+                                        tracing::info!("Successfully sent payment success email for {} on attempt {}", slug_clone, i + 1);
+                                        break;
+                                    },
+                                    Err(e) => {
+                                        last_err = e.clone();
+                                        tracing::warn!("Email attempt {} failed for {}: {}. Retrying...", i + 1, slug_clone, e);
+                                        // Exponential backoff
+                                        tokio::time::sleep(tokio::time::Duration::from_secs(2u64.pow(i))).await;
+                                    }
+                                }
+                            }
+                            
+                            if !success {
+                                tracing::error!("Failed to send payment success email for {} after 3 attempts: {}", slug, last_err);
                             }
                         });
                     }

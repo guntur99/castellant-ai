@@ -3,7 +3,7 @@ use lettre::{Message, AsyncSmtpTransport, AsyncTransport, Tokio1Executor};
 use askama::Template;
 use std::env;
 
-#[derive(Template)]
+#[derive(Template, Clone)]
 #[template(path = "email/payment_success.html")]
 pub struct PaymentSuccessEmail {
     pub name: String,
@@ -55,6 +55,7 @@ pub async fn send_payment_success_email(to_email: &str, template: PaymentSuccess
         .port(smtp_port)
         .credentials(creds)
         .tls(tls)
+        .timeout(Some(std::time::Duration::from_secs(10)))
         .build();
 
     mailer.send(email).await.map_err(|e| format!("Failed to send email: {}", e))?;
