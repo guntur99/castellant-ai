@@ -23,22 +23,32 @@ struct MayarInvoiceRequest {
     amount: i32,
     description: String,
     mobile: String,
+    #[serde(rename = "redirectUrl")]
     redirect_url: String,
+    items: Vec<MayarItem>,
     #[serde(rename = "extraData")]
     extra_data: HashMap<String, String>,
+}
+
+#[derive(Serialize)]
+struct MayarItem {
+    quantity: i32,
+    rate: i32,
+    description: String,
 }
 
 #[derive(Deserialize)]
 struct MayarInvoiceResponse {
     #[allow(dead_code)]
+    #[serde(rename = "statusCode", default)]
+    status_code: i32,
+    #[allow(dead_code)]
+    #[serde(default)]
     status: bool,
-    data: Option<MayarData>,
-}
-
-#[derive(Deserialize)]
-struct MayarData {
-    link: String,
-    id: String,
+    #[allow(dead_code)]
+    #[serde(default)]
+    messages: Option<String>,
+    data: Option<serde_json::Value>,
 }
 
 #[derive(Template)]
@@ -333,6 +343,12 @@ pub async fn create_invitation(
     extra_data.insert("invitation_slug".to_string(), slug.clone());
     extra_data.insert("target_plan".to_string(), plan_name.clone());
 
+    let items = vec![MayarItem {
+        quantity: 1,
+        rate: amount,
+        description: format!("Digital Invitation - {} Plan", plan_name.to_uppercase()),
+    }];
+
     // Call Mayar API
     let mayar_req = MayarInvoiceRequest {
         name: user_row.name.clone().unwrap_or_else(|| "Customer".to_string()),
@@ -341,6 +357,7 @@ pub async fn create_invitation(
         description: format!("Digital Invitation - {} Plan ({})", plan_name.to_uppercase(), fields.get("couple_name_short").unwrap()),
         mobile: "08123456789".to_string(), // Fallback mobile
         redirect_url: format!("{}/invitation/{}/manage", std::env::var("APP_BASE_URL").unwrap_or_else(|_| "http://localhost:3000".to_string()), slug),
+        items,
         extra_data,
     };
 
@@ -370,12 +387,20 @@ pub async fn create_invitation(
         Ok(data) => data,
         Err(e) => {
             eprintln!("Failed to decode Mayar response (status {}): {}. Body: {}", status, e, body_text);
+            // If we can't decode it, let's see if it's a simple error message
+            if let Ok(err_json) = serde_json::from_str::<serde_json::Value>(&body_text) {
+                if let Some(msg) = err_json.get("messages").and_then(|m| m.as_str()) {
+                    return (StatusCode::INTERNAL_SERVER_ERROR, format!("Payment Gateway Error: {}", msg)).into_response();
+                }
+            }
             return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to process payment response").into_response();
         }
     };
 
     let (payment_link, invoice_id) = if let Some(data) = mayar_res.data {
-        (Some(data.link), Some(data.id))
+        let link = data.get("link").and_then(|l| l.as_str().map(|s| s.to_string()));
+        let id = data.get("id").and_then(|i| i.as_str().map(|s| s.to_string()));
+        (link, id)
     } else {
         (None, None)
     };
@@ -2983,6 +3008,12 @@ pub async fn create_upgrade_payment(
         extra_data.insert("voucher_code".to_string(), code.clone());
     }
 
+    let items = vec![MayarItem {
+        quantity: 1,
+        rate: final_amount,
+        description: format!("Upgrade to {} Plan", payload.target_plan),
+    }];
+
     let mayar_req = MayarInvoiceRequest {
         name: user_row.name.unwrap_or_else(|| "Customer".to_string()),
         email: user_row.email,
@@ -2990,24 +3021,52 @@ pub async fn create_upgrade_payment(
         description: format!("Upgrade to {} Plan - {}", payload.target_plan, invitation.couple_name_short),
         mobile: "08123456789".to_string(),
         redirect_url: format!("{}/invitation/{}/manage", std::env::var("APP_BASE_URL").unwrap_or_else(|_| "http://localhost:3000".to_string()), slug),
+        items,
         extra_data,
     };
 
-    let mayar_res = state.http_client
+    let res = match state.http_client
         .post(&state.mayar_base_url)
         .header("Authorization", format!("Bearer {}", state.mayar_api_key))
         .json(&mayar_req)
         .send()
-        .await
-        .unwrap()
-        .json::<MayarInvoiceResponse>()
-        .await
-        .unwrap();
+        .await {
+            Ok(r) => r,
+            Err(e) => {
+                eprintln!("Failed to send request to Mayar (upgrade): {}", e);
+                return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to connect to payment gateway").into_response();
+            }
+        };
+
+    let status = res.status();
+    let body_text = match res.text().await {
+        Ok(t) => t,
+        Err(e) => {
+            eprintln!("Failed to get body from Mayar response (upgrade): {}", e);
+            return (StatusCode::INTERNAL_SERVER_ERROR, "Invalid response from payment gateway").into_response();
+        }
+    };
+
+    let mayar_res: MayarInvoiceResponse = match serde_json::from_str(&body_text) {
+        Ok(data) => data,
+        Err(e) => {
+            eprintln!("Failed to decode Mayar response (upgrade, status {}): {}. Body: {}", status, e, body_text);
+            if let Ok(err_json) = serde_json::from_str::<serde_json::Value>(&body_text) {
+                if let Some(msg) = err_json.get("messages").and_then(|m| m.as_str()) {
+                    return (StatusCode::INTERNAL_SERVER_ERROR, format!("Payment Gateway Error: {}", msg)).into_response();
+                }
+            }
+            return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to process payment response").into_response();
+        }
+    };
 
     if let Some(data) = mayar_res.data {
+        let link = data.get("link").and_then(|l| l.as_str().map(|s| s.to_string()));
+        let id = data.get("id").and_then(|i| i.as_str().map(|s| s.to_string()));
+
         sqlx::query("UPDATE invitations SET payment_link = $1, payment_invoice_id = $2 WHERE id = $3")
-            .bind(&data.link)
-            .bind(&data.id)
+            .bind(&link)
+            .bind(&id)
             .bind(invitation.id)
             .execute(&state.db)
             .await
@@ -3019,8 +3078,8 @@ pub async fn create_upgrade_payment(
             .bind(invitation.id)
             .bind(&payload.target_plan)
             .bind(amount)
-            .bind(&data.id)
-            .bind(&data.link)
+            .bind(&id)
+            .bind(&link)
             .bind("PENDING")
             .bind(applied_voucher)
             .bind(discount_amount)
@@ -3028,7 +3087,7 @@ pub async fn create_upgrade_payment(
             .await
             .unwrap();
         
-        Json(json!({ "status": "success", "link": data.link })).into_response()
+        Json(json!({ "status": "success", "link": link })).into_response()
     } else {
         (StatusCode::INTERNAL_SERVER_ERROR, "Failed to create invoice").into_response()
     }
