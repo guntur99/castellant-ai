@@ -245,50 +245,75 @@ pub async fn create_invitation(
             }
         }
     };
-    let user_id = Uuid::parse_str(&user_id_str).unwrap();
+    let user_id = match Uuid::parse_str(&user_id_str) {
+        Ok(id) => id,
+        Err(_) => return (StatusCode::UNAUTHORIZED, "Invalid session").into_response(),
+    };
 
     let mut fields = HashMap::new();
     let mut photo_paths = HashMap::new();
     let mut gallery_paths = Vec::new();
 
-    while let Some(field) = multipart.next_field().await.unwrap() {
-        let name = field.name().unwrap().to_string();
+    while let Ok(Some(field)) = multipart.next_field().await {
+        let name = match field.name() {
+            Some(n) => n.to_string(),
+            None => continue,
+        };
         
         if name == "gallery[]" || name == "gallery_photo" {
             let filename = Uuid::new_v4().to_string() + ".jpg";
             let path = format!("static/uploads/{}", filename);
-            let data = field.bytes().await.unwrap();
+            let data = field.bytes().await.unwrap_or_default();
             if !data.is_empty() {
-                std::fs::create_dir_all("static/uploads").unwrap();
-                std::fs::write(&path, data).unwrap();
+                let _ = std::fs::create_dir_all("static/uploads");
+                let _ = std::fs::write(&path, data);
                 gallery_paths.push(format!("/{}", path));
             }
         } else if name.ends_with("_photo") {
             let filename = Uuid::new_v4().to_string() + ".jpg";
             let path = format!("static/uploads/{}", filename);
-            let data = field.bytes().await.unwrap();
+            let data = field.bytes().await.unwrap_or_default();
             if !data.is_empty() {
-                std::fs::create_dir_all("static/uploads").unwrap();
-                std::fs::write(&path, data).unwrap();
+                let _ = std::fs::create_dir_all("static/uploads");
+                let _ = std::fs::write(&path, data);
                 photo_paths.insert(name, format!("/{}", path));
             }
         } else if name == "payment_proof" {
             let filename = Uuid::new_v4().to_string() + "_payment.jpg";
             let path = format!("static/uploads/{}", filename);
-            let data = field.bytes().await.unwrap();
+            let data = field.bytes().await.unwrap_or_default();
             if !data.is_empty() {
-                std::fs::create_dir_all("static/uploads").unwrap();
-                std::fs::write(&path, data).unwrap();
+                let _ = std::fs::create_dir_all("static/uploads");
+                let _ = std::fs::write(&path, data);
                 fields.insert("payment_proof".to_string(), format!("/{}", path));
             }
         } else {
-            let value = field.text().await.unwrap();
+            let value = field.text().await.unwrap_or_default();
             fields.insert(name, value);
         }
     }
 
     // Insert into DB
-    let slug = fields.get("slug").unwrap().to_string();
+    let slug = match fields.get("slug") {
+        Some(s) => s.to_string(),
+        None => return (StatusCode::BAD_REQUEST, "Missing slug").into_response(),
+    };
+
+    // Ensure slug is unique
+    let count: i64 = match sqlx::query_scalar("SELECT COUNT(*) FROM invitations WHERE slug = $1")
+        .bind(&slug)
+        .fetch_one(&state.db)
+        .await {
+            Ok(c) => c,
+            Err(e) => {
+                eprintln!("Database error checking slug: {}", e);
+                return (StatusCode::INTERNAL_SERVER_ERROR, "Database error").into_response();
+            }
+        };
+
+    if count > 0 {
+        return (StatusCode::BAD_REQUEST, "Slug already exists. Please choose another one.").into_response();
+    }
     
     let bride_data = json!(Person {
         name: fields.get("bride_name").cloned().unwrap_or_default(),
@@ -334,11 +359,16 @@ pub async fn create_invitation(
         _ => 50000,
     };
 
-    let user_row = sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
+    let user_row = match sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
         .bind(user_id)
         .fetch_one(&state.db)
-        .await
-        .unwrap();
+        .await {
+            Ok(u) => u,
+            Err(e) => {
+                eprintln!("Failed to fetch user {}: {}", user_id, e);
+                return (StatusCode::INTERNAL_SERVER_ERROR, "User not found").into_response();
+            }
+        };
 
     let mut extra_data = HashMap::new();
     extra_data.insert("invitation_slug".to_string(), slug.clone());
@@ -410,14 +440,17 @@ pub async fn create_invitation(
 
     let language = fields.get("language").cloned().unwrap_or_else(|| "id".to_string());
 
-    let invitation_id = sqlx::query_scalar::<_, Uuid>(
+    let couple_name_short = fields.get("couple_name_short").cloned().unwrap_or_else(|| "Couple".to_string());
+    let event_date = fields.get("event_date").cloned().unwrap_or_else(|| "TBA".to_string());
+
+    let invitation_id = match sqlx::query_scalar::<_, Uuid>(
         "INSERT INTO invitations (user_id, slug, couple_name_short, event_date, template_name, bride_data, groom_data, ceremony_data, reception_data, quote_data, plan_name, language, payment_link, payment_invoice_id) 
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id"
     )
     .bind(user_id)
     .bind(&slug)
-    .bind(fields.get("couple_name_short").unwrap())
-    .bind(fields.get("event_date").unwrap())
+    .bind(&couple_name_short)
+    .bind(&event_date)
     .bind(template_name)
     .bind(bride_data)
     .bind(groom_data)
@@ -429,12 +462,17 @@ pub async fn create_invitation(
     .bind(payment_link.clone())
     .bind(invoice_id.clone())
     .fetch_one(&state.db)
-    .await
-    .unwrap();
+    .await {
+        Ok(id) => id,
+        Err(e) => {
+            eprintln!("Failed to insert invitation: {}", e);
+            return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to save invitation. Possible duplicate slug.").into_response();
+        }
+    };
 
     // Insert Gallery Photos
     for (i, path) in gallery_paths.into_iter().enumerate() {
-        sqlx::query(
+        if let Err(e) = sqlx::query(
             "INSERT INTO invitation_photos (invitation_id, url, photo_type, \"order\") VALUES ($1, $2, $3, $4)"
         )
         .bind(invitation_id)
@@ -442,8 +480,9 @@ pub async fn create_invitation(
         .bind("gallery")
         .bind(i as i32)
         .execute(&state.db)
-        .await
-        .unwrap();
+        .await {
+            eprintln!("Failed to insert gallery photo: {}", e);
+        }
     }
 
     // Insert into Bookings Table for tracking
@@ -3281,5 +3320,22 @@ pub async fn test_email() -> impl IntoResponse {
     match mailer::send_payment_success_email(to_email, email_template).await {
         Ok(_) => (StatusCode::OK, "Email sent successfully! Check your inbox.").into_response(),
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to send email: {}", e)).into_response(),
+    }
+}
+
+pub async fn check_slug(
+    Path(slug): Path<String>,
+    State(state): State<AppState>,
+) -> impl IntoResponse {
+    let count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM invitations WHERE slug = $1")
+        .bind(&slug)
+        .fetch_one(&state.db)
+        .await
+        .unwrap_or(0);
+    
+    if count > 0 {
+        Json(json!({ "available": false, "message": "URL slug already taken" })).into_response()
+    } else {
+        Json(json!({ "available": true, "message": "URL slug is available" })).into_response()
     }
 }

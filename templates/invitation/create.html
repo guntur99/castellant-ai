@@ -71,7 +71,8 @@
                             <div class="input-group">
                                 <label>Custom URL Slug</label>
                                 <input type="text" name="slug" id="in-slug" placeholder="romeo-julia" required
-                                    oninput="isSlugManuallyEdited = true">
+                                    oninput="isSlugManuallyEdited = true; checkSlugAvailability()">
+                                <div id="slug-status" style="font-size: 0.75rem; margin-top: 0.5rem; min-height: 1.2rem; transition: all 0.3s;"></div>
                             </div>
                             <div class="input-group">
                                 <label>Wedding Date</label>
@@ -1471,7 +1472,22 @@
     let currentCategory = 'all';
     let templateLimit = 3; // Default for NOBLE
 
+    let isSlugAvailable = true;
+
     function nextStep(step) {
+        // Validation for moving from step 1 to 2
+        const currentStep = Array.from(document.querySelectorAll('.form-step')).findIndex(s => s.style.display !== 'none') + 1;
+        
+        if (currentStep === 1 && step === 2 && !isSlugAvailable) {
+            Swal.fire({
+                icon: 'error',
+                title: 'URL Slug Tidak Tersedia',
+                text: 'Silakan gunakan slug lain atau gunakan saran alternatif yang tersedia.',
+                confirmButtonColor: '#8E6E53'
+            });
+            return;
+        }
+
         console.log("Navigating to step:", step);
         if (step === 4) {
             loadLivePreview();
@@ -1698,6 +1714,52 @@
         });
     }
 
+    let slugCheckTimeout = null;
+
+    function checkSlugAvailability() {
+        const slugInput = document.getElementById('in-slug');
+        const statusEl = document.getElementById('slug-status');
+        const slug = slugInput.value.trim();
+        
+        if (!slug) {
+            statusEl.innerText = '';
+            return;
+        }
+
+        if (slugCheckTimeout) clearTimeout(slugCheckTimeout);
+
+        statusEl.innerHTML = '<span style="color: #999; font-style: italic;">Checking availability...</span>';
+
+        slugCheckTimeout = setTimeout(async () => {
+            try {
+                const res = await fetch(`/api/check-slug/${encodeURIComponent(slug)}`);
+                const data = await res.json();
+                
+                if (data.available) {
+                    isSlugAvailable = true;
+                    statusEl.innerHTML = `<span style="color: #2e7d32; font-weight: 700;">✅ ${data.message}</span>`;
+                } else {
+                    isSlugAvailable = false;
+                    const randomSuffix = Math.floor(100 + Math.random() * 900);
+                    const alternative = `${slug}-${randomSuffix}`;
+                    statusEl.innerHTML = `<span style="color: #c62828; font-weight: 700;">❌ ${data.message}.</span> <br><span style="color: #666; font-size: 0.7rem;">Try: <a href="#" onclick="applySlug('${alternative}'); return false;" style="color: #8E6E53; font-weight: 800; text-decoration: underline;">${alternative}</a></span>`;
+                }
+            } catch (e) {
+                console.error("Failed to check slug", e);
+                statusEl.innerText = '';
+            }
+        }, 600);
+    }
+
+    function applySlug(slug) {
+        const slugInput = document.getElementById('in-slug');
+        if (slugInput) {
+            slugInput.value = slug;
+            isSlugManuallyEdited = true;
+            checkSlugAvailability();
+        }
+    }
+
     function autoSlug() {
         if (isSlugManuallyEdited) return;
         const name = document.getElementById('in-name').value;
@@ -1708,6 +1770,7 @@
                 .replace(/[^a-z0-9 ]/g, '')
                 .trim()
                 .replace(/\s+/g, '-');
+            checkSlugAvailability();
         }
     }
 
