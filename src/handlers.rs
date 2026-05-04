@@ -3208,9 +3208,8 @@ pub async fn mayar_webhook(
     let is_authorized = if expected_token.is_empty() {
         true // Allow if not configured (useful for initial setup)
     } else {
-        token == Some(&expected_token) || 
-        token == Some(&format!("Bearer {}", expected_token)) ||
-        token.map(|t| t.replace("Bearer ", "")) == Some(expected_token.clone())
+        let provided = token.unwrap_or("").trim().replace("Bearer ", "");
+        provided == expected_token.trim()
     };
     
     tracing::info!("Received Webhook [{}]: event={}, data_id={:?}, auth={}", 
@@ -3221,8 +3220,11 @@ pub async fn mayar_webhook(
     );
 
     if !is_authorized && !event_name.contains("testing") {
-        tracing::warn!("401 Unauthorized Webhook: provided={:?}, payload_event={}", 
+        let header_keys: Vec<String> = headers.keys().map(|k| k.to_string()).collect();
+        tracing::warn!("401 Unauthorized Webhook: provided_prefix={:?}, expected_prefix={:?}, headers={:?}, payload_event={}", 
             token.map(|t| if t.len() > 8 { &t[..8] } else { t }),
+            if expected_token.len() > 8 { Some(&expected_token[..8]) } else { None },
+            header_keys,
             event_raw
         );
         return StatusCode::UNAUTHORIZED.into_response();
