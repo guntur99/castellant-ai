@@ -1499,6 +1499,10 @@
                 <div class="lux-modal-container">
                     <p class="text-muted mb-5" style="font-size: 1rem; font-style: italic;">Pilih level kemegahan baru untuk undangan Anda.</p>
                     ${optionsHtml}
+                    <div style="margin-top: 3rem; max-width: 400px; margin-left: auto; margin-right: auto;" class="animate__animated animate__fadeInUp">
+                        <label style="font-size: 0.75rem; font-weight: 700; color: #999; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 10px;">Punya Kode Voucher?</label>
+                        <input type="text" id="voucher_code_input" placeholder="Masukkan kode promo..." style="width: 100%; padding: 1rem 1.5rem; border-radius: 50px; border: 1px solid #eee; text-align: center; font-weight: 700; letter-spacing: 2px; box-shadow: 0 5px 15px rgba(0,0,0,0.02);">
+                    </div>
                 </div>
                 <style>
                     .swal2-popup {
@@ -1666,11 +1670,13 @@
             }
         });
 
+        const voucher = document.getElementById('voucher_code_input')?.value || "";
+        
         try {
             const response = await fetch(`/api/payment/create-upgrade/${slug}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ target_plan: plan })
+                body: JSON.stringify({ target_plan: plan, voucher_code: voucher })
             });
 
             const data = await response.json();

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Receipt - {{ booking.invoice_id }}</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; color: #333; margin: 0; padding: 40px; background: #f9f9f9; }
+        .receipt-card {
+            background: white;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            position: relative;
+        }
+        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 50px; }
+        .logo { font-size: 24px; font-weight: 800; color: #2A1E14; letter-spacing: 2px; }
+        .status { padding: 6px 15px; border-radius: 50px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+        .status-success { background: #e6fffa; color: #2c7a7b; }
+        
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-bottom: 50px; }
+        .info-label { font-size: 12px; text-transform: uppercase; color: #999; margin-bottom: 8px; letter-spacing: 1px; }
+        .info-value { font-size: 16px; font-weight: 600; }
+        
+        table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+        th { text-align: left; padding: 15px; border-bottom: 2px solid #f0f0f0; color: #999; font-size: 12px; text-transform: uppercase; }
+        td { padding: 20px 15px; border-bottom: 1px solid #f5f5f5; }
+        
+        .totals { margin-left: auto; width: 300px; }
+        .total-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .total-row.grand { border-top: 2px solid #2A1E14; padding-top: 15px; margin-top: 15px; font-size: 20px; font-weight: 800; }
+        
+        .footer { margin-top: 60px; text-align: center; font-size: 12px; color: #aaa; border-top: 1px solid #eee; padding-top: 30px; }
+        
+        @media print {
+            body { background: white; padding: 0; }
+            .receipt-card { box-shadow: none; border: none; }
+            .no-print { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="receipt-card">
+        <div class="header">
+            <div>
+                <div class="logo">CASTELLANT</div>
+                <div style="margin-top: 5px; font-size: 12px; color: #999;">Premium Digital Invitations</div>
+            </div>
+            <div class="status status-{{ booking.status|lower }}">{{ booking.status }}</div>
+        </div>
+
+        <div class="info-grid">
+            <div>
+                <div class="info-label">Invoice To</div>
+                <div class="info-value">{{ invitation.couple_name_short }}</div>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Invitation ID: {{ invitation.slug }}</div>
+            </div>
+            <div>
+                <div class="info-label">Payment Details</div>
+                <div class="info-value">ID: {{ booking.invoice_id }}</div>
+                <div style="font-size: 14px; color: #666; margin-top: 5px;">Date: {{ booking.created_at.format("%d %b %Y") }}</div>
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th style="text-align: right;">Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Upgrade to {{ booking.target_plan }} Plan</td>
+                    <td style="text-align: right;">Rp {{ booking.amount }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="totals">
+            <div class="total-row">
+                <div style="color: #999;">Subtotal</div>
+                <div>Rp {{ booking.amount }}</div>
+            </div>
+            {% if booking.discount_amount > 0 %}
+            <div class="total-row" style="color: #c53030;">
+                <div>Discount ({{ booking.voucher_code.clone().unwrap_or_default() }})</div>
+                <div>- Rp {{ booking.discount_amount }}</div>
+            </div>
+            {% endif %}
+            <div class="total-row grand">
+                <div>Total</div>
+                <div>Rp {{ booking.amount - booking.discount_amount }}</div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Thank you for choosing Castellant to preserve your legacy.</p>
+            <p>This is a computer-generated document. No signature is required.</p>
+        </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px;" class="no-print">
+        <button onclick="window.print()" style="padding: 12px 30px; border-radius: 50px; background: #2A1E14; color: white; border: none; font-weight: 700; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.1);">Print Receipt</button>
+    </div>
+</body>
+</html>

@@ -112,6 +112,7 @@ async fn main() {
         .route("/auth/logout", get(handlers::logout))
         .route("/create", get(handlers::create_invitation_page))
         .route("/templates", get(handlers::templates_list))
+        .route("/admin/revenue", get(handlers::admin_revenue))
         .route("/api/invitation", post(handlers::create_invitation))
         .route("/api/preview", post(handlers::preview))
         .route("/api/ai/generate-text", post(handlers::ai_generate_text))
@@ -127,6 +128,7 @@ async fn main() {
         .route("/invitation/{slug}/groups/{group_id}/delete", post(handlers::delete_group))
         .route("/api/payment/create-upgrade/{slug}", post(handlers::create_upgrade_payment))
         .route("/api/payment/webhook", post(handlers::mayar_webhook))
+        .route("/receipt/{invoice_id}", get(handlers::receipt_detail))
         .route("/sitemap.xml", get(handlers::sitemap))
         .route("/robots.txt", get(|| async { 
             tokio::fs::read_to_string("static/robots.txt").await.unwrap_or_else(|_| "".to_string()) 

@@ -11,6 +11,7 @@ pub struct User {
     pub email: String,
     pub name: Option<String>,
     pub avatar_url: Option<String>,
+    pub role: String, // USER, SUPERADMIN
     pub created_at: DateTime<Utc>,
 }
 
@@ -132,5 +133,33 @@ pub struct GuestGroup {
     pub invitation_id: Uuid,
     pub name: String,
     pub template_name: String,
+    pub created_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, FromRow)]
+pub struct Booking {
+    pub id: Uuid,
+    pub user_id: Option<Uuid>,
+    pub invitation_id: Uuid,
+    pub target_plan: String,
+    pub amount: i32,
+    pub status: String, // PENDING, SUCCESS, FAILED
+    pub invoice_id: String,
+    pub payment_link: Option<String>,
+    pub voucher_code: Option<String>,
+    pub discount_amount: i32,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, FromRow)]
+pub struct Voucher {
+    pub id: Uuid,
+    pub code: String,
+    pub discount_percent: i32,
+    pub valid_until: Option<DateTime<Utc>>,
+    pub usage_limit: Option<i32>,
+    pub usage_count: i32,
+    pub is_active: bool,
     pub created_at: DateTime<Utc>,
 }

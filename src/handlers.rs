@@ -6,7 +6,7 @@ use axum::{
     Json,
 };
 use askama::Template;
-use crate::models::{Invitation, Person, EventDetails, Quote, GiftAccount, RsvpForm, InvitationRow, Song, User, AiSession, Guest, GuestGroup};
+use crate::models::{Invitation, Person, EventDetails, Quote, GiftAccount, RsvpForm, InvitationRow, Song, User, AiSession, Guest, GuestGroup, Booking, Voucher};
 use crate::AppState;
 use serde_json::{from_value, json};
 use sqlx::Row;
@@ -2592,101 +2592,13 @@ pub async fn invitation_detail(
         _ => {
             // Fallback for samples
             if slug.ends_with("-sample") || slug == "sample" {
-                let (couple_name, template_name) = match slug.as_str() {
-                    "trendvibe-sample" => ("Nazma & Guntur", "trendvibe"),
-                    "loveanthem-sample" => ("Nazma & Guntur", "loveanthem"),
-                    "cinemarry-sample" => ("Nazma & Guntur", "cinemarry"),
-                    "cairide-sample" => ("Nazma & Guntur", "cairide"),
-                    "pinterlove-sample" => ("Nazma & Guntur", "pinterlove"),
-                    "shopee-live-wedding-sample" => ("Nazma & Guntur", "shopee-live-wedding"),
-                    "tiktok-live-wedding-sample" => ("Nazma & Guntur", "tiktok-live-wedding"),
-                    "we-uber-sample" => ("Nazma & Guntur", "we-uber"),
-                    "wedding-disney-sample" => ("Nazma & Guntur", "wedding-disney"),
-                    "wedding-facebook-sample" => ("Nazma & Guntur", "wedding-facebook"),
-                    "wedding-iphone-theme-sample" => ("Nazma & Guntur", "wedding-iphone-theme"),
-                    "wedding-netflix-v2-sample" => ("Nazma & Guntur", "wedding-netflix-v2"),
-                    "wedding-prime-sample" => ("Nazma & Guntur", "wedding-prime"),
-                    "wedding-wrath-v2-sample" => ("Nazma & Guntur", "wedding-wrath-v2"),
-                    "wedding-applemusic-sample" => ("Nazma & Guntur", "wedding-applemusic"),
-                    "we-capcut-sample" => ("Nazma & Guntur", "we-capcut"),
-                    "bereal-wedding-sample" => ("Nazma & Guntur", "bereal-wedding"),
-                    "instagram-live-wedding-sample" => ("Nazma & Guntur", "instagram-live-wedding"),
-                    "qris-wedding-sample" => ("Nazma & Guntur", "qris-wedding"),
-                    "wedding-grab-sample" => ("Nazma & Guntur", "wedding-grab"),
-                    "figma-wedding-sample" => ("Nazma & Guntur", "figma-wedding"),
-                    "we-discord-sample" => ("Nazma & Guntur", "we-discord"),
-                    "we-webtoon-sample" => ("Nazma & Guntur", "we-webtoon"),
-                    "we-mixue-sample" => ("Nazma & Guntur", "we-mixue"),
-                    "we-playstation-sample" => ("Nazma & Guntur", "we-playstation"),
-                    "we-threads-app-sample" => ("Nazma & Guntur", "we-threads-app"),
-                    "wedding-alfamart-sample" => ("Nazma & Guntur", "wedding-alfamart"),
-                    "wedding-kai-sample" => ("Nazma & Guntur", "wedding-kai"),
-                    "wedding-medium-sample" => ("Nazma & Guntur", "wedding-medium"),
-                    "wedding-transjakarta-sample" => ("Nazma & Guntur", "wedding-transjakarta"),
-                    "wedding-whatsapp-theme-sample" => ("Nazma & Guntur", "wedding-whatsapp-theme"),
-                    "we-manga-sample" => ("Nazma & Guntur", "we-manga"),
-                    "we-nintendo-switch-sample" => ("Nazma & Guntur", "we-nintendo-switch"),
-                    "wedding-kai-v2-sample" => ("Nazma & Guntur", "wedding-kai-v2"),
-                    "wedding-minecraft-sample" => ("Nazma & Guntur", "wedding-minecraft"),
-                    "wedding-zoom-v2-sample" => ("Nazma & Guntur", "wedding-zoom-v2"),
-                    "absensi-wedding-sample" => ("Nazma & Guntur", "absensi-wedding"),
-                    "we-asana-sample" => ("Nazma & Guntur", "we-asana"),
-                    "we-kopijago-sample" => ("Nazma & Guntur", "we-kopijago"),
-                    "we-linktree-sample" => ("Nazma & Guntur", "we-linktree"),
-                    "we-upwork-sample" => ("Nazma & Guntur", "we-upwork"),
-                    "wedding-danantara-sample" => ("Nazma & Guntur", "wedding-danantara"),
-                    "wedding-dota2-sample" => ("Nazma & Guntur", "wedding-dota2"),
-                    "wedding-indomie-goreng-sample" => ("Nazma & Guntur", "wedding-indomie-goreng"),
-                    "we-vscode-sample" => ("Nazma & Guntur", "we-vscode"),
-                    "gmail-wedding-sample" => ("Nazma & Guntur", "gmail-wedding"),
-                    "we-behance-sample" => ("Nazma & Guntur", "we-behance"),
-                    "we-chatime-sample" => ("Nazma & Guntur", "we-chatime"),
-                    "we-dribbble-sample" => ("Nazma & Guntur", "we-dribbble"),
-                    "we-hm-sample" => ("Nazma & Guntur", "we-hm"),
-                    "we-janjijiwa-sample" => ("Nazma & Guntur", "we-janjijiwa"),
-                    "we-kopikenangan-sample" => ("Nazma & Guntur", "we-kopikenangan"),
-                    "we-powerpoint-sample" => ("Nazma & Guntur", "we-powerpoint"),
-                    "we-talenta-sample" => ("Nazma & Guntur", "we-talenta"),
-                    "wedding-animal-crossing-sample" => ("Nazma & Guntur", "wedding-animal-crossing"),
-                    "wedding-claude-sample" => ("Nazma & Guntur", "wedding-claude"),
-                    "wedding-cod-sample" => ("Nazma & Guntur", "wedding-cod"),
-                    "wedding-danamon-sample" => ("Nazma & Guntur", "wedding-danamon"),
-                    "wedding-excel-theme-sample" => ("Nazma & Guntur", "wedding-excel-theme"),
-                    "wedding-freefire-sample" => ("Nazma & Guntur", "wedding-freefire"),
-                    "wedding-github-sample" => ("Nazma & Guntur", "wedding-github"),
-                    "wedding-jenius-v2-sample" => ("Nazma & Guntur", "wedding-jenius-v2"),
-                    "wedding-linux-sample" => ("Nazma & Guntur", "wedding-linux"),
-                    "wedding-word-theme-sample" => ("Nazma & Guntur", "wedding-word-theme"),
-                    "canva-elegant-wedding-sample" => ("Nazma & Guntur", "canva-elegant-wedding"),
-                    "elegant-wedding-sample" => ("Nazma & Guntur", "elegant-wedding"),
-                    "mrt-wedding-sample" => ("Nazma & Guntur", "mrt-wedding"),
-                    "we-brimo-sample" => ("Nazma & Guntur", "we-brimo"),
-                    "we-duolingo-sample" => ("Nazma & Guntur", "we-duolingo"),
-                    "we-google-calendar-sample" => ("Nazma & Guntur", "we-google-calendar"),
-                    "we-livin-sample" => ("Nazma & Guntur", "we-livin"),
-                    "we-manhua-sample" => ("Nazma & Guntur", "we-manhua"),
-                    "we-manhwa-sample" => ("Nazma & Guntur", "we-manhwa"),
-                    "we-momoyo-sample" => ("Nazma & Guntur", "we-momoyo"),
-                    "we-steam-store-sample" => ("Nazma & Guntur", "we-steam-store"),
-                    "we-uniqlo-sample" => ("Nazma & Guntur", "we-uniqlo"),
-                    "we-zara-sample" => ("Nazma & Guntur", "we-zara"),
-                    "wedding-bpjs-sample" => ("Nazma & Guntur", "wedding-bpjs"),
-                    "wedding-chatgpt-sample" => ("Nazma & Guntur", "wedding-chatgpt"),
-                    "wedding-familymart-sample" => ("Nazma & Guntur", "wedding-familymart"),
-                    "wedding-gemini-sample" => ("Nazma & Guntur", "wedding-gemini"),
-                    "wedding-genshin-theme-sample" => ("Nazma & Guntur", "wedding-genshin-theme"),
-                    "wedding-indomaret-sample" => ("Nazma & Guntur", "wedding-indomaret"),
-                    "wedding-jago-sample" => ("Nazma & Guntur", "wedding-jago"),
-                    "wedding-macintosh-sample" => ("Nazma & Guntur", "wedding-macintosh"),
-                    "wedding-mlbb-sample" => ("Nazma & Guntur", "wedding-mlbb"),
-                    "wedding-ps5-sample" => ("Nazma & Guntur", "wedding-ps5"),
-                    "wedding-pubg-sample" => ("Nazma & Guntur", "wedding-pubg"),
-                    "wedding-telegram-theme-sample" => ("Nazma & Guntur", "wedding-telegram-theme"),
-                    "wedding-wa-channel-sample" => ("Nazma & Guntur", "wedding-wa-channel"),
-                    "wedding-windows95-sample" => ("Nazma & Guntur", "wedding-windows95"),
-                    "wedding-windowsxp-sample" => ("Nazma & Guntur", "wedding-windowsxp"),
-                    "whoosh-wedding-sample" => ("Nazma & Guntur", "whoosh-wedding"),
-                    _ => ("Nazma & Guntur", "trendvibe"),
+                let (couple_name, template_name) = if let Some(base) = slug.strip_suffix("-sample") {
+                    ("Nazma & Guntur", base)
+                } else {
+                    match slug.as_str() {
+                        "sample" => ("Nazma & Guntur", "trendvibe"),
+                        _ => ("Nazma & Guntur", "trendvibe"),
+                    }
                 };
 
                 let invitation = Invitation {
@@ -3696,6 +3608,135 @@ pub async fn delete_group(
     Redirect::to(&format!("/invitation/{}/manage#groups", slug)).into_response()
 }
 
+#[derive(Deserialize)]
+pub struct CreateUpgradePaymentRequest {
+    pub target_plan: String,
+    pub voucher_code: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, sqlx::FromRow, Clone)]
+pub struct TemplateLeaderboardEntry {
+    pub template_name: String,
+    #[sqlx(default)]
+    pub friendly_title: String,
+    #[sqlx(default)]
+    pub preview_url: String,
+    pub count: i64,
+}
+
+#[derive(Template)]
+#[template(path = "admin/revenue.html")]
+pub struct AdminRevenueTemplate {
+    pub user: Option<User>,
+    pub total_revenue: i64,
+    pub successful_bookings: i64,
+    pub average_order_value: f64,
+    pub bookings: Vec<Booking>,
+    pub leaderboard: Vec<TemplateLeaderboardEntry>,
+    pub is_dev: bool,
+}
+
+pub async fn admin_revenue(
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user = match jar.get("user_id") {
+        Some(cookie) => {
+            let uid = Uuid::parse_str(cookie.value()).ok();
+            if let Some(id) = uid {
+                sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
+                    .bind(id)
+                    .fetch_optional(&state.db)
+                    .await
+                    .unwrap_or(None)
+            } else { None }
+        }
+        None => None,
+    };
+
+    // Admin check
+    if let Some(u) = &user {
+        if u.role != "SUPERADMIN" {
+            return (StatusCode::FORBIDDEN, "Admin access required").into_response();
+        }
+    } else {
+        return Redirect::to("/").into_response();
+    }
+
+    let bookings = sqlx::query_as::<_, Booking>("SELECT * FROM bookings ORDER BY created_at DESC")
+        .fetch_all(&state.db)
+        .await
+        .unwrap_or_default();
+
+    let total_revenue: i64 = bookings.iter()
+        .filter(|b| b.status == "SUCCESS")
+        .map(|b| (b.amount - b.discount_amount) as i64)
+        .sum();
+
+    let successful_count = bookings.iter().filter(|b| b.status == "SUCCESS").count() as i64;
+    let avg_order = if successful_count > 0 { total_revenue as f64 / successful_count as f64 } else { 0.0 };
+
+    let mut leaderboard = sqlx::query_as::<_, TemplateLeaderboardEntry>("SELECT template_name, COALESCE(COUNT(*), 0) as count FROM invitations GROUP BY template_name ORDER BY count DESC LIMIT 5")
+        .fetch_all(&state.db)
+        .await
+        .unwrap_or_default();
+
+    // Map technical names to friendly titles and previews
+    let all_templates = get_all_templates();
+    for entry in leaderboard.iter_mut() {
+        if let Some(meta) = all_templates.iter().find(|t| t.id == entry.template_name) {
+            entry.friendly_title = meta.title.clone();
+            entry.preview_url = meta.preview_img.clone();
+        } else {
+            entry.friendly_title = entry.template_name.clone();
+            entry.preview_url = "/static/img/placeholder.png".to_string();
+        }
+    }
+
+    HtmlTemplate(AdminRevenueTemplate {
+        user,
+        total_revenue,
+        successful_bookings: successful_count,
+        average_order_value: avg_order,
+        bookings,
+        leaderboard,
+        is_dev: state.is_dev,
+    }).into_response()
+}
+
+#[derive(Template)]
+#[template(path = "receipt.html")]
+pub struct ReceiptTemplate {
+    pub booking: Booking,
+    pub invitation: InvitationRow,
+}
+
+pub async fn receipt_detail(
+    Path(invoice_id): Path<String>,
+    State(state): State<AppState>,
+) -> impl IntoResponse {
+    let booking = sqlx::query_as::<_, Booking>("SELECT * FROM bookings WHERE invoice_id = $1")
+        .bind(&invoice_id)
+        .fetch_optional(&state.db)
+        .await
+        .unwrap();
+
+    if let Some(b) = booking {
+        let invitation = sqlx::query_as::<_, InvitationRow>("SELECT * FROM invitations WHERE id = $1")
+            .bind(b.invitation_id)
+            .fetch_one(&state.db)
+            .await
+            .unwrap();
+
+        HtmlTemplate(ReceiptTemplate {
+            booking: b,
+            invitation,
+        }).into_response()
+    } else {
+        (StatusCode::NOT_FOUND, "Receipt not found").into_response()
+    }
+}
+
 pub async fn create_upgrade_payment(
     Path(slug): Path<String>,
     State(state): State<AppState>,
@@ -3721,6 +3762,26 @@ pub async fn create_upgrade_payment(
         _ => 50000,
     };
 
+    let mut discount_amount = 0;
+    let mut applied_voucher = None;
+
+    if let Some(code) = &payload.voucher_code {
+        if !code.is_empty() {
+            let voucher = sqlx::query_as::<_, Voucher>("SELECT * FROM vouchers WHERE code = $1 AND is_active = true AND (usage_limit IS NULL OR usage_count < usage_limit) AND (valid_until IS NULL OR valid_until > NOW())")
+                .bind(code)
+                .fetch_optional(&state.db)
+                .await
+                .unwrap_or(None);
+            
+            if let Some(v) = voucher {
+                discount_amount = (amount * v.discount_percent) / 100;
+                applied_voucher = Some(v.code);
+            }
+        }
+    }
+
+    let final_amount = amount - discount_amount;
+
     let user_row = sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
         .bind(user_id.unwrap())
         .fetch_one(&state.db)
@@ -3730,11 +3791,14 @@ pub async fn create_upgrade_payment(
     let mut extra_data = HashMap::new();
     extra_data.insert("invitation_slug".to_string(), slug.clone());
     extra_data.insert("target_plan".to_string(), payload.target_plan.clone());
+    if let Some(code) = &applied_voucher {
+        extra_data.insert("voucher_code".to_string(), code.clone());
+    }
 
     let mayar_req = MayarInvoiceRequest {
         name: user_row.name.unwrap_or_else(|| "Customer".to_string()),
         email: user_row.email,
-        amount,
+        amount: final_amount,
         description: format!("Upgrade to {} Plan - {}", payload.target_plan, invitation.couple_name_short),
         mobile: "08123456789".to_string(),
         redirect_url: format!("{}/invitation/{}/manage", std::env::var("APP_BASE_URL").unwrap_or_else(|_| "http://localhost:3000".to_string()), slug),
@@ -3760,16 +3824,26 @@ pub async fn create_upgrade_payment(
             .execute(&state.db)
             .await
             .unwrap();
+
+        // 2. Track in Bookings Table
+        sqlx::query("INSERT INTO bookings (user_id, invitation_id, target_plan, amount, invoice_id, payment_link, status, voucher_code, discount_amount) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)")
+            .bind(user_id)
+            .bind(invitation.id)
+            .bind(&payload.target_plan)
+            .bind(amount)
+            .bind(&data.id)
+            .bind(&data.link)
+            .bind("PENDING")
+            .bind(applied_voucher)
+            .bind(discount_amount)
+            .execute(&state.db)
+            .await
+            .unwrap();
         
         Json(json!({ "status": "success", "link": data.link })).into_response()
     } else {
         (StatusCode::INTERNAL_SERVER_ERROR, "Failed to create invoice").into_response()
     }
-}
-
-#[derive(Deserialize)]
-pub struct CreateUpgradePaymentRequest {
-    pub target_plan: String,
 }
 
 #[derive(Deserialize)]
@@ -3780,12 +3854,9 @@ pub struct MayarWebhookPayload {
 
 #[derive(Deserialize)]
 pub struct MayarWebhookData {
-    #[allow(dead_code)]
-    pub id: String,
-    #[allow(dead_code)]
-    pub status: serde_json::Value,
-    #[allow(dead_code)]
-    pub amount: i32,
+    pub id: Option<String>,
+    pub status: Option<serde_json::Value>,
+    pub amount: Option<i32>,
     #[serde(rename = "extraData")]
     pub extra_data: Option<HashMap<String, String>>,
 }
@@ -3806,6 +3877,7 @@ pub async fn mayar_webhook(
         tracing::warn!("Unauthorized webhook attempt");
         return StatusCode::UNAUTHORIZED;
     }
+    tracing::info!("Received Mayar Webhook: event={}, data_id={:?}", payload.event, payload.data.id);
 
     if payload.event == "payment.received" || payload.event == "testing" {
         if let Some(extra_data) = payload.data.extra_data {
@@ -3821,6 +3893,24 @@ pub async fn mayar_webhook(
                     tracing::info!("Payment success for {}: Plan upgraded to {}", slug, plan);
                 }
             }
+        }
+    }
+
+    // Update Booking Status if Invoice ID is present
+    if let Some(invoice_id) = &payload.data.id {
+        let status = match payload.event.as_str() {
+            "payment.received" => "SUCCESS",
+            "payment.failed" => "FAILED",
+            _ => "PENDING",
+        };
+        
+        if status != "PENDING" {
+            sqlx::query("UPDATE bookings SET status = $1 WHERE invoice_id = $2")
+                .bind(status)
+                .bind(invoice_id)
+                .execute(&state.db)
+                .await
+                .ok();
         }
     }
 
