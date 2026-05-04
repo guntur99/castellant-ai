@@ -3322,24 +3322,27 @@ pub async fn mayar_webhook(
                             let mut success = false;
                             let mut last_err = String::new();
                             
-                            for i in 0..3 {
-                                match mailer::send_payment_success_email(&to_email, email_template.clone()).await {
+                            // Try multiple ports if the default one fails
+                            let ports = [None, Some(587), Some(465), Some(2525)];
+                            
+                            for (i, &port) in ports.iter().enumerate() {
+                                match mailer::send_payment_success_email(&to_email, email_template.clone(), port).await {
                                     Ok(_) => {
                                         success = true;
-                                        tracing::info!("Successfully sent payment success email for {} on attempt {}", slug_clone, i + 1);
+                                        tracing::info!("Successfully sent payment success email for {} on attempt {} (port: {:?})", slug_clone, i + 1, port);
                                         break;
                                     },
                                     Err(e) => {
                                         last_err = e.clone();
-                                        tracing::warn!("Email attempt {} failed for {}: {}. Retrying...", i + 1, slug_clone, e);
-                                        // Exponential backoff
-                                        tokio::time::sleep(tokio::time::Duration::from_secs(2u64.pow(i))).await;
+                                        tracing::warn!("Email attempt {} failed for {} (port: {:?}): {}. Retrying with next port...", i + 1, slug_clone, port, e);
+                                        // Short delay before next attempt
+                                        tokio::time::sleep(tokio::time::Duration::from_secs(2)).await;
                                     }
                                 }
                             }
                             
                             if !success {
-                                tracing::error!("Failed to send payment success email for {} after 3 attempts: {}", slug, last_err);
+                                tracing::error!("Failed to send payment success email for {} after trying all ports: {}", slug_clone, last_err);
                             }
                         });
                     }
@@ -3420,7 +3423,7 @@ pub async fn test_email() -> impl IntoResponse {
         language: "id".to_string(),
     };
 
-    match mailer::send_payment_success_email(&to_email, email_template).await {
+    match mailer::send_payment_success_email(&to_email, email_template, None).await {
         Ok(_) => (StatusCode::OK, "Email sent successfully! Check your inbox.").into_response(),
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to send email: {}", e)).into_response(),
     }

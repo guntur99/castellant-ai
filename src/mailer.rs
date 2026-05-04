@@ -13,9 +13,9 @@ pub struct PaymentSuccessEmail {
     pub language: String,
 }
 
-pub async fn send_payment_success_email(to_email: &str, template: PaymentSuccessEmail) -> Result<(), String> {
+pub async fn send_payment_success_email(to_email: &str, template: PaymentSuccessEmail, port_override: Option<u16>) -> Result<(), String> {
     let smtp_host = env::var("MAIL_HOST").unwrap_or_else(|_| "localhost".to_string());
-    let smtp_port = env::var("MAIL_PORT").unwrap_or_else(|_| "2525".to_string()).parse::<u16>().unwrap_or(2525);
+    let smtp_port = port_override.unwrap_or_else(|| env::var("MAIL_PORT").unwrap_or_else(|_| "2525".to_string()).parse::<u16>().unwrap_or(2525));
     let smtp_user = env::var("MAIL_USERNAME").unwrap_or_default();
     let smtp_pass = env::var("MAIL_PASSWORD").unwrap_or_default();
     let from_email = env::var("MAIL_FROM_ADDRESS").unwrap_or_else(|_| "no-reply@example.com".to_string());
@@ -47,7 +47,7 @@ pub async fn send_payment_success_email(to_email: &str, template: PaymentSuccess
     let tls = if smtp_port == 465 {
         lettre::transport::smtp::client::Tls::Wrapper(tls_parameters)
     } else {
-        lettre::transport::smtp::client::Tls::Required(tls_parameters)
+        lettre::transport::smtp::client::Tls::Opportunistic(tls_parameters)
     };
 
     let mailer: AsyncSmtpTransport<Tokio1Executor> = AsyncSmtpTransport::<Tokio1Executor>::relay(&smtp_host)
@@ -55,7 +55,7 @@ pub async fn send_payment_success_email(to_email: &str, template: PaymentSuccess
         .port(smtp_port)
         .credentials(creds)
         .tls(tls)
-        .timeout(Some(std::time::Duration::from_secs(10)))
+        .timeout(Some(std::time::Duration::from_secs(30)))
         .build();
 
     mailer.send(email).await.map_err(|e| format!("Failed to send email: {}", e))?;
