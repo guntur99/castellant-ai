@@ -408,9 +408,11 @@ pub async fn create_invitation(
 
     let template_name = fields.get("template_name").cloned().unwrap_or_else(|| "caiktok".to_string());
 
+    let language = fields.get("language").cloned().unwrap_or_else(|| "id".to_string());
+
     let invitation_id = sqlx::query_scalar::<_, Uuid>(
-        "INSERT INTO invitations (user_id, slug, couple_name_short, event_date, template_name, bride_data, groom_data, ceremony_data, reception_data, quote_data, plan_name, payment_link, payment_invoice_id) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING id"
+        "INSERT INTO invitations (user_id, slug, couple_name_short, event_date, template_name, bride_data, groom_data, ceremony_data, reception_data, quote_data, plan_name, language, payment_link, payment_invoice_id) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id"
     )
     .bind(user_id)
     .bind(&slug)
@@ -423,6 +425,7 @@ pub async fn create_invitation(
     .bind(reception_data)
     .bind(quote_data)
     .bind(plan_name.clone())
+    .bind(language)
     .bind(payment_link.clone())
     .bind(invoice_id.clone())
     .fetch_one(&state.db)
@@ -3113,56 +3116,57 @@ pub async fn create_upgrade_payment(
     }
 }
 
-#[derive(Deserialize)]
-pub struct MayarWebhookPayload {
-    pub event: String,
-    pub data: MayarWebhookData,
-}
-
-#[derive(Deserialize, Serialize, Debug)]
-pub struct MayarWebhookData {
-    pub id: Option<String>,
-    pub status: Option<serde_json::Value>,
-    pub amount: Option<i32>,
-    #[serde(rename = "extraData", alias = "extra_data")]
-    pub extra_data: Option<serde_json::Value>,
-    pub custom_field: Option<serde_json::Value>,
-}
-
 pub async fn mayar_webhook(
     State(state): State<AppState>,
     headers: axum::http::HeaderMap,
-    Json(payload): Json<MayarWebhookPayload>,
+    Json(payload): Json<serde_json::Value>,
 ) -> impl IntoResponse {
-    // Verify Webhook Token
+    // 1. Get Event and Data
+    let event_raw = payload.get("event").and_then(|e| e.as_str()).unwrap_or("");
+    let event_name = event_raw.to_lowercase();
+    let data = payload.get("data");
+    
+    let data_id = data.and_then(|d| d.get("id").or_else(|| d.get("invoiceId")).and_then(|i| i.as_str()));
+
+    // 2. Verify Webhook Token
     let token = headers.get("Authorization")
         .or_else(|| headers.get("X-Mayar-Token"))
         .and_then(|h| h.to_str().ok());
     
     let expected_token = std::env::var("MAYAR_WEBHOOK_SECRET").unwrap_or_default();
-    let is_authorized = token == Some(&expected_token) || token == Some(&format!("Bearer {}", expected_token));
+    let is_authorized = if expected_token.is_empty() {
+        true // Allow if not configured (useful for initial setup)
+    } else {
+        token == Some(&expected_token) || 
+        token == Some(&format!("Bearer {}", expected_token)) ||
+        token.map(|t| t.replace("Bearer ", "")) == Some(expected_token.clone())
+    };
     
-    let event_name = payload.event.to_lowercase();
     tracing::info!("Received Webhook [{}]: event={}, data_id={:?}, auth={}", 
         if is_authorized { "AUTH" } else { "GUEST" },
-        payload.event, 
-        payload.data.id,
+        event_raw, 
+        data_id,
         is_authorized
     );
 
     if !is_authorized && !event_name.contains("testing") {
-        tracing::warn!("401 Unauthorized: token_provided={:?}, expected_start={:?}", 
-            token.map(|t| if t.len() > 8 { &t[..8] } else { t }), 
-            if expected_token.len() > 8 { Some(&expected_token[..8]) } else { Some(&expected_token[..]) }
+        tracing::warn!("401 Unauthorized Webhook: provided={:?}, payload_event={}", 
+            token.map(|t| if t.len() > 8 { &t[..8] } else { t }),
+            event_raw
         );
-        return StatusCode::UNAUTHORIZED;
+        return StatusCode::UNAUTHORIZED.into_response();
     }
 
+    // 3. Handle Payment Success
     if event_name.contains("payment.received") || event_name.contains("testing") {
-        if let Some(extra_data_val) = &payload.data.extra_data {
-            let extra_data: HashMap<String, String> = serde_json::from_value(extra_data_val.clone()).unwrap_or_default();
-            if let Some(slug) = extra_data.get("invitation_slug") {
-                if let Some(plan) = extra_data.get("target_plan") {
+        if let Some(d) = data {
+            let extra_data_val = d.get("extraData").or_else(|| d.get("extra_data"));
+            
+            if let Some(ed) = extra_data_val {
+                let slug = ed.get("invitation_slug").and_then(|s| s.as_str());
+                let plan = ed.get("target_plan").and_then(|p| p.as_str());
+
+                if let (Some(slug), Some(plan)) = (slug, plan) {
                     sqlx::query("UPDATE invitations SET plan_name = $1, payment_link = NULL, payment_invoice_id = NULL WHERE slug = $2")
                         .bind(plan)
                         .bind(slug)
@@ -3174,11 +3178,11 @@ pub async fn mayar_webhook(
 
                     // Send Email Notification
                     let user_info = sqlx::query!(
-                        "SELECT u.email, u.name as user_name, i.couple_name_short 
-                         FROM invitations i 
-                         JOIN users u ON i.user_id = u.id 
-                         WHERE i.slug = $1",
-                        slug
+                         "SELECT u.email, u.name as user_name, i.couple_name_short, i.language 
+                          FROM invitations i 
+                          JOIN users u ON i.user_id = u.id 
+                          WHERE i.slug = $1",
+                         slug
                     )
                     .fetch_optional(&state.db)
                     .await
@@ -3186,12 +3190,13 @@ pub async fn mayar_webhook(
                     .flatten();
 
                     if let Some(info) = user_info {
-                        let amount = payload.data.amount.unwrap_or(0);
+                        let amount = d.get("amount").and_then(|a| a.as_i64()).unwrap_or(0) as i32;
                         let email_template = PaymentSuccessEmail {
                             name: info.user_name.unwrap_or_else(|| "Customer".to_string()),
                             plan_name: plan.to_uppercase(),
-                            slug: slug.clone(),
+                            slug: slug.to_string(),
                             amount,
+                            language: info.language.unwrap_or_else(|| "id".to_string()),
                         };
 
                         let to_email = info.email.clone();
@@ -3206,46 +3211,53 @@ pub async fn mayar_webhook(
         }
     }
 
-    // Update Booking Status if Invoice ID is present
-    if let Some(invoice_id) = &payload.data.id {
-        let status = match payload.event.as_str() {
-            "payment.received" => "SUCCESS",
-            "payment.failed" => "FAILED",
-            _ => "PENDING",
+    // 4. Update Booking Status if ID is present
+    if let Some(id) = data_id {
+        let status = if event_name.contains("payment.received") || event_name.contains("testing") {
+            "SUCCESS"
+        } else if event_name.contains("payment.failed") {
+            "FAILED"
+        } else {
+            "PENDING"
         };
         
         if status != "PENDING" {
             let result = sqlx::query("UPDATE bookings SET status = $1, updated_at = NOW() WHERE invoice_id = $2")
                 .bind(status)
-                .bind(invoice_id)
+                .bind(id)
                 .execute(&state.db)
                 .await;
             
             match result {
                 Ok(res) => {
                     if res.rows_affected() == 0 {
-                        tracing::warn!("Webhook received for invoice_id {} but no matching booking found to update", invoice_id);
+                        tracing::warn!("Webhook received for invoice_id {} but no matching booking found to update", id);
                         
-                        // Optional: Create a late-booking record if it's missing (failsafe)
+                        // Failsafe: Create a late-booking record if it's missing
                         if status == "SUCCESS" {
-                             if let Some(extra_data_val) = &payload.data.extra_data {
-                                let extra_data: HashMap<String, String> = serde_json::from_value(extra_data_val.clone()).unwrap_or_default();
-                                if let (Some(slug), Some(plan)) = (extra_data.get("invitation_slug"), extra_data.get("target_plan")) {
-                                    sqlx::query("INSERT INTO bookings (invitation_id, target_plan, amount, invoice_id, status, created_at, updated_at) 
-                                                 SELECT id, $1, $2, $3, $4, NOW(), NOW() FROM invitations WHERE slug = $5")
-                                        .bind(plan)
-                                        .bind(payload.data.amount.unwrap_or(0))
-                                        .bind(invoice_id)
-                                        .bind(status)
-                                        .bind(slug)
-                                        .execute(&state.db)
-                                        .await
-                                        .ok();
+                             if let Some(d) = data {
+                                let extra_data_val = d.get("extraData").or_else(|| d.get("extra_data"));
+                                if let Some(ed) = extra_data_val {
+                                    let slug = ed.get("invitation_slug").and_then(|s| s.as_str());
+                                    let plan = ed.get("target_plan").and_then(|p| p.as_str());
+                                    
+                                    if let (Some(slug), Some(plan)) = (slug, plan) {
+                                        sqlx::query("INSERT INTO bookings (invitation_id, target_plan, amount, invoice_id, status, created_at, updated_at) 
+                                                     SELECT id, $1, $2, $3, $4, NOW(), NOW() FROM invitations WHERE slug = $5")
+                                            .bind(plan)
+                                            .bind(d.get("amount").and_then(|a| a.as_i64()).unwrap_or(0) as i32)
+                                            .bind(id)
+                                            .bind(status)
+                                            .bind(slug)
+                                            .execute(&state.db)
+                                            .await
+                                            .ok();
+                                    }
                                 }
                              }
                         }
                     } else {
-                        tracing::info!("Successfully updated booking status to {} for invoice_id {}", status, invoice_id);
+                        tracing::info!("Successfully updated booking status to {} for invoice_id {}", status, id);
                     }
                 },
                 Err(e) => tracing::error!("Database error updating booking status: {}", e),
@@ -3253,5 +3265,21 @@ pub async fn mayar_webhook(
         }
     }
 
-    StatusCode::OK
+    StatusCode::OK.into_response()
+}
+
+pub async fn test_email() -> impl IntoResponse {
+    let to_email = "guntur@castellant.biz.id";
+    let email_template = PaymentSuccessEmail {
+        name: "Test User".to_string(),
+        plan_name: "PLATINUM".to_string(),
+        slug: "test-invitation".to_string(),
+        amount: 150000,
+        language: "id".to_string(),
+    };
+
+    match mailer::send_payment_success_email(to_email, email_template).await {
+        Ok(_) => (StatusCode::OK, "Email sent successfully! Check your inbox.").into_response(),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to send email: {}", e)).into_response(),
+    }
 }

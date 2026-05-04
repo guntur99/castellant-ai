@@ -30,6 +30,7 @@ pub struct InvitationRow {
     pub reception_data: serde_json::Value,
     pub quote_data: serde_json::Value,
     pub plan_name: Option<String>,
+    pub language: String,
     pub created_at: DateTime<Utc>,
 }
 

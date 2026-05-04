@@ -129,6 +129,7 @@ async fn main() {
         .route("/invitation/{slug}/groups/{group_id}/delete", post(handlers::delete_group))
         .route("/api/payment/create-upgrade/{slug}", post(handlers::create_upgrade_payment))
         .route("/api/payment/webhook", post(handlers::mayar_webhook))
+        .route("/api/test-email", get(handlers::test_email))
         .route("/receipt/{invoice_id}", get(handlers::receipt_detail))
         .route("/sitemap.xml", get(handlers::sitemap))
         .route("/robots.txt", get(|| async { 

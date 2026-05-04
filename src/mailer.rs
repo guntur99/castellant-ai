@@ -10,6 +10,7 @@ pub struct PaymentSuccessEmail {
     pub plan_name: String,
     pub slug: String,
     pub amount: i32,
+    pub language: String,
 }
 
 pub async fn send_payment_success_email(to_email: &str, template: PaymentSuccessEmail) -> Result<(), String> {
@@ -20,22 +21,40 @@ pub async fn send_payment_success_email(to_email: &str, template: PaymentSuccess
     let from_email = env::var("MAIL_FROM_ADDRESS").unwrap_or_else(|_| "team@castellant.biz.id".to_string());
     let from_name = env::var("MAIL_FROM_NAME").unwrap_or_else(|_| "Castellant Team".to_string());
 
+    let language = template.language.clone();
     let email_body = template.render().map_err(|e| format!("Failed to render email: {}", e))?;
+
+    let subject = if language == "id" {
+        "Pembayaran Berhasil! Undangan Anda Sudah Siap ✨"
+    } else {
+        "Payment Confirmed! Your Invitation is Ready ✨"
+    };
 
     let email = Message::builder()
         .from(format!("{} <{}>", from_name, from_email).parse().unwrap())
         .to(to_email.parse().unwrap())
-        .subject("Payment Confirmed! Your Invitation is Ready ✨")
+        .subject(subject)
         .header(lettre::message::header::ContentType::TEXT_HTML)
         .body(email_body)
         .map_err(|e| format!("Failed to build email: {}", e))?;
 
     let creds = Credentials::new(smtp_user, smtp_pass);
 
+    let tls_parameters = lettre::transport::smtp::client::TlsParameters::builder(smtp_host.clone())
+        .build()
+        .map_err(|e| format!("Failed to build TlsParameters: {}", e))?;
+
+    let tls = if smtp_port == 465 {
+        lettre::transport::smtp::client::Tls::Wrapper(tls_parameters)
+    } else {
+        lettre::transport::smtp::client::Tls::Required(tls_parameters)
+    };
+
     let mailer: AsyncSmtpTransport<Tokio1Executor> = AsyncSmtpTransport::<Tokio1Executor>::relay(&smtp_host)
         .map_err(|e| format!("Failed to create mailer: {}", e))?
         .port(smtp_port)
         .credentials(creds)
+        .tls(tls)
         .build();
 
     mailer.send(email).await.map_err(|e| format!("Failed to send email: {}", e))?;
