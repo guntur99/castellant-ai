@@ -3787,7 +3787,7 @@ pub struct MayarWebhookData {
     #[allow(dead_code)]
     pub amount: i32,
     #[serde(rename = "extraData")]
-    pub extra_data: HashMap<String, String>,
+    pub extra_data: Option<HashMap<String, String>>,
 }
 
 pub async fn mayar_webhook(
@@ -3807,17 +3807,19 @@ pub async fn mayar_webhook(
         return StatusCode::UNAUTHORIZED;
     }
 
-    if payload.event == "payment.received" {
-        if let Some(slug) = payload.data.extra_data.get("invitation_slug") {
-            if let Some(plan) = payload.data.extra_data.get("target_plan") {
-                sqlx::query("UPDATE invitations SET plan_name = $1, payment_link = NULL, payment_invoice_id = NULL WHERE slug = $2")
-                    .bind(plan)
-                    .bind(slug)
-                    .execute(&state.db)
-                    .await
-                    .unwrap();
-                
-                tracing::info!("Payment success for {}: Plan upgraded to {}", slug, plan);
+    if payload.event == "payment.received" || payload.event == "testing" {
+        if let Some(extra_data) = payload.data.extra_data {
+            if let Some(slug) = extra_data.get("invitation_slug") {
+                if let Some(plan) = extra_data.get("target_plan") {
+                    sqlx::query("UPDATE invitations SET plan_name = $1, payment_link = NULL, payment_invoice_id = NULL WHERE slug = $2")
+                        .bind(plan)
+                        .bind(slug)
+                        .execute(&state.db)
+                        .await
+                        .unwrap();
+                    
+                    tracing::info!("Payment success for {}: Plan upgraded to {}", slug, plan);
+                }
             }
         }
     }
