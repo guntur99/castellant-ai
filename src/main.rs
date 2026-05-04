@@ -52,6 +52,11 @@ async fn main() {
         .await
         .expect("Failed to connect to Postgres");
 
+    // Set timezone to Jakarta for all future sessions
+    let _ = sqlx::query("SET timezone TO 'Asia/Jakarta'")
+        .execute(&db_pool)
+        .await;
+
     // Run migrations
     sqlx::migrate!("./migrations")
         .run(&db_pool)
