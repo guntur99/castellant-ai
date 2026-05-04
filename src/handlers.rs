@@ -430,18 +430,33 @@ pub async fn create_invitation(
 
     let (payment_link, invoice_id) = if let Some(data) = mayar_res.data {
         let link = data.get("link").and_then(|l| l.as_str().map(|s| s.to_string()));
-        let id = data.get("id").and_then(|i| i.as_str().map(|s| s.to_string()));
+        let mut id = data.get("id").and_then(|i| i.as_str().map(|s| s.to_string()));
+        
+        // Extract readable ID from link (e.g., ix0x43nel8) to ensure better webhook matching
+        if let Some(ref l) = link {
+            if let Some(readable_id) = l.split('/').last() {
+                // If we have a readable ID, let's use it as the primary identifier for bookings
+                id = Some(readable_id.to_string());
+            }
+        }
         (link, id)
     } else {
         (None, None)
     };
 
     let template_name = fields.get("template_name").cloned().unwrap_or_else(|| "caiktok".to_string());
-
     let language = fields.get("language").cloned().unwrap_or_else(|| "id".to_string());
-
     let couple_name_short = fields.get("couple_name_short").cloned().unwrap_or_else(|| "Couple".to_string());
     let event_date = fields.get("event_date").cloned().unwrap_or_else(|| "TBA".to_string());
+
+    // START TRANSACTION
+    let mut tx = match state.db.begin().await {
+        Ok(t) => t,
+        Err(e) => {
+            eprintln!("Failed to start transaction: {}", e);
+            return (StatusCode::INTERNAL_SERVER_ERROR, "Database error").into_response();
+        }
+    };
 
     let invitation_id = match sqlx::query_scalar::<_, Uuid>(
         "INSERT INTO invitations (user_id, slug, couple_name_short, event_date, template_name, bride_data, groom_data, ceremony_data, reception_data, quote_data, plan_name, language, payment_link, payment_invoice_id) 
@@ -461,10 +476,11 @@ pub async fn create_invitation(
     .bind(language)
     .bind(payment_link.clone())
     .bind(invoice_id.clone())
-    .fetch_one(&state.db)
+    .fetch_one(&mut *tx)
     .await {
         Ok(id) => id,
         Err(e) => {
+            let _ = tx.rollback().await;
             eprintln!("Failed to insert invitation: {}", e);
             return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to save invitation. Possible duplicate slug.").into_response();
         }
@@ -479,29 +495,38 @@ pub async fn create_invitation(
         .bind(path)
         .bind("gallery")
         .bind(i as i32)
-        .execute(&state.db)
+        .execute(&mut *tx)
         .await {
-            eprintln!("Failed to insert gallery photo: {}", e);
+            let _ = tx.rollback().await;
+            eprintln!("Failed to insert photo: {}", e);
+            return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to save photos").into_response();
         }
     }
 
-    // Insert into Bookings Table for tracking
+    // Insert Booking record
     if let Some(inv_id) = invoice_id {
         if let Err(e) = sqlx::query(
             "INSERT INTO bookings (user_id, invitation_id, target_plan, amount, invoice_id, payment_link, status) 
-             VALUES ($1, $2, $3, $4, $5, $6, $7)"
+             VALUES ($1, $2, $3, $4, $5, $6, 'PENDING')"
         )
         .bind(user_id)
         .bind(invitation_id)
         .bind(&plan_name)
         .bind(amount)
         .bind(inv_id)
-        .bind(&payment_link)
-        .bind("PENDING")
-        .execute(&state.db)
+        .bind(payment_link.clone())
+        .execute(&mut *tx)
         .await {
-            eprintln!("Failed to create booking record: {}", e);
+            let _ = tx.rollback().await;
+            eprintln!("Failed to insert booking: {}", e);
+            return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to create booking record").into_response();
         }
+    }
+
+    // COMMIT TRANSACTION
+    if let Err(e) = tx.commit().await {
+        eprintln!("Failed to commit transaction: {}", e);
+        return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to finalize invitation").into_response();
     }
 
     if let Some(link) = payment_link {
@@ -3165,7 +3190,14 @@ pub async fn mayar_webhook(
     let event_name = event_raw.to_lowercase();
     let data = payload.get("data");
     
-    let data_id = data.and_then(|d| d.get("id").or_else(|| d.get("invoiceId")).and_then(|i| i.as_str()));
+    let data_id = data.and_then(|d| 
+        d.get("id")
+        .or_else(|| d.get("invoiceId"))
+        .or_else(|| d.get("invoice_id"))
+        .or_else(|| d.get("invoice_no"))
+        .or_else(|| d.get("no_invoice"))
+        .and_then(|i| i.as_str())
+    );
 
     // 2. Verify Webhook Token
     let token = headers.get("Authorization")
@@ -3267,10 +3299,13 @@ pub async fn mayar_webhook(
         };
         
         if status != "PENDING" {
+            let id_from_link = data.and_then(|d| d.get("link").and_then(|l| l.as_str()).and_then(|s| s.split('/').last()));
+
             // Match by invoice_id OR try to find by payment_link if it contains the ID
-            let result = sqlx::query("UPDATE bookings SET status = $1, updated_at = NOW() WHERE invoice_id = $2 OR payment_link LIKE $3")
+            let result = sqlx::query("UPDATE bookings SET status = $1, updated_at = NOW() WHERE invoice_id = $2 OR invoice_id = $3 OR payment_link LIKE $4")
                 .bind(status)
                 .bind(id)
+                .bind(id_from_link.unwrap_or(""))
                 .bind(format!("%{}%", id))
                 .execute(&state.db)
                 .await;
