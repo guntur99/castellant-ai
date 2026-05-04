@@ -3202,13 +3202,16 @@ pub async fn mayar_webhook(
     // 2. Verify Webhook Token
     let token = headers.get("Authorization")
         .or_else(|| headers.get("X-Mayar-Token"))
+        .or_else(|| headers.get("x-mayar-token"))
         .and_then(|h| h.to_str().ok());
+    
+    let token_in_payload = payload.get("token").and_then(|t| t.as_str());
     
     let expected_token = std::env::var("MAYAR_WEBHOOK_SECRET").unwrap_or_default();
     let is_authorized = if expected_token.is_empty() {
-        true // Allow if not configured (useful for initial setup)
+        true // Allow if not configured
     } else {
-        let provided = token.unwrap_or("").trim().replace("Bearer ", "");
+        let provided = token.or(token_in_payload).unwrap_or("").trim().replace("Bearer ", "");
         provided == expected_token.trim()
     };
     
