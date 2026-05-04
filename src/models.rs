@@ -108,6 +108,17 @@ pub struct RsvpForm {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, FromRow)]
+pub struct Rsvp {
+    pub id: Uuid,
+    pub invitation_id: Uuid,
+    pub name: String,
+    pub attendance: String,
+    pub guests: i32,
+    pub message: Option<String>,
+    pub created_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, FromRow)]
 pub struct AiSession {
     pub id: Uuid,
     pub user_id: Option<Uuid>,

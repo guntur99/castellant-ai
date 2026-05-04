@@ -6,7 +6,7 @@ use axum::{
     Json,
 };
 use askama::Template;
-use crate::models::{Invitation, Person, EventDetails, Quote, GiftAccount, RsvpForm, InvitationRow, Song, User, AiSession, Guest, GuestGroup, Booking, Voucher};
+use crate::models::{Invitation, Person, EventDetails, Quote, GiftAccount, RsvpForm, Rsvp, InvitationRow, Song, User, AiSession, Guest, GuestGroup, Booking, Voucher};
 use crate::AppState;
 use crate::mailer::{self, PaymentSuccessEmail};
 use serde_json::{from_value, json};
@@ -1520,6 +1520,7 @@ pub struct ManageInvitationTemplate {
     pub user: Option<User>,
     pub guests: Vec<Guest>,
     pub groups: Vec<GuestGroup>,
+    pub rsvps: Vec<Rsvp>,
 }
 
 #[derive(Template)]
@@ -2118,6 +2119,12 @@ pub async fn manage_invitation(
                 .await
                 .unwrap_or_default();
 
+            let rsvps = sqlx::query_as::<_, Rsvp>("SELECT * FROM rsvps WHERE invitation_id = $1 ORDER BY created_at DESC")
+                .bind(row.id)
+                .fetch_all(&state.db)
+                .await
+                .unwrap_or_default();
+
             HtmlTemplate(ManageInvitationTemplate { 
                 invitation, 
                 all_templates, 
@@ -2125,6 +2132,7 @@ pub async fn manage_invitation(
                 user,
                 guests,
                 groups,
+                rsvps,
             }).into_response()
         },
         None => (StatusCode::NOT_FOUND, "Invitation not found or unauthorized").into_response(),
@@ -2825,6 +2833,28 @@ pub async fn delete_guest(
 ) -> impl IntoResponse {
     sqlx::query("DELETE FROM guests WHERE id = $1").bind(guest_id).execute(&state.db).await.unwrap();
     Redirect::to(&format!("/invitation/{}/manage#guests", slug)).into_response()
+}
+
+pub async fn delete_rsvp(
+    Path((slug, rsvp_id)): Path<(String, Uuid)>,
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user_id = if let Some(cookie) = jar.get("user_id") {
+        Uuid::parse_str(cookie.value()).ok()
+    } else { None };
+
+    if user_id.is_none() { return Redirect::to("/").into_response(); }
+
+    sqlx::query("DELETE FROM rsvps WHERE id = $1 AND invitation_id = (SELECT id FROM invitations WHERE slug = $2 AND user_id = $3)")
+        .bind(rsvp_id)
+        .bind(&slug)
+        .bind(user_id.unwrap())
+        .execute(&state.db)
+        .await
+        .unwrap();
+
+    Redirect::to(&format!("/invitation/{}/manage#rsvps", slug)).into_response()
 }
 
 #[derive(Deserialize)]

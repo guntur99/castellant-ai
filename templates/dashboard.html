@@ -28,13 +28,11 @@
         <div class="invitations-grid">
             {% for inv in invitations %}
             <div class="invitation-card glass">
-                <div class="card-header">
-                    <div class="template-badge">{{ inv.template_name }}</div>
-                </div>
                 <div class="card-body">
                     <h3 class="serif">{{ inv.couple_name_short }}</h3>
-                    <p class="slug-text">/invitation/{{ inv.slug }}</p>
-                    <p class="event-date"><i class="far fa-calendar-alt"></i> {{ inv.event_date }}</p>
+                    <div class="event-date">
+                        <i class="far fa-calendar-alt"></i> <span>{{ inv.event_date }}</span>
+                    </div>
                 </div>
                 <div class="card-footer">
                     <a href="/invitation/{{ inv.slug }}" class="btn-action" target="_blank">
@@ -69,53 +67,54 @@
 .invitations-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2rem;
+    gap: 2.5rem;
 }
 
 .invitation-card {
     display: flex;
     flex-direction: column;
     height: 100%;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 1px solid rgba(142, 110, 83, 0.1);
 }
 
-.card-header {
-    margin-bottom: 1.5rem;
-}
-
-.template-badge {
-    display: inline-block;
-    padding: 4px 12px;
-    background: var(--color-accent-rose);
-    color: white;
-    font-size: 0.65rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    border-radius: 50px;
-    letter-spacing: 1px;
+.invitation-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 30px 60px rgba(142, 110, 83, 0.08);
+    border-color: rgba(142, 110, 83, 0.25);
 }
 
 .card-body {
     flex-grow: 1;
+    padding-top: 10px;
 }
 
-.slug-text {
-    font-size: 0.75rem;
-    color: var(--color-text-muted);
-    margin: 4px 0 12px;
+.card-body h3 {
+    font-size: 1.8rem;
+    color: #1a1a1a;
+    margin-bottom: 15px;
+    letter-spacing: -0.5px;
 }
 
 .event-date {
-    font-size: 0.85rem;
-    color: var(--color-text-primary);
-    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8rem;
+    color: #555;
+    font-weight: 700;
+    padding: 8px 16px;
+    background: rgba(0,0,0,0.02);
+    border-radius: 50px;
+    border: 1px solid rgba(0,0,0,0.04);
+    letter-spacing: 0.5px;
 }
 
 .card-footer {
     display: flex;
-    gap: 10px;
-    margin-top: 2rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid rgba(0,0,0,0.05);
+    gap: 12px;
+    margin-top: 2.5rem;
+    padding-top: 0;
 }
 
 .btn-action {
@@ -124,29 +123,33 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    padding: 10px;
-    border-radius: 12px;
-    font-size: 0.8rem;
+    padding: 12px;
+    border-radius: 50px;
+    font-size: 0.85rem;
     font-weight: 700;
     text-decoration: none;
     transition: all 0.3s ease;
-    background: rgba(0,0,0,0.03);
-    color: var(--color-text-primary);
+    background: #ffffff;
+    color: #1a1a1a;
+    border: 1px solid #e0e0e0;
 }
 
 .btn-action:hover {
-    background: rgba(0,0,0,0.06);
+    background: #f8f8f8;
+    border-color: #cccccc;
 }
 
 .btn-action.primary {
-    background: var(--color-accent-red);
+    background: #2A1E14;
     color: white;
+    border: none;
+    box-shadow: 0 10px 20px rgba(42, 30, 20, 0.15);
 }
 
 .btn-action.primary:hover {
-    background: #a62323;
+    background: #1a120c;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(212, 48, 48, 0.2);
+    box-shadow: 0 15px 25px rgba(42, 30, 20, 0.25);
 }
 
 .empty-state {

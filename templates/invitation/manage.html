@@ -188,15 +188,22 @@
         align-items: center;
         gap: 8px;
     }
+    .card {
+        background: rgba(255, 255, 255, 0.7);
         backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.4);
         box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
         border-radius: 40px;
         padding: 3rem;
+        margin-top: 4rem !important;
+        margin-bottom: 4rem !important;
+        display: block;
+        width: 100%;
     }
 
     .mt-5 {
-        margin-top: 3rem;
+        margin-top: 5rem !important;
+        margin-bottom: 5rem !important;
     }
 
     /* Visual Group Pairing Styles */
@@ -686,6 +693,80 @@
         border-radius: 50px;
         margin-bottom: 0.8rem;
     }
+
+    /* Sidebar Layout Styles */
+    .dashboard-layout {
+        display: flex;
+        gap: 3rem;
+        align-items: flex-start;
+        position: relative;
+    }
+    
+    .dashboard-sidebar {
+        position: sticky;
+        top: 100px;
+        width: 250px;
+        flex-shrink: 0;
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+        border-radius: 20px;
+        padding: 1.5rem;
+        z-index: 10;
+    }
+    
+    .sidebar-nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .sidebar-link {
+        padding: 12px 16px;
+        border-radius: 12px;
+        color: var(--color-text-muted);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+    
+    .sidebar-link i {
+        font-size: 1rem;
+        width: 20px;
+        text-align: center;
+    }
+    
+    .sidebar-link:hover {
+        background: rgba(142, 110, 83, 0.05);
+        color: #8E6E53;
+    }
+    
+    .sidebar-link.active {
+        background: rgba(142, 110, 83, 0.1);
+        color: #8E6E53;
+        font-weight: 700;
+    }
+    
+    .dashboard-main {
+        flex: 1;
+        min-width: 0;
+    }
+
+    @media (max-width: 992px) {
+        .dashboard-layout {
+            flex-direction: column;
+        }
+        .dashboard-sidebar {
+            position: static;
+            width: 100%;
+            margin-bottom: 2rem;
+        }
+    }
 </style>
 {% endblock %}
 
@@ -708,20 +789,32 @@
                 </div>
             </div>
             <div class="header-actions">
-                <a href="/invitation/{{ invitation.slug }}" class="btn btn-outline" target="_blank">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-                        <polyline points="15 3 21 3 21 9"></polyline>
-                        <line x1="10" y1="14" x2="21" y2="3"></line>
-                    </svg>
-                    View Live
-                </a>
+                <!-- View Live button removed as per user request -->
             </div>
         </header>
 
-        <div class="dashboard-main">
-            <!-- Details Card -->
-            <div class="creation-container">
+        <div class="dashboard-layout">
+            <!-- Sidebar Navigation -->
+            <aside class="dashboard-sidebar">
+                <nav class="sidebar-nav">
+                    <a href="#details" class="sidebar-link active">
+                        <i class="fas fa-info-circle"></i> General Details
+                    </a>
+                    <a href="#groups" class="sidebar-link">
+                        <i class="fas fa-layer-group"></i> Theme Assignment
+                    </a>
+                    <a href="#guests" class="sidebar-link">
+                        <i class="fas fa-users"></i> Guest Management
+                    </a>
+                    <a href="#rsvps" class="sidebar-link">
+                        <i class="fas fa-envelope-open-text"></i> RSVP Responses
+                    </a>
+                </nav>
+            </aside>
+
+            <div class="dashboard-main">
+                <!-- Details Card -->
+                <div id="details" class="creation-container">
                 <div class="progress-steps" style="background: #fdfdfd; border-bottom: 1px solid #f0f0f0;">
                     <div class="step-item active" id="step-1-indicator" onclick="goToStep(1)">
                         <span class="step-num">01</span>
@@ -1148,12 +1241,14 @@
 
             <!-- Guest Management -->
             <div id="guests" class="card glass mt-5">
-                <div class="section-header d-flex justify-content-between align-items-start mb-5">
-                    <div style="flex: 1; margin-right: 1.5rem;">
-                        <h3 class="serif">Guest Management</h3>
-                        <p class="text-muted small">Personalize links and overrides for each individual guest.</p>
+                <div class="section-header mb-5" style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+                    <div style="flex: 1;">
+                        <h3 class="serif" style="margin: 0;">Guest Management</h3>
+                        <p class="text-muted small" style="margin: 4px 0 0;">Personalize links and overrides for each individual guest.</p>
                     </div>
-                    <button class="btn btn-primary" onclick="toggleAddGuestModal()" style="white-space: nowrap; padding: 0.8rem 2rem; font-size: 0.85rem;">+ Add Guest</button>
+                    <div style="flex-shrink: 0; margin-left: 1.5rem;">
+                        <button class="btn btn-primary" onclick="toggleAddGuestModal()" style="white-space: nowrap; padding: 0.8rem 2rem; font-size: 0.85rem; border-radius: 50px; box-shadow: 0 10px 20px rgba(142, 110, 83, 0.2);">+ Add Guest</button>
+                    </div>
                 </div>
 
                 <!-- Table Controls -->
@@ -1236,14 +1331,79 @@
                 <!-- Pagination Footer -->
                 <div class="pagination-container">
                     <div class="pagination-info">
-                        Showing <span id="startRange">0</span> to <span id="endRange">0</span> of <span
-                            id="totalItems">0</span> guests
-                    </div>
-                    <div class="pagination-buttons" id="paginationBtns">
-                        <!-- Dynamic buttons -->
+                        Showing <span id="startRange">0</span> to <span id="endRange">0</span> of <span id="totalItems">0</span> guests
                     </div>
                 </div>
             </div>
+
+            <!-- RSVP Management -->
+            <div id="rsvps" class="card glass mt-5">
+                <div class="section-header mb-5" style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+                    <div style="flex: 1;">
+                        <h3 class="serif" style="margin: 0;">RSVP Responses</h3>
+                        <p class="text-muted small" style="margin: 4px 0 0;">Monitor and manage responses from your guests in real-time.</p>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="guest-table" style="table-layout: auto;">
+                        <thead>
+                            <tr>
+                                <th style="width: 25%;">Name</th>
+                                <th style="text-align: center; width: 15%;">Attendance</th>
+                                <th style="text-align: center; width: 10%;">Guests</th>
+                                <th style="width: 40%;">Message</th>
+                                <th style="text-align: right; width: 10%;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for rsvp in rsvps %}
+                            <tr>
+                                <td>
+                                    <div class="guest-name-cell">
+                                        <span class="font-bold" style="font-size: 0.95rem; color: #1a1a1a;">{{ rsvp.name }}</span>
+                                        <div class="guest-slug-hint" style="font-size: 0.7rem; color: #94a3b8;">{{ rsvp.created_at.format("%d %b, %H:%M") }}</div>
+                                    </div>
+                                </td>
+                                <td style="text-align: center;">
+                                    {% if rsvp.attendance == "yes" %}
+                                    <span class="badge" style="background: #f0fdf4; color: #166534; padding: 6px 14px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; border: 1px solid rgba(22, 101, 52, 0.1);">Hadir</span>
+                                    {% else %}
+                                    <span class="badge" style="background: #fef2f2; color: #991b1b; padding: 6px 14px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; border: 1px solid rgba(153, 27, 27, 0.1);">Absen</span>
+                                    {% endif %}
+                                </td>
+                                <td style="text-align: center; font-weight: 700; color: #475569;">{{ rsvp.guests }}</td>
+                                <td>
+                                    <div style="font-size: 0.85rem; color: #64748b; line-height: 1.5; font-style: italic; max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="{{ rsvp.message.as_deref().unwrap_or("-") }}">
+                                        "{{ rsvp.message.as_deref().unwrap_or("-") }}"
+                                    </div>
+                                </td>
+                                <td style="text-align: right;">
+                                    <div class="guest-actions" style="justify-content: flex-end;">
+                                        <form action="/invitation/{{ invitation.slug }}/rsvp/{{ rsvp.id }}/delete"
+                                            method="POST" style="display:inline;" onsubmit="return confirm('Hapus RSVP ini?')">
+                                            <button type="submit" class="btn-icon delete" title="Hapus RSVP">
+                                                <i class="far fa-trash-alt"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="5" class="text-center py-5">
+                                    <div style="opacity: 0.3; padding: 2rem 0;">
+                                        <i class="far fa-envelope-open fa-3x mb-3"></i>
+                                        <p style="font-weight: 600;">Belum ada RSVP masuk dari tamu.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
         </div>
     </div>
 </div>
@@ -1308,8 +1468,48 @@
             dropdownParent: $('#add-guest-modal')
         });
 
+        // Sidebar Smooth Scroll & Active State
+        $('.sidebar-link').on('click', function(e) {
+            e.preventDefault();
+            const targetId = $(this).attr('href');
+            const targetSection = $(targetId);
+            
+            if (targetSection.length) {
+                // Adjust for sticky header if you have one
+                const offset = 80; 
+                $('html, body').animate({
+                    scrollTop: targetSection.offset().top - offset
+                }, 500);
+            }
+        });
+
+        // Intersection Observer for highlighting active section
+        const sections = document.querySelectorAll('.dashboard-main > div[id]');
+        const navLinks = document.querySelectorAll('.sidebar-link');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '-20% 0px -60% 0px', // Adjust to trigger active state nicely
+            threshold: 0
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${entry.target.id}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(sec => observer.observe(sec));
+
         // Client-side Table Logic
-        const rowsPerPage = 10;
+        const rowsPerPage = 5;
         let currentPage = 1;
         let filteredRows = [];
 

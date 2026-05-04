@@ -130,6 +130,7 @@ async fn main() {
         .route("/invitation/{slug}/guests", post(handlers::add_guest))
         .route("/invitation/{slug}/guests/{guest_id}/delete", post(handlers::delete_guest))
         .route("/invitation/{slug}/guests/{guest_id}/update-template", post(handlers::update_guest_template))
+        .route("/invitation/{slug}/rsvp/{rsvp_id}/delete", post(handlers::delete_rsvp))
         .route("/invitation/{slug}/groups", post(handlers::add_group))
         .route("/invitation/{slug}/groups/{group_id}/delete", post(handlers::delete_group))
         .route("/api/payment/create-upgrade/{slug}", post(handlers::create_upgrade_payment))
