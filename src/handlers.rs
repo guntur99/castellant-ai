@@ -3056,10 +3056,22 @@ pub async fn create_upgrade_payment(
         .await
         .unwrap();
 
-    let amount = match payload.target_plan.as_str() {
+    let current_plan_price = match invitation.plan_name.as_deref().unwrap_or("NOBLE") {
         "ROYAL" => 100000,
         "DYNASTY" => 300000,
         _ => 50000,
+    };
+
+    let target_plan_price = match payload.target_plan.as_str() {
+        "ROYAL" => 100000,
+        "DYNASTY" => 300000,
+        _ => 50000,
+    };
+
+    let amount = if target_plan_price > current_plan_price {
+        target_plan_price - current_plan_price
+    } else {
+        0
     };
 
     let mut discount_amount = 0;
@@ -3356,7 +3368,7 @@ pub async fn mayar_webhook(
 }
 
 pub async fn test_email() -> impl IntoResponse {
-    let to_email = "guntur@castellant.biz.id";
+    let to_email = std::env::var("MAIL_TO_ADMIN_ADDRESS").unwrap_or_else(|_| "admin@example.com".to_string());
     let email_template = PaymentSuccessEmail {
         name: "Test User".to_string(),
         plan_name: "DYNASTY".to_string(),
@@ -3365,7 +3377,7 @@ pub async fn test_email() -> impl IntoResponse {
         language: "id".to_string(),
     };
 
-    match mailer::send_payment_success_email(to_email, email_template).await {
+    match mailer::send_payment_success_email(&to_email, email_template).await {
         Ok(_) => (StatusCode::OK, "Email sent successfully! Check your inbox.").into_response(),
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to send email: {}", e)).into_response(),
     }

@@ -18,7 +18,7 @@ pub async fn send_payment_success_email(to_email: &str, template: PaymentSuccess
     let smtp_port = env::var("MAIL_PORT").unwrap_or_else(|_| "2525".to_string()).parse::<u16>().unwrap_or(2525);
     let smtp_user = env::var("MAIL_USERNAME").unwrap_or_default();
     let smtp_pass = env::var("MAIL_PASSWORD").unwrap_or_default();
-    let from_email = env::var("MAIL_FROM_ADDRESS").unwrap_or_else(|_| "team@castellant.biz.id".to_string());
+    let from_email = env::var("MAIL_FROM_ADDRESS").unwrap_or_else(|_| "no-reply@example.com".to_string());
     let from_name = env::var("MAIL_FROM_NAME").unwrap_or_else(|_| "Castellant Team".to_string());
 
     let language = template.language.clone();
