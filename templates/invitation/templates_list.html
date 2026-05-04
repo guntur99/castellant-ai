@@ -103,10 +103,16 @@
 
         <div style="display: flex; gap: 0.5rem;">
             {% for i in 1..total_pages + 1 %}
-            <a href="?category={{ active_category }}&search={{ search_query }}&page={{ i }}" 
-               class="page-num {% if i == current_page %}active{% endif %}">
-                {{ i }}
-            </a>
+                {% if i == 1 || i == total_pages || (i >= current_page - 1 && i <= current_page + 1) %}
+                <a href="?category={{ active_category }}&search={{ search_query }}&page={{ i }}" 
+                   class="page-num {% if i == current_page %}active{% endif %}">
+                    {{ i }}
+                </a>
+                {% else if i == 2 && current_page > 3 %}
+                <span class="page-ellipsis">...</span>
+                {% else if i == total_pages - 1 && current_page < total_pages - 2 %}
+                <span class="page-ellipsis">...</span>
+                {% endif %}
             {% endfor %}
         </div>
 
@@ -192,6 +198,16 @@
         border-color: var(--color-accent-rose);
         color: var(--color-accent-red);
         transform: translateY(-2px);
+    }
+
+    .page-ellipsis {
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--color-text-muted);
+        font-weight: 600;
     }
 
     .btn-luxe-outline {
