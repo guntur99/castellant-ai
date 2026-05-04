@@ -1,244 +1,484 @@
 {% extends "site_base.html" %}
 
-{% block title %}Profile | Castellant{% endblock %}
+{% block title %}User Estate | Castellant{% endblock %}
 
 {% block site_content %}
 <div class="profile-page animate__animated animate__fadeIn">
-    <div class="container">
-        <header class="page-header">
-            <h1 class="serif">User Profile</h1>
-            <p class="text-muted">Manage your personal information and account details.</p>
+    <!-- Ambient background elements -->
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+    <div class="ambient-glow glow-3"></div>
+
+    <div class="container relative-z">
+        <header class="page-header text-center">
+            <div class="header-line"></div>
+            <span class="eyebrow" data-i18n="profile.eyebrow">Personal Architecture</span>
+            <h1 class="serif luxury-title" data-i18n="profile.title">The Master <em>Estate</em></h1>
+            <p class="subtitle" data-i18n="profile.subtitle">Curate your legacy and manage your architectural union with precision and grace.</p>
         </header>
 
-        <div class="profile-grid">
-            <div class="profile-sidebar">
-                <div class="glass profile-card">
-                    <div class="avatar-container">
-                        <img src="{% if let Some(u) = user %}{{ u.avatar_url.as_deref().unwrap_or("") }}{% endif %}" alt="Avatar" class="profile-avatar large">
-                        <button class="edit-avatar"><i class="fas fa-camera"></i></button>
+        <div class="profile-layout">
+            <!-- Sidebar: Identity Card -->
+            <aside class="profile-sidebar">
+                <div class="identity-card glass-premium">
+                    <div class="avatar-wrapper">
+                        <div class="avatar-ring"></div>
+                        <div class="avatar-ring-outer"></div>
+                        <img src="{% if let Some(u) = user %}{{ u.avatar_url.as_deref().unwrap_or("") }}{% endif %}" alt="Avatar" class="avatar-img">
+                        <button class="avatar-edit-btn" title="Update Portrait" data-i18n="[title]profile.sidebar.portrait_btn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                        </button>
                     </div>
-                    <h2 class="serif mt-4">{% if let Some(u) = user %}{{ u.name.as_deref().unwrap_or("User") }}{% else %}User{% endif %}</h2>
-                    <p class="text-muted">{% if let Some(u) = user %}{{ u.email }}{% endif %}</p>
                     
-                    <div class="profile-stats mt-4">
-                        <div class="stat">
-                            <span class="stat-value">Active</span>
-                            <span class="stat-label">Status</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-value">Premium</span>
-                            <span class="stat-label">Plan</span>
+                    <div class="identity-info">
+                        <h2 class="serif">{% if let Some(u) = user %}{{ u.name.as_deref().unwrap_or("Guest") }}{% else %}Guest{% endif %}</h2>
+                        <span class="user-email">{% if let Some(u) = user %}{{ u.email }}{% endif %}</span>
+                    </div>
+
+                    <div class="plan-badge-container">
+                        <div class="plan-pill badge-noble">
+                            <span class="pill-dot"></span>
+                            <span class="pill-text"><span data-i18n="profile.sidebar.plan_name">NOBLE</span> Plan</span>
                         </div>
                     </div>
-                </div>
-            </div>
 
-            <div class="profile-main">
-                <div class="glass form-card">
-                    <h3 class="serif mb-4">Account Information</h3>
-                    <form class="profile-form">
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Full Name</label>
-                                <input type="text" value="{% if let Some(u) = user %}{{ u.name.as_deref().unwrap_or("") }}{% endif %}" readonly>
-                            </div>
-                            <div class="form-group">
-                                <label>Email Address</label>
-                                <input type="email" value="{% if let Some(u) = user %}{{ u.email }}{% endif %}" readonly>
-                            </div>
+                    <div class="sidebar-stats">
+                        <div class="s-stat">
+                            <span class="s-value">12</span>
+                            <span class="s-label" data-i18n="profile.sidebar.stats.created">Legacy Created</span>
                         </div>
-                        <div class="form-group">
-                            <label>Member Since</label>
-                            <input type="text" value="March 2024" readonly>
+                        <div class="s-stat">
+                            <span class="s-value">450</span>
+                            <span class="s-label" data-i18n="profile.sidebar.stats.guests">Total Guests</span>
                         </div>
-                        
-                        <div class="form-actions mt-4">
-                            <p class="info-note">
-                                <i class="fas fa-info-circle"></i> Personal details are synchronized with your Google account.
-                            </p>
-                        </div>
-                    </form>
+                    </div>
+
+                    <div class="sidebar-actions">
+                        <button class="btn-luxe-sidebar">
+                            <i class="fas fa-sliders"></i>
+                            <span data-i18n="profile.sidebar.settings_btn">Estate Settings</span>
+                        </button>
+                    </div>
                 </div>
 
-                <div class="glass danger-zone mt-4">
-                    <h3 class="serif mb-2" style="color: #ff4757;">Danger Zone</h3>
-                    <p class="text-muted mb-4">Once you delete your account, there is no going back. Please be certain.</p>
-                    <button class="btn btn-danger">Delete Account</button>
+                <div class="referral-card glass-premium">
+                    <div class="card-icon-bg"><i class="fas fa-feather-pointed"></i></div>
+                    <h4 class="serif" data-i18n="profile.sidebar.referral_title">Invite Fellow Artisans</h4>
+                    <p data-i18n="profile.sidebar.referral_desc">Expand the Castellant circle and unlock exclusive architectural elements.</p>
+                    <div class="copy-link">
+                        <span>castellant.ai/ref/8291..</span>
+                        <div class="copy-btn-inner"><i class="fas fa-copy"></i></div>
+                    </div>
                 </div>
-            </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="profile-main">
+                <!-- Account Section -->
+                <section class="content-section glass-premium mb-5">
+                    <div class="section-header">
+                        <div class="header-decoration"></div>
+                        <h3 class="serif" data-i18n="profile.credentials.title">Estate Credentials</h3>
+                        <p data-i18n="profile.credentials.subtitle">The core components of your architectural identity.</p>
+                    </div>
+                    
+                    <div class="credentials-grid">
+                        <div class="info-tile">
+                            <label data-i18n="profile.credentials.name_label">Full Nomenclature</label>
+                            <div class="tile-value serif">{% if let Some(u) = user %}{{ u.name.as_deref().unwrap_or("-") }}{% endif %}</div>
+                        </div>
+                        <div class="info-tile">
+                            <label data-i18n="profile.credentials.email_label">Digital Correspondence</label>
+                            <div class="tile-value serif">{% if let Some(u) = user %}{{ u.email }}{% endif %}</div>
+                        </div>
+                        <div class="info-tile">
+                            <label data-i18n="profile.credentials.tenure_label">Architectural Tenure</label>
+                            <div class="tile-value serif" data-i18n="profile.credentials.tenure_value">Autumn, 2024</div>
+                        </div>
+                        <div class="info-tile">
+                            <label data-i18n="profile.credentials.status_label">Current Presence</label>
+                            <div class="tile-value serif" data-i18n="profile.credentials.status_active">Active Now</div>
+                        </div>
+                    </div>
+
+                    <div class="sync-banner">
+                        <div class="banner-icon-bg"><i class="fab fa-google"></i></div>
+                        <div class="banner-text">
+                            <strong data-i18n="profile.credentials.google_verified">Google Workspace Verified</strong>
+                            <span data-i18n="profile.credentials.google_desc">Your profile details are automatically synchronized.</span>
+                        </div>
+                    </div>
+                </section>
+
+                <div style="height: 2rem;"></div> <!-- Vertical Spacer for the layout overlap fix -->
+
+                <!-- Plan Section -->
+                <section class="content-section glass-premium">
+                    <div class="section-header">
+                        <div class="flex-header">
+                            <div>
+                                <h3 class="serif" data-i18n="profile.plan.title">Architecture Plan</h3>
+                                <p data-i18n="profile.plan.subtitle">Review your current pairing capacity and tier features.</p>
+                            </div>
+                            <button class="btn-upgrade-luxury" data-i18n="profile.plan.upgrade_btn">Enhance Tier</button>
+                        </div>
+                    </div>
+
+                    <div class="plan-visual-box">
+                        <div class="plan-progress">
+                            <div class="progress-info">
+                                <span class="label" data-i18n="profile.plan.capacity_label">Pairing Capacity</span>
+                                <span class="value"><span data-i18n="profile.plan.capacity_value" data-i18n-options='{"used": 3, "total": 3}'>3 of 3 Designs Used</span></span>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-track">
+                                    <div class="progress-bar-fill" style="width: 100%;"></div>
+                                </div>
+                                <div class="progress-glow"></div>
+                            </div>
+                            <div class="limit-status">
+                                <i class="fas fa-circle-info"></i>
+                                <span data-i18n="profile.plan.limit_msg">You have reached the limit of the NOBLE architectural tier.</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feature-matrix">
+                        <div class="matrix-item active">
+                            <div class="item-dot"></div>
+                            <span class="serif" data-i18n="profile.features.rsvp">Standard RSVP Engine</span>
+                        </div>
+                        <div class="matrix-item active">
+                            <div class="item-dot"></div>
+                            <span class="serif" data-i18n="profile.features.storage">Cloud Legacy Storage</span>
+                        </div>
+                        <div class="matrix-item active">
+                            <div class="item-dot"></div>
+                            <span class="serif" data-i18n="profile.features.domain">Custom Domain Mapping</span>
+                        </div>
+                        <div class="matrix-item locked">
+                            <div class="item-dot"></div>
+                            <span class="serif" data-i18n="profile.features.ai">AI Artisan Assistant</span>
+                        </div>
+                    </div>
+                </section>
+            </main>
         </div>
     </div>
 </div>
 
 <style>
+:root {
+    --color-gold: #D4A373;
+    --color-gold-dark: #8E6E53;
+    --color-cream: #fdf6f0;
+    --color-estate-dark: #2A1E14;
+    --glass-border: rgba(255, 255, 255, 0.6);
+}
+
 .profile-page {
-    padding: 120px 0 80px;
-    min-height: 80vh;
+    padding: 160px 0 120px;
+    background: #fafaf9;
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
 }
 
-.page-header {
-    margin-bottom: 4rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+.relative-z { position: relative; z-index: 10; }
+
+.header-line {
+    width: 60px;
+    height: 1px;
+    background: var(--color-gold);
+    margin: 0 auto 1.5rem;
 }
 
-.profile-grid {
+.luxury-title {
+    font-size: 4rem;
+    font-weight: 300;
+    color: var(--color-estate-dark);
+    margin-bottom: 1.2rem;
+    letter-spacing: -1px;
+}
+
+.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 5px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: var(--color-gold-dark);
+    display: block;
+    margin-bottom: 0.8rem;
+}
+
+.subtitle {
+    color: #777;
+    max-width: 550px;
+    margin: 0 auto 6rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+/* Ambient Glows */
+.ambient-glow {
+    position: absolute;
+    width: 800px;
+    height: 800px;
+    border-radius: 50%;
+    filter: blur(140px);
+    opacity: 0.3;
+    z-index: 1;
+}
+.glow-1 { top: -300px; left: -300px; background: rgba(212, 163, 115, 0.15); }
+.glow-2 { bottom: -300px; right: -300px; background: rgba(139, 42, 42, 0.1); }
+.glow-3 { top: 20%; right: -200px; background: rgba(212, 163, 115, 0.08); width: 400px; height: 400px; }
+
+.profile-layout {
     display: grid;
-    grid-template-columns: 350px 1fr;
-    gap: 3rem;
+    grid-template-columns: 380px 1fr;
+    gap: 4rem;
     align-items: start;
 }
 
-.profile-sidebar .profile-card {
+/* Sidebar Styling */
+.identity-card {
+    padding: 4rem 2.5rem;
     text-align: center;
-    padding: 3rem 2rem;
+    transition: transform 0.4s ease;
 }
+.identity-card:hover { transform: translateY(-5px); }
 
-.avatar-container {
+.avatar-wrapper {
     position: relative;
     width: 150px;
     height: 150px;
-    margin: 0 auto;
+    margin: 0 auto 2.5rem;
 }
 
-.profile-avatar.large {
-    width: 150px;
-    height: 150px;
+.avatar-ring {
+    position: absolute;
+    inset: -12px;
+    border: 1px solid rgba(212, 163, 115, 0.4);
     border-radius: 50%;
-    border: 4px solid white;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    animation: rotate 25s linear infinite;
 }
 
-.edit-avatar {
+.avatar-ring-outer {
+    position: absolute;
+    inset: -22px;
+    border: 1px dashed rgba(212, 163, 115, 0.15);
+    border-radius: 50%;
+    animation: rotate-reverse 40s linear infinite;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 6px solid white;
+    box-shadow: 0 20px 45px rgba(0,0,0,0.08);
+}
+
+.avatar-edit-btn {
     position: absolute;
     bottom: 5px;
     right: 5px;
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    background: var(--color-accent-red);
+    background: var(--color-estate-dark);
     color: white;
-    border: 2px solid white;
-    cursor: pointer;
+    border: 3px solid white;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     transition: all 0.3s ease;
 }
+.avatar-edit-btn:hover { transform: scale(1.1); background: var(--color-gold-dark); }
 
-.edit-avatar:hover {
-    transform: scale(1.1);
-}
+.identity-info h2 { font-size: 2rem; margin-bottom: 0.5rem; color: var(--color-estate-dark); font-weight: 400; }
+.user-email { color: #888; font-size: 0.95rem; font-weight: 500; }
 
-.profile-stats {
-    display: flex;
-    justify-content: space-around;
-    padding-top: 2rem;
-    border-top: 1px solid rgba(0,0,0,0.05);
-}
-
-.stat {
-    display: flex;
-    flex-direction: column;
-}
-
-.stat-value {
+.plan-badge-container { margin: 2rem 0; }
+.plan-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px;
+    border-radius: 100px;
     font-weight: 800;
-    font-size: 1.1rem;
-    color: var(--color-text-primary);
-}
-
-.stat-label {
     font-size: 0.7rem;
-    color: var(--color-text-muted);
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    letter-spacing: 1px;
 }
+.badge-noble { background: #fffcf8; color: var(--color-gold-dark); border: 1px solid rgba(142, 110, 83, 0.15); box-shadow: 0 4px 12px rgba(142, 110, 83, 0.05); }
+.pill-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
 
-.form-card {
-    padding: 3rem;
-}
-
-.profile-form .form-row {
+.sidebar-stats {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
+    margin: 2.5rem 0;
+    padding: 2rem 0;
+    border-top: 1px solid rgba(0,0,0,0.04);
+    border-bottom: 1px solid rgba(0,0,0,0.04);
 }
 
-.form-group {
-    margin-bottom: 1.5rem;
-}
+.s-value { display: block; font-size: 1.4rem; font-weight: 400; color: var(--color-estate-dark); font-family: 'Playfair Display', serif; }
+.s-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 1.5px; color: #aaa; margin-top: 4px; font-weight: 800; }
 
-.form-group label {
-    display: block;
-    font-size: 0.75rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-    color: var(--color-text-muted);
-}
-
-.form-group input {
+.btn-luxe-sidebar {
     width: 100%;
-    padding: 12px 16px;
-    border-radius: 12px;
-    border: 1px solid rgba(0,0,0,0.1);
-    background: rgba(255, 255, 255, 0.5);
-    font-size: 0.95rem;
-    color: var(--color-text-primary);
-}
-
-.form-group input:read-only {
-    background: rgba(0,0,0,0.02);
-    cursor: not-allowed;
-}
-
-.info-note {
-    font-size: 0.8rem;
-    color: var(--color-text-muted);
+    padding: 15px;
+    border-radius: 20px;
+    border: 1px solid rgba(0,0,0,0.04);
+    background: white;
+    color: var(--color-estate-dark);
+    font-weight: 700;
+    font-size: 0.85rem;
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 15px;
-    background: rgba(0,0,0,0.03);
-    border-radius: 12px;
-}
-
-.danger-zone {
-    border: 1px solid rgba(255, 71, 87, 0.2);
-    background: rgba(255, 71, 87, 0.02);
-}
-
-.btn-danger {
-    background: transparent;
-    color: #ff4757;
-    border: 1px solid #ff4757;
-    padding: 10px 25px;
-    border-radius: 50px;
-    font-weight: 700;
+    justify-content: center;
+    gap: 12px;
     cursor: pointer;
     transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+.btn-luxe-sidebar:hover { background: #fcfcfc; border-color: var(--color-gold-dark); transform: scale(1.02); }
+
+.referral-card { padding: 2.5rem; margin-top: 2.5rem; position: relative; overflow: hidden; }
+.card-icon-bg { position: absolute; top: -10px; right: -10px; font-size: 5rem; opacity: 0.03; transform: rotate(15deg); }
+.referral-card h4 { font-size: 1.25rem; margin-bottom: 0.8rem; font-weight: 400; }
+.referral-card p { font-size: 0.85rem; color: #888; line-height: 1.6; margin-bottom: 1.5rem; }
+.copy-link {
+    background: rgba(255,255,255,0.8);
+    padding: 12px 18px;
+    border-radius: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    font-family: monospace;
+    color: #555;
+    cursor: pointer;
+    border: 1px solid rgba(0,0,0,0.03);
+}
+.copy-btn-inner { color: var(--color-gold-dark); transition: transform 0.2s; }
+.copy-link:hover .copy-btn-inner { transform: scale(1.2); }
+
+/* Main Content Styling */
+.content-section { padding: 4rem; transition: transform 0.4s ease; margin-bottom: 3rem; }
+.content-section:hover { transform: scale(1.005); }
+
+.section-header { margin-bottom: 3.5rem; position: relative; }
+.header-decoration { width: 30px; height: 2px; background: var(--color-gold); margin-bottom: 1rem; }
+.section-header h3 { font-size: 2.2rem; margin-bottom: 0.8rem; color: var(--color-estate-dark); font-weight: 400; }
+.section-header p { color: #999; font-size: 1rem; letter-spacing: 0.5px; }
+
+.credentials-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3.5rem;
 }
 
-.btn-danger:hover {
-    background: #ff4757;
-    color: white;
+.info-tile label {
+    display: block;
+    font-size: 0.6rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: #ccc;
+    margin-bottom: 12px;
 }
 
-.glass {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.05);
-    border-radius: 30px;
+.tile-value {
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: var(--color-estate-dark);
+    padding: 15px 0;
+    border-bottom: 1px solid #f2f2f2;
+}
+
+.sync-banner {
+    margin-top: 4rem;
     padding: 2rem;
+    background: rgba(66, 133, 244, 0.03);
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border: 1px solid rgba(66, 133, 244, 0.08);
+    position: relative;
+    z-index: 10;
+}
+.banner-icon-bg { width: 50px; height: 50px; background: white; border-radius: 15px; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(66, 133, 244, 0.1); color: #4285F4; font-size: 1.4rem; }
+.banner-text { display: flex; flex-direction: column; gap: 4px; }
+.banner-text strong { color: var(--color-estate-dark); font-size: 1rem; }
+.banner-text span { color: #777; font-size: 0.85rem; }
+
+.flex-header { display: flex; justify-content: space-between; align-items: flex-end; }
+.btn-upgrade-luxury {
+    background: var(--color-estate-dark);
+    color: white;
+    border: none;
+    padding: 14px 35px;
+    border-radius: 100px;
+    font-weight: 800;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    box-shadow: 0 12px 25px rgba(42, 30, 20, 0.15);
+    transition: all 0.3s ease;
+}
+.btn-upgrade-luxury:hover { transform: translateY(-3px); box-shadow: 0 15px 30px rgba(42, 30, 20, 0.2); background: var(--color-gold-dark); }
+
+.plan-visual-box { margin-top: 3.5rem; padding: 2.5rem; background: #fffcf8; border-radius: 30px; border: 1px solid rgba(212, 163, 115, 0.1); }
+.plan-progress { width: 100%; }
+.progress-info { display: flex; justify-content: space-between; margin-bottom: 15px; }
+.progress-info .label { font-size: 0.9rem; font-weight: 800; color: var(--color-estate-dark); text-transform: uppercase; letter-spacing: 1px; }
+.progress-info .value { font-size: 1.1rem; font-weight: 400; color: var(--color-gold-dark); font-family: 'Playfair Display', serif; }
+
+.progress-bar-container { position: relative; height: 12px; margin-bottom: 15px; }
+.progress-bar-track { height: 100%; background: #eee; border-radius: 100px; overflow: hidden; position: relative; z-index: 2; }
+.progress-bar-fill { height: 100%; background: linear-gradient(90deg, var(--color-gold) 0%, var(--color-gold-dark) 100%); }
+.progress-glow { position: absolute; inset: 0; background: var(--color-gold); filter: blur(15px); opacity: 0.2; z-index: 1; border-radius: 100px; }
+
+.limit-status { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #8B2A2A; font-weight: 700; margin-top: 1.5rem; }
+
+.feature-matrix {
+    margin-top: 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+.matrix-item { display: flex; align-items: center; gap: 15px; padding: 1.5rem; border-radius: 20px; background: white; border: 1px solid rgba(0,0,0,0.02); transition: all 0.3s; }
+.matrix-item:hover { transform: translateX(5px); border-color: var(--color-gold-dark); }
+.item-dot { width: 8px; height: 8px; border-radius: 50%; background: #eee; }
+.matrix-item.active .item-dot { background: #4CAF50; box-shadow: 0 0 10px rgba(76, 175, 80, 0.4); }
+.matrix-item.active span { color: var(--color-estate-dark); font-weight: 600; font-size: 1rem; }
+.matrix-item.locked span { color: #bbb; font-weight: 400; font-size: 1rem; }
+
+.glass-premium {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(25px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.04);
+    border-radius: 50px;
 }
 
-@media (max-width: 992px) {
-    .profile-grid {
-        grid-template-columns: 1fr;
-    }
+@keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes rotate-reverse { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+
+@media (max-width: 1200px) { .profile-layout { grid-template-columns: 1fr; gap: 3rem; } }
+@media (max-width: 768px) {
+    .profile-page { padding-top: 120px; }
+    .luxury-title { font-size: 2.8rem; }
+    .content-section { padding: 2.5rem; }
+    .credentials-grid { grid-template-columns: 1fr; gap: 2rem; }
 }
 </style>
 {% endblock %}

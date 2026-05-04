@@ -1,0 +1,1480 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mesin Absensi · Undangan Pernikahan Anita & Zarda</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════
+   TOKENS
+══════════════════════════════════ */
+:root {
+  --machine-body:  #2A2D35;
+  --machine-dark:  #1A1C22;
+  --machine-panel: #232630;
+  --lcd-bg:        #0D1F12;
+  --lcd-green:     #39FF14;
+  --lcd-dim:       #1A4A1A;
+  --lcd-amber:     #FFB300;
+  --lcd-red:       #FF3B30;
+  --lcd-cyan:      #00E5FF;
+  --btn-blue:      #1565C0;
+  --btn-red:       #C62828;
+  --btn-green:     #2E7D32;
+  --btn-gray:      #424242;
+  --metal:         #B0B8C8;
+  --metal2:        #8A94A6;
+  --screw:         #6B7280;
+  --bg:            #141618;
+  --mono:          'Share Tech Mono', 'Courier New', monospace;
+  --orbit:         'Orbitron', sans-serif;
+  --sans:          'Inter', sans-serif;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+body {
+  background: var(--bg);
+  font-family: var(--sans);
+  color: var(--lcd-green);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* scanline effect */
+body::after {
+  content:'';
+  position:fixed; inset:0; z-index:9997; pointer-events:none;
+  background:repeating-linear-gradient(0deg, rgba(0,0,0,.04) 0px, rgba(0,0,0,.04) 1px, transparent 1px, transparent 2px);
+}
+
+/* ══════════════════════════════════
+   OPENING — BOOT SCREEN
+══════════════════════════════════ */
+#opening {
+  position:fixed; inset:0; z-index:999;
+  background:var(--lcd-bg);
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding:24px;
+  transition:opacity .5s ease;
+  overflow:hidden;
+}
+#opening.hide { opacity:0; pointer-events:none; }
+
+/* Boot scanline sweep */
+#opening::before {
+  content:'';
+  position:absolute; left:0; right:0; height:3px;
+  background:linear-gradient(180deg, transparent, rgba(57,255,20,.3), transparent);
+  animation:boot-scan 2s linear infinite;
+  z-index:1; pointer-events:none;
+}
+@keyframes boot-scan { from{top:-4px} to{top:100%} }
+
+.boot-screen {
+  width:100%; max-width:360px;
+  font-family:var(--mono);
+  font-size:12px; line-height:1.8;
+  color:var(--lcd-green);
+  position:relative; z-index:2;
+  text-align:left;
+}
+.boot-line { display:flex; gap:8px; margin-bottom:2px; }
+.boot-ok   { color:var(--lcd-green); }
+.boot-warn { color:var(--lcd-amber); }
+.boot-err  { color:var(--lcd-red); }
+.boot-cursor { display:inline-block; width:8px; height:14px; background:var(--lcd-green); animation:cursor-blink .7s step-end infinite; vertical-align:middle; }
+@keyframes cursor-blink { 0%,100%{opacity:1}50%{opacity:0} }
+
+.boot-logo {
+  text-align:center; margin-bottom:24px;
+  font-family:var(--orbit); font-size:14px; font-weight:700;
+  color:var(--lcd-green); letter-spacing:.15em; text-transform:uppercase;
+  text-shadow:0 0 12px rgba(57,255,20,.5);
+}
+.boot-logo-sub { font-size:9px; color:var(--lcd-dim); letter-spacing:.2em; margin-top:3px; }
+
+.boot-progress {
+  width:100%; height:3px; background:var(--lcd-dim);
+  margin:16px 0 8px; border-radius:2px; overflow:hidden;
+  position:relative;
+}
+.boot-progress-fill {
+  height:100%; background:var(--lcd-green);
+  border-radius:2px; width:0%;
+  transition:width .05s linear;
+  box-shadow:0 0 8px rgba(57,255,20,.6);
+}
+.boot-pct { font-size:11px; color:var(--lcd-dim); text-align:right; margin-bottom:12px; }
+
+.boot-cta {
+  width:100%; background:var(--btn-green); border:none;
+  padding:14px; font-family:var(--mono); font-size:13px; font-weight:400;
+  color:var(--lcd-green); cursor:pointer; letter-spacing:.1em;
+  text-transform:uppercase; display:none; align-items:center; justify-content:center;
+  gap:10px; transition:background .15s;
+  border:1px solid rgba(57,255,20,.3);
+  text-shadow:0 0 8px rgba(57,255,20,.5);
+}
+.boot-cta:hover { background:#1B5E20; }
+.boot-cta.show { display:flex; }
+.boot-cta svg { width:16px; height:16px; fill:var(--lcd-green); }
+
+/* ══════════════════════════════════
+   MAIN — MESIN ABSENSI UI
+══════════════════════════════════ */
+#main { opacity:0; transition:opacity .5s ease .1s; }
+#main.show { opacity:1; }
+
+.page { max-width:420px; margin:0 auto; padding:16px 12px max(80px,env(safe-area-inset-bottom)); }
+
+/* ══════════════════════════════════
+   MACHINE BODY
+══════════════════════════════════ */
+.machine {
+  background:var(--machine-body);
+  border-radius:12px;
+  border:2px solid rgba(255,255,255,.06);
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,.5),
+    0 8px 40px rgba(0,0,0,.7),
+    inset 0 1px 0 rgba(255,255,255,.06);
+  overflow:hidden;
+  margin-bottom:12px;
+  position:relative;
+}
+
+/* Screw corners */
+.machine::before, .machine::after {
+  content:'✕';
+  position:absolute; font-size:8px; color:var(--screw);
+  width:14px; height:14px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--machine-dark); border-radius:50%;
+  border:1px solid rgba(255,255,255,.06);
+  z-index:10; pointer-events:none;
+}
+.machine::before { top:8px; left:8px; }
+.machine::after  { top:8px; right:8px; }
+.machine-screw-bl, .machine-screw-br {
+  position:absolute; font-size:8px; color:var(--screw);
+  width:14px; height:14px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--machine-dark); border-radius:50%;
+  border:1px solid rgba(255,255,255,.06); z-index:10;
+}
+.machine-screw-bl { bottom:8px; left:8px; }
+.machine-screw-br { bottom:8px; right:8px; }
+
+/* Brand strip */
+.machine-brand {
+  background:var(--machine-dark);
+  padding:10px 20px 8px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:2px solid rgba(255,255,255,.04);
+}
+.mb-logo {
+  font-family:var(--orbit); font-size:13px; font-weight:700;
+  color:var(--metal); letter-spacing:.12em;
+  text-shadow:0 1px 4px rgba(0,0,0,.5);
+}
+.mb-model {
+  font-family:var(--mono); font-size:9px; color:var(--metal2);
+  letter-spacing:.1em;
+}
+.mb-led {
+  display:flex; gap:6px; align-items:center;
+}
+.led { width:7px; height:7px; border-radius:50%; }
+.led.green { background:var(--lcd-green); box-shadow:0 0 6px var(--lcd-green); animation:led-pulse 1.8s ease-in-out infinite; }
+.led.amber { background:var(--lcd-amber); box-shadow:0 0 6px var(--lcd-amber); }
+.led.red   { background:var(--lcd-red); }
+@keyframes led-pulse { 0%,100%{opacity:1}50%{opacity:.3} }
+
+/* ═══ LCD DISPLAY ═══ */
+.lcd {
+  background:var(--lcd-bg);
+  margin:14px 14px 10px;
+  border-radius:4px;
+  border:2px solid rgba(0,0,0,.6);
+  box-shadow:inset 0 2px 8px rgba(0,0,0,.8), 0 0 0 1px rgba(57,255,20,.05);
+  overflow:hidden;
+  position:relative;
+}
+/* LCD scanlines */
+.lcd::after {
+  content:''; position:absolute; inset:0; pointer-events:none;
+  background:repeating-linear-gradient(0deg, transparent 0px, transparent 3px, rgba(0,0,0,.15) 3px, rgba(0,0,0,.15) 4px);
+  z-index:5;
+}
+
+.lcd-header {
+  background:rgba(57,255,20,.06);
+  padding:8px 12px;
+  border-bottom:1px solid rgba(57,255,20,.08);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.lcd-title {
+  font-family:var(--mono); font-size:10px; color:var(--lcd-green);
+  letter-spacing:.12em; text-transform:uppercase;
+  text-shadow:0 0 8px rgba(57,255,20,.4);
+}
+.lcd-time {
+  font-family:var(--mono); font-size:11px; color:var(--lcd-green);
+  text-shadow:0 0 8px rgba(57,255,20,.4);
+}
+
+.lcd-body { padding:12px; position:relative; z-index:2; }
+
+/* Main status display */
+.lcd-status {
+  text-align:center; padding:10px 0 8px;
+  border-bottom:1px solid rgba(57,255,20,.1); margin-bottom:10px;
+}
+.lcd-status-label {
+  font-family:var(--mono); font-size:8px; color:var(--lcd-dim);
+  letter-spacing:.2em; text-transform:uppercase; margin-bottom:6px;
+}
+.lcd-main-text {
+  font-family:var(--orbit); font-size:clamp(20px,5vw,28px); font-weight:700;
+  color:var(--lcd-green); letter-spacing:.06em;
+  text-shadow:0 0 16px rgba(57,255,20,.6);
+  line-height:1.1;
+}
+.lcd-sub-text {
+  font-family:var(--mono); font-size:10px; color:var(--lcd-dim);
+  letter-spacing:.1em; margin-top:4px;
+}
+
+/* Data rows */
+.lcd-row {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:5px 0; border-bottom:1px solid rgba(57,255,20,.06);
+  font-family:var(--mono); font-size:11px;
+}
+.lcd-row:last-child { border-bottom:none; }
+.lcd-row-key { color:var(--lcd-dim); letter-spacing:.08em; text-transform:uppercase; font-size:9px; }
+.lcd-row-val { color:var(--lcd-green); text-shadow:0 0 6px rgba(57,255,20,.3); }
+.lcd-row-val.amber { color:var(--lcd-amber); text-shadow:0 0 6px rgba(255,179,0,.3); }
+.lcd-row-val.red   { color:var(--lcd-red); text-shadow:0 0 6px rgba(255,59,48,.3); }
+.lcd-row-val.cyan  { color:var(--lcd-cyan); text-shadow:0 0 6px rgba(0,229,255,.3); }
+
+/* blinking text */
+.blink { animation:blink-text .9s step-end infinite; }
+@keyframes blink-text { 0%,100%{opacity:1}50%{opacity:.2} }
+
+/* ═══ FINGERPRINT SCANNER ═══ */
+.scanner-area {
+  margin:10px 14px 12px;
+  background:var(--machine-panel);
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.05);
+  padding:16px;
+  display:flex; align-items:center; gap:14px;
+}
+.fingerprint-wrap {
+  width:72px; height:72px; flex-shrink:0;
+  background:var(--machine-dark); border-radius:6px;
+  border:2px solid rgba(57,255,20,.15);
+  display:flex; align-items:center; justify-content:center;
+  position:relative; overflow:hidden; cursor:pointer;
+  transition:border-color .3s;
+}
+.fingerprint-wrap:hover { border-color:rgba(57,255,20,.4); }
+.fingerprint-wrap.scanning { border-color:var(--lcd-green); }
+.fingerprint-wrap.scanning .fp-scan-line { animation:fp-scan .6s linear infinite; }
+.fingerprint-wrap.success { border-color:var(--lcd-green); background:rgba(57,255,20,.08); }
+.fingerprint-wrap.fail    { border-color:var(--lcd-red); background:rgba(255,59,48,.08); }
+
+.fp-svg { width:44px; height:44px; opacity:.5; transition:opacity .3s; }
+.fingerprint-wrap:hover .fp-svg { opacity:.7; }
+.fingerprint-wrap.scanning .fp-svg { opacity:.9; }
+.fingerprint-wrap.success .fp-svg { opacity:1; fill:var(--lcd-green); }
+
+.fp-scan-line {
+  position:absolute; left:0; right:0; height:2px;
+  background:linear-gradient(90deg,transparent,rgba(57,255,20,.8),transparent);
+  top:0; animation:none;
+  box-shadow:0 0 6px rgba(57,255,20,.5);
+}
+@keyframes fp-scan { from{top:0%} to{top:100%} }
+
+.scanner-meta { flex:1; }
+.sm-label { font-family:var(--mono); font-size:9px; color:var(--lcd-dim); letter-spacing:.12em; text-transform:uppercase; margin-bottom:5px; }
+.sm-status { font-family:var(--mono); font-size:12px; color:var(--lcd-green); text-shadow:0 0 6px rgba(57,255,20,.3); margin-bottom:6px; }
+.sm-hint { font-family:var(--mono); font-size:9px; color:var(--lcd-dim); letter-spacing:.05em; }
+
+/* ═══ KEYPAD ═══ */
+.keypad {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:4px;
+  margin:0 14px 14px; padding:10px; background:var(--machine-dark);
+  border-radius:6px; border:1px solid rgba(255,255,255,.04);
+}
+.key {
+  padding:8px 4px; border-radius:4px; border:none;
+  font-family:var(--mono); font-size:11px; letter-spacing:.04em;
+  cursor:pointer; transition:background .1s, transform .1s;
+  display:flex; align-items:center; justify-content:center;
+  min-height:36px;
+  box-shadow:0 2px 0 rgba(0,0,0,.4);
+}
+.key:active { transform:translateY(1px); box-shadow:none; }
+.key.num    { background:var(--btn-gray); color:#ddd; }
+.key.num:hover { background:#555; }
+.key.blue   { background:var(--btn-blue); color:#fff; }
+.key.blue:hover { background:#1976D2; }
+.key.red    { background:var(--btn-red); color:#fff; }
+.key.red:hover { background:#D32F2F; }
+.key.green  { background:var(--btn-green); color:#fff; font-weight:700; }
+.key.green:hover { background:#388E3C; }
+.key.wide   { grid-column:span 2; }
+.key-sub    { font-size:8px; color:rgba(255,255,255,.4); display:block; margin-top:1px; }
+
+/* ═══ CARD SLOT ═══ */
+.card-slot-area {
+  display:flex; align-items:center; gap:10px;
+  margin:0 14px 14px; padding:10px 12px;
+  background:var(--machine-dark); border-radius:6px;
+  border:1px solid rgba(255,255,255,.04);
+}
+.card-slot {
+  width:48px; height:30px; border-radius:3px;
+  background:#111; border:2px solid rgba(255,255,255,.1);
+  display:flex; align-items:center; justify-content:center;
+  flex-shrink:0; overflow:hidden; position:relative;
+}
+.card-slot-line { position:absolute; top:50%; left:0; right:0; height:1px; background:rgba(57,255,20,.2); }
+.card-slot-label { font-family:var(--mono); font-size:8px; color:var(--lcd-dim); letter-spacing:.1em; }
+.card-meta { flex:1; }
+.card-meta-l { font-family:var(--mono); font-size:8px; color:var(--lcd-dim); letter-spacing:.1em; text-transform:uppercase; margin-bottom:3px; }
+.card-meta-v { font-family:var(--mono); font-size:11px; color:var(--metal); }
+
+/* ══════════════════════════════════
+   EMPLOYEE CARD (ID Badge)
+══════════════════════════════════ */
+.id-card {
+  background:linear-gradient(135deg, #1C2340 0%, #0F1520 100%);
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 8px 32px rgba(0,0,0,.5);
+  overflow:hidden; margin-bottom:12px;
+  position:relative;
+}
+.idc-stripe {
+  height:5px;
+  background:linear-gradient(90deg,#1565C0,#1976D2,#42A5F5,#1976D2,#1565C0);
+}
+.idc-header {
+  background:rgba(21,101,192,.2);
+  padding:8px 14px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,.05);
+}
+.idc-company { font-family:var(--orbit); font-size:10px; font-weight:600; color:#90CAF9; letter-spacing:.1em; }
+.idc-dept { font-family:var(--mono); font-size:8px; color:rgba(255,255,255,.35); letter-spacing:.08em; }
+
+.idc-body { padding:14px; display:flex; gap:12px; align-items:flex-start; }
+.idc-photo {
+  width:64px; height:80px; border-radius:4px; overflow:hidden;
+  border:2px solid rgba(255,255,255,.1); flex-shrink:0; background:#0a0a1a;
+}
+.idc-photo img { width:100%; height:100%; object-fit:cover; filter:saturate(.8) brightness(.9); }
+.idc-photo-placeholder {
+  width:100%; height:100%; display:flex; align-items:center; justify-content:center;
+  font-family:var(--orbit); font-size:20px; color:rgba(255,255,255,.15);
+}
+.idc-info { flex:1; }
+.idc-id { font-family:var(--mono); font-size:9px; color:rgba(144,202,249,.5); letter-spacing:.1em; margin-bottom:4px; }
+.idc-name { font-family:var(--orbit); font-size:14px; font-weight:600; color:#fff; margin-bottom:2px; line-height:1.25; }
+.idc-title { font-size:11px; color:rgba(144,202,249,.6); margin-bottom:8px; }
+.idc-fields { display:flex; flex-direction:column; gap:4px; }
+.idc-field { }
+.idc-f-l { font-family:var(--mono); font-size:8px; color:rgba(255,255,255,.25); letter-spacing:.1em; text-transform:uppercase; }
+.idc-f-v { font-family:var(--mono); font-size:10px; color:rgba(255,255,255,.7); }
+
+.idc-barcode {
+  margin:0 14px; padding:8px 10px;
+  background:rgba(0,0,0,.3);
+  border-top:1px solid rgba(255,255,255,.04);
+  display:flex; align-items:center; gap:10px;
+}
+.idc-bc { flex:1; display:flex; align-items:center; gap:1px; height:24px; }
+.idc-bc-bar { background:#fff; border-radius:.5px; }
+.idc-bc-num { font-family:var(--mono); font-size:9px; color:rgba(255,255,255,.3); letter-spacing:.06em; flex-shrink:0; }
+
+.idc-footer {
+  padding:8px 14px;
+  background:rgba(21,101,192,.1);
+  border-top:1px solid rgba(255,255,255,.04);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.idc-valid { font-family:var(--mono); font-size:8px; color:rgba(144,202,249,.4); letter-spacing:.08em; }
+.idc-status-chip {
+  background:rgba(57,255,20,.1); border:1px solid rgba(57,255,20,.25);
+  color:var(--lcd-green); font-family:var(--mono); font-size:8px; font-weight:400;
+  padding:2px 8px; border-radius:2px; letter-spacing:.1em; text-transform:uppercase;
+  display:flex; align-items:center; gap:4px;
+}
+.idc-status-dot { width:4px; height:4px; background:var(--lcd-green); border-radius:50%; animation:led-pulse 1.8s infinite; }
+
+/* ══════════════════════════════════
+   SECTION CARDS
+══════════════════════════════════ */
+.sec-machine {
+  background:var(--machine-body);
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,.05);
+  box-shadow:0 4px 20px rgba(0,0,0,.4);
+  overflow:hidden; margin-bottom:12px;
+}
+.sm-head {
+  background:var(--machine-dark);
+  padding:8px 14px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+.sm-head-l { display:flex; align-items:center; gap:8px; }
+.sm-head-led { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.sm-head-title {
+  font-family:var(--mono); font-size:9px; color:var(--metal2);
+  letter-spacing:.15em; text-transform:uppercase;
+}
+.sm-head-badge {
+  font-family:var(--mono); font-size:8px; color:rgba(255,255,255,.25);
+  letter-spacing:.1em; text-transform:uppercase;
+}
+.sm-body { padding:14px; }
+
+/* ══════════════════════════════════
+   ABSENSI LOG TABLE
+══════════════════════════════════ */
+.absen-table { width:100%; border-collapse:collapse; font-family:var(--mono); font-size:10px; }
+.absen-table th {
+  text-align:left; padding:4px 8px; color:var(--lcd-dim);
+  border-bottom:1px solid rgba(57,255,20,.1);
+  letter-spacing:.1em; text-transform:uppercase; font-size:8px; font-weight:400;
+}
+.absen-table td { padding:6px 8px; border-bottom:1px solid rgba(255,255,255,.03); }
+.absen-table tr:last-child td { border-bottom:none; }
+.absen-table tr:hover td { background:rgba(57,255,20,.03); }
+.td-id    { color:var(--lcd-dim); }
+.td-name  { color:var(--metal); }
+.td-time  { color:var(--lcd-amber); }
+.td-status.hadir  { color:var(--lcd-green); }
+.td-status.tidak  { color:var(--lcd-red); }
+.td-jumlah{ color:var(--lcd-cyan); }
+
+/* ══════════════════════════════════
+   COUNTDOWN
+══════════════════════════════════ */
+.cd-lcd {
+  background:var(--lcd-bg); border-radius:4px;
+  border:1px solid rgba(57,255,20,.1);
+  padding:14px; display:flex; gap:8px;
+}
+.cd-cell { flex:1; text-align:center; }
+.cd-num {
+  font-family:var(--orbit); font-size:clamp(24px,6vw,32px); font-weight:700;
+  color:var(--lcd-green); line-height:1;
+  text-shadow:0 0 12px rgba(57,255,20,.5);
+  display:block;
+}
+.cd-unit {
+  font-family:var(--mono); font-size:7px; color:var(--lcd-dim);
+  text-transform:uppercase; letter-spacing:.15em; margin-top:4px; display:block;
+}
+.cd-sep { color:var(--lcd-dim); font-family:var(--orbit); font-size:24px; align-self:center; padding-bottom:12px; }
+
+/* ══════════════════════════════════
+   COUPLE SECTION
+══════════════════════════════════ */
+.couple-cards { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+@media(max-width:400px){ .couple-cards{ grid-template-columns:1fr; } }
+.c-card {
+  background:var(--machine-dark); border-radius:6px;
+  border:1px solid rgba(255,255,255,.05); overflow:hidden; text-align:center;
+}
+.c-card-head {
+  background:rgba(21,101,192,.15); padding:5px 8px;
+  font-family:var(--mono); font-size:8px; color:rgba(144,202,249,.5);
+  letter-spacing:.1em; text-transform:uppercase;
+  border-bottom:1px solid rgba(255,255,255,.04);
+}
+.c-body { padding:12px 10px; }
+.c-av { width:56px; height:56px; border-radius:50%; overflow:hidden; margin:0 auto 8px; border:2px solid rgba(57,255,20,.25); }
+.c-av img { width:100%; height:100%; object-fit:cover; filter:saturate(.8) brightness(.85); }
+.c-role { font-family:var(--mono); font-size:8px; color:var(--lcd-green); letter-spacing:.1em; text-transform:uppercase; margin-bottom:3px; }
+.c-name { font-family:var(--orbit); font-size:11px; font-weight:600; color:var(--metal); margin-bottom:4px; line-height:1.3; }
+.c-parents { font-family:var(--mono); font-size:9px; color:var(--metal2); line-height:1.6; }
+
+/* ══════════════════════════════════
+   EVENT SCHEDULE
+══════════════════════════════════ */
+.event-row {
+  background:var(--machine-dark); border-radius:6px;
+  border:1px solid rgba(255,255,255,.05); padding:12px 14px;
+  margin-bottom:8px; position:relative; overflow:hidden;
+}
+.event-row:last-child { margin-bottom:0; }
+.event-row::before {
+  content:''; position:absolute; left:0; top:0; bottom:0; width:2px;
+  background:var(--lcd-green);
+  box-shadow:0 0 6px rgba(57,255,20,.4);
+}
+.er-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+.er-type { font-family:var(--mono); font-size:9px; color:var(--lcd-green); letter-spacing:.12em; text-transform:uppercase; }
+.er-time { font-family:var(--orbit); font-size:13px; font-weight:600; color:var(--lcd-amber); text-shadow:0 0 8px rgba(255,179,0,.3); }
+.er-date { font-family:var(--orbit); font-size:14px; font-weight:700; color:var(--metal); margin-bottom:6px; }
+.er-loc { font-family:var(--mono); font-size:10px; color:var(--metal2); line-height:1.5; margin-bottom:6px; }
+.er-map { display:inline-flex; align-items:center; gap:5px; font-family:var(--mono); font-size:9px; color:var(--lcd-cyan); letter-spacing:.06em; text-decoration:none; transition:color .2s; }
+.er-map:hover { color:var(--lcd-green); }
+
+/* ══════════════════════════════════
+   TIMELINE
+══════════════════════════════════ */
+.tl-list { position:relative; padding-left:16px; }
+.tl-list::before { content:''; position:absolute; left:5px; top:6px; bottom:6px; width:2px; background:rgba(57,255,20,.15); border-radius:1px; }
+.tl-item { display:flex; gap:12px; margin-bottom:20px; position:relative; }
+.tl-item:last-child { margin-bottom:0; }
+.tl-dot { position:absolute; left:-15px; top:4px; width:10px; height:10px; border-radius:50%; border:2px solid var(--lcd-green); background:var(--machine-body); z-index:1; box-shadow:0 0 6px rgba(57,255,20,.3); }
+.tl-dot.done { background:var(--lcd-green); box-shadow:0 0 8px rgba(57,255,20,.5); }
+.tl-body { flex:1; }
+.tl-code { font-family:var(--mono); font-size:8px; color:var(--lcd-green); letter-spacing:.15em; text-transform:uppercase; margin-bottom:2px; }
+.tl-when { font-family:var(--mono); font-size:9px; color:var(--lcd-dim); margin-bottom:4px; }
+.tl-title { font-family:var(--orbit); font-size:13px; font-weight:600; color:var(--metal); margin-bottom:4px; }
+.tl-desc { font-family:var(--mono); font-size:10px; color:var(--metal2); line-height:1.65; }
+
+/* ══════════════════════════════════
+   GALLERY
+══════════════════════════════════ */
+.gal-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; }
+.gal-item { aspect-ratio:1; overflow:hidden; cursor:pointer; border-radius:3px; background:var(--machine-dark); position:relative; border:1px solid rgba(255,255,255,.04); }
+.gal-item img { width:100%; height:100%; object-fit:cover; filter:saturate(.6) brightness(.7) contrast(1.1); transition:filter .3s, transform .3s; }
+.gal-item:hover img { filter:saturate(1) brightness(.9); transform:scale(1.06); }
+.gal-item::after { content:''; position:absolute; inset:0; background:linear-gradient(0deg,rgba(0,0,0,.5),transparent 40%); }
+.gal-num { position:absolute; bottom:4px; left:4px; font-family:var(--mono); font-size:8px; color:var(--lcd-green); z-index:1; text-shadow:0 0 4px rgba(57,255,20,.5); }
+
+/* ══════════════════════════════════
+   GIFT
+══════════════════════════════════ */
+.gift-cards { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+@media(max-width:400px){ .gift-cards{ grid-template-columns:1fr; } }
+.gift-card {
+  background:var(--machine-dark); border-radius:6px;
+  border:1px solid rgba(255,255,255,.05); padding:12px; overflow:hidden; position:relative;
+}
+.gift-card::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background:var(--lcd-green); box-shadow:0 0 6px rgba(57,255,20,.4); }
+.gc-bank { font-family:var(--mono); font-size:8px; color:var(--lcd-dim); letter-spacing:.12em; text-transform:uppercase; margin-bottom:2px; }
+.gc-name { font-family:var(--orbit); font-size:18px; font-weight:700; color:var(--metal); margin-bottom:2px; }
+.gc-holder { font-family:var(--mono); font-size:9px; color:var(--metal2); margin-bottom:8px; }
+.gc-num { font-family:var(--mono); font-size:12px; color:var(--lcd-green); background:rgba(57,255,20,.05); border:1px solid rgba(57,255,20,.1); padding:5px 8px; border-radius:3px; display:inline-block; margin-bottom:8px; letter-spacing:.08em; text-shadow:0 0 6px rgba(57,255,20,.3); }
+.copy-btn {
+  display:inline-flex; align-items:center; gap:4px;
+  background:var(--btn-blue); color:#fff; border:none;
+  font-family:var(--mono); font-size:9px; letter-spacing:.08em;
+  padding:6px 12px; border-radius:3px; cursor:pointer; text-transform:uppercase;
+  transition:background .15s;
+}
+.copy-btn:hover { background:#1976D2; }
+.copy-btn.ok { background:var(--btn-green); }
+
+/* ══════════════════════════════════
+   RSVP — FORM ABSENSI
+══════════════════════════════════ */
+.rsvp-stats { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; margin-bottom:14px; }
+.rs { background:var(--lcd-bg); border:1px solid rgba(57,255,20,.1); padding:10px 6px; text-align:center; }
+.rs-n { font-family:var(--orbit); font-size:22px; font-weight:700; color:var(--lcd-green); line-height:1; text-shadow:0 0 10px rgba(57,255,20,.4); }
+.rs-l { font-family:var(--mono); font-size:8px; color:var(--lcd-dim); text-transform:uppercase; letter-spacing:.1em; margin-top:3px; }
+
+.fg { margin-bottom:12px; }
+.fl { display:block; font-family:var(--mono); font-size:8px; color:var(--lcd-dim); letter-spacing:.15em; text-transform:uppercase; margin-bottom:5px; }
+.fi {
+  width:100%; background:var(--machine-dark); border:1px solid rgba(57,255,20,.15);
+  border-radius:3px; padding:9px 11px; color:var(--lcd-green); font-family:var(--mono);
+  font-size:12px; outline:none; transition:border-color .2s, box-shadow .2s;
+  -webkit-appearance:none; appearance:none; letter-spacing:.04em;
+}
+.fi:focus { border-color:var(--lcd-green); box-shadow:0 0 0 2px rgba(57,255,20,.1); }
+.fi::placeholder { color:rgba(57,255,20,.2); }
+select.fi {
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='rgba(57,255,20,.4)' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 10px center; padding-right:30px; cursor:pointer;
+}
+select.fi option { background:var(--machine-dark); color:var(--lcd-green); }
+textarea.fi { min-height:70px; resize:none; }
+.gbtn-row { display:flex; gap:6px; }
+.gbtn {
+  flex:1; background:var(--machine-dark); border:1px solid rgba(255,255,255,.06);
+  border-radius:3px; padding:9px; color:var(--metal2); font-family:var(--mono);
+  font-size:11px; cursor:pointer; transition:all .15s; letter-spacing:.04em;
+}
+.gbtn.on { background:rgba(57,255,20,.08); border-color:var(--lcd-green); color:var(--lcd-green); }
+.rsvp-submit {
+  width:100%; background:var(--btn-green); border:1px solid rgba(57,255,20,.3);
+  border-radius:3px; padding:12px; color:var(--lcd-green); font-family:var(--mono);
+  font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+  cursor:pointer; transition:background .15s;
+  display:flex; align-items:center; justify-content:center; gap:8px; margin-top:6px;
+  text-shadow:0 0 8px rgba(57,255,20,.4);
+}
+.rsvp-submit:hover { background:#1B5E20; }
+.rsvp-submit svg { width:14px; height:14px; fill:var(--lcd-green); }
+
+/* ══════════════════════════════════
+   WISH LOG
+══════════════════════════════════ */
+.wish-log { display:flex; flex-direction:column; gap:0; }
+.wish-entry {
+  padding:10px 0; border-bottom:1px solid rgba(255,255,255,.03);
+  display:flex; gap:10px; opacity:0; transform:translateY(8px);
+  transition:opacity .5s, transform .5s;
+}
+.wish-entry.vis { opacity:1; transform:translateY(0); }
+.wish-entry:last-child { border-bottom:none; }
+.we-id {
+  font-family:var(--mono); font-size:9px; color:var(--lcd-dim);
+  letter-spacing:.04em; flex-shrink:0; padding-top:1px; min-width:28px;
+}
+.we-body { flex:1; }
+.we-name { font-family:var(--mono); font-size:11px; color:var(--metal); margin-bottom:2px; }
+.we-status { font-family:var(--mono); font-size:9px; color:var(--lcd-green); margin-bottom:4px; letter-spacing:.04em; }
+.we-msg { font-family:var(--mono); font-size:10px; color:var(--metal2); line-height:1.6; }
+.we-ts { font-family:var(--mono); font-size:8px; color:var(--lcd-dim); margin-top:3px; }
+
+/* ══════════════════════════════════
+   VERSE
+══════════════════════════════════ */
+.verse-lcd {
+  background:var(--lcd-bg); border:1px solid rgba(57,255,20,.1); border-radius:4px;
+  padding:14px; position:relative; overflow:hidden;
+}
+.verse-lcd::before {
+  content:'"'; font-family:'Georgia',serif; font-size:80px; color:rgba(57,255,20,.04);
+  position:absolute; top:-10px; left:8px; line-height:1; pointer-events:none;
+}
+.verse-text { font-family:var(--mono); font-size:11px; color:var(--lcd-dim); line-height:1.75; margin-bottom:8px; position:relative; z-index:1; }
+.verse-ref { font-family:var(--mono); font-size:9px; color:var(--lcd-green); letter-spacing:.1em; }
+
+/* ══════════════════════════════════
+   BOTTOM NAV
+══════════════════════════════════ */
+.bottom-nav {
+  position:fixed; bottom:0; left:0; right:0;
+  background:rgba(26,28,34,.97); backdrop-filter:blur(16px);
+  border-top:1px solid rgba(57,255,20,.1);
+  display:flex; justify-content:space-around;
+  padding:8px 0 max(8px,env(safe-area-inset-bottom));
+  z-index:100; transform:translateY(100%);
+  transition:transform .5s ease 1s;
+}
+.bottom-nav.show { transform:translateY(0); }
+.nav-i {
+  display:flex; flex-direction:column; align-items:center; gap:3px;
+  color:rgba(57,255,20,.25); background:none; border:none; cursor:pointer;
+  font-family:var(--mono); font-size:7px; letter-spacing:.08em; text-transform:uppercase;
+  padding:3px 10px; transition:color .15s;
+}
+.nav-i svg { width:18px; height:18px; fill:currentColor; }
+.nav-i.on, .nav-i:hover { color:var(--lcd-green); }
+
+/* ══════════════════════════════════
+   TOAST & LIGHTBOX
+══════════════════════════════════ */
+.toast {
+  position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(10px);
+  background:var(--lcd-bg); border:1px solid rgba(57,255,20,.3);
+  color:var(--lcd-green); padding:8px 20px;
+  font-family:var(--mono); font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+  opacity:0; transition:opacity .25s, transform .25s;
+  pointer-events:none; white-space:nowrap; z-index:999;
+  text-shadow:0 0 6px rgba(57,255,20,.4);
+}
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+.lb { position:fixed; inset:0; background:rgba(0,0,0,.97); z-index:200; display:none; align-items:center; justify-content:center; }
+.lb.open { display:flex; }
+.lb-img { max-width:94vw; max-height:84vh; border-radius:4px; object-fit:contain; border:1px solid rgba(57,255,20,.1); filter:saturate(.8); }
+.lb-close { position:absolute; top:16px; right:16px; background:none; border:none; color:var(--lcd-dim); font-family:var(--mono); font-size:9px; letter-spacing:.2em; cursor:pointer; text-transform:uppercase; padding:6px; transition:color .2s; }
+.lb-close:hover { color:var(--lcd-green); }
+.lb-nav { position:absolute; top:50%; transform:translateY(-50%); background:none; border:none; color:rgba(57,255,20,.3); font-size:32px; cursor:pointer; padding:16px; transition:color .2s; }
+.lb-nav:hover { color:var(--lcd-green); }
+.lb-prev { left:8px; } .lb-next { right:8px; }
+.lb-ctr { position:absolute; bottom:16px; left:50%; transform:translateX(-50%); font-family:var(--mono); font-size:9px; color:var(--lcd-dim); letter-spacing:.1em; }
+
+/* Reveal */
+.reveal { opacity:0; transform:translateY(14px); transition:opacity .6s, transform .6s; }
+.reveal.in { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- ══ OPENING BOOT SCREEN ══ -->
+<div id="opening">
+  <div class="boot-screen">
+    <div class="boot-logo">
+      ATTENDANCE SYSTEM v4.2
+      <div class="boot-logo-sub">Wedding Edition · Build 240526</div>
+    </div>
+    <div id="bootLines"></div>
+    <div class="boot-progress"><div class="boot-progress-fill" id="bootFill"></div></div>
+    <div class="boot-pct" id="bootPct">0%</div>
+    <button class="boot-cta" id="bootBtn" onclick="startApp()">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+      MASUK KE SISTEM
+    </button>
+  </div>
+</div>
+
+<!-- ══ MAIN APP ══ -->
+<div id="main">
+  <div class="page">
+
+    <!-- ── MACHINE ── -->
+    <div class="machine" id="home">
+      <div class="machine-screw-bl">✕</div>
+      <div class="machine-screw-br">✕</div>
+
+      <div class="machine-brand">
+        <div>
+          <div class="mb-logo">WEDCO-5000</div>
+          <div class="mb-model">WEDDING ATTENDANCE TERMINAL</div>
+        </div>
+        <div class="mb-led">
+          <div class="led green"></div>
+          <div class="led amber"></div>
+          <div class="led red"></div>
+        </div>
+      </div>
+
+      <!-- LCD DISPLAY -->
+      <div class="lcd">
+        <div class="lcd-header">
+          <div class="lcd-title">■ SISTEM ABSENSI AKTIF</div>
+          <div class="lcd-time" id="lcdTime">00:00:00</div>
+        </div>
+        <div class="lcd-body">
+          <div class="lcd-status">
+            <div class="lcd-status-label">Status Sistem</div>
+            <div class="lcd-main-text">ANITA &amp; ZARDA</div>
+            <div class="lcd-sub-text">WEDDING DAY · 24 MEI 2026</div>
+          </div>
+          <div class="lcd-row">
+            <span class="lcd-row-key">EVENT ID</span>
+            <span class="lcd-row-val">WED-AZ-240526-001</span>
+          </div>
+          <div class="lcd-row">
+            <span class="lcd-row-key">Lokasi</span>
+            <span class="lcd-row-val">Graha Yadika · Tangerang</span>
+          </div>
+          <div class="lcd-row">
+            <span class="lcd-row-key">Jam Kerja</span>
+            <span class="lcd-row-val amber">08:00 – 13:00 WIB</span>
+          </div>
+          <div class="lcd-row">
+            <span class="lcd-row-key">Status</span>
+            <span class="lcd-row-val blink">■ AKTIF</span>
+          </div>
+          <div class="lcd-row">
+            <span class="lcd-row-key">Tamu</span>
+            <span class="lcd-row-val cyan" id="lcdTamu">13 Orang</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FINGERPRINT SCANNER -->
+      <div class="scanner-area">
+        <div class="fingerprint-wrap" id="fpWrap" onclick="doScan()">
+          <div class="fp-scan-line" id="fpScanLine"></div>
+          <svg class="fp-svg" id="fpSvg" viewBox="0 0 64 64" fill="var(--lcd-dim)">
+            <path d="M32 4C16.536 4 4 16.536 4 32c0 15.464 12.536 28 28 28 15.464 0 28-12.536 28-28C60 16.536 47.464 4 32 4zm0 52C18.745 56 8 45.255 8 32S18.745 8 32 8s24 10.745 24 24-10.745 24-24 24z"/>
+            <path d="M32 14c-9.941 0-18 8.059-18 18 0 9.941 8.059 18 18 18 9.941 0 18-8.059 18-18 0-9.941-8.059-18-18-18zm0 32c-7.732 0-14-6.268-14-14s6.268-14 14-14 14 6.268 14 14-6.268 14-14 14z"/>
+            <path d="M32 22c-5.523 0-10 4.477-10 10s4.477 10 10 10 10-4.477 10-10-4.477-10-10-10zm0 16c-3.314 0-6-2.686-6-6s2.686-6 6-6 6 2.686 6 6-2.686 6-6 6z"/>
+            <!-- fingerprint lines -->
+            <path d="M20 32 Q24 26 32 26 Q40 26 44 32" stroke="var(--lcd-dim)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M18 36 Q22 28 32 28 Q42 28 46 36" stroke="var(--lcd-dim)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+            <path d="M22 40 Q26 34 32 34 Q38 34 42 40" stroke="var(--lcd-dim)" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="scanner-meta">
+          <div class="sm-label">Pemindai Sidik Jari</div>
+          <div class="sm-status" id="fpStatus">SIAP PINDAI</div>
+          <div class="sm-hint" id="fpHint">Tap untuk registrasi kehadiran</div>
+        </div>
+      </div>
+
+      <!-- KEYPAD -->
+      <div class="keypad">
+        <button class="key num" onclick="keyPress('1')">1<span class="key-sub"></span></button>
+        <button class="key num" onclick="keyPress('2')">2<span class="key-sub">ABC</span></button>
+        <button class="key num" onclick="keyPress('3')">3<span class="key-sub">DEF</span></button>
+        <button class="key blue" onclick="scrollTo2('rsvp')">RSVP</button>
+        <button class="key num" onclick="keyPress('4')">4<span class="key-sub">GHI</span></button>
+        <button class="key num" onclick="keyPress('5')">5<span class="key-sub">JKL</span></button>
+        <button class="key num" onclick="keyPress('6')">6<span class="key-sub">MNO</span></button>
+        <button class="key blue" onclick="scrollTo2('event')">INFO</button>
+        <button class="key num" onclick="keyPress('7')">7<span class="key-sub">PQRS</span></button>
+        <button class="key num" onclick="keyPress('8')">8<span class="key-sub">TUV</span></button>
+        <button class="key num" onclick="keyPress('9')">9<span class="key-sub">WXYZ</span></button>
+        <button class="key green" onclick="scrollTo2('rsvp')">✓ OK</button>
+        <button class="key red wide" onclick="keyPress('clear')">✕ CLEAR</button>
+        <button class="key num" onclick="keyPress('0')">0</button>
+        <button class="key blue" onclick="scrollTo2('gift')">GIFT</button>
+      </div>
+
+      <!-- CARD SLOT -->
+      <div class="card-slot-area">
+        <div class="card-slot">
+          <div class="card-slot-line"></div>
+          <div class="card-slot-label">◄ SWIPE</div>
+        </div>
+        <div class="card-meta">
+          <div class="card-meta-l">Slot Kartu Undangan</div>
+          <div class="card-meta-v">Scan kartu atau masukkan ID tamu</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ID CARD ── -->
+    <div class="id-card reveal" id="couple">
+      <div class="idc-stripe"></div>
+      <div class="idc-header">
+        <div>
+          <div class="idc-company">WEDDING CORP · PT. BAHAGIA BERSAMA</div>
+          <div class="idc-dept">Divisi: Pernikahan · Departemen: Cinta</div>
+        </div>
+      </div>
+      <div class="idc-body">
+        <div style="display:flex;gap:16px;width:100%">
+          <!-- Bride card -->
+          <div style="flex:1">
+            <div class="idc-photo"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=250&fit=crop&q=80" alt="Anita"></div>
+          </div>
+          <div style="flex:2">
+            <div class="idc-id">EMP-2026-001 · Mempelai Wanita</div>
+            <div class="idc-name">ANITA PANGESTUTI</div>
+            <div class="idc-title">S.Kom · Pengantin Perempuan</div>
+            <div class="idc-fields">
+              <div class="idc-field">
+                <div class="idc-f-l">Orang Tua</div>
+                <div class="idc-f-v">Bpk. Taryono & Ibu Wiwit</div>
+              </div>
+              <div class="idc-field">
+                <div class="idc-f-l">Jabatan</div>
+                <div class="idc-f-v">Mempelai Wanita</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="height:1px;background:rgba(255,255,255,.04);margin:0 14px"></div>
+      <div class="idc-body" style="padding-top:12px">
+        <div style="display:flex;gap:16px;width:100%">
+          <!-- Groom card -->
+          <div style="flex:1">
+            <div class="idc-photo"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=250&fit=crop&q=80" alt="Zarda"></div>
+          </div>
+          <div style="flex:2">
+            <div class="idc-id">EMP-2026-002 · Mempelai Pria</div>
+            <div class="idc-name">ZARDARIAN AHADIKA N</div>
+            <div class="idc-title">S.Kom · Pengantin Laki-laki</div>
+            <div class="idc-fields">
+              <div class="idc-field">
+                <div class="idc-f-l">Orang Tua</div>
+                <div class="idc-f-v">Bpk. Wan Sabran & Ibu Titik</div>
+              </div>
+              <div class="idc-field">
+                <div class="idc-f-l">Jabatan</div>
+                <div class="idc-f-v">Mempelai Pria</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="idc-barcode">
+        <div class="idc-bc" id="idcBarcode"></div>
+        <div class="idc-bc-num">AZ-240526-WED</div>
+      </div>
+      <div class="idc-footer">
+        <div class="idc-valid">Berlaku: 24 MEI 2026 · GRAHA YADIKA</div>
+        <div class="idc-status-chip"><div class="idc-status-dot"></div>AKTIF</div>
+      </div>
+    </div>
+
+    <!-- ── VERSE ── -->
+    <div class="sec-machine reveal">
+      <div class="sm-head">
+        <div class="sm-head-l"><div class="sm-head-led led green"></div><div class="sm-head-title">Pesan Sistem</div></div>
+        <div class="sm-head-badge">BROADCAST</div>
+      </div>
+      <div class="sm-body">
+        <div class="verse-lcd">
+          <div class="verse-text">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya..."</div>
+          <div class="verse-ref">// SOURCE: Surah Ar-Rum : 21</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── COUNTDOWN ── -->
+    <div class="sec-machine reveal">
+      <div class="sm-head">
+        <div class="sm-head-l"><div class="sm-head-led led amber"></div><div class="sm-head-title">Jam Masuk Kerja</div></div>
+        <div class="sm-head-badge">REAL-TIME</div>
+      </div>
+      <div class="sm-body">
+        <div class="cd-lcd">
+          <div class="cd-cell"><span class="cd-num" id="cdD">00</span><span class="cd-unit">Hari</span></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-cell"><span class="cd-num" id="cdH">00</span><span class="cd-unit">Jam</span></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-cell"><span class="cd-num" id="cdM">00</span><span class="cd-unit">Menit</span></div>
+          <div class="cd-sep">:</div>
+          <div class="cd-cell"><span class="cd-num" id="cdS">00</span><span class="cd-unit">Detik</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── JADWAL / EVENT ── -->
+    <div class="sec-machine reveal" id="event">
+      <div class="sm-head">
+        <div class="sm-head-l"><div class="sm-head-led led green"></div><div class="sm-head-title">Jadwal Kerja</div></div>
+        <div class="sm-head-badge">2 SHIFT</div>
+      </div>
+      <div class="sm-body">
+        <div class="event-row">
+          <div class="er-header">
+            <span class="er-type">SHIFT 1 · AKAD NIKAH</span>
+            <span class="er-time">08:00</span>
+          </div>
+          <div class="er-date">Minggu, 24 Mei 2026</div>
+          <div class="er-loc">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div>
+          <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="er-map">📍 BUKA MAPS</a>
+        </div>
+        <div class="event-row">
+          <div class="er-header">
+            <span class="er-type">SHIFT 2 · RESEPSI</span>
+            <span class="er-time">11:00 – 13:00</span>
+          </div>
+          <div class="er-date">Minggu, 24 Mei 2026</div>
+          <div class="er-loc">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div>
+          <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="er-map">📍 BUKA MAPS</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── RIWAYAT KERJA ── -->
+    <div class="sec-machine reveal" id="story">
+      <div class="sm-head">
+        <div class="sm-head-l"><div class="sm-head-led led amber"></div><div class="sm-head-title">Riwayat Perjalanan</div></div>
+        <div class="sm-head-badge">LOG HISTORY</div>
+      </div>
+      <div class="sm-body">
+        <div class="tl-list">
+          <div class="tl-item">
+            <div class="tl-dot done"></div>
+            <div class="tl-body">
+              <div class="tl-code">LOG-001 · STATUS: COMPLETE</div>
+              <div class="tl-when">Juni 2025</div>
+              <div class="tl-title">Awal Pertemuan</div>
+              <div class="tl-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot done"></div>
+            <div class="tl-body">
+              <div class="tl-code">LOG-002 · STATUS: COMPLETE</div>
+              <div class="tl-when">November 2025</div>
+              <div class="tl-title">Lamaran</div>
+              <div class="tl-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"></div>
+            <div class="tl-body">
+              <div class="tl-code">LOG-003 · STATUS: <span class="blink">PENDING</span></div>
+              <div class="tl-when">Mei 2026</div>
+              <div class="tl-title">Pernikahan</div>
+              <div class="tl-desc">Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── GALLERY ── -->
+    <div class="sec-machine reveal" id="gallery">
+      <div class="sm-head">
+        <div class="sm-head-l"><div class="sm-head-led led green"></div><div class="sm-head-title">Dokumentasi CCTV</div></div>
+        <div class="sm-head-badge">9 FILE</div>
+      </div>
+      <div class="sm-body" style="padding:8px">
+        <div class="gal-grid" id="galGrid"></div>
+      </div>
+    </div>
+
+    <!-- ── TUNJANGAN / GIFT ── -->
+    <div class="sec-machine reveal" id="gift">
+      <div class="sm-head">
+        <div class="sm-head-l"><div class="sm-head-led led amber"></div><div class="sm-head-title">Rekening Tunjangan</div></div>
+        <div class="sm-head-badge">AMPLOP DIGITAL</div>
+      </div>
+      <div class="sm-body">
+        <div style="font-family:var(--mono);font-size:9px;color:var(--lcd-dim);margin-bottom:12px;line-height:1.65;letter-spacing:.04em">// Doa restu sudah sangat cukup. Namun jika memberikan tunjangan adalah bentuk apresiasi, kami menerimanya dengan tulus.</div>
+        <div class="gift-cards">
+          <div class="gift-card">
+            <div class="gc-bank">Bank</div>
+            <div class="gc-name">BCA</div>
+            <div class="gc-holder">Zardarian Ahadika N</div>
+            <div class="gc-num">8210 3705 61</div><br>
+            <button class="copy-btn" onclick="copyAcc('8210370561',this)">SALIN</button>
+          </div>
+          <div class="gift-card">
+            <div class="gc-bank">Bank</div>
+            <div class="gc-name">BNI</div>
+            <div class="gc-holder">Anita Pangestuti</div>
+            <div class="gc-num">1192 9784 03</div><br>
+            <button class="copy-btn" onclick="copyAcc('1192978403',this)">SALIN</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── FORM ABSENSI / RSVP ── -->
+    <div class="sec-machine reveal" id="rsvp">
+      <div class="sm-head">
+        <div class="sm-head-l"><div class="sm-head-led led green" style="animation-duration:.5s"></div><div class="sm-head-title">Form Absensi Tamu</div></div>
+        <div class="sm-head-badge">INPUT DATA</div>
+      </div>
+      <div class="sm-body">
+        <div class="rsvp-stats">
+          <div class="rs"><div class="rs-n" id="stR">7</div><div class="rs-l">Respons</div></div>
+          <div class="rs"><div class="rs-n" id="stH">7</div><div class="rs-l">Hadir</div></div>
+          <div class="rs"><div class="rs-n" id="stT">13</div><div class="rs-l">Total</div></div>
+        </div>
+        <div class="fg"><label class="fl">Nama Tamu</label><input type="text" class="fi" placeholder="MASUKKAN NAMA..." id="rName"></div>
+        <div class="fg">
+          <label class="fl">Status Kehadiran</label>
+          <select class="fi" id="rStat">
+            <option value="">-- PILIH STATUS --</option>
+            <option value="hadir">HADIR ✓</option>
+            <option value="tidak">TIDAK HADIR ✗</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label class="fl">Jumlah Personil</label>
+          <div class="gbtn-row">
+            <button class="gbtn on" onclick="setG(1,this)">1 ORANG</button>
+            <button class="gbtn" onclick="setG(2,this)">2 ORANG</button>
+          </div>
+        </div>
+        <div class="fg"><label class="fl">Pesan / Catatan</label><textarea class="fi" placeholder="MASUKKAN PESAN..." id="rMsg"></textarea></div>
+        <button class="rsvp-submit" onclick="doRSVP()">
+          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          SUBMIT ABSENSI
+        </button>
+      </div>
+    </div>
+
+    <!-- ── LOG ABSENSI / WISHES ── -->
+    <div class="sec-machine reveal" id="wishes">
+      <div class="sm-head">
+        <div class="sm-head-l"><div class="sm-head-led led cyan" style="background:var(--lcd-cyan);box-shadow:0 0 6px var(--lcd-cyan)"></div><div class="sm-head-title">Log Absensi Tamu</div></div>
+        <div class="sm-head-badge" id="logCount">3 ENTRI</div>
+      </div>
+      <div class="sm-body" style="padding:10px 14px">
+        <!-- absen table for existing entries -->
+        <table class="absen-table" id="absenTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nama</th>
+              <th>Punch-In</th>
+              <th>Status</th>
+              <th>Pax</th>
+            </tr>
+          </thead>
+          <tbody id="absenBody">
+            <tr>
+              <td class="td-id">001</td>
+              <td class="td-name">Ayu Rahmawati</td>
+              <td class="td-time">08:12</td>
+              <td class="td-status hadir">HADIR</td>
+              <td class="td-jumlah">2</td>
+            </tr>
+            <tr>
+              <td class="td-id">002</td>
+              <td class="td-name">Reza Firmansyah</td>
+              <td class="td-time">08:35</td>
+              <td class="td-status hadir">HADIR</td>
+              <td class="td-jumlah">1</td>
+            </tr>
+            <tr>
+              <td class="td-id">003</td>
+              <td class="td-name">Sinta Dewi</td>
+              <td class="td-time">09:01</td>
+              <td class="td-status hadir">HADIR</td>
+              <td class="td-jumlah">2</td>
+            </tr>
+          </tbody>
+        </table>
+        <!-- detailed wish log -->
+        <div style="height:1px;background:rgba(57,255,20,.08);margin:12px 0"></div>
+        <div class="wish-log" id="wishLog">
+          <div class="wish-entry vis">
+            <div class="we-id">001</div>
+            <div class="we-body">
+              <div class="we-name">Ayu Rahmawati</div>
+              <div class="we-status">✓ HADIR · 2 PAX · 08:12:34</div>
+              <div class="we-msg">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu! 🌿</div>
+            </div>
+          </div>
+          <div class="wish-entry vis" style="transition-delay:.1s">
+            <div class="we-id">002</div>
+            <div class="we-body">
+              <div class="we-name">Reza Firmansyah</div>
+              <div class="we-status">✓ HADIR · 1 PAX · 08:35:17</div>
+              <div class="we-msg">Alhamdulillah! Semoga pernikahannya membawa keberkahan dan kebahagiaan. Aamiin!</div>
+            </div>
+          </div>
+          <div class="wish-entry vis" style="transition-delay:.2s">
+            <div class="we-id">003</div>
+            <div class="we-body">
+              <div class="we-name">Sinta Dewi</div>
+              <div class="we-status">✓ HADIR · 2 PAX · 09:01:55</div>
+              <div class="we-msg">Wishing you both a lifetime of love and laughter. Semoga selalu diberkahi Allah SWT 💚</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div style="text-align:center;padding:16px 0 8px;font-family:var(--mono);font-size:9px;color:var(--lcd-dim);letter-spacing:.1em;line-height:1.8">
+      WEDCO-5000 · WEDDING ATTENDANCE TERMINAL<br>
+      SERIAL: AZ-240526-001 · BUILD: v4.2.1<br>
+      COPYRIGHT © 2026 BRIDESSPACE CORP.<br>
+      ALL RIGHTS RESERVED<br>
+      <br>
+      <span style="color:rgba(57,255,20,.2)">_</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="bottom-nav" id="botNav">
+  <button class="nav-i on" data-id="home" onclick="scrollTo2('home')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    Mesin
+  </button>
+  <button class="nav-i" data-id="couple" onclick="scrollTo2('couple')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><circle cx="9" cy="11" r="3"/><path d="m15 8 2 2-2 2"/><line x1="13" y1="10" x2="17" y2="10"/></svg>
+    ID Card
+  </button>
+  <button class="nav-i" data-id="event" onclick="scrollTo2('event')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    Jadwal
+  </button>
+  <button class="nav-i" data-id="gift" onclick="scrollTo2('gift')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+    Transfer
+  </button>
+  <button class="nav-i" data-id="rsvp" onclick="scrollTo2('rsvp')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+    Absensi
+  </button>
+</nav>
+
+<!-- Lightbox -->
+<div class="lb" id="lb">
+  <button class="lb-close" onclick="closeLb()">TUTUP [ESC]</button>
+  <button class="lb-nav lb-prev" onclick="lbGo(-1)">‹</button>
+  <img class="lb-img" id="lbImg" src="" alt="">
+  <button class="lb-nav lb-next" onclick="lbGo(1)">›</button>
+  <div class="lb-ctr" id="lbCtr"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ── DATA ── */
+const GALLERY = [
+  "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=600&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=600&h=600&fit=crop&q=80"
+];
+
+const BOOT_LINES = [
+  { text:'Initializing WEDCO-5000 Hardware...', type:'ok', delay:200 },
+  { text:'Loading wedding database...', type:'ok', delay:400 },
+  { text:'Checking fingerprint sensor...', type:'ok', delay:600 },
+  { text:'Connecting to love network...', type:'warn', delay:800 },
+  { text:'WARNING: Heart rate elevated', type:'warn', delay:900 },
+  { text:'Loading guest list: 13 entries', type:'ok', delay:1100 },
+  { text:'Verifying couple identity...', type:'ok', delay:1300 },
+  { text:'EMP-001: ANITA PANGESTUTI [OK]', type:'ok', delay:1500 },
+  { text:'EMP-002: ZARDARIAN AHADIKA N [OK]', type:'ok', delay:1700 },
+  { text:'Mounting event module...', type:'ok', delay:1900 },
+  { text:'ERROR: Cannot find single status', type:'err', delay:2000 },
+  { text:'System override: MARRIED MODE ON', type:'warn', delay:2100 },
+  { text:'All systems nominal. Ready.', type:'ok', delay:2400 },
+  { text:'SYSTEM READY ■', type:'ok', delay:2600 },
+];
+
+let guestN=1, lbIdx=0, toastTO=null, entryNum=3;
+let bootProgress=0, bootRunning=false;
+
+/* ── BOOT SEQUENCE ── */
+window.addEventListener('load', startBoot);
+function startBoot() {
+  bootRunning = true;
+  const container = document.getElementById('bootLines');
+  // animate lines
+  BOOT_LINES.forEach((line,i) => {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'boot-line';
+      const prefix = line.type==='ok' ? '[  OK  ]' : line.type==='warn' ? '[ WARN ]' : '[ FAIL ]';
+      const cls = line.type==='ok' ? 'boot-ok' : line.type==='warn' ? 'boot-warn' : 'boot-err';
+      el.innerHTML = `<span class="${cls}">${prefix}</span><span style="color:var(--lcd-dim)">${line.text}</span>`;
+      container.appendChild(el);
+      container.scrollTop = container.scrollHeight;
+
+      // update progress
+      const pct = Math.round(((i+1)/BOOT_LINES.length)*100);
+      document.getElementById('bootFill').style.width = pct+'%';
+      document.getElementById('bootPct').textContent = pct+'%';
+
+      // show button when done
+      if (i === BOOT_LINES.length-1) {
+        setTimeout(() => {
+          document.getElementById('bootBtn').classList.add('show');
+        }, 400);
+      }
+    }, line.delay);
+  });
+}
+
+/* ── START APP ── */
+function startApp() {
+  document.getElementById('opening').classList.add('hide');
+  const main = document.getElementById('main');
+  setTimeout(()=>main.classList.add('show'), 200);
+  document.getElementById('botNav').classList.add('show');
+  setTimeout(init, 400);
+}
+
+/* ── INIT ── */
+function init() {
+  startClock();
+  startCountdown();
+  buildBarcode();
+  buildGallery();
+  initReveal();
+  initScrollSpy();
+}
+
+/* ── CLOCK ── */
+function startClock() {
+  function tick() {
+    const n = new Date();
+    const t = String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');
+    const el = document.getElementById('lcdTime');
+    if(el) el.textContent = t;
+  }
+  tick(); setInterval(tick,1000);
+}
+
+/* ── COUNTDOWN ── */
+function startCountdown() {
+  const tgt = new Date('2026-05-24T08:00:00');
+  const s=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=String(v).padStart(2,'0');};
+  function tick(){
+    const d=tgt-new Date();
+    if(d<=0){s('cdD',0);s('cdH',0);s('cdM',0);s('cdS',0);return;}
+    s('cdD',Math.floor(d/86400000));
+    s('cdH',Math.floor((d%86400000)/3600000));
+    s('cdM',Math.floor((d%3600000)/60000));
+    s('cdS',Math.floor((d%60000)/1000));
+  }
+  tick(); setInterval(tick,1000);
+}
+
+/* ── BARCODE ── */
+function buildBarcode() {
+  const wrap = document.getElementById('idcBarcode');
+  if(!wrap) return;
+  const pattern = [3,1,2,1,3,2,1,2,3,1,2,3,1,2,1,4,2,1,3,1,2];
+  let t = true;
+  pattern.forEach(w => {
+    const b = document.createElement('div');
+    b.className = 'idc-bc-bar';
+    b.style.width = (t ? w*2 : w)+'px';
+    b.style.background = t ? '#fff' : 'transparent';
+    b.style.height = '100%';
+    wrap.appendChild(b);
+    t=!t;
+  });
+}
+
+/* ── FINGERPRINT ── */
+let scanning=false;
+function doScan() {
+  if(scanning) return;
+  scanning=true;
+  const wrap=document.getElementById('fpWrap');
+  const status=document.getElementById('fpStatus');
+  const hint=document.getElementById('fpHint');
+  wrap.classList.add('scanning');
+  status.textContent='MEMINDAI...';
+  hint.textContent='Tahan jari pada sensor';
+  setTimeout(()=>{
+    wrap.classList.remove('scanning');
+    wrap.classList.add('success');
+    status.textContent='TERIDENTIFIKASI ✓';
+    hint.textContent='Selamat datang, tamu undangan!';
+    showToast('SCAN BERHASIL · SELAMAT DATANG');
+    setTimeout(()=>{
+      wrap.classList.remove('success');
+      status.textContent='SIAP PINDAI';
+      hint.textContent='Tap untuk registrasi kehadiran';
+      scanning=false;
+    },3000);
+  },2000);
+}
+
+/* ── KEYPAD ── */
+let keyBuffer='';
+function keyPress(k) {
+  if(k==='clear'){keyBuffer='';return;}
+  if(k.length===1) keyBuffer+=k;
+  if(keyBuffer.length>=4) {
+    showToast('ID: '+keyBuffer+' · TIDAK DITEMUKAN');
+    keyBuffer='';
+  }
+}
+
+/* ── GALLERY ── */
+function buildGallery() {
+  const g=document.getElementById('galGrid');
+  if(!g) return;
+  GALLERY.forEach((src,i)=>{
+    const d=document.createElement('div');
+    d.className='gal-item';
+    d.innerHTML=`<img src="${src}" alt="" loading="lazy"><div class="gal-num">CAM-${String(i+1).padStart(2,'0')}</div>`;
+    d.onclick=()=>openLb(i);
+    g.appendChild(d);
+  });
+}
+
+/* ── SCROLL ── */
+function scrollTo2(id) {
+  const el=document.getElementById(id);
+  if(!el) return;
+  const nav=document.querySelector('.bottom-nav');
+  const offset=nav?0:0;
+  window.scrollTo({top:el.getBoundingClientRect().top+window.pageYOffset-12,behavior:'smooth'});
+  setActiveNav(id);
+}
+function setActiveNav(id) {
+  document.querySelectorAll('.nav-i').forEach(b=>b.classList.toggle('on',b.dataset.id===id));
+}
+function initScrollSpy() {
+  const ids=['home','couple','event','story','gallery','gift','rsvp','wishes'];
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting) setActiveNav(e.target.id);});
+  },{rootMargin:'-30% 0px -60% 0px',threshold:0});
+  ids.forEach(id=>{const el=document.getElementById(id);if(el) obs.observe(el);});
+}
+function initReveal() {
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting) e.target.classList.add('in');});
+  },{threshold:.08});
+  document.querySelectorAll('.reveal,.wish-entry').forEach(el=>obs.observe(el));
+}
+
+/* ── RSVP ── */
+function setG(n,btn){guestN=n;document.querySelectorAll('.gbtn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+function doRSVP(){
+  const name=document.getElementById('rName').value.trim();
+  const stat=document.getElementById('rStat').value;
+  const msg=document.getElementById('rMsg').value.trim();
+  if(!name||!stat){showToast('ERROR: DATA TIDAK LENGKAP');return;}
+  entryNum++;
+  const now=new Date();
+  const ts=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0')+':'+String(now.getSeconds()).padStart(2,'0');
+  const stCls=stat==='hadir'?'hadir':'tidak';
+  const stTxt=stat==='hadir'?'HADIR':'TIDAK HADIR';
+
+  // add to table
+  const tbody=document.getElementById('absenBody');
+  if(tbody){
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="td-id">${String(entryNum).padStart(3,'0')}</td><td class="td-name">${name}</td><td class="td-time">${ts.slice(0,5)}</td><td class="td-status ${stCls}">${stTxt}</td><td class="td-jumlah">${guestN}</td>`;
+    tbody.appendChild(tr);
+  }
+
+  // add to wish log
+  const entry=document.createElement('div');
+  entry.className='wish-entry';
+  entry.innerHTML=`<div class="we-id">${String(entryNum).padStart(3,'0')}</div><div class="we-body"><div class="we-name">${name}</div><div class="we-status">${stat==='hadir'?'✓ HADIR':'✗ TIDAK HADIR'} · ${guestN} PAX · ${ts}</div><div class="we-msg">${msg||'// Tidak ada pesan'}</div></div>`;
+  const wl=document.getElementById('wishLog');
+  if(wl){wl.appendChild(entry);setTimeout(()=>entry.classList.add('vis'),50);}
+
+  // update counts
+  const lc=document.getElementById('logCount');
+  if(lc) lc.textContent=`${entryNum} ENTRI`;
+  const bump=(id,n=1)=>{const e=document.getElementById(id);if(e)e.textContent=parseInt(e.textContent)+n;};
+  bump('stR');
+  if(stat==='hadir'){
+    bump('stH');bump('stT',guestN);
+    // update LCD total
+    const lt=document.getElementById('lcdTamu');
+    if(lt) lt.textContent=(parseInt(lt.textContent)+guestN)+' Orang';
+  }
+
+  // reset
+  document.getElementById('rName').value='';
+  document.getElementById('rStat').value='';
+  document.getElementById('rMsg').value='';
+  showToast('ABSENSI TERCATAT · '+ts);
+  document.getElementById('wishes').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ── COPY ── */
+function copyAcc(text,btn){
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.classList.add('ok');btn.textContent='✓ OK';
+    showToast('TERSALIN: '+text);
+    setTimeout(()=>{btn.classList.remove('ok');btn.textContent='SALIN';},2500);
+  }).catch(()=>showToast('SALIN: '+text));
+}
+
+/* ── LIGHTBOX ── */
+function openLb(i){lbIdx=i;updLb();document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden';}
+function closeLb(){document.getElementById('lb').classList.remove('open');document.body.style.overflow='';}
+function lbGo(d){lbIdx=(lbIdx+d+GALLERY.length)%GALLERY.length;updLb();}
+function updLb(){document.getElementById('lbImg').src=GALLERY[lbIdx];document.getElementById('lbCtr').textContent=`CAM-${String(lbIdx+1).padStart(2,'0')} · ${lbIdx+1}/${GALLERY.length}`;}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lb').classList.contains('open')) return;
+  if(e.key==='Escape') closeLb();
+  if(e.key==='ArrowLeft') lbGo(-1);
+  if(e.key==='ArrowRight') lbGo(1);
+});
+
+/* ── TOAST ── */
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTO);
+  toastTO=setTimeout(()=>t.classList.remove('show'),2800);
+}
+</script>
+</body>
+</html>

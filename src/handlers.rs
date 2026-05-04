@@ -878,6 +878,78 @@ pub fn get_all_templates() -> Vec<TemplateMetadata> {
             category: "on-demand".to_string(),
             plan: "NOBLE".to_string(),
         },
+        TemplateMetadata {
+            id: "absensi-wedding".to_string(),
+            title: "LoveHadir".to_string(),
+            desc: "Presensi cinta yang sempurna. Tema buku tamu digital yang rapi dan elegan untuk memastikan setiap saksi kebahagiaan kalian tercatat dengan indah.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/absensi-wedding_preview.png".to_string(),
+            category: "social".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-asana".to_string(),
+            title: "Asmara".to_string(),
+            desc: "Manage your love project! Antarmuka manajemen tugas yang terorganisir untuk memastikan setiap milestone kebahagiaan kalian tercapai tepat waktu.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-asana_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-kopijago".to_string(),
+            title: "BankJodoh".to_string(),
+            desc: "Jago dalam urusan hati! Tema perbankan digital yang ceria dan futuristik untuk mengelola investasi kebahagiaan masa depan kalian.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-kopijago_preview.png".to_string(),
+            category: "social".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-linktree".to_string(),
+            title: "LinkLove".to_string(),
+            desc: "Satu tautan untuk semua cerita cinta. Antarmuka landing page yang clean dan mobile-friendly untuk membagikan setiap detail penting pernikahanmu.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-linktree_preview.png".to_string(),
+            category: "social".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "we-upwork".to_string(),
+            title: "LoveWork".to_string(),
+            desc: "Contract: Forever. Antarmuka platform profesional buat pasangan yang memandang pernikahan sebagai kemitraan strategis yang paling sukses.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/we-upwork_preview.png".to_string(),
+            category: "productivity".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-danantara".to_string(),
+            title: "DanaAsmara".to_string(),
+            desc: "Investasi negara... eh, investasi cinta! Tema agensi investasi yang megah dan formal untuk meresmikan kemitraan agung kalian.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-danantara_preview.png".to_string(),
+            category: "entertainment".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-dota2".to_string(),
+            title: "DotaLove".to_string(),
+            desc: "Match Found: The One! Tema MOBA legendaris buat pasangan gamer yang siap defend high ground pelaminan bersama-sama.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-dota2_preview.png".to_string(),
+            category: "game".to_string(),
+            plan: "NOBLE".to_string(),
+        },
+        TemplateMetadata {
+            id: "wedding-indomie-goreng".to_string(),
+            title: "IndoLover".to_string(),
+            desc: "Sajian istimewa dari hati. Tema mie instan paling ikonik yang hangat, familiar, dan pastinya bikin siapa pun yang melihat ketagihan rasa cinta kalian.".to_string(),
+            price: 50000,
+            preview_img: "/static/img/wedding-indomie-goreng_preview.png".to_string(),
+            category: "entertainment".to_string(),
+            plan: "NOBLE".to_string(),
+        },
     ]
 }
 
@@ -2078,6 +2150,78 @@ pub struct WeddingTransJakartaTemplate {
 }
 
 #[derive(Template)]
+#[template(path = "invitation/absensi-wedding.html")]
+pub struct AbsensiWeddingTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-asana.html")]
+pub struct WeAsanaTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-kopijago.html")]
+pub struct WeKopiJagoTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-linktree.html")]
+pub struct WeLinktreeTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/we-upwork.html")]
+pub struct WeUpworkTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-danantara.html")]
+pub struct WeddingDanantaraTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-dota2.html")]
+pub struct WeddingDota2Template {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/wedding-indomie-goreng.html")]
+pub struct WeddingIndomieGorengTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
 #[template(path = "invitation/manage.html")]
 pub struct ManageInvitationTemplate {
     pub invitation: Invitation,
@@ -2434,6 +2578,14 @@ pub async fn invitation_detail(
                 "wedding-windows95" => HtmlTemplate(WeddingWindows95Template { invitation, is_dev: state.is_dev }).into_response(),
                 "wedding-windowsxp" => HtmlTemplate(WeddingWindowsXpTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "whoosh-wedding" => HtmlTemplate(WhooshWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "absensi-wedding" => HtmlTemplate(AbsensiWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-asana" => HtmlTemplate(WeAsanaTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-kopijago" => HtmlTemplate(WeKopiJagoTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-linktree" => HtmlTemplate(WeLinktreeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "we-upwork" => HtmlTemplate(WeUpworkTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-danantara" => HtmlTemplate(WeddingDanantaraTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-dota2" => HtmlTemplate(WeddingDota2Template { invitation, is_dev: state.is_dev }).into_response(),
+                "wedding-indomie-goreng" => HtmlTemplate(WeddingIndomieGorengTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
             }
         },
@@ -2477,6 +2629,14 @@ pub async fn invitation_detail(
                     "wedding-kai-v2-sample" => ("Nazma & Guntur", "wedding-kai-v2"),
                     "wedding-minecraft-sample" => ("Nazma & Guntur", "wedding-minecraft"),
                     "wedding-zoom-v2-sample" => ("Nazma & Guntur", "wedding-zoom-v2"),
+                    "absensi-wedding-sample" => ("Nazma & Guntur", "absensi-wedding"),
+                    "we-asana-sample" => ("Nazma & Guntur", "we-asana"),
+                    "we-kopijago-sample" => ("Nazma & Guntur", "we-kopijago"),
+                    "we-linktree-sample" => ("Nazma & Guntur", "we-linktree"),
+                    "we-upwork-sample" => ("Nazma & Guntur", "we-upwork"),
+                    "wedding-danantara-sample" => ("Nazma & Guntur", "wedding-danantara"),
+                    "wedding-dota2-sample" => ("Nazma & Guntur", "wedding-dota2"),
+                    "wedding-indomie-goreng-sample" => ("Nazma & Guntur", "wedding-indomie-goreng"),
                     "we-vscode-sample" => ("Nazma & Guntur", "we-vscode"),
                     "gmail-wedding-sample" => ("Nazma & Guntur", "gmail-wedding"),
                     "we-behance-sample" => ("Nazma & Guntur", "we-behance"),
@@ -2667,6 +2827,14 @@ pub async fn invitation_detail(
                     "wedding-windows95" => HtmlTemplate(WeddingWindows95Template { invitation, is_dev: state.is_dev }).into_response(),
                     "wedding-windowsxp" => HtmlTemplate(WeddingWindowsXpTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     "whoosh-wedding" => HtmlTemplate(WhooshWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "absensi-wedding" => HtmlTemplate(AbsensiWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-asana" => HtmlTemplate(WeAsanaTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-kopijago" => HtmlTemplate(WeKopiJagoTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-linktree" => HtmlTemplate(WeLinktreeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "we-upwork" => HtmlTemplate(WeUpworkTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-danantara" => HtmlTemplate(WeddingDanantaraTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-dota2" => HtmlTemplate(WeddingDota2Template { invitation, is_dev: state.is_dev }).into_response(),
+                    "wedding-indomie-goreng" => HtmlTemplate(WeddingIndomieGorengTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 }
             } else {
@@ -3087,6 +3255,14 @@ pub async fn preview(
         "wedding-minecraft" => HtmlTemplate(WeddingMinecraftTemplate { invitation, is_dev: state.is_dev }).into_response(),
         "wedding-zoom-v2" => HtmlTemplate(WeddingZoomV2Template { invitation, is_dev: state.is_dev }).into_response(),
         "we-vscode" => HtmlTemplate(WeVSCodeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+        "absensi-wedding" => HtmlTemplate(AbsensiWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
+        "we-asana" => HtmlTemplate(WeAsanaTemplate { invitation, is_dev: state.is_dev }).into_response(),
+        "we-kopijago" => HtmlTemplate(WeKopiJagoTemplate { invitation, is_dev: state.is_dev }).into_response(),
+        "we-linktree" => HtmlTemplate(WeLinktreeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+        "we-upwork" => HtmlTemplate(WeUpworkTemplate { invitation, is_dev: state.is_dev }).into_response(),
+        "wedding-danantara" => HtmlTemplate(WeddingDanantaraTemplate { invitation, is_dev: state.is_dev }).into_response(),
+        "wedding-dota2" => HtmlTemplate(WeddingDota2Template { invitation, is_dev: state.is_dev }).into_response(),
+        "wedding-indomie-goreng" => HtmlTemplate(WeddingIndomieGorengTemplate { invitation, is_dev: state.is_dev }).into_response(),
         _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
     }
 }

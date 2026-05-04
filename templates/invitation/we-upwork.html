@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wedding Contract — Upwork</title>
+<link href="https://fonts.googleapis.com/css2?family=Neue+Montreal:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --uw-green:    #14a800;
+  --uw-green2:   #108a00;
+  --uw-green3:   #e1f5e1;
+  --uw-dark:     #001e00;
+  --uw-mid:      #3c3c3c;
+  --uw-gray:     #6b6b6b;
+  --uw-lgray:    #d5d5d5;
+  --uw-xlgray:   #f2f2f2;
+  --uw-bg:       #f7f7f7;
+  --uw-surface:  #ffffff;
+  --uw-blue:     #0d6efd;
+  --uw-gold:     #f2c94c;
+  --uw-orange:   #ff7a00;
+  --uw-red:      #e11900;
+  --uw-badge:    #14a800;
+  --uw-border:   #e0e0e0;
+
+  --fI: 'Inter', -apple-system, sans-serif;
+  --fM: 'IBM Plex Mono', monospace;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.08), 0 2px 4px rgba(0,0,0,.05);
+  --shadow-lg: 0 8px 24px rgba(0,0,0,.1),  0 4px 8px rgba(0,0,0,.06);
+  --shadow-xl: 0 16px 48px rgba(0,0,0,.12), 0 8px 16px rgba(0,0,0,.08);
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--uw-bg);
+  color:var(--uw-mid);
+  font-family:var(--fI);
+  overflow-x:hidden;
+  padding-bottom:68px;
+}
+
+/* ══════════════════════════
+   OPENING — Job Invitation popup
+══════════════════════════ */
+#opening{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(0,30,0,.7);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  transition:opacity .5s ease, transform .5s ease;
+  backdrop-filter:blur(4px);
+}
+#opening.hide{opacity:0;pointer-events:none;visibility:hidden}
+
+.op-modal{
+  background:var(--uw-surface);
+  border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-xl);
+  width:min(520px,100%);
+  overflow:hidden;
+}
+/* Header bar */
+.op-header{
+  background:var(--uw-dark);
+  padding:16px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.op-logo{display:flex;align-items:center;gap:8px}
+.op-logo svg{width:90px;height:24px}
+.op-header-right{font-family:var(--fI);font-size:12px;color:rgba(255,255,255,.5);letter-spacing:.04em}
+/* Invite badge */
+.op-invite-badge{
+  background:var(--uw-green3);
+  border-left:4px solid var(--uw-green);
+  padding:12px 20px;
+  display:flex;align-items:center;gap:10px;
+}
+.op-invite-badge svg{width:20px;height:20px;fill:var(--uw-green);flex-shrink:0}
+.op-invite-text{font-family:var(--fI);font-size:13px;font-weight:600;color:var(--uw-dark)}
+.op-invite-sub{font-family:var(--fI);font-size:11px;color:var(--uw-gray);margin-top:1px}
+/* Body */
+.op-body{padding:20px}
+/* Job title */
+.op-job-title{font-size:20px;font-weight:700;color:var(--uw-dark);margin-bottom:6px;line-height:1.3}
+/* Meta row */
+.op-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.op-tag{
+  background:var(--uw-xlgray);border-radius:var(--radius-full);
+  padding:4px 10px;font-size:11px;font-weight:600;color:var(--uw-gray);
+}
+.op-tag.green{background:var(--uw-green3);color:var(--uw-green2)}
+/* Client row */
+.op-client-row{
+  display:flex;align-items:center;gap:10px;padding:12px;
+  background:var(--uw-bg);border-radius:var(--radius-md);margin-bottom:14px;
+}
+.op-client-av{
+  width:40px;height:40px;border-radius:50%;
+  background:linear-gradient(135deg,var(--uw-green),var(--uw-dark));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;color:white;font-size:16px;flex-shrink:0;
+}
+.op-client-name{font-size:14px;font-weight:600;color:var(--uw-dark)}
+.op-client-meta{font-size:11px;color:var(--uw-gray);margin-top:1px}
+/* Budget */
+.op-budget-row{
+  display:flex;gap:12px;margin-bottom:16px;
+}
+.op-budget-item{
+  flex:1;background:var(--uw-bg);border-radius:var(--radius-md);
+  padding:12px;border:1px solid var(--uw-border);
+}
+.op-budget-label{font-size:10px;font-weight:600;letter-spacing:.06em;color:var(--uw-gray);text-transform:uppercase;margin-bottom:3px}
+.op-budget-value{font-size:18px;font-weight:700;color:var(--uw-dark)}
+.op-budget-sub{font-size:10px;color:var(--uw-gray);margin-top:1px}
+/* To recipient */
+.op-to-section{margin-bottom:16px}
+.op-to-label{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--uw-gray);text-transform:uppercase;margin-bottom:6px}
+.op-to-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--uw-xlgray);border-radius:var(--radius-full);
+  padding:6px 12px 6px 6px;
+}
+.op-to-av{width:24px;height:24px;border-radius:50%;background:var(--uw-green);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:white;flex-shrink:0}
+.op-to-name{font-size:13px;font-weight:500;color:var(--uw-dark)}
+/* Buttons */
+.op-btn-row{display:flex;gap:8px}
+.op-btn-primary{
+  flex:1;background:var(--uw-green);color:white;border:none;
+  border-radius:var(--radius-full);padding:12px;
+  font-family:var(--fI);font-size:14px;font-weight:600;
+  cursor:pointer;transition:background .15s;
+}
+.op-btn-primary:hover{background:var(--uw-green2)}
+.op-btn-secondary{
+  flex:1;background:transparent;color:var(--uw-green);
+  border:2px solid var(--uw-green);border-radius:var(--radius-full);padding:12px;
+  font-family:var(--fI);font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;
+}
+.op-btn-secondary:hover{background:var(--uw-green3)}
+
+/* ══════════════════════════
+   MAIN
+══════════════════════════ */
+#main{opacity:0;transition:opacity .5s ease .1s}
+#main.show{opacity:1}
+
+/* ── TOPBAR ── */
+.uw-topbar{
+  background:var(--uw-dark);
+  padding:0 16px;
+  display:flex;align-items:center;justify-content:space-between;
+  height:60px;
+  position:sticky;top:0;z-index:200;
+}
+.utb-left{display:flex;align-items:center;gap:20px}
+.utb-logo{display:flex;align-items:center;gap:0}
+.utb-logo svg{width:100px;height:26px}
+/* Nav links */
+.utb-nav{display:flex;align-items:center;gap:0}
+.utb-link{
+  padding:0 12px;height:60px;display:flex;align-items:center;
+  font-size:13px;font-weight:500;color:rgba(255,255,255,.7);
+  cursor:pointer;transition:color .15s;border-bottom:2px solid transparent;
+  white-space:nowrap;
+}
+.utb-link:hover{color:white}
+.utb-link.active{color:white;border-bottom-color:var(--uw-green)}
+@media(max-width:600px){.utb-nav{display:none}}
+.utb-right{display:flex;align-items:center;gap:8px}
+.utb-icon-btn{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:transparent;border:none;cursor:pointer;transition:background .15s;
+}
+.utb-icon-btn:hover{background:rgba(255,255,255,.1)}
+.utb-icon-btn svg{width:20px;height:20px;fill:rgba(255,255,255,.7)}
+.utb-avatar{
+  width:34px;height:34px;border-radius:50%;border:2px solid var(--uw-green);
+  background:linear-gradient(135deg,var(--uw-green),var(--uw-dark));
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:13px;color:white;cursor:pointer;
+}
+
+/* ── HERO — Job Posting ── */
+.hero-section{background:var(--uw-surface);border-bottom:1px solid var(--uw-border)}
+.hero-inner{max-width:900px;margin:0 auto;padding:24px 16px}
+
+/* Breadcrumb */
+.breadcrumb{display:flex;align-items:center;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.bc-item{font-size:12px;color:var(--uw-gray);cursor:pointer}
+.bc-item:hover{color:var(--uw-green);text-decoration:underline}
+.bc-sep{font-size:12px;color:var(--uw-lgray)}
+.bc-item.current{color:var(--uw-mid);cursor:default}
+.bc-item.current:hover{text-decoration:none}
+
+/* Job header */
+.job-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:16px}
+.job-header-left{flex:1;min-width:0}
+.job-status-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+.job-status-badge{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--uw-green3);border-radius:var(--radius-full);
+  padding:4px 10px;font-size:11px;font-weight:700;color:var(--uw-green2);
+}
+.job-status-badge::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--uw-green);display:inline-block;animation:pulse-dot 2s infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.job-posted{font-size:12px;color:var(--uw-gray)}
+.job-title{font-size:clamp(20px,5vw,28px);font-weight:700;color:var(--uw-dark);line-height:1.25;margin-bottom:10px}
+.job-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.job-tag{
+  background:var(--uw-xlgray);border-radius:var(--radius-full);
+  padding:5px 12px;font-size:12px;font-weight:500;color:var(--uw-mid);
+  transition:background .15s;cursor:default;
+}
+.job-tag:hover{background:var(--uw-green3);color:var(--uw-green2)}
+
+/* Job description */
+.job-desc{font-size:14px;color:var(--uw-mid);line-height:1.75;margin-bottom:18px}
+.job-desc p{margin-bottom:10px}
+
+/* Budget/scope row */
+.job-scope-row{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;
+  margin-bottom:18px;
+}
+.job-scope-item{
+  background:var(--uw-bg);border:1px solid var(--uw-border);border-radius:var(--radius-md);
+  padding:14px;text-align:center;
+}
+.js-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--uw-gray);text-transform:uppercase;margin-bottom:4px}
+.js-icon{font-size:20px;margin-bottom:4px}
+.js-value{font-size:15px;font-weight:700;color:var(--uw-dark)}
+.js-sub{font-size:10px;color:var(--uw-gray);margin-top:2px}
+
+/* Apply / Save button */
+.job-actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn-primary{
+  background:var(--uw-green);color:white;border:none;
+  border-radius:var(--radius-full);padding:12px 28px;
+  font-family:var(--fI);font-size:14px;font-weight:600;
+  cursor:pointer;transition:background .15s;display:inline-flex;align-items:center;gap:6px;
+}
+.btn-primary:hover{background:var(--uw-green2)}
+.btn-secondary{
+  background:transparent;color:var(--uw-green);
+  border:2px solid var(--uw-green);border-radius:var(--radius-full);padding:12px 24px;
+  font-family:var(--fI);font-size:14px;font-weight:600;cursor:pointer;transition:all .15s;
+}
+.btn-secondary:hover{background:var(--uw-green3)}
+.btn-icon{
+  width:44px;height:44px;border-radius:50%;
+  border:2px solid var(--uw-border);background:transparent;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .15s;
+}
+.btn-icon:hover{border-color:var(--uw-green);background:var(--uw-green3)}
+.btn-icon svg{width:18px;height:18px;fill:var(--uw-gray)}
+
+/* Music player in job header */
+.job-player{
+  background:var(--uw-bg);border:1px solid var(--uw-border);border-radius:var(--radius-lg);
+  padding:12px 14px;margin-bottom:18px;display:flex;align-items:center;gap:10px;
+}
+.jp-play{
+  width:38px;height:38px;border-radius:50%;background:var(--uw-green);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  box-shadow:0 2px 8px rgba(20,168,0,.3);transition:all .15s;
+}
+.jp-play:hover{background:var(--uw-green2);transform:scale(1.06)}
+.jp-play svg{width:14px;height:14px;fill:white}
+.jp-info{flex:1;min-width:0}
+.jp-title{font-size:13px;font-weight:600;color:var(--uw-dark);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+.jp-artist{font-size:11px;color:var(--uw-gray)}
+.jp-prog-wrap{flex:2;min-width:0}
+.jp-times{display:flex;justify-content:space-between;font-family:var(--fM);font-size:9px;color:var(--uw-lgray);margin-bottom:4px}
+.jp-track{height:4px;background:var(--uw-lgray);border-radius:var(--radius-full);cursor:pointer;position:relative}
+.jp-fill{height:100%;background:var(--uw-green);border-radius:var(--radius-full);width:0%;transition:width .5s linear;position:relative}
+.jp-fill::after{content:'';position:absolute;right:-6px;top:50%;transform:translateY(-50%);width:12px;height:12px;border-radius:50%;background:var(--uw-green);box-shadow:0 0 0 3px rgba(20,168,0,.2)}
+/* Track pills */
+.jp-pills{display:flex;gap:5px;flex-shrink:0;flex-wrap:wrap}
+.jp-pill{background:var(--uw-surface);border:1px solid var(--uw-border);border-radius:var(--radius-full);padding:4px 10px;font-size:10px;font-weight:600;color:var(--uw-gray);cursor:pointer;transition:all .15s}
+.jp-pill.active{background:var(--uw-green3);border-color:var(--uw-green);color:var(--uw-green2)}
+/* EQ */
+.eq{display:inline-flex;align-items:flex-end;gap:2px;height:12px;vertical-align:middle;margin-left:4px}
+.eq-b{width:3px;background:var(--uw-green);border-radius:1px;animation:eqA var(--s,.5s) ease-in-out infinite alternate}
+.eq-b:nth-child(2){--s:.75s;animation-delay:.1s}
+.eq-b:nth-child(3){--s:.55s;animation-delay:.2s}
+@keyframes eqA{from{height:2px}to{height:12px}}
+.eq.paused .eq-b{animation-play-state:paused;height:2px}
+
+/* Sidebar card */
+.job-layout{display:grid;grid-template-columns:1fr 300px;gap:20px;max-width:900px;margin:0 auto;padding:20px 16px}
+@media(max-width:700px){.job-layout{grid-template-columns:1fr}}
+.sidebar-card{
+  background:var(--uw-surface);border:1px solid var(--uw-border);
+  border-radius:var(--radius-lg);padding:16px;box-shadow:var(--shadow-sm);
+  position:sticky;top:76px;align-self:start;
+}
+.sc-title{font-size:14px;font-weight:700;color:var(--uw-dark);margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.sc-title svg{width:16px;height:16px;fill:var(--uw-green)}
+.sc-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--uw-border);font-size:13px}
+.sc-row:last-of-type{border-bottom:none}
+.sc-label{color:var(--uw-gray);font-weight:500}
+.sc-value{font-weight:700;color:var(--uw-dark)}
+.sc-value.green{color:var(--uw-green2)}
+/* Countdown in sidebar */
+.sc-countdown{
+  background:var(--uw-green3);border-radius:var(--radius-md);
+  padding:12px;margin-bottom:12px;text-align:center;
+}
+.sc-countdown-label{font-size:11px;font-weight:700;color:var(--uw-green2);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.sc-cd-grid{display:flex;gap:6px;justify-content:center}
+.sc-cd-item{background:white;border-radius:var(--radius-sm);padding:8px 6px;min-width:48px;text-align:center}
+.sc-cd-num{font-family:var(--fM);font-size:20px;font-weight:700;color:var(--uw-dark);line-height:1}
+.sc-cd-unit{font-size:8px;font-weight:700;letter-spacing:.06em;color:var(--uw-gray);text-transform:uppercase;margin-top:2px}
+
+/* ── MAIN CONTENT SECTIONS ── */
+.content-section{max-width:900px;margin:0 auto;padding:0 16px 20px}
+.section-card{
+  background:var(--uw-surface);border:1px solid var(--uw-border);
+  border-radius:var(--radius-lg);padding:20px;box-shadow:var(--shadow-sm);
+  margin-bottom:16px;
+}
+.sc-head{font-size:16px;font-weight:700;color:var(--uw-dark);margin-bottom:14px;display:flex;align-items:center;gap:8px;padding-bottom:12px;border-bottom:1px solid var(--uw-border)}
+.sc-head svg{width:18px;height:18px;fill:var(--uw-green)}
+
+/* ── FREELANCER PROFILES (Couple) ── */
+.freelancer-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:500px){.freelancer-grid{grid-template-columns:1fr}}
+.freelancer-card{
+  border:1px solid var(--uw-border);border-radius:var(--radius-lg);
+  padding:16px;position:relative;overflow:hidden;
+  transition:border-color .2s,box-shadow .2s;cursor:default;
+}
+.freelancer-card:hover{border-color:var(--uw-green);box-shadow:0 4px 16px rgba(20,168,0,.1)}
+.fc-top-badge{
+  position:absolute;top:10px;right:10px;
+  background:var(--uw-green);color:white;
+  border-radius:var(--radius-full);padding:3px 8px;
+  font-size:10px;font-weight:700;letter-spacing:.04em;
+}
+.fc-photo{width:64px;height:64px;border-radius:50%;overflow:hidden;margin-bottom:10px;border:3px solid var(--uw-green3)}
+.fc-photo img{width:100%;height:100%;object-fit:cover}
+.fc-name{font-size:15px;font-weight:700;color:var(--uw-dark);margin-bottom:2px}
+.fc-role{font-size:12px;color:var(--uw-gray);margin-bottom:6px}
+/* Star rating */
+.fc-stars{display:flex;align-items:center;gap:3px;margin-bottom:8px}
+.fc-star{font-size:13px;color:var(--uw-gold)}
+.fc-rating{font-size:12px;font-weight:700;color:var(--uw-dark);margin-left:2px}
+.fc-reviews{font-size:11px;color:var(--uw-gray)}
+/* Skills */
+.fc-skills{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}
+.fc-skill{background:var(--uw-xlgray);border-radius:var(--radius-full);padding:3px 8px;font-size:10px;font-weight:600;color:var(--uw-mid)}
+/* Top Rated badge */
+.fc-badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.fc-badge{
+  display:inline-flex;align-items:center;gap:3px;
+  background:var(--uw-green3);border-radius:var(--radius-full);
+  padding:3px 8px;font-size:10px;font-weight:600;color:var(--uw-green2);
+}
+/* Parents info */
+.fc-parents{font-size:11px;color:var(--uw-gray);line-height:1.7;border-top:1px solid var(--uw-border);padding-top:8px}
+.fc-parents strong{color:var(--uw-mid);font-weight:600}
+
+/* ── MILESTONES (Love Story) ── */
+.milestone-list{display:flex;flex-direction:column;gap:0}
+.milestone-item{
+  display:flex;gap:0;
+  opacity:0;transform:translateX(-12px);transition:opacity .5s,transform .5s;
+}
+.milestone-item.visible{opacity:1;transform:translateX(0)}
+.ml-left{display:flex;flex-direction:column;align-items:center;width:40px;flex-shrink:0}
+.ml-dot{
+  width:28px;height:28px;border-radius:50%;border:2px solid var(--uw-green);
+  background:var(--uw-green);display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;z-index:1;
+}
+.ml-dot svg{width:14px;height:14px;fill:white}
+.ml-dot.pending{background:white;border-color:var(--uw-lgray)}
+.ml-dot.pending svg{fill:var(--uw-lgray)}
+.ml-line{flex:1;width:2px;background:var(--uw-lgray);margin:0 auto}
+.ml-content{flex:1;padding:0 0 20px 14px}
+.ml-status-row{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.ml-status{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.ml-status.completed{color:var(--uw-green2)}
+.ml-status.active{color:var(--uw-orange)}
+.ml-status.pending{color:var(--uw-lgray)}
+.ml-date{font-size:11px;color:var(--uw-gray)}
+.ml-title{font-size:15px;font-weight:700;color:var(--uw-dark);margin-bottom:4px}
+.ml-desc{font-size:13px;color:var(--uw-gray);line-height:1.7;margin-bottom:8px}
+.ml-photo{width:100%;height:100px;object-fit:cover;border-radius:var(--radius-md);border:1px solid var(--uw-border);display:block;margin-bottom:6px;filter:brightness(.92)}
+.ml-amount{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--uw-green3);border-radius:var(--radius-full);
+  padding:4px 10px;font-size:11px;font-weight:700;color:var(--uw-green2);
+}
+.ml-amount svg{width:12px;height:12px;fill:currentColor}
+
+/* ── EVENT CARDS ── */
+.event-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:500px){.event-cards-grid{grid-template-columns:1fr}}
+.event-contract-card{
+  border:1px solid var(--uw-border);border-radius:var(--radius-lg);overflow:hidden;
+  transition:border-color .2s,box-shadow .2s;
+}
+.event-contract-card:hover{border-color:var(--uw-green);box-shadow:var(--shadow-md)}
+.ec-photo{width:100%;height:100px;object-fit:cover;display:block;filter:brightness(.85)}
+.ec-body{padding:14px}
+.ec-type-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--uw-green3);border-radius:var(--radius-full);
+  padding:4px 10px;font-size:10px;font-weight:700;color:var(--uw-green2);
+  margin-bottom:8px;
+}
+.ec-type-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--uw-green);animation:pulse-dot 2s infinite}
+.ec-title{font-size:15px;font-weight:700;color:var(--uw-dark);margin-bottom:6px}
+.ec-detail{display:flex;align-items:flex-start;gap:6px;margin-bottom:5px}
+.ec-icon{width:14px;height:14px;fill:var(--uw-gray);flex-shrink:0;margin-top:1px}
+.ec-text{font-size:12px;color:var(--uw-gray);line-height:1.5}
+.ec-maps-btn{
+  display:inline-flex;align-items:center;gap:5px;margin-top:8px;
+  background:var(--uw-green3);border:none;border-radius:var(--radius-full);
+  padding:7px 14px;font-family:var(--fI);font-size:11px;font-weight:600;color:var(--uw-green2);
+  cursor:pointer;text-decoration:none;transition:background .15s;
+}
+.ec-maps-btn:hover{background:#c8ecc8}
+.ec-maps-btn svg{width:12px;height:12px;fill:currentColor}
+
+/* ── GALLERY (Portfolio) ── */
+.portfolio-section{}
+.port-runner{overflow:hidden;position:relative;padding:4px 0}
+.port-runner::before,.port-runner::after{content:'';position:absolute;top:0;bottom:0;width:50px;z-index:10;pointer-events:none}
+.port-runner::before{left:0;background:linear-gradient(90deg,var(--uw-surface),transparent)}
+.port-runner::after{right:0;background:linear-gradient(270deg,var(--uw-surface),transparent)}
+.port-runner+.port-runner{margin-top:8px}
+.port-track{display:flex;gap:8px;width:max-content;will-change:transform}
+.port-item{
+  flex-shrink:0;overflow:hidden;border-radius:var(--radius-md);
+  border:1px solid var(--uw-border);cursor:pointer;
+  transition:transform .2s,box-shadow .2s,border-color .2s;
+}
+.port-item:hover{transform:scale(1.04);box-shadow:var(--shadow-md);border-color:var(--uw-green)}
+.port-item.sz1{width:clamp(140px,30vw,200px);height:clamp(160px,34vw,230px)}
+.port-item.sz2{width:clamp(120px,26vw,175px);height:clamp(140px,30vw,205px)}
+.port-item img{width:100%;height:100%;object-fit:cover;display:block;transition:filter .3s}
+.port-item:hover img{filter:brightness(1.05)}
+
+/* ── ESCROW/PAYMENT (Gift) ── */
+.escrow-header{
+  background:linear-gradient(135deg,var(--uw-dark),#0a3d00);
+  border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+  padding:16px;margin:-20px -20px 16px;
+  display:flex;align-items:center;gap:10px;
+}
+.escrow-icon{width:36px;height:36px;background:rgba(255,255,255,.12);border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.escrow-icon svg{width:20px;height:20px;fill:var(--uw-green)}
+.escrow-title{font-size:15px;font-weight:700;color:white}
+.escrow-sub{font-size:11px;color:rgba(255,255,255,.55);margin-top:1px}
+.escrow-desc{font-size:13px;color:var(--uw-gray);line-height:1.75;margin-bottom:16px}
+/* Bank account cards */
+.escrow-accounts{display:flex;flex-direction:column;gap:10px}
+.escrow-account{
+  border:1px solid var(--uw-border);border-radius:var(--radius-lg);
+  padding:14px;display:flex;align-items:center;gap:12px;
+  transition:border-color .2s,box-shadow .2s;
+}
+.escrow-account:hover{border-color:var(--uw-green);box-shadow:0 2px 8px rgba(20,168,0,.1)}
+/* Verified shield */
+.ea-verified{position:absolute;bottom:0;right:0;background:var(--uw-green);border-radius:50%;width:16px;height:16px;display:flex;align-items:center;justify-content:center;border:2px solid white}
+.ea-verified svg{width:8px;height:8px;fill:white}
+.ea-bank-wrap{position:relative;flex-shrink:0}
+.ea-bank-logo{
+  width:44px;height:44px;border-radius:var(--radius-md);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:12px;color:white;
+}
+.ea-info{flex:1;min-width:0}
+.ea-bank-name{font-size:13px;font-weight:700;color:var(--uw-dark);margin-bottom:2px}
+.ea-holder{font-size:11px;color:var(--uw-gray);margin-bottom:4px}
+.ea-number{font-family:var(--fM);font-size:14px;font-weight:600;color:var(--uw-mid);letter-spacing:.08em}
+.ea-copy-btn{
+  background:var(--uw-green3);border:1px solid rgba(20,168,0,.3);border-radius:var(--radius-full);
+  padding:8px 14px;font-family:var(--fI);font-size:11px;font-weight:700;color:var(--uw-green2);
+  cursor:pointer;flex-shrink:0;transition:all .15s;display:flex;align-items:center;gap:4px;
+}
+.ea-copy-btn:hover{background:#c8ecc8;border-color:var(--uw-green)}
+.ea-copy-btn.copied{background:var(--uw-green);color:white;border-color:var(--uw-green)}
+.ea-copy-btn svg{width:12px;height:12px;fill:currentColor}
+
+/* ── RSVP (Submit Proposal) ── */
+.proposal-header{
+  background:linear-gradient(135deg,#f2f9f2,var(--uw-surface));
+  border-radius:var(--radius-lg) var(--radius-lg) 0 0;
+  padding:16px;margin:-20px -20px 16px;
+  border-bottom:1px solid var(--uw-border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.ph-left{}
+.ph-title{font-size:16px;font-weight:700;color:var(--uw-dark);margin-bottom:2px}
+.ph-sub{font-size:12px;color:var(--uw-gray)}
+.ph-connects{display:flex;align-items:center;gap:6px}
+.ph-connect-badge{
+  background:var(--uw-green3);border-radius:var(--radius-full);
+  padding:4px 10px;font-size:11px;font-weight:700;color:var(--uw-green2);
+}
+/* Stats */
+.proposal-stats{
+  display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;
+}
+.ps-item{
+  flex:1;min-width:70px;background:var(--uw-bg);border:1px solid var(--uw-border);
+  border-radius:var(--radius-md);padding:10px;text-align:center;
+}
+.ps-n{font-family:var(--fM);font-size:24px;font-weight:700;color:var(--uw-green2);line-height:1}
+.ps-l{font-size:9px;font-weight:700;letter-spacing:.06em;color:var(--uw-gray);text-transform:uppercase;margin-top:3px}
+/* Form */
+.prop-form{max-width:500px}
+.pf-group{margin-bottom:14px}
+.pf-label{font-size:11px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--uw-gray);margin-bottom:5px;display:block}
+.pf-input{
+  width:100%;border:1px solid var(--uw-border);border-radius:var(--radius-sm);
+  padding:10px 12px;font-family:var(--fI);font-size:14px;color:var(--uw-dark);
+  outline:none;transition:border-color .15s,box-shadow .15s;background:white;
+}
+.pf-input:focus{border-color:var(--uw-green);box-shadow:0 0 0 3px rgba(20,168,0,.1)}
+.pf-input::placeholder{color:var(--uw-lgray)}
+select.pf-input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b6b6b' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:34px;cursor:pointer}
+select.pf-input option{background:white;color:var(--uw-dark)}
+textarea.pf-input{min-height:84px;resize:vertical}
+/* Guest counter */
+.pf-counter{display:flex;align-items:center;gap:10px}
+.pf-cnt-btn{
+  width:30px;height:30px;border-radius:50%;border:1px solid var(--uw-border);
+  background:white;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:18px;color:var(--uw-gray);transition:all .15s;
+}
+.pf-cnt-btn:hover{border-color:var(--uw-green);color:var(--uw-green);background:var(--uw-green3)}
+.pf-cnt-num{font-weight:700;font-size:16px;color:var(--uw-dark);min-width:20px;text-align:center}
+.prop-submit{
+  background:var(--uw-green);color:white;border:none;
+  border-radius:var(--radius-full);padding:12px 28px;
+  font-family:var(--fI);font-size:14px;font-weight:600;
+  cursor:pointer;transition:background .15s;margin-top:6px;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.prop-submit:hover{background:var(--uw-green2)}
+.prop-submit svg{width:15px;height:15px;fill:white}
+
+/* ── REVIEWS (Wishes) ── */
+.reviews-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--uw-border);
+}
+.reviews-overall{display:flex;align-items:center;gap:10px}
+.rev-big-num{font-family:var(--fM);font-size:36px;font-weight:700;color:var(--uw-dark);line-height:1}
+.rev-stars-col{display:flex;flex-direction:column;gap:2px}
+.rev-stars{display:flex;gap:2px}
+.rev-star{font-size:16px;color:var(--uw-gold)}
+.rev-count{font-size:11px;color:var(--uw-gray)}
+.rev-list{display:flex;flex-direction:column;gap:0}
+.review-item{
+  padding:16px 0;border-bottom:1px solid var(--uw-border);
+  opacity:0;transform:translateY(8px);transition:opacity .5s,transform .5s;
+}
+.review-item:last-child{border-bottom:none}
+.review-item.visible{opacity:1;transform:translateY(0)}
+.ri-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:6px}
+.ri-user{display:flex;align-items:center;gap:8px}
+.ri-av{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:14px;color:white;flex-shrink:0;
+}
+.ri-name{font-size:13px;font-weight:700;color:var(--uw-dark)}
+.ri-meta{font-size:11px;color:var(--uw-gray);margin-top:1px}
+.ri-rating{display:flex;align-items:center;gap:3px}
+.ri-star{font-size:12px;color:var(--uw-gold)}
+.ri-date{font-size:11px;color:var(--uw-lgray);margin-top:2px;text-align:right}
+.ri-text{font-size:13px;color:var(--uw-mid);line-height:1.7}
+.ri-status-badge{
+  display:inline-flex;align-items:center;gap:4px;
+  background:var(--uw-green3);border-radius:var(--radius-full);
+  padding:3px 8px;font-size:10px;font-weight:700;color:var(--uw-green2);margin-top:6px;
+}
+
+/* ── FOOTER ── */
+.uw-footer{
+  background:var(--uw-dark);
+  padding:32px 16px;text-align:center;
+}
+.uf-logo{margin-bottom:16px}
+.uf-tagline{font-size:13px;color:rgba(255,255,255,.4);letter-spacing:.04em;margin-bottom:10px}
+.uf-names{font-size:clamp(22px,5vw,32px);font-weight:700;color:white;margin-bottom:10px}
+.uf-msg{font-size:13px;color:rgba(255,255,255,.5);line-height:1.75;max-width:400px;margin:0 auto 16px}
+.uf-green-bar{height:3px;background:linear-gradient(90deg,transparent,var(--uw-green),transparent);max-width:120px;border-radius:var(--radius-full);margin:0 auto 14px}
+.uf-brand{font-size:11px;color:rgba(255,255,255,.25);letter-spacing:.1em}
+.uf-brand a{color:var(--uw-green);text-decoration:none;opacity:.8}
+
+/* ── BOTTOM NAV ── */
+.bnav{
+  position:fixed;bottom:0;left:0;right:0;
+  background:var(--uw-surface);border-top:1px solid var(--uw-border);
+  box-shadow:0 -2px 8px rgba(0,0,0,.06);
+  display:flex;justify-content:space-around;
+  padding:8px 0 max(8px,env(safe-area-inset-bottom));
+  z-index:300;transform:translateY(100%);transition:transform .4s ease 1s;
+  pointer-events:none;
+}
+.bnav.show{transform:translateY(0);pointer-events:auto}
+.n-item{
+  display:flex;flex-direction:column;align-items:center;gap:2px;
+  cursor:pointer;text-decoration:none;
+  font-family:var(--fI);font-size:9px;font-weight:700;letter-spacing:.04em;
+  color:var(--uw-lgray);padding:4px 8px;
+  transition:color .15s;min-width:52px;
+  -webkit-tap-highlight-color:transparent;position:relative;
+}
+.n-item:hover{color:var(--uw-green)}
+.n-item.active{color:var(--uw-green)}
+.n-item.active::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:24px;height:2px;background:var(--uw-green);border-radius:0 0 2px 2px}
+.n-item svg{width:19px;height:19px;fill:currentColor}
+
+/* ── LIGHTBOX ── */
+.lb{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:9998;display:none;align-items:center;justify-content:center}
+.lb.open{display:flex}
+.lb-img{max-width:92vw;max-height:88vh;border-radius:var(--radius-md);object-fit:contain;box-shadow:var(--shadow-xl)}
+.lb-x{position:absolute;top:14px;right:14px;background:rgba(255,255,255,.1);border:none;color:white;cursor:pointer;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;transition:background .15s}
+.lb-x:hover{background:rgba(255,255,255,.2)}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.1);border:none;color:white;cursor:pointer;width:40px;height:54px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:22px;transition:background .15s}
+.lb-nav:hover{background:rgba(255,255,255,.2)}
+.lb-p{left:12px}.lb-n{right:12px}
+.lb-c{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-family:var(--fM);font-size:11px;color:rgba(255,255,255,.4);letter-spacing:.1em}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:76px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--uw-dark);color:white;padding:10px 20px;border-radius:var(--radius-full);font-family:var(--fI);font-size:12px;font-weight:600;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;white-space:nowrap;z-index:9999;box-shadow:var(--shadow-lg);display:flex;align-items:center;gap:6px}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ══ OPENING ══ -->
+<div id="opening">
+  <div class="op-modal">
+    <div class="op-header">
+      <div class="op-logo">
+        <!-- Upwork wordmark SVG -->
+        <svg viewBox="0 0 102 28" fill="none">
+          <path d="M21.6 18.2c-2.7 0-5.1-1.2-6.8-3.2l1.1-5.2c1.2 2.5 3.5 4.2 5.7 4.2 1.8 0 2.7-1 2.7-2.3 0-3.7-9.1-3.2-9.1-9.7C15.2 0 17.8 0 18.5 0c3.1 0 5.5 1.5 7 3.8l-1 4.7c-1.1-2.4-3.1-4.1-5.2-4.1-1.5 0-2.3.8-2.3 2 0 3.4 9.1 2.8 9.1 9.6 0 1.5-.5 2.2-4.5 2.2z" fill="white"/>
+          <text x="28" y="20" fill="white" font-size="18" font-family="Arial" font-weight="700">upwork</text>
+        </svg>
+      </div>
+      <div class="op-header-right">Wedding Contract</div>
+    </div>
+    <div class="op-invite-badge">
+      <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+      <div>
+        <div class="op-invite-text">You've been invited to this job!</div>
+        <div class="op-invite-sub">Anita & Zarda Wedding Committee · Just now</div>
+      </div>
+    </div>
+    <div class="op-body">
+      <div class="op-job-title">💍 Wedding Guest — The Wedding of Anita &amp; Zarda</div>
+      <div class="op-meta">
+        <span class="op-tag green">● Open</span>
+        <span class="op-tag">Fixed Price</span>
+        <span class="op-tag">Expert Level</span>
+        <span class="op-tag">Indonesia</span>
+      </div>
+      <div class="op-client-row">
+        <div class="op-client-av">A</div>
+        <div>
+          <div class="op-client-name">Anita & Zarda Wedding</div>
+          <div class="op-client-meta">⭐ 5.0 · Top Rated Client · Member since 2023 · 2 jobs posted</div>
+        </div>
+      </div>
+      <div class="op-budget-row">
+        <div class="op-budget-item">
+          <div class="op-budget-label">Budget</div>
+          <div class="op-budget-value">Rp 0</div>
+          <div class="op-budget-sub">Free Entry 💕</div>
+        </div>
+        <div class="op-budget-item">
+          <div class="op-budget-label">Timeline</div>
+          <div class="op-budget-value">24 Mei</div>
+          <div class="op-budget-sub">2026 · 1 day</div>
+        </div>
+        <div class="op-budget-item">
+          <div class="op-budget-label">Guests</div>
+          <div class="op-budget-value">∞</div>
+          <div class="op-budget-sub">Seats available</div>
+        </div>
+      </div>
+      <div class="op-to-section">
+        <div class="op-to-label">Invited</div>
+        <div class="op-to-chip">
+          <div class="op-to-av">AG</div>
+          <span class="op-to-name">Ade Guntur Fitridullah &amp; Partner</span>
+        </div>
+      </div>
+      <div class="op-btn-row">
+        <button class="op-btn-primary" onclick="openInvitation()">Apply Now</button>
+        <button class="op-btn-secondary" onclick="openInvitation()">View Job</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<div id="main">
+
+<!-- TOPBAR -->
+<div class="uw-topbar">
+  <div class="utb-left">
+    <!-- Upwork logo -->
+    <div class="utb-logo">
+      <svg width="110" height="28" viewBox="0 0 110 28" fill="none">
+        <circle cx="14" cy="14" r="14" fill="#14a800"/>
+        <path d="M14 7c3.9 0 7 3.1 7 7s-3.1 7-7 7-7-3.1-7-7 3.1-7 7-7zm0 2c-2.8 0-5 2.2-5 5s2.2 5 5 5 5-2.2 5-5-2.2-5-5-5z" fill="white" opacity=".3"/>
+        <path d="M11 14c0 1.7 1.3 3 3 3s3-1.3 3-3-1.3-3-3-3-3 1.3-3 3z" fill="white"/>
+        <text x="32" y="19" fill="white" font-size="16" font-family="Arial" font-weight="700" letter-spacing="-0.5">upwork</text>
+      </svg>
+    </div>
+    <div class="utb-nav">
+      <div class="utb-link active">Find Work</div>
+      <div class="utb-link">My Jobs</div>
+      <div class="utb-link">Reports</div>
+      <div class="utb-link">Messages</div>
+    </div>
+  </div>
+  <div class="utb-right">
+    <button class="utb-icon-btn">
+      <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+    </button>
+    <button class="utb-icon-btn">
+      <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+    </button>
+    <div class="utb-avatar">A</div>
+  </div>
+</div>
+
+<!-- HERO - Job Posting -->
+<div class="hero-section" id="home">
+  <div class="hero-inner">
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+      <span class="bc-item">Find Work</span>
+      <span class="bc-sep">›</span>
+      <span class="bc-item">Events & Wedding</span>
+      <span class="bc-sep">›</span>
+      <span class="bc-item current">Wedding Guest — Anita & Zarda</span>
+    </div>
+    <!-- Job header -->
+    <div class="job-header">
+      <div class="job-header-left">
+        <div class="job-status-row">
+          <div class="job-status-badge">● Open</div>
+          <span class="job-posted">Posted just now · 1 applicant</span>
+        </div>
+        <h1 class="job-title">💍 Wedding Guest — The Wedding of Anita &amp; Zarda</h1>
+        <div class="job-tags">
+          <span class="job-tag">Wedding</span>
+          <span class="job-tag">Celebration</span>
+          <span class="job-tag">Indonesia</span>
+          <span class="job-tag">Tangerang</span>
+          <span class="job-tag">May 2026</span>
+          <span class="job-tag">Fixed Price</span>
+        </div>
+        <!-- Job description -->
+        <div class="job-desc">
+          <p>We are looking for <strong>wonderful guests</strong> to join our most important milestone — our wedding day! This is a <strong>fixed-price contract</strong> with guaranteed good food, warm atmosphere, and memories that will last a lifetime.</p>
+          <p>As our special guest, your role is simple: come, celebrate, and spread love. No experience required — just bring your best smile and heartfelt prayers. 💕</p>
+        </div>
+        <!-- Budget/Scope -->
+        <div class="job-scope-row">
+          <div class="job-scope-item"><div class="js-label">Budget</div><div class="js-icon">💰</div><div class="js-value">Free</div><div class="js-sub">No fee required</div></div>
+          <div class="job-scope-item"><div class="js-label">Duration</div><div class="js-icon">⏱️</div><div class="js-value">1 Day</div><div class="js-sub">08:00 – 13:00</div></div>
+          <div class="job-scope-item"><div class="js-label">Location</div><div class="js-icon">📍</div><div class="js-value">On-Site</div><div class="js-sub">Tangerang</div></div>
+          <div class="job-scope-item"><div class="js-label">Experience</div><div class="js-icon">⭐</div><div class="js-value">Any Level</div><div class="js-sub">All welcome</div></div>
+        </div>
+        <!-- Player -->
+        <div class="job-player">
+          <button class="jp-play" id="playBtn" onclick="togglePlay()">
+            <svg id="pIco" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+            <svg id="pauseIco" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+          </button>
+          <div class="jp-info">
+            <div class="jp-title" id="pTitle">Wedding Day <span class="eq paused" id="eqB"><span class="eq-b"></span><span class="eq-b"></span><span class="eq-b"></span></span></div>
+            <div class="jp-artist" id="pArtist">Anita & Zarda · Wedding Playlist</div>
+          </div>
+          <div class="jp-prog-wrap">
+            <div class="jp-times"><span id="curT">0:00</span><span id="totT">3:24</span></div>
+            <div class="jp-track" id="pTrack"><div class="jp-fill" id="pFill"></div></div>
+          </div>
+          <div class="jp-pills">
+            <div class="jp-pill active" onclick="sw(0,this)">Track 1</div>
+            <div class="jp-pill" onclick="sw(1,this)">Track 2</div>
+            <div class="jp-pill" onclick="sw(2,this)">Track 3</div>
+          </div>
+        </div>
+        <!-- Actions -->
+        <div class="job-actions">
+          <button class="btn-primary" onclick="document.getElementById('rsvp-section').scrollIntoView({behavior:'smooth'})">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+            Apply Now
+          </button>
+          <button class="btn-secondary">Save Job</button>
+          <button class="btn-icon" title="Share">
+            <svg viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LAYOUT: main + sidebar -->
+<div class="job-layout">
+  <div>
+
+    <!-- FREELANCER PROFILES — Couple -->
+    <div class="section-card" id="couple">
+      <div class="sc-head">
+        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        Client Profiles — Pasangan Kami
+      </div>
+      <div class="freelancer-grid">
+        <div class="freelancer-card">
+          <div class="fc-top-badge">💍 Mempelai Wanita</div>
+          <div class="fc-photo"><img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&h=200&fit=crop&q=80" alt="Anita" loading="lazy"></div>
+          <div class="fc-name">Anita Pangestuti, S.Kom</div>
+          <div class="fc-role">Putri Pertama · Heroine of This Story</div>
+          <div class="fc-stars">
+            <span class="fc-star">★</span><span class="fc-star">★</span><span class="fc-star">★</span><span class="fc-star">★</span><span class="fc-star">★</span>
+            <span class="fc-rating">5.0</span>
+            <span class="fc-reviews">(∞ reviews)</span>
+          </div>
+          <div class="fc-badges">
+            <span class="fc-badge">🏆 Top Rated</span>
+            <span class="fc-badge">💎 Rising Talent</span>
+          </div>
+          <div class="fc-skills">
+            <span class="fc-skill">Kindness</span>
+            <span class="fc-skill">S.Kom</span>
+            <span class="fc-skill">Loving</span>
+          </div>
+          <div class="fc-parents">Putri Pertama dari<br><strong>Bpk. Taryono & Ibu Wiwit Jayanti</strong></div>
+        </div>
+        <div class="freelancer-card">
+          <div class="fc-top-badge" style="background:var(--uw-dark)">💍 Mempelai Pria</div>
+          <div class="fc-photo"><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=200&h=200&fit=crop&q=80" alt="Zarda" loading="lazy"></div>
+          <div class="fc-name">Zardarian Ahadika N, S.Kom</div>
+          <div class="fc-role">Putra Kedua · Hero of This Story</div>
+          <div class="fc-stars">
+            <span class="fc-star">★</span><span class="fc-star">★</span><span class="fc-star">★</span><span class="fc-star">★</span><span class="fc-star">★</span>
+            <span class="fc-rating">5.0</span>
+            <span class="fc-reviews">(∞ reviews)</span>
+          </div>
+          <div class="fc-badges">
+            <span class="fc-badge">🏆 Top Rated</span>
+            <span class="fc-badge">⚡ Expert Vetted</span>
+          </div>
+          <div class="fc-skills">
+            <span class="fc-skill">Loyalty</span>
+            <span class="fc-skill">S.Kom</span>
+            <span class="fc-skill">Caring</span>
+          </div>
+          <div class="fc-parents">Putra Kedua dari<br><strong>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVENT CARDS -->
+    <div class="section-card" id="event">
+      <div class="sc-head">
+        <svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+        Contract Details — Waktu & Tempat
+      </div>
+      <div class="event-cards-grid">
+        <div class="event-contract-card">
+          <img class="ec-photo" src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=500&h=100&fit=crop&q=80" alt="" loading="lazy">
+          <div class="ec-body">
+            <span class="ec-type-badge">Akad Nikah · Milestone 1</span>
+            <div class="ec-title">Minggu, 24 Mei 2026</div>
+            <div class="ec-detail"><svg class="ec-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg><span class="ec-text">08.00 WIB · Duration: 2 hours</span></div>
+            <div class="ec-detail"><svg class="ec-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span class="ec-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
+            <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ec-maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>View on Maps</a>
+          </div>
+        </div>
+        <div class="event-contract-card">
+          <img class="ec-photo" src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=500&h=100&fit=crop&q=80" alt="" loading="lazy">
+          <div class="ec-body">
+            <span class="ec-type-badge">Resepsi · Milestone 2</span>
+            <div class="ec-title">Minggu, 24 Mei 2026</div>
+            <div class="ec-detail"><svg class="ec-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg><span class="ec-text">11.00 – 13.00 WIB · Duration: 2 hours</span></div>
+            <div class="ec-detail"><svg class="ec-icon" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span class="ec-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
+            <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ec-maps-btn"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>View on Maps</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- MILESTONES — Love Story -->
+    <div class="section-card">
+      <div class="sc-head">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 3c1.93 0 3.5 1.57 3.5 3.5S13.93 13 12 13s-3.5-1.57-3.5-3.5S10.07 6 12 6zm7 13H5v-.23c0-.62.28-1.2.76-1.58C7.47 15.82 9.64 15 12 15s4.53.82 6.24 2.19c.48.38.76.97.76 1.58V19z"/></svg>
+        Project Milestones — Love Story
+      </div>
+      <div class="milestone-list">
+        <div class="milestone-item">
+          <div class="ml-left">
+            <div class="ml-dot"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="ml-line"></div>
+          </div>
+          <div class="ml-content">
+            <div class="ml-status-row"><span class="ml-status completed">✓ Completed</span><span class="ml-date">Juni 2025</span></div>
+            <div class="ml-title">Milestone 1 — Awal Pertemuan</div>
+            <img class="ml-photo" src="https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=600&h=100&fit=crop&q=80" alt="" loading="lazy">
+            <div class="ml-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</div>
+            <span class="ml-amount"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>Payment Released</span>
+          </div>
+        </div>
+        <div class="milestone-item">
+          <div class="ml-left">
+            <div class="ml-dot"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+            <div class="ml-line"></div>
+          </div>
+          <div class="ml-content">
+            <div class="ml-status-row"><span class="ml-status completed">✓ Completed</span><span class="ml-date">November 2025</span></div>
+            <div class="ml-title">Milestone 2 — Lamaran</div>
+            <img class="ml-photo" src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&h=100&fit=crop&q=80" alt="" loading="lazy">
+            <div class="ml-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div>
+            <span class="ml-amount"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Payment Released</span>
+          </div>
+        </div>
+        <div class="milestone-item">
+          <div class="ml-left">
+            <div class="ml-dot" style="background:var(--uw-orange);border-color:var(--uw-orange)"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>
+          </div>
+          <div class="ml-content">
+            <div class="ml-status-row"><span class="ml-status active">⚡ Active — In Progress</span><span class="ml-date">24 Mei 2026</span></div>
+            <div class="ml-title">Milestone 3 — Pernikahan 💍</div>
+            <img class="ml-photo" src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&h=100&fit=crop&q=80" alt="" loading="lazy">
+            <div class="ml-desc">Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.</div>
+            <span class="ml-amount" style="background:#fff3e0;color:var(--uw-orange)"><svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>In Escrow — 24 Mei 2026</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PORTFOLIO — Gallery -->
+    <div class="section-card">
+      <div class="sc-head">
+        <svg viewBox="0 0 24 24"><path d="M21 3H3C2 3 1 4 1 5v3h2V5h18v14h-7v2h7c1 0 2-1 2-2V5c0-1-1-2-2-2zM1 18v3h3c0-1.66-1.34-3-3-3zm0-4v2c2.76 0 5 2.24 5 5h2c0-3.87-3.13-7-7-7zm0-4v2c4.97 0 9 4.03 9 9h2c0-6.08-4.93-11-11-11z"/></svg>
+        Portfolio — Galeri Foto
+      </div>
+      <div class="port-runner" id="pr1"><div class="port-track" id="pt1"></div></div>
+      <div class="port-runner" id="pr2"><div class="port-track" id="pt2"></div></div>
+    </div>
+
+    <!-- ESCROW — Gift -->
+    <div class="section-card" id="gift">
+      <div class="escrow-header">
+        <div class="escrow-icon">
+          <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>
+        </div>
+        <div>
+          <div class="escrow-title">Escrow Payment — Amplop Digital</div>
+          <div class="escrow-sub">Secured · Verified Accounts · Instant Transfer</div>
+        </div>
+      </div>
+      <div class="escrow-desc">Doa restu sudah sangat cukup, namun jika memberi merupakan tanda kasih, kami dengan senang hati menerimanya melalui rekening berikut.</div>
+      <div class="escrow-accounts">
+        <div class="escrow-account">
+          <div class="ea-bank-wrap">
+            <div class="ea-bank-logo" style="background:#005cac">BCA</div>
+            <div class="ea-verified"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+          </div>
+          <div class="ea-info">
+            <div class="ea-bank-name">Bank BCA</div>
+            <div class="ea-holder">Zardarian Ahadika N</div>
+            <div class="ea-number">8210 3705 61</div>
+          </div>
+          <button class="ea-copy-btn" onclick="cp('8210370561',this)">
+            <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            Copy
+          </button>
+        </div>
+        <div class="escrow-account">
+          <div class="ea-bank-wrap">
+            <div class="ea-bank-logo" style="background:#ff6200">BNI</div>
+            <div class="ea-verified"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
+          </div>
+          <div class="ea-info">
+            <div class="ea-bank-name">Bank BNI</div>
+            <div class="ea-holder">Anita Pangestuti</div>
+            <div class="ea-number">1192 9784 03</div>
+          </div>
+          <button class="ea-copy-btn" onclick="cp('1192978403',this)">
+            <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+            Copy
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROPOSAL / RSVP -->
+    <div class="section-card" id="rsvp-section">
+      <div class="proposal-header">
+        <div class="ph-left">
+          <div class="ph-title">Submit a Proposal — RSVP</div>
+          <div class="ph-sub">Konfirmasi kehadiran Anda untuk pernikahan Anita & Zarda</div>
+        </div>
+        <div class="ph-connects">
+          <span class="ph-connect-badge">💚 Free to Apply</span>
+        </div>
+      </div>
+      <div class="proposal-stats">
+        <div class="ps-item"><div class="ps-n">7</div><div class="ps-l">Proposals</div></div>
+        <div class="ps-item"><div class="ps-n">7</div><div class="ps-l">Attending</div></div>
+        <div class="ps-item"><div class="ps-n">13</div><div class="ps-l">Total Guests</div></div>
+      </div>
+      <div class="prop-form">
+        <div class="pf-group">
+          <label class="pf-label">Full Name *</label>
+          <input type="text" class="pf-input" placeholder="Enter your full name" id="rN">
+        </div>
+        <div class="pf-group">
+          <label class="pf-label">Availability *</label>
+          <select class="pf-input" id="rS">
+            <option value="">Select your availability</option>
+            <option value="hadir">✓ Available — Will Attend</option>
+            <option value="tidak">✗ Not Available — Can't Attend</option>
+          </select>
+        </div>
+        <div class="pf-group">
+          <label class="pf-label">Team Size</label>
+          <div class="pf-counter">
+            <button class="pf-cnt-btn" onclick="adj(-1)">−</button>
+            <div class="pf-cnt-num" id="gNum">1</div>
+            <button class="pf-cnt-btn" onclick="adj(1)">+</button>
+            <span style="font-size:12px;color:var(--uw-gray);margin-left:6px">person(s)</span>
+          </div>
+        </div>
+        <div class="pf-group">
+          <label class="pf-label">Cover Letter — Ucapan & Pesan</label>
+          <textarea class="pf-input" placeholder="Write your wishes for Anita & Zarda..." id="rM"></textarea>
+        </div>
+        <button class="prop-submit" onclick="submitR()">
+          <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+          Submit Proposal
+        </button>
+      </div>
+    </div>
+
+    <!-- REVIEWS — Wishes -->
+    <div class="section-card" id="rsvp">
+      <div class="reviews-header">
+        <div class="sc-head" style="border:none;padding:0;margin:0">
+          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+          Reviews — Ucapan & Doa
+        </div>
+        <div class="reviews-overall">
+          <div class="rev-big-num">5.0</div>
+          <div class="rev-stars-col">
+            <div class="rev-stars">⭐⭐⭐⭐⭐</div>
+            <div class="rev-count">3 reviews</div>
+          </div>
+        </div>
+      </div>
+      <div class="rev-list" id="wList">
+        <div class="review-item visible">
+          <div class="ri-header">
+            <div class="ri-user">
+              <div class="ri-av" style="background:#0d6efd">A</div>
+              <div><div class="ri-name">Ayu Rahmawati</div><div class="ri-meta">⭐ Top Rated · 2 guests · Hadir</div></div>
+            </div>
+            <div>
+              <div class="ri-rating">⭐⭐⭐⭐⭐</div>
+              <div class="ri-date">May 2026</div>
+            </div>
+          </div>
+          <div class="ri-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu Anita & Zarda! 🌿</div>
+          <span class="ri-status-badge">✓ Verified Attendee</span>
+        </div>
+        <div class="review-item visible">
+          <div class="ri-header">
+            <div class="ri-user">
+              <div class="ri-av" style="background:var(--uw-green)">R</div>
+              <div><div class="ri-name">Reza Firmansyah</div><div class="ri-meta">⭐ Rising Talent · 1 guest · Hadir</div></div>
+            </div>
+            <div>
+              <div class="ri-rating">⭐⭐⭐⭐⭐</div>
+              <div class="ri-date">May 2026</div>
+            </div>
+          </div>
+          <div class="ri-text">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan kebahagiaan yang tidak pernah habis. Aamiin!</div>
+          <span class="ri-status-badge">✓ Verified Attendee</span>
+        </div>
+        <div class="review-item visible">
+          <div class="ri-header">
+            <div class="ri-user">
+              <div class="ri-av" style="background:var(--uw-orange)">S</div>
+              <div><div class="ri-name">Sinta Dewi</div><div class="ri-meta">⭐ Top Rated · 2 guests · Hadir</div></div>
+            </div>
+            <div>
+              <div class="ri-rating">⭐⭐⭐⭐⭐</div>
+              <div class="ri-date">May 2026</div>
+            </div>
+          </div>
+          <div class="ri-text">Wishing you both a lifetime of love and laughter. Semoga langkah kalian selalu diberkahi Allah SWT 💚</div>
+          <span class="ri-status-badge">✓ Verified Attendee</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /main col -->
+
+  <!-- SIDEBAR -->
+  <div>
+    <div class="sidebar-card">
+      <!-- Countdown -->
+      <div class="sc-countdown">
+        <div class="sc-countdown-label">⏰ Contract Deadline</div>
+        <div class="sc-cd-grid">
+          <div class="sc-cd-item"><div class="sc-cd-num" id="cdD">00</div><div class="sc-cd-unit">Days</div></div>
+          <div class="sc-cd-item"><div class="sc-cd-num" id="cdH">00</div><div class="sc-cd-unit">Hrs</div></div>
+          <div class="sc-cd-item"><div class="sc-cd-num" id="cdM">00</div><div class="sc-cd-unit">Min</div></div>
+          <div class="sc-cd-item"><div class="sc-cd-num" id="cdS">00</div><div class="sc-cd-unit">Sec</div></div>
+        </div>
+      </div>
+      <div class="sc-title"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11z"/></svg>Job Details</div>
+      <div class="sc-row"><span class="sc-label">Type</span><span class="sc-value">Fixed Price</span></div>
+      <div class="sc-row"><span class="sc-label">Budget</span><span class="sc-value green">Free Entry</span></div>
+      <div class="sc-row"><span class="sc-label">Timeline</span><span class="sc-value">1 day</span></div>
+      <div class="sc-row"><span class="sc-label">Location</span><span class="sc-value">On-Site</span></div>
+      <div class="sc-row"><span class="sc-label">Category</span><span class="sc-value">Wedding</span></div>
+      <div class="sc-row"><span class="sc-label">Proposals</span><span class="sc-value">7</span></div>
+      <div style="margin-top:12px">
+        <button class="btn-primary" style="width:100%;justify-content:center;margin-bottom:8px" onclick="document.getElementById('rsvp-section').scrollIntoView({behavior:'smooth'})">Apply Now</button>
+        <button class="btn-secondary" style="width:100%;justify-content:center">Save Job</button>
+      </div>
+    </div>
+
+    <!-- Client card -->
+    <div class="sidebar-card" style="margin-top:12px">
+      <div class="sc-title"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>About the Client</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+        <div style="width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--uw-green),var(--uw-dark));display:flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:18px;flex-shrink:0">A</div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--uw-dark)">Anita & Zarda Wedding</div>
+          <div style="font-size:11px;color:var(--uw-gray)">🇮🇩 Indonesia · Member since 2023</div>
+        </div>
+      </div>
+      <div class="sc-row"><span class="sc-label">Rating</span><span class="sc-value">⭐ 5.0</span></div>
+      <div class="sc-row"><span class="sc-label">Jobs</span><span class="sc-value">2 posted</span></div>
+      <div class="sc-row"><span class="sc-label">Hire rate</span><span class="sc-value green">100%</span></div>
+      <div class="sc-row"><span class="sc-label">Total spent</span><span class="sc-value">Rp ∞</span></div>
+      <div style="margin-top:10px;padding:10px;background:var(--uw-green3);border-radius:var(--radius-md);font-size:12px;color:var(--uw-green2);font-weight:600;text-align:center">
+        💚 Payment Method Verified
+      </div>
+    </div>
+  </div>
+</div><!-- /job-layout -->
+
+<!-- FOOTER -->
+<div class="uw-footer">
+  <div class="uf-logo">
+    <svg width="120" height="32" viewBox="0 0 120 32" fill="none">
+      <circle cx="16" cy="16" r="16" fill="#14a800"/>
+      <circle cx="16" cy="16" r="8" fill="white" opacity=".3"/>
+      <circle cx="16" cy="16" r="4" fill="white"/>
+      <text x="38" y="22" fill="white" font-size="18" font-family="Arial" font-weight="700" letter-spacing="-0.5">upwork</text>
+    </svg>
+  </div>
+  <div class="uf-tagline">The World's Work Marketplace · Wedding Edition</div>
+  <div class="uf-green-bar"></div>
+  <div class="uf-names">Anita &amp; Zarda</div>
+  <div class="uf-msg">Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu kepada kami.</div>
+  <div class="uf-brand">Digital Invitation by <a href="#">BridesSpace</a> · Upwork Theme</div>
+</div>
+
+</div><!-- /main -->
+
+<!-- BOTTOM NAV -->
+<nav class="bnav" id="bnav">
+  <a href="#home" class="n-item active"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Jobs</a>
+  <a href="#couple" class="n-item"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Profiles</a>
+  <a href="#event" class="n-item"><svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>Contract</a>
+  <a href="#gift" class="n-item"><svg viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z"/></svg>Escrow</a>
+  <a href="#rsvp-section" class="n-item"><svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>Proposal</a>
+</nav>
+
+<div class="lb" id="lb">
+  <button class="lb-x" onclick="closeLb()">✕</button>
+  <button class="lb-nav lb-p" onclick="lbPrev()">‹</button>
+  <img class="lb-img" id="lbI" src="" alt="">
+  <button class="lb-nav lb-n" onclick="lbNext()">›</button>
+  <div class="lb-c" id="lbC"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const TRACKS=[
+  {title:"Wedding Day",artist:"Anita & Zarda · Wedding Playlist",dur:"3:24",secs:204},
+  {title:"First Look",artist:"Anita & Zarda · Wedding Playlist",dur:"2:58",secs:178},
+  {title:"Lamaran",artist:"Anita & Zarda · Wedding Playlist",dur:"4:12",secs:252},
+];
+const IMGS=[
+  "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=500&h=650&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=650&fit=crop&q=80",
+];
+
+let tIdx=0,isPlaying=false,prog=0,pTimer=null,lbIdx=0,gCnt=1;
+
+function openInvitation(){
+  document.getElementById('opening').classList.add('hide');
+  setTimeout(()=>document.getElementById('main').classList.add('show'),100);
+  document.getElementById('bnav').classList.add('show');
+  setTimeout(init,400);
+}
+function init(){countdown();buildGallery();scrollAnims();navHL()}
+
+/* Player */
+function togglePlay(){isPlaying?pause():play()}
+function play(){setPlay(true)}
+function pause(){clearInterval(pTimer);setPlay(false)}
+function setPlay(p){
+  isPlaying=p;
+  document.getElementById('pIco').style.display=p?'none':'block';
+  document.getElementById('pauseIco').style.display=p?'block':'none';
+  const eq=document.getElementById('eqB');if(eq)eq.classList.toggle('paused',!p);
+  if(p){const t=TRACKS[tIdx];pTimer=setInterval(()=>{prog=Math.min(prog+(100/t.secs),100);updProg();if(prog>=100)nextTrack()},1000)}
+}
+function updProg(){
+  document.getElementById('pFill').style.width=prog+'%';
+  const t=TRACKS[tIdx],e=Math.round((prog/100)*t.secs);
+  document.getElementById('curT').textContent=Math.floor(e/60)+':'+String(e%60).padStart(2,'0');
+}
+function sw(idx,btn){
+  document.querySelectorAll('.jp-pill').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');tIdx=idx;clearInterval(pTimer);prog=0;
+  const t=TRACKS[idx];
+  document.getElementById('pTitle').innerHTML=`${t.title} <span class="eq ${isPlaying?'':'paused'}" id="eqB"><span class="eq-b"></span><span class="eq-b"></span><span class="eq-b"></span></span>`;
+  document.getElementById('pArtist').textContent=t.artist;
+  document.getElementById('totT').textContent=t.dur;
+  updProg();
+  if(isPlaying){pTimer=setInterval(()=>{prog=Math.min(prog+(100/t.secs),100);updProg();if(prog>=100)nextTrack()},1000)}
+}
+function nextTrack(){const n=(tIdx+1)%TRACKS.length;const pill=document.querySelectorAll('.jp-pill')[n];if(pill)sw(n,pill)}
+document.addEventListener('click',e=>{const tr=document.getElementById('pTrack');if(tr&&tr.contains(e.target)){const r=tr.getBoundingClientRect();prog=Math.max(0,Math.min(100,((e.clientX-r.left)/r.width)*100));updProg()}});
+
+/* Countdown */
+function countdown(){
+  const t=new Date('2026-05-24T08:00:00');
+  function tick(){
+    const d=t-new Date();
+    if(d<=0){['cdD','cdH','cdM','cdS'].forEach(id=>document.getElementById(id).textContent='00');return}
+    document.getElementById('cdD').textContent=String(Math.floor(d/86400000)).padStart(2,'0');
+    document.getElementById('cdH').textContent=String(Math.floor((d%86400000)/3600000)).padStart(2,'0');
+    document.getElementById('cdM').textContent=String(Math.floor((d%3600000)/60000)).padStart(2,'0');
+    document.getElementById('cdS').textContent=String(Math.floor((d%60000)/1000)).padStart(2,'0');
+  }
+  tick();setInterval(tick,1000);
+}
+
+/* Gallery */
+function buildGallery(){
+  buildRow('pt1','pr1',IMGS,.5,'sz1');
+  buildRow('pt2','pr2',[...IMGS].reverse(),-.42,'sz2');
+}
+function buildRow(tId,wId,imgs,spd,cls){
+  const track=document.getElementById(tId),wrap=document.getElementById(wId);
+  const all=[...imgs,...imgs,...imgs];
+  all.forEach((src,i)=>{
+    const ri=i%imgs.length;
+    const el=document.createElement('div');el.className=`port-item ${cls}`;
+    el.innerHTML=`<img src="${src}" alt="G${ri+1}" loading="lazy">`;
+    el.addEventListener('click',()=>openLb(ri));
+    track.appendChild(el);
+  });
+  requestAnimationFrame(()=>{
+    const item=track.querySelector('.port-item');if(!item)return;
+    const iw=item.offsetWidth+8,total=imgs.length*iw;
+    let off=total,paused=false,drag=false,dS=0,sS=0;
+    function tick(){
+      if(!paused){off+=spd;if(spd>0){if(off>=total*2)off-=total;if(off<total)off+=total}else{if(off<=0)off+=total;if(off>total)off-=total}}
+      track.style.transform=`translateX(-${off}px)`;requestAnimationFrame(tick);
+    }
+    track.style.transform=`translateX(-${off}px)`;requestAnimationFrame(tick);
+    wrap.addEventListener('mousedown',e=>{drag=true;dS=e.clientX;sS=off;paused=true});
+    window.addEventListener('mousemove',e=>{if(!drag)return;off=sS-(e.clientX-dS)});
+    window.addEventListener('mouseup',()=>{drag=false;paused=false});
+    wrap.addEventListener('touchstart',e=>{dS=e.touches[0].clientX;sS=off;paused=true},{passive:true});
+    wrap.addEventListener('touchmove',e=>{off=sS-(e.touches[0].clientX-dS)},{passive:true});
+    wrap.addEventListener('touchend',()=>{paused=false});
+    wrap.addEventListener('mouseenter',()=>{if(!drag)paused=true});
+    wrap.addEventListener('mouseleave',()=>{drag=false;paused=false});
+  });
+}
+
+/* Lightbox */
+function openLb(idx){lbIdx=idx;updLb();document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden'}
+function closeLb(){document.getElementById('lb').classList.remove('open');document.body.style.overflow=''}
+function lbPrev(){lbIdx=(lbIdx-1+IMGS.length)%IMGS.length;updLb()}
+function lbNext(){lbIdx=(lbIdx+1)%IMGS.length;updLb()}
+function updLb(){document.getElementById('lbI').src=IMGS[lbIdx];document.getElementById('lbC').textContent=`${lbIdx+1} / ${IMGS.length}`}
+document.addEventListener('keydown',e=>{if(!document.getElementById('lb').classList.contains('open'))return;if(e.key==='Escape')closeLb();if(e.key==='ArrowLeft')lbPrev();if(e.key==='ArrowRight')lbNext()});
+
+/* Scroll anims */
+function scrollAnims(){
+  const obs=new IntersectionObserver(en=>en.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.08});
+  document.querySelectorAll('.milestone-item,.review-item').forEach(el=>obs.observe(el));
+}
+
+/* Nav */
+function navHL(){
+  const obs=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.n-item').forEach(n=>n.classList.remove('active'));const a=document.querySelector(`.n-item[href="#${e.target.id}"]`);if(a)a.classList.add('active')}})},{rootMargin:'-35% 0px -35% 0px'});
+  ['home','couple','event','gift','rsvp-section'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el)});
+}
+
+/* RSVP */
+function adj(delta){gCnt=Math.max(1,Math.min(10,gCnt+delta));document.getElementById('gNum').textContent=gCnt}
+function submitR(){
+  const name=document.getElementById('rN').value.trim();
+  const status=document.getElementById('rS').value;
+  const msg=document.getElementById('rM').value.trim();
+  if(!name||!status){showT('Please fill in your name and availability');return}
+  const init=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const colors=['#0d6efd','#14a800','#ff7a00','#8764b8','#00b7c3','#e11900'];
+  const color=colors[Math.floor(Math.random()*colors.length)];
+  const stxt=status==='hadir'?`⭐ Top Rated · ${gCnt} guest(s) · Hadir`:'Tidak Hadir';
+  const stars=status==='hadir'?'⭐⭐⭐⭐⭐':'⭐⭐⭐';
+  const item=document.createElement('div');item.className='review-item';
+  item.innerHTML=`<div class="ri-header"><div class="ri-user"><div class="ri-av" style="background:${color}">${init}</div><div><div class="ri-name">${name}</div><div class="ri-meta">${stxt}</div></div></div><div><div class="ri-rating">${stars}</div><div class="ri-date">Just now</div></div></div><div class="ri-text">${msg||'Selamat dan semoga bahagia selalu! 💚'}</div><span class="ri-status-badge">✓ Verified Proposal</span>`;
+  document.getElementById('wList').prepend(item);
+  setTimeout(()=>item.classList.add('visible'),50);
+  document.getElementById('rN').value='';document.getElementById('rS').value='';document.getElementById('rM').value='';
+  gCnt=1;document.getElementById('gNum').textContent='1';
+  showT('✓ Proposal submitted successfully!');
+  setTimeout(()=>document.getElementById('rsvp').scrollIntoView({behavior:'smooth',block:'start'}),300);
+}
+
+/* Copy */
+function cp(txt,btn){
+  navigator.clipboard.writeText(txt).then(()=>{
+    btn.classList.add('copied');
+    const orig=btn.innerHTML;
+    btn.innerHTML='<svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Copied!';
+    showT('✓ Account number copied!');
+    setTimeout(()=>{btn.classList.remove('copied');btn.innerHTML=orig},2500);
+  }).catch(()=>showT('Copy failed — try manually: '+txt));
+}
+
+/* Toast */
+let tT;
+function showT(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2800)}
+</script>
+</body>
+</html>

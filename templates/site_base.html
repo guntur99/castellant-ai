@@ -285,7 +285,37 @@
             "create.field.nickname": "Nama Panggilan",
             "create.field.fullname": "Nama Lengkap",
             "create.field.photo": "Foto Profil",
-            "create.field.upload_text": "Klik atau seret file ke sini untuk mengunggah"
+            "create.field.upload_text": "Klik atau seret file ke sini untuk mengunggah",
+            "profile.eyebrow": "Arsitektur Personal",
+            "profile.title": "The Master <em>Estate</em>",
+            "profile.subtitle": "Kurasi warisan Anda dan kelola persatuan arsitektur Anda dengan presisi dan keanggunan.",
+            "profile.sidebar.portrait_btn": "Perbarui Potret",
+            "profile.sidebar.plan_name": "NOBLE",
+            "profile.sidebar.stats.created": "Warisan Dibuat",
+            "profile.sidebar.stats.guests": "Total Tamu",
+            "profile.sidebar.settings_btn": "Pengaturan Estate",
+            "profile.sidebar.referral_title": "Undang Rekan Artisan",
+            "profile.sidebar.referral_desc": "Perluas lingkaran Castellant dan buka elemen arsitektur eksklusif.",
+            "profile.credentials.title": "Kredensial Estate",
+            "profile.credentials.subtitle": "Komponen inti dari identitas arsitektur Anda.",
+            "profile.credentials.name_label": "Nomenklatur Lengkap",
+            "profile.credentials.email_label": "Korespondensi Digital",
+            "profile.credentials.tenure_label": "Masa Jabatan Arsitektur",
+            "profile.credentials.tenure_value": "Musim Gugur, 2024",
+            "profile.credentials.status_label": "Kehadiran Saat Ini",
+            "profile.credentials.status_active": "Aktif Sekarang",
+            "profile.credentials.google_verified": "Terverifikasi Google Workspace",
+            "profile.credentials.google_desc": "Detail profil Anda disinkronkan secara otomatis.",
+            "profile.plan.title": "Rencana Arsitektur",
+            "profile.plan.subtitle": "Tinjau kapasitas pemasangan dan fitur tingkat Anda saat ini.",
+            "profile.plan.upgrade_btn": "Tingkatkan Tier",
+            "profile.plan.capacity_label": "Kapasitas Pemasangan",
+            "profile.plan.capacity_value": "{{ "{{" }}used{{ "}}" }} dari {{ "{{" }}total{{ "}}" }} Desain Digunakan",
+            "profile.plan.limit_msg": "Anda telah mencapai batas tingkat arsitektur NOBLE.",
+            "profile.features.rsvp": "Mesin RSVP Standar",
+            "profile.features.storage": "Penyimpanan Warisan Cloud",
+            "profile.features.domain": "Pemetaan Domain Kustom",
+            "profile.features.ai": "Asisten AI Artisan"
         },
         en: {
             "nav.collections": "Collections",
@@ -384,7 +414,37 @@
             "create.field.nickname": "Nickname",
             "create.field.fullname": "Full Name",
             "create.field.photo": "Profile Photo",
-            "create.field.upload_text": "Click or drag file here to upload"
+            "create.field.upload_text": "Click or drag file here to upload",
+            "profile.eyebrow": "Personal Architecture",
+            "profile.title": "The Master <em>Estate</em>",
+            "profile.subtitle": "Curate your legacy and manage your architectural union with precision and grace.",
+            "profile.sidebar.portrait_btn": "Update Portrait",
+            "profile.sidebar.plan_name": "NOBLE",
+            "profile.sidebar.stats.created": "Legacy Created",
+            "profile.sidebar.stats.guests": "Total Guests",
+            "profile.sidebar.settings_btn": "Estate Settings",
+            "profile.sidebar.referral_title": "Invite Fellow Artisans",
+            "profile.sidebar.referral_desc": "Expand the Castellant circle and unlock exclusive architectural elements.",
+            "profile.credentials.title": "Estate Credentials",
+            "profile.credentials.subtitle": "The core components of your architectural identity.",
+            "profile.credentials.name_label": "Full Nomenclature",
+            "profile.credentials.email_label": "Digital Correspondence",
+            "profile.credentials.tenure_label": "Architectural Tenure",
+            "profile.credentials.tenure_value": "Autumn, 2024",
+            "profile.credentials.status_label": "Current Presence",
+            "profile.credentials.status_active": "Active Now",
+            "profile.credentials.google_verified": "Google Workspace Verified",
+            "profile.credentials.google_desc": "Your profile details are automatically synchronized.",
+            "profile.plan.title": "Architecture Plan",
+            "profile.plan.subtitle": "Review your current pairing capacity and tier features.",
+            "profile.plan.upgrade_btn": "Enhance Tier",
+            "profile.plan.capacity_label": "Pairing Capacity",
+            "profile.plan.capacity_value": "{{ "{{" }}used{{ "}}" }} of {{ "{{" }}total{{ "}}" }} Designs Used",
+            "profile.plan.limit_msg": "You have reached the limit of the NOBLE architectural tier.",
+            "profile.features.rsvp": "Standard RSVP Engine",
+            "profile.features.storage": "Cloud Legacy Storage",
+            "profile.features.domain": "Custom Domain Mapping",
+            "profile.features.ai": "AI Artisan Assistant"
         },
         ja: {
             "nav.collections": "コレクション",
@@ -798,7 +858,18 @@
         // Update elements with data-i18n
         const elements = document.querySelectorAll('[data-i18n]');
         elements.forEach(el => {
-            const key = el.getAttribute('data-i18n');
+            let key = el.getAttribute('data-i18n');
+            let attr = null;
+
+            // Handle attribute translation [attr]key
+            if (key.startsWith('[')) {
+                const match = key.match(/^\[(.*)\](.*)/);
+                if (match) {
+                    attr = match[1];
+                    key = match[2];
+                }
+            }
+
             let text = "";
             
             // Priority: Target Language -> English -> Original Content
@@ -809,7 +880,21 @@
                 console.warn(`Translation missing for key: ${key} in ${lang}. Falling back to English.`);
             }
             
-            if (text) el.innerHTML = text;
+            if (text) {
+                // Handle dynamic options
+                const options = el.getAttribute('data-i18n-options');
+                if (options) {
+                    try {
+                        const parsed = JSON.parse(options);
+                        Object.keys(parsed).forEach(oKey => {
+                            text = text.replace('{{ "{{" }}' + oKey + '{{ "}}" }}', parsed[oKey]);
+                        });
+                    } catch (e) { console.error("Error parsing i18n options", e); }
+                }
+
+                if (attr) el.setAttribute(attr, text);
+                else el.innerHTML = text;
+            }
         });
         localStorage.setItem('preferred-lang', lang);
 

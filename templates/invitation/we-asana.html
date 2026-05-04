@@ -1,0 +1,1401 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Nazma & Guntur · Asana Wedding</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+:root{
+  --coral:    #F06A6A;
+  --coral2:   #E05555;
+  --coral3:   #FFF0EE;
+  --peach:    #FF8C69;
+  --pink:     #FC91AD;
+  --purple:   #9B8AFF;
+  --purple2:  #7B6CE0;
+  --purple3:  #F0EEFF;
+  --teal:     #4ECBC4;
+  --teal3:    #E8FAFA;
+  --green:    #25C16F;
+  --green3:   #E4F9EE;
+  --yellow:   #F1BD6C;
+  --yellow3:  #FEF6E4;
+  --bg:       #F5F5F7;
+  --sidebar:  #FAFAFA;
+  --white:    #FFFFFF;
+  --border:   #E8E8EC;
+  --border2:  #D4D4DC;
+  --text:     #1E1F26;
+  --sub:      #6D6E7A;
+  --sub2:     #A8A9B4;
+  --sans:     'Inter', system-ui, sans-serif;
+  --nav-h:    56px;
+  --bot-h:    60px;
+  --r:        8px;
+  --r2:       6px;
+}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+/* ─── OPENING ─── */
+#opening{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--white);overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 24px;text-align:center;
+  transition:opacity .5s ease;
+}
+#opening.hide{opacity:0;pointer-events:none}
+
+/* animated gradient blobs */
+.op-blob{
+  position:absolute;border-radius:50%;filter:blur(60px);pointer-events:none;opacity:.18;
+  animation:blob-float var(--d,8s) ease-in-out infinite alternate;
+}
+@keyframes blob-float{from{transform:translate(0,0) scale(1)}to{transform:translate(20px,15px) scale(1.05)}}
+
+.op-inner{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%}
+
+.op-logo{display:flex;align-items:center;gap:10px;margin-bottom:40px}
+.op-logo-icon{
+  width:36px;height:36px;
+  background:linear-gradient(135deg,var(--coral),var(--peach));
+  border-radius:8px;display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 12px rgba(240,106,106,.3);
+}
+.op-logo-icon svg{width:20px;height:20px}
+.op-logo-text{font-size:18px;font-weight:700;color:var(--text);letter-spacing:-.02em}
+
+.op-project-tag{
+  display:inline-flex;align-items:center;gap:6px;
+  background:var(--coral3);border:1px solid rgba(240,106,106,.2);
+  border-radius:20px;padding:4px 12px 4px 8px;
+  font-size:11px;font-weight:600;color:var(--coral2);margin-bottom:18px;
+}
+.op-tag-dot{width:7px;height:7px;border-radius:50%;background:var(--coral);animation:blink-dot 2s ease-in-out infinite}
+@keyframes blink-dot{0%,100%{opacity:1}50%{opacity:.3}}
+
+.op-title{
+  font-size:clamp(30px,9vw,52px);font-weight:800;
+  letter-spacing:-.03em;line-height:.92;color:var(--text);
+  margin-bottom:6px;
+}
+.op-title .coral{color:var(--coral)}
+.op-date{
+  font-size:12px;font-weight:500;color:var(--sub);
+  margin-bottom:36px;letter-spacing:.05em;
+}
+
+/* task card guest */
+.op-task-card{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--r);
+  padding:14px 16px;margin-bottom:28px;
+  width:100%;max-width:340px;text-align:left;
+  box-shadow:0 1px 3px rgba(0,0,0,.05),0 4px 12px rgba(0,0,0,.04);
+}
+.otc-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.otc-label{
+  font-size:9px;font-weight:600;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--sub2);
+}
+.otc-status{
+  display:flex;align-items:center;gap:4px;
+  background:var(--coral3);border-radius:20px;padding:2px 8px;
+  font-size:9px;font-weight:600;color:var(--coral2);
+}
+.otc-status::before{content:'●';font-size:7px}
+.otc-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
+.otc-meta{font-size:11px;color:var(--sub)}
+
+.op-btn{
+  width:100%;max-width:340px;
+  background:linear-gradient(135deg,var(--coral),var(--peach));
+  color:var(--white);border:none;border-radius:var(--r);
+  padding:14px;font-family:var(--sans);
+  font-size:14px;font-weight:600;cursor:pointer;
+  transition:all .2s;
+  box-shadow:0 4px 12px rgba(240,106,106,.35);
+  letter-spacing:.01em;
+}
+.op-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(240,106,106,.45)}
+
+/* ─── TOP NAV ─── */
+.top-nav{
+  position:fixed;top:0;left:0;right:0;height:var(--nav-h);
+  background:var(--white);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 18px;z-index:100;
+  transform:translateY(-100%);transition:transform .4s ease .2s;
+  box-shadow:0 1px 0 var(--border);
+}
+.top-nav.show{transform:translateY(0)}
+.tn-left{display:flex;align-items:center;gap:10px}
+.tn-logo-icon{
+  width:26px;height:26px;
+  background:linear-gradient(135deg,var(--coral),var(--peach));
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+}
+.tn-logo-icon svg{width:15px;height:15px}
+.tn-logo-text{font-size:14px;font-weight:700;color:var(--text);letter-spacing:-.01em}
+.tn-sep{width:1px;height:18px;background:var(--border);margin:0 4px}
+.tn-project{font-size:13px;font-weight:500;color:var(--sub)}
+.tn-right{display:flex;align-items:center;gap:6px}
+.tn-link{
+  font-size:12px;font-weight:500;color:var(--sub);
+  cursor:pointer;text-decoration:none;padding:5px 8px;
+  border-radius:var(--r2);transition:all .15s;
+}
+.tn-link:hover{color:var(--text);background:var(--bg)}
+.tn-btn{
+  background:var(--coral);color:var(--white);border:none;
+  border-radius:var(--r2);padding:7px 14px;
+  font-family:var(--sans);font-size:12px;font-weight:600;
+  cursor:pointer;transition:background .15s;
+}
+.tn-btn:hover{background:var(--coral2)}
+
+/* ─── BOTTOM NAV ─── */
+.bot-nav{
+  position:fixed;bottom:0;left:0;right:0;height:var(--bot-h);
+  background:var(--white);border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-around;
+  padding:0 4px calc(env(safe-area-inset-bottom));
+  z-index:100;
+  transform:translateY(100%);transition:transform .4s ease .2s;
+}
+.bot-nav.show{transform:translateY(0)}
+.bn-item{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  color:var(--sub2);text-decoration:none;cursor:pointer;
+  transition:color .15s;padding:5px 10px;border-radius:var(--r);
+  font-size:9px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+}
+.bn-item svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.bn-item:hover{color:var(--sub)}
+.bn-item.active{color:var(--coral)}
+.bn-item.active svg{stroke:var(--coral)}
+
+/* ─── MAIN ─── */
+#main{
+  opacity:0;transition:opacity .5s ease .1s;
+  padding-top:var(--nav-h);
+  padding-bottom:calc(var(--bot-h) + env(safe-area-inset-bottom));
+}
+#main.show{opacity:1}
+
+/* ─── PROJECT HEADER ─── */
+.project-header{
+  background:var(--white);border-bottom:1px solid var(--border);
+  padding:20px 18px 0;
+}
+.ph-inner{max-width:780px;margin:0 auto}
+.ph-breadcrumb{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;color:var(--sub);margin-bottom:10px;
+}
+.ph-breadcrumb a{color:var(--coral);cursor:pointer;text-decoration:none}
+.ph-breadcrumb a:hover{text-decoration:underline}
+.ph-breadcrumb-sep{opacity:.4}
+
+.ph-title-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:12px}
+.ph-title{font-size:clamp(20px,5vw,28px);font-weight:800;letter-spacing:-.02em;color:var(--text);line-height:1.1}
+.ph-actions{display:flex;gap:6px;flex-shrink:0}
+.ph-action-btn{
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--r2);padding:6px 12px;
+  font-family:var(--sans);font-size:11px;font-weight:600;color:var(--sub);
+  cursor:pointer;display:flex;align-items:center;gap:5px;
+  transition:all .15s;white-space:nowrap;
+}
+.ph-action-btn:hover{border-color:var(--border2);color:var(--text)}
+.ph-action-btn.primary{background:var(--coral);color:var(--white);border-color:var(--coral)}
+.ph-action-btn.primary:hover{background:var(--coral2);border-color:var(--coral2)}
+.ph-action-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2}
+
+/* project meta row */
+.ph-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.ph-meta-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--sub)}
+.ph-meta-item svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8}
+.ph-meta-chip{
+  display:inline-flex;align-items:center;gap:4px;
+  border-radius:20px;padding:2px 8px;font-size:10px;font-weight:600;
+}
+.chip-coral{background:var(--coral3);color:var(--coral2)}
+.chip-purple{background:var(--purple3);color:var(--purple2)}
+.chip-teal{background:var(--teal3);color:#2A9D97}
+.chip-green{background:var(--green3);color:#1A9055}
+.chip-yellow{background:var(--yellow3);color:#C47C0A}
+
+/* VIEW TABS */
+.ph-tabs{
+  display:flex;gap:0;border-bottom:none;
+  margin:0 -18px;padding:0 18px;
+  overflow-x:auto;scrollbar-width:none;
+}
+.ph-tabs::-webkit-scrollbar{display:none}
+.ph-tab{
+  padding:10px 14px;font-size:12px;font-weight:500;
+  color:var(--sub);cursor:pointer;white-space:nowrap;
+  border-bottom:2px solid transparent;transition:all .15s;
+  display:flex;align-items:center;gap:5px;margin-bottom:-1px;
+}
+.ph-tab svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:1.8}
+.ph-tab:hover{color:var(--text)}
+.ph-tab.active{color:var(--coral);border-bottom-color:var(--coral);font-weight:600}
+
+/* ─── PAGE CONTENT ─── */
+.page-content{max-width:780px;margin:0 auto;padding:16px}
+
+/* ─── SECTION ─── */
+.section-label{
+  font-size:11px;font-weight:600;color:var(--sub);
+  letter-spacing:.08em;text-transform:uppercase;
+  margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ─── TASK LIST ─── */
+.task-section{margin-bottom:20px}
+.task-section-header{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 12px;border-radius:var(--r2);
+  margin-bottom:4px;cursor:pointer;
+  transition:background .15s;
+}
+.task-section-header:hover{background:var(--bg)}
+.tsh-color{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.tsh-name{font-size:13px;font-weight:600;color:var(--text);flex:1}
+.tsh-count{font-size:11px;color:var(--sub2);background:var(--bg);border-radius:20px;padding:1px 7px}
+
+.task-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:var(--r2);
+  transition:background .15s;cursor:pointer;
+  border-bottom:1px solid var(--border);
+  opacity:0;transform:translateX(-8px);
+  transition:opacity .4s ease,transform .4s ease,background .15s;
+}
+.task-item:last-child{border-bottom:none}
+.task-item.visible{opacity:1;transform:translateX(0)}
+.task-item:hover{background:var(--bg)}
+
+.task-check{
+  width:18px;height:18px;border-radius:50%;
+  border:2px solid var(--border2);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;cursor:pointer;
+}
+.task-check:hover{border-color:var(--coral)}
+.task-check.done{background:var(--coral);border-color:var(--coral)}
+.task-check.done svg{display:block}
+.task-check svg{display:none;width:10px;height:10px;stroke:white;fill:none;stroke-width:3}
+
+.task-name{flex:1;font-size:13px;font-weight:500;color:var(--text);min-width:0}
+.task-name.done{text-decoration:line-through;color:var(--sub2)}
+.task-meta{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.task-due{font-size:10px;color:var(--sub2);white-space:nowrap}
+.task-assign{
+  width:22px;height:22px;border-radius:50%;
+  background:linear-gradient(135deg,var(--coral),var(--peach));
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;color:white;flex-shrink:0;
+}
+.task-tag{
+  font-size:9px;font-weight:600;border-radius:20px;padding:2px 7px;
+}
+
+/* ─── MILESTONE / COUNTDOWN ─── */
+.milestone-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px;margin-bottom:12px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);
+}
+.mc-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.mc-title{font-size:13px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:7px}
+.mc-title-icon{font-size:15px}
+.mc-badge{font-size:9px;font-weight:700;border-radius:20px;padding:3px 9px}
+
+.cd-row{display:flex;gap:8px}
+.cd-cell{
+  flex:1;background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--r2);padding:12px 6px;text-align:center;
+}
+.cd-num{
+  font-size:clamp(22px,6vw,32px);font-weight:800;
+  color:var(--coral);display:block;line-height:1;
+  letter-spacing:-.02em;margin-bottom:4px;
+}
+.cd-tag{font-size:8px;font-weight:600;color:var(--sub2);text-transform:uppercase;letter-spacing:.1em}
+
+/* ─── KANBAN BOARD ─── */
+.kanban{
+  display:flex;gap:10px;overflow-x:auto;
+  scrollbar-width:none;padding:2px 0 8px;
+  margin:0 -16px;padding-left:16px;
+}
+.kanban::-webkit-scrollbar{display:none}
+.kanban-col{
+  flex-shrink:0;width:220px;
+  display:flex;flex-direction:column;gap:7px;
+}
+.kanban-col-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2px;margin-bottom:2px;
+}
+.kch-left{display:flex;align-items:center;gap:6px}
+.kch-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.kch-name{font-size:12px;font-weight:600;color:var(--text)}
+.kch-count{font-size:10px;color:var(--sub2);background:var(--bg);border-radius:20px;padding:1px 6px}
+
+.kanban-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r);padding:11px 12px;
+  box-shadow:0 1px 2px rgba(0,0,0,.04);
+  transition:box-shadow .2s,transform .2s;cursor:pointer;
+}
+.kanban-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.08);transform:translateY(-1px)}
+.kc-tags{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:7px}
+.kc-tag{font-size:9px;font-weight:600;border-radius:4px;padding:2px 6px}
+.kc-title{font-size:12px;font-weight:600;color:var(--text);margin-bottom:8px;line-height:1.4}
+.kc-footer{display:flex;align-items:center;justify-content:space-between}
+.kc-due{font-size:10px;color:var(--sub2);display:flex;align-items:center;gap:3px}
+.kc-due svg{width:10px;height:10px;stroke:currentColor;fill:none;stroke-width:2}
+.kc-avatars{display:flex}
+.kc-av{
+  width:18px;height:18px;border-radius:50%;margin-left:-4px;
+  border:1.5px solid var(--white);
+  display:flex;align-items:center;justify-content:center;
+  font-size:8px;font-weight:700;color:white;flex-shrink:0;
+  overflow:hidden;
+}
+.kc-av:first-child{margin-left:0}
+.kc-av img{width:100%;height:100%;object-fit:cover}
+
+/* ─── TIMELINE ─── */
+.timeline-widget{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px;margin-bottom:12px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);
+}
+.tw-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.tw-title{font-size:13px;font-weight:700;color:var(--text)}
+.tl-list{display:flex;flex-direction:column;gap:0;position:relative}
+.tl-list::before{
+  content:'';position:absolute;left:14px;top:20px;bottom:20px;width:1.5px;
+  background:linear-gradient(180deg,var(--coral),var(--border));
+}
+.tl-row{
+  display:flex;gap:12px;padding:10px 0;
+  opacity:0;transform:translateY(8px);
+  transition:opacity .5s ease,transform .5s ease;
+}
+.tl-row.visible{opacity:1;transform:translateY(0)}
+.tl-dot{
+  width:28px;height:28px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;background:var(--white);
+  border:2px solid var(--border);z-index:1;position:relative;
+}
+.tl-dot.active{border-color:var(--coral);background:var(--coral3)}
+.tl-body{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:var(--r2);padding:10px 12px;min-width:0}
+.tl-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;gap:6px;flex-wrap:wrap}
+.tl-title{font-size:12px;font-weight:700;color:var(--text)}
+.tl-date{font-size:10px;font-weight:500;color:var(--sub2)}
+.tl-tag{font-size:9px;font-weight:600;border-radius:20px;padding:2px 7px;margin-bottom:4px;display:inline-block}
+.tl-desc{font-size:11px;color:var(--sub);line-height:1.6}
+
+/* ─── GOALS / COUPLE ─── */
+.goal-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r);padding:14px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);
+  transition:box-shadow .2s;display:flex;gap:12px;align-items:center;
+  margin-bottom:8px;
+}
+.goal-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.07)}
+.gc-avatar{
+  width:48px;height:48px;border-radius:12px;flex-shrink:0;
+  background:var(--coral3);overflow:hidden;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:700;color:var(--coral);
+}
+.gc-avatar img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.gc-body{flex:1;min-width:0}
+.gc-role{
+  font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  margin-bottom:2px;
+}
+.gc-name{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.01em;margin-bottom:3px}
+.gc-parents{font-size:11px;color:var(--sub);line-height:1.5}
+.gc-right{text-align:right;flex-shrink:0}
+.gc-status{
+  font-size:9px;font-weight:600;border-radius:20px;
+  padding:3px 8px;display:inline-block;margin-bottom:3px;
+}
+.gc-id{font-size:9px;color:var(--sub2)}
+
+/* ─── PORTFOLIO / GALLERY ─── */
+.portfolio-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:6px;
+}
+@media(max-width:420px){.portfolio-grid{grid-template-columns:repeat(2,1fr)}}
+.portfolio-item{
+  aspect-ratio:1;overflow:hidden;border-radius:var(--r2);
+  background:var(--bg);cursor:pointer;position:relative;
+  border:1px solid var(--border);
+}
+.portfolio-item:nth-child(1){grid-column:span 2;aspect-ratio:2/1}
+.portfolio-item img{
+  width:100%;height:100%;object-fit:cover;
+  filter:saturate(.9);transition:all .4s;
+  display:block;
+}
+.portfolio-item:hover img{transform:scale(1.05);filter:saturate(1)}
+.portfolio-overlay{
+  position:absolute;inset:0;background:rgba(0,0,0,0);
+  transition:background .3s;display:flex;align-items:center;justify-content:center;
+}
+.portfolio-item:hover .portfolio-overlay{background:rgba(0,0,0,.18)}
+.portfolio-num{
+  font-size:10px;font-weight:600;color:rgba(255,255,255,0);
+  letter-spacing:.1em;transition:color .3s;
+}
+.portfolio-item:hover .portfolio-num{color:rgba(255,255,255,.9)}
+
+/* ─── EVENT / SCHEDULE ─── */
+.schedule-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r);overflow:hidden;margin-bottom:8px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);
+  transition:box-shadow .2s;
+}
+.schedule-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.08)}
+.sc-header{
+  padding:12px 14px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);
+}
+.sc-type-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.sc-type{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;flex:1;margin-left:7px}
+.sc-status-badge{
+  font-size:9px;font-weight:700;border-radius:20px;padding:3px 9px;
+  display:flex;align-items:center;gap:4px;
+}
+.sc-status-badge::before{content:'●';font-size:7px;animation:blink-dot 1.5s ease-in-out infinite}
+.sc-body{padding:14px}
+.sc-date{font-size:16px;font-weight:800;color:var(--text);margin-bottom:10px;letter-spacing:-.01em}
+.sc-row{display:flex;align-items:flex-start;gap:7px;margin-bottom:6px}
+.sc-row svg{width:12px;height:12px;stroke:var(--sub2);fill:none;stroke-width:2;flex-shrink:0;margin-top:2px}
+.sc-row span{font-size:12px;color:var(--sub);line-height:1.5}
+.sc-map-btn{
+  display:inline-flex;align-items:center;gap:5px;margin-top:10px;
+  background:var(--bg);border:1px solid var(--border2);
+  border-radius:var(--r2);padding:6px 12px;
+  font-family:var(--sans);font-size:11px;font-weight:600;color:var(--coral);
+  text-decoration:none;transition:all .15s;
+}
+.sc-map-btn:hover{background:var(--coral3);border-color:rgba(240,106,106,.3)}
+.sc-map-btn svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2}
+/* map mini */
+.sc-map{
+  height:60px;background:var(--bg);margin-top:10px;
+  border-radius:var(--r2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
+}
+.sc-map::before{
+  content:'';position:absolute;inset:0;
+  background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:14px 14px;
+}
+.sc-pin{
+  width:8px;height:8px;background:var(--coral);border-radius:50%;
+  z-index:1;position:relative;
+  box-shadow:0 0 0 4px rgba(240,106,106,.2),0 0 0 8px rgba(240,106,106,.07);
+  animation:pin-pulse 2s ease-in-out infinite;
+}
+@keyframes pin-pulse{
+  0%,100%{box-shadow:0 0 0 4px rgba(240,106,106,.2),0 0 0 8px rgba(240,106,106,.07)}
+  50%{box-shadow:0 0 0 8px rgba(240,106,106,.15),0 0 0 16px rgba(240,106,106,.04)}
+}
+
+/* ─── GIFT / PAYMENT ─── */
+.payment-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r);padding:14px;margin-bottom:8px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);
+  display:flex;align-items:center;gap:12px;
+  transition:box-shadow .2s;
+}
+.payment-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.07)}
+.pay-icon{
+  width:40px;height:40px;border-radius:10px;flex-shrink:0;
+  background:var(--coral3);display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+}
+.pay-body{flex:1;min-width:0}
+.pay-bank{font-size:16px;font-weight:800;color:var(--text);letter-spacing:-.01em;margin-bottom:1px}
+.pay-owner{font-size:11px;color:var(--sub);margin-bottom:6px}
+.pay-num{font-size:13px;font-weight:600;letter-spacing:.06em;color:var(--text);font-family:monospace}
+.copy-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--bg);border:1px solid var(--border2);
+  border-radius:var(--r2);color:var(--sub);
+  font-family:var(--sans);font-size:10px;font-weight:600;
+  padding:6px 10px;cursor:pointer;transition:all .15s;flex-shrink:0;
+}
+.copy-btn:hover{border-color:rgba(240,106,106,.4);color:var(--coral);background:var(--coral3)}
+.copy-btn.copied{border-color:rgba(37,193,111,.4);color:var(--green);background:var(--green3)}
+
+/* ─── FORM / RSVP ─── */
+.form-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r);padding:16px;margin-bottom:12px;
+  box-shadow:0 1px 3px rgba(0,0,0,.04);
+}
+.rsvp-stat-row{display:flex;gap:8px;margin-bottom:16px}
+.rstat{
+  flex:1;background:var(--bg);border:1px solid var(--border);
+  border-radius:var(--r2);padding:12px 8px;text-align:center;
+}
+.rstat-num{
+  font-size:22px;font-weight:800;color:var(--coral);
+  letter-spacing:-.02em;display:block;margin-bottom:2px;
+}
+.rstat-label{font-size:9px;font-weight:600;color:var(--sub2);text-transform:uppercase;letter-spacing:.1em}
+
+.form-row{margin-bottom:12px}
+.form-label{display:block;font-size:11px;font-weight:600;color:var(--text);margin-bottom:5px}
+.form-input{
+  width:100%;background:var(--bg);
+  border:1.5px solid var(--border);border-radius:var(--r2);
+  padding:9px 11px;color:var(--text);
+  font-family:var(--sans);font-size:13px;font-weight:500;outline:none;
+  transition:border-color .15s,box-shadow .15s;-webkit-appearance:none;
+}
+.form-input:focus{border-color:var(--coral);box-shadow:0 0 0 3px rgba(240,106,106,.12)}
+.form-input::placeholder{color:var(--sub2)}
+textarea.form-input{resize:vertical;min-height:78px;line-height:1.55}
+select.form-input{
+  appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236D6E7A' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;padding-right:30px;
+}
+.att-row{display:flex;gap:6px}
+.att-btn{
+  flex:1;background:var(--bg);border:1.5px solid var(--border);
+  border-radius:var(--r2);color:var(--sub);
+  font-family:var(--sans);font-size:11px;font-weight:600;
+  padding:9px 6px;cursor:pointer;transition:all .15s;text-align:center;
+}
+.att-btn.on{background:var(--coral3);border-color:rgba(240,106,106,.4);color:var(--coral2)}
+.g-row{display:flex;gap:5px}
+.g-btn{
+  width:42px;height:38px;background:var(--bg);border:1.5px solid var(--border);
+  border-radius:var(--r2);color:var(--sub);
+  font-family:var(--sans);font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .15s;
+}
+.g-btn.on{background:var(--coral3);border-color:rgba(240,106,106,.4);color:var(--coral2)}
+.rsvp-submit{
+  width:100%;background:linear-gradient(135deg,var(--coral),var(--peach));
+  border:none;border-radius:var(--r2);padding:12px;
+  color:var(--white);font-family:var(--sans);font-size:13px;font-weight:700;
+  cursor:pointer;transition:all .2s;
+  box-shadow:0 4px 12px rgba(240,106,106,.3);margin-top:4px;
+}
+.rsvp-submit:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(240,106,106,.4)}
+
+/* ─── INBOX / WISHES ─── */
+.inbox-item{
+  display:flex;gap:10px;
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r);padding:11px 12px;margin-bottom:6px;
+  box-shadow:0 1px 2px rgba(0,0,0,.03);
+  opacity:0;transform:translateY(6px);transition:opacity .4s,transform .4s;
+}
+.inbox-item.visible{opacity:1;transform:translateY(0)}
+.ii-av{
+  width:32px;height:32px;border-radius:8px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:white;
+}
+.ii-body{flex:1;min-width:0}
+.ii-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:3px;gap:6px}
+.ii-name{font-size:12px;font-weight:700;color:var(--text)}
+.ii-tag{
+  font-size:9px;font-weight:600;border-radius:20px;
+  padding:2px 7px;white-space:nowrap;flex-shrink:0;
+}
+.ii-text{font-size:12px;color:var(--sub);line-height:1.6}
+
+/* ─── VERSE ─── */
+.verse-card{
+  background:linear-gradient(135deg,var(--coral3),rgba(252,145,173,.1));
+  border:1px solid rgba(240,106,106,.15);
+  border-radius:var(--r);padding:18px;margin-bottom:12px;
+  position:relative;overflow:hidden;
+}
+.verse-card::before{
+  content:'"';font-size:100px;font-family:Georgia,serif;font-weight:700;
+  color:rgba(240,106,106,.06);position:absolute;top:-20px;left:10px;line-height:1;
+}
+.vc-tag{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:9px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--coral2);margin-bottom:10px;
+}
+.vc-text{font-size:13px;color:var(--text);line-height:1.7;font-style:italic;margin-bottom:8px;position:relative;z-index:1}
+.vc-ref{font-size:10px;font-weight:600;color:var(--coral2);letter-spacing:.08em}
+
+/* ─── FOOTER ─── */
+.app-footer{
+  background:var(--white);border-top:1px solid var(--border);
+  padding:40px 20px 32px;text-align:center;
+}
+.af-inner{max-width:680px;margin:0 auto}
+.af-logo{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:20px;opacity:.5}
+.af-logo-icon{width:22px;height:22px;background:linear-gradient(135deg,var(--coral),var(--peach));border-radius:5px;display:flex;align-items:center;justify-content:center}
+.af-logo-icon svg{width:12px;height:12px}
+.af-logo-text{font-size:12px;font-weight:700;color:var(--text)}
+.af-names{
+  font-size:clamp(26px,7vw,40px);font-weight:800;
+  letter-spacing:-.03em;color:var(--text);margin-bottom:8px;line-height:1;
+}
+.af-names span{color:var(--coral)}
+.af-msg{font-size:12px;color:var(--sub);line-height:1.75;max-width:380px;margin:0 auto 16px}
+.af-sign{font-size:13px;color:var(--sub);margin-bottom:20px}
+.af-sign b{font-weight:700;color:var(--text)}
+.af-div{height:1px;background:var(--border);margin:16px 0}
+.af-copy{font-size:10px;color:var(--sub2)}
+
+/* ─── PROGRESS DOTS ROW ─── */
+.progress-dots{display:flex;gap:4px;align-items:center}
+.pd{width:6px;height:6px;border-radius:50%;background:var(--border)}
+.pd.done{background:var(--coral)}
+.pd.active{background:var(--coral);animation:pd-pulse 1.5s ease-in-out infinite}
+@keyframes pd-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+
+/* ─── FADE ANIM ─── */
+.fade-as{opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease}
+.fade-as.visible{opacity:1;transform:translateY(0)}
+
+/* ─── LIGHTBOX ─── */
+.lb{position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:9990;display:none;align-items:center;justify-content:center}
+.lb.open{display:flex}
+.lb img{max-width:94vw;max-height:88vh;border-radius:var(--r);object-fit:contain}
+.lb-x{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.12);border:none;color:white;width:34px;height:34px;border-radius:var(--r2);font-size:15px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.lb-x:hover{background:rgba(255,255,255,.22)}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.1);border:none;color:white;width:42px;height:54px;border-radius:var(--r);font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.lb-nav:hover{background:rgba(255,255,255,.2)}
+.lb-prev{left:12px}.lb-next{right:12px}
+.lb-ct{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:500;color:rgba(255,255,255,.4);letter-spacing:.1em}
+
+/* ─── TOAST ─── */
+.toast{
+  position:fixed;bottom:72px;left:50%;transform:translateX(-50%) translateY(10px);
+  background:var(--text);color:white;padding:9px 16px;
+  border-radius:var(--r);font-size:12px;font-weight:600;
+  opacity:0;transition:opacity .25s,transform .25s;
+  pointer-events:none;white-space:nowrap;z-index:9999;
+  box-shadow:0 4px 16px rgba(0,0,0,.2);
+  display:flex;align-items:center;gap:6px;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<!-- ─── OPENING ─── -->
+<div id="opening">
+  <div class="op-blob" style="width:320px;height:320px;background:var(--coral);top:-80px;left:-80px;--d:7s"></div>
+  <div class="op-blob" style="width:240px;height:240px;background:var(--purple);bottom:-60px;right:-40px;--d:9s;animation-delay:.5s"></div>
+  <div class="op-blob" style="width:160px;height:160px;background:var(--teal);bottom:20%;left:-40px;--d:6s;animation-delay:1s"></div>
+
+  <div class="op-inner">
+    <div class="op-logo">
+      <div class="op-logo-icon">
+        <svg viewBox="0 0 24 24" fill="white"><circle cx="12" cy="5" r="3"/><circle cx="4.5" cy="17" r="3"/><circle cx="19.5" cy="17" r="3"/></svg>
+      </div>
+      <span class="op-logo-text">Asana</span>
+    </div>
+
+    <div class="op-project-tag">
+      <span class="op-tag-dot"></span>
+      Wedding Project · Active
+    </div>
+
+    <h1 class="op-title">
+      <span class="coral">Nazma</span> &<br><span class="coral">Guntur</span><br>Wedding
+    </h1>
+    <p class="op-date">Due date: 24 Mei 2026 · Tangerang</p>
+
+    <div class="op-task-card">
+      <div class="otc-top">
+        <span class="otc-label">Assigned to</span>
+        <span class="otc-status">Invited</span>
+      </div>
+      <div class="otc-name">Ade Guntur Fitridullah & Partner</div>
+      <div class="otc-meta">Wedding Guest · Priority: High</div>
+    </div>
+
+    <button class="op-btn" onclick="openInvitation()">
+      Open Project →
+    </button>
+  </div>
+</div>
+
+<!-- ─── TOP NAV ─── -->
+<header class="top-nav" id="topNav">
+  <div class="tn-left">
+    <div class="tn-logo-icon">
+      <svg viewBox="0 0 24 24" fill="white" style="width:15px;height:15px"><circle cx="12" cy="5" r="3"/><circle cx="4.5" cy="17" r="3"/><circle cx="19.5" cy="17" r="3"/></svg>
+    </div>
+    <span class="tn-logo-text">Asana</span>
+    <div class="tn-sep"></div>
+    <span class="tn-project">Wedding · Nazma & Guntur</span>
+  </div>
+  <div class="tn-right">
+    <a href="#event" class="tn-link">Jadwal</a>
+    <a href="#gift" class="tn-link">Gift</a>
+    <button class="tn-btn" onclick="document.getElementById('rsvp').scrollIntoView({behavior:'smooth'})">+ RSVP</button>
+  </div>
+</header>
+
+<!-- ─── MAIN ─── -->
+<div id="main">
+
+  <!-- PROJECT HEADER -->
+  <div class="project-header" id="home">
+    <div class="ph-inner">
+      <div class="ph-breadcrumb">
+        <a>My Projects</a>
+        <span class="ph-breadcrumb-sep">›</span>
+        <a>Wedding 2026</a>
+        <span class="ph-breadcrumb-sep">›</span>
+        <span style="color:var(--text)">Nazma & Guntur</span>
+      </div>
+      <div class="ph-title-row">
+        <h1 class="ph-title">💍 Nazma & Guntur Wedding Project</h1>
+        <div class="ph-actions">
+          <button class="ph-action-btn primary" onclick="document.getElementById('rsvp').scrollIntoView({behavior:'smooth'})">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            RSVP
+          </button>
+        </div>
+      </div>
+      <div class="ph-meta">
+        <span class="ph-meta-chip chip-coral">● On Track</span>
+        <div class="ph-meta-item">
+          <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          24 Mei 2026
+        </div>
+        <div class="ph-meta-item">
+          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          2 Members
+        </div>
+        <span class="ph-meta-chip chip-teal">Graha Yadika</span>
+        <span class="ph-meta-chip chip-purple">Forever</span>
+        <div class="progress-dots">
+          <div class="pd done"></div>
+          <div class="pd done"></div>
+          <div class="pd active"></div>
+          <div class="pd"></div>
+        </div>
+      </div>
+      <div class="ph-tabs">
+        <div class="ph-tab active">
+          <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+          List
+        </div>
+        <div class="ph-tab">
+          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+          Board
+        </div>
+        <div class="ph-tab">
+          <svg viewBox="0 0 24 24"><line x1="17" y1="12" x2="3" y2="12"/><polyline points="10 19 3 12 10 5"/><line x1="21" y1="5" x2="21" y2="19"/></svg>
+          Timeline
+        </div>
+        <div class="ph-tab">
+          <svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          Overview
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE CONTENT -->
+  <div class="page-content">
+
+    <!-- COUNTDOWN -->
+    <div class="milestone-card fade-as">
+      <div class="mc-head">
+        <div class="mc-title">
+          <span class="mc-title-icon">🎯</span>
+          Milestone: Hari Pernikahan
+        </div>
+        <span class="mc-badge chip-coral">Due: 24 Mei 2026</span>
+      </div>
+      <div class="cd-row">
+        <div class="cd-cell"><span class="cd-num" id="cdD">--</span><span class="cd-tag">Hari</span></div>
+        <div class="cd-cell"><span class="cd-num" id="cdH">--</span><span class="cd-tag">Jam</span></div>
+        <div class="cd-cell"><span class="cd-num" id="cdM">--</span><span class="cd-tag">Menit</span></div>
+        <div class="cd-cell"><span class="cd-num" id="cdS">--</span><span class="cd-tag">Detik</span></div>
+      </div>
+    </div>
+
+    <!-- VERSE -->
+    <div class="verse-card fade-as">
+      <div class="vc-tag">📖 Inspirasi</div>
+      <p class="vc-text">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan dijadikan-Nya di antaramu rasa kasih dan sayang."</p>
+      <p class="vc-ref">— Surah Ar-Rum : 21</p>
+    </div>
+
+    <!-- TASK LIST: COUPLE -->
+    <div id="couple">
+      <div class="section-label">Team Members</div>
+      <div class="task-section fade-as">
+        <div class="goal-card">
+          <div class="gc-avatar">
+            N
+            <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&h=200&fit=crop&q=80" alt="Nazma" onerror="this.style.display='none'">
+          </div>
+          <div class="gc-body">
+            <div class="gc-role" style="color:var(--coral2)">Mempelai Wanita</div>
+            <div class="gc-name">Nazma</div>
+            <div class="gc-parents">Putri Pertama dari<br><strong>Bpk. Taryono & Ibu Wiwit Jayanti</strong></div>
+          </div>
+          <div class="gc-right">
+            <div class="gc-status" style="background:var(--coral3);color:var(--coral2)">Owner</div>
+            <div class="gc-id">P1 · 2026</div>
+          </div>
+        </div>
+        <div class="goal-card">
+          <div class="gc-avatar" style="background:var(--purple3);color:var(--purple2)">
+            G
+            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Guntur" onerror="this.style.display='none'">
+          </div>
+          <div class="gc-body">
+            <div class="gc-role" style="color:var(--purple2)">Mempelai Pria</div>
+            <div class="gc-name">Guntur</div>
+            <div class="gc-parents">Putra Kedua dari<br><strong>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</strong></div>
+          </div>
+          <div class="gc-right">
+            <div class="gc-status" style="background:var(--purple3);color:var(--purple2)">Member</div>
+            <div class="gc-id">P2 · 2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TASK LIST: LOVE STORY -->
+    <div>
+      <div class="section-label">Project Timeline</div>
+      <div class="task-section">
+        <div class="task-section-header">
+          <div class="tsh-color" style="background:var(--coral)"></div>
+          <span class="tsh-name">Our Love Story</span>
+          <span class="tsh-count">3</span>
+        </div>
+        <div style="background:var(--white);border:1px solid var(--border);border-radius:var(--r);overflow:hidden">
+          <div class="task-item">
+            <div class="task-check done" onclick="toggleCheck(this)"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span class="task-name done">Awal Pertemuan — Bowling, Sushi & Es Krim</span>
+            <div class="task-meta">
+              <span class="task-due">Juni 2025</span>
+              <span class="task-tag" style="background:var(--coral3);color:var(--coral2)">Done</span>
+            </div>
+          </div>
+          <div class="task-item">
+            <div class="task-check done" onclick="toggleCheck(this)"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span class="task-name done">Lamaran — Di hadapan keluarga tercinta</span>
+            <div class="task-meta">
+              <span class="task-due">Nov 2025</span>
+              <span class="task-tag" style="background:var(--coral3);color:var(--coral2)">Done</span>
+            </div>
+          </div>
+          <div class="task-item" style="border-bottom:none">
+            <div class="task-check active" style="border-color:var(--coral);background:var(--coral3)" onclick="toggleCheck(this)"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
+            <span class="task-name" style="font-weight:600">Pernikahan — Akad & Resepsi 🎉</span>
+            <div class="task-meta">
+              <span class="task-due" style="color:var(--coral);font-weight:600">24 Mei 2026</span>
+              <span class="task-tag" style="background:var(--coral3);color:var(--coral2)">In Progress</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KANBAN BOARD -->
+    <div>
+      <div class="section-label">Board View</div>
+      <div class="kanban">
+        <!-- Col 1: Todo -->
+        <div class="kanban-col">
+          <div class="kanban-col-header">
+            <div class="kch-left">
+              <div class="kch-dot" style="background:var(--sub2)"></div>
+              <span class="kch-name">To Do</span>
+            </div>
+            <span class="kch-count">2</span>
+          </div>
+          <div class="kanban-card">
+            <div class="kc-tags"><span class="kc-tag" style="background:var(--purple3);color:var(--purple2)">Guest</span></div>
+            <div class="kc-title">Konfirmasi kehadiran tamu undangan</div>
+            <div class="kc-footer">
+              <div class="kc-due"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>24 Mei</div>
+              <div class="kc-avatars">
+                <div class="kc-av" style="background:var(--coral)">N</div>
+                <div class="kc-av" style="background:var(--purple)">G</div>
+              </div>
+            </div>
+          </div>
+          <div class="kanban-card">
+            <div class="kc-tags"><span class="kc-tag" style="background:var(--yellow3);color:#C47C0A">Venue</span></div>
+            <div class="kc-title">Persiapan Graha Yadika, Tangerang</div>
+            <div class="kc-footer">
+              <div class="kc-due"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>24 Mei</div>
+              <div class="kc-avatars"><div class="kc-av" style="background:var(--teal)">T</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Col 2: In Progress -->
+        <div class="kanban-col">
+          <div class="kanban-col-header">
+            <div class="kch-left">
+              <div class="kch-dot" style="background:var(--coral)"></div>
+              <span class="kch-name">In Progress</span>
+            </div>
+            <span class="kch-count">2</span>
+          </div>
+          <div class="kanban-card" style="border-left:3px solid var(--coral)">
+            <div class="kc-tags"><span class="kc-tag" style="background:var(--coral3);color:var(--coral2)">Priority</span></div>
+            <div class="kc-title">Akad Nikah · 08.00 WIB</div>
+            <div class="kc-footer">
+              <div class="kc-due" style="color:var(--coral);font-weight:600"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>24 Mei</div>
+              <div class="kc-avatars">
+                <div class="kc-av" style="background:var(--coral)">N</div>
+                <div class="kc-av" style="background:var(--purple)">G</div>
+              </div>
+            </div>
+          </div>
+          <div class="kanban-card" style="border-left:3px solid var(--teal)">
+            <div class="kc-tags"><span class="kc-tag" style="background:var(--teal3);color:#2A9D97">Resepsi</span></div>
+            <div class="kc-title">Resepsi Pernikahan · 11.00–13.00</div>
+            <div class="kc-footer">
+              <div class="kc-due"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>24 Mei</div>
+              <div class="kc-avatars">
+                <div class="kc-av" style="background:var(--coral)">N</div>
+                <div class="kc-av" style="background:var(--purple)">G</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Col 3: Done -->
+        <div class="kanban-col">
+          <div class="kanban-col-header">
+            <div class="kch-left">
+              <div class="kch-dot" style="background:var(--green)"></div>
+              <span class="kch-name">Completed</span>
+            </div>
+            <span class="kch-count">2</span>
+          </div>
+          <div class="kanban-card" style="opacity:.7">
+            <div class="kc-tags"><span class="kc-tag" style="background:var(--green3);color:#1A9055">Done ✓</span></div>
+            <div class="kc-title" style="text-decoration:line-through;color:var(--sub)">Awal Pertemuan · Juni 2025</div>
+            <div class="kc-footer">
+              <div class="kc-due">Jun 2025</div>
+              <div class="kc-avatars"><div class="kc-av" style="background:var(--green)">✓</div></div>
+            </div>
+          </div>
+          <div class="kanban-card" style="opacity:.7">
+            <div class="kc-tags"><span class="kc-tag" style="background:var(--green3);color:#1A9055">Done ✓</span></div>
+            <div class="kc-title" style="text-decoration:line-through;color:var(--sub)">Lamaran · November 2025</div>
+            <div class="kc-footer">
+              <div class="kc-due">Nov 2025</div>
+              <div class="kc-avatars"><div class="kc-av" style="background:var(--green)">✓</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- EVENT / SCHEDULE -->
+    <div id="event" style="margin-top:8px">
+      <div class="section-label">Jadwal Acara</div>
+      <div class="schedule-card fade-as">
+        <div class="sc-header">
+          <div class="sc-type-dot" style="background:var(--coral)"></div>
+          <span class="sc-type" style="color:var(--coral)">Akad Nikah</span>
+          <span class="sc-status-badge" style="background:var(--coral3);color:var(--coral2)">Scheduled</span>
+        </div>
+        <div class="sc-body">
+          <div class="sc-date">Minggu, 24 Mei 2026</div>
+          <div class="sc-row"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>08.00 WIB</span></div>
+          <div class="sc-row"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
+          <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="sc-map-btn">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+            Lihat di Maps
+          </a>
+          <div class="sc-map"><div class="sc-pin"></div></div>
+        </div>
+      </div>
+      <div class="schedule-card fade-as">
+        <div class="sc-header">
+          <div class="sc-type-dot" style="background:var(--teal)"></div>
+          <span class="sc-type" style="color:#2A9D97">Resepsi Pernikahan</span>
+          <span class="sc-status-badge" style="background:var(--teal3);color:#2A9D97">Scheduled</span>
+        </div>
+        <div class="sc-body">
+          <div class="sc-date">Minggu, 24 Mei 2026</div>
+          <div class="sc-row"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>11.00 – 13.00 WIB</span></div>
+          <div class="sc-row"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
+          <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="sc-map-btn">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+            Lihat di Maps
+          </a>
+          <div class="sc-map"><div class="sc-pin" style="background:var(--teal);box-shadow:0 0 0 4px rgba(78,203,196,.2),0 0 0 8px rgba(78,203,196,.07)"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GALLERY -->
+    <div>
+      <div class="section-label">Photo Attachments</div>
+      <div class="portfolio-grid fade-as" id="galleryGrid"></div>
+    </div>
+
+    <!-- GIFT -->
+    <div id="gift" style="margin-top:20px">
+      <div class="section-label">Payment Info</div>
+      <p style="font-size:12px;color:var(--sub);margin-bottom:12px;line-height:1.6" class="fade-as">Doa restu sudah sangat cukup. Namun jika ingin memberi tanda kasih, kami menerimanya dengan senang hati 🤍</p>
+      <div class="payment-card fade-as">
+        <div class="pay-icon">🏦</div>
+        <div class="pay-body">
+          <div class="pay-bank">BCA</div>
+          <div class="pay-owner">Guntur Fitridullah</div>
+          <div class="pay-num">8210 3705 61</div>
+        </div>
+        <button class="copy-btn" onclick="copyNum('8210370561',this)">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Salin
+        </button>
+      </div>
+      <div class="payment-card fade-as">
+        <div class="pay-icon">🏦</div>
+        <div class="pay-body">
+          <div class="pay-bank">BNI</div>
+          <div class="pay-owner">Nazma</div>
+          <div class="pay-num">1192 9784 03</div>
+        </div>
+        <button class="copy-btn" onclick="copyNum('1192978403',this)">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Salin
+        </button>
+      </div>
+    </div>
+
+    <!-- RSVP -->
+    <div id="rsvp" style="margin-top:8px">
+      <div class="section-label">Guest Check-In · RSVP</div>
+      <div class="form-card fade-as">
+        <div class="rsvp-stat-row">
+          <div class="rstat"><span class="rstat-num" id="rsRes">7</span><span class="rstat-label">Respons</span></div>
+          <div class="rstat"><span class="rstat-num" id="rsHadir">7</span><span class="rstat-label">Hadir</span></div>
+          <div class="rstat"><span class="rstat-num" id="rsTamu">13</span><span class="rstat-label">Tamu</span></div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Nama Lengkap</label>
+          <input class="form-input" id="rName" type="text" placeholder="Masukkan nama Anda">
+        </div>
+        <div class="form-row">
+          <label class="form-label">Konfirmasi Kehadiran</label>
+          <div class="att-row">
+            <button class="att-btn on" onclick="setAtt('hadir',this)">✓ Hadir</button>
+            <button class="att-btn" onclick="setAtt('tidak',this)">✗ Tidak Hadir</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Jumlah Tamu</label>
+          <div class="g-row">
+            <button class="g-btn on" onclick="setGuest(1,this)">1</button>
+            <button class="g-btn" onclick="setGuest(2,this)">2</button>
+            <button class="g-btn" onclick="setGuest(3,this)">3</button>
+            <button class="g-btn" onclick="setGuest(4,this)">4+</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <label class="form-label">Ucapan & Doa</label>
+          <textarea class="form-input" id="rMsg" placeholder="Tulis ucapan untuk Nazma & Guntur..."></textarea>
+        </div>
+        <button class="rsvp-submit" onclick="submitRSVP()">Konfirmasi Kehadiran →</button>
+      </div>
+    </div>
+
+    <!-- WISHES / INBOX -->
+    <div id="wishes" style="margin-top:8px">
+      <div class="section-label">Inbox · Ucapan & Doa</div>
+      <div id="wishesList">
+        <div class="inbox-item visible">
+          <div class="ii-av" style="background:var(--coral);border-radius:8px">A</div>
+          <div class="ii-body">
+            <div class="ii-header">
+              <span class="ii-name">Ayu Rahmawati</span>
+              <span class="ii-tag" style="background:var(--green3);color:#1A9055">Hadir · 2</span>
+            </div>
+            <div class="ii-text">Selamat menempuh hidup baru! Semoga sakinah, mawaddah, wa rahmah 🌿</div>
+          </div>
+        </div>
+        <div class="inbox-item visible">
+          <div class="ii-av" style="background:var(--purple);border-radius:8px">R</div>
+          <div class="ii-body">
+            <div class="ii-header">
+              <span class="ii-name">Reza Firmansyah</span>
+              <span class="ii-tag" style="background:var(--green3);color:#1A9055">Hadir · 1</span>
+            </div>
+            <div class="ii-text">Alhamdulillah! Semoga membawa keberkahan yang tidak pernah habis. Aamiin!</div>
+          </div>
+        </div>
+        <div class="inbox-item visible">
+          <div class="ii-av" style="background:var(--teal);border-radius:8px">S</div>
+          <div class="ii-body">
+            <div class="ii-header">
+              <span class="ii-name">Sinta Dewi</span>
+              <span class="ii-tag" style="background:var(--green3);color:#1A9055">Hadir · 2</span>
+            </div>
+            <div class="ii-text">Wishing you a lifetime of love! Semoga selalu diberkahi Allah SWT 💕</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /page-content -->
+
+  <!-- FOOTER -->
+  <div class="app-footer">
+    <div class="af-inner">
+      <div class="af-logo">
+        <div class="af-logo-icon"><svg viewBox="0 0 24 24" fill="white" style="width:12px;height:12px"><circle cx="12" cy="5" r="3"/><circle cx="4.5" cy="17" r="3"/><circle cx="19.5" cy="17" r="3"/></svg></div>
+        <span class="af-logo-text">Asana Wedding Project</span>
+      </div>
+      <div class="af-names"><span>Nazma</span> & <span>Guntur</span></div>
+      <p class="af-msg">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu kepada kami.</p>
+      <p class="af-sign">Kami yang berbahagia, <b>Nazma & Guntur</b></p>
+      <div class="af-div"></div>
+      <p class="af-copy">© 2026 Nazma & Guntur Wedding · Project Closed ✓</p>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ─── BOTTOM NAV ─── -->
+<nav class="bot-nav" id="botNav">
+  <a href="#home" class="bn-item active" onclick="setNav(this);return false">
+    <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+    Tasks
+  </a>
+  <a href="#couple" class="bn-item" onclick="setNav(this);return false">
+    <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    Team
+  </a>
+  <a href="#event" class="bn-item" onclick="setNav(this);return false">
+    <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+    Schedule
+  </a>
+  <a href="#gift" class="bn-item" onclick="setNav(this);return false">
+    <svg viewBox="0 0 24 24"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+    Payment
+  </a>
+  <a href="#rsvp" class="bn-item" onclick="setNav(this);return false">
+    <svg viewBox="0 0 24 24"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    RSVP
+  </a>
+</nav>
+
+<!-- ─── LIGHTBOX ─── -->
+<div class="lb" id="lb">
+  <button class="lb-x" onclick="closeLB()">✕</button>
+  <button class="lb-nav lb-prev" onclick="navLB(-1)">‹</button>
+  <img id="lbImg" src="" alt="">
+  <button class="lb-nav lb-next" onclick="navLB(1)">›</button>
+  <div class="lb-ct" id="lbCt"></div>
+</div>
+
+<!-- ─── TOAST ─── -->
+<div class="toast" id="toast"></div>
+
+<script>
+const IMGS=[
+  "https://images.unsplash.com/photo-1519741497674-611481863552?w=700&h=350&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=350&h=350&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=350&h=350&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=350&h=350&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=350&h=350&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=350&h=350&fit=crop&q=80",
+  "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=700&h=350&fit=crop&q=80",
+];
+let attStatus='hadir',guestCount=1,lbIdx=0,toastTO;
+
+function openInvitation(){
+  document.getElementById('opening').classList.add('hide');
+  setTimeout(()=>{
+    document.getElementById('main').classList.add('show');
+    document.getElementById('topNav').classList.add('show');
+    document.getElementById('botNav').classList.add('show');
+    initAll();
+  },300);
+}
+
+function initAll(){
+  buildGallery();
+  startCountdown();
+  initScroll();
+  initNavObs();
+}
+
+function buildGallery(){
+  const g=document.getElementById('galleryGrid');
+  IMGS.forEach((src,i)=>{
+    const el=document.createElement('div');
+    el.className='portfolio-item';
+    el.innerHTML=`<img src="${src}" loading="lazy" alt=""><div class="portfolio-overlay"><span class="portfolio-num">${String(i+1).padStart(2,'0')}</span></div>`;
+    el.onclick=()=>openLB(i);
+    g.appendChild(el);
+  });
+}
+
+function startCountdown(){
+  const t=new Date('2026-05-24T08:00:00');
+  const tick=()=>{
+    const d=t-new Date();
+    if(d<=0){['cdD','cdH','cdM','cdS'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='00'});return;}
+    const s=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=String(v).padStart(2,'0')};
+    s('cdD',Math.floor(d/86400000));
+    s('cdH',Math.floor((d%86400000)/3600000));
+    s('cdM',Math.floor((d%3600000)/60000));
+    s('cdS',Math.floor((d%60000)/1000));
+  };
+  tick();setInterval(tick,1000);
+}
+
+function initScroll(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+  },{threshold:.08});
+  document.querySelectorAll('.fade-as,.task-item,.tl-row,.inbox-item').forEach(el=>obs.observe(el));
+}
+
+function initNavObs(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{
+      if(!e.isIntersecting)return;
+      document.querySelectorAll('.bn-item').forEach(n=>n.classList.remove('active'));
+      const a=document.querySelector(`.bn-item[href="#${e.target.id}"]`);
+      if(a)a.classList.add('active');
+    });
+  },{rootMargin:'-30% 0px -60% 0px'});
+  ['home','couple','event','gift','rsvp'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el)});
+}
+
+function setNav(el){
+  if(!el)return;
+  // get target id from href
+  const href=el.getAttribute('href');
+  if(href){
+    const target=document.querySelector(href);
+    if(target){
+      const offset=document.getElementById('topNav').offsetHeight||56;
+      const y=target.getBoundingClientRect().top+window.scrollY-offset-8;
+      window.scrollTo({top:y,behavior:'smooth'});
+    }
+  }
+  // update active state after brief delay
+  setTimeout(()=>{
+    document.querySelectorAll('.bn-item').forEach(n=>n.classList.remove('active'));
+    el.classList.add('active');
+  },80);
+}
+
+function toggleCheck(el){
+  el.classList.toggle('done');
+  const taskName=el.nextElementSibling;
+  if(taskName)taskName.classList.toggle('done');
+}
+
+function setAtt(val,btn){
+  attStatus=val;
+  document.querySelectorAll('.att-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+function setGuest(n,btn){
+  guestCount=n;
+  document.querySelectorAll('.g-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+}
+
+function submitRSVP(){
+  const name=document.getElementById('rName').value.trim();
+  if(!name){showToast('Masukkan nama Anda dulu');return;}
+  const msg=document.getElementById('rMsg').value.trim();
+  const inits=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  const colors=['#F06A6A','#9B8AFF','#4ECBC4','#F1BD6C','#FC91AD','#25C16F'];
+  const color=colors[Math.floor(Math.random()*colors.length)];
+  const tagColor=attStatus==='hadir'
+    ?'background:var(--green3);color:#1A9055'
+    :'background:var(--coral3);color:var(--coral2)';
+  const tagText=attStatus==='hadir'?`Hadir · ${guestCount}`:'Tidak Hadir';
+
+  const item=document.createElement('div');
+  item.className='inbox-item';
+  item.innerHTML=`<div class="ii-av" style="background:${color};border-radius:8px">${inits}</div><div class="ii-body"><div class="ii-header"><span class="ii-name">${name}</span><span class="ii-tag" style="${tagColor}">${tagText}</span></div><div class="ii-text">${msg||'Selamat dan semoga bahagia selalu! 🎉'}</div></div>`;
+  document.getElementById('wishesList').prepend(item);
+  setTimeout(()=>item.classList.add('visible'),50);
+
+  const add=(id,n=1)=>{const el=document.getElementById(id);if(el)el.textContent=parseInt(el.textContent)+n};
+  add('rsRes');
+  if(attStatus==='hadir'){add('rsHadir');add('rsTamu',guestCount)}
+
+  document.getElementById('rName').value='';
+  document.getElementById('rMsg').value='';
+  showToast('✓ Task completed! Terima kasih');
+  setTimeout(()=>document.getElementById('wishes').scrollIntoView({behavior:'smooth',block:'start'}),400);
+}
+
+function copyNum(text,btn){
+  navigator.clipboard.writeText(text).then(()=>{
+    btn.classList.add('copied');
+    btn.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Tersalin';
+    showToast('✓ Nomor rekening tersalin!');
+    setTimeout(()=>{
+      btn.classList.remove('copied');
+      btn.innerHTML='<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Salin';
+    },2500);
+  }).catch(()=>showToast('Salin: '+text));
+}
+
+function openLB(i){lbIdx=i;renderLB();document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden'}
+function closeLB(){document.getElementById('lb').classList.remove('open');document.body.style.overflow=''}
+function navLB(d){lbIdx=(lbIdx+d+IMGS.length)%IMGS.length;renderLB()}
+function renderLB(){document.getElementById('lbImg').src=IMGS[lbIdx];document.getElementById('lbCt').textContent=`${lbIdx+1} / ${IMGS.length}`}
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('lb').classList.contains('open'))return;
+  if(e.key==='Escape')closeLB();
+  if(e.key==='ArrowLeft')navLB(-1);
+  if(e.key==='ArrowRight')navLB(1);
+});
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastTO);
+  toastTO=setTimeout(()=>t.classList.remove('show'),2800);
+}
+</script>
+</body>
+</html>
