@@ -3272,7 +3272,7 @@ pub async fn test_email() -> impl IntoResponse {
     let to_email = "guntur@castellant.biz.id";
     let email_template = PaymentSuccessEmail {
         name: "Test User".to_string(),
-        plan_name: "PLATINUM".to_string(),
+        plan_name: "DYNASTY".to_string(),
         slug: "test-invitation".to_string(),
         amount: 150000,
         language: "id".to_string(),
