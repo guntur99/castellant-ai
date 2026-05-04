@@ -11,6 +11,7 @@ pub struct PaymentSuccessEmail {
     pub slug: String,
     pub amount: i32,
     pub language: String,
+    pub base_url: String,
 }
 
 pub async fn send_payment_success_email(to_email: &str, template: PaymentSuccessEmail, port_override: Option<u16>) -> Result<(), String> {

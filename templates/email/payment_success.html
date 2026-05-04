@@ -2,57 +2,212 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment Successful</title>
     <style>
-        body { font-family: 'Inter', -apple-system, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f9f9f9; }
-        .container { max-width: 600px; margin: 40px auto; background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #f0f0f0; }
-        .header { background: linear-gradient(135deg, #2A1E14 0%, #4A3728 100%); padding: 40px; text-align: center; color: white; }
-        .header h1 { margin: 0; font-family: 'serif'; font-size: 24px; letter-spacing: 1px; }
-        .content { padding: 40px; }
-        .plan-badge { display: inline-block; background: #fdf6f0; color: #8E6E53; padding: 6px 16px; border-radius: 50px; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 20px; }
-        .amount { font-size: 2rem; font-weight: 800; color: #2A1E14; margin: 20px 0; }
-        .btn { display: inline-block; background: #8E6E53; color: white; padding: 16px 32px; border-radius: 12px; text-decoration: none; font-weight: 700; margin-top: 30px; box-shadow: 0 10px 20px rgba(142, 110, 83, 0.2); }
-        .footer { padding: 30px; text-align: center; font-size: 12px; color: #999; border-top: 1px solid #f5f5f5; }
+        /* Modern Elegant Design System */
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            line-height: 1.7; 
+            color: #1a1a1a; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #f4f4f4; 
+        }
+        .wrapper {
+            padding: 40px 20px;
+            background-color: #f4f4f4;
+        }
+        .container { 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background: #ffffff; 
+            border-radius: 16px; 
+            overflow: hidden; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        }
+        .header { 
+            background-color: #000000; 
+            padding: 60px 40px; 
+            text-align: center; 
+            color: #ffffff;
+            position: relative;
+        }
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 2px;
+            background-color: #C5A059;
+        }
+        .header h1 { 
+            margin: 0; 
+            font-family: 'Georgia', serif; 
+            font-size: 28px; 
+            letter-spacing: 6px; 
+            font-weight: 400;
+            text-transform: uppercase;
+        }
+        .header p {
+            margin-top: 10px;
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            opacity: 0.6;
+        }
+        .content { 
+            padding: 50px 40px; 
+        }
+        .plan-info {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .plan-badge { 
+            display: inline-block; 
+            border: 1px solid #C5A059;
+            color: #C5A059; 
+            padding: 5px 20px; 
+            border-radius: 4px; 
+            font-weight: 600; 
+            font-size: 11px; 
+            letter-spacing: 2px;
+            text-transform: uppercase; 
+        }
+        .greeting {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #000;
+        }
+        .message {
+            color: #555;
+            font-size: 15px;
+            margin-bottom: 30px;
+        }
+        .invoice-box {
+            background-color: #fcfcfc;
+            border: 1px solid #eeeeee;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin: 30px 0;
+        }
+        .invoice-label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+        .amount { 
+            font-size: 32px; 
+            font-family: 'Georgia', serif;
+            font-weight: 400; 
+            color: #000; 
+        }
+        .action-area {
+            text-align: center;
+            margin-top: 40px;
+        }
+        .btn { 
+            display: inline-block; 
+            background-color: #000000; 
+            color: #ffffff !important; 
+            padding: 18px 40px; 
+            border-radius: 4px; 
+            text-decoration: none; 
+            font-weight: 600; 
+            font-size: 14px;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .footer { 
+            padding: 40px; 
+            text-align: center; 
+            font-size: 11px; 
+            color: #aaaaaa; 
+            background-color: #fafafa;
+            border-top: 1px solid #eeeeee;
+            letter-spacing: 1px;
+        }
+        .signature {
+            margin-top: 50px;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+            padding-top: 30px;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>CASTELLANT</h1>
-            <p style="opacity: 0.8; font-size: 14px;">Digital Invitation & Legacy</p>
-        </div>
-        <div class="content">
-            <span class="plan-badge">{{ plan_name }} PLAN</span>
-            
-            {% if language == "id" %}
-                <h2 style="margin-top: 0; color: #2A1E14;">Pembayaran Berhasil!</h2>
-                <p>Halo <strong>{{ name }}</strong>,</p>
-                <p>Terima kasih telah berinvestasi di <strong>Castellant</strong>. Pembayaran Anda telah berhasil diproses dan arsitektur undangan Anda sekarang telah terbuka sepenuhnya.</p>
+    <div class="wrapper">
+        <div class="container">
+            <div class="header">
+                <h1>CASTELLANT</h1>
+                <p>Digital Invitation & Legacy</p>
+            </div>
+            <div class="content">
+                <div class="plan-info">
+                    <span class="plan-badge">{{ plan_name }} EDITION</span>
+                </div>
                 
-                <div class="amount">Rp {{ amount }}</div>
-                
-                <p style="color: #666;">Anda sekarang dapat mengelola tamu, melacak RSVP, dan membagikan karya digital Anda kepada dunia.</p>
-                
-                <a href="https://castellant.biz.id/invitation/{{ slug }}/manage" class="btn">Kelola Undangan Anda</a>
-                
-                <p style="margin-top: 40px; color: #2A1E14;">Salam hangat,<br><strong>Tim Castellant</strong></p>
-            {% else %}
-                <h2 style="margin-top: 0; color: #2A1E14;">Payment Confirmed!</h2>
-                <p>Hi <strong>{{ name }}</strong>,</p>
-                <p>Thank you for your investment in <strong>Castellant</strong>. Your payment has been successfully processed and your invitation architecture is now fully unlocked.</p>
-                
-                <div class="amount">Rp {{ amount }}</div>
-                
-                <p style="color: #666;">You can now manage your guests, track RSVPs, and share your digital masterpiece with the world.</p>
-                
-                <a href="https://castellant.biz.id/invitation/{{ slug }}/manage" class="btn">Manage Your Invitation</a>
-                
-                <p style="margin-top: 40px; color: #2A1E14;">Warm regards,<br><strong>The Castellant Team</strong></p>
-            {% endif %}
-        </div>
-        <div class="footer">
-            &copy; 2026 Castellant. Built with architectural precision.<br>
-            If you have any questions, reply to this email.
+                {% if language == "id" %}
+                    <div class="greeting">Pembayaran Berhasil</div>
+                    <div class="message">
+                        Halo <strong>{{ name }}</strong>,<br><br>
+                        Terima kasih telah mempercayakan momen berharga Anda kepada <strong>Castellant</strong>. Kami telah memvalidasi pembayaran Anda, dan seluruh arsitektur digital undangan Anda kini telah aktif sepenuhnya.
+                    </div>
+                    
+                    <div class="invoice-box">
+                        <div class="invoice-label">Total Investasi</div>
+                        <div class="amount">IDR {{ amount }}</div>
+                    </div>
+                    
+                    <div class="message">
+                        Kini Anda dapat mulai mengkurasi daftar tamu, memantau konfirmasi kehadiran, dan menyempurnakan setiap detail undangan digital Anda melalui dashboard eksklusif kami.
+                    </div>
+                    
+                    <div class="action-area">
+                        <a href="{{ base_url }}/invitation/{{ slug }}/manage" class="btn">KELOLA UNDANGAN</a>
+                    </div>
+                    
+                    <div class="signature">
+                        Salam hangat,<br>
+                        <strong>Castellant Concierge</strong>
+                    </div>
+                {% else %}
+                    <div class="greeting">Payment Confirmed</div>
+                    <div class="message">
+                        Dear <strong>{{ name }}</strong>,<br><br>
+                        Thank you for entrusting your precious moments to <strong>Castellant</strong>. Your payment has been successfully validated, and your digital invitation architecture is now fully unlocked and ready for curation.
+                    </div>
+                    
+                    <div class="invoice-box">
+                        <div class="invoice-label">Total Investment</div>
+                        <div class="amount">IDR {{ amount }}</div>
+                    </div>
+                    
+                    <div class="message">
+                        You may now proceed to manage your guest list, track RSVPs in real-time, and refine every detail of your digital masterpiece via your exclusive dashboard.
+                    </div>
+                    
+                    <div class="action-area">
+                        <a href="{{ base_url }}/invitation/{{ slug }}/manage" class="btn">MANAGE INVITATION</a>
+                    </div>
+                    
+                    <div class="signature">
+                        Warm regards,<br>
+                        <strong>Castellant Concierge</strong>
+                    </div>
+                {% endif %}
+            </div>
+            <div class="footer">
+                &copy; 2026 CASTELLANT. CRAFTED WITH ARCHITECTURAL PRECISION.<br><br>
+                This is an automated notification. If you require further assistance, please contact our support team.
+            </div>
         </div>
     </div>
 </body>

@@ -3314,6 +3314,7 @@ pub async fn mayar_webhook(
                             slug: slug.clone(),
                             amount,
                             language: info.language.unwrap_or_else(|| "id".to_string()),
+                            base_url: std::env::var("REDIRECT_APP_BASE_URL").unwrap_or_else(|_| "https://castellant-ai.up.railway.app".to_string()),
                         };
 
                         let to_email = info.email.clone();
@@ -3421,6 +3422,7 @@ pub async fn test_email() -> impl IntoResponse {
         slug: "test-invitation".to_string(),
         amount: 150000,
         language: "id".to_string(),
+        base_url: std::env::var("REDIRECT_APP_BASE_URL").unwrap_or_else(|_| "https://castellant-ai.up.railway.app".to_string()),
     };
 
     match mailer::send_payment_success_email(&to_email, email_template, None).await {
