@@ -1358,18 +1358,14 @@
                         <div class="plan-label">{{ invitation.plan_name }} PLAN</div>
                         <div class="usage-text">
                             {% set count = groups.len() %}
-                            {% set limit = 3 %}
                             {% set plan = invitation.plan_name.to_uppercase() %}
-                            {% if plan == "ROYAL" %}
-                                {% set limit = 7 %}
-                            {% else if plan == "DYNASTY" %}
-                                {% set limit = 999 %}
-                            {% endif %}
                             
                             {% if plan == "DYNASTY" %}
                                 <span class="count">{{ count }}</span> groups created
+                            {% else if plan == "ROYAL" %}
+                                <span class="count {% if count >= 7 %}limit-reached{% endif %}">{{ count }}/7</span> slots used
                             {% else %}
-                                <span class="count {% if count >= limit %}limit-reached{% endif %}">{{ count }}/{{ limit }}</span> slots used
+                                <span class="count {% if count >= 3 %}limit-reached{% endif %}">{{ count }}/3</span> slots used
                             {% endif %}
                         </div>
                     </div>
@@ -1491,11 +1487,8 @@
 
                     {% set count = groups.len() %}
                     {% set plan = invitation.plan_name.to_uppercase() %}
-                    {% set limit = 3 %}
-                    {% if plan == "ROYAL" %}{% set limit = 7 %}{% endif %}
-                    {% if plan == "DYNASTY" %}{% set limit = 999 %}{% endif %}
 
-                    {% if plan == "DYNASTY" || count < limit %}
+                    {% if plan == "DYNASTY" || (plan == "ROYAL" && count < 7) || (plan == "NOBLE" && count < 3) || (plan != "DYNASTY" && plan != "ROYAL" && plan != "NOBLE" && count < 3) %}
                     <form action="/invitation/{{ invitation.slug }}/groups" method="POST" class="add-group-horizontal">
                         <div class="form-group">
                             <label>Group Name</label>
