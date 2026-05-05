@@ -126,9 +126,9 @@ pub struct TemplatesListTemplate {
 
 pub async fn get_all_templates(db: &sqlx::PgPool, only_published: bool) -> Vec<TemplateMetadata> {
     let query = if only_published {
-        "SELECT * FROM templates WHERE status = 'PUBLISHED' ORDER BY id ASC"
+        "SELECT * FROM templates WHERE status = 'PUBLISHED' ORDER BY created_at DESC"
     } else {
-        "SELECT * FROM templates ORDER BY id ASC"
+        "SELECT * FROM templates ORDER BY created_at DESC"
     };
     sqlx::query_as::<_, TemplateMetadata>(query)
         .fetch_all(db)
@@ -1583,6 +1583,10 @@ pub async fn dashboard(
                 gift_accounts: Vec::new(),
                 song_url: String::new(),
                 plan_name: r.plan_name.unwrap_or_else(|| "NOBLE".to_string()),
+                ai_chat_enabled: r.ai_chat_enabled,
+                ai_usage_count: r.ai_usage_count,
+                ai_custom_knowledge: r.ai_custom_knowledge.unwrap_or_default(),
+                ai_language: r.ai_language.unwrap_or_else(|| "id".to_string()),
             })
             .collect();
 
@@ -1788,6 +1792,10 @@ pub async fn invitation_detail(
                 gift_accounts,
                 song_url,
                 plan_name: row.plan_name.unwrap_or_else(|| "NOBLE".to_string()),
+                ai_chat_enabled: row.ai_chat_enabled,
+                ai_usage_count: row.ai_usage_count,
+                ai_custom_knowledge: row.ai_custom_knowledge.unwrap_or_default(),
+                ai_language: row.ai_language.unwrap_or_else(|| "id".to_string()),
             };
 
             match template_name.as_str() {
@@ -1949,6 +1957,10 @@ pub async fn invitation_detail(
                     ],
                     song_url,
                     plan_name: "NOBLE".to_string(),
+                    ai_chat_enabled: false,
+                    ai_usage_count: 0,
+                    ai_custom_knowledge: String::new(),
+                    ai_language: "id".to_string(),
                 };
                 
                 match template_name {
@@ -2094,6 +2106,10 @@ pub async fn manage_invitation(
                 gift_accounts: Vec::new(),
                 song_url: String::new(),
                 plan_name: row.plan_name.unwrap_or_else(|| "NOBLE".to_string()),
+                ai_chat_enabled: row.ai_chat_enabled,
+                ai_usage_count: row.ai_usage_count,
+                ai_custom_knowledge: row.ai_custom_knowledge.unwrap_or_default(),
+                ai_language: row.ai_language.unwrap_or_else(|| "id".to_string()),
             };
 
             let user = if let Some(cookie) = jar.get("user_id") {
@@ -2235,9 +2251,13 @@ pub async fn update_invitation(
 
     let couple_name_short = fields.get("couple_name_short").cloned().unwrap_or(row.couple_name_short);
     let event_date = fields.get("event_date").cloned().unwrap_or(row.event_date);
+    let ai_chat_enabled = fields.get("ai_chat_enabled").map(|v| v == "on").unwrap_or(false);
+    let ai_custom_knowledge = fields.get("ai_custom_knowledge").cloned().unwrap_or(row.ai_custom_knowledge.unwrap_or_default());
+    let template_name = fields.get("template_name").cloned().unwrap_or(row.template_name);
+    let ai_language = fields.get("ai_language").cloned().unwrap_or(row.ai_language.unwrap_or_else(|| "id".to_string()));
 
     sqlx::query(
-        "UPDATE invitations SET couple_name_short = $1, event_date = $2, bride_data = $3, groom_data = $4, ceremony_data = $5, reception_data = $6, quote_data = $7 WHERE id = $8"
+        "UPDATE invitations SET couple_name_short = $1, event_date = $2, bride_data = $3, groom_data = $4, ceremony_data = $5, reception_data = $6, quote_data = $7, ai_chat_enabled = $8, ai_custom_knowledge = $9, ai_language = $10, template_name = $11 WHERE id = $12"
     )
     .bind(couple_name_short)
     .bind(event_date)
@@ -2246,6 +2266,10 @@ pub async fn update_invitation(
     .bind(json!(ceremony))
     .bind(json!(reception))
     .bind(json!(quote))
+    .bind(ai_chat_enabled)
+    .bind(ai_custom_knowledge)
+    .bind(ai_language)
+    .bind(template_name)
     .bind(row.id)
     .execute(&state.db)
     .await
@@ -2432,6 +2456,10 @@ pub async fn preview(
         ],
         song_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3".to_string(),
         plan_name: "NOBLE".to_string(),
+        ai_chat_enabled: false,
+        ai_usage_count: 0,
+        ai_custom_knowledge: String::new(),
+        ai_language: "id".to_string(),
     };
 
     match payload.template_name.as_str() {
@@ -2535,9 +2563,39 @@ pub async fn ai_generate_text(
 }
 
 pub async fn ai_guest_chat(
+    Path(slug): Path<String>,
     State(state): State<AppState>,
     Json(payload): Json<AiGenerateRequest>,
 ) -> impl IntoResponse {
+    let row = sqlx::query_as::<_, InvitationRow>(
+        "SELECT * FROM invitations WHERE slug = $1"
+    )
+    .bind(&slug)
+    .fetch_optional(&state.db)
+    .await
+    .unwrap();
+
+    if row.is_none() {
+        return (StatusCode::NOT_FOUND, "Invitation not found").into_response();
+    }
+    let invitation = row.unwrap();
+
+    // Check Plan and Enablement
+    let plan = invitation.plan_name.clone().unwrap_or_else(|| "NOBLE".to_string());
+    if plan == "NOBLE" {
+        return (StatusCode::FORBIDDEN, "AI Chat is not available in NOBLE plan. Please upgrade to ROYAL or DYNASTY.").into_response();
+    }
+
+    if !invitation.ai_chat_enabled {
+        return (StatusCode::FORBIDDEN, "AI Chat is currently disabled for this invitation.").into_response();
+    }
+
+    // Check Limits
+    let limit = if plan == "ROYAL" { 400 } else { 2500 };
+    if invitation.ai_usage_count >= limit {
+        return (StatusCode::PAYMENT_REQUIRED, "AI Chat limit reached for this invitation.").into_response();
+    }
+
     let api_key = &state.sumopod_api_key;
     let base_url = &state.sumopod_base_url;
     let model = &state.sumopod_model;
@@ -2548,6 +2606,16 @@ pub async fn ai_guest_chat(
 
     let invitation_context = payload.context.unwrap_or_else(|| "No wedding details provided.".to_string());
 
+    let ai_language = invitation.ai_language.unwrap_or_else(|| "id".to_string());
+    let lang_str = match ai_language.as_str() {
+        "en" => "English",
+        "jv" => "Javanese (Bahasa Jawa)",
+        "su" => "Sundanese (Bahasa Sunda)",
+        "id" => "Bahasa Indonesia",
+        custom if !custom.is_empty() && custom != "custom" => custom,
+        _ => "Bahasa Indonesia",
+    };
+
     let messages = json!([
         {
             "role": "system",
@@ -2555,13 +2623,20 @@ pub async fn ai_guest_chat(
                 "You are a helpful Wedding Concierge. Use the following wedding details to answer guest questions. 
                 Be polite, warm, and helpful. If you don't know the answer, politely ask them to contact the couple directly.
                 
+                ADDITIONAL KNOWLEDGE FROM THE COUPLE:
+                {}
+
                 STRICT BOUNDARIES: 
                 - You ONLY answer questions about this specific wedding. 
                 - DO NOT answer general questions, political questions, or technical questions.
                 - If the question is not about this wedding, politely redirect the guest.
+                - **CRITICAL**: YOU MUST ALWAYS RESPOND IN {}. Respond politely, warmly, and formally yet friendly in {}.
 
                 WEDDING DETAILS:
                 {}", 
+                invitation.ai_custom_knowledge.unwrap_or_default(),
+                lang_str,
+                lang_str,
                 invitation_context
             )
         },
@@ -2592,6 +2667,13 @@ pub async fn ai_guest_chat(
                 .unwrap_or("I'm sorry, I couldn't process your request.")
                 .to_string();
             
+            // Increment usage count on success
+            sqlx::query("UPDATE invitations SET ai_usage_count = ai_usage_count + 1 WHERE id = $1")
+                .bind(invitation.id)
+                .execute(&state.db)
+                .await
+                .unwrap();
+
             Json(AiGenerateResponse { text, session_id: None }).into_response()
         }
         Err(e) => {

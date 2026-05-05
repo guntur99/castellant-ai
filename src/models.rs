@@ -31,6 +31,10 @@ pub struct InvitationRow {
     pub quote_data: serde_json::Value,
     pub plan_name: Option<String>,
     pub language: String,
+    pub ai_chat_enabled: bool,
+    pub ai_usage_count: i32,
+    pub ai_custom_knowledge: Option<String>,
+    pub ai_language: Option<String>,
     pub created_at: DateTime<Utc>,
 }
 
@@ -50,6 +54,10 @@ pub struct Invitation {
     pub gift_accounts: Vec<GiftAccount>,
     pub song_url: String,
     pub plan_name: String,
+    pub ai_chat_enabled: bool,
+    pub ai_usage_count: i32,
+    pub ai_custom_knowledge: String,
+    pub ai_language: String,
 }
 
 impl Invitation {
