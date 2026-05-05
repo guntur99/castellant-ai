@@ -1798,33 +1798,19 @@ pub async fn invitation_detail(
                 }
             }
 
-            let mut event_date_iso = "2026-05-24T08:00:00".to_string();
-            // Try a simple parse for Indonesian date like "12 Desember 2026"
-            let parts: Vec<&str> = row.event_date.split_whitespace().collect();
-            if parts.len() == 3 {
-                let day = parts[0];
-                let month_str = parts[1].to_lowercase();
-                let year = parts[2];
-                
-                let month = match month_str.as_str() {
-                    "januari" => "01",
-                    "februari" => "02",
-                    "maret" => "03",
-                    "april" => "04",
-                    "mei" => "05",
-                    "juni" => "06",
-                    "juli" => "07",
-                    "agustus" => "08",
-                    "september" => "09",
-                    "oktober" => "10",
-                    "november" => "11",
-                    "desember" => "12",
-                    _ => "05", // Fallback to Mei
-                };
-                
-                let day_padded = if day.len() == 1 { format!("0{}", day) } else { day.to_string() };
-                event_date_iso = format!("{}-{}-{}T08:00:00", year, month, day_padded);
+            let event_date_iso = parse_event_date_to_iso(&row.event_date);
+
+            let mut ceremony: EventDetails = from_value(row.ceremony_data).unwrap_or_default();
+            let mut reception: EventDetails = from_value(row.reception_data).unwrap_or_default();
+            
+            // Format dates for display
+            let event_date = format_date_for_display(&row.event_date);
+            if ceremony.date.is_empty() || ceremony.date.contains('-') {
+                ceremony.date = event_date.clone();
+            } else {
+                ceremony.date = format_date_for_display(&ceremony.date);
             }
+            reception.date = format_date_for_display(&reception.date);
 
             let invitation = Invitation {
                 slug: row.slug.clone(),
@@ -1832,9 +1818,9 @@ pub async fn invitation_detail(
                 couple_name_short: row.couple_name_short,
                 bride: from_value(row.bride_data).unwrap_or_default(),
                 groom: from_value(row.groom_data).unwrap_or_default(),
-                event_date: row.event_date,
-                ceremony: from_value(row.ceremony_data).unwrap_or_default(),
-                reception: from_value(row.reception_data).unwrap_or_default(),
+                event_date,
+                ceremony,
+                reception,
                 quote: from_value(row.quote_data).unwrap_or_default(),
                 gallery_images,
                 gift_accounts,
@@ -2152,6 +2138,7 @@ pub async fn manage_invitation(
 
     match row {
         Some(row) => {
+            let event_date_iso = parse_event_date_to_iso(&row.event_date);
             let invitation = Invitation {
                 slug: row.slug,
                 template_name: row.template_name,
@@ -2171,7 +2158,7 @@ pub async fn manage_invitation(
                 ai_custom_knowledge: row.ai_custom_knowledge.unwrap_or_default(),
                 ai_language: row.ai_language.clone(),
                 recipient_name: "Guest Guest & Partner".to_string(),
-                event_date_iso: "2026-05-24T08:00:00".to_string(),
+                event_date_iso,
                 rsvps: sqlx::query_as::<_, Rsvp>("SELECT * FROM rsvps WHERE invitation_id = $1 ORDER BY created_at DESC")
                     .bind(row.id)
                     .fetch_all(&state.db)
@@ -3769,4 +3756,81 @@ pub async fn check_slug(
     } else {
         Json(json!({ "available": true, "message": "URL slug is available" })).into_response()
     }
+}
+
+fn parse_event_date_to_iso(date_str: &str) -> String {
+    // 1. Handle ISO format YYYY-MM-DD
+    if date_str.contains('-') && date_str.len() >= 10 {
+        if date_str.len() == 10 {
+            return format!("{}T08:00:00", date_str);
+        } else if date_str.contains('T') {
+            return date_str.to_string();
+        }
+    }
+
+    // 2. Handle Indonesian format like "12 Desember 2026"
+    let parts: Vec<&str> = date_str.split_whitespace().collect();
+    if parts.len() == 3 {
+        let day = parts[0];
+        let month_str = parts[1].to_lowercase();
+        let year = parts[2];
+        
+        let month = match month_str.as_str() {
+            "januari" => "01",
+            "februari" => "02",
+            "maret" => "03",
+            "april" => "04",
+            "mei" => "05",
+            "juni" => "06",
+            "juli" => "07",
+            "agustus" => "08",
+            "september" => "09",
+            "oktober" => "10",
+            "november" => "11",
+            "desember" => "12",
+            _ => "05", // Fallback
+        };
+        
+        let day_padded = if day.len() == 1 { format!("0{}", day) } else { day.to_string() };
+        return format!("{}-{}-{}T08:00:00", year, month, day_padded);
+    }
+
+    "2026-05-24T08:00:00".to_string() // Ultimate fallback
+}
+
+fn format_date_for_display(date_str: &str) -> String {
+    // If it's already a nice string, keep it (simple heuristic)
+    if !date_str.contains('-') || date_str.len() != 10 {
+        return date_str.to_string();
+    }
+
+    // Handle YYYY-MM-DD
+    let parts: Vec<&str> = date_str.split('-').collect();
+    if parts.len() == 3 {
+        let year = parts[0];
+        let month_num = parts[1];
+        let day = parts[2];
+        
+        let month_name = match month_num {
+            "01" => "Januari",
+            "02" => "Februari",
+            "03" => "Maret",
+            "04" => "April",
+            "05" => "Mei",
+            "06" => "Juni",
+            "07" => "Juli",
+            "08" => "Agustus",
+            "09" => "September",
+            "10" => "Oktober",
+            "11" => "November",
+            "12" => "Desember",
+            _ => return date_str.to_string(),
+        };
+        
+        // Remove leading zero from day
+        let day_clean = if day.starts_with('0') { &day[1..] } else { day };
+        return format!("{} {} {}", day_clean, month_name, year);
+    }
+
+    date_str.to_string()
 }

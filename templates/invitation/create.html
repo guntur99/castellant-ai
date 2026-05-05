@@ -76,8 +76,8 @@
                             </div>
                             <div class="input-group">
                                 <label>Wedding Date</label>
-                                <input type="text" name="event_date" id="in-date" placeholder="October 24, 2026"
-                                    required oninput="syncReception()">
+                                <input type="date" name="event_date" id="in-date"
+                                    required oninput="syncReception(); updatePreview()">
                             </div>
                         </div>
                         <div class="form-grid" style="margin-top: 1rem;">
@@ -356,7 +356,7 @@
                                     <div class="input-group" style="margin-bottom: 1.5rem;">
                                         <label>Tanggal & Waktu Resepsi</label>
                                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                            <input type="text" name="reception_date" id="in-reception-date"
+                                            <input type="date" name="reception_date" id="in-reception-date"
                                                 placeholder="Tanggal">
                                             <input type="text" name="reception_time" id="in-reception-time"
                                                 placeholder="Waktu">
@@ -1771,6 +1771,17 @@
         nextStep(step);
     }
 
+    function formatDate(dateStr) {
+        if (!dateStr || !dateStr.includes('-')) return dateStr;
+        const parts = dateStr.split('-');
+        if (parts.length !== 3) return dateStr;
+        const months = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+        const year = parts[0];
+        const monthNum = parseInt(parts[1]) - 1;
+        const day = parseInt(parts[2]);
+        return `${day} ${months[monthNum]} ${year}`;
+    }
+
     function updatePreview() {
         console.log("Updating preview...");
         // Elements to update (Using optional chaining and new classes)
@@ -1796,7 +1807,7 @@
             elPreviewLink.innerText = '/preview/' + inSlug;
             elPreviewLink.href = '/preview/' + inSlug;
         }
-        if (elDate) elDate.innerText = inDate;
+        if (elDate) elDate.innerText = formatDate(inDate);
         if (elVenue) elVenue.innerText = inAddress ? inVenue + " (" + inAddress + ")" : inVenue;
 
         // Template logic
