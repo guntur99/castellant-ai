@@ -1789,7 +1789,7 @@
 
         <div class="op-dear">
             <div class="op-dear-l">Kepada Yth.</div>
-            <div class="op-dear-n">Ade Guntur Fitridullah & Partner</div>
+            <div class="op-dear-n">{{ invitation.recipient_name }}</div>
         </div>
 
         <button class="op-btn" onclick="openApp()">
@@ -1993,7 +1993,7 @@
                 <div class="info-rows">
                     <div class="info-row">
                         <span class="ir-key">Pengirim</span>
-                        <span class="ir-val">Ade Guntur Fitridullah & Partner</span>
+                        <span class="ir-val">{{ invitation.recipient_name }}</span>
                     </div>
                     <div class="info-row">
                         <span class="ir-key">Merchant</span>
@@ -2001,7 +2001,7 @@
                     </div>
                     <div class="info-row">
                         <span class="ir-key">Tanggal</span>
-                        <span class="ir-val mono">Minggu, 24 Mei 2026</span>
+                        <span class="ir-val mono">Minggu, {{ invitation.event_date }}</span>
                     </div>
                     <div class="info-row">
                         <span class="ir-key">Lokasi</span>
@@ -2306,9 +2306,25 @@
                 </div>
                 <div class="sc-body">
                     <div class="wishes-list" id="wishesList">
-                        <div class="wish-item vis">
-                            <div class="wi-head">
-                                <div class="wi-av">A</div>
+                {% if invitation.is_preview %}
+                
+                <!-- RSVPs will be loaded here -->
+            
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
+                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+</div>
                                 <div>
                                     <div class="wi-name">Ayu Rahmawati</div>
                                     <div class="wi-status">✓ Hadir · 2 tamu</div>
@@ -2364,7 +2380,7 @@
                 <p style="font-size:11px;color:var(--qr-sub);line-height:1.7;max-width:320px;margin:0 auto">
                     Undangan digital ini diproteksi oleh enkripsi 256-bit<br>dan diverifikasi oleh Bank
                     Indonesia.<br><br>
-                    <strong style="color:var(--qr-text)">Nazma & Gunturr · 24 Mei 2026</strong>
+                    <strong style="color:var(--qr-text)">Nazma & Gunturr · {{ invitation.event_date }}</strong>
                 </p>
                 <p style="font-size:10px;color:#b0b7c3;margin-top:12px;letter-spacing:.05em">DIGITAL INVITATION BY
                     BRIDESSPACE</p>
@@ -2477,7 +2493,7 @@
 
         /* ── COUNTDOWN ── */
         function startCountdown() {
-            const tgt = new Date('2026-05-24T08:00:00');
+            const tgt = new Date('{{ invitation.event_date_iso }}');
             const set = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = String(v).padStart(2, '0'); };
             function tick() {
                 const d = tgt - new Date();

@@ -918,7 +918,7 @@ textarea.xl-form-input{height:70px;resize:vertical;padding:4px 6px}
         <label class="xl-radio"><input type="radio" name="fmt"> Mata Uang (Rp 9.800.000)</label>
         <label class="xl-radio"><input type="radio" name="fmt"> Akuntansi</label>
         <label class="xl-radio"><input type="radio" name="fmt"> Tanggal Pendek (24/05/2026)</label>
-        <label class="xl-radio"><input type="radio" name="fmt"> Tanggal Panjang (Minggu, 24 Mei 2026)</label>
+        <label class="xl-radio"><input type="radio" name="fmt"> Tanggal Panjang (Minggu, {{ invitation.event_date }})</label>
         <label class="xl-radio"><input type="radio" name="fmt"> Waktu (08:00)</label>
         <label class="xl-radio"><input type="radio" name="fmt"> Persentase (98%)</label>
         <label class="xl-radio"><input type="radio" name="fmt"> Teks</label>
@@ -982,8 +982,8 @@ const SHEETS = {
     [9,  {v:'',cls:'fill-gray'}, {v:'Kolom A',cls:'fill-green-pale bold'},{v:'Kolom B',cls:'fill-green-pale bold'},{v:'Kolom C',cls:'fill-green-pale bold'},{v:'Kolom D',cls:'fill-green-pale bold'},{v:'Kolom E',cls:'fill-green-pale bold'},{v:'Kolom F',cls:'fill-green-pale bold'},{v:'Kolom G',cls:'fill-green-pale bold'},{v:'Kolom H',cls:'fill-green-pale bold'},{v:'Kolom I',cls:'fill-green-pale bold'}],
     [10, {v:'',cls:'fill-gray'}, {v:'',cls:'',colspan:9}],
     [11, {v:'',cls:'fill-gray'}, {v:'📋 INFORMASI UNDANGAN',cls:'header-row bold',colspan:5},{v:'',cls:'header-row',colspan:4}],
-    [12, {v:'',cls:'fill-gray'}, {v:'Kepada Yth.',cls:'header-col bold'},{v:'Ade Guntur Fitridullah & Partner',cls:'bold',colspan:3},{v:'',cls:'',colspan:4}],
-    [13, {v:'',cls:'fill-gray'}, {v:'Tanggal',cls:'header-col bold'},{v:'Minggu, 24 Mei 2026',cls:'bold',colspan:3},{v:'',cls:'',colspan:4}],
+    [12, {v:'',cls:'fill-gray'}, {v:'Kepada Yth.',cls:'header-col bold'},{v:'{{ invitation.recipient_name }}',cls:'bold',colspan:3},{v:'',cls:'',colspan:4}],
+    [13, {v:'',cls:'fill-gray'}, {v:'Tanggal',cls:'header-col bold'},{v:'Minggu, {{ invitation.event_date }}',cls:'bold',colspan:3},{v:'',cls:'',colspan:4}],
     [14, {v:'',cls:'fill-gray'}, {v:'Akad Nikah',cls:'header-col bold'},{v:'08.00 WIB',cls:'',colspan:2},{v:'',cls:'fill-green-pale',colspan:2},{v:'=IF(HADIR,"Konfirmasi Diterima","Menunggu")',cls:'formula italic text-blue',colspan:3}],
     [15, {v:'',cls:'fill-gray'}, {v:'Resepsi',cls:'header-col bold'},{v:'11.00 – 13.00 WIB',cls:'',colspan:2},{v:'',cls:'fill-green-pale',colspan:2},{v:'=COUNTIF(RSVP,"Hadir")',cls:'formula italic text-blue',colspan:3}],
     [16, {v:'',cls:'fill-gray'}, {v:'Lokasi',cls:'header-col bold'},{v:'Graha Yadika, Ciledug, Tangerang',cls:'',colspan:3},{v:'',cls:'fill-green-pale',colspan:4}],
@@ -1027,7 +1027,7 @@ const SHEETS = {
   ],
 
   jadwal: [
-    [1,  {v:'',cls:'fill-gray'},{v:'🗓 RUNDOWN ACARA — 24 Mei 2026',cls:'header-row bold',colspan:9}],
+    [1,  {v:'',cls:'fill-gray'},{v:'🗓 RUNDOWN ACARA — {{ invitation.event_date }}',cls:'header-row bold',colspan:9}],
     [2,  {v:'',cls:'fill-gray'},{v:'No.',cls:'header-col bold center'},{v:'Waktu',cls:'header-col bold'},{v:'Acara',cls:'header-col bold'},{v:'Lokasi',cls:'header-col bold'},{v:'Penanggung Jawab',cls:'header-col bold'},{v:'Status',cls:'header-col bold'},{v:'Catatan',cls:'header-col bold'},{v:'',cls:'header-col'},{v:'',cls:'header-col'}],
     [3,  {v:'',cls:'fill-gray'},{v:'1',cls:'center'},{v:'06.00 – 07.30'},{v:'Persiapan Mempelai'},{v:'Ruang Rias'},{v:'Tim MUA'},{v:'🟡 Proses',cls:'text-orange bold'},{v:'MC standby 06.00'},{v:'',cls:'',colspan:2}],
     [4,  {v:'',cls:'fill-gray'},{v:'2',cls:'center'},{v:'07.30 – 08.00'},{v:'Registrasi Tamu Akad'},{v:'Lobi Graha Yadika'},{v:'Panitia'},{v:'🟡 Proses',cls:'text-orange bold'},{v:'Daftar hadir tamu'},{v:'',cls:'',colspan:2}],
@@ -1063,9 +1063,69 @@ const SHEETS = {
     [1,  {v:'',cls:'fill-gray'},{v:'📬 DATA RSVP — Konfirmasi Kehadiran',cls:'header-row bold',colspan:9}],
     [2,  {v:'',cls:'fill-gray'},{v:'No.',cls:'header-col bold center'},{v:'Nama Tamu',cls:'header-col bold'},{v:'Status',cls:'header-col bold'},{v:'Jumlah',cls:'header-col bold center'},{v:'Akad',cls:'header-col bold center'},{v:'Resepsi',cls:'header-col bold center'},{v:'Ucapan',cls:'header-col bold'},{v:'Waktu Input',cls:'header-col bold'},{v:'',cls:'header-col'}],
     [3,  {v:'',cls:'fill-gray'},{v:'1',cls:'center'},{v:'Ade Guntur Fitridullah'},{v:'✅ Hadir',cls:'text-green bold'},{v:'2',cls:'center bold'},{v:'✅',cls:'center'},{v:'✅',cls:'center'},{v:'Selamat & bahagia selalu!'},{v:'01/05/2026 09:41'},{v:''}],
-    [4,  {v:'',cls:'fill-gray'},{v:'2',cls:'center'},{v:'Ayu Rahmawati'},{v:'✅ Hadir',cls:'text-green bold'},{v:'2',cls:'center bold'},{v:'✅',cls:'center'},{v:'✅',cls:'center'},{v:'Sakinah mawaddah wa rahmah!'},{v:'02/05/2026 10:15'},{v:''}],
+
+                {% if invitation.is_preview %}
+                    [4,  {v:'',cls:'fill-gray'},{v:'2',cls:'center'},{v:'Ayu Rahmawati'},{v:'✅ Hadir',cls:'text-green bold'},{v:'2',cls:'center bold'},{v:'✅',cls:'center'},{v:'✅',cls:'center'},{v:'Sakinah mawaddah wa rahmah!'},{v:'02/05/2026 10:15'},{v:''}],
     [5,  {v:'',cls:'fill-gray'},{v:'3',cls:'center'},{v:'Reza Firmansyah'},{v:'✅ Hadir',cls:'text-green bold'},{v:'1',cls:'center bold'},{v:'❌',cls:'center'},{v:'✅',cls:'center'},{v:'Alhamdulillah! Semoga bahagia!'},{v:'03/05/2026 14:22'},{v:''}],
-    // Dynamic rows added here
+
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                "{{ rsvp.display_message() }}"<rows.length-6&&r[1]&&typeof r[1]==='object'&&r[1].v&&/^\d+$/.test(r[1].v)){r=r.slice();r[1]={...r[1],v:String(i-1)};} return r;});
+  }
+
+  rows.forEach(rowData=>{
+    const tr=document.createElement('tr');
+    rowData.forEach((cellData,ci)=>{
+      if(ci===0){
+        const th=document.createElement('th');
+        th.className='row-header';
+        th.textContent=cellData;
+        th.onclick=()=>selectRow(cellData);
+        tr.appendChild(th);
+        return;
+      }
+      if(cellData===null||cellData===undefined)return;// skip (already spanned)
+
+      const td=document.createElement('td');
+
+      let v='',cls='cell text',colspan=1,formula=null,action=null,img=null,chart=null,id=null,lbI=null,style='';
+
+      if(typeof cellData==='string'){v=cellData}
+      else if(typeof cellData==='object'){
+        if(cellData.v!==undefined){
+          if(typeof cellData.v==='object'&&cellData.v.cls){
+            // nested cell object
+            cls='cell '+cellData.v.cls;
+            v=cellData.v.v||'';
+            action=cellData.v.action||null;
+          } else {
+            v=cellData.v||'';
+          }
+          if(cellData.cls) cls='cell '+cellData.cls;
+          if(cellData.colspan) colspan=cellData.colspan;
+          if(cellData.formula) formula=cellData.formula;
+          if(cellData.action) action=cellData.action||null;
+          if(cellData.img) img=cellData.img;
+          if(cellData.chart) chart=cellData.chart;
+          if(cellData.id) id=cellData.id;
+          if(cellData.lbIdx!==undefined) lbI=cellData.lbIdx;
+          if(cellData.style) style=cellData.style;
+        }
+      }
+
+      td.className=cls||'cell text';
+      if(colspan>1){td.colSpan=colspan}
+      if(style) td.style.cssText+=style;
+
+      // Photo cell
+      if(img){
+        td.className+=' photo-cell';
+        td.style.height='80px';td.style.padding='2px';
+        td.innerHTML=`<div style="position:relative;height:100%;overflow:hidden;background:#f0f0f0"><img src="${img}" style="width:100%;height:100%;object-fit:cover;cursor:pointer" loading="lazy"><div class="photo-overlay">🔍 Lihat</div></div>`;
+
+                {% endfor %}
+                {% endif %}
+                    // Dynamic rows added here
     [6,  {v:'',cls:'fill-gray'},{v:'',cls:'fill-gray',colspan:9}],
     [7,  {v:'',cls:'fill-gray'},{v:'📊 RINGKASAN RSVP',cls:'header-row bold',colspan:4},{v:'',cls:'header-row',colspan:5}],
     [8,  {v:'',cls:'fill-gray'},{v:'Total Respons:'},{v:{v:'3',id:'stat-total'},cls:'bold number'},{v:''},{ v:'=COUNTIF(C3:C100,"✅ Hadir")',cls:'formula italic text-blue'},{v:'Total Hadir',cls:'bold'},{v:{v:'3',id:'stat-hadir'},cls:'text-green bold number'},{v:'',cls:'',colspan:3}],

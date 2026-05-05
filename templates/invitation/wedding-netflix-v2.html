@@ -2285,7 +2285,7 @@
                     <span class="row-see-all">Lihat Semua</span>
                 </div>
                 <div class="row-strip">
-                    <div class="nf-card" onclick="toast('💍 Akad Nikah — 24 Mei 2026')">
+                    <div class="nf-card" onclick="toast('💍 Akad Nikah — {{ invitation.event_date }}')">
                         <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=300&h=450&fit=crop&q=80"
                             alt="Akad">
                         <div class="card-overlay">
@@ -2297,7 +2297,7 @@
                                 <path d="M8 5v14l11-7z" />
                             </svg></div>
                     </div>
-                    <div class="nf-card" onclick="toast('🎊 Resepsi — 24 Mei 2026')">
+                    <div class="nf-card" onclick="toast('🎊 Resepsi — {{ invitation.event_date }}')">
                         <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=300&h=450&fit=crop&q=80"
                             alt="Resepsi">
                         <div class="card-overlay">
@@ -2432,7 +2432,7 @@
                     </div>
                     <div class="ep-body">
                         <div class="ep-name">Pernikahan — Season Finale 🔴 LIVE</div>
-                        <div class="ep-duration">24 Mei 2026 · Segera Hadir</div>
+                        <div class="ep-duration">{{ invitation.event_date }} · Segera Hadir</div>
                         <div class="ep-desc">Episode penutup yang telah dinantikan. Saksikan momen bersejarah mereka
                             secara langsung.</div>
                         <div class="ep-progress" style="background:rgba(229,9,20,.15)">
@@ -2448,7 +2448,7 @@
                     <div class="pb-content">
                         <div class="pb-label">Siaran Langsung</div>
                         <div class="pb-title">Season Finale<br>Premiere</div>
-                        <div class="pb-meta">Minggu, 24 Mei 2026 · Graha Yadika, Tangerang</div>
+                        <div class="pb-meta">Minggu, {{ invitation.event_date }} · Graha Yadika, Tangerang</div>
                         <div class="premiere-grid">
                             <div class="pb-info-card">
                                 <div class="pb-ic-icon">🕗</div>
@@ -2685,7 +2685,9 @@
                         <div class="rc-top">
                             <div class="rc-avatar" style="background:rgba(229,9,20,.15);color:#e50914">A</div>
                             <div>
-                                <div class="rc-name">Ayu Rahmawati</div>
+
+                {% if invitation.is_preview %}
+                                                <div class="rc-name">Ayu Rahmawati</div>
                                 <div class="rc-stars"><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span
                                         class="rc-star">⭐</span><span class="rc-star">⭐</span><span
                                         class="rc-star">⭐</span></div>
@@ -2714,7 +2716,14 @@
                             <div class="rc-avatar" style="background:rgba(255,149,0,.15);color:#FF9500">S</div>
                             <div>
                                 <div class="rc-name">Sinta Dewi</div>
-                                <div class="rc-stars"><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span
+
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                                                <div class="rc-name">{{ rsvp.name }}</div>
+
+                {% endfor %}
+                {% endif %}
+                                                <div class="rc-stars"><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span
                                         class="rc-star">⭐</span><span class="rc-star">⭐</span><span
                                         class="rc-star">⭐</span></div>
                             </div>
@@ -2924,7 +2933,7 @@
 
         /* ══ COUNTDOWN ══ */
         function countdown() {
-            const t = new Date('2026-05-24T08:00:00');
+            const t = new Date('{{ invitation.event_date_iso }}');
             function tick() {
                 const d = t - new Date();
                 if (d <= 0) { ['cdD', 'cdH', 'cdM', 'cdS'].forEach(id => document.getElementById(id).textContent = '00'); return; }
@@ -3029,6 +3038,12 @@
             const name = document.getElementById('rsvpName').value.trim();
             const status = document.getElementById('rsvpStatus').value;
             const msg = document.getElementById('rsvpMsg').value.trim();
+            fetch('/api/rsvp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
+            });
+
             if (!name || !status) { toast('Mohon isi nama dan status kehadiran'); return; }
             const ini = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             const pals = [

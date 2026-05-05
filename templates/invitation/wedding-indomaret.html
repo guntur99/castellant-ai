@@ -1373,14 +1373,14 @@ textarea.form-input { min-height:76px; resize:vertical; font-weight:400; font-si
       <div class="indo-point-badge">⭐ INDOMARET POINT</div>
     </div>
     <div class="open-headlines">
-      <div class="open-promo-week">📰 Promo Spesial Pernikahan · Edisi 24 Mei 2026</div>
+      <div class="open-promo-week">📰 Promo Spesial Pernikahan · Edisi {{ invitation.event_date }}</div>
       <span class="open-title">ANITA<br>&amp; ZARDA</span>
       <div class="open-title-sub">Promo Cinta, Hemat Duka!</div>
     </div>
     <div class="open-hemat">🏷️ HEMAT 100% KESEDIHAN!</div>
     <div class="open-dear">
       <div class="open-dear-lbl">🎫 Undangan Khusus Untuk:</div>
-      <div class="open-dear-name">Ade Guntur Fitridullah & Partner</div>
+      <div class="open-dear-name">{{ invitation.recipient_name }}</div>
     </div>
     <button class="open-btn" onclick="openInvitation()">
       🛍️ Buka Katalog
@@ -1613,7 +1613,7 @@ textarea.form-input { min-height:76px; resize:vertical; font-weight:400; font-si
           </div>
           <div class="tl-body">
             <div class="tl-tag">TRX-003 · MEI 2026</div>
-            <div class="tl-header"><span class="tl-title">Pernikahan</span><span class="tl-date">24 Mei 2026</span></div>
+            <div class="tl-header"><span class="tl-title">Pernikahan</span><span class="tl-date">{{ invitation.event_date }}</span></div>
             <p class="tl-desc">Babak paling istimewa. Dalam ikatan suci pernikahan, kami berjanji saling mencintai selamanya.</p>
           </div>
         </div>
@@ -1633,7 +1633,7 @@ textarea.form-input { min-height:76px; resize:vertical; font-weight:400; font-si
             <div class="ec-type">AKAD NIKAH</div>
             <div class="ec-sku">SKU: WED-AKD-2026</div>
           </div>
-          <div class="ec-date">Minggu,<br>24 Mei 2026</div>
+          <div class="ec-date">Minggu,<br>{{ invitation.event_date }}</div>
           <div class="ec-body">
             <div class="ec-row"><span class="ec-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></span><span class="ec-text">08.00 WIB</span></div>
             <div class="ec-row"><span class="ec-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></span><span class="ec-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
@@ -1649,7 +1649,7 @@ textarea.form-input { min-height:76px; resize:vertical; font-weight:400; font-si
             <div class="ec-type">RESEPSI</div>
             <div class="ec-sku">SKU: WED-RSP-2026</div>
           </div>
-          <div class="ec-date">Minggu,<br>24 Mei 2026</div>
+          <div class="ec-date">Minggu,<br>{{ invitation.event_date }}</div>
           <div class="ec-body">
             <div class="ec-row"><span class="ec-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></span><span class="ec-text">11.00 – 13.00 WIB</span></div>
             <div class="ec-row"><span class="ec-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></span><span class="ec-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
@@ -1797,7 +1797,9 @@ textarea.form-input { min-height:76px; resize:vertical; font-weight:400; font-si
           <div class="rc-head">
             <div class="rc-avatar" style="background:var(--i-red)">A</div>
             <div>
-              <div class="rc-name">Ayu Rahmawati</div>
+
+                {% if invitation.is_preview %}
+                              <div class="rc-name">Ayu Rahmawati</div>
               <div class="rc-stars">★★★★★</div>
             </div>
             <div class="rc-status">✓ HADIR · 2 TMU</div>
@@ -1820,7 +1822,14 @@ textarea.form-input { min-height:76px; resize:vertical; font-weight:400; font-si
             <div class="rc-avatar" style="background:var(--i-green)">S</div>
             <div>
               <div class="rc-name">Sinta Dewi</div>
-              <div class="rc-stars">★★★★★</div>
+
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                              <div class="rc-name">{{ rsvp.name }}</div>
+
+                {% endfor %}
+                {% endif %}
+                              <div class="rc-stars">★★★★★</div>
             </div>
             <div class="rc-status">✓ HADIR · 2 TMU</div>
           </div>
@@ -1909,7 +1918,7 @@ function buildGallery() {
 }
 
 function startCountdown() {
-  const target = new Date('2026-05-24T08:00:00');
+  const target = new Date('{{ invitation.event_date_iso }}');
   function tick() {
     const diff = target - new Date();
     const ids = ['cdDays','cdHours','cdMinutes','cdSeconds'];
@@ -1961,6 +1970,12 @@ function submitRSVP() {
   const name = document.getElementById('rsvpName').value.trim();
   const status = document.getElementById('rsvpStatus').value;
   const msg = document.getElementById('rsvpMsg').value.trim();
+            fetch('/api/rsvp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
+            });
+
   if (!name || !status) { showToast('⚠ Mohon isi nama dan status!'); return; }
   const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
   const colors = ['#E8001A','#0066CC','#009944','#FF6B00','#6a1b9a'];

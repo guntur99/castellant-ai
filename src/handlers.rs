@@ -1588,6 +1588,10 @@ pub async fn dashboard(
                 ai_usage_count: r.ai_usage_count,
                 ai_custom_knowledge: r.ai_custom_knowledge.unwrap_or_default(),
                 ai_language: r.ai_language.clone(),
+                recipient_name: "Guest Guest & Partner".to_string(),
+                event_date_iso: "2026-05-24T08:00:00".to_string(),
+                rsvps: Vec::new(),
+                is_preview: false,
             })
             .collect();
 
@@ -1741,10 +1745,13 @@ pub async fn invitation_detail(
             let mut template_name = row.template_name.clone();
             let mut ai_language = row.ai_language.clone();
             
+            let mut recipient_name = "Guest Guest & Partner".to_string();
+            
             // Override with preview_theme if provided
             if let Some(preview) = params.get("preview_theme") {
                 template_name = preview.clone();
             } else if let Some(gs) = params.get("to") {
+                recipient_name = gs.clone(); // Default to the query param value
                 let guest = sqlx::query_as::<_, Guest>("SELECT * FROM guests WHERE invitation_id = $1 AND (slug = $2 OR name = $2)")
                     .bind(row.id)
                     .bind(gs)
@@ -1753,6 +1760,7 @@ pub async fn invitation_detail(
                     .unwrap_or_default();
                 
                 if let Some(g) = guest {
+                    recipient_name = g.name.clone();
                     // AI Language Override from Guest
                     if !g.ai_language.is_empty() {
                         ai_language = g.ai_language.clone();
@@ -1790,6 +1798,34 @@ pub async fn invitation_detail(
                 }
             }
 
+            let mut event_date_iso = "2026-05-24T08:00:00".to_string();
+            // Try a simple parse for Indonesian date like "12 Desember 2026"
+            let parts: Vec<&str> = row.event_date.split_whitespace().collect();
+            if parts.len() == 3 {
+                let day = parts[0];
+                let month_str = parts[1].to_lowercase();
+                let year = parts[2];
+                
+                let month = match month_str.as_str() {
+                    "januari" => "01",
+                    "februari" => "02",
+                    "maret" => "03",
+                    "april" => "04",
+                    "mei" => "05",
+                    "juni" => "06",
+                    "juli" => "07",
+                    "agustus" => "08",
+                    "september" => "09",
+                    "oktober" => "10",
+                    "november" => "11",
+                    "desember" => "12",
+                    _ => "05", // Fallback to Mei
+                };
+                
+                let day_padded = if day.len() == 1 { format!("0{}", day) } else { day.to_string() };
+                event_date_iso = format!("{}-{}-{}T08:00:00", year, month, day_padded);
+            }
+
             let invitation = Invitation {
                 slug: row.slug.clone(),
                 template_name: template_name.clone(),
@@ -1808,6 +1844,14 @@ pub async fn invitation_detail(
                 ai_usage_count: row.ai_usage_count,
                 ai_custom_knowledge: row.ai_custom_knowledge.unwrap_or_default(),
                 ai_language: ai_language,
+                recipient_name: recipient_name,
+                event_date_iso: event_date_iso,
+                rsvps: sqlx::query_as::<_, Rsvp>("SELECT * FROM rsvps WHERE invitation_id = $1 ORDER BY created_at DESC")
+                    .bind(row.id)
+                    .fetch_all(&state.db)
+                    .await
+                    .unwrap_or_default(),
+                is_preview: params.contains_key("preview_theme"),
             };
 
             match template_name.as_str() {
@@ -1973,6 +2017,10 @@ pub async fn invitation_detail(
                     ai_usage_count: 0,
                     ai_custom_knowledge: String::new(),
                     ai_language: "id".to_string(),
+                    recipient_name: "Guest Guest & Partner".to_string(),
+                    event_date_iso: "2026-12-12T08:00:00".to_string(),
+                    rsvps: Vec::new(),
+                    is_preview: true,
                 };
                 
                 match template_name {
@@ -2122,6 +2170,14 @@ pub async fn manage_invitation(
                 ai_usage_count: row.ai_usage_count,
                 ai_custom_knowledge: row.ai_custom_knowledge.unwrap_or_default(),
                 ai_language: row.ai_language.clone(),
+                recipient_name: "Guest Guest & Partner".to_string(),
+                event_date_iso: "2026-05-24T08:00:00".to_string(),
+                rsvps: sqlx::query_as::<_, Rsvp>("SELECT * FROM rsvps WHERE invitation_id = $1 ORDER BY created_at DESC")
+                    .bind(row.id)
+                    .fetch_all(&state.db)
+                    .await
+                    .unwrap_or_default(),
+                is_preview: false,
             };
 
             let user = if let Some(cookie) = jar.get("user_id") {
@@ -2347,12 +2403,13 @@ pub async fn rsvp(
     // Save RSVP to DB if invitation exists
     let _ = sqlx::query(
         "INSERT INTO rsvps (invitation_id, name, attendance, guests, message) 
-         SELECT id, $1, $2, $3, $4 FROM invitations LIMIT 1"
+         SELECT id, $1, $2, $3, $4 FROM invitations WHERE slug = $5"
     )
     .bind(&payload.name)
     .bind(&payload.attendance)
     .bind(payload.guests as i32)
     .bind(&payload.message)
+    .bind(&payload.invitation_slug)
     .execute(&state.db)
     .await;
     
@@ -2472,6 +2529,10 @@ pub async fn preview(
         ai_usage_count: 0,
         ai_custom_knowledge: String::new(),
         ai_language: "id".to_string(),
+        recipient_name: "Guest Guest & Partner".to_string(),
+        event_date_iso: "2026-05-24T08:00:00".to_string(),
+        rsvps: Vec::new(),
+        is_preview: true,
     };
 
     match payload.template_name.as_str() {

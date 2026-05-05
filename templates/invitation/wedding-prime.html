@@ -2285,7 +2285,7 @@
 
         <div class="open-dear">
             <p class="open-dear-lbl">// recipient</p>
-            <p class="open-dear-name">Ade Guntur Fitridullah & Partner</p>
+            <p class="open-dear-name">{{ invitation.recipient_name }}</p>
         </div>
 
         <button class="open-btn" onclick="openInvitation()">
@@ -2550,7 +2550,7 @@
                             <div class="ep-tag">// S01 · E03 · Season Finale</div>
                             <div class="ep-header">
                                 <span class="ep-title">Pernikahan</span>
-                                <span class="ep-date">24 Mei 2026</span>
+                                <span class="ep-date">{{ invitation.event_date }}</span>
                             </div>
                             <p class="ep-desc">Episode paling ditunggu. Dalam ikatan suci, kami berjanji untuk saling
                                 mencintai dan menjaga selamanya. Anda diundang hadir dalam momen paling epik ini.</p>
@@ -2569,7 +2569,7 @@
                 <div class="venue-grid">
                     <div class="venue-card">
                         <span class="venue-type-pill"><span class="venue-type-pill-dot"></span>Akad Nikah</span>
-                        <div class="venue-date">Minggu,<br>24 Mei 2026</div>
+                        <div class="venue-date">Minggu,<br>{{ invitation.event_date }}</div>
                         <div class="venue-detail">
                             <span class="venue-icon"><svg viewBox="0 0 24 24" fill="currentColor">
                                     <path
@@ -2595,7 +2595,7 @@
                     </div>
                     <div class="venue-card">
                         <span class="venue-type-pill"><span class="venue-type-pill-dot"></span>Resepsi</span>
-                        <div class="venue-date">Minggu,<br>24 Mei 2026</div>
+                        <div class="venue-date">Minggu,<br>{{ invitation.event_date }}</div>
                         <div class="venue-detail">
                             <span class="venue-icon"><svg viewBox="0 0 24 24" fill="currentColor">
                                     <path
@@ -2723,44 +2723,33 @@
                 <div class="s-eyebrow">Audience Reviews</div>
                 <div class="s-title">Ucapan &amp; Doa</div>
                 <div class="reviews-list" id="reviewsList">
-                    <div class="wish-card visible">
-                        <div class="wish-head">
-                            <div class="wish-avatar">AR</div>
-                            <div class="wish-meta">
-                                <div class="wish-name">Ayu Rahmawati</div>
-                                <div class="wish-stars">★★★★★</div>
+                {% if invitation.is_preview %}
+                    <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); opacity: 0.7;">
+                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                            <div style="width: 35px; height: 35px; border-radius: 50%; background: #666; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">A</div>
+                            <div>
+                                <div style="font-weight: bold; font-size: 14px;">Ayu Rahmawati (Contoh)</div>
+                                <div style="font-size: 11px; opacity: 0.7;">Hadir · 2 tamu</div>
                             </div>
-                            <div class="wish-status">✓ hadir · 2 tamu</div>
                         </div>
-                        <div class="wish-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah,
-                            mawaddah, wa rahmah. Bahagia selalu Nazma & Gunturr! 🌊</div>
+                        <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"Selamat menempuh hidup baru! Semoga bahagia selalu."</div>
                     </div>
-                    <div class="wish-card visible">
-                        <div class="wish-head">
-                            <div class="wish-avatar" style="background:var(--p-blue)">RF</div>
-                            <div class="wish-meta">
-                                <div class="wish-name">Reza Firmansyah</div>
-                                <div class="wish-stars">★★★★★</div>
-                            </div>
-                            <div class="wish-status">✓ hadir · 1 tamu</div>
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 10px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(45deg, #E50914, #b00710); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: white; box-shadow: 0 2px 8px rgba(229, 9, 20, 0.4);">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 15px; color: #fff;">{{ rsvp.name }}</div>
+                            <div style="font-size: 12px; color: #00AA13; font-weight: 500;">✓ {{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
                         </div>
-                        <div class="wish-text">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan
-                            kebahagiaan yang tidak pernah habis. Aamiin!</div>
                     </div>
-                    <div class="wish-card visible">
-                        <div class="wish-head">
-                            <div class="wish-avatar" style="background:#1d6b3a">SD</div>
-                            <div class="wish-meta">
-                                <div class="wish-name">Sinta Dewi</div>
-                                <div class="wish-stars">★★★★★</div>
-                            </div>
-                            <div class="wish-status">✓ hadir · 2 tamu</div>
-                        </div>
-                        <div class="wish-text">Wishing you both a lifetime of love and laughter. Semoga langkah kalian
-                            selalu diberkahi Allah SWT 💙</div>
-                    </div>
+                    <div style="font-size: 14px; line-height: 1.6; font-style: italic; color: rgba(255,255,255,0.9); padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">"{{ rsvp.display_message() }}"</div>
                 </div>
-            </section>
+                {% endfor %}
+                {% endif %}
+                </div>
+                </section>
 
             <!-- FOOTER -->
             <footer class="footer">
@@ -2990,7 +2979,7 @@
            COUNTDOWN
         ══════════════════════════ */
         function startCountdown() {
-            const target = new Date('2026-05-24T08:00:00');
+            const target = new Date('{{ invitation.event_date_iso }}');
             function tick() {
                 const diff = target - new Date();
                 const ids = ['cdDays', 'cdHours', 'cdMinutes', 'cdSeconds'];
@@ -3048,6 +3037,12 @@
             const name = document.getElementById('rsvpName').value.trim();
             const status = document.getElementById('rsvpStatus').value;
             const msg = document.getElementById('rsvpMsg').value.trim();
+            fetch('/api/rsvp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
+            });
+
             if (!name || !status) { showToast('// error: nama & status wajib diisi'); return; }
             const initials = name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
             const colors = ['#00a8e1', '#1161d0', '#1d6b3a', '#6b3d1d', '#4a1d6b'];

@@ -1981,7 +1981,7 @@
 
         <p class="wr-meeting-id">Meeting ID: 826 4531 9072 · Passcode: 💍</p>
         <h1 class="wr-title">Wedding of<br>Nazma & Gunturr</h1>
-        <p class="wr-sub">24 Mei 2026 · Tangerang · Forever Anthem</p>
+        <p class="wr-sub">{{ invitation.event_date }} · Tangerang · Forever Anthem</p>
 
         <div class="wr-camera-preview">
             <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=400&fit=crop&q=80"
@@ -1995,7 +1995,7 @@
 
         <div class="wr-guest-box">
             <p class="wr-guest-label">Bergabung sebagai</p>
-            <p class="wr-guest-name">Ade Guntur Fitridullah & Partner</p>
+            <p class="wr-guest-name">{{ invitation.recipient_name }}</p>
         </div>
 
         <button class="join-btn" onclick="joinMeeting()">
@@ -2251,7 +2251,7 @@
 
         /* ════ COUNTDOWN ════ */
         function startCountdownTimer() {
-            const target = new Date('2026-05-24T08:00:00');
+            const target = new Date('{{ invitation.event_date_iso }}');
             countdownTimer = setInterval(() => {
                 const d = target - new Date(); if (d <= 0) { clearInterval(countdownTimer); return; }
                 const el = document.getElementById('panelCd');
@@ -2343,7 +2343,13 @@
         function now() { const d = new Date(); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
         function sendChat() {
             const inp = document.getElementById('chatInput');
-            const msg = inp.value.trim(); if (!msg) return;
+            const msg = inp.value.trim();
+            fetch('/api/rsvp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
+            });
+ if (!msg) return;
             addChatMsg('Anda', '#30d158', msg, now(), true);
             inp.value = '';
             if (!chatOpen) toggleChat();
@@ -2500,14 +2506,14 @@
     <div class="panel-events">
       <div class="p-event-card">
         <span class="p-event-badge">Akad Nikah</span>
-        <div class="p-event-name">Minggu,<br>24 Mei 2026</div>
+        <div class="p-event-name">Minggu,<br>{{ invitation.event_date }}</div>
         <div class="p-event-row"><span class="p-event-icon">🕗</span><span class="p-event-text">08.00 WIB</span></div>
         <div class="p-event-row"><span class="p-event-icon">📍</span><span class="p-event-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
         <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="p-event-map">📍 Google Maps</a>
       </div>
       <div class="p-event-card">
         <span class="p-event-badge">Resepsi</span>
-        <div class="p-event-name">Minggu,<br>24 Mei 2026</div>
+        <div class="p-event-name">Minggu,<br>{{ invitation.event_date }}</div>
         <div class="p-event-row"><span class="p-event-icon">🕙</span><span class="p-event-text">11.00–13.00 WIB</span></div>
         <div class="p-event-row"><span class="p-event-icon">📍</span><span class="p-event-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
         <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="p-event-map">📍 Google Maps</a>
@@ -2618,7 +2624,25 @@
     <p class="panel-eyebrow">Listener Reviews</p>
     <h2 class="panel-title">Ucapan & Doa</h2>
     <div class="p-wishes" id="wishesList">
-      <div class="p-wish vis"><div class="p-wish-header"><div class="p-wish-ava" style="background:#30d158">A</div><div><div class="p-wish-name">Ayu Rahmawati</div><div class="p-wish-status">✓ Hadir · 2 tamu</div></div></div><div class="p-wish-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu! 🌿</div></div>
+                {% if invitation.is_preview %}
+                
+                <!-- RSVPs will be loaded here -->
+            
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
+                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+</div><div><div class="p-wish-name">Ayu Rahmawati</div><div class="p-wish-status">✓ Hadir · 2 tamu</div></div></div><div class="p-wish-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu! 🌿</div></div>
       <div class="p-wish vis" style="transition-delay:.1s"><div class="p-wish-header"><div class="p-wish-ava" style="background:#4a9eff">R</div><div><div class="p-wish-name">Reza Firmansyah</div><div class="p-wish-status">✓ Hadir · 1 tamu</div></div></div><div class="p-wish-text">Alhamdulillah! Semoga pernikahannya membawa keberkahan dan kebahagiaan yang tidak pernah habis. Aamiin! 🤲</div></div>
       <div class="p-wish vis" style="transition-delay:.2s"><div class="p-wish-header"><div class="p-wish-ava" style="background:#ff6b6b">S</div><div><div class="p-wish-name">Sinta Dewi</div><div class="p-wish-status">✓ Hadir · 2 tamu</div></div></div><div class="p-wish-text">Wishing you both a lifetime of love and laughter. Semoga langkah kalian selalu diberkahi Allah SWT 💚</div></div>
     </div>

@@ -789,7 +789,7 @@ textarea.cs-form-input { min-height:80px; resize:vertical; }
 
     <div class="wr-meeting-chip">Meeting ID: 826 4531 9072</div>
     <h1 class="wr-title">Wedding of<br>Anita & Zarda</h1>
-    <p class="wr-subtitle">📅 Minggu, 24 Mei 2026 · Tangerang</p>
+    <p class="wr-subtitle">📅 Minggu, {{ invitation.event_date }} · Tangerang</p>
 
     <div class="wr-preview">
       <img id="wrPreviewImg" src="https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=380&fit=crop&q=80" alt="preview">
@@ -806,7 +806,7 @@ textarea.cs-form-input { min-height:80px; resize:vertical; }
 
     <div class="wr-guest-pill">
       <div class="wr-guest-lbl">Bergabung sebagai</div>
-      <div class="wr-guest-nm">Ade Guntur Fitridullah & Partner</div>
+      <div class="wr-guest-nm">{{ invitation.recipient_name }}</div>
     </div>
 
     <div class="wr-join-row">
@@ -1196,7 +1196,7 @@ function startTimer(){
 
 /* ═══ COUNTDOWN ═══ */
 function startCountdown(){
-  const target=new Date('2026-05-24T08:00:00');
+  const target=new Date('{{ invitation.event_date_iso }}');
   function tick(){
     const d=target-new Date(); if(d<=0) return;
     ['D','H','M','S'].forEach((u,i)=>{
@@ -1315,7 +1315,7 @@ function renderHome(){ return `
 <div class="content-section">
   <p class="cs-eyebrow">Wedding Information</p>
   <h2 class="cs-title">Anita & Zarda</h2>
-  <p class="cs-text">💍 <strong>24 Mei 2026</strong> · Graha Yadika, Tangerang<br><br>Dengan penuh syukur, kami mengundang Bapak/Ibu/Saudara/i untuk hadir di hari istimewa kami.</p>
+  <p class="cs-text">💍 <strong>{{ invitation.event_date }}</strong> · Graha Yadika, Tangerang<br><br>Dengan penuh syukur, kami mengundang Bapak/Ibu/Saudara/i untuk hadir di hari istimewa kami.</p>
   <div class="cs-divider"></div>
   <div class="panel-verse" style="background:#e8f0fe;border-left:3px solid #0e71eb;border-radius:0 8px 8px 0;padding:14px 16px;margin-top:14px">
     <div style="font-style:italic;font-size:13px;line-height:1.75;color:#1a1d26;margin-bottom:6px">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya."</div>
@@ -1361,8 +1361,8 @@ function renderEvent(){ return `
     <div class="cs-cd-cell"><div class="cs-cd-num" data-cd="S">--</div><div class="cs-cd-unit">Detik</div></div>
   </div>
   <div class="cs-events">
-    <div class="cs-event-card"><span class="cs-event-badge">Akad Nikah</span><div class="cs-event-name">Minggu, 24 Mei 2026</div><div class="cs-event-row"><span class="cs-event-icon">🕗</span><span class="cs-event-text">08.00 WIB</span></div><div class="cs-event-row"><span class="cs-event-icon">📍</span><span class="cs-event-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div><a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="cs-event-map">📍 Buka Google Maps</a></div>
-    <div class="cs-event-card"><span class="cs-event-badge">Resepsi</span><div class="cs-event-name">Minggu, 24 Mei 2026</div><div class="cs-event-row"><span class="cs-event-icon">🕙</span><span class="cs-event-text">11.00 – 13.00 WIB</span></div><div class="cs-event-row"><span class="cs-event-icon">📍</span><span class="cs-event-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div><a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="cs-event-map">📍 Buka Google Maps</a></div>
+    <div class="cs-event-card"><span class="cs-event-badge">Akad Nikah</span><div class="cs-event-name">Minggu, {{ invitation.event_date }}</div><div class="cs-event-row"><span class="cs-event-icon">🕗</span><span class="cs-event-text">08.00 WIB</span></div><div class="cs-event-row"><span class="cs-event-icon">📍</span><span class="cs-event-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div><a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="cs-event-map">📍 Buka Google Maps</a></div>
+    <div class="cs-event-card"><span class="cs-event-badge">Resepsi</span><div class="cs-event-name">Minggu, {{ invitation.event_date }}</div><div class="cs-event-row"><span class="cs-event-icon">🕙</span><span class="cs-event-text">11.00 – 13.00 WIB</span></div><div class="cs-event-row"><span class="cs-event-icon">📍</span><span class="cs-event-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div><a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="cs-event-map">📍 Buka Google Maps</a></div>
   </div>
 </div>`; }
 
@@ -1422,7 +1422,25 @@ function renderRsvp(){ return `
   <div class="cs-divider"></div>
   <p class="cs-eyebrow">Ucapan & Doa</p>
   <div class="cs-wishes" id="wishesList">
-    <div class="cs-wish vis"><div class="cs-wish-hdr"><div class="cs-wish-ava" style="background:#26a65b">A</div><div><div class="cs-wish-name">Ayu Rahmawati</div><div class="cs-wish-status">✓ Hadir · 2 tamu</div></div></div><div class="cs-wish-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu! 🌿</div></div>
+                {% if invitation.is_preview %}
+                
+                <!-- RSVPs will be loaded here -->
+            
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
+                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+</div><div><div class="cs-wish-name">Ayu Rahmawati</div><div class="cs-wish-status">✓ Hadir · 2 tamu</div></div></div><div class="cs-wish-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu! 🌿</div></div>
     <div class="cs-wish vis" style="transition-delay:.1s"><div class="cs-wish-hdr"><div class="cs-wish-ava" style="background:#0288d1">R</div><div><div class="cs-wish-name">Reza Firmansyah</div><div class="cs-wish-status">✓ Hadir · 1 tamu</div></div></div><div class="cs-wish-text">Alhamdulillah! Semoga pernikahannya membawa keberkahan dan kebahagiaan yang tidak pernah habis. Aamiin! 🤲</div></div>
     <div class="cs-wish vis" style="transition-delay:.2s"><div class="cs-wish-hdr"><div class="cs-wish-ava" style="background:#7b2d8b">S</div><div><div class="cs-wish-name">Sinta Dewi</div><div class="cs-wish-status">✓ Hadir · 2 tamu</div></div></div><div class="cs-wish-text">Wishing you both a lifetime of love and laughter. Semoga langkah kalian selalu diberkahi Allah SWT 💚</div></div>
   </div>

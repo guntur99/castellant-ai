@@ -771,7 +771,7 @@ textarea.f-inp{min-height:86px;resize:vertical}
 
     <div class="op-dear">
       <p class="op-dear-lbl">Kepada yang terhormat</p>
-      <p class="op-dear-name">Ade Guntur Fitridullah & Partner</p>
+      <p class="op-dear-name">{{ invitation.recipient_name }}</p>
     </div>
 
     <button class="op-btn" onclick="openInvitation()">読む — Baca Sekarang</button>
@@ -992,7 +992,7 @@ textarea.f-inp{min-height:86px;resize:vertical}
       <div class="ev-body">
         <div class="tone-lines"></div>
         <span class="ev-caption red">Akad Nikah</span>
-        <div class="ev-date">Minggu,<br>24 Mei 2026</div>
+        <div class="ev-date">Minggu,<br>{{ invitation.event_date }}</div>
         <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg><span class="ev-txt">08.00 WIB</span></div>
         <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span class="ev-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
         <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-maps">地図 · Maps</a>
@@ -1004,7 +1004,7 @@ textarea.f-inp{min-height:86px;resize:vertical}
       <div class="ev-body">
         <div class="tone-lines"></div>
         <span class="ev-caption red">Resepsi</span>
-        <div class="ev-date">Minggu,<br>24 Mei 2026</div>
+        <div class="ev-date">Minggu,<br>{{ invitation.event_date }}</div>
         <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg><span class="ev-txt">11.00 – 13.00 WIB</span></div>
         <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span class="ev-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
         <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-maps">地図 · Maps</a>
@@ -1186,7 +1186,9 @@ textarea.f-inp{min-height:86px;resize:vertical}
   </div>
   <div class="wish-list" id="wList">
     <div class="w-card visible">
-      <div class="w-hd"><div class="w-av">A</div><div><div class="w-nm">Ayu Rahmawati</div><div class="w-st">✓ HADIR · 2 TAMU</div></div></div>
+
+                {% if invitation.is_preview %}
+                      <div class="w-hd"><div class="w-av">A</div><div><div class="w-nm">Ayu Rahmawati</div><div class="w-st">✓ HADIR · 2 TAMU</div></div></div>
       <div class="w-msg">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu!</div>
     </div>
     <div class="w-card visible">
@@ -1195,7 +1197,14 @@ textarea.f-inp{min-height:86px;resize:vertical}
     </div>
     <div class="w-card visible">
       <div class="w-hd"><div class="w-av" style="background:var(--ink2)">S</div><div><div class="w-nm">Sinta Dewi</div><div class="w-st">✓ HADIR · 2 TAMU</div></div></div>
-      <div class="w-msg">Wishing you both a lifetime of love and laughter. Semoga selalu diberkahi Allah SWT.</div>
+
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                      <div class="w-hd"><div class="w-av">{{ rsvp.initial() }}</div><div><div class="w-nm">{{ rsvp.name }}</div><div class="w-st">✓ HADIR · 2 TAMU</div></div></div>
+
+                {% endfor %}
+                {% endif %}
+                      <div class="w-msg">Wishing you both a lifetime of love and laughter. Semoga selalu diberkahi Allah SWT.</div>
     </div>
   </div>
 </section>
@@ -1319,7 +1328,7 @@ document.addEventListener('click',e=>{const tr=document.getElementById('pTrack')
 
 /* Countdown */
 function countdown(){
-  const t=new Date('2026-05-24T08:00:00');
+  const t=new Date('{{ invitation.event_date_iso }}');
   function tick(){
     const d=t-new Date();
     if(d<=0){['cdD','cdH','cdM','cdS'].forEach(id=>document.getElementById(id).textContent='00');return}

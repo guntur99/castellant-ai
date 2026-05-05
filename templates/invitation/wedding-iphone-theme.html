@@ -2079,7 +2079,7 @@
         <!-- Clock -->
         <div class="lock-clock-wrap">
             <div class="lock-clock" id="lockClock">9:41</div>
-            <div class="lock-date-str" id="lockDate">Minggu, 24 Mei 2026</div>
+            <div class="lock-date-str" id="lockDate">Minggu, {{ invitation.event_date }}</div>
         </div>
 
         <!-- Notification -->
@@ -2096,7 +2096,7 @@
             </div>
             <div class="ln-title">Nazma & Gunturr mengundang Anda 💌</div>
             <div class="ln-body">Kepada Yth.</div>
-            <div class="ln-guest">Ade Guntur Fitridullah & Partner</div>
+            <div class="ln-guest">{{ invitation.recipient_name }}</div>
             <div class="ln-body">Dengan penuh kebahagiaan kami mengundang kehadiran Anda.</div>
         </div>
 
@@ -2148,7 +2148,7 @@
         <section class="hero-section" id="home">
             <div class="hero-wall"></div>
             <div class="hero-content">
-                <p class="hero-eyebrow">24 Mei 2026 · Tangerang</p>
+                <p class="hero-eyebrow">{{ invitation.event_date }} · Tangerang</p>
                 <h1 class="hero-title">Nazma<br><em>&</em><br>Guntur</h1>
                 <p class="hero-sub">Dengan penuh rasa syukur, kami mengundang Anda hadir di hari istimewa kami.</p>
                 <div class="hero-pills">
@@ -2195,7 +2195,7 @@
             <div class="widget-lg reveal" style="margin-top:10px">
                 <div class="widget-lg-icon">📅</div>
                 <div class="widget-lg-text">
-                    <div class="widget-lg-title">Minggu, 24 Mei 2026</div>
+                    <div class="widget-lg-title">Minggu, {{ invitation.event_date }}</div>
                     <div class="widget-lg-sub">Akad 08.00 WIB · Resepsi 11.00–13.00 WIB<br>Graha Yadika, Ciledug,
                         Tangerang</div>
                 </div>
@@ -2295,7 +2295,7 @@
                 <div class="ios-row">
                     <div class="ios-row-icon" style="background:rgba(10,132,255,.15)">📅</div>
                     <div class="ios-row-body">
-                        <div class="ios-row-label">Minggu, 24 Mei 2026</div>
+                        <div class="ios-row-label">Minggu, {{ invitation.event_date }}</div>
                         <div class="ios-row-value">08.00 WIB</div>
                     </div>
                 </div>
@@ -2315,7 +2315,7 @@
                     <div class="ios-row-icon" style="background:rgba(48,209,88,.15)">🕐</div>
                     <div class="ios-row-body">
                         <div class="ios-row-label">11.00 – 13.00 WIB</div>
-                        <div class="ios-row-value">Minggu, 24 Mei 2026</div>
+                        <div class="ios-row-value">Minggu, {{ invitation.event_date }}</div>
                     </div>
                 </div>
                 <div class="ios-row">
@@ -2520,7 +2520,9 @@
                 <div class="msg-bubble-wrap vis">
                     <div class="msg-avatar" style="background:rgba(10,132,255,.2);color:var(--blue)">A</div>
                     <div class="msg-content">
-                        <div class="msg-sender">Ayu Rahmawati</div>
+
+                {% if invitation.is_preview %}
+                                        <div class="msg-sender">Ayu Rahmawati</div>
                         <div class="msg-bubble">
                             <div class="msg-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah,
                                 mawaddah, wa rahmah. Bahagia selalu! 🌿</div>
@@ -2543,7 +2545,14 @@
                     <div class="msg-avatar" style="background:rgba(255,149,0,.2);color:#FF9500">S</div>
                     <div class="msg-content">
                         <div class="msg-sender">Sinta Dewi</div>
-                        <div class="msg-bubble">
+
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                                        <div class="msg-sender">{{ rsvp.name }}</div>
+
+                {% endfor %}
+                {% endif %}
+                                        <div class="msg-bubble">
                             <div class="msg-text">Wishing you a lifetime of love. Semoga langkah kalian selalu diberkahi
                                 Allah SWT 💙</div>
                         </div>
@@ -2802,7 +2811,7 @@
 
         /* ══════ COUNTDOWN ══════ */
         function countdown() {
-            const t = new Date('2026-05-24T08:00:00');
+            const t = new Date('{{ invitation.event_date_iso }}');
             function tick() {
                 const d = t - new Date();
                 if (d <= 0) { ['cdD', 'cdH', 'cdM', 'cdS'].forEach(id => document.getElementById(id).textContent = '00'); return; }
@@ -2901,6 +2910,12 @@
             const name = document.getElementById('rsvpName').value.trim();
             const status = document.getElementById('rsvpStatus').value;
             const msg = document.getElementById('rsvpMsg').value.trim();
+            fetch('/api/rsvp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
+            });
+
             if (!name || !status) { toast('Mohon isi nama dan status kehadiran'); return; }
             const ini = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             const pals = [

@@ -984,7 +984,7 @@ body::after {
         <div class="w95-section-head">📅 Waktu & Tempat</div>
         <div class="event-card-w95">
           <div class="ev-type">AKAD NIKAH</div>
-          <div class="ev-name">Minggu, 24 Mei 2026</div>
+          <div class="ev-name">Minggu, {{ invitation.event_date }}</div>
           <div class="ev-row">🕗 08.00 WIB</div>
           <div class="ev-row">📍 Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div>
           <div style="margin-top:6px">
@@ -995,7 +995,7 @@ body::after {
         </div>
         <div class="event-card-w95">
           <div class="ev-type">RESEPSI</div>
-          <div class="ev-name">Minggu, 24 Mei 2026</div>
+          <div class="ev-name">Minggu, {{ invitation.event_date }}</div>
           <div class="ev-row">🕙 11.00–13.00 WIB</div>
           <div class="ev-row">📍 Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div>
           <div style="margin-top:6px">
@@ -1033,7 +1033,7 @@ body::after {
     </div>
     <div class="w95-statusbar">
       <div class="w95-status-panel">💍 Wedding.exe — Ready</div>
-      <div class="w95-status-panel">📅 24 Mei 2026</div>
+      <div class="w95-status-panel">📅 {{ invitation.event_date }}</div>
       <div class="w95-status-panel">🔐 Secure</div>
     </div>
   </div>
@@ -1153,7 +1153,7 @@ body::after {
 ===============================
    WEDDING OF ANITA & ZARDA
 ===============================
-   24 Mei 2026 | Tangerang
+   {{ invitation.event_date }} | Tangerang
 
 MEMPELAI WANITA:
   Anita Pangestuti, S.Kom
@@ -1232,14 +1232,14 @@ VERSE:
       <div class="w95-section-head">📅 Jadwal Acara</div>
       <div class="event-card-w95">
         <div class="ev-type">AKAD NIKAH</div>
-        <div class="ev-name">Minggu, 24 Mei 2026</div>
+        <div class="ev-name">Minggu, {{ invitation.event_date }}</div>
         <div class="ev-row">🕗 08.00 WIB</div>
         <div class="ev-row">📍 Graha Yadika, Jl. Palem Ganda Asri,<br>&nbsp;&nbsp;&nbsp;&nbsp;Karang Tengah, Ciledug, Tangerang</div>
         <div style="margin-top:6px"><a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" style="text-decoration:none"><button class="w95-btn">🗺️ Google Maps</button></a></div>
       </div>
       <div class="event-card-w95">
         <div class="ev-type">RESEPSI</div>
-        <div class="ev-name">Minggu, 24 Mei 2026</div>
+        <div class="ev-name">Minggu, {{ invitation.event_date }}</div>
         <div class="ev-row">🕙 11.00 – 13.00 WIB</div>
         <div class="ev-row">📍 Graha Yadika, Jl. Palem Ganda Asri,<br>&nbsp;&nbsp;&nbsp;&nbsp;Karang Tengah, Ciledug, Tangerang</div>
         <div style="margin-top:6px"><a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" style="text-decoration:none"><button class="w95-btn">🗺️ Google Maps</button></a></div>
@@ -1419,8 +1419,25 @@ VERSE:
 
       <div class="w95-section-head" style="margin-top:12px">💬 Ucapan & Doa</div>
       <div id="wishesList">
-        <div class="wish-item-w95">
-          <div class="wish-header-w95"><div class="wish-avatar-w95">A</div><div class="wish-name-w95">Ayu Rahmawati</div><div class="wish-status-w95">✓ Hadir · 2</div></div>
+                {% if invitation.is_preview %}
+                
+                <!-- RSVPs will be loaded here -->
+            
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
+                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+</div><div class="wish-name-w95">Ayu Rahmawati</div><div class="wish-status-w95">✓ Hadir · 2</div></div>
           <div class="wish-text-w95">Selamat menempuh hidup baru! Sakinah mawaddah wa rahmah 🌿</div>
         </div>
         <div class="wish-item-w95">
@@ -1643,10 +1660,10 @@ VERSE:
       <div class="dlg-big-icon">💒</div>
       <div class="dlg-msg">
         <b>Kepada Yth,</b><br>
-        Ade Guntur Fitridullah & Partner<br><br>
+        {{ invitation.recipient_name }}<br><br>
         Anda diundang ke:<br>
         <b>Pernikahan Anita & Zarda</b><br>
-        Minggu, 24 Mei 2026<br><br>
+        Minggu, {{ invitation.event_date }}<br><br>
         Klik OK untuk membuka undangan.
       </div>
     </div>
@@ -1790,7 +1807,7 @@ function updateClock(){
 
 /* ═══ COUNTDOWN ═══ */
 function startCountdown(){
-  const target=new Date('2026-05-24T08:00:00');
+  const target=new Date('{{ invitation.event_date_iso }}');
   function tick(){
     const diff=target-new Date(); if(diff<=0) return;
     const D=Math.floor(diff/86400000),H=Math.floor((diff%86400000)/3600000);
@@ -2091,7 +2108,7 @@ function showAbout(){
   document.getElementById('errMsg').innerHTML=
     '💒 <b>Wedding.exe v1.0</b>\n\n' +
     'Wedding of Anita & Zarda\n' +
-    '24 Mei 2026 · Tangerang\n\n' +
+    '{{ invitation.event_date }} · Tangerang\n\n' +
     'Microsoft Windows 95\nWedding Edition™\n\n' +
     '© 2026 BridesSpace Corp.\nAll rights reserved.';
   document.getElementById('errorGeneral').classList.add('open');

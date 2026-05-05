@@ -917,7 +917,7 @@ textarea.form-input { resize:none; min-height:90px; }
         <span class="hero-name-line"><span class="hero-amp">&amp;</span></span>
         <span class="hero-name-line">Zarda</span>
       </h1>
-      <div class="hero-date-line">Minggu &ensp;·&ensp; 24 Mei 2026 &ensp;·&ensp; Tangerang</div>
+      <div class="hero-date-line">Minggu &ensp;·&ensp; {{ invitation.event_date }} &ensp;·&ensp; Tangerang</div>
       <div class="hero-stats">
         <div>
           <div class="hero-stat-num" id="hDays">—</div>
@@ -1012,7 +1012,7 @@ textarea.form-input { resize:none; min-height:90px; }
     <div class="events-grid reveal" style="max-width:960px;margin:0 auto">
       <div class="event-panel">
         <div class="event-type">Akad Nikah</div>
-        <div class="event-name">Minggu,<br>24 Mei 2026</div>
+        <div class="event-name">Minggu,<br>{{ invitation.event_date }}</div>
         <div class="event-detail">
           <svg class="event-detail-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
           08.00 WIB — Selesai
@@ -1028,7 +1028,7 @@ textarea.form-input { resize:none; min-height:90px; }
       </div>
       <div class="event-panel">
         <div class="event-type">Resepsi Pernikahan</div>
-        <div class="event-name">Minggu,<br>24 Mei 2026</div>
+        <div class="event-name">Minggu,<br>{{ invitation.event_date }}</div>
         <div class="event-detail">
           <svg class="event-detail-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
           11.00 — 13.00 WIB
@@ -1188,7 +1188,9 @@ textarea.form-input { resize:none; min-height:90px; }
         <div class="wish-item in">
           <div class="wish-av">A</div>
           <div>
-            <div class="wish-name">Ayu Rahmawati</div>
+
+                {% if invitation.is_preview %}
+                            <div class="wish-name">Ayu Rahmawati</div>
             <div class="wish-status">Hadir &ensp;·&ensp; 2 Tamu</div>
             <div class="wish-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu Anita &amp; Zarda.</div>
           </div>
@@ -1205,7 +1207,14 @@ textarea.form-input { resize:none; min-height:90px; }
           <div class="wish-av">S</div>
           <div>
             <div class="wish-name">Sinta Dewi</div>
-            <div class="wish-status">Hadir &ensp;·&ensp; 2 Tamu</div>
+
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                            <div class="wish-name">{{ rsvp.name }}</div>
+
+                {% endfor %}
+                {% endif %}
+                            <div class="wish-status">Hadir &ensp;·&ensp; 2 Tamu</div>
             <div class="wish-text">Wishing you both a lifetime of love and laughter. Semoga langkah kalian selalu diberkahi Allah SWT.</div>
           </div>
         </div>
@@ -1224,7 +1233,7 @@ textarea.form-input { resize:none; min-height:90px; }
     </div>
     <div class="footer-monogram"><span class="footer-mono-text">A&amp;Z</span></div>
     <div class="footer-names">Anita &amp; Zarda</div>
-    <div class="footer-tagline">24 Mei 2026 &ensp;·&ensp; Tangerang, Indonesia</div>
+    <div class="footer-tagline">{{ invitation.event_date }} &ensp;·&ensp; Tangerang, Indonesia</div>
     <p class="footer-closing">
       "Merupakan suatu kebahagiaan dan kehormatan bagi kami,<br>
       apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan<br>
@@ -1401,7 +1410,7 @@ function init() {
 
 /* Hero days remaining */
 function startHeroDays() {
-  const tgt = new Date('2026-05-24T08:00:00');
+  const tgt = new Date('{{ invitation.event_date_iso }}');
   const diff = tgt - new Date();
   const d = Math.max(0, Math.floor(diff / 86400000));
   const el = document.getElementById('hDays');
@@ -1410,7 +1419,7 @@ function startHeroDays() {
 
 /* Countdown */
 function startCountdown() {
-  const tgt = new Date('2026-05-24T08:00:00');
+  const tgt = new Date('{{ invitation.event_date_iso }}');
   const s = id => { const e=document.getElementById(id); return v => { if(e) e.textContent=String(v).padStart(2,'0'); }; };
   const setD=s('cdD'), setH=s('cdH'), setM=s('cdM'), setSec=s('cdS');
   function tick() {

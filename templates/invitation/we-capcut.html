@@ -2106,7 +2106,7 @@
             <p class="op-sub">FINAL CUT · 4K WEDDING FILM</p>
             <div class="op-dear">
                 <p class="op-dear-lbl">// ADDRESSED TO</p>
-                <p class="op-dear-name">Ade Guntur Fitridullah & Partner</p>
+                <p class="op-dear-name">{{ invitation.recipient_name }}</p>
             </div>
             <button class="op-btn" onclick="openInvitation()">▶ &nbsp;Play Invitation</button>
         </div>
@@ -2245,7 +2245,7 @@
             </div>
         </div>
         <div class="cd-wrap">
-            <p class="cd-sub">24 Mei 2026 · Tangerang</p>
+            <p class="cd-sub">{{ invitation.event_date }} · Tangerang</p>
             <div class="cd-grid">
                 <div class="cd-box">
                     <div class="cd-n" id="cdD">00</div>
@@ -2332,7 +2332,7 @@
                         alt="" loading="lazy">
                     <div class="ev-card-body">
                         <span class="ev-tag">Akad Nikah</span>
-                        <div class="ev-date">Minggu,<br>24 Mei 2026</div>
+                        <div class="ev-date">Minggu,<br>{{ invitation.event_date }}</div>
                         <div class="ev-det"><svg class="ev-ico" viewBox="0 0 24 24">
                                 <path
                                     d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
@@ -2355,7 +2355,7 @@
                         alt="" loading="lazy">
                     <div class="ev-card-body">
                         <span class="ev-tag">Resepsi</span>
-                        <div class="ev-date">Minggu,<br>24 Mei 2026</div>
+                        <div class="ev-date">Minggu,<br>{{ invitation.event_date }}</div>
                         <div class="ev-det"><svg class="ev-ico" viewBox="0 0 24 24">
                                 <path
                                     d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
@@ -2519,7 +2519,9 @@
                     <div class="w-hd">
                         <div class="w-av">A</div>
                         <div>
-                            <div class="w-nm">Ayu Rahmawati</div>
+
+                {% if invitation.is_preview %}
+                                            <div class="w-nm">Ayu Rahmawati</div>
                             <div class="w-st">✓ HADIR · 2 TAMU</div>
                         </div>
                     </div>
@@ -2542,7 +2544,14 @@
                         <div class="w-av" style="background:#ff6b6b">S</div>
                         <div>
                             <div class="w-nm">Sinta Dewi</div>
-                            <div class="w-st">✓ HADIR · 2 TAMU</div>
+
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                                            <div class="w-nm">{{ rsvp.name }}</div>
+
+                {% endfor %}
+                {% endif %}
+                                            <div class="w-st">✓ HADIR · 2 TAMU</div>
                         </div>
                     </div>
                     <div class="w-tx">Wishing you both a lifetime of love and laughter. Semoga langkah kalian selalu
@@ -2699,7 +2708,7 @@
 
         /* ════ COUNTDOWN ════ */
         function countdown() {
-            const target = new Date('2026-05-24T08:00:00');
+            const target = new Date('{{ invitation.event_date_iso }}');
             function tick() {
                 const d = target - new Date();
                 if (d <= 0) { ['cdD', 'cdH', 'cdM', 'cdS'].forEach(id => document.getElementById(id).textContent = '00'); return }

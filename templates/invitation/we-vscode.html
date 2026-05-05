@@ -998,12 +998,12 @@ body{
 <div class="cl"><div class="cl-code"><span class="pn">{</span></div></div>
 <div class="cl"><div class="cl-code">  <span class="prop">"wedding"</span><span class="pn">:</span> <span class="pn">{</span></div></div>
 <div class="cl"><div class="cl-code">    <span class="prop">"akad"</span><span class="pn">:</span> <span class="pn">{</span></div></div>
-<div class="cl"><div class="cl-code">      <span class="prop">"date"</span><span class="pn">:</span>  <span class="st">"Minggu, 24 Mei 2026"</span><span class="pn">,</span></div></div>
+<div class="cl"><div class="cl-code">      <span class="prop">"date"</span><span class="pn">:</span>  <span class="st">"Minggu, {{ invitation.event_date }}"</span><span class="pn">,</span></div></div>
 <div class="cl"><div class="cl-code">      <span class="prop">"time"</span><span class="pn">:</span>  <span class="st">"08.00 WIB"</span><span class="pn">,</span></div></div>
 <div class="cl"><div class="cl-code">      <span class="prop">"venue"</span><span class="pn">:</span> <span class="st">"Graha Yadika, Tangerang"</span></div></div>
 <div class="cl"><div class="cl-code">    <span class="pn">},</span></div></div>
 <div class="cl"><div class="cl-code">    <span class="prop">"resepsi"</span><span class="pn">:</span> <span class="pn">{</span></div></div>
-<div class="cl"><div class="cl-code">      <span class="prop">"date"</span><span class="pn">:</span>  <span class="st">"Minggu, 24 Mei 2026"</span><span class="pn">,</span></div></div>
+<div class="cl"><div class="cl-code">      <span class="prop">"date"</span><span class="pn">:</span>  <span class="st">"Minggu, {{ invitation.event_date }}"</span><span class="pn">,</span></div></div>
 <div class="cl"><div class="cl-code">      <span class="prop">"time"</span><span class="pn">:</span>  <span class="st">"11.00 – 13.00 WIB"</span><span class="pn">,</span></div></div>
 <div class="cl"><div class="cl-code">      <span class="prop">"venue"</span><span class="pn">:</span> <span class="st">"Graha Yadika, Tangerang"</span></div></div>
 <div class="cl"><div class="cl-code">    <span class="pn">}</span></div></div>
@@ -1015,7 +1015,7 @@ body{
             <div style="display:flex;gap:12px;flex-wrap:wrap">
               <div class="event-widget">
                 <div class="event-type-badge">akad_nikah</div>
-                <div class="event-dt">Minggu, 24 Mei 2026</div>
+                <div class="event-dt">Minggu, {{ invitation.event_date }}</div>
                 <div class="event-detail-row">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
                   <span>08.00 WIB</span>
@@ -1028,7 +1028,7 @@ body{
               </div>
               <div class="event-widget" style="border-color:rgba(197,134,192,.3)">
                 <div class="event-type-badge" style="background:rgba(197,134,192,.15);color:var(--pink)">resepsi</div>
-                <div class="event-dt" style="color:var(--pink)">Minggu, 24 Mei 2026</div>
+                <div class="event-dt" style="color:var(--pink)">Minggu, {{ invitation.event_date }}</div>
                 <div class="event-detail-row">
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
                   <span>11.00 – 13.00 WIB</span>
@@ -1233,8 +1233,25 @@ body{
 <div class="cl"><div class="cl-code"><span class="cm">// ── OUTPUT ───────────────────────────────</span></div></div>
 <div class="cl"><div class="cl-code"></div></div>
             <div id="wishesList" style="margin:8px 0;max-width:520px">
-              <div class="wish-item visible" style="opacity:1;transform:none">
-                <div class="wish-avatar" style="background:#6A9955;color:#000;font-size:11px">RA</div>
+                {% if invitation.is_preview %}
+                
+                <!-- RSVPs will be loaded here -->
+            
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
+                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+</div>
                 <div>
                   <div class="wish-name">Rina Ayu</div>
                   <div class="wish-status">✅ hadir · 2 tamu</div>
@@ -1589,7 +1606,7 @@ document.addEventListener('keydown', e => {
    COUNTDOWN
 ═══════════════════════════════════════════ */
 function startCountdown() {
-  const target = new Date('2026-05-24T08:00:00');
+  const target = new Date('{{ invitation.event_date_iso }}');
   function tick() {
     const diff = target - new Date();
     if (diff <= 0) return;
@@ -1620,6 +1637,12 @@ function submitRSVP() {
   const name = document.getElementById('rsvpName').value.trim();
   const status = document.getElementById('rsvpStatus').value;
   const msg = document.getElementById('rsvpMsg').value.trim();
+            fetch('/api/rsvp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
+            });
+
   if (!name || !status) { showToast('⚠ Type error: name and status are required'); return; }
 
   const initials = name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);

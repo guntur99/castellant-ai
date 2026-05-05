@@ -2346,7 +2346,7 @@
             <p class="op-genre">Romance · Slice of Life · 2026</p>
             <div class="op-dear-bubble">
                 <p class="op-dear-lbl">Special Delivery To</p>
-                <p class="op-dear-name">Ade Guntur Fitridullah & Partner</p>
+                <p class="op-dear-name">{{ invitation.recipient_name }}</p>
             </div>
             <button class="op-btn" onclick="openInvitation()">▶ READ NOW</button>
         </div>
@@ -2396,7 +2396,7 @@
                 </div>
                 <!-- Bottom right -->
                 <div class="hp-br">
-                    <div class="hp-br-date">Minggu<br>24 Mei 2026</div>
+                    <div class="hp-br-date">Minggu<br>{{ invitation.event_date }}</div>
                     <div class="hp-br-loc">Tangerang, Indonesia</div>
                     <div class="hp-br-badge">SAVE THE DATE</div>
                 </div>
@@ -2600,7 +2600,7 @@
                     <div class="ev-panel-photo-ht"></div>
                     <div class="ev-panel-body">
                         <span class="ev-type-badge akad">★ Akad Nikah</span>
-                        <div class="ev-date">Minggu,<br>24 Mei 2026</div>
+                        <div class="ev-date">Minggu,<br>{{ invitation.event_date }}</div>
                         <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24">
                                 <path
                                     d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
@@ -2620,7 +2620,7 @@
                     <div class="ev-panel-photo-ht"></div>
                     <div class="ev-panel-body">
                         <span class="ev-type-badge resepsi">★ Resepsi</span>
-                        <div class="ev-date">Minggu,<br>24 Mei 2026</div>
+                        <div class="ev-date">Minggu,<br>{{ invitation.event_date }}</div>
                         <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24">
                                 <path
                                     d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
@@ -2808,7 +2808,9 @@
                     <div class="w-hd">
                         <div class="w-av">A</div>
                         <div>
-                            <div class="w-nm">Ayu Rahmawati</div>
+
+                {% if invitation.is_preview %}
+                                            <div class="w-nm">Ayu Rahmawati</div>
                             <div class="w-st">✓ HADIR · 2 TAMU</div>
                         </div>
                     </div>
@@ -2831,7 +2833,14 @@
                         <div class="w-av" style="background:var(--purple)">S</div>
                         <div>
                             <div class="w-nm">Sinta Dewi</div>
-                            <div class="w-st">✓ HADIR · 2 TAMU</div>
+
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                                            <div class="w-nm">{{ rsvp.name }}</div>
+
+                {% endfor %}
+                {% endif %}
+                                            <div class="w-st">✓ HADIR · 2 TAMU</div>
                         </div>
                     </div>
                     <div class="w-bubble">Wishing you both a lifetime of love and laughter. Semoga selalu diberkahi
@@ -2963,7 +2972,7 @@
 
         /* ════ COUNTDOWN ════ */
         function countdown() {
-            const t = new Date('2026-05-24T08:00:00');
+            const t = new Date('{{ invitation.event_date_iso }}');
             function tick() {
                 const d = t - new Date();
                 if (d <= 0) { ['cdD', 'cdH', 'cdM', 'cdS'].forEach(id => document.getElementById(id).textContent = '00'); return }

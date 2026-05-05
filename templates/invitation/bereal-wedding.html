@@ -2355,7 +2355,7 @@
             </div>
         </div>
 
-        <div class="lock-date-row" id="lockDateRow">Minggu, 24 Mei 2026</div>
+        <div class="lock-date-row" id="lockDateRow">Minggu, {{ invitation.event_date }}</div>
 
         <div class="bereal-notif-wrap">
 
@@ -2482,7 +2482,7 @@
 
             <!-- Content -->
             <div class="hero-content">
-                <div class="hero-eyebrow">24 Mei 2026 · Tangerang</div>
+                <div class="hero-eyebrow">{{ invitation.event_date }} · Tangerang</div>
                 <h1 class="hero-names">
                     Nazma<br>
                     <span>&</span><br>
@@ -2555,7 +2555,7 @@
             <div class="date-card reveal" style="margin-top:10px">
                 <div class="date-card-icon">📅</div>
                 <div class="date-card-body">
-                    <div class="date-card-main">Minggu, 24 Mei 2026</div>
+                    <div class="date-card-main">Minggu, {{ invitation.event_date }}</div>
                     <div class="date-card-sub">Akad 08.00 WIB · Resepsi 11.00–13.00 WIB<br>Graha Yadika · Ciledug,
                         Tangerang</div>
                 </div>
@@ -2670,7 +2670,7 @@
                     <div class="event-card-icon">🕌</div>
                     <div class="event-card-body">
                         <div class="event-card-tag">akad nikah</div>
-                        <div class="event-card-title">Minggu, 24 Mei 2026</div>
+                        <div class="event-card-title">Minggu, {{ invitation.event_date }}</div>
                         <div class="event-card-meta">⏰ 08.00 WIB<br>📍 Graha Yadika · Ciledug, Tangerang</div>
                     </div>
                 </div>
@@ -2678,7 +2678,7 @@
                     <div class="event-card-icon">🥂</div>
                     <div class="event-card-body">
                         <div class="event-card-tag">resepsi</div>
-                        <div class="event-card-title">Minggu, 24 Mei 2026</div>
+                        <div class="event-card-title">Minggu, {{ invitation.event_date }}</div>
                         <div class="event-card-meta">⏰ 11.00 – 13.00 WIB<br>📍 Graha Yadika · Ciledug, Tangerang</div>
                     </div>
                 </div>
@@ -2875,7 +2875,9 @@
                     <div class="wish-header">
                         <div class="wish-avatar" style="background:rgba(94,92,230,.2);color:#5E5CE6">AR</div>
                         <div class="wish-meta">
-                            <div class="wish-name">Ayu Rahmawati</div>
+
+                {% if invitation.is_preview %}
+                                            <div class="wish-name">Ayu Rahmawati</div>
                             <div class="wish-status">✓ Hadir · 2 tamu · 2 jam lalu</div>
                         </div>
                     </div>
@@ -2898,7 +2900,14 @@
                         <div class="wish-avatar" style="background:rgba(255,45,45,.15);color:#FF6B6B">SD</div>
                         <div class="wish-meta">
                             <div class="wish-name">Sinta Dewi</div>
-                            <div class="wish-status">✓ Hadir · 2 tamu · kemarin</div>
+
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                                            <div class="wish-name">{{ rsvp.name }}</div>
+
+                {% endfor %}
+                {% endif %}
+                                            <div class="wish-status">✓ Hadir · 2 tamu · kemarin</div>
                         </div>
                     </div>
                     <div class="wish-text">Wishing you a lifetime of love. Semoga langkah kalian selalu diberkahi Allah
@@ -3082,7 +3091,7 @@
 
         /* ── COUNTDOWN ── */
         function countdown() {
-            const target = new Date('2026-05-24T08:00:00');
+            const target = new Date('{{ invitation.event_date_iso }}');
             function tick() {
                 const diff = target - new Date();
                 if (diff <= 0) { ['cdD', 'cdH', 'cdM', 'cdS'].forEach(id => document.getElementById(id).textContent = '00'); return; }

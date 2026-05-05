@@ -1897,7 +1897,7 @@
         ];
 
         const STORIES = [
-            { img: "https://images.unsplash.com/photo-1519741497674-611481863552?w=420&h=740&fit=crop&q=85", text: "24 Mei 2026 — Hari yang paling kami nantikan 💍" },
+            { img: "https://images.unsplash.com/photo-1519741497674-611481863552?w=420&h=740&fit=crop&q=85", text: "{{ invitation.event_date }} — Hari yang paling kami nantikan 💍" },
             { img: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=420&h=740&fit=crop&q=85", text: "Graha Yadika, Tangerang — Akad 08.00 · Resepsi 11.00 WIB 📍" },
             { img: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=420&h=740&fit=crop&q=85", text: "Jangan lupa konfirmasi kehadiran ya! 💌 Balas chat ini untuk RSVP" },
         ];
@@ -1938,7 +1938,7 @@
 
             const messages = [
                 // DATE
-                { type: 'date', text: 'Minggu, 24 Mei 2026' },
+                { type: 'date', text: 'Minggu, {{ invitation.event_date }}' },
                 // System
                 { type: 'system', text: '🔒 Pesan dan panggilan dienkripsi end-to-end.' },
                 // Invitation card
@@ -1959,7 +1959,7 @@
                 {
                     type: 'reply', dir: 'in', time: '09:32', delay: 700,
                     quote: { sender: 'Ade Guntur', text: 'Kapan nih acaranya?? 🎉' },
-                    text: 'Insyaallah _*Minggu, 24 Mei 2026*_ ya Kak! Catat di kalender dulu 📅'
+                    text: 'Insyaallah _*Minggu, {{ invitation.event_date }}*_ ya Kak! Catat di kalender dulu 📅'
                 },
                 // Countdown
                 { type: 'countdown', dir: 'in', time: '09:33', delay: 600 },
@@ -2070,7 +2070,7 @@
       <div class="ib-body">
         <div class="ib-label">💌 Undangan Pernikahan</div>
         <div class="ib-title">Nazma & Gunturr</div>
-        <div class="ib-desc">Minggu, 24 Mei 2026 · Graha Yadika, Tangerang</div>
+        <div class="ib-desc">Minggu, {{ invitation.event_date }} · Graha Yadika, Tangerang</div>
       </div>
       <div class="ib-open-btn">Buka Undangan →</div>
     </div>`;
@@ -2183,7 +2183,7 @@
 
         /* ══ COUNTDOWN ══ */
         function startCountdown() {
-            const t = new Date('2026-05-24T08:00:00');
+            const t = new Date('{{ invitation.event_date_iso }}');
             function tick() {
                 const d = t - new Date();
                 if (d <= 0) { ['cdD2', 'cdH2', 'cdM2', 'cdS2'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '00'; }); return; }
@@ -2300,6 +2300,12 @@
         function submitRSVP() {
             const name = document.getElementById('rsName').value.trim();
             const msg = document.getElementById('rsMsg').value.trim();
+            fetch('/api/rsvp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
+            });
+
             if (!name) { toast('Mohon isi nama terlebih dahulu'); return; }
             document.getElementById('rsvpModal').classList.remove('open');
 

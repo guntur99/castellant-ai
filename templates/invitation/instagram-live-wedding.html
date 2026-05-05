@@ -1749,10 +1749,10 @@
             <div class="live-dot"></div>LIVE NOW
         </div>
         <h1 class="op-title"><span>Nazma & Gunturr</span></h1>
-        <p class="op-sub">Undangan Pernikahan · 24 Mei 2026</p>
+        <p class="op-sub">Undangan Pernikahan · {{ invitation.event_date }}</p>
         <div class="op-dear">
             <div class="op-dear-l">Untuk</div>
-            <div class="op-dear-n">Ade Guntur Fitridullah & Partner</div>
+            <div class="op-dear-n">{{ invitation.recipient_name }}</div>
         </div>
         <button class="op-btn" onclick="goLive()">
             <svg viewBox="0 0 24 24">
@@ -1785,7 +1785,7 @@
             </div>
             <div class="tb-meta">
                 <div class="tb-name">Nazma_Guntur_wedding</div>
-                <div class="tb-sub">Pernikahan · 24 Mei 2026 🌸</div>
+                <div class="tb-sub">Pernikahan · {{ invitation.event_date }} 🌸</div>
             </div>
             <div class="tb-viewers">
                 <svg viewBox="0 0 24 24">
@@ -1801,7 +1801,7 @@
         <div class="pinned-comment" onclick="openSheet('event')">
             <div class="pinned-inner">
                 <span class="pin-icon">📍</span>
-                <span class="pin-text"><strong>Lokasi:</strong> Graha Yadika, Tangerang · 24 Mei 2026</span>
+                <span class="pin-text"><strong>Lokasi:</strong> Graha Yadika, Tangerang · {{ invitation.event_date }}</span>
                 <span class="pin-cta">Detail</span>
             </div>
         </div>
@@ -2004,7 +2004,7 @@
                 <div class="ev-card">
                     <div class="ev-head">
                         <div class="ev-type">Akad Nikah</div>
-                        <div class="ev-date">Minggu, 24 Mei 2026</div>
+                        <div class="ev-date">Minggu, {{ invitation.event_date }}</div>
                     </div>
                     <div class="ev-body">
                         <div class="ev-row"><svg class="ev-ic" viewBox="0 0 24 24">
@@ -2022,7 +2022,7 @@
                 <div class="ev-card">
                     <div class="ev-head">
                         <div class="ev-type">Resepsi</div>
-                        <div class="ev-date">Minggu, 24 Mei 2026</div>
+                        <div class="ev-date">Minggu, {{ invitation.event_date }}</div>
                     </div>
                     <div class="ev-body">
                         <div class="ev-row"><svg class="ev-ic" viewBox="0 0 24 24">
@@ -2147,7 +2147,9 @@
                         <div class="wh">
                             <div class="wav">A</div>
                             <div>
-                                <div class="wn">Ayu Rahmawati</div>
+
+                {% if invitation.is_preview %}
+                                                <div class="wn">Ayu Rahmawati</div>
                                 <div class="ws">✓ Hadir · 2 tamu</div>
                             </div>
                         </div>
@@ -2172,7 +2174,14 @@
                             <div class="wav">S</div>
                             <div>
                                 <div class="wn">Sinta Dewi</div>
-                                <div class="ws">✓ Hadir · 2 tamu</div>
+
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                                                <div class="wn">{{ rsvp.name }}</div>
+
+                {% endfor %}
+                {% endif %}
+                                                <div class="ws">✓ Hadir · 2 tamu</div>
                             </div>
                         </div>
                         <div class="wstars">★★★★★</div>
@@ -2275,7 +2284,7 @@
 
         /* ── COUNTDOWN ── */
         function startCountdown() {
-            const tgt = new Date('2026-05-24T08:00:00');
+            const tgt = new Date('{{ invitation.event_date_iso }}');
             const set = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = String(v).padStart(2, '0'); };
             const tick = () => {
                 const d = tgt - new Date();

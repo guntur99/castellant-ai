@@ -790,7 +790,7 @@ body{
           <div class="balance-label">Undangan Pernikahan</div>
           <div class="balance-names">Anita <span class="amp">&</span> Zarda</div>
           <div class="balance-meta">
-            <div class="balance-date">📅 Minggu, 24 Mei 2026</div>
+            <div class="balance-date">📅 Minggu, {{ invitation.event_date }}</div>
             <div class="balance-chip">Graha Yadika</div>
           </div>
         </div>
@@ -888,7 +888,7 @@ body{
           <div class="row-icon" style="background:#E8F1FF">🕗</div>
           <div class="row-info">
             <div class="row-label">Akad Nikah</div>
-            <div class="row-val">Minggu, 24 Mei 2026 · 08.00 WIB</div>
+            <div class="row-val">Minggu, {{ invitation.event_date }} · 08.00 WIB</div>
           </div>
           <div class="row-arrow">›</div>
         </div>
@@ -896,7 +896,7 @@ body{
           <div class="row-icon" style="background:#E8F1FF">🎊</div>
           <div class="row-info">
             <div class="row-label">Resepsi</div>
-            <div class="row-val">Minggu, 24 Mei 2026 · 11.00 WIB</div>
+            <div class="row-val">Minggu, {{ invitation.event_date }} · 11.00 WIB</div>
           </div>
           <div class="row-arrow">›</div>
         </div>
@@ -948,7 +948,7 @@ body{
         <div class="hero-content" style="text-align:center">
           <div style="font-size:38px;margin-bottom:8px">💒</div>
           <div class="event-hero-txt">Pernikahan Anita & Zarda</div>
-          <div class="event-hero-sub">Minggu, 24 Mei 2026 · Graha Yadika, Tangerang</div>
+          <div class="event-hero-sub">Minggu, {{ invitation.event_date }} · Graha Yadika, Tangerang</div>
         </div>
       </div>
       <div class="event-tabs">
@@ -960,7 +960,7 @@ body{
           <div class="event-live-dot"></div>
           <div><div class="event-card-head-title">Akad Nikah</div><div class="event-card-head-sub">Prosesi pernikahan resmi</div></div>
         </div>
-        <div class="card-row"><div class="row-icon" style="background:#E8F1FF">📅</div><div class="row-info"><div class="row-label">Tanggal</div><div class="row-val">Minggu, 24 Mei 2026</div></div></div>
+        <div class="card-row"><div class="row-icon" style="background:#E8F1FF">📅</div><div class="row-info"><div class="row-label">Tanggal</div><div class="row-val">Minggu, {{ invitation.event_date }}</div></div></div>
         <div class="card-row"><div class="row-icon" style="background:#E8F1FF">🕗</div><div class="row-info"><div class="row-label">Waktu</div><div class="row-val">08.00 WIB</div><div style="font-size:11px;color:var(--text3);margin-top:2px;font-weight:600">Harap hadir 30 menit lebih awal</div></div></div>
         <div class="card-row"><div class="row-icon" style="background:#E8F1FF">📍</div><div class="row-info"><div class="row-label">Lokasi</div><div class="row-val">Graha Yadika</div><div style="font-size:11px;color:var(--text3);margin-top:2px;font-weight:600">Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div></div></div>
         <div class="card-row"><div class="row-icon" style="background:#E8F1FF">👔</div><div class="row-info"><div class="row-label">Dress Code</div><div class="row-val">Formal & Sopan</div></div></div>
@@ -970,7 +970,7 @@ body{
           <div class="event-live-dot" style="background:var(--bri-cyan2);box-shadow:0 0 8px var(--bri-cyan2)"></div>
           <div><div class="event-card-head-title">Resepsi Pernikahan</div><div class="event-card-head-sub">Pesta perayaan bersama</div></div>
         </div>
-        <div class="card-row"><div class="row-icon" style="background:#E8F1FF">📅</div><div class="row-info"><div class="row-label">Tanggal</div><div class="row-val">Minggu, 24 Mei 2026</div></div></div>
+        <div class="card-row"><div class="row-icon" style="background:#E8F1FF">📅</div><div class="row-info"><div class="row-label">Tanggal</div><div class="row-val">Minggu, {{ invitation.event_date }}</div></div></div>
         <div class="card-row"><div class="row-icon" style="background:#E8F1FF">🕗</div><div class="row-info"><div class="row-label">Waktu</div><div class="row-val">11.00 – 13.00 WIB</div></div></div>
         <div class="card-row"><div class="row-icon" style="background:#E8F1FF">📍</div><div class="row-info"><div class="row-label">Lokasi</div><div class="row-val">Graha Yadika</div><div style="font-size:11px;color:var(--text3);margin-top:2px;font-weight:600">Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div></div></div>
         <div class="card-row"><div class="row-icon" style="background:#E8F1FF">👗</div><div class="row-info"><div class="row-label">Dress Code</div><div class="row-val">Semi Formal · Bebas Rapi</div></div></div>
@@ -1172,8 +1172,25 @@ body{
         </div>
       </div>
       <div id="wishesList">
-        <div class="wish-item visible">
-          <div class="wish-av" style="background:#DCFCE7;color:#16A34A">RA</div>
+                {% if invitation.is_preview %}
+                
+                <!-- RSVPs will be loaded here -->
+            
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
+                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+</div>
           <div>
             <div class="wish-name">Rina Ayu</div>
             <div class="wish-status yes">✅ Hadir · 2 tamu</div>
@@ -1204,7 +1221,7 @@ body{
         <div class="hero-content" style="text-align:center">
           <div style="font-size:36px;margin-bottom:8px">🎬</div>
           <div style="font-family:var(--font-serif);font-size:20px;font-style:italic;color:#fff">Video Pernikahan</div>
-          <div style="font-size:12px;color:rgba(255,255,255,.65);font-weight:600;margin-top:4px">Anita & Zarda · 24 Mei 2026</div>
+          <div style="font-size:12px;color:rgba(255,255,255,.65);font-weight:600;margin-top:4px">Anita & Zarda · {{ invitation.event_date }}</div>
         </div>
       </div>
       <div class="video-player-wrap">
@@ -1274,7 +1291,7 @@ body{
     <div class="splash-from">📨 Undangan Pernikahan dari</div>
     <div class="splash-names">Anita <span class="amp">&</span> Zardarian</div>
     <div class="splash-date-row">
-      <span>📅 Minggu, 24 Mei 2026</span>
+      <span>📅 Minggu, {{ invitation.event_date }}</span>
       <div class="splash-dot"></div>
       <span>Graha Yadika</span>
     </div>
@@ -1340,7 +1357,7 @@ function openApp(){
 
 /* ── COUNTDOWN ── */
 function startCd(){
-  const t=new Date('2026-05-24T08:00:00');
+  const t=new Date('{{ invitation.event_date_iso }}');
   function upd(){
     const d=t-new Date(); if(d<=0) return;
     document.getElementById('cdD').textContent=String(Math.floor(d/86400000)).padStart(2,'0');

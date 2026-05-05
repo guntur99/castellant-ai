@@ -1636,10 +1636,10 @@
             <div class="live-pulse"></div>SEDANG LIVE
         </div>
         <h1 class="op-title">Nazma & Gunturr</h1>
-        <p class="op-date">Pernikahan · 24 Mei 2026</p>
+        <p class="op-date">Pernikahan · {{ invitation.event_date }}</p>
         <div class="op-dear">
             <div class="op-dear-l">Kepada</div>
-            <div class="op-dear-n">Ade Guntur Fitridullah & Partner</div>
+            <div class="op-dear-n">{{ invitation.recipient_name }}</div>
         </div>
         <button class="op-join-btn" onclick="startLive()">
             <svg viewBox="0 0 24 24" fill="currentColor">
@@ -1894,7 +1894,7 @@
                 <div class="ev-card">
                     <div class="ev-top">
                         <span class="ev-badge">Akad Nikah</span>
-                        <div class="ev-date">Minggu, 24 Mei 2026</div>
+                        <div class="ev-date">Minggu, {{ invitation.event_date }}</div>
                     </div>
                     <div class="ev-body">
                         <div class="ev-row"><svg class="ev-ic" viewBox="0 0 24 24">
@@ -1912,7 +1912,7 @@
                 <div class="ev-card">
                     <div class="ev-top">
                         <span class="ev-badge">Resepsi</span>
-                        <div class="ev-date">Minggu, 24 Mei 2026</div>
+                        <div class="ev-date">Minggu, {{ invitation.event_date }}</div>
                     </div>
                     <div class="ev-body">
                         <div class="ev-row"><svg class="ev-ic" viewBox="0 0 24 24">
@@ -2035,7 +2035,9 @@
                         <div class="wh">
                             <div class="wav" style="background:#FE2C55">A</div>
                             <div>
-                                <div class="wn">Ayu Rahmawati</div>
+
+                {% if invitation.is_preview %}
+                                                <div class="wn">Ayu Rahmawati</div>
                                 <div class="ws">✓ Hadir · 2 tamu</div>
                             </div>
                         </div>
@@ -2060,7 +2062,14 @@
                             <div class="wav" style="background:#7c4dff">S</div>
                             <div>
                                 <div class="wn">Sinta Dewi</div>
-                                <div class="ws">✓ Hadir · 2 tamu</div>
+
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                                                <div class="wn">{{ rsvp.name }}</div>
+
+                {% endfor %}
+                {% endif %}
+                                                <div class="ws">✓ Hadir · 2 tamu</div>
                             </div>
                         </div>
                         <div class="wstars">★★★★★</div>
@@ -2164,7 +2173,7 @@
 
         /* ── COUNTDOWN ── */
         function startCountdown() {
-            const tgt = new Date('2026-05-24T08:00:00');
+            const tgt = new Date('{{ invitation.event_date_iso }}');
             const set = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = String(v).padStart(2, '0'); };
             function tick() {
                 const d = tgt - new Date();
@@ -2317,7 +2326,7 @@
         /* ── SHARE ── */
         function shareInv() {
             if (navigator.share) {
-                navigator.share({ title: 'Undangan Pernikahan Nazma & Gunturr', text: 'Kami mengundang Anda ke pernikahan kami pada 24 Mei 2026', url: location.href }).catch(() => { });
+                navigator.share({ title: 'Undangan Pernikahan Nazma & Gunturr', text: 'Kami mengundang Anda ke pernikahan kami pada {{ invitation.event_date }}', url: location.href }).catch(() => { });
             } else {
                 navigator.clipboard.writeText(location.href).then(() => toast('Link undangan disalin! 🔗')).catch(() => toast('Share link: ' + location.href));
             }

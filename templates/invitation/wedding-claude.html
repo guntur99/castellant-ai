@@ -682,7 +682,7 @@ select.ri-in { appearance:none;cursor:none }
 
     <div class="op-dear">
       <div class="op-dear-label">// Kepada Yth.</div>
-      <div class="op-dear-name">Tamu Undangan</div>
+      <div class="op-dear-name">{{ invitation.recipient_name }}</div>
     </div>
 
   </div>
@@ -729,7 +729,7 @@ select.ri-in { appearance:none;cursor:none }
       <div class="sb-user">
         <div class="sb-user-ava">T</div>
         <div>
-          <div class="sb-user-name">Tamu Undangan</div>
+          <div class="sb-user-name">{{ invitation.recipient_name }}</div>
           <div class="sb-user-plan">Claude Pro ✦</div>
         </div>
       </div>
@@ -768,7 +768,7 @@ select.ri-in { appearance:none;cursor:none }
         <textarea class="input-textarea" id="inputField" placeholder="Tanya apa saja tentang undangan Anita & Zarda..." rows="1" onkeydown="handleKey(event)" oninput="autoResize(this)"></textarea>
         <button class="input-send" onclick="sendMsg()">↑</button>
       </div>
-      <div class="input-hint">Claude · Wedding Edition · Anita &amp; Zarda · 24 Mei 2026</div>
+      <div class="input-hint">Claude · Wedding Edition · Anita &amp; Zarda · {{ invitation.event_date }}</div>
     </div>
   </div>
 
@@ -827,7 +827,7 @@ document.querySelectorAll('a,button,select,input,textarea,.op-prompt-card,.sb-co
 });
 
 /* ── TYPEWRITER ── */
-const prompts=['Tunjukkan undangan pernikahan Anita & Zarda 💍','Ceritakan kisah cinta mereka ❤️','Detail akad & resepsi 24 Mei 2026 📅','RSVP dan amplop digital 🎁'];
+const prompts=['Tunjukkan undangan pernikahan Anita & Zarda 💍','Ceritakan kisah cinta mereka ❤️','Detail akad & resepsi {{ invitation.event_date }} 📅','RSVP dan amplop digital 🎁'];
 let pi=0,ci=0,typing=true;
 function typeOp(){
   const el=document.getElementById('opTyped');const p=prompts[pi];
@@ -889,10 +889,10 @@ function buildStory(){
 <p>Di hari pertama bertemu, tawa tercipta di antara lemparan <strong>bowling</strong>, cerita mengalir di sela santapan <strong>sushi</strong>, dan manisnya <strong>es krim</strong> menjadi saksi awal kisah mereka yang indah.</p>
 <h3>💌 Lamaran — November 2025</h3>
 <p>Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga tercinta, Zarda resmi melamar Anita dalam momen penuh haru dan kebahagian yang tak terlupakan.</p>
-<h3>🕊️ Pernikahan — 24 Mei 2026</h3>
+<h3>🕊️ Pernikahan — {{ invitation.event_date }}</h3>
 <p>Kini keduanya siap melangkah lebih jauh. Dalam ikatan suci pernikahan, mereka berjanji saling menjaga, mencintai, dan tumbuh bersama selamanya.</p>
 <hr>
-<p style="font-size:12px;color:var(--muted);font-style:italic">📖 anita-zarda-wedding.com · 24 Mei 2026</p>`;
+<p style="font-size:12px;color:var(--muted);font-style:italic">📖 anita-zarda-wedding.com · {{ invitation.event_date }}</p>`;
 }
 
 function buildEvent(){
@@ -901,7 +901,7 @@ function buildEvent(){
 <div class="c-card">
   <div class="c-card-header"><span class="c-card-icon">🕌</span> Akad Nikah</div>
   <div class="c-card-body">
-    <div class="ev-row"><div class="ev-ic">📅</div><div class="ev-txt"><strong>Minggu, 24 Mei 2026</strong></div></div>
+    <div class="ev-row"><div class="ev-ic">📅</div><div class="ev-txt"><strong>Minggu, {{ invitation.event_date }}</strong></div></div>
     <div class="ev-row"><div class="ev-ic">⏰</div><div class="ev-txt">08.00 – 10.00 WIB</div></div>
     <div class="ev-row"><div class="ev-ic">📍</div><div class="ev-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div></div>
     <div class="ev-row"><div class="ev-ic">👔</div><div class="ev-txt">Formal / Semi-formal</div></div>
@@ -1149,7 +1149,7 @@ function closeArtifact(){ document.getElementById('artifactPanel').classList.rem
 let cdInt=null;
 function startCD(){
   if(cdInt) return;
-  const T=new Date('2026-05-24T08:00:00');
+  const T=new Date('{{ invitation.event_date_iso }}');
   function tick(){
     const d=T-new Date(); if(d<=0) return;
     ['cdD','cdH','cdM','cdS'].forEach((id,i)=>{

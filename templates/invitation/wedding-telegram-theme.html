@@ -826,7 +826,7 @@ textarea.rsvp-input{min-height:80px;resize:vertical}
           <span class="cl-time">09:38</span>
         </div>
         <div class="cl-bottom">
-          <span class="cl-preview">📢 Akad 24 Mei 2026 · Graha Yadika</span>
+          <span class="cl-preview">📢 Akad {{ invitation.event_date }} · Graha Yadika</span>
           <span class="cl-unread">5</span>
         </div>
       </div>
@@ -950,7 +950,7 @@ textarea.rsvp-input{min-height:80px;resize:vertical}
     <div class="pinned-line"></div>
     <div class="pinned-body">
       <div class="pinned-label">Pesan Disematkan</div>
-      <div class="pinned-text">📅 Akad 08.00 · Resepsi 11.00–13.00 · 24 Mei 2026 · Graha Yadika</div>
+      <div class="pinned-text">📅 Akad 08.00 · Resepsi 11.00–13.00 · {{ invitation.event_date }} · Graha Yadika</div>
     </div>
     <span class="pinned-close" onclick="document.getElementById('pinnedBar').style.display='none'">×</span>
   </div>
@@ -1016,7 +1016,7 @@ textarea.rsvp-input{min-height:80px;resize:vertical}
   <div class="rsvp-panel">
     <div class="rsvp-handle"></div>
     <div class="rsvp-title">Konfirmasi Kehadiran 💌</div>
-    <div class="rsvp-subtitle">Anita & Zarda — Minggu, 24 Mei 2026</div>
+    <div class="rsvp-subtitle">Anita & Zarda — Minggu, {{ invitation.event_date }}</div>
 
     <div class="rsvp-field">
       <div class="rsvp-label">Nama Lengkap</div>
@@ -1110,7 +1110,7 @@ function closeChat(){
 
 /* ══ MESSAGES ══ */
 const MSGS = [
-  {type:'date', text:'Minggu, 24 Mei 2026'},
+  {type:'date', text:'Minggu, {{ invitation.event_date }}'},
   {type:'service', text:'🔒 Pesan dienkripsi end-to-end'},
   {type:'channel-post', delay:300},
   {type:'text', dir:'in', t:'09:31', delay:500,
@@ -1195,7 +1195,7 @@ function buildMsg(m){
         <div class="inv-body">
           <div class="inv-source">💌 Undangan Pernikahan</div>
           <div class="inv-title">Anita & Zarda</div>
-          <div class="inv-desc">Minggu, 24 Mei 2026 · Graha Yadika, Tangerang</div>
+          <div class="inv-desc">Minggu, {{ invitation.event_date }} · Graha Yadika, Tangerang</div>
           <div class="inv-open" onclick="event.stopPropagation();openRSVP()">Buka & Konfirmasi Hadir →</div>
         </div>
       </div>
@@ -1322,7 +1322,7 @@ function buildMsg(m){
         </div>
       </div>
       <div class="cp-body">
-        <div class="cp-text">📢 <b>PENGUMUMAN RESMI</b>\n\nKami dengan penuh rasa syukur mengumumkan bahwa <b>Anita Pangestuti, S.Kom</b> & <b>Zardarian Ahadika N, S.Kom</b> akan melangsungkan pernikahan pada:\n\n📅 Minggu, 24 Mei 2026\n🕗 Akad 08.00 · Resepsi 11.00 WIB\n📍 Graha Yadika, Ciledug, Tangerang</div>
+        <div class="cp-text">📢 <b>PENGUMUMAN RESMI</b>\n\nKami dengan penuh rasa syukur mengumumkan bahwa <b>Anita Pangestuti, S.Kom</b> & <b>Zardarian Ahadika N, S.Kom</b> akan melangsungkan pernikahan pada:\n\n📅 Minggu, {{ invitation.event_date }}\n🕗 Akad 08.00 · Resepsi 11.00 WIB\n📍 Graha Yadika, Ciledug, Tangerang</div>
       </div>
       <div class="bub-meta" style="padding:4px 14px 10px">
         <span class="bub-views"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>1.2K</span>
@@ -1354,7 +1354,7 @@ function buildMsg(m){
 
 /* ══ COUNTDOWN ══ */
 function runCd(){
-  const t=new Date('2026-05-24T08:00:00');
+  const t=new Date('{{ invitation.event_date_iso }}');
   function tick(){
     const d=t-new Date();
     if(d<=0){['tgD','tgH','tgM','tgS'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='00'});return}

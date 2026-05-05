@@ -961,7 +961,7 @@ textarea.dlg-inp{height:60px;resize:vertical;padding:4px 6px}
           <!-- Kepada -->
           <div class="w-h1">Kepada Yth.</div>
           <div class="w-body" style="font-size:16pt;font-weight:700;color:#2B579A;margin-bottom:4pt">
-            <span class="content-control" onclick="toast('Klik untuk mengisi nama tamu...')">Ade Guntur Fitridullah & Partner</span><span class="cursor-blink" id="docCursor"></span>
+            <span class="content-control" onclick="toast('Klik untuk mengisi nama tamu...')">{{ invitation.recipient_name }}</span><span class="cursor-blink" id="docCursor"></span>
           </div>
           <div class="w-body">
             Dengan hormat dan penuh rasa syukur kepada Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberikan doa restu pada pernikahan kami:
@@ -1045,13 +1045,13 @@ textarea.dlg-inp{height:60px;resize:vertical;padding:4px 6px}
             <tbody>
               <tr>
                 <td><strong>⛪ Akad Nikah</strong></td>
-                <td>Minggu, 24 Mei 2026</td>
+                <td>Minggu, {{ invitation.event_date }}</td>
                 <td>08.00 WIB</td>
                 <td rowspan="2">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</td>
               </tr>
               <tr>
                 <td><strong>🎊 Resepsi Pernikahan</strong></td>
-                <td>Minggu, 24 Mei 2026</td>
+                <td>Minggu, {{ invitation.event_date }}</td>
                 <td>11.00–13.00 WIB</td>
               </tr>
             </tbody>
@@ -1126,7 +1126,9 @@ textarea.dlg-inp{height:60px;resize:vertical;padding:4px 6px}
           </div>
 
           <div class="w-body w-body-justify" style="margin-top:6pt">
-            Seiring berjalannya waktu, rasa itu tumbuh menjadi keyakinan. Pada <strong>November 2025</strong>, di hadapan keluarga tercinta, Zarda mengucapkan kata-kata yang telah ia simpan dalam hati. Sebuah lamaran yang mengubah segalanya — dan Anita menjawab dengan <span class="comment-mark" data-comment="Moment paling mengharukan! 🥹 — Ayu Rahmawati" onclick="highlightComment(this)">"Ya" yang penuh kebahagiaan</span>.
+
+                {% if invitation.is_preview %}
+                            Seiring berjalannya waktu, rasa itu tumbuh menjadi keyakinan. Pada <strong>November 2025</strong>, di hadapan keluarga tercinta, Zarda mengucapkan kata-kata yang telah ia simpan dalam hati. Sebuah lamaran yang mengubah segalanya — dan Anita menjawab dengan <span class="comment-mark" data-comment="Moment paling mengharukan! 🥹 — Ayu Rahmawati" onclick="highlightComment(this)">"Ya" yang penuh kebahagiaan</span>.
           </div>
 
           <div class="w-body w-body-justify" style="margin-top:6pt">
@@ -1140,7 +1142,7 @@ textarea.dlg-inp{height:60px;resize:vertical;padding:4px 6px}
             <li><strong>Agustus 2025</strong> — Mulai sering menghabiskan waktu bersama. Perasaan mulai tumbuh. 🌱</li>
             <li><strong>November 2025</strong> — Lamaran resmi di hadapan keluarga. 💍</li>
             <li><strong>Desember 2025 – April 2026</strong> — Persiapan pernikahan. Sesi foto pre-wedding. 📸</li>
-            <li><strong>24 Mei 2026</strong> — <strong>HARI PERNIKAHAN</strong>. Momen yang paling ditunggu! 🎊</li>
+            <li><strong>{{ invitation.event_date }}</strong> — <strong>HARI PERNIKAHAN</strong>. Momen yang paling ditunggu! 🎊</li>
           </ul>
 
           <!-- Amplop Digital -->
@@ -1280,7 +1282,7 @@ textarea.dlg-inp{height:60px;resize:vertical;padding:4px 6px}
             Anita &amp; Zarda
           </div>
           <div class="w-body w-body-center" style="font-size:10pt;color:var(--wd-gray);margin-top:4pt">
-            Minggu, 24 Mei 2026 · Graha Yadika, Tangerang
+            Minggu, {{ invitation.event_date }} · Graha Yadika, Tangerang
           </div>
 
           <div style="height:24pt"></div>
@@ -1326,7 +1328,14 @@ textarea.dlg-inp{height:60px;resize:vertical;padding:4px 6px}
         </div>
         <div class="comment-card" id="cc3">
           <div class="cc-author">Ayu Rahmawati</div>
-          <div class="cc-time">03/05/2026 14:30 · Hlm. 3</div>
+
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                            Seiring berjalannya waktu, rasa itu tumbuh menjadi keyakinan. Pada <strong>November 2025</strong>, di hadapan keluarga tercinta, Zarda mengucapkan kata-kata yang telah ia simpan dalam hati. Sebuah lamaran yang mengubah segalanya — dan Anita menjawab dengan <span class="comment-mark" data-comment="Moment paling mengharukan! 🥹 — {{ rsvp.name }}" onclick="highlightComment(this)">"Ya" yang penuh kebahagiaan</span>.
+
+                {% endfor %}
+                {% endif %}
+                          <div class="cc-time">03/05/2026 14:30 · Hlm. 3</div>
           <div class="cc-text">Moment paling mengharukan!! Gue nangis waktu denger cerita ini 🥹💕 Selamat ya!!!</div>
           <div class="cc-actions">
             <button class="cc-act-btn" onclick="toast('↩ Membalas...')">Balas</button>

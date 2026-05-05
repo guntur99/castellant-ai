@@ -1070,7 +1070,7 @@ textarea.fi { min-height: 80px; resize: none; }
             <span class="stn-time">08:00 WIB</span>
           </div>
           <div class="stn-body">
-            <div class="stn-name">Minggu, 24 Mei 2026</div>
+            <div class="stn-name">Minggu, {{ invitation.event_date }}</div>
             <div class="stn-info-row">
               <svg class="stn-info-ic" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
               <span>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span>
@@ -1084,7 +1084,7 @@ textarea.fi { min-height: 80px; resize: none; }
             <span class="stn-time">11:00–13:00 WIB</span>
           </div>
           <div class="stn-body">
-            <div class="stn-name">Minggu, 24 Mei 2026</div>
+            <div class="stn-name">Minggu, {{ invitation.event_date }}</div>
             <div class="stn-info-row">
               <svg class="stn-info-ic" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
               <span>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span>
@@ -1225,7 +1225,9 @@ textarea.fi { min-height: 80px; resize: none; }
           <div class="wcard vis">
             <div class="wav">A</div>
             <div>
-              <div class="wn">Ayu Rahmawati</div>
+
+                {% if invitation.is_preview %}
+                              <div class="wn">Ayu Rahmawati</div>
               <div class="ws">BOARDED · 2 PAX</div>
               <div class="wref">REF: LOG·AYU·240526·001</div>
               <div class="wtxt">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah 🌿</div>
@@ -1244,7 +1246,14 @@ textarea.fi { min-height: 80px; resize: none; }
             <div class="wav" style="background:#1a6b3a">S</div>
             <div>
               <div class="wn">Sinta Dewi</div>
-              <div class="ws">BOARDED · 2 PAX</div>
+
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                              <div class="wn">{{ rsvp.name }}</div>
+
+                {% endfor %}
+                {% endif %}
+                              <div class="ws">BOARDED · 2 PAX</div>
               <div class="wref">REF: LOG·SINTA·240526·003</div>
               <div class="wtxt">Wishing you both a lifetime of love. Semoga langkah kalian selalu diberkahi Allah SWT 💚</div>
             </div>
@@ -1263,7 +1272,7 @@ textarea.fi { min-height: 80px; resize: none; }
       </div>
       <p style="font-family:var(--mono);font-size:10px;color:var(--mrt-gray);line-height:1.7">
         Terima kasih telah menggunakan layanan<br>MRT Wedding Line. Selamat menikmati perjalanan.<br><br>
-        <strong style="color:var(--mrt-dark)">24 Mei 2026 · Graha Yadika, Tangerang</strong>
+        <strong style="color:var(--mrt-dark)">{{ invitation.event_date }} · Graha Yadika, Tangerang</strong>
       </p>
       <p style="font-family:var(--mono);font-size:9px;color:#b0b7c3;margin-top:12px;letter-spacing:.08em">DIGITAL INVITATION BY BRIDESSPACE</p>
       <div style="height:70px"></div>
@@ -1368,7 +1377,7 @@ function startClocks() {
 
 /* ── COUNTDOWN ── */
 function startCountdown() {
-  const tgt = new Date('2026-05-24T08:00:00');
+  const tgt = new Date('{{ invitation.event_date_iso }}');
   const s = (id, v) => { const e = document.getElementById(id); if(e) e.textContent = String(v).padStart(2,'0'); };
   function tick() {
     const d = tgt - new Date();

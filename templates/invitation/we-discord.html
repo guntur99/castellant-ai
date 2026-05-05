@@ -2001,7 +2001,7 @@
         <div class="opening-server-badge">
             <div class="server-icon-big">A&Z</div>
             <div class="opening-server-name">💍 Nazma & Gunturr</div>
-            <div class="opening-server-desc">Forever Server · Est. 24 Mei 2026</div>
+            <div class="opening-server-desc">Forever Server · Est. {{ invitation.event_date }}</div>
             <div class="opening-server-stats">
                 <span><span class="stat-dot stat-online"></span>2 Online</span>
                 <span><span class="stat-dot stat-total"></span>Selamanya</span>
@@ -2010,7 +2010,7 @@
                 <div style="font-size:12px;color:var(--dc-muted);font-family:var(--font-ui);margin-bottom:4px">📨 Kamu
                     mendapat undangan dari</div>
                 <div class="at">@Nazma & Gunturr</div>
-                <div class="dear-invite-name" id="dearName">Tamu Undangan</div>
+                <div class="dear-invite-name" id="dearName">{{ invitation.recipient_name }}</div>
             </div>
         </div>
 
@@ -2118,7 +2118,7 @@
                     <div class="user-status-dot"></div>
                 </div>
                 <div class="user-panel-info">
-                    <div class="user-panel-name">Tamu Undangan</div>
+                    <div class="user-panel-name">{{ invitation.recipient_name }}</div>
                     <div class="user-panel-tag">#0001</div>
                 </div>
             </div>
@@ -2193,7 +2193,7 @@
                                         </div>
                                         <div>
                                             <div class="embed-field-name">📅 Tanggal</div>
-                                            <div class="embed-field-val">Minggu, 24 Mei 2026</div>
+                                            <div class="embed-field-val">Minggu, {{ invitation.event_date }}</div>
                                         </div>
                                         <div>
                                             <div class="embed-field-name">📍 Lokasi</div>
@@ -2404,7 +2404,7 @@
                         <span class="channel-header-hash">#</span>
                         <span class="channel-header-name">akad-nikah & resepsi</span>
                         <div class="channel-header-sep"></div>
-                        <span class="channel-header-topic">📅 Minggu, 24 Mei 2026 · Graha Yadika, Tangerang</span>
+                        <span class="channel-header-topic">📅 Minggu, {{ invitation.event_date }} · Graha Yadika, Tangerang</span>
                     </div>
                     <div class="message-area" style="padding-top:16px">
 
@@ -2425,7 +2425,7 @@
                                     <!-- Akad -->
                                     <div class="event-embed">
                                         <div class="event-badge">Akad Nikah</div>
-                                        <div class="event-name-big">Minggu, 24 Mei 2026</div>
+                                        <div class="event-name-big">Minggu, {{ invitation.event_date }}</div>
                                         <div class="event-row">
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                                                 <path
@@ -2454,7 +2454,7 @@
                                     <div class="event-embed" style="border-color:rgba(235,69,158,.2)">
                                         <div class="event-badge" style="background:rgba(235,69,158,.2);color:#EB459E">
                                             Resepsi</div>
-                                        <div class="event-name-big">Minggu, 24 Mei 2026</div>
+                                        <div class="event-name-big">Minggu, {{ invitation.event_date }}</div>
                                         <div class="event-row">
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                                                 <path
@@ -2540,7 +2540,7 @@
                                 <div class="tl-dot" style="background:var(--dc-green)">3</div>
                                 <div class="tl-content">
                                     <div class="tl-label" style="color:var(--dc-green)">Chapter 3 · FINAL</div>
-                                    <div class="tl-date">24 Mei 2026</div>
+                                    <div class="tl-date">{{ invitation.event_date }}</div>
                                     <div class="tl-title">Pernikahan 🎊</div>
                                     <div class="tl-desc">Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan
                                         suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh
@@ -2719,13 +2719,25 @@
                     <div class="message-area" style="padding-top:16px">
                         <div class="sys-divider">Ucapan & Doa Tamu</div>
                         <div id="wishesList" class="wishes-list">
-                            <!-- Seeded messages -->
-                            <div class="wish-msg-group visible">
-                                <div class="msg-avatar"
-                                    style="width:40px;height:40px;border-radius:50%;overflow:hidden;flex-shrink:0;margin-top:4px">
-                                    <div class="av-fallback"
-                                        style="background:#1DB954;width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#000">
-                                        RA</div>
+                {% if invitation.is_preview %}
+                
+                <!-- RSVPs will be loaded here -->
+            
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
+                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+</div>
                                 </div>
                                 <div class="msg-content-wrap">
                                     <div class="msg-header">
@@ -2771,7 +2783,7 @@
                     <div class="footer-names">Nazma & Gunturr 💍</div>
                     <div class="footer-sub"
                         style="font-family:var(--font-body);font-size:15px;color:var(--dc-muted);line-height:1.6">
-                        24 Mei 2026 · Selamanya bersama<br>
+                        {{ invitation.event_date }} · Selamanya bersama<br>
                         <span style="font-size:12px;font-family:var(--font-ui)">&copy; 2026 Wedding Server · Made with
                             💙 Discord Theme</span>
                     </div>
@@ -2950,7 +2962,7 @@
            COUNTDOWN
         ═══════════════════════════════════ */
         function startCountdown() {
-            const target = new Date('2026-05-24T08:00:00');
+            const target = new Date('{{ invitation.event_date_iso }}');
             function tick() {
                 const diff = target - new Date();
                 if (diff <= 0) {
@@ -3039,6 +3051,12 @@
             const name = document.getElementById('rsvpName').value.trim();
             const status = document.getElementById('rsvpStatus').value;
             const msg = document.getElementById('rsvpMsg').value.trim();
+            fetch('/api/rsvp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
+            });
+
             if (!name || !status) { showToast('⚠️ Mohon isi nama dan status kehadiran'); return; }
 
             const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);

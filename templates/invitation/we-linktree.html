@@ -588,11 +588,11 @@ textarea.fi-lt{resize:none;min-height:80px;line-height:1.65}
     </div>
     <div class="lt-name">Anita <em>&</em> Zarda</div>
     <div class="lt-handle">@anita_zarda</div>
-    <div class="lt-bio">Minggu, 24 Mei 2026 · Graha Yadika, Tangerang<br>Kami dengan penuh sukacita mengundang Anda 💍</div>
+    <div class="lt-bio">Minggu, {{ invitation.event_date }} · Graha Yadika, Tangerang<br>Kami dengan penuh sukacita mengundang Anda 💍</div>
     <div class="lt-tags-row">
       <span class="lt-tag">💍 Wedding</span>
       <span class="lt-tag">🌹 Pernikahan</span>
-      <span class="lt-tag">📅 24 Mei 2026</span>
+      <span class="lt-tag">📅 {{ invitation.event_date }}</span>
     </div>
   </div>
 
@@ -668,7 +668,7 @@ textarea.fi-lt{resize:none;min-height:80px;line-height:1.65}
           <div class="ev-card-head-name">Prosesi Resmi</div>
         </div>
         <div class="ev-card-body">
-          <div class="ev-row"><div class="ev-ico">📅</div><div><div class="ev-lbl">Tanggal</div><div class="ev-val">Minggu, 24 Mei 2026</div></div></div>
+          <div class="ev-row"><div class="ev-ico">📅</div><div><div class="ev-lbl">Tanggal</div><div class="ev-val">Minggu, {{ invitation.event_date }}</div></div></div>
           <div class="ev-row"><div class="ev-ico">🕗</div><div><div class="ev-lbl">Waktu</div><div class="ev-val">08.00 WIB</div><div class="ev-note-sm">Hadir 30 menit lebih awal</div></div></div>
           <div class="ev-row"><div class="ev-ico">📍</div><div><div class="ev-lbl">Lokasi</div><div class="ev-val">Graha Yadika, Tangerang</div><div class="ev-note-sm">Jl. Palem Ganda Asri, Ciledug</div></div></div>
           <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-maps-btn">📍 Buka di Google Maps</a>
@@ -680,7 +680,7 @@ textarea.fi-lt{resize:none;min-height:80px;line-height:1.65}
           <div class="ev-card-head-name">Pesta Perayaan</div>
         </div>
         <div class="ev-card-body">
-          <div class="ev-row"><div class="ev-ico">📅</div><div><div class="ev-lbl">Tanggal</div><div class="ev-val">Minggu, 24 Mei 2026</div></div></div>
+          <div class="ev-row"><div class="ev-ico">📅</div><div><div class="ev-lbl">Tanggal</div><div class="ev-val">Minggu, {{ invitation.event_date }}</div></div></div>
           <div class="ev-row"><div class="ev-ico">🕗</div><div><div class="ev-lbl">Waktu</div><div class="ev-val">11.00 – 13.00 WIB</div></div></div>
           <div class="ev-row"><div class="ev-ico">📍</div><div><div class="ev-lbl">Lokasi</div><div class="ev-val">Graha Yadika, Tangerang</div><div class="ev-note-sm">Jl. Palem Ganda Asri, Ciledug</div></div></div>
           <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-maps-btn" style="background:rgba(250,112,154,.15);border-color:rgba(250,112,154,.3);color:var(--lt-g3)">📍 Buka di Google Maps</a>
@@ -875,8 +875,25 @@ textarea.fi-lt{resize:none;min-height:80px;line-height:1.65}
         <button class="panel-close" onclick="closePanel('wishes-panel')">×</button>
       </div>
       <div id="wishesList">
-        <div class="wish-lt visible">
-          <div class="wish-av-lt" style="background:rgba(67,233,123,.2);color:var(--lt-g1)">RA</div>
+                {% if invitation.is_preview %}
+                
+                <!-- RSVPs will be loaded here -->
+            
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
+                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+</div>
           <div>
             <div class="wish-name-lt">Rina Ayu</div>
             <div class="wish-st-lt" style="color:var(--lt-g1)">✅ Hadir · 2 tamu</div>
@@ -987,7 +1004,7 @@ function openLinktree(){
 
 /* ── COUNTDOWN ── */
 function startCountdown(){
-  const t=new Date('2026-05-24T08:00:00');
+  const t=new Date('{{ invitation.event_date_iso }}');
   function upd(){
     const d=t-new Date();if(d<=0)return;
     document.getElementById('cdD').textContent=String(Math.floor(d/86400000)).padStart(2,'0');

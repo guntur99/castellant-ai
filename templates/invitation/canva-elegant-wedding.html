@@ -846,7 +846,7 @@ body { background:var(--c-bg); color:var(--c-text); font-family:var(--sans); fon
             <div class="cov-photo"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=520&fit=crop&q=85" alt=""></div>
             <div class="cov-rule-h"></div>
             <div class="cov-names">Anita<span class="cov-amp">&</span>Zarda</div>
-            <div class="cov-date">Minggu · 24 Mei 2026 · Tangerang</div>
+            <div class="cov-date">Minggu · {{ invitation.event_date }} · Tangerang</div>
             <div class="cov-rule-v"></div>
             <div class="cov-btns">
               <a href="#p8" class="cov-btn primary" onclick="selPage(document.getElementById('p8'),8,440,'#F0EAE0')">RSVP Sekarang</a>
@@ -868,7 +868,7 @@ body { background:var(--c-bg); color:var(--c-text); font-family:var(--sans); fon
               <div class="pg-cd-cell"><div class="pg-cd-n" id="cdM">--</div><div class="pg-cd-u">Menit</div></div>
               <div class="pg-cd-cell"><div class="pg-cd-n" id="cdS">--</div><div class="pg-cd-u">Detik</div></div>
             </div>
-            <div class="pg-cd-footer">24 Mei 2026 — Graha Yadika, Tangerang</div>
+            <div class="pg-cd-footer">{{ invitation.event_date }} — Graha Yadika, Tangerang</div>
           </div>
         </div>
 
@@ -915,8 +915,8 @@ body { background:var(--c-bg); color:var(--c-text); font-family:var(--sans); fon
           <div class="pg-event">
             <div class="pg-title">Rangkaian Acara</div>
             <div class="ev-rows">
-              <div class="ev-row"><div class="ev-n">01</div><div class="ev-body"><div class="ev-tag">Akad Nikah</div><div class="ev-name">Minggu, 24 Mei 2026</div><div class="ev-meta">08.00 WIB<br>Graha Yadika, Ciledug, Tangerang</div></div></div>
-              <div class="ev-row"><div class="ev-n">02</div><div class="ev-body"><div class="ev-tag">Resepsi Pernikahan</div><div class="ev-name">Minggu, 24 Mei 2026</div><div class="ev-meta">11.00 – 13.00 WIB<br>Graha Yadika, Ciledug, Tangerang</div></div></div>
+              <div class="ev-row"><div class="ev-n">01</div><div class="ev-body"><div class="ev-tag">Akad Nikah</div><div class="ev-name">Minggu, {{ invitation.event_date }}</div><div class="ev-meta">08.00 WIB<br>Graha Yadika, Ciledug, Tangerang</div></div></div>
+              <div class="ev-row"><div class="ev-n">02</div><div class="ev-body"><div class="ev-tag">Resepsi Pernikahan</div><div class="ev-name">Minggu, {{ invitation.event_date }}</div><div class="ev-meta">11.00 – 13.00 WIB<br>Graha Yadika, Ciledug, Tangerang</div></div></div>
             </div>
             <div class="ev-map">
               <div class="ev-map-img">
@@ -999,7 +999,25 @@ body { background:var(--c-bg); color:var(--c-text); font-family:var(--sans); fon
           <div class="pg-wishes">
             <div class="pg-title">Ucapan & Doa</div>
             <div class="wishes-list" id="wishesList">
-              <div class="w-item"><div class="w-top"><div class="w-name">Ayu Rahmawati</div><div class="w-meta">· Hadir · 2 tamu</div><div class="w-time">2 jam lalu</div></div><div class="w-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah.</div></div>
+                {% if invitation.is_preview %}
+                
+                <!-- RSVPs will be loaded here -->
+            
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
+                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+</div><div class="w-meta">· Hadir · 2 tamu</div><div class="w-time">2 jam lalu</div></div><div class="w-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah.</div></div>
               <div class="w-item"><div class="w-top"><div class="w-name">Reza Firmansyah</div><div class="w-meta">· Hadir · 1 tamu</div><div class="w-time">4 jam lalu</div></div><div class="w-text">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan kebahagiaan. Aamiin.</div></div>
               <div class="w-item"><div class="w-top"><div class="w-name">Sinta Dewi</div><div class="w-meta">· Hadir · 2 tamu</div><div class="w-time">kemarin</div></div><div class="w-text">Wishing you a lifetime of love. Semoga langkah kalian selalu diberkahi.</div></div>
             </div>
@@ -1187,7 +1205,7 @@ function buildGallery(){
 
 /* ── COUNTDOWN ── */
 function countdown(){
-  const t=new Date('2026-05-24T08:00:00');
+  const t=new Date('{{ invitation.event_date_iso }}');
   function tick(){
     const d=t-new Date();
     if(d<=0){['cdD','cdH','cdM','cdS'].forEach(id=>document.getElementById(id).textContent='00');return;}

@@ -316,7 +316,7 @@ textarea.form-input{min-height:76px;resize:vertical;font-weight:400;font-size:13
   <p class="op-sub">A love story, always open — just like your favourite konbini ✨</p>
   <div class="op-dear">
     <div class="op-dear-lbl">🏷️ Special Delivery For:</div>
-    <div class="op-dear-name">Ade Guntur Fitridullah & Partner</div>
+    <div class="op-dear-name">{{ invitation.recipient_name }}</div>
   </div>
   <button class="op-btn" onclick="openInvitation()">🚪 Enter Store</button>
 </div>
@@ -436,8 +436,8 @@ textarea.form-input{min-height:76px;resize:vertical;font-weight:400;font-size:13
         <div class="tl-item">
           <div class="tl-num-col"><div class="tl-num-emoji">💍</div><div class="tl-num-text">Final</div></div>
           <div class="tl-body">
-            <div class="tl-cat">Grand Finale · 24 Mei 2026</div>
-            <div class="tl-header"><span class="tl-title">Pernikahan</span><span class="tl-date">24 Mei 2026</span></div>
+            <div class="tl-cat">Grand Finale · {{ invitation.event_date }}</div>
+            <div class="tl-header"><span class="tl-title">Pernikahan</span><span class="tl-date">{{ invitation.event_date }}</span></div>
             <p class="tl-desc">Chapter paling spesial. Dalam ikatan suci yang abadi, kami berjanji untuk saling mencintai selamanya — dan Anda adalah bagian dari cerita ini.</p>
           </div>
         </div>
@@ -452,7 +452,7 @@ textarea.form-input{min-height:76px;resize:vertical;font-weight:400;font-size:13
       <div class="ev-cards">
         <div class="ev-card">
           <div class="ev-header"><div class="ev-badge">Akad Nikah</div><div class="ev-code">WED-AKD-2026 · 08:00 WIB</div></div>
-          <div class="ev-date">Minggu,<br>24 Mei 2026</div>
+          <div class="ev-date">Minggu,<br>{{ invitation.event_date }}</div>
           <div class="ev-body">
             <div class="ev-row"><span class="ev-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></span><span class="ev-text">08.00 WIB — Sacred Ceremony</span></div>
             <div class="ev-row"><span class="ev-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></span><span class="ev-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
@@ -462,7 +462,7 @@ textarea.form-input{min-height:76px;resize:vertical;font-weight:400;font-size:13
         </div>
         <div class="ev-card">
           <div class="ev-header"><div class="ev-badge">Resepsi</div><div class="ev-code">WED-RSP-2026 · 11:00 WIB</div></div>
-          <div class="ev-date">Minggu,<br>24 Mei 2026</div>
+          <div class="ev-date">Minggu,<br>{{ invitation.event_date }}</div>
           <div class="ev-body">
             <div class="ev-row"><span class="ev-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></span><span class="ev-text">11.00 – 13.00 WIB — Grand Celebration</span></div>
             <div class="ev-row"><span class="ev-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></span><span class="ev-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
@@ -540,7 +540,9 @@ textarea.form-input{min-height:76px;resize:vertical;font-weight:400;font-size:13
     <div class="reviews-wrap">
       <div class="review-list" id="reviewList">
         <div class="review-item visible">
-          <div class="rv-head"><div class="rv-avatar" style="background:var(--fm-blue)">AR</div><div><div class="rv-name">Ayu Rahmawati</div><div class="rv-stars">★★★★★</div></div><div class="rv-status">✓ Hadir · 2 tamu</div></div>
+
+                {% if invitation.is_preview %}
+                          <div class="rv-head"><div class="rv-avatar" style="background:var(--fm-blue)">AR</div><div><div class="rv-name">Ayu Rahmawati</div><div class="rv-stars">★★★★★</div></div><div class="rv-status">✓ Hadir · 2 tamu</div></div>
           <div class="rv-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu Anita & Zarda! 🌸</div>
         </div>
         <div class="review-item visible">
@@ -549,7 +551,14 @@ textarea.form-input{min-height:76px;resize:vertical;font-weight:400;font-size:13
         </div>
         <div class="review-item visible">
           <div class="rv-head"><div class="rv-avatar" style="background:var(--fm-green)">SD</div><div><div class="rv-name">Sinta Dewi</div><div class="rv-stars">★★★★★</div></div><div class="rv-status">✓ Hadir · 2 tamu</div></div>
-          <div class="rv-text">お幸せに！ Wishing you both a lifetime of love and happiness! Semoga langkah kalian selalu diberkahi 💙</div>
+
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                          <div class="rv-head"><div class="rv-avatar" style="background:var(--fm-blue)">{{ rsvp.initial() }}</div><div><div class="rv-name">{{ rsvp.name }}</div><div class="rv-stars">★★★★★</div></div><div class="rv-status">✓ {{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div></div>
+
+                {% endfor %}
+                {% endif %}
+                          <div class="rv-text">お幸せに！ Wishing you both a lifetime of love and happiness! Semoga langkah kalian selalu diberkahi 💙</div>
         </div>
       </div>
     </div>
@@ -596,7 +605,7 @@ function closeLb(){document.getElementById('lightbox').classList.remove('open');
 function lbNav(d){lbIdx=(lbIdx+d+IMGS.length)%IMGS.length;updateLb()}
 function updateLb(){document.getElementById('lbImg').src=IMGS[lbIdx];document.getElementById('lbCount').textContent=`🌸 ${lbIdx+1} / ${IMGS.length}`}
 document.addEventListener('keydown',e=>{if(!document.getElementById('lightbox').classList.contains('open'))return;if(e.key==='Escape')closeLb();if(e.key==='ArrowLeft')lbNav(-1);if(e.key==='ArrowRight')lbNav(1)});
-function startCountdown(){const target=new Date('2026-05-24T08:00:00');function tick(){const diff=target-new Date();const ids=['cdDays','cdHours','cdMinutes','cdSeconds'];if(diff<=0){ids.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='00'});return}const vals=[Math.floor(diff/86400000),Math.floor((diff%86400000)/3600000),Math.floor((diff%3600000)/60000),Math.floor((diff%60000)/1000)];ids.forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=String(vals[i]).padStart(2,'0')})}tick();setInterval(tick,1000)}
+function startCountdown(){const target=new Date('{{ invitation.event_date_iso }}');function tick(){const diff=target-new Date();const ids=['cdDays','cdHours','cdMinutes','cdSeconds'];if(diff<=0){ids.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='00'});return}const vals=[Math.floor(diff/86400000),Math.floor((diff%86400000)/3600000),Math.floor((diff%3600000)/60000),Math.floor((diff%60000)/1000)];ids.forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=String(vals[i]).padStart(2,'0')})}tick();setInterval(tick,1000)}
 function initScrollAnim(){const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.1});document.querySelectorAll('.tl-item,.review-item').forEach(el=>obs.observe(el))}
 function initNavHighlight(){const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));const a=document.querySelector(`.nav-item[href="#${e.target.id}"]`);if(a)a.classList.add('active')}})},{rootMargin:'-30% 0px -30% 0px'});['home','cast','venue','gift','rsvp'].forEach(id=>{const el=document.getElementById(id);if(el)obs.observe(el)})}
 function selGuests(n,btn){guestCount=n;document.querySelectorAll('.guest-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}

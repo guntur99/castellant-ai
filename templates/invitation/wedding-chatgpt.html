@@ -581,7 +581,7 @@ select.ri-input { appearance:none; cursor:none }
 
   <div class="op-dear">
     <div class="op-dear-label">// kepada yth</div>
-    <div class="op-dear-name">Tamu Undangan</div>
+    <div class="op-dear-name">{{ invitation.recipient_name }}</div>
   </div>
   </div><!-- /op-center-wrap -->
 </div>
@@ -629,7 +629,7 @@ select.ri-input { appearance:none; cursor:none }
       <div class="sb-user">
         <div class="sb-user-ava">T</div>
         <div>
-          <div class="sb-user-name">Tamu Undangan</div>
+          <div class="sb-user-name">{{ invitation.recipient_name }}</div>
           <div class="sb-user-plan">ChatGPT Plus ✦</div>
         </div>
       </div>
@@ -717,7 +717,7 @@ document.querySelectorAll('a,button,select,input,textarea,.op-starter,.sb-conv')
 });
 
 /* ── TYPEWRITER (opening) ── */
-const prompts=['Tunjukkan undangan pernikahan Anita & Zarda 💍','Ceritakan kisah cinta mereka ❤️','Detail akad & resepsi 24 Mei 2026','Bantuan RSVP dan amplop digital 🎁'];
+const prompts=['Tunjukkan undangan pernikahan Anita & Zarda 💍','Ceritakan kisah cinta mereka ❤️','Detail akad & resepsi {{ invitation.event_date }}','Bantuan RSVP dan amplop digital 🎁'];
 let pi=0,ci=0,typing=true;
 function typeOp(){
   const el=document.getElementById('opTyped');const p=prompts[pi];
@@ -772,10 +772,10 @@ function buildStory(){
 <p>Di hari pertama bertemu, tawa tercipta di antara lemparan <strong>bowling</strong>, cerita mengalir di sela santapan <strong>sushi</strong>, dan manisnya <strong>es krim</strong> menjadi saksi awal kisah mereka yang indah.</p>
 <h3>💌 Lamaran — November 2025</h3>
 <p>Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga tercinta, Zarda resmi melamar Anita dalam momen penuh haru dan kebahagiaan.</p>
-<h3>🕊️ Pernikahan — 24 Mei 2026</h3>
+<h3>🕊️ Pernikahan — {{ invitation.event_date }}</h3>
 <p>Kini keduanya siap melangkah lebih jauh. Dalam ikatan suci pernikahan, mereka berjanji saling menjaga, mencintai, dan tumbuh bersama selamanya.</p>
 <hr>
-<p style="font-size:13px;color:var(--muted);font-style:italic">📖 Sumber: anita-zarda-wedding.com · Diperbarui 24 Mei 2026</p>`;
+<p style="font-size:13px;color:var(--muted);font-style:italic">📖 Sumber: anita-zarda-wedding.com · Diperbarui {{ invitation.event_date }}</p>`;
 }
 
 function buildEvent(){
@@ -785,7 +785,7 @@ function buildEvent(){
 <div class="gpt-card">
   <div class="gpt-card-header"><span class="gpt-card-icon">🕌</span> Akad Nikah</div>
   <div class="gpt-card-body">
-    <div class="ev-row"><div class="ev-icon">📅</div><div class="ev-text"><strong>Minggu, 24 Mei 2026</strong></div></div>
+    <div class="ev-row"><div class="ev-icon">📅</div><div class="ev-text"><strong>Minggu, {{ invitation.event_date }}</strong></div></div>
     <div class="ev-row"><div class="ev-icon">⏰</div><div class="ev-text">08.00 – 10.00 WIB</div></div>
     <div class="ev-row"><div class="ev-icon">📍</div><div class="ev-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div></div>
     <div class="ev-row"><div class="ev-icon">👔</div><div class="ev-text">Formal / Semi-formal</div></div>
@@ -795,7 +795,7 @@ function buildEvent(){
 <div class="gpt-card" style="margin-top:10px">
   <div class="gpt-card-header"><span class="gpt-card-icon">🎊</span> Resepsi Pernikahan</div>
   <div class="gpt-card-body">
-    <div class="ev-row"><div class="ev-icon">📅</div><div class="ev-text"><strong>Minggu, 24 Mei 2026</strong></div></div>
+    <div class="ev-row"><div class="ev-icon">📅</div><div class="ev-text"><strong>Minggu, {{ invitation.event_date }}</strong></div></div>
     <div class="ev-row"><div class="ev-icon">⏰</div><div class="ev-text">11.00 – 13.00 WIB</div></div>
     <div class="ev-row"><div class="ev-icon">📍</div><div class="ev-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div></div>
     <div class="ev-row"><div class="ev-icon">🍽</div><div class="ev-text">Makan siang disediakan</div></div>
@@ -1051,7 +1051,7 @@ function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrol
 let cdInterval=null;
 function startCountdown(){
   if(cdInterval) return; // prevent duplicates
-  const T=new Date('2026-05-24T08:00:00');
+  const T=new Date('{{ invitation.event_date_iso }}');
   function tick(){
     const d=T-new Date();
     if(d<=0) return;

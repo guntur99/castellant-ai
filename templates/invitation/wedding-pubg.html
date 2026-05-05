@@ -1711,7 +1711,7 @@ option{font-family:sans-serif}
   <div class="mission-cards">
     <div class="mission-card reveal rd1">
       <div class="mc-mission-tag">MISSION ALPHA</div>
-      <h3 class="mc-title">Minggu,<br>24 Mei 2026</h3>
+      <h3 class="mc-title">Minggu,<br>{{ invitation.event_date }}</h3>
       <div class="mc-row">
         <svg class="mc-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 17.5v-2h-1v2C8.41 19.25 5.75 16.59 5.5 13.5h2v-1h-2C5.75 9.41 8.41 6.75 11.5 6.5v2h1v-2c3.09.25 5.75 2.91 6 6h-2v1h2c-.25 3.09-2.91 5.75-6 6z"/></svg>
         <span class="mc-txt">Akad Nikah · 08.00 WIB</span>
@@ -1724,7 +1724,7 @@ option{font-family:sans-serif}
     </div>
     <div class="mission-card reveal rd2">
       <div class="mc-mission-tag">MISSION BRAVO</div>
-      <h3 class="mc-title">Minggu,<br>24 Mei 2026</h3>
+      <h3 class="mc-title">Minggu,<br>{{ invitation.event_date }}</h3>
       <div class="mc-row">
         <svg class="mc-ico" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.5 17.5v-2h-1v2C8.41 19.25 5.75 16.59 5.5 13.5h2v-1h-2C5.75 9.41 8.41 6.75 11.5 6.5v2h1v-2c3.09.25 5.75 2.91 6 6h-2v1h2c-.25 3.09-2.91 5.75-6 6z"/></svg>
         <span class="mc-txt">Resepsi · 11.00 – 13.00 WIB</span>
@@ -1854,21 +1854,33 @@ option{font-family:sans-serif}
       <h2 class="pb-heading">Ucapan &amp; Doa</h2>
     </div>
     <div class="wishes-list" id="wishesList">
-      <div class="wish-card visible">
-        <div class="wa">AY</div>
-        <div><div class="wn">Ayu Rahmawati</div><div class="ws">✓ Hadir · 2 players</div><p class="wt">Selamat menempuh hidup baru! Semoga sakinah, mawaddah, wa rahmah. GG Anita & Zarda!</p></div>
-      </div>
-      <div class="wish-card visible">
-        <div class="wa" style="background:var(--pb-blue2);color:#fff">RZ</div>
-        <div><div class="wn">Reza Firmansyah</div><div class="ws">✓ Hadir · 1 player</div><p class="wt">Alhamdulillah! Semoga pernikahannya membawa keberkahan tiada henti. Aamiin ya Rabbal Alamin.</p></div>
-      </div>
-      <div class="wish-card visible">
-        <div class="wa" style="background:var(--pb-green);color:#fff">ST</div>
-        <div><div class="wn">Sinta Dewi</div><div class="ws">✓ Hadir · 2 players</div><p class="wt">Wishing you both a lifetime of love! Semoga selalu diberkahi Allah SWT. Winner winner!</p></div>
-      </div>
-    </div>
-  </div>
-</section>
+                {% if invitation.is_preview %}
+                    <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); opacity: 0.7;">
+                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                            <div style="width: 35px; height: 35px; border-radius: 50%; background: #666; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">A</div>
+                            <div>
+                                <div style="font-weight: bold; font-size: 14px;">Ayu Rahmawati (Contoh)</div>
+                                <div style="font-size: 11px; opacity: 0.7;">Hadir · 2 tamu</div>
+                            </div>
+                        </div>
+                        <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"Selamat menempuh hidup baru! Semoga bahagia selalu."</div>
+                    </div>
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 10px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(45deg, #E50914, #b00710); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: white; box-shadow: 0 2px 8px rgba(229, 9, 20, 0.4);">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 15px; color: #fff;">{{ rsvp.name }}</div>
+                            <div style="font-size: 12px; color: #00AA13; font-weight: 500;">✓ {{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 14px; line-height: 1.6; font-style: italic; color: rgba(255,255,255,0.9); padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+                </div>
+                </section>
 
 <!-- FOOTER -->
 <footer class="footer">
@@ -2013,7 +2025,7 @@ document.addEventListener('keydown',e=>{
 
 /* ── COUNTDOWN ── */
 function startCountdown(){
-  const T=new Date('2026-05-24T08:00:00');
+  const T=new Date('{{ invitation.event_date_iso }}');
   function tick(){
     const d=T-new Date();if(d<=0)return;
     document.getElementById('cdD').textContent=String(Math.floor(d/86400000)).padStart(2,'0');

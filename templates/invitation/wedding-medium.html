@@ -1681,7 +1681,7 @@
 
         <div class="splash-dear">
             <p class="splash-dear">Kepada yang terhormat,</p>
-            <p class="splash-dear-name">Tamu Undangan</p>
+            <p class="splash-dear-name">{{ invitation.recipient_name }}</p>
         </div>
 
         <div class="splash-meta">
@@ -1690,7 +1690,7 @@
             <div class="splash-meta-dot"></div>
             <span>8 min read</span>
             <div class="splash-meta-dot"></div>
-            <span>24 Mei 2026</span>
+            <span>{{ invitation.event_date }}</span>
         </div>
 
         <button class="open-btn" onclick="openInvitation()">
@@ -1729,7 +1729,7 @@
                 <div class="byline-ava">A&amp;Z</div>
                 <div class="byline-info">
                     <div class="byline-name">Nazma Putri &amp; Guntur Putra</div>
-                    <div class="byline-meta">Minggu, 24 Mei 2026 · 8 min read</div>
+                    <div class="byline-meta">Minggu, {{ invitation.event_date }} · 8 min read</div>
                 </div>
                 <button class="byline-follow" id="followBtn" onclick="toggleFollow(this)">Follow</button>
             </div>
@@ -1842,7 +1842,7 @@
                     <div class="embed-card-icon" style="background:#F2F2F2">🕌</div>
                     <div>
                         <div class="embed-card-title">Akad Nikah</div>
-                        <div class="embed-card-sub">Minggu, 24 Mei 2026</div>
+                        <div class="embed-card-sub">Minggu, {{ invitation.event_date }}</div>
                     </div>
                 </div>
                 <div class="embed-card-body">
@@ -1871,7 +1871,7 @@
                     <div class="embed-card-icon" style="background:#F2F2F2">🎊</div>
                     <div>
                         <div class="embed-card-title">Resepsi Pernikahan</div>
-                        <div class="embed-card-sub">Minggu, 24 Mei 2026</div>
+                        <div class="embed-card-sub">Minggu, {{ invitation.event_date }}</div>
                     </div>
                 </div>
                 <div class="embed-card-body">
@@ -1951,7 +1951,7 @@
             <div class="story-section">
                 <div class="story-num">03</div>
                 <p class="story-chapter">Chapter III — Final</p>
-                <p class="story-date">24 Mei 2026</p>
+                <p class="story-date">{{ invitation.event_date }}</p>
                 <h3 class="story-title">Pernikahan</h3>
                 <p class="story-text">Kini, kami memilih untuk melangkah lebih jauh bersama. Dalam ikatan suci
                     pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya — dan Anda
@@ -2083,8 +2083,25 @@
                 <span class="responses-count" id="responseCount">2 respons</span>
             </div>
             <div id="wishesList">
-                <div class="response-item visible">
-                    <div class="response-ava" style="background:#2E7D32">SK</div>
+                {% if invitation.is_preview %}
+                
+                <!-- RSVPs will be loaded here -->
+            
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
+                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+</div>
                     <div class="response-body">
                         <div class="response-name">Siti Khadijah</div>
                         <div class="response-meta">✓ Hadir · 2 tamu · baru saja</div>
@@ -2121,7 +2138,7 @@
             <div class="footer-tags">
                 <span class="footer-tag">Wedding</span>
                 <span class="footer-tag">Love Story</span>
-                <span class="footer-tag">24 Mei 2026</span>
+                <span class="footer-tag">{{ invitation.event_date }}</span>
                 <span class="footer-tag">Tangerang</span>
                 <span class="footer-tag">Pernikahan</span>
             </div>
@@ -2156,7 +2173,7 @@
 
         /* ── COUNTDOWN ── */
         function startCountdown() {
-            const target = new Date('2026-05-24T08:00:00');
+            const target = new Date('{{ invitation.event_date_iso }}');
             function tick() {
                 const d = target - new Date();
                 if (d <= 0) { ['cdDays', 'cdHours', 'cdMinutes', 'cdSeconds'].forEach(id => document.getElementById(id).textContent = '00'); return }
@@ -2244,6 +2261,12 @@
             const name = document.getElementById('rsvpName').value.trim();
             const status = document.getElementById('rsvpStatus').value;
             const msg = document.getElementById('rsvpMsg').value.trim();
+            fetch('/api/rsvp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
+            });
+
             if (!name || !status) { showToast('Mohon isi nama dan status kehadiran.'); return }
             const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             const colors = ['#2E7D32', '#1565C0', '#6A1B9A', '#BF360C', '#00695C', '#4527A0'];

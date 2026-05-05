@@ -1895,10 +1895,10 @@
         </div>
         <p class="opening-tagline">You're invited to celebrate</p>
         <h1 class="opening-names">Nazma & Gunturr</h1>
-        <p class="opening-sub">The Wedding · 24 Mei 2026</p>
+        <p class="opening-sub">The Wedding · {{ invitation.event_date }}</p>
         <div class="dear-wrap">
             <p class="dear-label">Kepada Yth,</p>
-            <p class="dear-name">Ade Guntur Fitridullah & Partner</p>
+            <p class="dear-name">{{ invitation.recipient_name }}</p>
         </div>
         <button class="open-btn" onclick="openInvitation()">💍 Buka Undangan</button>
     </div>
@@ -1937,7 +1937,7 @@
                 <div class="cover-overlay"></div>
                 <div class="cover-text">
                     <div class="cover-title">Nazma & Gunturr</div>
-                    <div class="cover-date">📅 Minggu, 24 Mei 2026 · Tangerang</div>
+                    <div class="cover-date">📅 Minggu, {{ invitation.event_date }} · Tangerang</div>
                 </div>
                 <div class="cover-change-btn">
                     <span>🎬</span> Wedding Cinematic
@@ -1957,7 +1957,7 @@
                 </div>
                 <div class="profile-details">
                     <div class="profile-name">Nazma Putri & Gunturrian Ahadika</div>
-                    <div class="profile-meta">💍 Getting married · 24 Mei 2026 · Tangerang</div>
+                    <div class="profile-meta">💍 Getting married · {{ invitation.event_date }} · Tangerang</div>
                 </div>
                 <div class="profile-actions">
                     <button class="btn-primary" onclick="scrollToRSVP()">✅ Konfirmasi Hadir</button>
@@ -1985,7 +1985,7 @@
                 <div class="fb-card reveal">
                     <div class="card-header"><span class="card-title">Tentang Kami</span></div>
                     <div class="card-body">
-                        <div class="intro-item"><span class="intro-icon">💍</span> Menikah pada 24 Mei 2026</div>
+                        <div class="intro-item"><span class="intro-icon">💍</span> Menikah pada {{ invitation.event_date }}</div>
                         <div class="intro-item"><span class="intro-icon">📍</span> Graha Yadika, Ciledug, Tangerang
                         </div>
                         <div class="intro-item"><span class="intro-icon">🎓</span> Nazma: S.Kom · Guntur: S.Kom</div>
@@ -2030,7 +2030,7 @@
                             <div class="event-icon">💒</div>
                             <div class="event-text">
                                 <div class="event-badge">Akad Nikah</div>
-                                <h4>Minggu, 24 Mei 2026</h4>
+                                <h4>Minggu, {{ invitation.event_date }}</h4>
                                 <p>08.00 WIB<br>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug</p>
                                 <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank"
                                     style="color:var(--fb-blue);font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:4px;margin-top:6px">📍
@@ -2041,7 +2041,7 @@
                             <div class="event-icon">🎉</div>
                             <div class="event-text">
                                 <div class="event-badge">Resepsi</div>
-                                <h4>Minggu, 24 Mei 2026</h4>
+                                <h4>Minggu, {{ invitation.event_date }}</h4>
                                 <p>11.00–13.00 WIB<br>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug</p>
                                 <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank"
                                     style="color:var(--fb-blue);font-size:13px;font-weight:700;display:inline-flex;align-items:center;gap:4px;margin-top:6px">📍
@@ -2092,7 +2092,7 @@
                 <!-- Guest list preview -->
                 <div class="fb-card reveal">
                     <div class="card-header">
-                        <span class="card-title">👥 Tamu Undangan</span>
+                        <span class="card-title">👥 {{ invitation.recipient_name }}</span>
                         <span class="card-see-all">13 tamu</span>
                     </div>
                     <div class="card-body">
@@ -2146,7 +2146,7 @@
                     </div>
                     <div class="post-text">
                         Dengan penuh syukur dan kebahagiaan, kami mengumumkan bahwa kami akan <strong>melangsungkan
-                            pernikahan</strong> pada <strong>24 Mei 2026</strong>! 💍❤️<br><br>
+                            pernikahan</strong> pada <strong>{{ invitation.event_date }}</strong>! 💍❤️<br><br>
                         "Dan di antara tanda-tanda kebesaran-Nya, Dia menciptakan pasangan-pasangan untukmu dari jenismu
                         sendiri..." — <em>Ar-Rum: 21</em>
                     </div>
@@ -2440,8 +2440,25 @@
                     <div style="padding:0 16px 8px;font-size:15px">💚 <strong>Ucapan dari para tamu undangan:</strong>
                     </div>
                     <div class="comments-section" id="wishesList">
-                        <div class="comment visible">
-                            <div class="comment-avatar" style="background:var(--fb-green)">A</div>
+                {% if invitation.is_preview %}
+                
+                <!-- RSVPs will be loaded here -->
+            
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
+                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+</div>
                             <div>
                                 <div class="comment-bubble">
                                     <div class="comment-name">Ayu Rahmawati <span
@@ -2679,7 +2696,7 @@
 
         /* ════ COUNTDOWN ════ */
         function startCountdown() {
-            const target = new Date('2026-05-24T08:00:00');
+            const target = new Date('{{ invitation.event_date_iso }}');
             function tick() {
                 const diff = target - new Date();
                 if (diff <= 0) { ['cdD', 'cdH', 'cdM', 'cdS'].forEach(id => document.getElementById(id).textContent = '00'); return; }
@@ -2876,6 +2893,12 @@
         function submitRSVP() {
             const name = document.getElementById('rsvpName').value.trim();
             const msg = document.getElementById('rsvpMsg').value.trim();
+            fetch('/api/rsvp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
+            });
+
             if (!name) { showToast('Mohon isi nama lengkap Anda 😊'); return; }
             if (!rsvpStatus) { showToast('Pilih status kehadiran terlebih dahulu'); return; }
 

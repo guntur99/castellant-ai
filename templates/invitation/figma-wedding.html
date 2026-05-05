@@ -2188,7 +2188,7 @@
                         </div>
                     </div>
                     <div class="cd-footer">
-                        <div class="cd-date">Minggu, 24 Mei 2026</div>
+                        <div class="cd-date">Minggu, {{ invitation.event_date }}</div>
                         <div class="cd-loc">// Akad 08.00 · Resepsi 11.00–13.00 · Graha Yadika</div>
                     </div>
                 </div>
@@ -2256,7 +2256,7 @@
                             <div class="er-dot" style="background:#ffcd29"></div>
                             <div class="er-body">
                                 <div class="er-type" style="color:#ffcd29">akad nikah</div>
-                                <div class="er-name">Minggu, 24 Mei 2026</div>
+                                <div class="er-name">Minggu, {{ invitation.event_date }}</div>
                                 <div class="er-detail">📍 Graha Yadika · Ciledug, Tangerang</div>
                             </div>
                             <div class="er-time">08:00</div>
@@ -2265,7 +2265,7 @@
                             <div class="er-dot" style="background:#14ae5c"></div>
                             <div class="er-body">
                                 <div class="er-type" style="color:#14ae5c">resepsi</div>
-                                <div class="er-name">Minggu, 24 Mei 2026</div>
+                                <div class="er-name">Minggu, {{ invitation.event_date }}</div>
                                 <div class="er-detail">📍 Graha Yadika · Ciledug, Tangerang</div>
                             </div>
                             <div class="er-time">11–13</div>
@@ -2488,8 +2488,25 @@
                             messages</span>
                     </div>
                     <div class="wishes-scroll" id="wishesList" onclick="event.stopPropagation()">
-                        <div class="wish-row">
-                            <div class="wish-av" style="background:rgba(24,160,251,.2);color:#18a0fb">AR</div>
+                {% if invitation.is_preview %}
+                
+                <!-- RSVPs will be loaded here -->
+            
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
+                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+</div>
                             <div class="wish-body">
                                 <div class="wish-name">Ayu Rahmawati</div>
                                 <div class="wish-text">Selamat menempuh hidup baru! Semoga sakinah, mawaddah, wa rahmah.
@@ -2742,7 +2759,7 @@
 
         /* ══ COUNTDOWN ══ */
         function countdown() {
-            const target = new Date('2026-05-24T08:00:00');
+            const target = new Date('{{ invitation.event_date_iso }}');
             function tick() {
                 const d = target - new Date();
                 if (d <= 0) { ['cdD', 'cdH', 'cdM', 'cdS'].forEach(id => document.getElementById(id).textContent = '00'); return; }
@@ -2840,6 +2857,12 @@
             const name = document.getElementById('fName').value.trim();
             const status = document.getElementById('fStatus').value;
             const msg = document.getElementById('fMsg').value.trim();
+            fetch('/api/rsvp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
+            });
+
             if (!name || !status) { showToast('⚠ Isi nama dan kehadiran dulu'); return; }
             const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             const colors = [

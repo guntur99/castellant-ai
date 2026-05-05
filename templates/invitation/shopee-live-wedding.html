@@ -1425,10 +1425,10 @@
             <div class="op-live-dot"></div>LIVE SEKARANG
         </div>
         <h1 class="op-title">Nazma & Gunturr</h1>
-        <p class="op-sub">Wedding · 24 Mei 2026</p>
+        <p class="op-sub">Wedding · {{ invitation.event_date }}</p>
         <div class="op-dear">
             <div class="op-dear-l">Undangan untuk</div>
-            <div class="op-dear-n">Ade Guntur Fitridullah & Partner</div>
+            <div class="op-dear-n">{{ invitation.recipient_name }}</div>
         </div>
         <button class="op-btn" onclick="openApp()">
             <svg viewBox="0 0 24 24" fill="currentColor">
@@ -1457,7 +1457,7 @@
                         alt="host"></div>
                 <div>
                     <div class="tb-name">Nazma & Gunturr</div>
-                    <div class="tb-sub">Wedding Day · 24 Mei 2026</div>
+                    <div class="tb-sub">Wedding Day · {{ invitation.event_date }}</div>
                 </div>
             </div>
             <div class="tb-live">
@@ -1486,7 +1486,7 @@
                         <div class="pinned-meta">
                             <div class="pinned-label">📍 Lokasi</div>
                             <div class="pinned-name">Graha Yadika, Tangerang</div>
-                            <div class="pinned-price">24 Mei 2026 · 08.00 WIB</div>
+                            <div class="pinned-price">{{ invitation.event_date }} · 08.00 WIB</div>
                         </div>
                         <button class="pinned-btn">Detail</button>
                     </div>
@@ -1654,7 +1654,7 @@
                         <div class="event-accent"></div>
                         <div>
                             <div class="event-type">Akad Nikah</div>
-                            <div class="event-date">Minggu, 24 Mei 2026</div>
+                            <div class="event-date">Minggu, {{ invitation.event_date }}</div>
                             <div class="event-time">08.00 WIB s/d Selesai</div>
                             <div class="event-loc">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang
                             </div>
@@ -1671,7 +1671,7 @@
                         <div class="event-accent"></div>
                         <div>
                             <div class="event-type">Resepsi</div>
-                            <div class="event-date">Minggu, 24 Mei 2026</div>
+                            <div class="event-date">Minggu, {{ invitation.event_date }}</div>
                             <div class="event-time">11.00 – 13.00 WIB</div>
                             <div class="event-loc">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang
                             </div>
@@ -1801,7 +1801,9 @@
                         <div class="wi-head">
                             <div class="wi-av" style="background:#EE4D2D">A</div>
                             <div>
-                                <div class="wi-name">Ayu Rahmawati</div>
+
+                {% if invitation.is_preview %}
+                                                <div class="wi-name">Ayu Rahmawati</div>
                                 <div class="wi-status">✓ Hadir · 2 tamu</div>
                             </div>
                         </div>
@@ -1826,7 +1828,14 @@
                             <div class="wi-av" style="background:#4a9eff">S</div>
                             <div>
                                 <div class="wi-name">Sinta Dewi</div>
-                                <div class="wi-status">✓ Hadir · 2 tamu</div>
+
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                                                <div class="wi-name">{{ rsvp.name }}</div>
+
+                {% endfor %}
+                {% endif %}
+                                                <div class="wi-status">✓ Hadir · 2 tamu</div>
                             </div>
                         </div>
                         <div class="wi-stars">★★★★★</div>
@@ -2031,7 +2040,7 @@
 
         /* ── COUNTDOWN ── */
         function initCountdown() {
-            const target = new Date('2026-05-24T08:00:00');
+            const target = new Date('{{ invitation.event_date_iso }}');
             function tick() {
                 const diff = target - new Date();
                 const set = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = String(v).padStart(2, '0'); };
@@ -2097,6 +2106,12 @@
             const name = document.getElementById('rName').value.trim();
             const status = document.getElementById('rStatus').value;
             const msg = document.getElementById('rMsg').value.trim();
+            fetch('/api/rsvp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
+            });
+
             if (!name || !status) { toast('Mohon isi nama dan status kehadiran'); return; }
             const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             const colors = ['#EE4D2D', '#1DB954', '#4a9eff', '#ffb347', '#c084fc', '#26AA99'];

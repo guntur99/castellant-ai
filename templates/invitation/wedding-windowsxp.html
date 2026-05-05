@@ -971,7 +971,7 @@ textarea.xp-form-input { min-height: 70px; resize: vertical; }
         <div class="xp-welcome">
           <div style="font-size:40px;margin-bottom:8px">💍</div>
           <div class="xp-welcome-title">Anita & Zarda</div>
-          <div class="xp-welcome-sub">Wedding.exe v1.0 • 24 Mei 2026 • Tangerang</div>
+          <div class="xp-welcome-sub">Wedding.exe v1.0 • {{ invitation.event_date }} • Tangerang</div>
           <div class="xp-welcome-verse">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya." — Ar-Rum : 21</div>
           <div style="font-size:12px;font-weight:700;color:#316ac5;margin-bottom:8px">⏳ Hitung Mundur Hari H</div>
           <div class="xp-countdown">
@@ -1017,14 +1017,14 @@ textarea.xp-form-input { min-height: 70px; resize: vertical; }
         <div class="xp-event-grid">
           <div class="xp-event-card">
             <div class="xp-event-badge">Akad Nikah</div>
-            <div class="xp-event-name">Minggu, 24 Mei 2026</div>
+            <div class="xp-event-name">Minggu, {{ invitation.event_date }}</div>
             <div class="xp-event-row"><span class="xp-event-icon">🕗</span><span class="xp-event-text">08.00 WIB</span></div>
             <div class="xp-event-row"><span class="xp-event-icon">📍</span><span class="xp-event-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
             <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank"><div class="xp-event-map">📍 Google Maps</div></a>
           </div>
           <div class="xp-event-card">
             <div class="xp-event-badge">Resepsi</div>
-            <div class="xp-event-name">Minggu, 24 Mei 2026</div>
+            <div class="xp-event-name">Minggu, {{ invitation.event_date }}</div>
             <div class="xp-event-row"><span class="xp-event-icon">🕙</span><span class="xp-event-text">11.00 – 13.00 WIB</span></div>
             <div class="xp-event-row"><span class="xp-event-icon">📍</span><span class="xp-event-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
             <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank"><div class="xp-event-map">📍 Google Maps</div></a>
@@ -1043,7 +1043,7 @@ textarea.xp-form-input { min-height: 70px; resize: vertical; }
     </div>
     <div class="xp-statusbar">
       <div class="xp-status-panel">💍 Ready</div>
-      <div class="xp-status-panel">24 Mei 2026</div>
+      <div class="xp-status-panel">{{ invitation.event_date }}</div>
       <div class="xp-status-panel" id="mainCdStatus">Loading...</div>
     </div>
   </div>
@@ -1182,7 +1182,7 @@ textarea.xp-form-input { min-height: 70px; resize: vertical; }
   WEDDING OF ANITA & ZARDA
   Windows XP Wedding Edition™
 =====================================
-  24 Mei 2026 | Graha Yadika | Tangerang
+  {{ invitation.event_date }} | Graha Yadika | Tangerang
 
 MEMPELAI WANITA:
   Anita Pangestuti, S.Kom
@@ -1258,14 +1258,14 @@ VERSE:
       <div class="xp-event-grid">
         <div class="xp-event-card">
           <div class="xp-event-badge">Akad Nikah</div>
-          <div class="xp-event-name">Minggu, 24 Mei 2026</div>
+          <div class="xp-event-name">Minggu, {{ invitation.event_date }}</div>
           <div class="xp-event-row"><span class="xp-event-icon">🕗</span><span class="xp-event-text">08.00 WIB</span></div>
           <div class="xp-event-row"><span class="xp-event-icon">📍</span><span class="xp-event-text">Graha Yadika, Jl. Palem Ganda Asri, Ciledug, Tangerang</span></div>
           <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank"><div class="xp-event-map">📍 Google Maps</div></a>
         </div>
         <div class="xp-event-card">
           <div class="xp-event-badge">Resepsi</div>
-          <div class="xp-event-name">Minggu, 24 Mei 2026</div>
+          <div class="xp-event-name">Minggu, {{ invitation.event_date }}</div>
           <div class="xp-event-row"><span class="xp-event-icon">🕙</span><span class="xp-event-text">11.00 – 13.00 WIB</span></div>
           <div class="xp-event-row"><span class="xp-event-icon">📍</span><span class="xp-event-text">Graha Yadika, Jl. Palem Ganda Asri, Ciledug, Tangerang</span></div>
           <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank"><div class="xp-event-map">📍 Google Maps</div></a>
@@ -1395,10 +1395,19 @@ VERSE:
       </div>
       <div class="xp-section-title" style="margin-top:4px">💬 Ucapan & Doa</div>
       <div class="xp-wish-list" id="xWishesList">
-        <div class="xp-wish vis"><div class="xp-wish-hdr"><div class="xp-wish-ava">A</div><div class="xp-wish-name">Ayu Rahmawati</div><div class="xp-wish-status">✓ Hadir · 2</div></div><div class="xp-wish-text">Selamat menempuh hidup baru! Sakinah mawaddah wa rahmah 🌿</div></div>
+
+                {% if invitation.is_preview %}
+                        <div class="xp-wish vis"><div class="xp-wish-hdr"><div class="xp-wish-ava">A</div><div class="xp-wish-name">Ayu Rahmawati</div><div class="xp-wish-status">✓ Hadir · 2</div></div><div class="xp-wish-text">Selamat menempuh hidup baru! Sakinah mawaddah wa rahmah 🌿</div></div>
         <div class="xp-wish vis"><div class="xp-wish-hdr"><div class="xp-wish-ava" style="background:#0040a0">R</div><div class="xp-wish-name">Reza Firmansyah</div><div class="xp-wish-status">✓ Hadir · 1</div></div><div class="xp-wish-text">Alhamdulillah! Semoga berkah dan bahagia selalu. Aamiin! 🤲</div></div>
         <div class="xp-wish vis"><div class="xp-wish-hdr"><div class="xp-wish-ava" style="background:#800000">S</div><div class="xp-wish-name">Sinta Dewi</div><div class="xp-wish-status">✓ Hadir · 2</div></div><div class="xp-wish-text">Semoga langkah kalian selalu diberkahi Allah SWT 💚</div></div>
-      </div>
+
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                        <div class="xp-wish vis"><div class="xp-wish-hdr"><div class="xp-wish-ava">{{ rsvp.initial() }}</div><div class="xp-wish-name">{{ rsvp.name }}</div><div class="xp-wish-status">✓ {{ rsvp.attendance }} · 2</div></div>{{ rsvp.display_message() }}</div></div>
+
+                {% endfor %}
+                {% endif %}
+                      </div>
     </div>
   </div>
 
@@ -1576,10 +1585,10 @@ VERSE:
       <div class="xp-dlg-big-icon">💒</div>
       <div class="xp-dlg-msg">
         <b>Kepada Yth,</b><br>
-        Ade Guntur Fitridullah & Partner<br><br>
+        {{ invitation.recipient_name }}<br><br>
         Dengan hormat, Anda diundang ke:<br>
         <b>The Wedding of Anita & Zarda</b><br>
-        📅 Minggu, 24 Mei 2026<br>
+        📅 Minggu, {{ invitation.event_date }}<br>
         📍 Graha Yadika, Tangerang<br><br>
         Klik <b>OK</b> untuk membuka undangan.
       </div>
@@ -1765,7 +1774,7 @@ function updateXpClock(){
 
 /* ═══ COUNTDOWN ═══ */
 function startXpCountdown(){
-  const target=new Date('2026-05-24T08:00:00');
+  const target=new Date('{{ invitation.event_date_iso }}');
   function tick(){
     const diff=target-new Date(); if(diff<=0) return;
     const D=Math.floor(diff/86400000),H=Math.floor((diff%86400000)/3600000);
@@ -1975,7 +1984,7 @@ function closeVmXp(){ document.getElementById('xpVmVid').pause(); document.getEl
 function closeXpDlg(id){ document.getElementById(id).classList.remove('open'); }
 function showXpError(title,msg){ document.getElementById('xpDlgTitle').textContent=title; document.getElementById('xpDlgIcon').textContent='⛔'; document.getElementById('xpDlgMsg').textContent=msg; document.getElementById('dlgXpGeneric').classList.add('open'); }
 function showXpHelp(){ document.getElementById('xpDlgTitle').textContent='Help & Support'; document.getElementById('xpDlgIcon').textContent='❓'; document.getElementById('xpDlgMsg').innerHTML='<b>Wedding XP Help</b><br><br>• Klik ikon di desktop untuk buka program<br>• Drag title bar untuk pindah window<br>• Klik Start untuk menu lengkap<br>• Semua menu tersedia dan berfungsi!<br><br>Selamat menikmati undangan! 💍'; document.getElementById('dlgXpGeneric').classList.add('open'); }
-function showAbout(){ document.getElementById('xpDlgTitle').textContent='About Wedding XP'; document.getElementById('xpDlgIcon').textContent='💍'; document.getElementById('xpDlgMsg').innerHTML='<b>Wedding XP Professional</b><br>Version 5.1.2600<br><br>Copyright © 2026 BridesSpace Corporation<br>All rights reserved.<br><br>Licensed to:<br>Anita & Zarda<br>24 Mei 2026 · Tangerang'; document.getElementById('dlgXpGeneric').classList.add('open'); }
+function showAbout(){ document.getElementById('xpDlgTitle').textContent='About Wedding XP'; document.getElementById('xpDlgIcon').textContent='💍'; document.getElementById('xpDlgMsg').innerHTML='<b>Wedding XP Professional</b><br>Version 5.1.2600<br><br>Copyright © 2026 BridesSpace Corporation<br>All rights reserved.<br><br>Licensed to:<br>Anita & Zarda<br>{{ invitation.event_date }} · Tangerang'; document.getElementById('dlgXpGeneric').classList.add('open'); }
 function showShutdown(){ document.getElementById('dlgXpShutdown').classList.add('open'); closeXpStart(); }
 function openXpWelcome(){ closeXpDlg('dlgXpWelcome'); openWin('winWedding'); if(!openWins.includes('winWedding')) openWins.push('winWedding'); updateXpTaskbar(); }
 

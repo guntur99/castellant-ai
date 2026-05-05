@@ -732,14 +732,14 @@ select.form-input{
     <h1 class="op-title">
       <span class="coral">Nazma</span> &<br><span class="coral">Guntur</span><br>Wedding
     </h1>
-    <p class="op-date">Due date: 24 Mei 2026 · Tangerang</p>
+    <p class="op-date">Due date: {{ invitation.event_date }} · Tangerang</p>
 
     <div class="op-task-card">
       <div class="otc-top">
         <span class="otc-label">Assigned to</span>
         <span class="otc-status">Invited</span>
       </div>
-      <div class="otc-name">Ade Guntur Fitridullah & Partner</div>
+      <div class="otc-name">{{ invitation.recipient_name }}</div>
       <div class="otc-meta">Wedding Guest · Priority: High</div>
     </div>
 
@@ -792,7 +792,7 @@ select.form-input{
         <span class="ph-meta-chip chip-coral">● On Track</span>
         <div class="ph-meta-item">
           <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          24 Mei 2026
+          {{ invitation.event_date }}
         </div>
         <div class="ph-meta-item">
           <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -838,7 +838,7 @@ select.form-input{
           <span class="mc-title-icon">🎯</span>
           Milestone: Hari Pernikahan
         </div>
-        <span class="mc-badge chip-coral">Due: 24 Mei 2026</span>
+        <span class="mc-badge chip-coral">Due: {{ invitation.event_date }}</span>
       </div>
       <div class="cd-row">
         <div class="cd-cell"><span class="cd-num" id="cdD">--</span><span class="cd-tag">Hari</span></div>
@@ -922,7 +922,7 @@ select.form-input{
             <div class="task-check active" style="border-color:var(--coral);background:var(--coral3)" onclick="toggleCheck(this)"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg></div>
             <span class="task-name" style="font-weight:600">Pernikahan — Akad & Resepsi 🎉</span>
             <div class="task-meta">
-              <span class="task-due" style="color:var(--coral);font-weight:600">24 Mei 2026</span>
+              <span class="task-due" style="color:var(--coral);font-weight:600">{{ invitation.event_date }}</span>
               <span class="task-tag" style="background:var(--coral3);color:var(--coral2)">In Progress</span>
             </div>
           </div>
@@ -1036,7 +1036,7 @@ select.form-input{
           <span class="sc-status-badge" style="background:var(--coral3);color:var(--coral2)">Scheduled</span>
         </div>
         <div class="sc-body">
-          <div class="sc-date">Minggu, 24 Mei 2026</div>
+          <div class="sc-date">Minggu, {{ invitation.event_date }}</div>
           <div class="sc-row"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>08.00 WIB</span></div>
           <div class="sc-row"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
           <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="sc-map-btn">
@@ -1053,7 +1053,7 @@ select.form-input{
           <span class="sc-status-badge" style="background:var(--teal3);color:#2A9D97">Scheduled</span>
         </div>
         <div class="sc-body">
-          <div class="sc-date">Minggu, 24 Mei 2026</div>
+          <div class="sc-date">Minggu, {{ invitation.event_date }}</div>
           <div class="sc-row"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>11.00 – 13.00 WIB</span></div>
           <div class="sc-row"><svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg><span>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
           <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="sc-map-btn">
@@ -1142,8 +1142,25 @@ select.form-input{
     <div id="wishes" style="margin-top:8px">
       <div class="section-label">Inbox · Ucapan & Doa</div>
       <div id="wishesList">
-        <div class="inbox-item visible">
-          <div class="ii-av" style="background:var(--coral);border-radius:8px">A</div>
+                {% if invitation.is_preview %}
+                
+                <!-- RSVPs will be loaded here -->
+            
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
+                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+</div>
           <div class="ii-body">
             <div class="ii-header">
               <span class="ii-name">Ayu Rahmawati</span>
@@ -1271,7 +1288,7 @@ function buildGallery(){
 }
 
 function startCountdown(){
-  const t=new Date('2026-05-24T08:00:00');
+  const t=new Date('{{ invitation.event_date_iso }}');
   const tick=()=>{
     const d=t-new Date();
     if(d<=0){['cdD','cdH','cdM','cdS'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='00'});return;}

@@ -657,14 +657,14 @@ select.form-input{
       <span class="highlight">Nazma & Guntur</span><br>
       Wedding Dashboard
     </h1>
-    <p class="op-sub">24 Mei 2026 · Graha Yadika, Tangerang</p>
+    <p class="op-sub">{{ invitation.event_date }} · Graha Yadika, Tangerang</p>
 
     <div class="op-employee-card">
       <div class="oec-label">Guest Profile</div>
       <div class="oec-row">
         <div class="oec-avatar">AG</div>
         <div>
-          <div class="oec-name">Ade Guntur Fitridullah & Partner</div>
+          <div class="oec-name">{{ invitation.recipient_name }}</div>
           <div class="oec-dept">Invited Guest · Wedding 2026</div>
         </div>
       </div>
@@ -704,7 +704,7 @@ select.form-input{
         <span class="dh-wave">👋</span>
       </div>
       <h1 class="dh-title">Wedding Dashboard<br>Nazma & Guntur</h1>
-      <p class="dh-sub">24 Mei 2026 · Graha Yadika, Tangerang</p>
+      <p class="dh-sub">{{ invitation.event_date }} · Graha Yadika, Tangerang</p>
       <div class="dh-stats">
         <div class="dh-stat"><span class="dhs-num" id="heroRes">7</span><span class="dhs-label">Respons</span></div>
         <div class="dh-stat"><span class="dhs-num" id="heroHadir">7</span><span class="dhs-label">Konfirmasi Hadir</span></div>
@@ -838,7 +838,7 @@ select.form-input{
               <div class="sch-accent"></div>
               <div class="sch-body">
                 <div class="sch-type">Akad Nikah</div>
-                <div class="sch-title">Minggu, 24 Mei 2026</div>
+                <div class="sch-title">Minggu, {{ invitation.event_date }}</div>
                 <div class="sch-rows">
                   <div class="sch-row">
                     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -860,7 +860,7 @@ select.form-input{
               <div class="sch-accent green"></div>
               <div class="sch-body">
                 <div class="sch-type" style="color:var(--green)">Resepsi Pernikahan</div>
-                <div class="sch-title">Minggu, 24 Mei 2026</div>
+                <div class="sch-title">Minggu, {{ invitation.event_date }}</div>
                 <div class="sch-rows">
                   <div class="sch-row">
                     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -1080,8 +1080,25 @@ select.form-input{
         </div>
         <div class="widget-body">
           <div class="wish-feed" id="wishesList">
-            <div class="wish-item visible">
-              <div class="wi-av" style="background:#c4a96a;border-radius:8px">A</div>
+                {% if invitation.is_preview %}
+                
+                <!-- RSVPs will be loaded here -->
+            
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
+                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+</div>
               <div class="wi-body">
                 <div class="wi-top"><span class="wi-name">Ayu Rahmawati</span><span class="wi-status">Hadir · 2</span></div>
                 <div class="wi-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah 🌿</div>
@@ -1205,7 +1222,7 @@ function buildGallery(){
 }
 
 function startCountdown(){
-  const t=new Date('2026-05-24T08:00:00');
+  const t=new Date('{{ invitation.event_date_iso }}');
   const tick=()=>{
     const d=t-new Date();
     if(d<=0){['cdD','cdH','cdM','cdS'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='00'});return;}

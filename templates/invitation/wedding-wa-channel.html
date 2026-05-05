@@ -844,7 +844,7 @@ textarea.rs-inp{min-height:80px;resize:vertical}
           Anita & Zarda 💍
           <svg viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px;color:var(--wa-green)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
         </div>
-        <div class="cic-desc">Channel resmi pernikahan Anita Pangestuti & Zardarian Ahadika N. Update informasi, foto, dan countdown menuju hari bahagia kami 🤍 — 24 Mei 2026</div>
+        <div class="cic-desc">Channel resmi pernikahan Anita Pangestuti & Zardarian Ahadika N. Update informasi, foto, dan countdown menuju hari bahagia kami 🤍 — {{ invitation.event_date }}</div>
         <div class="cic-stats">
           <div class="cic-stat"><div class="cic-stat-num">12.4K</div><div class="cic-stat-lbl">Pengikut</div></div>
           <div class="cic-stat"><div class="cic-stat-num">24</div><div class="cic-stat-lbl">Postingan</div></div>
@@ -890,7 +890,7 @@ textarea.rs-inp{min-height:80px;resize:vertical}
   <div class="rsvp-sheet">
     <div class="rs-handle"></div>
     <div class="rs-title">💌 Konfirmasi Kehadiran</div>
-    <div class="rs-sub">Anita & Zarda · Minggu, 24 Mei 2026 · Graha Yadika</div>
+    <div class="rs-sub">Anita & Zarda · Minggu, {{ invitation.event_date }} · Graha Yadika</div>
     <div class="rs-field">
       <div class="rs-label">Nama Lengkap</div>
       <input type="text" class="rs-inp" placeholder="Masukkan nama Anda" id="rsName">
@@ -1013,14 +1013,14 @@ const POSTS = [
   {
     type:'announcement',
     time:'09:00', views:'12.4K',
-    text:'<b>📢 PENGUMUMAN RESMI</b>\n\nBismillah...\n\nDengan penuh rasa syukur dan kebahagiaan, kami mengumumkan bahwa pernikahan kami akan dilangsungkan pada:\n\n📅 <b>Minggu, 24 Mei 2026</b>\n🕗 Akad Nikah · 08.00 WIB\n🎊 Resepsi · 11.00 – 13.00 WIB\n📍 Graha Yadika, Ciledug, Tangerang\n\nSemoga Allah meridhoi langkah kami 🤍',
+    text:'<b>📢 PENGUMUMAN RESMI</b>\n\nBismillah...\n\nDengan penuh rasa syukur dan kebahagiaan, kami mengumumkan bahwa pernikahan kami akan dilangsungkan pada:\n\n📅 <b>Minggu, {{ invitation.event_date }}</b>\n🕗 Akad Nikah · 08.00 WIB\n🎊 Resepsi · 11.00 – 13.00 WIB\n📍 Graha Yadika, Ciledug, Tangerang\n\nSemoga Allah meridhoi langkah kami 🤍',
     reactions:[{e:'❤️',n:842,green:false},{e:'🥹',n:324,green:false},{e:'🎊',n:218,green:false},{e:'🤲',n:156,green:true}],
   },
   {
     type:'photo-single',
     time:'09:15', views:'9.8K',
     img:0,
-    caption:'Save the Date!\n\n<b>Anita & Zarda</b> — 24 Mei 2026 💍\n\nGraha Yadika, Ciledug, Tangerang',
+    caption:'Save the Date!\n\n<b>Anita & Zarda</b> — {{ invitation.event_date }} 💍\n\nGraha Yadika, Ciledug, Tangerang',
     reactions:[{e:'❤️',n:712,green:false},{e:'😍',n:289,green:false},{e:'✨',n:134,green:true}],
   },
   {
@@ -1087,7 +1087,7 @@ async function renderPosts(){
 
   const dateEl=document.createElement('div');
   dateEl.className='post-date';
-  dateEl.innerHTML='<span>Minggu, 24 Mei 2026</span>';
+  dateEl.innerHTML='<span>Minggu, {{ invitation.event_date }}</span>';
   feed.appendChild(dateEl);
 
   for(let i=0;i<POSTS.length;i++){
@@ -1230,7 +1230,7 @@ function buildPost(p,idx){
 
 /* ══ COUNTDOWN ══ */
 function startCountdown(){
-  const t=new Date('2026-05-24T08:00:00');
+  const t=new Date('{{ invitation.event_date_iso }}');
   function tick(){
     const d=t-new Date();
     if(d<=0){['pcdD','pcdH','pcdM','pcdS'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='00'});return}

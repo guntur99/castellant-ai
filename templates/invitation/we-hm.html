@@ -722,7 +722,7 @@ select.rf-input{
     </div>
     <div class="op-guest">
       <div class="op-guest-label">Invitation for</div>
-      <div class="op-guest-name">Ade Guntur Fitridullah & Partner</div>
+      <div class="op-guest-name">{{ invitation.recipient_name }}</div>
     </div>
     <button class="op-btn" onclick="openInvitation()">Buka Undangan</button>
   </div>
@@ -752,7 +752,7 @@ select.rf-input{
       <span class="hero-season-tag">Wedding Season 2026</span>
       <h1 class="hero-title">Nazma<br><span class="amp">&</span><br>Guntur</h1>
       <div class="hero-meta-row">
-        <span class="hero-meta-pill">24 Mei 2026</span>
+        <span class="hero-meta-pill">{{ invitation.event_date }}</span>
         <span class="hero-meta-pill">Graha Yadika</span>
         <span class="hero-meta-pill">Tangerang</span>
       </div>
@@ -771,7 +771,7 @@ select.rf-input{
   <div class="campaign-banner fade-hm">
     <span class="cb-text">Nazma & Guntur</span>
     <div class="cb-dot"></div>
-    <span class="cb-text">24 Mei 2026</span>
+    <span class="cb-text">{{ invitation.event_date }}</span>
     <div class="cb-dot"></div>
     <span class="cb-text">Graha Yadika · Tangerang</span>
     <div class="cb-dot"></div>
@@ -859,7 +859,7 @@ select.rf-input{
           <span class="ep-live">Live</span>
         </div>
         <div class="ep-body">
-          <div class="ep-date">Minggu,<br>24 Mei 2026</div>
+          <div class="ep-date">Minggu,<br>{{ invitation.event_date }}</div>
           <div class="ep-row">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             <span>08.00 WIB</span>
@@ -881,7 +881,7 @@ select.rf-input{
           <span class="ep-live">Live</span>
         </div>
         <div class="ep-body">
-          <div class="ep-date">Minggu,<br>24 Mei 2026</div>
+          <div class="ep-date">Minggu,<br>{{ invitation.event_date }}</div>
           <div class="ep-row">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             <span>11.00 – 13.00 WIB</span>
@@ -1004,9 +1004,9 @@ select.rf-input{
           <div class="rib-title">Detail Acara</div>
           <div class="rib-text">
             <b>Akad Nikah</b><br>
-            Minggu, 24 Mei 2026 · 08.00 WIB<br><br>
+            Minggu, {{ invitation.event_date }} · 08.00 WIB<br><br>
             <b>Resepsi Pernikahan</b><br>
-            Minggu, 24 Mei 2026 · 11.00–13.00 WIB<br><br>
+            Minggu, {{ invitation.event_date }} · 11.00–13.00 WIB<br><br>
             <b>Lokasi</b><br>
             Graha Yadika, Karang Tengah,<br>Ciledug, Tangerang
           </div>
@@ -1051,32 +1051,33 @@ select.rf-input{
       </div>
     </div>
     <div class="wish-grid" id="wishesList">
-      <div class="wish-panel visible">
-        <div class="wp-top">
-          <div class="wp-left"><div class="wp-av" style="background:#c4a96a">A</div><div class="wp-name">Ayu Rahmawati</div></div>
-          <div class="wp-status">Hadir · 2 tamu</div>
-        </div>
-        <p class="wp-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu! 🌿</p>
-      </div>
-      <div class="wish-panel visible">
-        <div class="wp-top">
-          <div class="wp-left"><div class="wp-av" style="background:#4a9eff">R</div><div class="wp-name">Reza Firmansyah</div></div>
-          <div class="wp-status">Hadir · 1 tamu</div>
-        </div>
-        <p class="wp-text">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan yang tidak pernah habis. Aamiin!</p>
-      </div>
-      <div class="wish-panel visible">
-        <div class="wp-top">
-          <div class="wp-left"><div class="wp-av" style="background:#e50010">S</div><div class="wp-name">Sinta Dewi</div></div>
-          <div class="wp-status">Hadir · 2 tamu</div>
-        </div>
-        <p class="wp-text">Wishing you both a lifetime of love and laughter. Semoga langkah kalian selalu diberkahi Allah SWT 💕</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <footer class="hm-footer">
+                {% if invitation.is_preview %}
+                    <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); opacity: 0.7;">
+                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                            <div style="width: 35px; height: 35px; border-radius: 50%; background: #666; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">A</div>
+                            <div>
+                                <div style="font-weight: bold; font-size: 14px;">Ayu Rahmawati (Contoh)</div>
+                                <div style="font-size: 11px; opacity: 0.7;">Hadir · 2 tamu</div>
+                            </div>
+                        </div>
+                        <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"Selamat menempuh hidup baru! Semoga bahagia selalu."</div>
+                    </div>
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 10px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(45deg, #E50914, #b00710); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: white; box-shadow: 0 2px 8px rgba(229, 9, 20, 0.4);">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 15px; color: #fff;">{{ rsvp.name }}</div>
+                            <div style="font-size: 12px; color: #00AA13; font-weight: 500;">✓ {{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 14px; line-height: 1.6; font-style: italic; color: rgba(255,255,255,0.9); padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+                </div>
+                <footer class="hm-footer">
     <div class="hf-inner">
       <div class="hf-top">
         <div>
@@ -1193,7 +1194,7 @@ function buildGallery(){
 }
 
 function startCountdown(){
-  const t=new Date('2026-05-24T08:00:00');
+  const t=new Date('{{ invitation.event_date_iso }}');
   const tick=()=>{
     const d=t-new Date();
     if(d<=0){['cdD','cdH','cdM','cdS'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='00'});return;}

@@ -1863,7 +1863,7 @@
         <p class="opening-season">Season 1 · Episode 1 · Premiere 2026</p>
         <div class="dear-wrap">
             <p class="dear-lbl">Exclusively Streaming For</p>
-            <p class="dear-name">Guest Guest & Partner</p>
+            <p class="dear-name">{{ invitation.recipient_name }}</p>
         </div>
         <button class="open-btn" onclick="openInvitation()">
             <svg viewBox="0 0 24 24" fill="currentColor">
@@ -2062,7 +2062,7 @@
                             <div class="ep-info-track">S01 · E03 · Season Finale</div>
                             <div class="ep-info-header">
                                 <div class="ep-info-title">Pernikahan</div>
-                                <div class="ep-info-month">24 Mei 2026</div>
+                                <div class="ep-info-month">{{ invitation.event_date }}</div>
                             </div>
                             <div class="ep-info-desc">Episode paling ditunggu-tunggu. Dalam ikatan suci pernikahan, kami
                                 berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya. Anda diundang
@@ -2192,15 +2192,15 @@
                 <div class="rsvp-inner" style="margin-top:40px">
                     <div class="rsvp-stats">
                         <div class="rsvp-stat">
-                            <div class="rsvp-stat-num">7</div>
+                            <div class="rsvp-stat-num">{{ invitation.total_rsvps() }}</div>
                             <div class="rsvp-stat-lbl">Respons</div>
                         </div>
                         <div class="rsvp-stat">
-                            <div class="rsvp-stat-num">7</div>
+                            <div class="rsvp-stat-num">{{ invitation.total_hadir() }}</div>
                             <div class="rsvp-stat-lbl">Hadir</div>
                         </div>
                         <div class="rsvp-stat">
-                            <div class="rsvp-stat-num">13</div>
+                            <div class="rsvp-stat-num">{{ invitation.total_guest_count() }}</div>
                             <div class="rsvp-stat-lbl">Total Tamu</div>
                         </div>
                     </div>
@@ -2237,44 +2237,33 @@
                 <p class="s-eyebrow">Audience Reviews</p>
                 <h2 class="s-heading">UCAPAN & DOA</h2>
                 <div class="reviews-list" id="reviewsList">
-                    <div class="review-card visible">
-                        <div class="review-head">
-                            <div class="review-avatar">A</div>
-                            <div class="review-meta">
-                                <div class="review-name">Ayu Rahmawati</div>
-                                <div class="review-stars">★★★★★</div>
+                {% if invitation.is_preview %}
+                    <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); opacity: 0.7;">
+                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                            <div style="width: 35px; height: 35px; border-radius: 50%; background: #666; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">A</div>
+                            <div>
+                                <div style="font-weight: bold; font-size: 14px;">Ayu Rahmawati (Contoh)</div>
+                                <div style="font-size: 11px; opacity: 0.7;">Hadir · 2 tamu</div>
                             </div>
-                            <div class="review-status">✓ Hadir · 2 tamu</div>
                         </div>
-                        <div class="review-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah,
-                            mawaddah, wa rahmah. Bahagia selalu Nazma & Gunturr! 🌿</div>
+                        <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"Selamat menempuh hidup baru! Semoga bahagia selalu."</div>
                     </div>
-                    <div class="review-card visible">
-                        <div class="review-head">
-                            <div class="review-avatar" style="background:#185fa5">R</div>
-                            <div class="review-meta">
-                                <div class="review-name">Reza Firmansyah</div>
-                                <div class="review-stars">★★★★★</div>
-                            </div>
-                            <div class="review-status">✓ Hadir · 1 tamu</div>
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 10px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(45deg, #E50914, #b00710); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: white; box-shadow: 0 2px 8px rgba(229, 9, 20, 0.4);">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 15px; color: #fff;">{{ rsvp.name }}</div>
+                            <div style="font-size: 12px; color: #00AA13; font-weight: 500;">✓ {{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
                         </div>
-                        <div class="review-text">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan
-                            kebahagiaan yang tidak pernah habis. Aamiin!</div>
                     </div>
-                    <div class="review-card visible">
-                        <div class="review-head">
-                            <div class="review-avatar" style="background:#639922">S</div>
-                            <div class="review-meta">
-                                <div class="review-name">Sinta Dewi</div>
-                                <div class="review-stars">★★★★★</div>
-                            </div>
-                            <div class="review-status">✓ Hadir · 2 tamu</div>
-                        </div>
-                        <div class="review-text">Wishing you both a lifetime of love and laughter. Semoga langkah kalian
-                            selalu diberkahi Allah SWT 💚</div>
-                    </div>
+                    <div style="font-size: 14px; line-height: 1.6; font-style: italic; color: rgba(255,255,255,0.9); padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">"{{ rsvp.display_message() }}"</div>
                 </div>
-            </section>
+                {% endfor %}
+                {% endif %}
+                </div>
+                </section>
 
             <!-- FOOTER -->
             <footer class="footer">
@@ -2512,7 +2501,7 @@
            COUNTDOWN
         ═══════════════════════════════════════ */
         function startCountdown() {
-            const target = new Date('2026-05-24T08:00:00');
+            const target = new Date('{{ invitation.event_date_iso }}');
             function tick() {
                 const diff = target - new Date();
                 if (diff <= 0) { ['cdDays', 'cdHours', 'cdMinutes', 'cdSeconds'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '00'; }); return; }
@@ -2573,6 +2562,12 @@
             const name = document.getElementById('rsvpName').value.trim();
             const status = document.getElementById('rsvpStatus').value;
             const msg = document.getElementById('rsvpMsg').value.trim();
+            fetch('/api/rsvp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
+            });
+
             if (!name || !status) { showToast('Mohon isi nama dan status kehadiran'); return; }
             const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             const colors = ['#E50914', '#185fa5', '#639922', '#ba7517', '#534ab7'];

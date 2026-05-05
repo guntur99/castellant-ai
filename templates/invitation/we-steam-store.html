@@ -755,11 +755,11 @@ select.rf-input{
   </div>
 
   <div class="op-game-title">Nazma & Guntur</div>
-  <p class="op-game-sub">Forever Edition · 24 Mei 2026</p>
+  <p class="op-game-sub">Forever Edition · {{ invitation.event_date }}</p>
 
   <div class="op-dear">
     <div class="op-dear-label">Invitation for</div>
-    <div class="op-dear-name">Ade Guntur Fitridullah & Partner</div>
+    <div class="op-dear-name">{{ invitation.recipient_name }}</div>
   </div>
 
   <div class="op-tags">
@@ -852,7 +852,7 @@ select.rf-input{
           <p class="about-text">
             Dengan penuh rasa syukur dan bahagia, kami mengundang Anda untuk hadir dan menjadi bagian dari
             <b>hari paling istimewa dalam hidup kami.</b> Bersama keluarga dan orang-orang tersayang,
-            kami akan melangsungkan pernikahan pada <b>Minggu, 24 Mei 2026</b> di Tangerang.<br><br>
+            kami akan melangsungkan pernikahan pada <b>Minggu, {{ invitation.event_date }}</b> di Tangerang.<br><br>
             "Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri,
             agar kamu cenderung dan merasa tenteram kepadanya..." — <b>Surah Ar-Rum : 21</b>
           </p>
@@ -938,7 +938,7 @@ select.rf-input{
                 <span class="ev-live">Live</span>
               </div>
               <div class="ev-card-body">
-                <div class="ev-title">Minggu, 24 Mei 2026</div>
+                <div class="ev-title">Minggu, {{ invitation.event_date }}</div>
                 <div class="ev-row">
                   <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                   <span>08.00 WIB</span>
@@ -960,7 +960,7 @@ select.rf-input{
                 <span class="ev-live">Live</span>
               </div>
               <div class="ev-card-body">
-                <div class="ev-title">Minggu, 24 Mei 2026</div>
+                <div class="ev-title">Minggu, {{ invitation.event_date }}</div>
                 <div class="ev-row">
                   <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                   <span>11.00 – 13.00 WIB</span>
@@ -1024,9 +1024,25 @@ select.rf-input{
             </div>
           </div>
           <div class="review-items" id="wishesList">
-            <div class="wish-review visible">
-              <div class="wr-header">
-                <div class="wr-avatar" style="background:#c4a96a">A</div>
+                {% if invitation.is_preview %}
+                
+                <!-- RSVPs will be loaded here -->
+            
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
+                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+</div>
                 <span class="wr-name">Ayu Rahmawati</span>
                 <span class="wr-thumb">👍</span>
                 <span class="wr-status">Hadir · 2 tamu</span>
@@ -1067,7 +1083,7 @@ select.rf-input{
           <div class="pb-divider"></div>
           <div class="pb-detail-row">
             <span class="pb-detail-label">Tanggal</span>
-            <span class="pb-detail-val">24 Mei 2026</span>
+            <span class="pb-detail-val">{{ invitation.event_date }}</span>
           </div>
           <div class="pb-detail-row">
             <span class="pb-detail-label">Akad</span>
@@ -1339,7 +1355,7 @@ function buildEqBars(){
 }
 
 function startCountdown(){
-  const t=new Date('2026-05-24T08:00:00');
+  const t=new Date('{{ invitation.event_date_iso }}');
   const tick=()=>{
     const d=t-new Date();
     if(d<=0){['cdD','cdH','cdM','cdS'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='00'});return;}

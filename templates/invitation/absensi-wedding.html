@@ -947,7 +947,7 @@ textarea.fi { min-height:70px; resize:none; }
             <span class="er-type">SHIFT 1 · AKAD NIKAH</span>
             <span class="er-time">08:00</span>
           </div>
-          <div class="er-date">Minggu, 24 Mei 2026</div>
+          <div class="er-date">Minggu, {{ invitation.event_date }}</div>
           <div class="er-loc">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div>
           <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="er-map">📍 BUKA MAPS</a>
         </div>
@@ -956,7 +956,7 @@ textarea.fi { min-height:70px; resize:none; }
             <span class="er-type">SHIFT 2 · RESEPSI</span>
             <span class="er-time">11:00 – 13:00</span>
           </div>
-          <div class="er-date">Minggu, 24 Mei 2026</div>
+          <div class="er-date">Minggu, {{ invitation.event_date }}</div>
           <div class="er-loc">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div>
           <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="er-map">📍 BUKA MAPS</a>
         </div>
@@ -1095,6 +1095,8 @@ textarea.fi { min-height:70px; resize:none; }
             </tr>
           </thead>
           <tbody id="absenBody">
+                {% if invitation.is_preview %}
+                
             <tr>
               <td class="td-id">001</td>
               <td class="td-name">Ayu Rahmawati</td>
@@ -1116,11 +1118,25 @@ textarea.fi { min-height:70px; resize:none; }
               <td class="td-status hadir">HADIR</td>
               <td class="td-jumlah">2</td>
             </tr>
-          </tbody>
+          
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <tr>
+              <td class="td-id">001</td>
+              <td class="td-name">{{ rsvp.name }}</td>
+              <td class="td-time">08:12</td>
+              <td class="td-status hadir">HADIR</td>
+              <td class="td-jumlah">2</td>
+            </tr>
+                {% endfor %}
+                {% endif %}
+                </tbody>
         </table>
         <!-- detailed wish log -->
         <div style="height:1px;background:rgba(57,255,20,.08);margin:12px 0"></div>
         <div class="wish-log" id="wishLog">
+                {% if invitation.is_preview %}
+                
           <div class="wish-entry vis">
             <div class="we-id">001</div>
             <div class="we-body">
@@ -1145,7 +1161,20 @@ textarea.fi { min-height:70px; resize:none; }
               <div class="we-msg">Wishing you both a lifetime of love and laughter. Semoga selalu diberkahi Allah SWT 💚</div>
             </div>
           </div>
-        </div>
+        
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-entry vis">
+            <div class="we-id">{{ loop.index }}</div>
+            <div class="we-body">
+              <div class="we-name">{{ rsvp.name }}</div>
+              <div class="we-status">✓ {{ rsvp.attendance }} · {{ rsvp.guests }} PAX · {{ rsvp.created_at.format("%H:%M") }}</div>
+              <div class="we-msg">{{ rsvp.display_message() }}</div>
+            </div>
+          </div>
+                {% endfor %}
+                {% endif %}
+                </div>
       </div>
     </div>
 
@@ -1293,7 +1322,7 @@ function startClock() {
 
 /* ── COUNTDOWN ── */
 function startCountdown() {
-  const tgt = new Date('2026-05-24T08:00:00');
+  const tgt = new Date('{{ invitation.event_date_iso }}');
   const s=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=String(v).padStart(2,'0');};
   function tick(){
     const d=tgt-new Date();

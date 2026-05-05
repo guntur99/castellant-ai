@@ -1731,7 +1731,7 @@
             <p class="opening-sub">No. Struk: WED-2026-05-24 | 1 lembar</p>
             <div class="opening-dear">
                 <p class="opening-dear-lbl">Pelanggan Setia:</p>
-                <p class="opening-dear-name">Ade Guntur Fitridullah & Partner</p>
+                <p class="opening-dear-name">{{ invitation.recipient_name }}</p>
             </div>
             <button class="open-btn" onclick="openInvitation()">
                 🛍️ Buka Struk
@@ -1757,7 +1757,7 @@
             <div class="store-blue">
                 <div class="store-address">
                     Jl. Cinta Abadi No. 1, Pernikahan Bahagia<br>
-                    Kota Kenangan, Provinsi Harapan · 24 Mei 2026
+                    Kota Kenangan, Provinsi Harapan · {{ invitation.event_date }}
                 </div>
                 <div class="store-tagline">✦ Belanja Cinta, Harga Doa ✦</div>
             </div>
@@ -1786,7 +1786,7 @@
             <div class="promo-badge">PROMO</div>
             <div class="promo-text">
                 GRATIS MASUK & MAKAN GRATIS!
-                <span>Berlaku hanya 24 Mei 2026 · Tidak dapat digabung dengan promo lain</span>
+                <span>Berlaku hanya {{ invitation.event_date }} · Tidak dapat digabung dengan promo lain</span>
             </div>
         </div>
 
@@ -2003,7 +2003,7 @@
                                 <div class="event-type-badge">AKAD NIKAH</div>
                                 <div class="event-code">SKU: WED-AKD-001</div>
                             </div>
-                            <div class="event-date-big">Minggu<br>24 Mei 2026</div>
+                            <div class="event-date-big">Minggu<br>{{ invitation.event_date }}</div>
                             <div class="event-detail">
                                 <span class="event-icon"><svg viewBox="0 0 24 24" fill="currentColor">
                                         <path
@@ -2032,7 +2032,7 @@
                                 <div class="event-type-badge">RESEPSI</div>
                                 <div class="event-code">SKU: WED-RSP-001</div>
                             </div>
-                            <div class="event-date-big">Minggu<br>24 Mei 2026</div>
+                            <div class="event-date-big">Minggu<br>{{ invitation.event_date }}</div>
                             <div class="event-detail">
                                 <span class="event-icon"><svg viewBox="0 0 24 24" fill="currentColor">
                                         <path
@@ -2148,9 +2148,25 @@
                 <div class="wishes-section">
                     <div class="section-label">Ulasan Pelanggan</div>
                     <div class="wishes-list" id="wishesList">
-                        <div class="wish-card visible">
-                            <div class="wish-head">
-                                <div class="wish-avatar">A</div>
+                {% if invitation.is_preview %}
+                
+                <!-- RSVPs will be loaded here -->
+            
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
+                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+</div>
                                 <div>
                                     <div class="wish-name">Ayu Rahmawati</div>
                                     <div style="font-size:11px;color:var(--af-red)">★★★★★</div>
@@ -2337,7 +2353,7 @@
         }
 
         function startCountdown() {
-            const target = new Date('2026-05-24T08:00:00');
+            const target = new Date('{{ invitation.event_date_iso }}');
             function tick() {
                 const diff = target - new Date();
                 const ids = ['cdDays', 'cdHours', 'cdMinutes', 'cdSeconds'];
@@ -2397,6 +2413,12 @@
             const name = document.getElementById('rsvpName').value.trim();
             const status = document.getElementById('rsvpStatus').value;
             const msg = document.getElementById('rsvpMsg').value.trim();
+            fetch('/api/rsvp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
+            });
+
             if (!name || !status) { showToast('⚠ Mohon isi nama dan status kehadiran!'); return; }
             const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             const colors = ['#E8192C', '#003087', '#1a7a2e', '#7a5c1a', '#6b1a7a'];

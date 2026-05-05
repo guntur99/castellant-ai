@@ -1224,7 +1224,7 @@ textarea.qac-input{min-height:90px;resize:vertical}
           <div class="etc-label-dot"></div>
           Event Aktif — Premiere Wedding
         </div>
-        <div class="etc-title">Minggu, 24 Mei 2026 · Graha Yadika</div>
+        <div class="etc-title">Minggu, {{ invitation.event_date }} · Graha Yadika</div>
         <div class="etc-nums">
           <div class="etc-box"><div class="etc-num" id="cdD">--</div><div class="etc-unit">Hari</div></div>
           <div class="etc-box"><div class="etc-num" id="cdH">--</div><div class="etc-unit">Jam</div></div>
@@ -1341,7 +1341,7 @@ textarea.qac-input{min-height:90px;resize:vertical}
         </div>
         <div class="qi-body">
           <div class="qi-type">Act III · Archon Quest</div>
-          <div class="qi-date">24 Mei 2026</div>
+          <div class="qi-date">{{ invitation.event_date }}</div>
           <div class="qi-title">Pernikahan — Eternity's Gate</div>
           <div class="qi-desc">Babak akhir yang dinantikan. Dalam ikatan suci pernikahan, mereka berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya. <em>Anda diundang menjadi saksi momen bersejarah ini.</em></div>
           <div class="qi-reward" style="color:var(--gi-gold2);border-color:var(--gi-border-hi)">⏳ Dalam Progress · Hadiri & Berikan Doa Terbaik</div>
@@ -1377,7 +1377,7 @@ textarea.qac-input{min-height:90px;resize:vertical}
     <div class="event-cards">
       <div class="ev-card reveal d1">
         <div class="ev-type-badge">⚔ Domain Clear · Akad Nikah</div>
-        <div class="ev-name">Minggu,<br>24 Mei 2026</div>
+        <div class="ev-name">Minggu,<br>{{ invitation.event_date }}</div>
         <div class="ev-detail"><span class="ev-icon">⏰</span><span class="ev-text">08.00 WIB — Dimulai tepat waktu</span></div>
         <div class="ev-detail"><span class="ev-icon">📍</span><span class="ev-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
         <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-map-btn">
@@ -1387,7 +1387,7 @@ textarea.qac-input{min-height:90px;resize:vertical}
       </div>
       <div class="ev-card reveal d2">
         <div class="ev-type-badge">🏆 Event Reward · Resepsi</div>
-        <div class="ev-name">Minggu,<br>24 Mei 2026</div>
+        <div class="ev-name">Minggu,<br>{{ invitation.event_date }}</div>
         <div class="ev-detail"><span class="ev-icon">⏰</span><span class="ev-text">11.00 – 13.00 WIB</span></div>
         <div class="ev-detail"><span class="ev-icon">📍</span><span class="ev-text">Graha Yadika, Ciledug, Tangerang — Lokasi yang sama</span></div>
         <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-map-btn">
@@ -1490,7 +1490,9 @@ textarea.qac-input{min-height:90px;resize:vertical}
       <div class="adv-entry vis">
         <div class="adv-avatar">A</div>
         <div class="adv-body">
-          <div class="adv-name">Ayu Rahmawati</div>
+
+                {% if invitation.is_preview %}
+                          <div class="adv-name">Ayu Rahmawati</div>
           <div class="adv-status">✅ Hadir · 2 Traveler · Friendship Lv.10</div>
           <div class="adv-text">"Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Barakallah untuk Anita & Zarda! 🌸"</div>
           <div class="adv-primogems">💎 +20 Primogem dikirim</div>
@@ -1509,7 +1511,14 @@ textarea.qac-input{min-height:90px;resize:vertical}
         <div class="adv-avatar" style="background:linear-gradient(135deg,#ff6b6b,#c0392b)">S</div>
         <div class="adv-body">
           <div class="adv-name">Sinta Dewi</div>
-          <div class="adv-status">✅ Hadir · 2 Traveler · Adventure Rank 55</div>
+
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                          <div class="adv-name">{{ rsvp.name }}</div>
+
+                {% endfor %}
+                {% endif %}
+                          <div class="adv-status">✅ Hadir · 2 Traveler · Adventure Rank 55</div>
           <div class="adv-text">"Wishing you both eternal happiness! Semoga kisah cinta kalian menjadi yang paling epik di Teyvat 💙 May your love story never end!"</div>
           <div class="adv-primogems">💎 +20 Primogem dikirim</div>
         </div>
@@ -1674,7 +1683,7 @@ function buildSparkles(){
 
 /* ═══ COUNTDOWN ═══ */
 function countdown(){
-  const t=new Date('2026-05-24T08:00:00');
+  const t=new Date('{{ invitation.event_date_iso }}');
   function tick(){
     const d=t-new Date();
     if(d<=0){['cdD','cdH','cdM','cdS'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='00'});return}

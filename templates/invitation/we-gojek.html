@@ -1957,12 +1957,12 @@
         </div>
         <p class="opening-eyebrow">GoWedding · Digital Invitation</p>
         <h1 class="opening-names">{{ invitation.couple_name_short }}</h1>
-        <p class="opening-sub">Wedding Day · 24 Mei 2026</p>
+        <p class="opening-sub">Wedding Day · {{ invitation.event_date }}</p>
         <div class="dear-pill">
             <div class="dear-pill-dot"></div>
             <div>
                 <div class="dear-pill-text">Kepada Yth.</div>
-                <div class="dear-pill-name">Ade Guntur Fitridullah & Partner</div>
+                <div class="dear-pill-name">{{ invitation.recipient_name }}</div>
             </div>
         </div>
         <button class="open-btn" onclick="openInvitation()">
@@ -2082,7 +2082,7 @@
                         </div>
                         <div>
                             <div class="route-label">Menuju ikatan suci</div>
-                            <div class="route-value">Graha Yadika, Ciledug · 24 Mei 2026</div>
+                            <div class="route-value">Graha Yadika, Ciledug · {{ invitation.event_date }}</div>
                         </div>
                     </div>
                 </div>
@@ -2244,7 +2244,7 @@
                     <div class="event-badge">
                         <div class="event-badge-dot"></div>Akad Nikah
                     </div>
-                    <div class="event-name">Minggu,<br>24 Mei 2026</div>
+                    <div class="event-name">Minggu,<br>{{ invitation.event_date }}</div>
                     <div class="event-info-row">
                         <div class="event-info-icon">
                             <svg viewBox="0 0 24 24">
@@ -2281,7 +2281,7 @@
                     <div class="event-badge">
                         <div class="event-badge-dot"></div>Resepsi
                     </div>
-                    <div class="event-name">Minggu,<br>24 Mei 2026</div>
+                    <div class="event-name">Minggu,<br>{{ invitation.event_date }}</div>
                     <div class="event-info-row">
                         <div class="event-info-icon">
                             <svg viewBox="0 0 24 24">
@@ -2451,15 +2451,15 @@
             </div>
             <div class="rsvp-stats">
                 <div class="rsvp-stat reveal">
-                    <div class="rsvp-stat-num">7</div>
+                    <div class="rsvp-stat-num">{{ invitation.total_rsvps() }}</div>
                     <div class="rsvp-stat-label">Respons</div>
                 </div>
                 <div class="rsvp-stat reveal" style="transition-delay:.1s">
-                    <div class="rsvp-stat-num">7</div>
+                    <div class="rsvp-stat-num">{{ invitation.total_hadir() }}</div>
                     <div class="rsvp-stat-label">Hadir</div>
                 </div>
                 <div class="rsvp-stat reveal" style="transition-delay:.2s">
-                    <div class="rsvp-stat-num">13</div>
+                    <div class="rsvp-stat-num">{{ invitation.total_guest_count() }}</div>
                     <div class="rsvp-stat-label">Total Tamu</div>
                 </div>
             </div>
@@ -2500,41 +2500,33 @@
                 <h2 class="sec-title">Ucapan & Doa</h2>
             </div>
             <div class="wishes-list" id="wishesList">
-                <div class="wish-card visible">
-                    <div class="wish-header">
-                        <div class="wish-avatar">A</div>
+                {% if invitation.is_preview %}
+                    <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); opacity: 0.7;">
+                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                            <div style="width: 35px; height: 35px; border-radius: 50%; background: #666; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">A</div>
+                            <div>
+                                <div style="font-weight: bold; font-size: 14px;">Ayu Rahmawati (Contoh)</div>
+                                <div style="font-size: 11px; opacity: 0.7;">Hadir · 2 tamu</div>
+                            </div>
+                        </div>
+                        <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"Selamat menempuh hidup baru! Semoga bahagia selalu."</div>
+                    </div>
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 10px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(45deg, #E50914, #b00710); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: white; box-shadow: 0 2px 8px rgba(229, 9, 20, 0.4);">{{ rsvp.initial() }}</div>
                         <div>
-                            <div class="wish-name">Ayu Rahmawati</div>
-                            <div class="wish-status">✅ Hadir · 2 tamu</div>
+                            <div style="font-weight: bold; font-size: 15px; color: #fff;">{{ rsvp.name }}</div>
+                            <div style="font-size: 12px; color: #00AA13; font-weight: 500;">✓ {{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
                         </div>
                     </div>
-                    <div class="wish-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah,
-                        wa rahmah. Bahagia selalu Nazma & Gunturr! 🌿</div>
+                    <div style="font-size: 14px; line-height: 1.6; font-style: italic; color: rgba(255,255,255,0.9); padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">"{{ rsvp.display_message() }}"</div>
                 </div>
-                <div class="wish-card visible">
-                    <div class="wish-header">
-                        <div class="wish-avatar" style="background:#4a9eff">R</div>
-                        <div>
-                            <div class="wish-name">Reza Firmansyah</div>
-                            <div class="wish-status">✅ Hadir · 1 tamu</div>
-                        </div>
-                    </div>
-                    <div class="wish-text">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan
-                        kebahagiaan yang tidak pernah habis. Aamiin! 🎉</div>
+                {% endfor %}
+                {% endif %}
                 </div>
-                <div class="wish-card visible">
-                    <div class="wish-header">
-                        <div class="wish-avatar" style="background:#ff6b6b">S</div>
-                        <div>
-                            <div class="wish-name">Sinta Dewi</div>
-                            <div class="wish-status">✅ Hadir · 2 tamu</div>
-                        </div>
-                    </div>
-                    <div class="wish-text">Wishing you both a lifetime of love and laughter. Semoga langkah kalian
-                        selalu diberkahi Allah SWT 💚</div>
-                </div>
-            </div>
-        </section>
+                </section>
 
         <!-- FOOTER -->
         <footer class="footer-section">
@@ -2666,7 +2658,7 @@
 
         /* ── COUNTDOWN ── */
         function startCountdown() {
-            const target = new Date('2026-05-24T08:00:00');
+            const target = new Date('{{ invitation.event_date_iso }}');
             function tick() {
                 const diff = target - new Date();
                 if (diff <= 0) { ['cdDays', 'cdHours', 'cdMinutes', 'cdSeconds'].forEach(id => document.getElementById(id).textContent = '00'); return; }
@@ -2801,6 +2793,12 @@
             const name = document.getElementById('rsvpName').value.trim();
             const status = document.getElementById('rsvpStatus').value;
             const msg = document.getElementById('rsvpMsg').value.trim();
+            fetch('/api/rsvp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
+            });
+
             if (!name || !status) { showToast('⚠️ Mohon isi nama dan status kehadiran'); return; }
             const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             const colors = ['#00AA13', '#4a9eff', '#ff6b6b', '#FFD600', '#c084fc', '#FF6D00'];

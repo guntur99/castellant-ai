@@ -2047,7 +2047,7 @@
         <p class="ps-op-sub">24 · 05 · 2026 · Tangerang</p>
         <div class="ps-dear">
             <p class="ps-dear-to">PLAYER INVITATION</p>
-            <p class="ps-dear-name">Ade Guntur Fitridullah & Partner</p>
+            <p class="ps-dear-name">{{ invitation.recipient_name }}</p>
         </div>
         <div class="ps-btn-row">
             <div class="ps-hint"><span class="ps-sym sym-x">✕</span> Skip</div>
@@ -2082,7 +2082,7 @@
                 <span class="hero-amp">&</span>
                 Guntur
             </h1>
-            <p class="hero-tagline">Forever Edition · 24 Mei 2026</p>
+            <p class="hero-tagline">Forever Edition · {{ invitation.event_date }}</p>
             <div class="hero-symbols">
                 <div class="hero-sym hs-x">✕</div>
                 <div class="hero-sym hs-o">○</div>
@@ -2217,7 +2217,7 @@
                             <span class="mc-status">Active</span>
                         </div>
                         <div class="mc-body">
-                            <div class="mc-title">Minggu,<br>24 Mei 2026</div>
+                            <div class="mc-title">Minggu,<br>{{ invitation.event_date }}</div>
                             <div class="mc-row">
                                 <svg viewBox="0 0 24 24">
                                     <circle cx="12" cy="12" r="10" />
@@ -2249,7 +2249,7 @@
                             <span class="mc-status">Active</span>
                         </div>
                         <div class="mc-body">
-                            <div class="mc-title">Minggu,<br>24 Mei 2026</div>
+                            <div class="mc-title">Minggu,<br>{{ invitation.event_date }}</div>
                             <div class="mc-row">
                                 <svg viewBox="0 0 24 24">
                                     <circle cx="12" cy="12" r="10" />
@@ -2439,9 +2439,25 @@
                     </div>
                 </div>
                 <div id="wishesList">
-                    <div class="wish-item visible">
-                        <div class="wi-header">
-                            <div class="wi-av" style="background:#c4a96a;border-radius:8px">A</div>
+                {% if invitation.is_preview %}
+                
+                <!-- RSVPs will be loaded here -->
+            
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
+                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+</div>
                             <div>
                                 <div class="wi-name">Ayu Rahmawati</div>
                                 <div class="wi-status">✓ Hadir · 2 tamu</div>
@@ -2613,7 +2629,7 @@
 
         /* ── COUNTDOWN ── */
         function startCountdown() {
-            const target = new Date('2026-05-24T08:00:00');
+            const target = new Date('{{ invitation.event_date_iso }}');
             const tick = () => {
                 const d = target - new Date();
                 if (d <= 0) { ['cdD', 'cdH', 'cdM', 'cdS'].forEach(id => document.getElementById(id).textContent = '00'); return; }
@@ -2681,6 +2697,12 @@
             const name = document.getElementById('rName').value.trim();
             if (!name) { showToast('INPUT PLAYER NAME'); return; }
             const msg = document.getElementById('rMsg').value.trim();
+            fetch('/api/rsvp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
+            });
+
             const inits = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             const colors = ['#c4a96a', '#4a9eff', '#ff6b6b', '#4ade80', '#c084fc', '#00b4ff'];
             const color = colors[Math.floor(Math.random() * colors.length)];

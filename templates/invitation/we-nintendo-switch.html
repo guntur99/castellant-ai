@@ -747,7 +747,7 @@ select.rf-input{
   <p class="op-date">24 · 05 · 2026 · Tangerang</p>
 
   <div class="op-dear">
-    <p class="op-dear-name">Ade Guntur Fitridullah & Partner</p>
+    <p class="op-dear-name">{{ invitation.recipient_name }}</p>
   </div>
 
   <div class="op-btns">
@@ -791,7 +791,7 @@ select.rf-input{
       <span class="hero-amp">~</span>
       Guntur
     </h1>
-    <p class="hero-tagline">Forever Edition · 24 Mei 2026</p>
+    <p class="hero-tagline">Forever Edition · {{ invitation.event_date }}</p>
 
     <div class="hero-abxy">
       <div class="abxy-btn abxy-x abxy-x">X</div>
@@ -802,7 +802,7 @@ select.rf-input{
 
     <div class="hero-date-badge">
       <span class="dot"></span>
-      Minggu, 24 Mei 2026 · Tangerang
+      Minggu, {{ invitation.event_date }} · Tangerang
     </div>
 
     <div class="hero-scroll">
@@ -894,7 +894,7 @@ select.rf-input{
           <span class="stage-status">Live</span>
         </div>
         <div class="stage-body">
-          <div class="stage-title">Minggu,<br>24 Mei 2026</div>
+          <div class="stage-title">Minggu,<br>{{ invitation.event_date }}</div>
           <div class="stage-row">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             <span>08.00 WIB</span>
@@ -916,7 +916,7 @@ select.rf-input{
           <span class="stage-status">Live</span>
         </div>
         <div class="stage-body">
-          <div class="stage-title">Minggu,<br>24 Mei 2026</div>
+          <div class="stage-title">Minggu,<br>{{ invitation.event_date }}</div>
           <div class="stage-row">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
             <span>11.00 – 13.00 WIB</span>
@@ -1068,8 +1068,25 @@ select.rf-input{
       </div>
     </div>
     <div id="wishesList">
-      <div class="wish-card visible">
-        <div class="wc-header"><div class="wc-av" style="background:var(--yellow)">A</div><div><div class="wc-name">Ayu Rahmawati</div><div class="wc-status">✅ Hadir · 2 tamu</div></div></div>
+                {% if invitation.is_preview %}
+                
+                <!-- RSVPs will be loaded here -->
+            
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
+                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+</div><div><div class="wc-name">Ayu Rahmawati</div><div class="wc-status">✅ Hadir · 2 tamu</div></div></div>
         <p class="wc-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu! 🌿</p>
       </div>
       <div class="wish-card visible">
@@ -1180,7 +1197,7 @@ function buildGallery(){
 }
 
 function startCountdown(){
-  const t=new Date('2026-05-24T08:00:00');
+  const t=new Date('{{ invitation.event_date_iso }}');
   const tick=()=>{
     const d=t-new Date();
     if(d<=0){['cdD','cdH','cdM','cdS'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='00'});return;}

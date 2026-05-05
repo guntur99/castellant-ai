@@ -805,7 +805,7 @@ textarea.ip-input{min-height:80px;resize:vertical}
       <div class="op-label">Presentation</div>
       <div class="op-title">The Wedding of Anita &amp; Zarda</div>
       <div class="op-meta">
-        <span>Minggu, 24 Mei 2026</span>
+        <span>Minggu, {{ invitation.event_date }}</span>
         <span class="op-meta-dot"></span>
         <span>10 slides</span>
         <span class="op-meta-dot"></span>
@@ -995,7 +995,7 @@ textarea.ip-input{min-height:80px;resize:vertical}
         <div class="s1-content">
           <div class="s1-eyebrow">Wedding Invitation · 2026</div>
           <div class="s1-title">The Wedding of<br><strong>Anita &amp; Zarda</strong></div>
-          <div class="s1-subtitle">Minggu · 24 Mei 2026 · Tangerang</div>
+          <div class="s1-subtitle">Minggu · {{ invitation.event_date }} · Tangerang</div>
         </div>
         <div class="s1-circle">
           <div class="s1-date-big">24<br>Mei</div>
@@ -1009,7 +1009,7 @@ textarea.ip-input{min-height:80px;resize:vertical}
         <div class="s2-header">
           <span class="s2-header-title">COUNTDOWN TO THE BIG DAY</span>
           <div class="s2-header-dot"></div>
-          <span class="s2-header-title" style="opacity:.7">24 Mei 2026</span>
+          <span class="s2-header-title" style="opacity:.7">{{ invitation.event_date }}</span>
         </div>
         <div class="s2-content">
           <div class="s2-title">Menuju Hari Istimewa</div>
@@ -1072,13 +1072,13 @@ textarea.ip-input{min-height:80px;resize:vertical}
           <div class="s5-cards">
             <div class="s5-card">
               <div class="s5-card-type">Akad Nikah</div>
-              <div class="s5-card-date">Minggu, 24 Mei 2026</div>
+              <div class="s5-card-date">Minggu, {{ invitation.event_date }}</div>
               <div class="s5-card-time">08:00 WIB</div>
               <div class="s5-card-loc">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div>
             </div>
             <div class="s5-card">
               <div class="s5-card-type">Resepsi</div>
-              <div class="s5-card-date">Minggu, 24 Mei 2026</div>
+              <div class="s5-card-date">Minggu, {{ invitation.event_date }}</div>
               <div class="s5-card-time">11:00 – 13:00 WIB</div>
               <div class="s5-card-loc">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div>
             </div>
@@ -1212,7 +1212,7 @@ textarea.ip-input{min-height:80px;resize:vertical}
         <div class="s10-shape2"></div>
         <div class="s10-content">
           <div class="s10-main">Thank You for Coming! 💍<br><strong>Anita &amp; Zarda</strong></div>
-          <div class="s10-sub">Minggu · 24 Mei 2026 · Tangerang</div>
+          <div class="s10-sub">Minggu · {{ invitation.event_date }} · Tangerang</div>
         </div>
         <div class="slide-number">10 / 10</div>
       </div>
@@ -1299,7 +1299,9 @@ textarea.ip-input{min-height:80px;resize:vertical}
     </div>
     <div class="wish-list" id="wList">
       <div class="wish-item visible">
-        <div class="wi-header"><div class="wi-av" style="background:#0078d4">A</div><div><div class="wi-name">Ayu Rahmawati</div><div class="wi-status">✓ Hadir · 2 tamu</div></div></div>
+
+                {% if invitation.is_preview %}
+                        <div class="wi-header"><div class="wi-av" style="background:#0078d4">A</div><div><div class="wi-name">Ayu Rahmawati</div><div class="wi-status">✓ Hadir · 2 tamu</div></div></div>
         <div class="wi-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu Anita & Zarda! 🌿</div>
       </div>
       <div class="wish-item visible">
@@ -1308,7 +1310,14 @@ textarea.ip-input{min-height:80px;resize:vertical}
       </div>
       <div class="wish-item visible">
         <div class="wi-header"><div class="wi-av" style="background:#8764b8">S</div><div><div class="wi-name">Sinta Dewi</div><div class="wi-status">✓ Hadir · 2 tamu</div></div></div>
-        <div class="wi-text">Wishing you both a lifetime of love and laughter. Semoga langkah kalian selalu diberkahi Allah SWT 💚</div>
+
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                        <div class="wi-header"><div class="wi-av" style="background:#0078d4">{{ rsvp.initial() }}</div><div><div class="wi-name">{{ rsvp.name }}</div><div class="wi-status">✓ {{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div></div></div>
+
+                {% endfor %}
+                {% endif %}
+                        <div class="wi-text">Wishing you both a lifetime of love and laughter. Semoga langkah kalian selalu diberkahi Allah SWT 💚</div>
       </div>
     </div>
   </div>
@@ -1438,7 +1447,7 @@ document.addEventListener('click',e=>{const tr=document.getElementById('pTrack')
 
 /* ── COUNTDOWN ── */
 function countdown(){
-  const t=new Date('2026-05-24T08:00:00');
+  const t=new Date('{{ invitation.event_date_iso }}');
   function tick(){
     const d=t-new Date();
     if(d<=0){['cdD','cdH','cdM','cdS'].forEach(id=>document.getElementById(id).textContent='00');return}
@@ -1570,7 +1579,7 @@ function ribPaste(){
 
 /* COPY — copy teks undangan ke clipboard */
 function ribCopy(){
-  const text = `💍 Anda diundang ke pernikahan Anita & Zarda\n📅 Minggu, 24 Mei 2026 · 08:00 WIB\n📍 Graha Yadika, Karang Tengah, Ciledug, Tangerang\n\nBuka undangan digital: ${window.location.href}`;
+  const text = `💍 Anda diundang ke pernikahan Anita & Zarda\n📅 Minggu, {{ invitation.event_date }} · 08:00 WIB\n📍 Graha Yadika, Karang Tengah, Ciledug, Tangerang\n\nBuka undangan digital: ${window.location.href}`;
   navigator.clipboard.writeText(text).then(()=>{
     showT('📋 Link undangan tersalin ke clipboard!');
     ribNotif('Undangan berhasil disalin! Bagikan ke teman & keluarga. ✓');

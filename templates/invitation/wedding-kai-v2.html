@@ -1041,7 +1041,7 @@ textarea.form-input { min-height:100px; resize:vertical; }
         </div>
         <div class="board-cell">
           <div class="board-cell-label">Tanggal</div>
-          <div class="board-cell-val">24 Mei 2026</div>
+          <div class="board-cell-val">{{ invitation.event_date }}</div>
         </div>
         <div class="board-cell">
           <div class="board-cell-label">Gerbong / Kursi</div>
@@ -1052,7 +1052,7 @@ textarea.form-input { min-height:100px; resize:vertical; }
       <!-- Guest -->
       <div class="board-passenger">
         <div class="board-passenger-label">Kepada Yth.</div>
-        <div class="board-passenger-name" id="guestName">Tamu Undangan</div>
+        <div class="board-passenger-name" id="guestName">{{ invitation.recipient_name }}</div>
       </div>
 
       <button class="board-btn" onclick="openInvitation()">
@@ -1084,7 +1084,7 @@ textarea.form-input { min-height:100px; resize:vertical; }
     <div class="hero-inner">
       <div class="hero-pill">
         <div class="hero-pill-dot"></div>
-        Wedding Day · 24 Mei 2026
+        Wedding Day · {{ invitation.event_date }}
       </div>
       <h1 class="hero-names">
         RANIA
@@ -1101,7 +1101,7 @@ textarea.form-input { min-height:100px; resize:vertical; }
         <div class="ho-line"></div>
       </div>
       <div class="hero-date-box">
-        <div class="hd-main">Minggu, 24 Mei 2026</div>
+        <div class="hd-main">Minggu, {{ invitation.event_date }}</div>
         <div class="hd-sub">Akad 08.00 · Resepsi 11.00 · Graha Yadika</div>
       </div>
     </div>
@@ -1466,10 +1466,33 @@ textarea.form-input { min-height:100px; resize:vertical; }
       <h2 class="section-heading">Doa &amp; <em>Ucapan</em></h2>
     </div>
     <div class="wishes-list" id="wishesList">
-      <div class="wish-card visible"><div class="wish-head"><div class="wish-avatar">AH</div><div><div class="wish-name">Ahmad Hakim</div><div class="wish-status">Hadir · 2 Tamu</div></div></div><p class="wish-text">Semoga pernikahan kalian menjadi awal dari hidup yang penuh berkah dan cinta yang abadi. Barakallah. 🤍</p></div>
-      <div class="wish-card visible"><div class="wish-head"><div class="wish-avatar">SR</div><div><div class="wish-name">Sari Rahayu</div><div class="wish-status">Hadir · 1 Tamu</div></div></div><p class="wish-text">Selamat menempuh hidup baru! Semoga menjadi pasangan yang sakinah, mawaddah, warahmah. 🧡</p></div>
-    </div>
-  </section>
+                {% if invitation.is_preview %}
+                    <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); opacity: 0.7;">
+                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                            <div style="width: 35px; height: 35px; border-radius: 50%; background: #666; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">A</div>
+                            <div>
+                                <div style="font-weight: bold; font-size: 14px;">Ayu Rahmawati (Contoh)</div>
+                                <div style="font-size: 11px; opacity: 0.7;">Hadir · 2 tamu</div>
+                            </div>
+                        </div>
+                        <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"Selamat menempuh hidup baru! Semoga bahagia selalu."</div>
+                    </div>
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 10px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(45deg, #E50914, #b00710); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: white; box-shadow: 0 2px 8px rgba(229, 9, 20, 0.4);">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 15px; color: #fff;">{{ rsvp.name }}</div>
+                            <div style="font-size: 12px; color: #00AA13; font-weight: 500;">✓ {{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 14px; line-height: 1.6; font-style: italic; color: rgba(255,255,255,0.9); padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+                </div>
+                </section>
 
   <!-- FOOTER -->
   <footer class="footer">
@@ -1571,7 +1594,7 @@ textarea.form-input { min-height:100px; resize:vertical; }
 /* ─── GUEST NAME ─── */
 const params = new URLSearchParams(location.search);
 document.getElementById('guestName').textContent =
-  params.get('to') || params.get('name') || 'Tamu Undangan';
+  params.get('to') || params.get('name') || '{{ invitation.recipient_name }}';
 
 /* ─── HERO PARTICLES ─── */
 function initParticles() {
@@ -1658,7 +1681,7 @@ document.addEventListener('keydown',e=>{if(!document.getElementById('lightbox').
 
 /* ─── COUNTDOWN ─── */
 function startCountdown(){
-  const t=new Date('2026-05-24T08:00:00');
+  const t=new Date('{{ invitation.event_date_iso }}');
   const tick=()=>{const d=t-Date.now();if(d<=0)return;
     document.getElementById('cdDays').textContent=String(Math.floor(d/86400000)).padStart(2,'0');
     document.getElementById('cdHours').textContent=String(Math.floor((d%86400000)/3600000)).padStart(2,'0');

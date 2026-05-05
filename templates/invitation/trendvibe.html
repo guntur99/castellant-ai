@@ -493,7 +493,7 @@ select.form-input option{background:var(--tt-dark);color:var(--tt-white)}
   <p class="opening-sub">{{ invitation.ceremony.date }} — Tangerang</p>
   <div class="dear-box">
     <p class="dear-label">// Kepada Yth.</p>
-    <p class="dear-name">Tamu Undangan</p>
+    <p class="dear-name">{{ invitation.recipient_name }}</p>
   </div>
   <button class="open-btn" onclick="openInvitation()">▶ Buka Undangan</button>
 </div>
@@ -544,7 +544,7 @@ select.form-input option{background:var(--tt-dark);color:var(--tt-white)}
     </h1>
     <div class="hero-date-tag">
       <span>📍</span>
-      <span>24 Mei 2026 · Tangerang</span>
+      <span>{{ invitation.event_date }} · Tangerang</span>
     </div>
     <div class="stats-bar">
       <div class="stat-item">
@@ -828,30 +828,33 @@ select.form-input option{background:var(--tt-dark);color:var(--tt-white)}
       <h2 class="section-heading">Ucapan &amp; Doa</h2>
     </div>
     <div class="wishes-list" id="wishesList">
-      <div class="wish-card visible">
-        <div class="wish-header">
-          <div class="wish-avatar" style="background:linear-gradient(135deg,#FE2C55,#FF6B8A)">SK</div>
-          <div>
-            <div class="wish-name">Siti Khadijah</div>
-            <div class="wish-status">✓ Hadir · 2 tamu</div>
-          </div>
-        </div>
-        <div class="wish-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, warahmah. Bahagia selalu ya! 💕</div>
-        <div class="wish-time">// baru saja</div>
-      </div>
-      <div class="wish-card visible">
-        <div class="wish-header">
-          <div class="wish-avatar" style="background:linear-gradient(135deg,#25F4EE,#00FFD1)">BR</div>
-          <div>
-            <div class="wish-name">Budi Raharjo</div>
-            <div class="wish-status">✓ Hadir · 1 tamu</div>
-          </div>
-        </div>
-        <div class="wish-text">Alhamdulillah akhirnya! Selamat untuk kalian berdua. Semoga langkah ini membawa kebahagiaan yang tak terhingga 🤍</div>
-        <div class="wish-time">// 2 jam lalu</div>
-      </div>
-    </div>
-  </section>
+                {% if invitation.is_preview %}
+                    <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); opacity: 0.7;">
+                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+                            <div style="width: 35px; height: 35px; border-radius: 50%; background: #666; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">A</div>
+                            <div>
+                                <div style="font-weight: bold; font-size: 14px;">Ayu Rahmawati (Contoh)</div>
+                                <div style="font-size: 11px; opacity: 0.7;">Hadir · 2 tamu</div>
+                            </div>
+                        </div>
+                        <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"Selamat menempuh hidup baru! Semoga bahagia selalu."</div>
+                    </div>
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                <div class="wish-card visible" style="margin-bottom: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 10px;">
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(45deg, #E50914, #b00710); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: white; box-shadow: 0 2px 8px rgba(229, 9, 20, 0.4);">{{ rsvp.initial() }}</div>
+                        <div>
+                            <div style="font-weight: bold; font-size: 15px; color: #fff;">{{ rsvp.name }}</div>
+                            <div style="font-size: 12px; color: #00AA13; font-weight: 500;">✓ {{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 14px; line-height: 1.6; font-style: italic; color: rgba(255,255,255,0.9); padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">"{{ rsvp.display_message() }}"</div>
+                </div>
+                {% endfor %}
+                {% endif %}
+                </div>
+                </section>
 
   <!-- FOOTER -->
   <footer class="footer-section">
@@ -954,7 +957,7 @@ function openInvitation(){
    DAYS LEFT COUNTER
 ══════════════════════════════════════ */
 function updateDaysLeft(){
-  const target=new Date('2026-05-24T08:00:00');
+  const target=new Date('{{ invitation.event_date_iso }}');
   const diff=target-new Date();
   const days=Math.max(0,Math.floor(diff/86400000));
   document.getElementById('daysLeft').textContent=days;
@@ -964,7 +967,7 @@ function updateDaysLeft(){
    COUNTDOWN
 ══════════════════════════════════════ */
 function startCountdown(){
-  const target=new Date('2026-05-24T08:00:00');
+  const target=new Date('{{ invitation.event_date_iso }}');
   function tick(){
     const diff=target-new Date();
     if(diff<=0){['cdDays','cdHours','cdMinutes','cdSeconds'].forEach(id=>document.getElementById(id).textContent='00');return;}

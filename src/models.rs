@@ -58,11 +58,27 @@ pub struct Invitation {
     pub ai_usage_count: i32,
     pub ai_custom_knowledge: String,
     pub ai_language: String,
+    pub recipient_name: String,
+    pub event_date_iso: String,
+    pub rsvps: Vec<Rsvp>,
+    pub is_preview: bool,
 }
 
 impl Invitation {
     pub fn to_json_context(&self) -> String {
         serde_json::to_string(self).unwrap_or_default()
+    }
+    
+    pub fn total_rsvps(&self) -> usize {
+        self.rsvps.len()
+    }
+    
+    pub fn total_hadir(&self) -> usize {
+        self.rsvps.iter().filter(|r| r.attendance.to_lowercase() == "hadir").count()
+    }
+    
+    pub fn total_guest_count(&self) -> i32 {
+        self.rsvps.iter().filter(|r| r.attendance.to_lowercase() == "hadir").map(|r| r.guests as i32).sum()
     }
 }
 
@@ -109,6 +125,7 @@ pub struct Song {
 
 #[derive(Debug, Deserialize)]
 pub struct RsvpForm {
+    pub invitation_slug: String,
     pub name: String,
     pub attendance: String,
     pub guests: u8,
@@ -124,6 +141,16 @@ pub struct Rsvp {
     pub guests: i32,
     pub message: Option<String>,
     pub created_at: DateTime<Utc>,
+}
+
+impl Rsvp {
+    pub fn initial(&self) -> String {
+        self.name.chars().next().unwrap_or('G').to_string().to_uppercase()
+    }
+    
+    pub fn display_message(&self) -> &str {
+        self.message.as_deref().unwrap_or("")
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, FromRow)]
