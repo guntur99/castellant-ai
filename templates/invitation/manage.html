@@ -1459,6 +1459,11 @@
                                         {%- if t.id == group.template_name -%}{{ t.title }}{%- endif -%}
                                     {%- endfor -%}
                                 </span>
+                                {% if group.ai_language != "" %}
+                                <div style="font-size: 0.6rem; margin-top: 4px;">
+                                    <span style="background: #fdf2f8; color: #be185d; padding: 2px 6px; border-radius: 4px; font-weight: 700;">AI: {{ group.ai_language|upper }}</span>
+                                </div>
+                                {% endif %}
                             </div>
 
                             <div class="group-actions-row">
@@ -1485,12 +1490,30 @@
                         <div class="form-group" style="flex: 1.5;">
                             <label>Assigned Theme</label>
                             <select name="template_name" class="select2-enable" required>
-                                <option value="" disabled selected>Select a visual theme...</option>
+                                <option value="" disabled selected>Select a theme...</option>
                                 {% for t in all_templates %}
                                 <option value="{{ t.id }}">{{ t.title }}</option>
                                 {% endfor %}
                             </select>
                         </div>
+                        {% if invitation.plan_name == "ROYAL" || invitation.plan_name == "DYNASTY" %}
+                        <div class="form-group" style="flex: 1;">
+                            <label>AI Language</label>
+                            <select name="ai_language" class="select2-enable">
+                                <option value="">Inherit Default</option>
+                                <option value="id">Bahasa Indonesia</option>
+                                <option value="en">English</option>
+                                <option value="jv">Bahasa Jawa</option>
+                                <option value="su">Bahasa Sunda</option>
+                                <option value="ja">Japanese (日本語)</option>
+                                <option value="zh">Chinese (Mandarin)</option>
+                                <option value="ko">Korean (한국어)</option>
+                                <option value="ar">Arabic (العربية)</option>
+                            </select>
+                        </div>
+                        {% else %}
+                        <input type="hidden" name="ai_language" value="">
+                        {% endif %}
                         <button type="submit" class="btn btn-primary" style="padding: 0.8rem 2rem;">Add Pair</button>
                     </form>
                     {% else %}
@@ -1561,6 +1584,11 @@
                                     <div class="guest-name-cell">
                                         <span class="font-bold">{{ guest.name }}</span>
                                         <div class="guest-slug-hint">slug: {{ guest.slug }}</div>
+                                        {% if guest.ai_language != "" %}
+                                        <div style="font-size: 0.6rem; margin-top: 4px;">
+                                            <span style="background: #eef2ff; color: #4338ca; padding: 2px 6px; border-radius: 4px; font-weight: 700;">AI: {{ guest.ai_language|upper }}</span>
+                                        </div>
+                                        {% endif %}
                                     </div>
                                 </td>
                                 <td>
@@ -1730,6 +1758,24 @@
                     {% endfor %}
                 </select>
             </div>
+            {% endif %}
+            {% if invitation.plan_name == "DYNASTY" %}
+            <div class="form-group">
+                <label>AI Language Override (Optional)</label>
+                <select name="ai_language" class="select2-modal">
+                    <option value="">Inherit from Group/Global</option>
+                    <option value="id">Bahasa Indonesia</option>
+                    <option value="en">English</option>
+                    <option value="jv">Bahasa Jawa</option>
+                    <option value="su">Bahasa Sunda</option>
+                    <option value="ja">Japanese (日本語)</option>
+                    <option value="zh">Chinese (Mandarin)</option>
+                    <option value="ko">Korean (한국어)</option>
+                    <option value="ar">Arabic (العربية)</option>
+                </select>
+            </div>
+            {% else %}
+            <input type="hidden" name="ai_language" value="">
             {% endif %}
             <div class="modal-footer">
                 <button type="button" class="btn btn-outline" onclick="toggleAddGuestModal()">Cancel</button>

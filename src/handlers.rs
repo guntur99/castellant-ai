@@ -91,6 +91,7 @@ pub struct AiGenerateRequest {
     pub prompt: String,
     pub session_id: Option<Uuid>,
     pub context: Option<String>,
+    pub guest_slug: Option<String>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -1586,7 +1587,7 @@ pub async fn dashboard(
                 ai_chat_enabled: r.ai_chat_enabled,
                 ai_usage_count: r.ai_usage_count,
                 ai_custom_knowledge: r.ai_custom_knowledge.unwrap_or_default(),
-                ai_language: r.ai_language.unwrap_or_else(|| "id".to_string()),
+                ai_language: r.ai_language.clone(),
             })
             .collect();
 
@@ -1795,7 +1796,7 @@ pub async fn invitation_detail(
                 ai_chat_enabled: row.ai_chat_enabled,
                 ai_usage_count: row.ai_usage_count,
                 ai_custom_knowledge: row.ai_custom_knowledge.unwrap_or_default(),
-                ai_language: row.ai_language.unwrap_or_else(|| "id".to_string()),
+                ai_language: row.ai_language.clone(),
             };
 
             match template_name.as_str() {
@@ -2109,7 +2110,7 @@ pub async fn manage_invitation(
                 ai_chat_enabled: row.ai_chat_enabled,
                 ai_usage_count: row.ai_usage_count,
                 ai_custom_knowledge: row.ai_custom_knowledge.unwrap_or_default(),
-                ai_language: row.ai_language.unwrap_or_else(|| "id".to_string()),
+                ai_language: row.ai_language.clone(),
             };
 
             let user = if let Some(cookie) = jar.get("user_id") {
@@ -2123,13 +2124,13 @@ pub async fn manage_invitation(
             } else { None };
 
             let all_templates = get_all_templates(&state.db, false).await;
-            let guests = sqlx::query_as::<_, Guest>("SELECT * FROM guests WHERE invitation_id = $1 ORDER BY created_at DESC")
+            let guests = sqlx::query_as::<_, Guest>("SELECT id, invitation_id, name, category, template_override, slug, is_sent, COALESCE(ai_language, '') as ai_language, created_at FROM guests WHERE invitation_id = $1 ORDER BY created_at DESC")
                 .bind(row.id)
                 .fetch_all(&state.db)
                 .await
                 .unwrap_or_default();
             
-            let groups = sqlx::query_as::<_, GuestGroup>("SELECT * FROM invitation_groups WHERE invitation_id = $1 ORDER BY name ASC")
+            let groups = sqlx::query_as::<_, GuestGroup>("SELECT id, invitation_id, name, template_name, COALESCE(ai_language, '') as ai_language, created_at FROM invitation_groups WHERE invitation_id = $1 ORDER BY name ASC")
                 .bind(row.id)
                 .fetch_all(&state.db)
                 .await
@@ -2254,7 +2255,7 @@ pub async fn update_invitation(
     let ai_chat_enabled = fields.get("ai_chat_enabled").map(|v| v == "on").unwrap_or(false);
     let ai_custom_knowledge = fields.get("ai_custom_knowledge").cloned().unwrap_or(row.ai_custom_knowledge.unwrap_or_default());
     let template_name = fields.get("template_name").cloned().unwrap_or(row.template_name);
-    let ai_language = fields.get("ai_language").cloned().unwrap_or(row.ai_language.unwrap_or_else(|| "id".to_string()));
+    let final_ai_language = fields.get("ai_language").cloned().unwrap_or(row.ai_language.clone());
 
     sqlx::query(
         "UPDATE invitations SET couple_name_short = $1, event_date = $2, bride_data = $3, groom_data = $4, ceremony_data = $5, reception_data = $6, quote_data = $7, ai_chat_enabled = $8, ai_custom_knowledge = $9, ai_language = $10, template_name = $11 WHERE id = $12"
@@ -2268,7 +2269,7 @@ pub async fn update_invitation(
     .bind(json!(quote))
     .bind(ai_chat_enabled)
     .bind(ai_custom_knowledge)
-    .bind(ai_language)
+    .bind(final_ai_language)
     .bind(template_name)
     .bind(row.id)
     .execute(&state.db)
@@ -2606,12 +2607,55 @@ pub async fn ai_guest_chat(
 
     let invitation_context = payload.context.unwrap_or_else(|| "No wedding details provided.".to_string());
 
-    let ai_language = invitation.ai_language.unwrap_or_else(|| "id".to_string());
-    let lang_str = match ai_language.as_str() {
+    // Multi-level language fallback: Guest -> Group -> Invitation
+    let mut final_ai_language = invitation.ai_language.clone();
+    if final_ai_language.is_empty() { final_ai_language = "id".to_string(); }
+
+    if let Some(g_slug) = payload.guest_slug {
+        // Try to find specific guest language
+        let guest_row = sqlx::query_as::<_, Guest>(
+            "SELECT id, invitation_id, name, category, template_override, slug, is_sent, COALESCE(ai_language, '') as ai_language, created_at FROM guests WHERE invitation_id = $1 AND slug = $2"
+        )
+        .bind(invitation.id)
+        .bind(&g_slug)
+        .fetch_optional(&state.db)
+        .await
+        .unwrap_or_default();
+
+        if let Some(guest) = guest_row {
+            if !guest.ai_language.is_empty() {
+                final_ai_language = guest.ai_language;
+            } else {
+                // If guest lang is empty, try to find group language
+                if let Some(g_cat) = guest.category {
+                    let group_row = sqlx::query_as::<_, GuestGroup>(
+                        "SELECT id, invitation_id, name, template_name, COALESCE(ai_language, '') as ai_language, created_at FROM invitation_groups WHERE invitation_id = $1 AND name = $2"
+                    )
+                    .bind(invitation.id)
+                    .bind(&g_cat)
+                    .fetch_optional(&state.db)
+                    .await
+                    .unwrap_or_default();
+
+                    if let Some(group) = group_row {
+                        if !group.ai_language.is_empty() {
+                            final_ai_language = group.ai_language;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    let lang_str = match final_ai_language.as_str() {
         "en" => "English",
         "jv" => "Javanese (Bahasa Jawa)",
         "su" => "Sundanese (Bahasa Sunda)",
         "id" => "Bahasa Indonesia",
+        "ja" => "Japanese (日本語)",
+        "zh" => "Chinese (Mandarin)",
+        "ko" => "Korean (한국어)",
+        "ar" => "Arabic (العربية)",
         custom if !custom.is_empty() && custom != "custom" => custom,
         _ => "Bahasa Indonesia",
     };
@@ -2847,6 +2891,7 @@ pub struct AddGuestRequest {
     pub name: String,
     pub category: Option<String>,
     pub template_override: Option<String>,
+    pub ai_language: Option<String>,
 }
 
 pub async fn add_guest(
@@ -2861,7 +2906,7 @@ pub async fn add_guest(
 
     if user_id.is_none() { return Redirect::to("/").into_response(); }
 
-    let invitation = sqlx::query!("SELECT id FROM invitations WHERE slug = $1 AND user_id = $2", slug, user_id.unwrap())
+    let invitation = sqlx::query!("SELECT id, plan_name FROM invitations WHERE slug = $1 AND user_id = $2", slug, user_id.unwrap())
         .fetch_one(&state.db)
         .await
         .unwrap();
@@ -2872,14 +2917,21 @@ pub async fn add_guest(
         .collect::<String>()
         .replace(" ", "-");
     
+    let ai_language = if invitation.plan_name.as_deref().unwrap_or("NOBLE") == "DYNASTY" {
+        payload.ai_language.unwrap_or_default()
+    } else {
+        "".to_string()
+    };
+
     sqlx::query(
-        "INSERT INTO guests (invitation_id, name, category, slug, template_override) VALUES ($1, $2, $3, $4, $5)"
+        "INSERT INTO guests (invitation_id, name, category, slug, template_override, ai_language) VALUES ($1, $2, $3, $4, $5, $6)"
     )
     .bind(invitation.id)
     .bind(&payload.name)
     .bind(&payload.category)
     .bind(&guest_slug)
     .bind(&payload.template_override)
+    .bind(&ai_language)
     .execute(&state.db)
     .await
     .unwrap();
@@ -2943,6 +2995,7 @@ pub async fn delete_rsvp(
 pub struct AddGroupRequest {
     pub name: String,
     pub template_name: String,
+    pub ai_language: Option<String>,
 }
 
 pub async fn add_group(
@@ -2993,13 +3046,20 @@ pub async fn add_group(
         }
     }
 
+    let ai_language = if plan_name == "ROYAL" || plan_name == "DYNASTY" {
+        payload.ai_language.unwrap_or_default()
+    } else {
+        "".to_string()
+    };
+
     sqlx::query(
-        "INSERT INTO invitation_groups (invitation_id, name, template_name) VALUES ($1, $2, $3)
-         ON CONFLICT (invitation_id, name) DO UPDATE SET template_name = $3"
+        "INSERT INTO invitation_groups (invitation_id, name, template_name, ai_language) VALUES ($1, $2, $3, $4)
+         ON CONFLICT (invitation_id, name) DO UPDATE SET template_name = $3, ai_language = $4"
     )
     .bind(invitation_id)
     .bind(&payload.name)
     .bind(&payload.template_name)
+    .bind(&ai_language)
     .execute(&state.db)
     .await
     .unwrap();

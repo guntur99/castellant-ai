@@ -34,7 +34,7 @@ pub struct InvitationRow {
     pub ai_chat_enabled: bool,
     pub ai_usage_count: i32,
     pub ai_custom_knowledge: Option<String>,
-    pub ai_language: Option<String>,
+    pub ai_language: String,
     pub created_at: DateTime<Utc>,
 }
 
@@ -144,6 +144,7 @@ pub struct Guest {
     pub template_override: Option<String>,
     pub slug: String,
     pub is_sent: bool,
+    pub ai_language: String,
     pub created_at: DateTime<Utc>,
 }
 
@@ -153,6 +154,7 @@ pub struct GuestGroup {
     pub invitation_id: Uuid,
     pub name: String,
     pub template_name: String,
+    pub ai_language: String,
     pub created_at: DateTime<Utc>,
 }
 
