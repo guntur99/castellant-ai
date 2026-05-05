@@ -123,14 +123,22 @@
                     Sugeng rawuh! Kulo AI Castellant kagem mantenan {{ invitation.bride.name }} & {{ invitation.groom.name }}. Monggo tanglet babagan lokasi, wekdal, utawi rasukan!
                 {% else if invitation.ai_language == "su" %}
                     Wilujeng sumping! Simkuring AI Castellant kanggo pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }}. Mangga taroskeun perkawis lokasi, waktos, atanapi acuk!
+                {% else if invitation.ai_language == "ja" %}
+                    こんにちは！{{ invitation.bride.name }}と{{ invitation.groom.name }}の結婚式のためのAIコンシェルジュです。会場、時間、ドレスコードなど、何でも聞いてください！
+                {% else if invitation.ai_language == "zh" %}
+                    你好！我是{{ invitation.bride.name }}和{{ invitation.groom.name }}婚礼的AI助手。关于地点、时间或着装要求，你可以问我任何问题！
+                {% else if invitation.ai_language == "ko" %}
+                    안녕하세요! {{ invitation.bride.name }}와 {{ invitation.groom.name }}의 결혼식을 위한 AI 컨시어지입니다. 장소, 시간, 드레스 코드 등 궁금한 점은 무엇이든 물어보세요!
+                {% else if invitation.ai_language == "ar" %}
+                    مرحباً! أنا مساعد الذكاء الاصطناعي لحفل زفاف {{ invitation.bride.name }} و {{ invitation.groom.name }}. اسألني عن أي شيء يخص الموقع، الوقت، أو قواعد اللباس!
                 {% else %}
-                    Hi! I'm your AI Concierge for {{ invitation.bride.name }} & {{ invitation.groom.name }}'s wedding. Ask me anything about the venue, time, or dress code!
+                    Halo! Saya AI Castellant untuk pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }}. Tanyakan apapun tentang lokasi, waktu, atau dress code!
                 {% endif %}
             </div>
         </div>
         <div class="ai-chat-footer">
             <input type="text" class="ai-chat-input" id="aiChatInput" 
-                   placeholder="{% if invitation.ai_language == "id" %}Tanya sesuatu...{% else %}Ask a question...{% endif %}" 
+                   placeholder="{% if invitation.ai_language == "en" %}Ask a question...{% else if invitation.ai_language == "ja" %}質問する...{% else if invitation.ai_language == "zh" %}提问...{% else if invitation.ai_language == "ko" %}질문하기...{% else if invitation.ai_language == "ar" %}اسأل سؤالاً...{% else %}Tanya sesuatu...{% endif %}" 
                    onkeypress="if(event.key==='Enter') sendAiGuestMessage()">
             <button class="ai-chat-send" onclick="sendAiGuestMessage()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
@@ -182,12 +190,14 @@
         history.scrollTop = history.scrollHeight;
 
         try {
+            const guestSlug = new URLSearchParams(window.location.search).get('to');
             const response = await fetch('/invitation/{{ invitation.slug }}/ai-chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     prompt: q,
-                    context: invitationContext
+                    context: invitationContext,
+                    guest_slug: guestSlug
                 })
             });
 

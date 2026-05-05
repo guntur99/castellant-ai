@@ -1739,6 +1739,7 @@ pub async fn invitation_detail(
                 .collect();
 
             let mut template_name = row.template_name.clone();
+            let mut ai_language = row.ai_language.clone();
             
             // Override with preview_theme if provided
             if let Some(preview) = params.get("preview_theme") {
@@ -1752,6 +1753,11 @@ pub async fn invitation_detail(
                     .unwrap_or_default();
                 
                 if let Some(g) = guest {
+                    // AI Language Override from Guest
+                    if !g.ai_language.is_empty() {
+                        ai_language = g.ai_language.clone();
+                    }
+
                     let mut found_override = false;
                     
                     // 1. Check individual override
@@ -1763,16 +1769,21 @@ pub async fn invitation_detail(
                     }
                     
                     // 2. Check group template if no individual override
-                    if !found_override {
-                        if let Some(cat) = g.category {
-                            let group = sqlx::query_as::<_, GuestGroup>("SELECT * FROM invitation_groups WHERE invitation_id = $1 AND name = $2")
-                                .bind(row.id)
-                                .bind(cat)
-                                .fetch_optional(&state.db)
-                                .await
-                                .unwrap_or_default();
-                            if let Some(grp) = group {
+                    if let Some(cat) = g.category {
+                        let group = sqlx::query_as::<_, GuestGroup>("SELECT id, invitation_id, name, template_name, COALESCE(ai_language, '') as ai_language, created_at FROM invitation_groups WHERE invitation_id = $1 AND name = $2")
+                            .bind(row.id)
+                            .bind(&cat)
+                            .fetch_optional(&state.db)
+                            .await
+                            .unwrap_or_default();
+                        
+                        if let Some(grp) = group {
+                            if !found_override {
                                 template_name = grp.template_name;
+                            }
+                            // If guest lang is empty, use group lang
+                            if g.ai_language.is_empty() && !grp.ai_language.is_empty() {
+                                ai_language = grp.ai_language;
                             }
                         }
                     }
@@ -1796,7 +1807,7 @@ pub async fn invitation_detail(
                 ai_chat_enabled: row.ai_chat_enabled,
                 ai_usage_count: row.ai_usage_count,
                 ai_custom_knowledge: row.ai_custom_knowledge.unwrap_or_default(),
-                ai_language: row.ai_language.clone(),
+                ai_language: ai_language,
             };
 
             match template_name.as_str() {
@@ -2939,6 +2950,46 @@ pub async fn add_guest(
     Redirect::to(&format!("/invitation/{}/manage#guests", slug)).into_response()
 }
 
+pub async fn update_guest(
+    Path((slug, guest_id)): Path<(String, Uuid)>,
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+    Form(payload): Form<AddGuestRequest>,
+) -> impl IntoResponse {
+    let user_id = if let Some(cookie) = jar.get("user_id") {
+        Uuid::parse_str(cookie.value()).ok()
+    } else { None };
+
+    if user_id.is_none() { return Redirect::to("/").into_response(); }
+
+    let invitation = sqlx::query!("SELECT id, plan_name FROM invitations WHERE slug = $1 AND user_id = $2", slug, user_id.unwrap())
+        .fetch_one(&state.db)
+        .await
+        .unwrap();
+
+    let ai_language = if invitation.plan_name.as_deref().unwrap_or("NOBLE") == "DYNASTY" {
+        payload.ai_language.unwrap_or_default()
+    } else {
+        "".to_string()
+    };
+
+    sqlx::query(
+        "UPDATE guests SET name = $1, category = $2, template_override = $3, ai_language = $4 WHERE id = $5 AND invitation_id = $6"
+    )
+    .bind(&payload.name)
+    .bind(&payload.category)
+    .bind(&payload.template_override)
+    .bind(&ai_language)
+    .bind(guest_id)
+    .bind(invitation.id)
+    .execute(&state.db)
+    .await
+    .unwrap();
+
+    Redirect::to(&format!("/invitation/{}/manage#guests", slug)).into_response()
+}
+
+
 #[derive(Deserialize)]
 pub struct UpdateGuestTemplateRequest {
     pub template_override: String,
@@ -3066,6 +3117,45 @@ pub async fn add_group(
 
     Redirect::to(&format!("/invitation/{}/manage#groups", slug)).into_response()
 }
+
+pub async fn update_group(
+    Path((slug, group_id)): Path<(String, Uuid)>,
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+    Form(payload): Form<AddGroupRequest>,
+) -> impl IntoResponse {
+    let user_id = if let Some(cookie) = jar.get("user_id") {
+        Uuid::parse_str(cookie.value()).ok()
+    } else { None };
+
+    if user_id.is_none() { return Redirect::to("/").into_response(); }
+
+    // Verify ownership
+    let exists: bool = sqlx::query_scalar(
+        "SELECT EXISTS(SELECT 1 FROM invitations WHERE slug = $1 AND user_id = $2)"
+    )
+    .bind(&slug)
+    .bind(user_id.unwrap())
+    .fetch_one(&state.db)
+    .await
+    .unwrap();
+
+    if !exists { return Redirect::to("/").into_response(); }
+
+    sqlx::query(
+        "UPDATE invitation_groups SET name = $1, template_name = $2, ai_language = $3 WHERE id = $4"
+    )
+    .bind(&payload.name)
+    .bind(&payload.template_name)
+    .bind(&payload.ai_language)
+    .bind(group_id)
+    .execute(&state.db)
+    .await
+    .unwrap();
+
+    Redirect::to(&format!("/invitation/{}/manage#groups", slug)).into_response()
+}
+
 
 
 pub async fn delete_group(
