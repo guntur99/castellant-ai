@@ -795,7 +795,11 @@ body {
 </head>
 <body>
 
-<div class="phone">
+
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="phone">
   <div class="phone-notch">
     <div class="notch-cam"></div>
     <div class="notch-face"></div>
@@ -899,14 +903,14 @@ body {
       </div>
       <div class="couple-strip fade-in">
         <div class="couple-pill" onclick="goScreen('couple')">
-          <img class="couple-pill-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita">
+          <img class="couple-pill-img" src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita">
           <div class="couple-pill-role">Mempelai Wanita</div>
-          <div class="couple-pill-name">Anita Pangestuti</div>
+          <div class="couple-pill-name">{{ account.account_holder }}</div>
         </div>
         <div class="couple-pill" onclick="goScreen('couple')">
-          <img class="couple-pill-img" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda" style="border-color:var(--mandiri-blue3)">
+          <img class="couple-pill-img" src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda" style="border-color:var(--mandiri-blue3)">
           <div class="couple-pill-role" style="color:var(--mandiri-blue3)">Mempelai Pria</div>
-          <div class="couple-pill-name">Zardarian Ahadika N</div>
+          <div class="couple-pill-name">{{ account.account_holder }}</div>
         </div>
       </div>
 
@@ -955,8 +959,8 @@ body {
 
       <!-- Bride -->
       <div class="profile-cover">
-        <img class="profile-avatar" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=300&fit=crop&q=80" alt="Anita">
-        <div class="profile-name-big">Anita Pangestuti</div>
+        <img class="profile-avatar" src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=300&h=300&fit=crop&q=80" alt="Anita">
+        <div class="profile-name-big">{{ account.account_holder }}</div>
         <div class="profile-role-tag">👰 Mempelai Wanita</div>
       </div>
       <div class="profile-card fade-in">
@@ -978,8 +982,8 @@ body {
 
       <!-- Groom -->
       <div class="profile-cover" style="background:linear-gradient(160deg,#1A3A8F,#001F5C)">
-        <img class="profile-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&q=80" alt="Zarda" style="border-color:var(--mandiri-blue3)">
-        <div class="profile-name-big">Zardarian Ahadika N</div>
+        <img class="profile-avatar" src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=300&h=300&fit=crop&q=80" alt="Zarda" style="border-color:var(--mandiri-blue3)">
+        <div class="profile-name-big">{{ account.account_holder }}</div>
         <div class="profile-role-tag" style="background:rgba(26,86,214,.25);border-color:rgba(26,86,214,.4);color:#93C5FD">🤵 Mempelai Pria</div>
       </div>
       <div class="profile-card fade-in">
@@ -1160,42 +1164,26 @@ body {
         <div class="gift-note-text">Jika ingin memberi sebagai tanda kasih, kami dengan senang hati menerimanya. Tap tombol salin untuk menyalin nomor rekening.</div>
       </div>
 
-      <!-- BCA -->
+      <!-- {{ account.bank_name }} -->
       <div class="bank-card fade-in">
         <div class="bank-card-header">
           <div class="bank-chip"></div>
-          <div class="bank-logo">BCA</div>
+          <div class="bank-logo">{{ account.bank_name }}</div>
         </div>
         <div class="bank-card-body">
           <div class="bank-name-label">Atas nama</div>
-          <div class="bank-name-val">Zardarian Ahadika N</div>
+          <div class="bank-name-val">{{ account.account_holder }}</div>
           <div class="bank-number-box">
-            <div class="bank-number">8210 3705 61</div>
-            <button class="bank-copy-btn" id="copyBCA" onclick="copyBank('8210370561','copyBCA')">
+            <div class="bank-number">{{ account.account_number }}</div>
+                    {% endfor %}
+                
+            <button class="bank-copy-btn" id="copy{{ account.bank_name }}" onclick="copyBank('{{ account.account_number }}','copy{{ account.bank_name }}')" style="background:#FF6B00">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
               Salin
             </button>
           </div>
-          <div class="bank-holder">Bank Central Asia</div>
-        </div>
-      </div>
-
-      <!-- BNI -->
-      <div class="bank-card fade-in" style="margin-bottom:12px">
-        <div class="bank-card-header" style="background:linear-gradient(135deg,#FF6B00,#CC5000)">
-          <div class="bank-chip" style="background:linear-gradient(135deg,#FFD700,#FFA500)"></div>
-          <div class="bank-logo">BNI</div>
-        </div>
-        <div class="bank-card-body">
-          <div class="bank-name-label">Atas nama</div>
-          <div class="bank-name-val">Anita Pangestuti</div>
-          <div class="bank-number-box">
-            <div class="bank-number">1192 9784 03</div>
-            <button class="bank-copy-btn" id="copyBNI" onclick="copyBank('1192978403','copyBNI')" style="background:#FF6B00">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-              Salin
-            </button>
-          </div>
+                    {% endfor %}
+                
           <div class="bank-holder">Bank Negara Indonesia</div>
         </div>
       </div>

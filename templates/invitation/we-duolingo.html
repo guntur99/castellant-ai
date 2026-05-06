@@ -750,7 +750,9 @@ body{
 </head>
 <body>
 
-<div class="phone">
+
+                    {% for account in invitation.gift_accounts %}
+                    <div class="phone">
   <div class="notch-bar">
     <div class="notch-dot"></div>
     <div class="notch-bar-pill"></div>
@@ -812,12 +814,12 @@ body{
       <div class="couple-card-duo" onclick="goSc('couple')">
         <div class="cc-duo-title">🎓 Profil Mempelai</div>
         <div class="cc-duo-imgs">
-          <img class="cc-duo-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita">
+          <img class="cc-duo-img" src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita">
           <div class="cc-duo-amp">&</div>
-          <img class="cc-duo-img" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda">
+          <img class="cc-duo-img" src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda">
         </div>
         <div class="cc-duo-names">
-          <div class="cc-duo-name">Anita Pangestuti × Zardarian Ahadika N</div>
+          <div class="cc-duo-name">{{ account.account_holder }} × {{ account.account_holder }}</div>
           <div class="cc-duo-date">📅 Minggu, {{ invitation.event_date }}</div>
         </div>
       </div>
@@ -919,9 +921,9 @@ body{
         </div>
         <!-- Bride card -->
         <div style="background:var(--duo-pink);border:2.5px solid #E060A8;border-radius:var(--r);padding:18px;box-shadow:0 4px 0 #C040A0;margin-bottom:12px;text-align:center">
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.2);margin:0 auto 10px;display:block" alt="Anita">
+          <img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=200&h=200&fit=crop&q=80" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.2);margin:0 auto 10px;display:block" alt="Anita">
           <div style="font-size:10px;font-weight:900;color:rgba(255,255,255,.85);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">👰 Mempelai Wanita</div>
-          <div style="font-size:17px;font-weight:900;color:#fff;margin-bottom:8px">Anita Pangestuti, S.Kom</div>
+          <div style="font-size:17px;font-weight:900;color:#fff;margin-bottom:8px">{{ account.account_holder }}, S.Kom</div>
           <div style="background:rgba(255,255,255,.2);border-radius:10px;padding:10px;font-size:12px;font-weight:700;color:#fff;line-height:1.7;text-align:left">
             <div>👨‍👩‍👧 Orang Tua:</div>
             <div>Bpk. Taryono & Ibu Wiwit Jayanti</div>
@@ -930,9 +932,9 @@ body{
         </div>
         <!-- Groom card -->
         <div style="background:var(--duo-blue);border:2.5px solid var(--duo-blue-d);border-radius:var(--r);padding:18px;box-shadow:0 4px 0 var(--duo-blue-d);margin-bottom:12px;text-align:center">
-          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.2);margin:0 auto 10px;display:block" alt="Zarda">
+          <img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:3px solid #fff;box-shadow:0 3px 0 rgba(0,0,0,.2);margin:0 auto 10px;display:block" alt="Zarda">
           <div style="font-size:10px;font-weight:900;color:rgba(255,255,255,.85);text-transform:uppercase;letter-spacing:.07em;margin-bottom:4px">🤵 Mempelai Pria</div>
-          <div style="font-size:17px;font-weight:900;color:#fff;margin-bottom:8px">Zardarian Ahadika N, S.Kom</div>
+          <div style="font-size:17px;font-weight:900;color:#fff;margin-bottom:8px">{{ account.account_holder }}, S.Kom</div>
           <div style="background:rgba(255,255,255,.2);border-radius:10px;padding:10px;font-size:12px;font-weight:700;color:#fff;line-height:1.7;text-align:left">
             <div>👨‍👩‍👦 Orang Tua:</div>
             <div>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</div>
@@ -1068,29 +1070,14 @@ body{
         <div style="font-size:12px;font-weight:700;color:var(--text2);line-height:1.6">Jika ingin memberi sebagai tanda kasih, kami dengan senang hati menerimanya. Tap <b>Salin</b> untuk menyalin nomor rekening.</div>
       </div>
 
-      <!-- BCA -->
+      <!-- {{ account.bank_name }} -->
       <div class="atm-duo">
         <div class="atm-duo-bg" style="background:linear-gradient(145deg,#003D9C,#0050C8,#0062F5)">
           <div class="atm-chip-duo"></div>
-          <div class="atm-logo-duo">BCA</div>
-          <div class="atm-number-duo">8210 3705 61</div>
-          <div class="atm-bottom-duo">
-            <div><div class="atm-holder-lbl">Pemilik</div><div class="atm-holder-val">Zardarian Ahadika N</div></div>
-            <button class="atm-copy-duo" id="cpBCA" onclick="copyNum('8210370561','cpBCA')">📋 Salin</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- BNI -->
-      <div class="atm-duo" style="margin-bottom:4px">
-        <div class="atm-duo-bg" style="background:linear-gradient(145deg,#CC5000,#FF6B00)">
-          <div class="atm-chip-duo" style="background:linear-gradient(135deg,#eee,#ccc)"></div>
-          <div class="atm-logo-duo">BNI</div>
-          <div class="atm-number-duo">1192 9784 03</div>
-          <div class="atm-bottom-duo">
-            <div><div class="atm-holder-lbl">Pemilik</div><div class="atm-holder-val">Anita Pangestuti</div></div>
-            <button class="atm-copy-duo" id="cpBNI" onclick="copyNum('1192978403','cpBNI')">📋 Salin</button>
-          </div>
+          <div class="atm-logo-duo">{{ account.bank_name }}</div>
+          <div class="atm-number-duo">{{ account.account_number }}</div>
+                    {% endfor %}
+                
         </div>
       </div>
       <div class="safe"></div>

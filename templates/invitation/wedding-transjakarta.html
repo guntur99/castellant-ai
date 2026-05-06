@@ -2145,7 +2145,11 @@
     <!-- ════ OPENING — TIKET ════ -->
     <div id="opening">
         <!-- Moving lines bg -->
-        <div class="op-bg-line" style="top:15%"></div>
+        
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="op-bg-line" style="top:15%"></div>
         <div class="op-bg-line" style="top:35%;animation-delay:.5s;opacity:.5"></div>
         <div class="op-bg-line" style="top:65%;animation-delay:1s;opacity:.3"></div>
         <div class="op-bg-line" style="top:85%;animation-delay:.3s;opacity:.4"></div>
@@ -2184,7 +2188,7 @@
                 <div class="tiket-row">
                     <div class="tiket-field">
                         <div class="tiket-field-label">Dari</div>
-                        <div class="tiket-field-value big">Nazma</div>
+                        <div class="tiket-field-value big">{{ account.account_holder }}</div>
                     </div>
                     <div style="align-self:flex-end;padding:0 8px;font-size:20px;color:var(--tj-gray3);font-weight:300">
                         →</div>
@@ -2207,7 +2211,7 @@
                 <!-- Barcode -->
                 <div class="tiket-barcode">
                     <div class="barcode-bars" id="barcodeEl"></div>
-                    <div class="barcode-num">240520260001 — WED-TJ</div>
+                    <div class="barcode-num">{{ account.account_number }}01 — WED-TJ</div>
                 </div>
 
                 <div class="tiket-dear">
@@ -2240,7 +2244,7 @@
 
                     <p class="hero-koridor">Koridor Cinta — 01</p>
                     <h1 class="hero-title">
-                        <span class="red">Nazma</span><br>
+                        <span class="red">{{ account.account_holder }}</span><br>
                         & Guntur
                     </h1>
                     <div class="hero-connector">Wedding Day</div>
@@ -2338,7 +2342,7 @@
         <div class="ticker-bar">
             <div class="ticker-label">INFO HALTE</div>
             <div class="ticker-content">
-                &nbsp;&nbsp;&nbsp; ★ SELAMAT DATANG DI UNDANGAN PERNIKAHAN Nazma & GunturR &nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp; ★ SELAMAT DATANG DI UNDANGAN PERNIKAHAN {{ account.account_holder }} & GunturR &nbsp;&nbsp;
                 ▸ AKAD NIKAH: 24 MEI 2026 · 08:00 WIB · GRAHA YADIKA, TANGERANG &nbsp;&nbsp;
                 ▸ RESEPSI: 24 MEI 2026 · 11:00–13:00 WIB · LOKASI YANG SAMA &nbsp;&nbsp;
                 ▸ MOHON KONFIRMASI KEHADIRAN ANDA &nbsp;&nbsp; ★ &nbsp;&nbsp;&nbsp;
@@ -2432,16 +2436,16 @@
                 <div class="kartu-penumpang reveal">
                     <div class="kp-header">
                         <span class="kp-header-logo">TransJakarta</span>
-                        <span class="kp-header-type">Mempelai WNazma</span>
+                        <span class="kp-header-type">Mempelai W{{ account.account_holder }}</span>
                     </div>
                     <div class="kp-body">
                         <div class="kp-foto">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80"
-                                alt="Nazma">
+                            <img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=200&h=200&fit=crop&q=80"
+                                alt="{{ account.account_holder }}">
                         </div>
                         <div class="kp-info">
                             <p class="kp-role">Penumpang 01</p>
-                            <h3 class="kp-name">Nazma Putri,<br>S.Kom</h3>
+                            <h3 class="kp-name">{{ account.account_holder }},<br>S.Kom</h3>
                             <p class="kp-parents">Putri Pertama<br>Bpk. Taryono &<br>Ibu Wiwit Jayanti</p>
                         </div>
                     </div>
@@ -2460,12 +2464,12 @@
                     </div>
                     <div class="kp-body">
                         <div class="kp-foto">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80"
+                            <img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80"
                                 alt="Guntur">
                         </div>
                         <div class="kp-info">
                             <p class="kp-role">Penumpang 02</p>
-                            <h3 class="kp-name">Guntur Putra,<br>S.Kom</h3>
+                            <h3 class="kp-name">{{ account.account_holder }},<br>S.Kom</h3>
                             <p class="kp-parents">Putra Kedua<br>Bpk. Wan Sabran, M.MAR &<br>Ibu Titik Sundari, M.Si</p>
                         </div>
                     </div>
@@ -2564,18 +2568,15 @@
             <div class="emoney-cards">
                 <div class="emoney reveal rd1">
                     <div class="emoney-chip"></div>
-                    <div class="emoney-bank">BCA</div>
-                    <div class="emoney-holder">Guntur Putra</div>
-                    <div class="emoney-number">8210 3705 61</div>
-                    <button class="emoney-copy" onclick="copyNum('8210370561',this)">SALIN NOMOR</button>
+                    <div class="emoney-bank">{{ account.bank_name }}</div>
+                    <div class="emoney-holder">{{ account.account_holder }}</div>
+                    <div class="emoney-number">{{ account.account_number }}</div>
+                    {% endfor %}
+                
+                    <button class="emoney-copy" onclick="copyNum('{{ account.account_number }}',this)">SALIN NOMOR</button>
                 </div>
-                <div class="emoney reveal rd2">
-                    <div class="emoney-chip"></div>
-                    <div class="emoney-bank">BNI</div>
-                    <div class="emoney-holder">Nazma Putri</div>
-                    <div class="emoney-number">1192 9784 03</div>
-                    <button class="emoney-copy" onclick="copyNum('1192978403',this)">SALIN NOMOR</button>
-                </div>
+                    {% endfor %}
+                
             </div>
         </section>
 

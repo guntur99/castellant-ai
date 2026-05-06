@@ -822,7 +822,11 @@ textarea.fi { min-height: 80px; resize: none; }
 
 <!-- ══ OPENING ══ -->
 <div id="opening">
-  <div class="op-dot-header">
+  
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="op-dot-header">
     <div class="op-dot-ticker">
       <div class="op-dot-ticker-inner">
         ◆ MRT WEDDING LINE · ANITA &amp; ZARDA · 24 MEI 2026 &nbsp;&nbsp;&nbsp;
@@ -884,7 +888,7 @@ textarea.fi { min-height: 80px; resize: none; }
       <div class="op-dear-icon">🎫</div>
       <div>
         <div class="op-dear-label">Tiket Untuk</div>
-        <div class="op-dear-name">Ade Guntur Fitridullah &amp; Partner</div>
+        <div class="op-dear-name">{{ account.account_holder }} Fitridullah &amp; Partner</div>
       </div>
     </div>
   </div>
@@ -998,7 +1002,7 @@ textarea.fi { min-height: 80px; resize: none; }
         <div class="bp-barcode-meta">
           <div class="bp-barcode-num">AZ·240526·GRAHA·YADIKA</div>
           <div class="bp-barcode-label">Penumpang</div>
-          <div class="bp-barcode-sub">Ade Guntur Fitridullah &amp; Partner</div>
+          <div class="bp-barcode-sub">{{ account.account_holder }} Fitridullah &amp; Partner</div>
         </div>
       </div>
     </div>
@@ -1038,18 +1042,18 @@ textarea.fi { min-height: 80px; resize: none; }
           <div class="couple-card">
             <div class="cc-badge">Mempelai Wanita</div>
             <div class="cc-body">
-              <div class="cc-av"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita"></div>
+              <div class="cc-av"><img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita"></div>
               <div class="cc-role">Passenger · Female</div>
-              <div class="cc-name">Anita Pangestuti, S.Kom</div>
+              <div class="cc-name">{{ account.account_holder }}, S.Kom</div>
               <div class="cc-parents">Putri Pertama dari<br><strong>Bpk. Taryono &<br>Ibu Wiwit Jayanti</strong></div>
             </div>
           </div>
           <div class="couple-card">
             <div class="cc-badge">Mempelai Pria</div>
             <div class="cc-body">
-              <div class="cc-av"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda"></div>
+              <div class="cc-av"><img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda"></div>
               <div class="cc-role">Passenger · Male</div>
-              <div class="cc-name">Zardarian Ahadika N, S.Kom</div>
+              <div class="cc-name">{{ account.account_holder }}, S.Kom</div>
               <div class="cc-parents">Putra Kedua dari<br><strong>Bpk. Wan Sabran, M.MAR &<br>Ibu Titik Sundari, M.Si</strong></div>
             </div>
           </div>
@@ -1155,25 +1159,25 @@ textarea.fi { min-height: 80px; resize: none; }
           Doa restu sudah sangat cukup. Namun jika berkenan berbagi rezeki, berikut rekening kami.
         </div>
         <div class="gift-cards">
-          <div class="gift-card">
+                    {% for account in invitation.gift_accounts %}
+                    <div class="gift-card">
             <div class="gc-stripe"></div>
-            <div class="gc-body">
-              <div class="gc-bank">Bank</div>
-              <div class="gc-name">BCA</div>
-              <div class="gc-holder">Zardarian Ahadika N</div>
-              <div class="gc-num">8210 3705 61</div><br>
-              <button class="copy-btn" onclick="copyAcc('8210370561',this)">Salin Nomor</button>
-            </div>
+                    {% endfor %}
+                </div>
           </div>
           <div class="gift-card">
             <div class="gc-stripe"></div>
             <div class="gc-body">
               <div class="gc-bank">Bank</div>
-              <div class="gc-name">BNI</div>
-              <div class="gc-holder">Anita Pangestuti</div>
-              <div class="gc-num">1192 9784 03</div><br>
-              <button class="copy-btn" onclick="copyAcc('1192978403',this)">Salin Nomor</button>
+              <div class="gc-name">{{ account.bank_name }}</div>
+              <div class="gc-holder">{{ account.account_holder }}</div>
+              <div class="gc-num">{{ account.account_number }}</div>
+                    {% endfor %}
+                <br>
+              <button class="copy-btn" onclick="copyAcc('{{ account.account_number }}',this)">Salin Nomor</button>
             </div>
+                    {% endfor %}
+                
           </div>
         </div>
       </div>

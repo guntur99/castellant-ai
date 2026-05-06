@@ -635,7 +635,11 @@ select.form-input{
 
 <!-- ─── OPENING ─── -->
 <div id="opening">
-  <div class="op-grad-bg"></div>
+  
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="op-grad-bg"></div>
   <div class="op-inner" style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%">
 
     <div class="op-logo-wrap">
@@ -654,7 +658,7 @@ select.form-input{
     </div>
 
     <h1 class="op-title">
-      <span class="highlight">Nazma & Guntur</span><br>
+      <span class="highlight">{{ account.account_holder }} & Guntur</span><br>
       Wedding Dashboard
     </h1>
     <p class="op-sub">{{ invitation.event_date }} · Graha Yadika, Tangerang</p>
@@ -703,7 +707,7 @@ select.form-input{
         <span class="dh-greeting-text">Selamat datang di</span>
         <span class="dh-wave">👋</span>
       </div>
-      <h1 class="dh-title">Wedding Dashboard<br>Nazma & Guntur</h1>
+      <h1 class="dh-title">Wedding Dashboard<br>{{ account.account_holder }} & Guntur</h1>
       <p class="dh-sub">{{ invitation.event_date }} · Graha Yadika, Tangerang</p>
       <div class="dh-stats">
         <div class="dh-stat"><span class="dhs-num" id="heroRes">7</span><span class="dhs-label">Respons</span></div>
@@ -776,10 +780,10 @@ select.form-input{
             <div class="emp-card">
               <div class="emp-avatar">
                 N
-                <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&h=200&fit=crop&q=80" alt="Nazma" onerror="this.style.display='none'">
+                <img src="https://images.unsplash.com/photo-{{ account.account_number }}594-4ff0802cfb7e?w=200&h=200&fit=crop&q=80" alt="{{ account.account_holder }}" onerror="this.style.display='none'">
               </div>
               <div class="emp-info">
-                <div class="emp-name">Nazma</div>
+                <div class="emp-name">{{ account.account_holder }}</div>
                 <div class="emp-role">Mempelai Wanita</div>
                 <span class="emp-dept">Dept. Kebahagiaan</span>
               </div>
@@ -799,7 +803,7 @@ select.form-input{
             <div class="emp-card">
               <div class="emp-avatar" style="background:var(--primary3);color:var(--primary)">
                 G
-                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Guntur" onerror="this.style.display='none'">
+                <img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Guntur" onerror="this.style.display='none'">
               </div>
               <div class="emp-info">
                 <div class="emp-name">Guntur</div>
@@ -998,24 +1002,18 @@ select.form-input{
           <div class="payroll-grid">
             <div class="payroll-card">
               <div class="pay-bank-label">Bank</div>
-              <div class="pay-bank">BCA</div>
-              <div class="pay-owner">Guntur Fitridullah</div>
-              <div class="pay-num">8210 3705 61</div>
-              <button class="copy-btn" onclick="copyNum('8210370561',this)">
+              <div class="pay-bank">{{ account.bank_name }}</div>
+              <div class="pay-owner">{{ account.account_holder }}</div>
+              <div class="pay-num">{{ account.account_number }}</div>
+                    {% endfor %}
+                
+              <button class="copy-btn" onclick="copyNum('{{ account.account_number }}',this)">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                 Salin
               </button>
             </div>
-            <div class="payroll-card">
-              <div class="pay-bank-label">Bank</div>
-              <div class="pay-bank">BNI</div>
-              <div class="pay-owner">Nazma</div>
-              <div class="pay-num">1192 9784 03</div>
-              <button class="copy-btn" onclick="copyNum('1192978403',this)">
-                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                Salin
-              </button>
-            </div>
+                    {% endfor %}
+                
           </div>
         </div>
       </div>

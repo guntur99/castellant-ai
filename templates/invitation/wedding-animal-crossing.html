@@ -905,7 +905,11 @@ textarea.rfc-input{min-height:90px;resize:vertical}
   <!-- Stars -->
   <div id="loadStars"></div>
   <!-- Sun -->
-  <div class="load-sun"></div>
+  
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="load-sun"></div>
   <!-- Clouds -->
   <div class="load-cloud" style="width:100px;height:28px;top:16%;left:8%;--d:14s;--del:0s"><div style="position:absolute;width:45px;height:45px;top:-20px;left:10px;background:rgba(255,255,255,.9);border-radius:50%"></div><div style="position:absolute;width:35px;height:35px;top:-15px;left:40px;background:rgba(255,255,255,.9);border-radius:50%"></div></div>
   <div class="load-cloud" style="width:80px;height:24px;top:22%;right:10%;--d:10s;--del:2s"><div style="position:absolute;width:36px;height:36px;top:-18px;left:8px;background:rgba(255,255,255,.9);border-radius:50%"></div><div style="position:absolute;width:28px;height:28px;top:-12px;left:35px;background:rgba(255,255,255,.9);border-radius:50%"></div></div>
@@ -1018,10 +1022,10 @@ textarea.rfc-input{min-height:90px;resize:vertical}
       <div class="npc-dialog left reveal d1">
         <div style="display:flex;gap:12px;align-items:flex-start">
           <div class="npc-portrait">
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita">
+            <img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita">
           </div>
           <div style="flex:1">
-            <div class="npc-name">Anita Pangestuti, S.Kom</div>
+            <div class="npc-name">{{ account.account_holder }}, S.Kom</div>
             <div class="npc-text">
               Assalamu'alaikum~ 🌸 Dengan penuh rasa syukur, aku — putri dari <span class="ac-green">Bpk. Taryono & Ibu Wiwit Jayanti</span> — mengundang kamu ke hari paling bahagia dalam hidupku!
             </div>
@@ -1032,10 +1036,10 @@ textarea.rfc-input{min-height:90px;resize:vertical}
       <div class="npc-dialog left reveal d2" style="margin-top:12px">
         <div style="display:flex;gap:12px;align-items:flex-start">
           <div class="npc-portrait">
-            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda">
+            <img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda">
           </div>
           <div style="flex:1">
-            <div class="npc-name">Zardarian Ahadika N, S.Kom</div>
+            <div class="npc-name">{{ account.account_holder }}, S.Kom</div>
             <div class="npc-text">
               Yeay! Dan aku — putra dari <span class="ac-green">Bpk. Wan Sabran & Ibu Titik Sundari</span> — juga sangat berharap kamu bisa hadir ya! Pulau ini belum lengkap tanpa kamu! 🎉
             </div>
@@ -1098,13 +1102,13 @@ textarea.rfc-input{min-height:90px;resize:vertical}
       <div class="resident-cards">
         <div class="resident-card reveal">
           <div class="rc-photo">
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=400&fit=crop&q=80" alt="Anita" loading="lazy">
+            <img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=400&h=400&fit=crop&q=80" alt="Anita" loading="lazy">
             <div class="rc-species-badge">🌸 Normal</div>
             <div class="rc-personality">Mempelai Wanita</div>
           </div>
           <div class="rc-info">
             <div class="rc-role">Resident · Dendro User</div>
-            <div class="rc-name">Anita Pangestuti</div>
+            <div class="rc-name">{{ account.account_holder }}</div>
             <div class="rc-catchphrase">"Nyam nyam~"</div>
             <div class="rc-birthday">🎂 Bday: {{ invitation.event_date }}</div>
             <div class="rc-parents">Putri dari<br><strong>Bpk. Taryono & Ibu Wiwit Jayanti</strong></div>
@@ -1112,7 +1116,7 @@ textarea.rfc-input{min-height:90px;resize:vertical}
         </div>
         <div class="resident-card reveal d1">
           <div class="rc-photo" style="background:linear-gradient(180deg,var(--ac-sky2),var(--ac-lavender))">
-            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&q=80" alt="Zarda" loading="lazy">
+            <img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=400&h=400&fit=crop&q=80" alt="Zarda" loading="lazy">
             <div class="rc-species-badge" style="background:var(--ac-lavender);color:var(--ac-brown2)">⚡ Smug</div>
             <div class="rc-personality">Mempelai Pria</div>
           </div>
@@ -1245,24 +1249,18 @@ textarea.rfc-input{min-height:90px;resize:vertical}
         <div class="shop-items">
           <div class="shop-item">
             <span class="si-bank-emoji">💙</span>
-            <div class="si-bank-name">BCA</div>
-            <div class="si-holder">a/n Zardarian Ahadika N</div>
-            <div class="si-num">8210 3705 61</div>
-            <button class="si-copy-btn" onclick="copyNum('8210370561',this)">
+            <div class="si-bank-name">{{ account.bank_name }}</div>
+            <div class="si-holder">a/n {{ account.account_holder }}</div>
+            <div class="si-num">{{ account.account_number }}</div>
+                    {% endfor %}
+                
+            <button class="si-copy-btn" onclick="copyNum('{{ account.account_number }}',this)">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
               Salin!
             </button>
           </div>
-          <div class="shop-item">
-            <span class="si-bank-emoji">🧡</span>
-            <div class="si-bank-name">BNI</div>
-            <div class="si-holder">a/n Anita Pangestuti</div>
-            <div class="si-num">1192 9784 03</div>
-            <button class="si-copy-btn" onclick="copyNum('1192978403',this)">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-              Salin!
-            </button>
-          </div>
+                    {% endfor %}
+                
         </div>
       </div>
     </div>

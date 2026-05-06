@@ -855,7 +855,9 @@ textarea.form-ctrl{resize:vertical;min-height:80px;line-height:1.6}
 
 <!-- ═══ SPLASH ═══ -->
 <div id="splash">
-  <div class="splash-logo">
+  
+                    {% for account in invitation.gift_accounts %}
+                    <div class="splash-logo">
     <div class="splash-logo-mark"><span>Be</span></div>
     <div class="splash-logo-text">Behance</div>
   </div>
@@ -967,7 +969,7 @@ textarea.form-ctrl{resize:vertical;min-height:80px;line-height:1.6}
     <div id="couple-sec" class="fade-up">
       <h2 class="sec-heading">About this <em>Project</em></h2>
       <p class="project-desc">
-        Dengan penuh rasa syukur dan kebahagiaan, kami — Anita Pangestuti dan Zardarian Ahadika N — mengundang Anda untuk hadir dan menjadi bagian dari momen sakral pernikahan kami. Sebuah karya cinta yang telah dirancang dengan sepenuh hati.
+        Dengan penuh rasa syukur dan kebahagiaan, kami — {{ account.account_holder }} dan {{ account.account_holder }} — mengundang Anda untuk hadir dan menjadi bagian dari momen sakral pernikahan kami. Sebuah karya cinta yang telah dirancang dengan sepenuh hati.
       </p>
       <div class="tags-row">
         <span class="tag">Wedding</span>
@@ -987,23 +989,23 @@ textarea.form-ctrl{resize:vertical;min-height:80px;line-height:1.6}
       <div class="profiles-grid">
         <div class="profile-card">
           <div class="profile-img-wrap">
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&h=800&fit=crop&q=80" alt="Anita">
+            <img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=600&h=800&fit=crop&q=80" alt="Anita">
             <div class="profile-overlay"><span class="profile-overlay-text">👰 Mempelai Wanita</span></div>
           </div>
           <div class="profile-info">
             <div class="profile-role">👰 Mempelai Wanita</div>
-            <div class="profile-name">Anita Pangestuti</div>
+            <div class="profile-name">{{ account.account_holder }}</div>
             <div class="profile-parents">S.Kom · Putri Pertama<br>Bpk. Taryono & Ibu Wiwit Jayanti</div>
           </div>
         </div>
         <div class="profile-card">
           <div class="profile-img-wrap">
-            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=800&fit=crop&q=80" alt="Zarda">
+            <img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=600&h=800&fit=crop&q=80" alt="Zarda">
             <div class="profile-overlay"><span class="profile-overlay-text">🤵 Mempelai Pria</span></div>
           </div>
           <div class="profile-info">
             <div class="profile-role" style="color:#1a1a1a">🤵 Mempelai Pria</div>
-            <div class="profile-name">Zardarian Ahadika N</div>
+            <div class="profile-name">{{ account.account_holder }}</div>
             <div class="profile-parents">S.Kom · Putra Kedua<br>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</div>
           </div>
         </div>
@@ -1131,28 +1133,14 @@ textarea.form-ctrl{resize:vertical;min-height:80px;line-height:1.6}
         <div>Doa restu sudah sangat cukup bagi kami. Namun jika ingin memberi sebagai tanda kasih, kami dengan senang hati menerimanya.</div>
       </div>
       <div class="bank-cards-grid">
-        <!-- BCA -->
+        <!-- {{ account.bank_name }} -->
         <div class="bank-card-bh">
           <div class="bc-face" style="background:linear-gradient(145deg,#003D9C,#0050C8,#0062F5)">
             <div class="bc-chip"></div>
-            <div class="bc-logo">BCA</div>
-            <div class="bc-number">8210 3705 61</div>
-            <div class="bc-bottom">
-              <div><div class="bc-holder-lbl">Account holder</div><div class="bc-holder-name">Zardarian Ahadika N</div></div>
-              <button class="bc-copy" id="bcaBc" onclick="copyBank('8210370561','bcaBc')">📋 Copy</button>
-            </div>
-          </div>
-        </div>
-        <!-- BNI -->
-        <div class="bank-card-bh">
-          <div class="bc-face" style="background:linear-gradient(145deg,#CC5000,#FF6B00)">
-            <div class="bc-chip" style="background:linear-gradient(135deg,#eee,#ccc)"></div>
-            <div class="bc-logo">BNI</div>
-            <div class="bc-number">1192 9784 03</div>
-            <div class="bc-bottom">
-              <div><div class="bc-holder-lbl">Account holder</div><div class="bc-holder-name">Anita Pangestuti</div></div>
-              <button class="bc-copy" id="bniBc" onclick="copyBank('1192978403','bniBc')">📋 Copy</button>
-            </div>
+            <div class="bc-logo">{{ account.bank_name }}</div>
+            <div class="bc-number">{{ account.account_number }}</div>
+                    {% endfor %}
+                
           </div>
         </div>
       </div>

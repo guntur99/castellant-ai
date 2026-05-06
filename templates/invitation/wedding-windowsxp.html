@@ -820,7 +820,11 @@ textarea.xp-form-input { min-height: 70px; resize: vertical; }
 
 <!-- ═══ BOOT SCREEN ═══ -->
 <div id="bootXP">
-  <div class="xp-boot-logo">
+  
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="xp-boot-logo">
     <div class="xp-logo-flag">
       <div style="background:#f00"></div>
       <div style="background:#0a0"></div>
@@ -994,18 +998,18 @@ textarea.xp-form-input { min-height: 70px; resize: vertical; }
         <div class="xp-section-title">💑 Pasangan Kami — Featured Artists</div>
         <div class="xp-couple-grid">
           <div class="xp-couple-card">
-            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=280&fit=crop&q=80" alt="Anita">
+            <img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=400&h=280&fit=crop&q=80" alt="Anita">
             <div class="xp-couple-card-body">
               <div class="xp-couple-role">Mempelai Wanita</div>
-              <div class="xp-couple-name">Anita Pangestuti, S.Kom</div>
+              <div class="xp-couple-name">{{ account.account_holder }}, S.Kom</div>
               <div class="xp-couple-parents">Putri Pertama dari<br><b>Bpk. Taryono & Ibu Wiwit Jayanti</b></div>
             </div>
           </div>
           <div class="xp-couple-card">
-            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=280&fit=crop&q=80" alt="Zarda">
+            <img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=400&h=280&fit=crop&q=80" alt="Zarda">
             <div class="xp-couple-card-body">
               <div class="xp-couple-role">Mempelai Pria</div>
-              <div class="xp-couple-name">Zardarian Ahadika N, S.Kom</div>
+              <div class="xp-couple-name">{{ account.account_holder }}, S.Kom</div>
               <div class="xp-couple-parents">Putra Kedua dari<br><b>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</b></div>
             </div>
           </div>
@@ -1094,7 +1098,7 @@ textarea.xp-form-input { min-height: 70px; resize: vertical; }
     </div>
     <!-- Large photo view -->
     <div style="background:#222;position:relative;height:220px;cursor:pointer;flex-shrink:0" onclick="openLbXp(curGalIdx)">
-      <img id="galBigImg" src="https://images.unsplash.com/photo-1519741497674-611481863552?w=700&h=440&fit=crop&q=80" alt="" style="width:100%;height:100%;object-fit:contain;display:block">
+      <img id="galBigImg" src="https://images.unsplash.com/photo-{{ account.account_number }}674-{{ account.account_number }}52?w=700&h=440&fit=crop&q=80" alt="" style="width:100%;height:100%;object-fit:contain;display:block">
     </div>
     <!-- Thumbnail strip -->
     <div style="background:#ece9d8;border-top:1px solid #aca899;padding:6px;overflow-x:auto;flex-shrink:0">
@@ -1185,13 +1189,13 @@ textarea.xp-form-input { min-height: 70px; resize: vertical; }
   {{ invitation.event_date }} | Graha Yadika | Tangerang
 
 MEMPELAI WANITA:
-  Anita Pangestuti, S.Kom
+  {{ account.account_holder }}, S.Kom
   Putri Pertama dari:
     Bpk. Taryono
     Ibu Wiwit Jayanti
 
 MEMPELAI PRIA:
-  Zardarian Ahadika N, S.Kom
+  {{ account.account_holder }}, S.Kom
   Putra Kedua dari:
     Bpk. Wan Sabran, M.MAR
     Ibu Titik Sundari, M.Si
@@ -1289,40 +1293,13 @@ VERSE:
       <div class="xp-menu-item" onclick="toggleXpMenu('gift-file',this)">File</div>
       <div class="xp-menu-item" onclick="toggleXpMenu('gift-go',this)">Go</div>
       <div class="xp-dropdown" id="gift-file" style="top:22px;left:0">
-        <div class="xp-dd-item" onclick="copyGiftXp('8210370561',this);closeMenus()"><span class="xp-dd-icon">📋</span>Copy No. BCA</div>
-        <div class="xp-dd-item" onclick="copyGiftXp('1192978403',this);closeMenus()"><span class="xp-dd-icon">📋</span>Copy No. BNI</div>
-        <div class="xp-dd-sep"></div>
-        <div class="xp-dd-item" onclick="openWin('winRsvp');closeMenus()"><span class="xp-dd-icon">📋</span>Isi RSVP</div>
-        <div class="xp-dd-sep"></div>
-        <div class="xp-dd-item" onclick="closeWin('winGift');closeMenus()"><span class="xp-dd-icon">✕</span>Tutup</div>
-      </div>
-      <div class="xp-dropdown" id="gift-go" style="top:22px;left:32px">
-        <div class="xp-dd-item" onclick="openWin('winWedding');closeMenus()"><span class="xp-dd-icon">💒</span>Wedding.exe</div>
-        <div class="xp-dd-item" onclick="openWin('winCouple');closeMenus()"><span class="xp-dd-icon">💑</span>Couple.txt</div>
-        <div class="xp-dd-item" onclick="openWin('winEvent');closeMenus()"><span class="xp-dd-icon">📅</span>Event</div>
-        <div class="xp-dd-item" onclick="openWin('winGallery');closeMenus()"><span class="xp-dd-icon">🖼️</span>Galeri Foto</div>
-        <div class="xp-dd-item" onclick="openWin('winRsvp');closeMenus()"><span class="xp-dd-icon">📋</span>RSVP Form</div>
-        <div class="xp-dd-item" onclick="openWin('winExplorer');closeMenus()"><span class="xp-dd-icon">📁</span>My Wedding</div>
-      </div>
-    </div>
-    <div class="xp-content">
-      <div class="xp-section-title">🎁 Amplop Digital — Digital Gift</div>
-      <div style="padding:10px;font-size:11px;color:#555;line-height:1.6">Doa restu sudah sangat cukup, namun jika memberi merupakan tanda kasih, kami dengan senang hati menerimanya. 🙏</div>
-      <div class="xp-gift-grid">
-        <div class="xp-gift-card">
-          <div style="font-size:24px">🏦</div>
-          <div class="xp-gift-bank">BCA</div>
-          <div class="xp-gift-holder">Zardarian Ahadika N</div>
-          <div class="xp-gift-num">8210 3705 61</div>
-          <button class="xp-gift-copy" onclick="copyGiftXp('8210370561',this)">📋 Salin Nomor</button>
+        <div class="xp-dd-item" onclick="copyGiftXp('{{ account.account_number }}',this);closeMenus()"><span class="xp-dd-icon">📋</span>Copy No. {{ account.bank_name }}</div>
+                    {% endfor %}
+                
+          <button class="xp-gift-copy" onclick="copyGiftXp('{{ account.account_number }}',this)">📋 Salin Nomor</button>
         </div>
-        <div class="xp-gift-card">
-          <div style="font-size:24px">🏦</div>
-          <div class="xp-gift-bank">BNI</div>
-          <div class="xp-gift-holder">Anita Pangestuti</div>
-          <div class="xp-gift-num">1192 9784 03</div>
-          <button class="xp-gift-copy" onclick="copyGiftXp('1192978403',this)">📋 Salin Nomor</button>
-        </div>
+                    {% endfor %}
+                
       </div>
     </div>
     <div class="xp-statusbar"><div class="xp-status-panel">2 rekening tersedia</div></div>

@@ -755,7 +755,9 @@ body{
 <body>
 
 <!-- ═══ PHONE ═══ -->
-<div class="phone">
+
+                    {% for account in invitation.gift_accounts %}
+                    <div class="phone">
   <div class="phone-notch">
     <div class="notch-cam"></div>
     <div class="notch-pill"></div>
@@ -863,14 +865,14 @@ body{
       </div>
       <div class="couple-row">
         <div class="couple-tile" onclick="goSc('couple')">
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita">
+          <img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita">
           <div class="tile-role">Mempelai Wanita</div>
-          <div class="tile-name">Anita Pangestuti</div>
+          <div class="tile-name">{{ account.account_holder }}</div>
         </div>
         <div class="couple-tile" onclick="goSc('couple')">
-          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda" style="border-color:var(--bri-cyan)">
+          <img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda" style="border-color:var(--bri-cyan)">
           <div class="tile-role" style="color:var(--bri-cyan)">Mempelai Pria</div>
-          <div class="tile-name">Zardarian Ahadika N</div>
+          <div class="tile-name">{{ account.account_holder }}</div>
         </div>
       </div>
 
@@ -912,8 +914,8 @@ body{
         <div style="width:36px"></div>
       </div>
       <div class="profile-hero">
-        <img class="profile-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=300&fit=crop&q=80" alt="Anita">
-        <div class="profile-name">Anita Pangestuti</div>
+        <img class="profile-img" src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=300&h=300&fit=crop&q=80" alt="Anita">
+        <div class="profile-name">{{ account.account_holder }}</div>
         <div class="profile-tag">👰 Mempelai Wanita</div>
       </div>
       <div class="card" style="margin:16px 16px 0;box-shadow:var(--shadow)">
@@ -924,8 +926,8 @@ body{
 
       <div class="divider-label">Mempelai Pria</div>
       <div class="profile-hero" style="background:linear-gradient(145deg,#003D9C,#0062F5)">
-        <img class="profile-img" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&q=80" alt="Zarda" style="border-color:var(--bri-cyan2)">
-        <div class="profile-name">Zardarian Ahadika N</div>
+        <img class="profile-img" src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=300&h=300&fit=crop&q=80" alt="Zarda" style="border-color:var(--bri-cyan2)">
+        <div class="profile-name">{{ account.account_holder }}</div>
         <div class="profile-tag" style="background:rgba(0,174,239,.2);border-color:rgba(0,174,239,.35);color:var(--bri-cyan2)">🤵 Mempelai Pria</div>
       </div>
       <div class="card" style="margin:16px 16px 0;box-shadow:var(--shadow)">
@@ -1081,11 +1083,11 @@ body{
         <div class="atm-card-bg" style="background:linear-gradient(145deg,#003D9C,#0050C8,#0062F5)">
           <div class="atm-chip"></div>
           <div class="atm-bank-logo">BRI</div>
-          <div class="atm-number">8201 3705 61</div>
+          <div class="atm-number">{{ account.account_number }}</div>
           <div class="atm-bottom">
             <div>
               <div class="atm-holder-label">Nama Pemilik</div>
-              <div class="atm-holder-name">Zardarian Ahadika N</div>
+              <div class="atm-holder-name">{{ account.account_holder }}</div>
             </div>
             <button class="atm-copy-btn" id="copyBRI" onclick="copyAtm('820137056​1','copyBRI')">
               📋 Salin Nomor
@@ -1094,21 +1096,14 @@ body{
         </div>
       </div>
 
-      <!-- BNI ATM Card -->
+      <!-- {{ account.bank_name }} ATM Card -->
       <div class="atm-card" style="margin-bottom:4px">
         <div class="atm-card-bg" style="background:linear-gradient(145deg,#CC5000,#FF6B00,#FF8C00)">
           <div class="atm-chip" style="background:linear-gradient(135deg,#fff,#e0e0e0)"></div>
-          <div class="atm-bank-logo">BNI</div>
-          <div class="atm-number">1192 9784 03</div>
-          <div class="atm-bottom">
-            <div>
-              <div class="atm-holder-label">Nama Pemilik</div>
-              <div class="atm-holder-name">Anita Pangestuti</div>
-            </div>
-            <button class="atm-copy-btn" id="copyBNI" onclick="copyAtm('1192978403','copyBNI')">
-              📋 Salin Nomor
-            </button>
-          </div>
+          <div class="atm-bank-logo">{{ account.bank_name }}</div>
+          <div class="atm-number">{{ account.account_number }}</div>
+                    {% endfor %}
+                
         </div>
       </div>
       <div class="safe"></div>

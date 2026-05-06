@@ -1947,7 +1947,11 @@
 <body>
 
     <!-- ─────────────── TITLE BAR ─────────────── -->
-    <div class="titlebar">
+    
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="titlebar">
         <div class="tb-left">
             <div class="fig-logo">
                 <svg viewBox="0 0 38 57" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1958,7 +1962,7 @@
                     <path d="M0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z" fill="#a259ff" />
                 </svg>
             </div>
-            <span class="tb-filename">Nazma-Guntur-wedding.fig</span>
+            <span class="tb-filename">{{ account.account_holder }}-Guntur-wedding.fig</span>
         </div>
 
         <div class="tb-center">
@@ -1991,7 +1995,7 @@
 
         <div class="tb-right">
             <div class="mp-avatars">
-                <div class="mp-av" style="background:#18a0fb;color:#fff" title="Nazma (editing)">AN</div>
+                <div class="mp-av" style="background:#18a0fb;color:#fff" title="{{ account.account_holder }} (editing)">AN</div>
                 <div class="mp-av" style="background:#7b61ff;color:#fff" title="Guntur (viewing)">ZR</div>
                 <div class="mp-av" style="background:#14ae5c;color:#fff" title="You">ME</div>
             </div>
@@ -2143,7 +2147,7 @@
                         </div>
                         <div class="hero-text">
                             <div class="hero-eyebrow">24 · 05 · 2026 — Tangerang</div>
-                            <div class="hero-name">Nazma<span>&</span>Guntur</div>
+                            <div class="hero-name">{{ account.account_holder }}<span>&</span>Guntur</div>
                             <div class="hero-sub">// Dengan penuh rasa syukur, kami<br>// mengundang kehadiran Anda.
                             </div>
                             <div class="hero-cta-row">
@@ -2218,17 +2222,17 @@
                     <div class="rhandle rh-br"></div>
                     <div class="couple-half">
                         <div>
-                            <div class="ch-tag" style="color:#18a0fb">// mempelai wNazma</div>
-                            <div class="ch-name">Nazma Putri</div>
+                            <div class="ch-tag" style="color:#18a0fb">// mempelai w{{ account.account_holder }}</div>
+                            <div class="ch-name">{{ account.account_holder }}</div>
                             <div class="ch-sub">S.Kom — Putri Pertama dari<br>Bpk. Taryono & Ibu Wiwit Jayanti</div>
                         </div>
-                        <div class="ch-role" style="background:rgba(24,160,251,.12);color:var(--fig-blue)">@Nazma.Putri_
+                        <div class="ch-role" style="background:rgba(24,160,251,.12);color:var(--fig-blue)">@{{ account.account_holder }}.Putri_
                         </div>
                     </div>
                     <div class="couple-half">
                         <div>
                             <div class="ch-tag" style="color:#7b61ff">// mempelai pria</div>
-                            <div class="ch-name">Guntur Putra</div>
+                            <div class="ch-name">{{ account.account_holder }}</div>
                             <div class="ch-sub">S.Kom — Putra Kedua dari<br>Bpk. Wan Sabran & Ibu Titik Sundari</div>
                         </div>
                         <div class="ch-role" style="background:rgba(123,97,255,.12);color:var(--fig-purple)">
@@ -2391,24 +2395,23 @@
                         <div class="gift-title">amplop digital / rekening</div>
                     </div>
                     <div class="gift-cards">
-                        <div class="gift-card gc-bca">
-                            <div class="gc-left">
-                                <div class="gc-bank">BCA</div>
-                                <div class="gc-holder">Guntur Putra</div>
-                                <div class="gc-num">8210 3705 61</div>
+                    {% for account in invitation.gift_accounts %}
+                    <div class="gc-left">
+                                <div class="gc-bank">{{ account.bank_name }}</div>
+                    {% endfor %}
+                </div>
                             </div>
                             <button class="gc-copy"
-                                onclick="copyNum('8210370561',this);event.stopPropagation()">Copy</button>
+                                onclick="copyNum('{{ account.account_number }}',this);event.stopPropagation()">Copy</button>
                         </div>
-                        <div class="gift-card gc-bni">
-                            <div class="gc-left">
-                                <div class="gc-bank">BNI</div>
-                                <div class="gc-holder">Nazma Putri</div>
-                                <div class="gc-num">1192 9784 03</div>
+                    {% endfor %}
+                
                             </div>
                             <button class="gc-copy"
-                                onclick="copyNum('1192978403',this);event.stopPropagation()">Copy</button>
+                                onclick="copyNum('{{ account.account_number }}',this);event.stopPropagation()">Copy</button>
                         </div>
+                    {% endfor %}
+                
                     </div>
                 </div>
 

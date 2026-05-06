@@ -151,6 +151,38 @@ impl Rsvp {
     pub fn display_message(&self) -> &str {
         self.message.as_deref().unwrap_or("")
     }
+
+    pub fn display_attendance(&self) -> &str {
+        if self.attendance.to_lowercase() == "hadir" {
+            "✅ Hadir"
+        } else {
+            "❌ Tidak Hadir"
+        }
+    }
+
+    pub fn attendance_class(&self) -> &str {
+        if self.attendance.to_lowercase() == "hadir" {
+            "text-green"
+        } else {
+            "text-red"
+        }
+    }
+
+    pub fn attendance_style(&self) -> &str {
+        if self.attendance.to_lowercase() == "hadir" {
+            "color:green;font-weight:600"
+        } else {
+            "color:red;font-weight:600"
+        }
+    }
+
+    pub fn is_attending_akad(&self) -> bool {
+        self.attendance.to_lowercase() == "hadir"
+    }
+
+    pub fn is_attending_reception(&self) -> bool {
+        self.attendance.to_lowercase() == "hadir"
+    }
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, FromRow)]

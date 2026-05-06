@@ -784,7 +784,11 @@ textarea.ip-input{min-height:80px;resize:vertical}
 
 <!-- ══ OPENING ══ -->
 <div id="opening">
-  <div class="op-card">
+  
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="op-card">
     <div class="op-header">
       <div class="op-ppt-icon">
         <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 6h-3v2h3v2h-3v2H9V7h5v2z"/></svg>
@@ -824,7 +828,7 @@ textarea.ip-input{min-height:80px;resize:vertical}
         <span class="op-to-label">To:</span>
         <div class="op-to-chip">
           <div class="op-to-dot">AG</div>
-          <span>Ade Guntur Fitridullah &amp; Partner</span>
+          <span>{{ account.account_holder }} Fitridullah &amp; Partner</span>
         </div>
       </div>
       <button class="op-btn" onclick="openInvitation()">
@@ -988,7 +992,7 @@ textarea.ip-input{min-height:80px;resize:vertical}
 
       <!-- SLIDE 1: Title -->
       <div class="slide s1 fade-slide" id="s-1" onclick="setActiveSlide(this,1)">
-        <img class="s1-photo" src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1000&h=600&fit=crop&q=85" alt="">
+        <img class="s1-photo" src="https://images.unsplash.com/photo-{{ account.account_number }}674-{{ account.account_number }}52?w=1000&h=600&fit=crop&q=85" alt="">
         <div class="s1-overlay"></div>
         <div class="s1-shape"></div>
         <div class="s1-shape2"></div>
@@ -1019,7 +1023,7 @@ textarea.ip-input{min-height:80px;resize:vertical}
             <div class="s2-box"><div class="s2-num" id="cdM">00</div><div class="s2-unit">Menit</div></div>
             <div class="s2-box"><div class="s2-num" id="cdS">00</div><div class="s2-unit">Detik</div></div>
           </div>
-          <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=120&fit=crop&q=80" style="width:85%;height:clamp(30px,12%,50px);object-fit:cover;border-radius:1px;opacity:.5" alt="" loading="lazy">
+          <img src="https://images.unsplash.com/photo-{{ account.account_number }}579-730e3918a45a?w=600&h=120&fit=crop&q=80" style="width:85%;height:clamp(30px,12%,50px);object-fit:cover;border-radius:1px;opacity:.5" alt="" loading="lazy">
         </div>
         <div class="slide-number" style="color:var(--ms-lgray)">2 / 10</div>
       </div>
@@ -1044,18 +1048,18 @@ textarea.ip-input{min-height:80px;resize:vertical}
         </div>
         <div class="s4-cols">
           <div class="s4-col">
-            <img class="s4-col-photo" src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=250&fit=crop&q=80" alt="Anita" loading="lazy">
+            <img class="s4-col-photo" src="https://images.unsplash.com/photo-{{ account.account_number }}594-4ff0802cfb7e?w=400&h=250&fit=crop&q=80" alt="Anita" loading="lazy">
             <div class="s4-col-body">
               <div class="s4-col-role">Mempelai Wanita</div>
-              <div class="s4-col-name">Anita Pangestuti, S.Kom</div>
+              <div class="s4-col-name">{{ account.account_holder }}, S.Kom</div>
               <div class="s4-col-parents">Putri Pertama dari<br><strong>Bpk. Taryono & Ibu Wiwit Jayanti</strong></div>
             </div>
           </div>
           <div class="s4-col">
-            <img class="s4-col-photo" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=250&fit=crop&q=80" alt="Zarda" loading="lazy">
+            <img class="s4-col-photo" src="https://images.unsplash.com/photo-{{ account.account_number }}202-cad84cf45f1d?w=400&h=250&fit=crop&q=80" alt="Zarda" loading="lazy">
             <div class="s4-col-body">
               <div class="s4-col-role">Mempelai Pria</div>
-              <div class="s4-col-name">Zardarian Ahadika N, S.Kom</div>
+              <div class="s4-col-name">{{ account.account_holder }}, S.Kom</div>
               <div class="s4-col-parents">Putra Kedua dari<br><strong>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</strong></div>
             </div>
           </div>
@@ -1147,23 +1151,18 @@ textarea.ip-input{min-height:80px;resize:vertical}
           <div class="s8-heading">Amplop Digital — Rekening Bank</div>
           <div class="s8-cards-row">
             <div class="s8-giftcard">
-              <div class="s8-bank">BCA</div>
-              <div class="s8-holder">Zardarian Ahadika N</div>
-              <div class="s8-num">8210 3705 61</div>
-              <button class="s8-copy" onclick="cp('8210370561',this);event.stopPropagation()">
+              <div class="s8-bank">{{ account.bank_name }}</div>
+              <div class="s8-holder">{{ account.account_holder }}</div>
+              <div class="s8-num">{{ account.account_number }}</div>
+                    {% endfor %}
+                
+              <button class="s8-copy" onclick="cp('{{ account.account_number }}',this);event.stopPropagation()">
                 <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
                 Copy
               </button>
             </div>
-            <div class="s8-giftcard">
-              <div class="s8-bank">BNI</div>
-              <div class="s8-holder">Anita Pangestuti</div>
-              <div class="s8-num">1192 9784 03</div>
-              <button class="s8-copy" onclick="cp('1192978403',this);event.stopPropagation()">
-                <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-                Copy
-              </button>
-            </div>
+                    {% endfor %}
+                
           </div>
         </div>
         <div class="slide-number" style="color:var(--ms-lgray)">8 / 10</div>

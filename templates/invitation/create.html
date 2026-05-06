@@ -430,6 +430,44 @@
                                 style="text-align: center; border: none; background: transparent; color: #8E6E53; font-weight: 700; width: 100%; margin-top: 1rem;">
                         </div>
 
+                        <!-- Amplop Digital Section -->
+                        <div class="gift-section"
+                            style="margin-top: 4rem; padding: 4rem; background: #f8f9ff; border-radius: 40px; border: 1px solid #e5eafb;">
+                            <h3 style="font-family: var(--font-serif); color: #2c3e50; text-align: center; margin-bottom: 2rem;">
+                                <i class="fas fa-wallet" style="margin-right: 0.5rem; color: #4e73df;"></i>
+                                Amplop Digital (Gift)
+                            </h3>
+                            <p style="text-align: center; color: #666; margin-bottom: 2rem; font-size: 0.9rem;">
+                                Berikan kemudahan tamu untuk mengirimkan kado digital. Anda dapat menambahkan detail rekening bank atau e-wallet.
+                            </p>
+                            
+                            <div id="gift-accounts-container">
+                                <div class="gift-account-item" style="display: flex; flex-direction: column; gap: 1.2rem; margin-bottom: 1.5rem; padding: 1.5rem; background: white; border-radius: 20px; border: 1px solid #eef0f7; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                        <div class="input-group">
+                                            <label style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Bank/E-Wallet</label>
+                                            <input type="text" name="bank_name[]" placeholder="BCA, Mandiri, Dana, dll">
+                                        </div>
+                                        <div class="input-group">
+                                            <label style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Nomor Rekening</label>
+                                            <input type="text" name="account_number[]" placeholder="8210370xxx">
+                                        </div>
+                                    </div>
+                                    <div class="input-group">
+                                        <label style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Atas Nama</label>
+                                        <input type="text" name="account_holder[]" placeholder="Nama Lengkap Pemilik">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="text-align: center; margin-top: 1.5rem;">
+                                <button type="button" class="btn-ai-magic" onclick="addGiftAccount()" style="position:static; margin: 0 auto; background: white; color: #4e73df; border: 1px solid #4e73df;">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Tambah Rekening Lain</span>
+                                </button>
+                            </div>
+                        </div>
+
                         <div
                             style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
                             <button type="button" class="btn-back" onclick="prevStep(2)">← Back</button>
@@ -1094,14 +1132,32 @@
         margin-bottom: 0.4rem;
     }
 
-    .input-group input[type="text"],
+    .input-group input,
     .input-group textarea {
         width: 100%;
-        padding: 1rem;
-        border-radius: 15px;
-        border: 1px solid #f0f0f0;
-        background: #fafafa;
-        font-family: var(--font-sans);
+        padding: 0.9rem 1.2rem;
+        border-radius: 14px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        background: rgba(255, 255, 255, 0.9);
+        font-family: inherit;
+        font-size: 0.9rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    }
+
+    .input-group input:focus,
+    .input-group textarea:focus {
+        outline: none;
+        border-color: var(--color-accent-red);
+        background: white;
+        box-shadow: 0 5px 15px rgba(255, 71, 87, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .input-group textarea {
+        resize: vertical;
+        min-height: 100px;
+        line-height: 1.6;
     }
 
     .progress-steps {
@@ -1428,9 +1484,6 @@
         outline: none;
     }
 
-    textarea {
-        resize: none;
-    }
 
     .preview-link {
         display: inline-block;
@@ -1449,10 +1502,34 @@
     .preview-link:hover {
         background: var(--color-accent-red);
         color: white;
-    }
 </style>
 
 <script>
+    function addGiftAccount() {
+        const container = document.getElementById('gift-accounts-container');
+        const newItem = document.createElement('div');
+        newItem.className = 'gift-account-item';
+        newItem.style.cssText = 'display: flex; flex-direction: column; gap: 1.2rem; margin-bottom: 1.5rem; padding: 1.5rem; background: white; border-radius: 20px; border: 1px solid #eef0f7; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.03);';
+        newItem.innerHTML = `
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="input-group">
+                    <label style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Bank/E-Wallet</label>
+                    <input type="text" name="bank_name[]" placeholder="BCA, Mandiri, Dana, dll">
+                </div>
+                <div class="input-group">
+                    <label style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Nomor Rekening</label>
+                    <input type="text" name="account_number[]" placeholder="8210370xxx">
+                </div>
+            </div>
+            <div class="input-group">
+                <label style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Atas Nama</label>
+                <input type="text" name="account_holder[]" placeholder="Nama Lengkap Pemilik">
+            </div>
+            <button type="button" onclick="this.parentElement.remove()" style="position: absolute; top: -10px; right: -10px; width: 28px; height: 28px; border-radius: 50%; background: #ff4757; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(255,71,87,0.3);"><i class="fas fa-times" style="font-size: 0.7rem;"></i></button>
+        `;
+        container.appendChild(newItem);
+    }
+
     let isSlugManuallyEdited = false;
     // Dynamic Template Map from Database
     const TPL_MAP = {

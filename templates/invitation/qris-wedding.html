@@ -1752,7 +1752,11 @@
 
     <!-- ══ OPENING ══ -->
     <div id="opening">
-        <div class="op-qris-logo">
+        
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="op-qris-logo">
             <div class="qris-letter qris-q">Q</div>
             <div class="qris-letter qris-r">R</div>
             <div class="qris-letter qris-i">I</div>
@@ -1784,7 +1788,7 @@
             <div class="op-tag-dot"></div>Scan untuk hadir
         </div>
         <div class="op-title">UNDANGAN PERNIKAHAN · INDONESIA</div>
-        <div class="op-names">Nazma & Gunturr</div>
+        <div class="op-names">{{ account.account_holder }} & Gunturr</div>
         <div class="op-nominal">Rp <span>HADIR</span></div>
 
         <div class="op-dear">
@@ -1843,7 +1847,7 @@
                 <div class="card-header">
                     <div class="ch-merchant">
                         <div class="ch-merchant-label">Nama Merchant</div>
-                        <div class="ch-merchant-name">Nazma & Gunturr</div>
+                        <div class="ch-merchant-name">{{ account.account_holder }} & Gunturr</div>
                         <div class="ch-merchant-id">MID: WEDDING·24052026·TANGERANG</div>
                     </div>
                     <div class="ch-status">
@@ -1964,8 +1968,8 @@
 
                     <!-- Bank logos -->
                     <div class="bank-logos-row">
-                        <span class="bank-logo-pill bca">BCA</span>
-                        <span class="bank-logo-pill bni">BNI</span>
+                        <span class="bank-logo-pill bca">{{ account.bank_name }}</span>
+                        <span class="bank-logo-pill bni">{{ account.bank_name }}</span>
                         <span class="bank-logo-pill bri">BRI</span>
                         <span class="bank-logo-pill mandiri">MANDIRI</span>
                         <span class="bank-logo-pill gopay">GoPay</span>
@@ -1997,7 +2001,7 @@
                     </div>
                     <div class="info-row">
                         <span class="ir-key">Merchant</span>
-                        <span class="ir-val">Nazma & Gunturr Wedding</span>
+                        <span class="ir-val">{{ account.account_holder }} & Gunturr Wedding</span>
                     </div>
                     <div class="info-row">
                         <span class="ir-key">Tanggal</span>
@@ -2088,20 +2092,20 @@
                     <div class="couple-grid">
                         <div class="c-card">
                             <div class="c-av"><img
-                                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80"
-                                    alt="Nazma"></div>
-                            <div class="c-role">🌸 Mempelai WNazma</div>
-                            <div class="c-name">Nazma Putri, S.Kom</div>
+                                    src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=200&h=200&fit=crop&q=80"
+                                    alt="{{ account.account_holder }}"></div>
+                            <div class="c-role">🌸 Mempelai W{{ account.account_holder }}</div>
+                            <div class="c-name">{{ account.account_holder }}, S.Kom</div>
                             <div class="c-parents">Putri Pertama dari<br><strong>Bpk. Taryono &<br>Ibu Wiwit
                                     Jayanti</strong></div>
                         </div>
                         <div class="c-amp">&</div>
                         <div class="c-card">
                             <div class="c-av"><img
-                                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80"
+                                    src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80"
                                     alt="Guntur"></div>
                             <div class="c-role">🤵 Mempelai Pria</div>
-                            <div class="c-name">Guntur Putra, S.Kom</div>
+                            <div class="c-name">{{ account.account_holder }}, S.Kom</div>
                             <div class="c-parents">Putra Kedua dari<br><strong>Bpk. Wan Sabran, M.MAR &<br>Ibu Titik
                                     Sundari, M.Si</strong></div>
                         </div>
@@ -2158,7 +2162,7 @@
                     <div class="sc-head-icon" style="background:var(--qr-blue)">💛</div>
                     <div>
                         <div class="sc-head-title">Riwayat Transaksi</div>
-                        <div class="sc-head-sub">Love Story Nazma & Gunturr</div>
+                        <div class="sc-head-sub">Love Story {{ account.account_holder }} & Gunturr</div>
                     </div>
                 </div>
                 <div class="sc-body">
@@ -2227,18 +2231,15 @@
                         sangat cukup. Namun jika memberi adalah tanda kasih, kami dengan tulus menerimanya.</p>
                     <div class="gift-receipt">
                         <div class="gr-bank">Bank</div>
-                        <div class="gr-name">BCA</div>
-                        <div class="gr-holder">Guntur Putra</div>
-                        <div class="gr-num">8210 3705 61</div><br>
-                        <button class="copy-btn" onclick="copyAcc('8210370561',this)">Salin Nomor</button>
+                        <div class="gr-name">{{ account.bank_name }}</div>
+                        <div class="gr-holder">{{ account.account_holder }}</div>
+                        <div class="gr-num">{{ account.account_number }}</div>
+                    {% endfor %}
+                <br>
+                        <button class="copy-btn" onclick="copyAcc('{{ account.account_number }}',this)">Salin Nomor</button>
                     </div>
-                    <div class="gift-receipt">
-                        <div class="gr-bank">Bank</div>
-                        <div class="gr-name">BNI</div>
-                        <div class="gr-holder">Nazma Putri</div>
-                        <div class="gr-num">1192 9784 03</div><br>
-                        <button class="copy-btn" onclick="copyAcc('1192978403',this)">Salin Nomor</button>
-                    </div>
+                    {% endfor %}
+                
                 </div>
             </div>
 

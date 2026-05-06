@@ -868,7 +868,11 @@ textarea.form-input { resize:none; min-height:90px; }
 <body>
 
 <!-- Custom cursor -->
-<div class="cursor" id="cursor">
+
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="cursor" id="cursor">
   <div class="cursor-dot"></div>
   <div class="cursor-ring"></div>
 </div>
@@ -887,7 +891,7 @@ textarea.form-input { resize:none; min-height:90px; }
     <div class="gate-names">Anita<br>&amp; Zarda</div>
     <div class="gate-rule"></div>
     <div class="gate-dear">Kepada Yth.</div>
-    <div class="gate-to">Ade Guntur Fitridullah &amp; Partner</div>
+    <div class="gate-to">{{ account.account_holder }} Fitridullah &amp; Partner</div>
     <div style="margin-top:28px">
       <button class="gate-btn" onclick="openGate()"><span>Buka Undangan</span></button>
     </div>
@@ -904,7 +908,7 @@ textarea.form-input { resize:none; min-height:90px; }
   <section class="hero" id="home">
     <div class="hero-image-col">
       <img class="hero-img" id="heroImg"
-        src="https://images.unsplash.com/photo-1519741497674-611481863552?w=900&q=85"
+        src="https://images.unsplash.com/photo-{{ account.account_number }}674-{{ account.account_number }}52?w=900&q=85"
         alt="Anita & Zarda">
       <div class="hero-image-overlay"></div>
       <div class="hero-vertical-text">Anita &amp; Zarda · Wedding 2026</div>
@@ -981,20 +985,20 @@ textarea.form-input { resize:none; min-height:90px; }
     </div>
     <div class="couple-grid reveal" style="max-width:960px;margin:0 auto;position:relative">
       <div class="couple-card">
-        <img class="couple-card-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=600&h=800&fit=crop&q=80" alt="Anita">
+        <img class="couple-card-img" src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=600&h=800&fit=crop&q=80" alt="Anita">
         <div class="couple-card-overlay"></div>
         <div class="couple-card-content">
           <div class="couple-card-role">Mempelai Wanita</div>
-          <div class="couple-card-name">Anita Pangestuti,<br><em style="font-size:.75em;opacity:.7">S.Kom</em></div>
+          <div class="couple-card-name">{{ account.account_holder }},<br><em style="font-size:.75em;opacity:.7">S.Kom</em></div>
           <div class="couple-card-parents">Putri Pertama dari<br>Bpk. Taryono &amp; Ibu Wiwit Jayanti</div>
         </div>
       </div>
       <div class="couple-card">
-        <img class="couple-card-img" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=800&fit=crop&q=80" alt="Zarda">
+        <img class="couple-card-img" src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=600&h=800&fit=crop&q=80" alt="Zarda">
         <div class="couple-card-overlay"></div>
         <div class="couple-card-content">
           <div class="couple-card-role">Mempelai Pria</div>
-          <div class="couple-card-name">Zardarian Ahadika N,<br><em style="font-size:.75em;opacity:.7">S.Kom</em></div>
+          <div class="couple-card-name">{{ account.account_holder }},<br><em style="font-size:.75em;opacity:.7">S.Kom</em></div>
           <div class="couple-card-parents">Putra Kedua dari<br>Bpk. Wan Sabran, M.MAR &amp; Ibu Titik Sundari, M.Si</div>
         </div>
       </div>
@@ -1109,18 +1113,15 @@ textarea.form-input { resize:none; min-height:90px; }
       <div class="gift-cards reveal">
         <div class="gift-card">
           <div class="gc-bank">Bank</div>
-          <div class="gc-name">BCA</div>
-          <div class="gc-holder">Zardarian Ahadika N</div>
-          <div class="gc-num">8210 3705 61</div>
-          <button class="copy-btn" onclick="copyAcc('8210370561',this)"><span>Salin Nomor</span></button>
+          <div class="gc-name">{{ account.bank_name }}</div>
+          <div class="gc-holder">{{ account.account_holder }}</div>
+          <div class="gc-num">{{ account.account_number }}</div>
+                    {% endfor %}
+                
+          <button class="copy-btn" onclick="copyAcc('{{ account.account_number }}',this)"><span>Salin Nomor</span></button>
         </div>
-        <div class="gift-card">
-          <div class="gc-bank">Bank</div>
-          <div class="gc-name">BNI</div>
-          <div class="gc-holder">Anita Pangestuti</div>
-          <div class="gc-num">1192 9784 03</div>
-          <button class="copy-btn" onclick="copyAcc('1192978403',this)"><span>Salin Nomor</span></button>
-        </div>
+                    {% endfor %}
+                
       </div>
     </div>
   </section>

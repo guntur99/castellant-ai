@@ -124,14 +124,45 @@
         color: var(--color-text-muted);
     }
 
-    .form-group input {
+    .form-group input, .form-group textarea {
         width: 100%;
-        padding: 0.8rem 1rem;
-        border-radius: 12px;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        background: rgba(255, 255, 255, 0.8);
+        padding: 0.9rem 1.2rem;
+        border-radius: 14px;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        background: rgba(255, 255, 255, 0.9);
         font-family: inherit;
-        transition: all 0.3s ease;
+        font-size: 0.9rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    }
+
+    .form-group input:focus, .form-group textarea:focus {
+        outline: none;
+        border-color: var(--color-accent-red);
+        background: white;
+        box-shadow: 0 5px 15px rgba(255, 71, 87, 0.1);
+        transform: translateY(-1px);
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+        line-height: 1.6;
+        border: 1px solid rgba(0, 0, 0, 0.08);
+        border-radius: 14px;
+        padding: 1rem 1.2rem;
+        background: rgba(255, 255, 255, 0.9);
+        font-family: inherit;
+        font-size: 0.9rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--color-accent-red);
+        background: white;
+        box-shadow: 0 5px 15px rgba(255, 71, 87, 0.1);
+        transform: translateY(-1px);
     }
 
     .btn-primary {
@@ -216,6 +247,50 @@
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 1.5rem;
         margin-bottom: 2rem;
+    }
+
+    /* Media Queries for Responsiveness */
+    @media (max-width: 1024px) {
+        .dashboard-container {
+            flex-direction: column !important;
+        }
+        .sidebar {
+            width: 100% !important;
+            height: auto !important;
+            position: relative !important;
+            border-right: none !important;
+            border-bottom: 1px solid rgba(0,0,0,0.05) !important;
+        }
+        .main-content {
+            padding: 1.5rem !important;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .form-grid {
+            grid-template-columns: 1fr !important;
+        }
+        .glass {
+            padding: 1.5rem !important;
+            border-radius: 20px !important;
+        }
+        .accent-title {
+            font-size: 1.5rem !important;
+        }
+        .visual-group-grid {
+            grid-template-columns: 1fr !important;
+        }
+        .form-step {
+            padding: 0 !important;
+        }
+        .btn-elegant {
+            width: 100% !important;
+            justify-content: center !important;
+        }
+        .step-navigation {
+            flex-direction: column-reverse !important;
+            gap: 1rem !important;
+        }
     }
 
     .group-visual-card {
@@ -1194,99 +1269,166 @@
 
                     <!-- Step 3: Event & Gallery -->
                     <div class="form-step" id="step-3">
-                        <h3 class="serif accent-title">Events & Gallery</h3>
-                        <div class="form-grid" style="gap: 4rem;">
-                            <!-- Left: Event Details -->
-                            <div>
-                                <h4 class="serif mb-4" style="color: #8E6E53;">Ceremony & Reception</h4>
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label>Ceremony Time</label>
-                                        <input type="text" name="ceremony_time" value="{{ invitation.ceremony.time }}">
-                                    </div>
-                                    <div class="form-group">
-                                        <label>Ceremony Venue</label>
-                                        <input type="text" name="ceremony_venue" value="{{ invitation.ceremony.venue }}">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Ceremony Address</label>
-                                    <textarea name="ceremony_address" rows="2">{{ invitation.ceremony.address }}</textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label>Ceremony Google Maps URL</label>
-                                    <input type="text" name="ceremony_maps" value="{{ invitation.ceremony.maps_url }}">
+                        <h3 class="serif accent-title" style="margin-bottom: 2.5rem; font-size: 2rem;">Events & Gallery</h3>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 3rem;">
+                            <!-- Section: Ceremony & Reception -->
+                            <div class="glass" style="padding: 2.5rem; border-radius: 30px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(255,255,255,0.8);">
+                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                                    <div style="width: 42px; height: 42px; background: #fef2f2; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--color-accent-red); font-size: 1.2rem;">📅</div>
+                                    <h4 class="serif" style="color: #4A3728; font-size: 1.4rem; margin: 0;">Ceremony & Reception</h4>
                                 </div>
 
-                                <div style="height: 1px; background: #eee; margin: 2rem 0;"></div>
+                                <div style="display: flex; flex-direction: column; gap: 3rem;">
+                                    <!-- Ceremony -->
+                                    <div>
+                                        <h5 style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem; color: #8E6E53; margin-bottom: 1.5rem; font-weight: 800; border-bottom: 1px solid rgba(142, 110, 83, 0.2); padding-bottom: 0.5rem; display: inline-block;">Akad Nikah / Ceremony</h5>
+                                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                                            <div class="form-group">
+                                                <label>Ceremony Time</label>
+                                                <input type="text" name="ceremony_time" value="{{ invitation.ceremony.time }}" placeholder="Contoh: 08:00 - 10:00 WIB">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Ceremony Venue</label>
+                                                <input type="text" name="ceremony_venue" value="{{ invitation.ceremony.venue }}" placeholder="Nama Gedung/Tempat">
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="margin-top: 1rem;">
+                                            <label>Ceremony Address</label>
+                                            <textarea name="ceremony_address" rows="2" placeholder="Alamat lengkap lokasi akad nikah">{{ invitation.ceremony.address }}</textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Google Maps URL</label>
+                                            <input type="text" name="ceremony_maps" value="{{ invitation.ceremony.maps_url }}" placeholder="https://maps.google.com/...">
+                                        </div>
+                                    </div>
 
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label>Reception Date</label>
-                                        <input type="date" name="reception_date" value="{{ invitation.event_date_iso[..10] }}">
+                                    <!-- Reception -->
+                                    <div>
+                                        <h5 style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem; color: #8E6E53; margin-bottom: 1.5rem; font-weight: 800; border-bottom: 1px solid rgba(142, 110, 83, 0.2); padding-bottom: 0.5rem; display: inline-block;">Resepsi / Reception</h5>
+                                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                                            <div class="form-group">
+                                                <label>Reception Date</label>
+                                                <input type="date" name="reception_date" value="{{ invitation.event_date_iso[..10] }}">
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Reception Time</label>
+                                                <input type="text" name="reception_time" value="{{ invitation.reception.time }}" placeholder="Contoh: 11:00 - 13:00 WIB">
+                                            </div>
+                                        </div>
+                                        <div class="form-group" style="margin-top: 1rem;">
+                                            <label>Reception Venue</label>
+                                            <input type="text" name="reception_venue" value="{{ invitation.reception.venue }}" placeholder="Nama Gedung/Tempat">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Reception Address</label>
+                                            <textarea name="reception_address" rows="2" placeholder="Alamat lengkap lokasi resepsi">{{ invitation.reception.address }}</textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label>Google Maps URL</label>
+                                            <input type="text" name="reception_maps" value="{{ invitation.reception.maps_url }}" placeholder="https://maps.google.com/...">
+                                        </div>
                                     </div>
-                                    <div class="form-group">
-                                        <label>Reception Time</label>
-                                        <input type="text" name="reception_time" value="{{ invitation.reception.time }}">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label>Reception Venue</label>
-                                    <input type="text" name="reception_venue" value="{{ invitation.reception.venue }}">
-                                </div>
-                                <div class="form-group">
-                                    <label>Reception Address</label>
-                                    <textarea name="reception_address" rows="2">{{ invitation.reception.address }}</textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label>Reception Google Maps URL</label>
-                                    <input type="text" name="reception_maps" value="{{ invitation.reception.maps_url }}">
                                 </div>
                             </div>
 
-                            <!-- Right: Gallery & Quote -->
-                            <div>
-                                <h4 class="serif mb-4" style="color: #8E6E53;">Media & Memories</h4>
-                                <div class="form-group">
-                                    <label>Wedding Quote</label>
-                                    <textarea name="quote_text" rows="3" style="background: #FFFBF8; border: 1px solid #FDF0E5; font-style: italic; text-align: center; font-family: 'Georgia', serif; font-size: 1.1rem; color: #4A3728; border-radius: 15px; padding: 1.5rem; line-height: 1.6; resize: none;">{{ invitation.quote.text }}</textarea>
-                                </div>
-                                <div class="form-group">
-                                    <label>Quote Source</label>
-                                    <input type="text" name="quote_source" value="{{ invitation.quote.source }}" style="text-align: center; background: white; border: 1px solid rgba(0,0,0,0.05); border-radius: 15px; padding: 1.2rem; font-weight: 700; color: #4A3728;">
-                                </div>
-
-                                <div style="height: 1px; background: #eee; margin: 2rem 0;"></div>
-
-                                <div class="form-group">
-                                    <label style="display: flex; align-items: center; gap: 8px; font-weight: 800; color: #4A3728; margin-bottom: 1rem;">
-                                        <span style="font-size: 1.2rem;">🖼️</span> Gallery Photos
-                                    </label>
-                                    <div class="upload-zone" style="border: 2px dashed #D4C4B5; background: #FFFBF8; border-radius: 24px; padding: 3rem 2rem; text-align: center; cursor: pointer; transition: all 0.3s ease; position: relative;">
-                                        <div style="font-size: 3rem; margin-bottom: 1rem; filter: sepia(0.5);">🖼️</div>
-                                        <p style="font-size: 0.85rem; color: #8E6E53; font-weight: 600; margin-bottom: 0.5rem;">Tambah foto baru ke galeri Anda</p>
-                                        <div style="background: white; border: 1px solid #D4C4B5; padding: 10px 20px; border-radius: 12px; display: inline-block; margin-top: 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                                            <input type="file" name="gallery[]" accept="image/*" multiple style="opacity: 0; position: absolute; inset: 0; cursor: pointer; width: 100%;">
-                                            <span style="font-size: 0.8rem; font-weight: 700; color: #4A3728;">Choose Files</span>
-                                        </div>
+                            <!-- Section: Media & Quote -->
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
+                                <div class="glass" style="padding: 2.5rem; border-radius: 30px; background: rgba(255, 255, 255, 0.6);">
+                                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                                        <div style="width: 42px; height: 42px; background: #fff7ed; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #f59e0b; font-size: 1.2rem;">✍️</div>
+                                        <h4 class="serif" style="color: #4A3728; font-size: 1.4rem; margin: 0;">Wedding Quote</h4>
                                     </div>
-                                    <div class="gallery-preview-grid">
+                                    <div class="form-group">
+                                        <textarea name="quote_text" rows="4" style="background: white; font-style: italic; text-align: center; font-family: 'Georgia', serif; font-size: 1.1rem; color: #4A3728; border-radius: 15px; padding: 1.5rem; line-height: 1.6; width: 100%;">{{ invitation.quote.text }}</textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label style="text-align: center; display: block;">Quote Source</label>
+                                        <input type="text" name="quote_source" value="{{ invitation.quote.source }}" style="text-align: center; font-weight: 700; width: 100%;">
+                                    </div>
+                                </div>
+
+                                <div class="glass" style="padding: 2.5rem; border-radius: 30px; background: rgba(255, 255, 255, 0.6);">
+                                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                                        <div style="width: 42px; height: 42px; background: #f0f9ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #0ea5e9; font-size: 1.2rem;">🖼️</div>
+                                        <h4 class="serif" style="color: #4A3728; font-size: 1.4rem; margin: 0;">Gallery Photos</h4>
+                                    </div>
+                                    <div class="upload-zone" style="border: 2px dashed #cbd5e1; background: white; border-radius: 20px; padding: 1.5rem; text-align: center; cursor: pointer; position: relative; width: 100%;">
+                                        <p style="font-size: 0.8rem; color: #64748b; margin: 0;">Klik atau seret foto ke sini</p>
+                                        <input type="file" name="gallery[]" accept="image/*" multiple style="opacity: 0; position: absolute; inset: 0; cursor: pointer; width: 100%;">
+                                    </div>
+                                    <div class="gallery-preview-grid" style="margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(60px, 1fr)); gap: 0.5rem; width: 100%;">
                                         {% for img in invitation.gallery_images %}
-                                        <img src="{{ img }}" class="gallery-item-preview" alt="Gallery">
+                                        <div style="aspect-ratio: 1/1; border-radius: 8px; overflow: hidden; border: 1px solid rgba(0,0,0,0.05);">
+                                            <img src="{{ img }}" style="width: 100%; height: 100%; object-fit: cover;" alt="Gallery">
+                                        </div>
                                         {% endfor %}
                                     </div>
                                 </div>
                             </div>
+
+                            <!-- Section: Amplop Digital -->
+                            <div class="glass" style="padding: 2.5rem; border-radius: 30px; background: rgba(255, 255, 255, 0.6);">
+                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                                    <div style="width: 42px; height: 42px; background: #f8f9ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #4338ca; font-size: 1.2rem;">💰</div>
+                                    <h4 class="serif" style="color: #4A3728; font-size: 1.4rem; margin: 0;">Amplop Digital (Gift)</h4>
+                                </div>
+                                <div id="gift-accounts-container">
+                                    <div class="gift-accounts-list">
+                                        {% for account in invitation.gift_accounts %}
+                                        <div class="gift-account-item" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; padding: 1.5rem; background: white; border-radius: 15px; border: 1px solid rgba(0,0,0,0.05); position: relative;">
+                                            <div class="form-group mb-0">
+                                                <label>Bank/E-Wallet</label>
+                                                <input type="text" name="bank_name[]" value="{{ account.bank_name }}" placeholder="BCA, Dana...">
+                                            </div>
+                                            <div class="form-group mb-0">
+                                                <label>No. Rekening</label>
+                                                <input type="text" name="account_number[]" value="{{ account.account_number }}" placeholder="8210370xxx">
+                                            </div>
+                                            <div class="form-group mb-0" style="grid-column: 1 / -1;">
+                                                <label>Atas Nama</label>
+                                                <input type="text" name="account_holder[]" value="{{ account.account_holder }}" placeholder="Nama Lengkap">
+                                            </div>
+                                            <button type="button" onclick="this.parentElement.remove()" style="position: absolute; top: 0.5rem; right: 0.5rem; width: 24px; height: 24px; border-radius: 6px; background: #fff1f2; color: #ef4444; border: none; cursor: pointer; font-size: 0.7rem;"><i class="fas fa-trash-alt"></i></button>
+                                        </div>
+                                        {% endfor %}
+                                        {% if invitation.gift_accounts.len() == 0 %}
+                                        <div class="gift-account-item" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; padding: 1.5rem; background: white; border-radius: 15px; border: 1px solid rgba(0,0,0,0.05); position: relative;">
+                                            <div class="form-group mb-0">
+                                                <label>Bank/E-Wallet</label>
+                                                <input type="text" name="bank_name[]" placeholder="BCA, Dana...">
+                                            </div>
+                                            <div class="form-group mb-0">
+                                                <label>No. Rekening</label>
+                                                <input type="text" name="account_number[]" placeholder="8210370xxx">
+                                            </div>
+                                            <div class="form-group mb-0" style="grid-column: 1 / -1;">
+                                                <label>Atas Nama</label>
+                                                <input type="text" name="account_holder[]" placeholder="Nama Lengkap">
+                                            </div>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <button type="button" class="btn-elegant" style="width: 100%; padding: 0.8rem; font-size: 0.8rem; margin-top: 1rem;" onclick="addGiftAccount()">
+                                        <i class="fas fa-plus"></i> Tambah Rekening Lain
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
-                        <div style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
-                            <button type="button" class="btn-back" onclick="goToStep(2)">← Back</button>
-                            <button type="button" class="btn-elegant primary" onclick="goToStep(4)">
+                        <!-- Step Navigation Buttons -->
+                        <div class="step-navigation" style="margin-top: 5rem; padding-top: 2rem; border-top: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;">
+                            <button type="button" class="btn-back" onclick="goToStep(2)">
+                                <i class="fas fa-arrow-left"></i> Kembali
+                            </button>
+                            <button type="button" class="btn-elegant primary" style="min-width: 200px;" onclick="goToStep(4)">
                                 <span>Preview Draft</span>
                                 <i class="fas fa-eye"></i>
                             </button>
                         </div>
                     </div>
+
+
 
                     <!-- Step 4: Preview -->
                     <div class="form-step" id="step-4">
@@ -1340,7 +1482,7 @@
                             </div>
                         </div>
 
-                        <div style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
+                        <div class="step-navigation" style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
                             <button type="button" class="btn-back" onclick="goToStep(3)">← Back</button>
                         </div>
                     </div>
@@ -2511,6 +2653,31 @@
 </div>
 
 <script>
+    function addGiftAccount() {
+        const container = document.querySelector('.gift-accounts-list');
+        const newItem = document.createElement('div');
+        newItem.className = 'gift-account-item';
+        newItem.style.cssText = 'display: flex; flex-direction: column; gap: 1.2rem; margin-bottom: 1.5rem; padding: 1.5rem; background: white; border-radius: 20px; border: 1px solid #eef0f7; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.03);';
+        newItem.innerHTML = `
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group mb-0">
+                    <label style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Bank/E-Wallet</label>
+                    <input type="text" name="bank_name[]" placeholder="BCA, Dana, Mandiri...">
+                </div>
+                <div class="form-group mb-0">
+                    <label style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">No. Rekening</label>
+                    <input type="text" name="account_number[]" placeholder="8210370xxx">
+                </div>
+            </div>
+            <div class="form-group mb-0">
+                <label style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Atas Nama</label>
+                <input type="text" name="account_holder[]" placeholder="Nama Lengkap Pemilik">
+            </div>
+            <button type="button" onclick="this.parentElement.remove()" style="position: absolute; top: -10px; right: -10px; width: 28px; height: 28px; border-radius: 50%; background: #ff4757; color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 8px rgba(255,71,87,0.3);"><i class="fas fa-times" style="font-size: 0.7rem;"></i></button>
+        `;
+        container.appendChild(newItem);
+    }
+
     function openEditGroupModal(id, name, template, aiLang) {
         const modal = document.getElementById('editGroupModal');
         const form = document.getElementById('editGroupForm');

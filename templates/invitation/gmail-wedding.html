@@ -587,7 +587,11 @@ textarea.form-input-gmail { min-height:80px; resize:none; }
 
 <!-- ══ OPENING ══ -->
 <div id="opening">
-  <div class="op-gmail-logo">
+  
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="op-gmail-logo">
     <!-- Gmail M icon -->
     <svg class="op-gmail-m" width="56" height="40" viewBox="0 0 56 40" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect width="56" height="40" rx="4" fill="#fff" stroke="#E0E0E0"/>
@@ -774,7 +778,7 @@ textarea.form-input-gmail { min-height:80px; resize:none; }
             <div class="ti-star"><svg class="star-icon" viewBox="0 0 24 24"><path d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.63-7.03L22 9.24zm-10 6.71l-3.76 2.27 1-4.28-3.32-2.88 4.38-.38L12 6.1l1.71 4.59 4.38.38-3.32 2.88 1 4.28L12 15.95z"/></svg></div>
             <div class="ti-avatar" style="background:#34A853">B</div>
             <div class="ti-body">
-              <div class="ti-sender">BCA · Notifikasi</div>
+              <div class="ti-sender">{{ account.bank_name }} · Notifikasi</div>
               <div class="ti-subject-row"><div class="ti-subject">Konfirmasi Transfer Dana — Rp 2.500.000</div></div>
               <div class="ti-preview">Transfer Anda kepada XXX berhasil diproses. Saldo tersedia: Rp XXX...</div>
             </div>
@@ -824,7 +828,7 @@ textarea.form-input-gmail { min-height:80px; resize:none; }
             <div class="em-avatar" style="background:linear-gradient(135deg,#EA4335,#FBBC04)">A</div>
             <div class="em-meta">
               <div class="em-from">Anita & Zarda Wedding &lt;wedding@anita-zarda.id&gt;</div>
-              <div class="em-to">kepada: Ade Guntur Fitridullah &lt;ade.guntur@gmail.com&gt; <span style="color:var(--g-blue);cursor:pointer">▾</span></div>
+              <div class="em-to">kepada: {{ account.account_holder }} Fitridullah &lt;ade.guntur@gmail.com&gt; <span style="color:var(--g-blue);cursor:pointer">▾</span></div>
             </div>
             <div class="em-date" id="emDate">—</div>
             <div class="em-icons">
@@ -848,15 +852,15 @@ textarea.form-input-gmail { min-height:80px; resize:none; }
             <p style="margin-bottom:10px;font-weight:500">👫 Pasangan Pengantin:</p>
             <div class="em-couple">
               <div class="em-c-card">
-                <div class="em-c-av"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita"></div>
+                <div class="em-c-av"><img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita"></div>
                 <div class="em-c-role">🌸 Mempelai Wanita</div>
-                <div class="em-c-name">Anita Pangestuti, S.Kom</div>
+                <div class="em-c-name">{{ account.account_holder }}, S.Kom</div>
                 <div class="em-c-parents">Putri Pertama dari<br>Bpk. Taryono & Ibu Wiwit Jayanti</div>
               </div>
               <div class="em-c-card">
-                <div class="em-c-av"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda"></div>
+                <div class="em-c-av"><img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda"></div>
                 <div class="em-c-role">🤵 Mempelai Pria</div>
-                <div class="em-c-name">Zardarian Ahadika N, S.Kom</div>
+                <div class="em-c-name">{{ account.account_holder }}, S.Kom</div>
                 <div class="em-c-parents">Putra Kedua dari<br>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</div>
               </div>
             </div>
@@ -922,18 +926,15 @@ textarea.form-input-gmail { min-height:80px; resize:none; }
             <div class="em-gift">
               <div class="em-gift-card">
                 <div class="em-gc-bank">Bank</div>
-                <div class="em-gc-name">BCA</div>
-                <div class="em-gc-holder">Zardarian Ahadika N</div>
-                <div class="em-gc-num">8210 3705 61</div><br>
-                <button class="copy-btn" onclick="copyAcc('8210370561',this)">📋 Salin</button>
+                <div class="em-gc-name">{{ account.bank_name }}</div>
+                <div class="em-gc-holder">{{ account.account_holder }}</div>
+                <div class="em-gc-num">{{ account.account_number }}</div>
+                    {% endfor %}
+                <br>
+                <button class="copy-btn" onclick="copyAcc('{{ account.account_number }}',this)">📋 Salin</button>
               </div>
-              <div class="em-gift-card">
-                <div class="em-gc-bank">Bank</div>
-                <div class="em-gc-name">BNI</div>
-                <div class="em-gc-holder">Anita Pangestuti</div>
-                <div class="em-gc-num">1192 9784 03</div><br>
-                <button class="copy-btn" onclick="copyAcc('1192978403',this)">📋 Salin</button>
-              </div>
+                    {% endfor %}
+                
             </div>
 
             <div class="em-signature">

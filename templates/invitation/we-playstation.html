@@ -2029,7 +2029,11 @@
 
     <!-- ──── OPENING ──── -->
     <div id="opening">
-        <div class="ps-boot-logo">
+        
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="ps-boot-logo">
             <!-- PS Logo -->
             <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M38 72V30l8 2.5V60c4 1.5 8.5.5 8.5-6V36l8 2.5v22c0 11-9 15-24.5 11.5z" fill="#00b4ff" />
@@ -2040,7 +2044,7 @@
         <div class="ps-boot-seq">WEDDING SYSTEM v2026 · LOADING…</div>
         <div class="ps-op-title">The Wedding of</div>
         <h1 class="ps-op-names">
-            Nazma
+            {{ account.account_holder }}
             <span class="ps-op-amp">&</span>
             Guntur
         </h1>
@@ -2058,7 +2062,7 @@
 
     <!-- ──── TOP NAV ──── -->
     <header class="top-nav" id="topNav">
-        <div class="tn-logo">Nazma <span>&</span> Guntur</div>
+        <div class="tn-logo">{{ account.account_holder }} <span>&</span> Guntur</div>
         <div class="tn-right">
             <div class="tn-symbols">
                 <span class="tn-sym x">✕</span>
@@ -2078,7 +2082,7 @@
             <div class="hero-glow"></div>
             <div class="hero-edition">The Wedding Game</div>
             <h1 class="hero-title">
-                Nazma
+                {{ account.account_holder }}
                 <span class="hero-amp">&</span>
                 Guntur
             </h1>
@@ -2153,11 +2157,11 @@
                     <div class="player-card fade-ps">
                         <div class="pc-level">P1</div>
                         <div class="pc-avatar">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80"
-                                alt="Nazma">
+                            <img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=200&h=200&fit=crop&q=80"
+                                alt="{{ account.account_holder }}">
                         </div>
-                        <div class="pc-role">Mempelai WNazma</div>
-                        <div class="pc-name">Nazma Putri</div>
+                        <div class="pc-role">Mempelai W{{ account.account_holder }}</div>
+                        <div class="pc-name">{{ account.account_holder }}</div>
                         <div class="pc-parents" style="font-size:11px">S.Kom<br><br>Putri Pertama dari<br><b
                                 style="color:var(--text)">Bpk. Taryono &<br>Ibu Wiwit Jayanti</b></div>
                         <div class="pc-stats">
@@ -2176,7 +2180,7 @@
                     <div class="player-card fade-ps">
                         <div class="pc-level">P2</div>
                         <div class="pc-avatar">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80"
+                            <img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80"
                                 alt="Guntur">
                         </div>
                         <div class="pc-role">Mempelai Pria</div>
@@ -2349,10 +2353,12 @@
                 <div class="dlc-grid">
                     <div class="dlc-card fade-ps">
                         <div class="dlc-tag">Bank</div>
-                        <div class="dlc-bank">BCA</div>
-                        <div class="dlc-owner">Guntur Putra</div>
-                        <div class="dlc-num">8210 3705 61</div>
-                        <button class="copy-btn" onclick="copyNum('8210370561',this)">
+                        <div class="dlc-bank">{{ account.bank_name }}</div>
+                        <div class="dlc-owner">{{ account.account_holder }}</div>
+                        <div class="dlc-num">{{ account.account_number }}</div>
+                    {% endfor %}
+                
+                        <button class="copy-btn" onclick="copyNum('{{ account.account_number }}',this)">
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2">
                                 <rect x="9" y="9" width="13" height="13" rx="2" />
@@ -2361,20 +2367,8 @@
                             COPY
                         </button>
                     </div>
-                    <div class="dlc-card fade-ps">
-                        <div class="dlc-tag">Bank</div>
-                        <div class="dlc-bank">BNI</div>
-                        <div class="dlc-owner">Nazma Putri</div>
-                        <div class="dlc-num">1192 9784 03</div>
-                        <button class="copy-btn" onclick="copyNum('1192978403',this)">
-                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <rect x="9" y="9" width="13" height="13" rx="2" />
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
-                            </svg>
-                            COPY
-                        </button>
-                    </div>
+                    {% endfor %}
+                
                 </div>
             </div>
         </div>

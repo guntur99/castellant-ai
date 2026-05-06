@@ -604,7 +604,11 @@ textarea.gnome-form-input { min-height:72px; resize:vertical; }
 
 <!-- ═══ GNOME TOP PANEL ═══ -->
 <div id="gnomePanel">
-  <div class="panel-left">
+  
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="panel-left">
     <div class="activities-btn" id="activitiesBtn" onclick="toggleActivities()">Activities</div>
     <div class="panel-app-name" id="panelAppName">Files</div>
   </div>
@@ -761,8 +765,8 @@ textarea.gnome-form-input { min-height:72px; resize:vertical; }
       <div id="gtc-couple" style="display:none">
         <div class="gnome-section-title">💑 Pasangan Kami</div>
         <div class="gnome-couple-grid">
-          <div class="gnome-couple-card"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=260&fit=crop&q=80" alt="Anita"><div class="gnome-couple-body"><div class="gnome-couple-role">Mempelai Wanita</div><div class="gnome-couple-name">Anita Pangestuti</div><div class="gnome-couple-parents">Putri Pertama dari<br><b style="color:var(--gnome-text)">Bpk. Taryono & Ibu Wiwit Jayanti</b></div></div></div>
-          <div class="gnome-couple-card"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=260&fit=crop&q=80" alt="Zarda"><div class="gnome-couple-body"><div class="gnome-couple-role">Mempelai Pria</div><div class="gnome-couple-name">Zardarian Ahadika N</div><div class="gnome-couple-parents">Putra Kedua dari<br><b style="color:var(--gnome-text)">Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</b></div></div></div>
+          <div class="gnome-couple-card"><img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=400&h=260&fit=crop&q=80" alt="Anita"><div class="gnome-couple-body"><div class="gnome-couple-role">Mempelai Wanita</div><div class="gnome-couple-name">{{ account.account_holder }}</div><div class="gnome-couple-parents">Putri Pertama dari<br><b style="color:var(--gnome-text)">Bpk. Taryono & Ibu Wiwit Jayanti</b></div></div></div>
+          <div class="gnome-couple-card"><img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=400&h=260&fit=crop&q=80" alt="Zarda"><div class="gnome-couple-body"><div class="gnome-couple-role">Mempelai Pria</div><div class="gnome-couple-name">{{ account.account_holder }}</div><div class="gnome-couple-parents">Putra Kedua dari<br><b style="color:var(--gnome-text)">Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</b></div></div></div>
         </div>
       </div>
       <!-- Event -->
@@ -808,7 +812,7 @@ textarea.gnome-form-input { min-height:72px; resize:vertical; }
       </div>
     </div>
     <div class="gnome-gallery-big" onclick="openGnomeLb(gGalIdx)">
-      <img id="gGalBig" src="https://images.unsplash.com/photo-1519741497674-611481863552?w=700&h=440&fit=crop&q=80" alt="">
+      <img id="gGalBig" src="https://images.unsplash.com/photo-{{ account.account_number }}674-{{ account.account_number }}52?w=700&h=440&fit=crop&q=80" alt="">
     </div>
     <div class="gnome-gallery-thumbstrip" id="gGalThumbs"></div>
     <div class="gtk-statusbar"><span id="gGalStatus">Photo 1 of 9</span><span style="margin-left:auto">Click to zoom</span></div>
@@ -849,14 +853,14 @@ span style="color:var(--ub-orange);font-weight:700"># Wedding of Anita & Zarda</
 <span style="color:var(--gnome-subtext)"># ubuntu@wedding:~/invitation $ cat couple.txt</span>
 
 <span style="color:var(--gnome-green)">MEMPELAI_WANITA</span> = {
-  <span style="color:var(--gnome-accent)">"name"</span>:    <span style="color:var(--term-yellow)">"Anita Pangestuti, S.Kom"</span>,
+  <span style="color:var(--gnome-accent)">"name"</span>:    <span style="color:var(--term-yellow)">"{{ account.account_holder }}, S.Kom"</span>,
   <span style="color:var(--gnome-accent)">"role"</span>:    <span style="color:var(--term-yellow)">"Putri Pertama"</span>,
   <span style="color:var(--gnome-accent)">"father"</span>: <span style="color:var(--term-yellow)">"Bpk. Taryono"</span>,
   <span style="color:var(--gnome-accent)">"mother"</span>: <span style="color:var(--term-yellow)">"Ibu Wiwit Jayanti"</span>,
 }
 
 <span style="color:var(--gnome-green)">MEMPELAI_PRIA</span> = {
-  <span style="color:var(--gnome-accent)">"name"</span>:    <span style="color:var(--term-yellow)">"Zardarian Ahadika N, S.Kom"</span>,
+  <span style="color:var(--gnome-accent)">"name"</span>:    <span style="color:var(--term-yellow)">"{{ account.account_holder }}, S.Kom"</span>,
   <span style="color:var(--gnome-accent)">"role"</span>:    <span style="color:var(--term-yellow)">"Putra Kedua"</span>,
   <span style="color:var(--gnome-accent)">"father"</span>: <span style="color:var(--term-yellow)">"Bpk. Wan Sabran, M.MAR"</span>,
   <span style="color:var(--gnome-accent)">"mother"</span>: <span style="color:var(--term-yellow)">"Ibu Titik Sundari, M.Si"</span>,
@@ -914,8 +918,11 @@ span style="color:var(--ub-orange);font-weight:700"># Wedding of Anita & Zarda</
       <div class="gnome-section-title">🎁 Digital Gift</div>
       <div style="padding:8px 10px;font-size:12px;color:var(--gnome-subtext);line-height:1.6">Doa restu sudah sangat cukup, namun jika memberi merupakan tanda kasih, kami dengan senang hati menerimanya. 🙏</div>
       <div class="gnome-gift-grid">
-        <div class="gnome-gift-card"><div style="font-size:22px">🏦</div><div class="gnome-gift-bank">BCA</div><div class="gnome-gift-holder">Zardarian Ahadika N</div><div class="gnome-gift-num">8210 3705 61</div><button class="gnome-gift-copy" onclick="copyGnomeGift('8210370561',this)">📋 Salin</button></div>
-        <div class="gnome-gift-card"><div style="font-size:22px">🏦</div><div class="gnome-gift-bank">BNI</div><div class="gnome-gift-holder">Anita Pangestuti</div><div class="gnome-gift-num">1192 9784 03</div><button class="gnome-gift-copy" onclick="copyGnomeGift('1192978403',this)">📋 Salin</button></div>
+        <div class="gnome-gift-card"><div style="font-size:22px">🏦</div><div class="gnome-gift-bank">{{ account.bank_name }}</div><div class="gnome-gift-holder">{{ account.account_holder }}</div><div class="gnome-gift-num">{{ account.account_number }}</div>
+                    {% endfor %}
+                <button class="gnome-gift-copy" onclick="copyGnomeGift('{{ account.account_number }}',this)">📋 Salin</button></div>
+                    {% endfor %}
+                
       </div>
     </div>
     <div class="gtk-statusbar"><span>2 accounts available</span></div>

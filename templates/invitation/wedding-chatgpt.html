@@ -519,7 +519,11 @@ select.ri-input { appearance:none; cursor:none }
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
+
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
 <!-- ══════════════════════════════════════
@@ -698,12 +702,12 @@ const TRACKS=[
   {title:'All of Me',artist:'John Legend',src:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',grad:'conic-gradient(#10A37F,#0d6b52,#19C37D)',dur:'4:29'},
 ];
 const GALLERY=[
-  {url:'https://images.unsplash.com/photo-1519741497674-611481863552?w=900&auto=format&fit=crop&q=70',label:'The Couple'},
-  {url:'https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&auto=format&fit=crop&q=70',label:'Wedding Rings'},
-  {url:'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&auto=format&fit=crop&q=70',label:'Bouquet'},
-  {url:'https://images.unsplash.com/photo-1465495976277-4387d4b0e4a6?w=600&auto=format&fit=crop&q=70',label:'Together'},
-  {url:'https://images.unsplash.com/photo-1583939411023-14783179e581?w=600&auto=format&fit=crop&q=70',label:'The Kiss'},
-  {url:'https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&auto=format&fit=crop&q=70',label:'Celebration'},
+  {url:'https://images.unsplash.com/photo-{{ account.account_number }}674-{{ account.account_number }}52?w=900&auto=format&fit=crop&q=70',label:'The Couple'},
+  {url:'https://images.unsplash.com/photo-{{ account.account_number }}929-80b456fea0bc?w=600&auto=format&fit=crop&q=70',label:'Wedding Rings'},
+  {url:'https://images.unsplash.com/photo-{{ account.account_number }}052-a08af7148866?w=600&auto=format&fit=crop&q=70',label:'Bouquet'},
+  {url:'https://images.unsplash.com/photo-{{ account.account_number }}277-4387d4b0e4a6?w=600&auto=format&fit=crop&q=70',label:'Together'},
+  {url:'https://images.unsplash.com/photo-{{ account.account_number }}023-14783179e581?w=600&auto=format&fit=crop&q=70',label:'The Kiss'},
+  {url:'https://images.unsplash.com/photo-{{ account.account_number }}807-013ccf25f16a?w=600&auto=format&fit=crop&q=70',label:'Celebration'},
 ];
 
 /* ── CURSOR ── */
@@ -831,7 +835,7 @@ function buildVideoMsg(){
 <h2>🎬 Pre-Wedding Video</h2>
 <p>Video pre-wedding <em>Anita &amp; Zarda</em> — momen-momen indah sebelum hari pernikahan:</p>
 <div class="gpt-video">
-  <video id="inlineVid" playsinline preload="metadata" poster="https://images.unsplash.com/photo-1519741497674-611481863552?w=900&auto=format&fit=crop&q=60">
+  <video id="inlineVid" playsinline preload="metadata" poster="https://images.unsplash.com/photo-{{ account.account_number }}674-{{ account.account_number }}52?w=900&auto=format&fit=crop&q=60">
     <source src="https://assets.mixkit.co/videos/preview/mixkit-couple-holding-hands-during-sunset-42795-large.mp4" type="video/mp4">
   </video>
   <div class="vid-play-overlay" id="vpo" onclick="toggleInlineVid()">
@@ -887,21 +891,16 @@ function buildGiftMsg(){
 <p>Doa restu Anda sudah sangat berarti. Jika berkenan mengirimkan tanda kasih, berikut informasi rekening:</p>
 <div class="gift-code">
   <div class="gift-code-header">
-    <span class="gift-code-lang">BCA</span>
-    <button class="gift-copy-btn" onclick="copyCode('8210370561',this)">Copy</button>
+    <span class="gift-code-lang">{{ account.bank_name }}</span>
+    <button class="gift-copy-btn" onclick="copyCode('{{ account.account_number }}',this)">Copy</button>
   </div>
-  <div><span class="gift-code-key">bank</span>     = <span class="gift-code-str">"Bank Central Asia (BCA)"</span></div>
-  <div><span class="gift-code-key">atas_nama</span> = <span class="gift-code-str">"Zardarian Ahadika N"</span></div>
-  <div><span class="gift-code-key">nomor</span>    = <span class="gift-code-val">"8210 3705 61"</span></div>
-</div>
-<div class="gift-code">
-  <div class="gift-code-header">
-    <span class="gift-code-lang">BNI</span>
-    <button class="gift-copy-btn" onclick="copyCode('1192978403',this)">Copy</button>
-  </div>
-  <div><span class="gift-code-key">bank</span>     = <span class="gift-code-str">"Bank Negara Indonesia (BNI)"</span></div>
-  <div><span class="gift-code-key">atas_nama</span> = <span class="gift-code-str">"Anita Pangestuti"</span></div>
-  <div><span class="gift-code-key">nomor</span>    = <span class="gift-code-val">"1192 9784 03"</span></div>
+                    {% endfor %}
+                
+  <div><span class="gift-code-key">bank</span>     = <span class="gift-code-str">"Bank Negara Indonesia ({{ account.bank_name }})"</span></div>
+  <div><span class="gift-code-key">atas_nama</span> = <span class="gift-code-str">"{{ account.account_holder }}"</span></div>
+  <div><span class="gift-code-key">nomor</span>    = <span class="gift-code-val">"{{ account.account_number }}"</span></div>
+                    {% endfor %}
+                
 </div>
 <p style="font-size:13px;color:var(--muted)">💡 Klik tombol <code>Copy</code> untuk menyalin nomor rekening.</p>`;
 }

@@ -793,7 +793,11 @@ body::after {
 
 <!-- ═══ BOOT SCREEN ═══ -->
 <div id="bootScreen">
-  <div class="boot-logo">
+  
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="boot-logo">
     <div class="boot-win-logo">
       <div style="background:#f00"></div>
       <div style="background:#0f0"></div>
@@ -961,19 +965,19 @@ body::after {
       <div class="w95-tab-content" id="tc-couple" style="border-top:2px solid #fff">
         <div class="w95-section-head">👥 Featured Artists — Pasangan Kami</div>
         <div class="couple-card-w95">
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&h=120&fit=crop&q=80" alt="Anita">
+          <img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=120&h=120&fit=crop&q=80" alt="Anita">
           <div class="couple-card-body">
             <div class="role">MEMPELAI WANITA</div>
-            <div class="cname">Anita Pangestuti, S.Kom</div>
+            <div class="cname">{{ account.account_holder }}, S.Kom</div>
             <div class="parents">Putri Pertama dari<br><b>Bpk. Taryono & Ibu Wiwit Jayanti</b></div>
           </div>
         </div>
         <div style="text-align:center;font-size:28px;margin:6px 0;color:#000080">⊕</div>
         <div class="couple-card-w95">
-          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&q=80" alt="Zarda">
+          <img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=120&h=120&fit=crop&q=80" alt="Zarda">
           <div class="couple-card-body">
             <div class="role">MEMPELAI PRIA</div>
-            <div class="cname">Zardarian Ahadika N, S.Kom</div>
+            <div class="cname">{{ account.account_holder }}, S.Kom</div>
             <div class="parents">Putra Kedua dari<br><b>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</b></div>
           </div>
         </div>
@@ -1099,7 +1103,7 @@ body::after {
       <div class="paint-tool" onclick="nextGallery()">▶</div>
     </div>
     <div class="paint-canvas" style="height:260px">
-      <img id="paintImg" src="https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=400&fit=crop&q=80" alt="Gallery" onclick="openLB95(curGalleryIdx)">
+      <img id="paintImg" src="https://images.unsplash.com/photo-{{ account.account_number }}674-{{ account.account_number }}52?w=600&h=400&fit=crop&q=80" alt="Gallery" onclick="openLB95(curGalleryIdx)">
     </div>
     <div style="padding:4px 6px;display:grid;grid-template-columns:repeat(4,1fr);gap:3px;background:var(--w95-silver);border-top:1px solid #808080" id="galleryThumbs"></div>
     <div class="w95-statusbar">
@@ -1156,13 +1160,13 @@ body::after {
    {{ invitation.event_date }} | Tangerang
 
 MEMPELAI WANITA:
-  Anita Pangestuti, S.Kom
+  {{ account.account_holder }}, S.Kom
   Putri Pertama dari:
     Bpk. Taryono
     Ibu Wiwit Jayanti
 
 MEMPELAI PRIA:
-  Zardarian Ahadika N, S.Kom
+  {{ account.account_holder }}, S.Kom
   Putra Kedua dari:
     Bpk. Wan Sabran, M.MAR
     Ibu Titik Sundari, M.Si
@@ -1274,52 +1278,13 @@ VERSE:
       <div class="w95-menu-item" onclick="toggleMenu('mnu-gift-help',this)">Help</div>
       <!-- File -->
       <div class="w95-dropdown" id="mnu-gift-file" style="top:22px;left:0">
-        <div class="w95-dd-item" onclick="copyGift('8210370561',{textContent:''});closeAllMenus()"><span class="w95-dd-icon">📋</span>Copy No. BCA</div>
-        <div class="w95-dd-item" onclick="copyGift('1192978403',{textContent:''});closeAllMenus()"><span class="w95-dd-icon">📋</span>Copy No. BNI</div>
-        <div class="w95-dd-sep"></div>
-        <div class="w95-dd-item" onclick="openWindow('winRsvp');closeAllMenus()"><span class="w95-dd-icon">📋</span>Isi RSVP</div>
-        <div class="w95-dd-sep"></div>
-        <div class="w95-dd-item" onclick="closeWindow('winGift');closeAllMenus()"><span class="w95-dd-icon">✕</span>Tutup</div>
-      </div>
-      <!-- Go -->
-      <div class="w95-dropdown" id="mnu-gift-go" style="top:22px;left:30px">
-        <div class="w95-dd-item" onclick="openWindow('winWedding');closeAllMenus()"><span class="w95-dd-icon">💒</span>Wedding.exe</div>
-        <div class="w95-dd-item" onclick="openWindow('winCouple');closeAllMenus()"><span class="w95-dd-icon">💑</span>Couple.txt</div>
-        <div class="w95-dd-item" onclick="openWindow('winEvent');closeAllMenus()"><span class="w95-dd-icon">📅</span>Event Calendar</div>
-        <div class="w95-dd-item" onclick="openWindow('winGallery');closeAllMenus()"><span class="w95-dd-icon">🖼️</span>Galeri Foto</div>
-        <div class="w95-dd-item" onclick="openWindow('winRsvp');closeAllMenus()"><span class="w95-dd-icon">📋</span>RSVP Form</div>
-        <div class="w95-dd-item" onclick="openWindow('winExplorer');closeAllMenus()"><span class="w95-dd-icon">📁</span>File Explorer</div>
-      </div>
-      <!-- Help -->
-      <div class="w95-dropdown" id="mnu-gift-help" style="top:22px;left:60px">
-        <div class="w95-dd-item" onclick="showHelp();closeAllMenus()"><span class="w95-dd-icon">❓</span>Help Topics</div>
-        <div class="w95-dd-item" onclick="showAbout();closeAllMenus()"><span class="w95-dd-icon">💍</span>About</div>
-      </div>
-    </div>
-    <div class="w95-content">
-      <div class="w95-section-head">🎁 Amplop Digital</div>
-      <div style="font-size:13px;margin-bottom:10px;font-family:var(--font-sys)">Doa restu sudah sangat cukup, namun jika memberi merupakan tanda kasih, kami dengan senang hati menerimanya. 🙏</div>
-      <div class="gift-card-w95">
-        <div>
-          <div style="font-size:11px;color:#808080;font-weight:bold">BANK</div>
-          <div class="gift-bank-name">BCA</div>
-          <div style="font-size:12px;color:#404040">Zardarian Ahadika N</div>
+        <div class="w95-dd-item" onclick="copyGift('{{ account.account_number }}',{textContent:''});closeAllMenus()"><span class="w95-dd-icon">📋</span>Copy No. {{ account.bank_name }}</div>
+                    {% endfor %}
+                
+          <button class="w95-btn" style="margin-top:5px;font-size:12px" onclick="copyGift('{{ account.account_number }}',this)">📋 Copy</button>
         </div>
-        <div style="margin-left:auto;text-align:right">
-          <div class="gift-number-w95">8210 3705 61</div>
-          <button class="w95-btn" style="margin-top:5px;font-size:12px" onclick="copyGift('8210370561',this)">📋 Copy</button>
-        </div>
-      </div>
-      <div class="gift-card-w95">
-        <div>
-          <div style="font-size:11px;color:#808080;font-weight:bold">BANK</div>
-          <div class="gift-bank-name">BNI</div>
-          <div style="font-size:12px;color:#404040">Anita Pangestuti</div>
-        </div>
-        <div style="margin-left:auto;text-align:right">
-          <div class="gift-number-w95">1192 9784 03</div>
-          <button class="w95-btn" style="margin-top:5px;font-size:12px" onclick="copyGift('1192978403',this)">📋 Copy</button>
-        </div>
+                    {% endfor %}
+                
       </div>
     </div>
     <div class="w95-statusbar">

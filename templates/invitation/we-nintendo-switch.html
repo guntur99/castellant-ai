@@ -722,7 +722,11 @@ select.rf-input{
 <!-- ─── OPENING ─── -->
 <div id="opening">
   <!-- floating circles bg -->
-  <div class="hero-circle" style="width:300px;height:300px;background:var(--red);top:-100px;left:-80px;--dur:7s"></div>
+  
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="hero-circle" style="width:300px;height:300px;background:var(--red);top:-100px;left:-80px;--dur:7s"></div>
   <div class="hero-circle" style="width:200px;height:200px;background:var(--blue);bottom:-60px;right:-60px;--dur:5s;animation-delay:.5s"></div>
 
   <div class="jc-logo">
@@ -742,7 +746,7 @@ select.rf-input{
   <p class="op-system">Wedding Edition · 2026</p>
   <p class="op-title">The Wedding of</p>
   <h1 class="op-names">
-    Nazma<span class="hero-amp" style="color:var(--red);-webkit-text-fill-color:var(--red)">&</span>Guntur
+    {{ account.account_holder }}<span class="hero-amp" style="color:var(--red);-webkit-text-fill-color:var(--red)">&</span>Guntur
   </h1>
   <p class="op-date">24 · 05 · 2026 · Tangerang</p>
 
@@ -762,7 +766,7 @@ select.rf-input{
 <header class="top-bar" id="topBar">
   <div class="tb-logo">
     <div class="tb-jcl"></div>
-    Nazma & Guntur
+    {{ account.account_holder }} & Guntur
     <div class="tb-jcr"></div>
   </div>
   <div class="tb-right">
@@ -787,7 +791,7 @@ select.rf-input{
     </div>
 
     <h1 class="hero-title">
-      Nazma
+      {{ account.account_holder }}
       <span class="hero-amp">~</span>
       Guntur
     </h1>
@@ -855,9 +859,9 @@ select.rf-input{
     <div class="char-grid">
       <div class="char-card p1 fade-sw">
         <div class="char-player">P1</div>
-        <div class="char-avatar"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Nazma"></div>
+        <div class="char-avatar"><img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="{{ account.account_holder }}"></div>
         <div class="char-role">Mempelai Wanita</div>
-        <div class="char-name">Nazma Pangestuti</div>
+        <div class="char-name">{{ account.account_holder }} Pangestuti</div>
         <div class="char-parents">S.Kom<br><br>Putri Pertama dari<br><b style="color:var(--text)">Bpk. Taryono &<br>Ibu Wiwit Jayanti</b></div>
         <div class="char-hp">
           <div class="char-hp-label"><span>❤️ Love</span><span>MAX</span></div>
@@ -866,9 +870,9 @@ select.rf-input{
       </div>
       <div class="char-card p2 fade-sw">
         <div class="char-player">P2</div>
-        <div class="char-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Guntur"></div>
+        <div class="char-avatar"><img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Guntur"></div>
         <div class="char-role">Mempelai Pria</div>
-        <div class="char-name">Guntur Fitridullah</div>
+        <div class="char-name">{{ account.account_holder }}</div>
         <div class="char-parents">N, S.Kom<br><br>Putra Kedua dari<br><b style="color:var(--text)">Bpk. Wan Sabran, M.MAR &<br>Ibu Titik Sundari, M.Si</b></div>
         <div class="char-hp">
           <div class="char-hp-label"><span>❤️ Love</span><span>MAX</span></div>
@@ -994,24 +998,18 @@ select.rf-input{
     <div class="coin-grid">
       <div class="coin-card fade-sw">
         <div class="coin-bank-label">Bank</div>
-        <div class="coin-bank">BCA</div>
-        <div class="coin-owner">Guntur Fitridullah</div>
-        <div class="coin-num">8210 3705 61</div>
-        <button class="copy-btn" onclick="copyNum('8210370561',this)">
+        <div class="coin-bank">{{ account.bank_name }}</div>
+        <div class="coin-owner">{{ account.account_holder }}</div>
+        <div class="coin-num">{{ account.account_number }}</div>
+                    {% endfor %}
+                
+        <button class="copy-btn" onclick="copyNum('{{ account.account_number }}',this)">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
           Salin
         </button>
       </div>
-      <div class="coin-card fade-sw">
-        <div class="coin-bank-label">Bank</div>
-        <div class="coin-bank">BNI</div>
-        <div class="coin-owner">Nazma Pangestuti</div>
-        <div class="coin-num">1192 9784 03</div>
-        <button class="copy-btn" onclick="copyNum('1192978403',this)">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Salin
-        </button>
-      </div>
+                    {% endfor %}
+                
     </div>
   </div>
 

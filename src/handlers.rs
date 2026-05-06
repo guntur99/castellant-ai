@@ -254,6 +254,9 @@ pub async fn create_invitation(
     let mut fields = HashMap::new();
     let mut photo_paths = HashMap::new();
     let mut gallery_paths = Vec::new();
+    let mut bank_names = Vec::new();
+    let mut account_numbers = Vec::new();
+    let mut account_holders = Vec::new();
 
     while let Ok(Some(field)) = multipart.next_field().await {
         let name = match field.name() {
@@ -288,6 +291,12 @@ pub async fn create_invitation(
                 let _ = std::fs::write(&path, data);
                 fields.insert("payment_proof".to_string(), format!("/{}", path));
             }
+        } else if name == "bank_name[]" {
+            bank_names.push(field.text().await.unwrap_or_default());
+        } else if name == "account_number[]" {
+            account_numbers.push(field.text().await.unwrap_or_default());
+        } else if name == "account_holder[]" {
+            account_holders.push(field.text().await.unwrap_or_default());
         } else {
             let value = field.text().await.unwrap_or_default();
             fields.insert(name, value);
@@ -501,6 +510,25 @@ pub async fn create_invitation(
             let _ = tx.rollback().await;
             eprintln!("Failed to insert photo: {}", e);
             return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to save photos").into_response();
+        }
+    }
+
+    // Insert Gift Accounts
+    for i in 0..bank_names.len() {
+        if !bank_names[i].is_empty() && !account_numbers[i].is_empty() {
+            if let Err(e) = sqlx::query(
+                "INSERT INTO gift_accounts (invitation_id, bank_name, account_number, account_holder) VALUES ($1, $2, $3, $4)"
+            )
+            .bind(invitation_id)
+            .bind(&bank_names[i])
+            .bind(&account_numbers[i])
+            .bind(&account_holders[i])
+            .execute(&mut *tx)
+            .await {
+                let _ = tx.rollback().await;
+                eprintln!("Failed to insert gift account: {}", e);
+                return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to save gift accounts").into_response();
+            }
         }
     }
 
@@ -2150,7 +2178,7 @@ pub async fn manage_invitation(
                 reception: from_value(row.reception_data).unwrap_or_default(),
                 quote: from_value(row.quote_data).unwrap_or_default(),
                 gallery_images: Vec::new(),
-                gift_accounts: Vec::new(),
+                gift_accounts: sqlx::query_as::<_, GiftAccount>("SELECT bank_name, account_number, account_holder FROM gift_accounts WHERE invitation_id = $1").bind(row.id).fetch_all(&state.db).await.unwrap_or_default(),
                 song_url: String::new(),
                 plan_name: row.plan_name.unwrap_or_else(|| "NOBLE".to_string()),
                 ai_chat_enabled: row.ai_chat_enabled,
@@ -2244,6 +2272,9 @@ pub async fn update_invitation(
     let mut fields = HashMap::new();
     let mut photo_paths = HashMap::new();
     let mut gallery_paths = Vec::new();
+    let mut bank_names = Vec::new();
+    let mut account_numbers = Vec::new();
+    let mut account_holders = Vec::new();
 
     while let Some(field) = multipart.next_field().await.unwrap() {
         let name = field.name().unwrap().to_string();
@@ -2266,6 +2297,12 @@ pub async fn update_invitation(
                 std::fs::write(&path, data).unwrap();
                 photo_paths.insert(name, format!("/{}", path));
             }
+        } else if name == "bank_name[]" {
+            bank_names.push(field.text().await.unwrap_or_default());
+        } else if name == "account_number[]" {
+            account_numbers.push(field.text().await.unwrap_or_default());
+        } else if name == "account_holder[]" {
+            account_holders.push(field.text().await.unwrap_or_default());
         } else {
             let value = field.text().await.unwrap();
             fields.insert(name, value);
@@ -2342,6 +2379,26 @@ pub async fn update_invitation(
             .execute(&state.db)
             .await
             .unwrap();
+        }
+    }
+
+    // Update Gift Accounts: Delete existing and insert new ones
+    let _ = sqlx::query("DELETE FROM gift_accounts WHERE invitation_id = $1")
+        .bind(row.id)
+        .execute(&state.db)
+        .await;
+
+    for i in 0..bank_names.len() {
+        if !bank_names[i].is_empty() && !account_numbers[i].is_empty() {
+            let _ = sqlx::query(
+                "INSERT INTO gift_accounts (invitation_id, bank_name, account_number, account_holder) VALUES ($1, $2, $3, $4)"
+            )
+            .bind(row.id)
+            .bind(&bank_names[i])
+            .bind(&account_numbers[i])
+            .bind(&account_holders[i])
+            .execute(&state.db)
+            .await;
         }
     }
 

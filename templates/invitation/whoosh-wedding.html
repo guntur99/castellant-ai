@@ -644,7 +644,11 @@ textarea.fi { min-height:80px; resize:none; }
 
 <!-- ══ OPENING ══ -->
 <div id="opening">
-  <div class="op-speed-bg" id="speedBg"></div>
+  
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="op-speed-bg" id="speedBg"></div>
   <div class="op-red-bar"></div>
 
   <div class="op-topbar">
@@ -930,18 +934,18 @@ textarea.fi { min-height:80px; resize:none; }
           <div class="c-card">
             <div class="c-card-seat">Seat · 1A · Wanita</div>
             <div class="c-body">
-              <div class="c-av"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita"></div>
+              <div class="c-av"><img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita"></div>
               <div class="c-role">🌸 Mempelai Wanita</div>
-              <div class="c-name">Anita Pangestuti, S.Kom</div>
+              <div class="c-name">{{ account.account_holder }}, S.Kom</div>
               <div class="c-parents">Putri Pertama dari<br><strong>Bpk. Taryono &<br>Ibu Wiwit Jayanti</strong></div>
             </div>
           </div>
           <div class="c-card">
             <div class="c-card-seat">Seat · 1B · Pria</div>
             <div class="c-body">
-              <div class="c-av"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda"></div>
+              <div class="c-av"><img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda"></div>
               <div class="c-role">🤵 Mempelai Pria</div>
-              <div class="c-name">Zardarian Ahadika N, S.Kom</div>
+              <div class="c-name">{{ account.account_holder }}, S.Kom</div>
               <div class="c-parents">Putra Kedua dari<br><strong>Bpk. Wan Sabran, M.MAR &<br>Ibu Titik Sundari, M.Si</strong></div>
             </div>
           </div>
@@ -1068,25 +1072,25 @@ textarea.fi { min-height:80px; resize:none; }
       <div class="sc-body">
         <p style="font-size:12px;color:var(--w-gray);line-height:1.65;margin-bottom:14px">Doa restu sudah sangat cukup. Namun jika berkenan berbagi rezeki, berikut rekening kami.</p>
         <div class="gift-grid">
-          <div class="gift-card">
+                    {% for account in invitation.gift_accounts %}
+                    <div class="gift-card">
             <div class="gc-top"></div>
-            <div class="gc-body">
-              <div class="gc-bank">Bank</div>
-              <div class="gc-name">BCA</div>
-              <div class="gc-holder">Zardarian Ahadika N</div>
-              <div class="gc-num">8210 3705 61</div><br>
-              <button class="copy-btn" onclick="copyAcc('8210370561',this)">Salin Nomor</button>
-            </div>
+                    {% endfor %}
+                </div>
           </div>
           <div class="gift-card">
             <div class="gc-top"></div>
             <div class="gc-body">
               <div class="gc-bank">Bank</div>
-              <div class="gc-name">BNI</div>
-              <div class="gc-holder">Anita Pangestuti</div>
-              <div class="gc-num">1192 9784 03</div><br>
-              <button class="copy-btn" onclick="copyAcc('1192978403',this)">Salin Nomor</button>
+              <div class="gc-name">{{ account.bank_name }}</div>
+              <div class="gc-holder">{{ account.account_holder }}</div>
+              <div class="gc-num">{{ account.account_number }}</div>
+                    {% endfor %}
+                <br>
+              <button class="copy-btn" onclick="copyAcc('{{ account.account_number }}',this)">Salin Nomor</button>
             </div>
+                    {% endfor %}
+                
           </div>
         </div>
       </div>

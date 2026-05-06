@@ -1118,7 +1118,11 @@ option{font-family:sans-serif}
     loop muted playsinline preload="auto"
     poster="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=1400&q=60">
   </video>
-  <div class="op-ov1"></div><div class="op-ov2"></div>
+  
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="op-ov1"></div><div class="op-ov2"></div>
   <div class="op-ov-radiant"></div><div class="op-scan"></div>
 
   <!-- Rotating rune rings -->
@@ -1179,7 +1183,7 @@ option{font-family:sans-serif}
 
     <div class="op-scroll">
       <div class="op-scroll-lbl">◈ Invited Hero</div>
-      <div class="op-scroll-nm">Ade Guntur Fitridullah &amp; Partner</div>
+      <div class="op-scroll-nm">{{ account.account_holder }} Fitridullah &amp; Partner</div>
     </div>
 
     <button class="op-btn" onclick="pickHero()">
@@ -1202,7 +1206,7 @@ option{font-family:sans-serif}
   <video class="hero-vid" id="heroBgVid"
     src="https://www.w3schools.com/html/movie.mp4"
     loop muted playsinline preload="none"
-    poster="https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&q=60">
+    poster="https://images.unsplash.com/photo-{{ account.account_number }}674-{{ account.account_number }}52?w=1400&q=60">
   </video>
   <div class="hero-ov"></div>
   <div class="hero-radiant-glow"></div>
@@ -1328,14 +1332,14 @@ option{font-family:sans-serif}
         <span class="pc-faction-ico">✦</span>
       </div>
       <div class="pc-splash">
-        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=320&fit=crop&q=80" alt="Anita">
+        <img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=400&h=320&fit=crop&q=80" alt="Anita">
         <div class="pc-splash-ov"></div>
         <div class="pc-attr" style="color:var(--r-green2)">💧</div>
         <div class="pc-mmr">IMMORTAL RANK</div>
       </div>
       <div class="pc-body">
         <p class="pc-role">Mempelai Wanita · Support</p>
-        <h3 class="pc-name">Anita Pangestuti,<br>S.Kom</h3>
+        <h3 class="pc-name">{{ account.account_holder }},<br>S.Kom</h3>
         <p class="pc-parents">Putri Pertama dari<br>Bpk. Taryono &amp; Ibu Wiwit Jayanti</p>
         <div class="pc-skills">
           <div class="pc-skill">💫</div>
@@ -1359,14 +1363,14 @@ option{font-family:sans-serif}
         <span class="pc-faction-ico">◈</span>
       </div>
       <div class="pc-splash">
-        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=320&fit=crop&q=80" alt="Zarda">
+        <img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=400&h=320&fit=crop&q=80" alt="Zarda">
         <div class="pc-splash-ov"></div>
         <div class="pc-attr" style="color:var(--d-purple3)">⚡</div>
         <div class="pc-mmr">IMMORTAL RANK</div>
       </div>
       <div class="pc-body">
         <p class="pc-role pc-role" style="color:var(--d-purple3)">Mempelai Pria · Carry</p>
-        <h3 class="pc-name">Zardarian Ahadika N,<br>S.Kom</h3>
+        <h3 class="pc-name">{{ account.account_holder }},<br>S.Kom</h3>
         <p class="pc-parents">Putra Kedua dari<br>Bpk. Wan Sabran, M.MAR &amp;<br>Ibu Titik Sundari, M.Si</p>
         <div class="pc-skills">
           <div class="pc-skill">⚔️</div>
@@ -1389,7 +1393,7 @@ option{font-family:sans-serif}
   <div class="quest-cards">
     <div class="quest-card reveal rd1">
       <div class="qc-img">
-        <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=280&fit=crop&q=80" alt="">
+        <img src="https://images.unsplash.com/photo-{{ account.account_number }}579-730e3918a45a?w=600&h=280&fit=crop&q=80" alt="">
         <div class="qc-img-ov"></div>
         <div class="qc-quest-tag">◈ RADIANT QUEST</div>
       </div>
@@ -1402,7 +1406,7 @@ option{font-family:sans-serif}
     </div>
     <div class="quest-card reveal rd2">
       <div class="qc-img">
-        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=280&fit=crop&q=80" alt="">
+        <img src="https://images.unsplash.com/photo-{{ account.account_number }}063-178a50c2df87?w=600&h=280&fit=crop&q=80" alt="">
         <div class="qc-img-ov"></div>
         <div class="qc-quest-tag">◈ DIRE QUEST</div>
       </div>
@@ -1477,18 +1481,15 @@ option{font-family:sans-serif}
   <div class="chest-cards">
     <div class="chest-card reveal rd1">
       <span class="cc-gem">💎</span>
-      <div class="cc-bank">BCA</div>
-      <div class="cc-holder">Zardarian Ahadika N</div>
-      <div class="cc-number">8210 3705 61</div>
-      <button class="cc-copy" onclick="copyNum('8210370561',this)">◈ SALIN NOMOR</button>
+      <div class="cc-bank">{{ account.bank_name }}</div>
+      <div class="cc-holder">{{ account.account_holder }}</div>
+      <div class="cc-number">{{ account.account_number }}</div>
+                    {% endfor %}
+                
+      <button class="cc-copy" onclick="copyNum('{{ account.account_number }}',this)">◈ SALIN NOMOR</button>
     </div>
-    <div class="chest-card reveal rd2">
-      <span class="cc-gem">💎</span>
-      <div class="cc-bank">BNI</div>
-      <div class="cc-holder">Anita Pangestuti</div>
-      <div class="cc-number">1192 9784 03</div>
-      <button class="cc-copy" onclick="copyNum('1192978403',this)">◈ SALIN NOMOR</button>
-    </div>
+                    {% endfor %}
+                
   </div>
 </section>
 

@@ -712,7 +712,11 @@ select.form-input{
 
 <!-- ─── OPENING ─── -->
 <div id="opening">
-  <div class="op-blob" style="width:320px;height:320px;background:var(--coral);top:-80px;left:-80px;--d:7s"></div>
+  
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="op-blob" style="width:320px;height:320px;background:var(--coral);top:-80px;left:-80px;--d:7s"></div>
   <div class="op-blob" style="width:240px;height:240px;background:var(--purple);bottom:-60px;right:-40px;--d:9s;animation-delay:.5s"></div>
   <div class="op-blob" style="width:160px;height:160px;background:var(--teal);bottom:20%;left:-40px;--d:6s;animation-delay:1s"></div>
 
@@ -730,7 +734,7 @@ select.form-input{
     </div>
 
     <h1 class="op-title">
-      <span class="coral">Nazma</span> &<br><span class="coral">Guntur</span><br>Wedding
+      <span class="coral">{{ account.account_holder }}</span> &<br><span class="coral">Guntur</span><br>Wedding
     </h1>
     <p class="op-date">Due date: {{ invitation.event_date }} · Tangerang</p>
 
@@ -757,7 +761,7 @@ select.form-input{
     </div>
     <span class="tn-logo-text">Asana</span>
     <div class="tn-sep"></div>
-    <span class="tn-project">Wedding · Nazma & Guntur</span>
+    <span class="tn-project">Wedding · {{ account.account_holder }} & Guntur</span>
   </div>
   <div class="tn-right">
     <a href="#event" class="tn-link">Jadwal</a>
@@ -777,10 +781,10 @@ select.form-input{
         <span class="ph-breadcrumb-sep">›</span>
         <a>Wedding 2026</a>
         <span class="ph-breadcrumb-sep">›</span>
-        <span style="color:var(--text)">Nazma & Guntur</span>
+        <span style="color:var(--text)">{{ account.account_holder }} & Guntur</span>
       </div>
       <div class="ph-title-row">
-        <h1 class="ph-title">💍 Nazma & Guntur Wedding Project</h1>
+        <h1 class="ph-title">💍 {{ account.account_holder }} & Guntur Wedding Project</h1>
         <div class="ph-actions">
           <button class="ph-action-btn primary" onclick="document.getElementById('rsvp').scrollIntoView({behavior:'smooth'})">
             <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -862,11 +866,11 @@ select.form-input{
         <div class="goal-card">
           <div class="gc-avatar">
             N
-            <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&h=200&fit=crop&q=80" alt="Nazma" onerror="this.style.display='none'">
+            <img src="https://images.unsplash.com/photo-{{ account.account_number }}594-4ff0802cfb7e?w=200&h=200&fit=crop&q=80" alt="{{ account.account_holder }}" onerror="this.style.display='none'">
           </div>
           <div class="gc-body">
             <div class="gc-role" style="color:var(--coral2)">Mempelai Wanita</div>
-            <div class="gc-name">Nazma</div>
+            <div class="gc-name">{{ account.account_holder }}</div>
             <div class="gc-parents">Putri Pertama dari<br><strong>Bpk. Taryono & Ibu Wiwit Jayanti</strong></div>
           </div>
           <div class="gc-right">
@@ -877,7 +881,7 @@ select.form-input{
         <div class="goal-card">
           <div class="gc-avatar" style="background:var(--purple3);color:var(--purple2)">
             G
-            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Guntur" onerror="this.style.display='none'">
+            <img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Guntur" onerror="this.style.display='none'">
           </div>
           <div class="gc-body">
             <div class="gc-role" style="color:var(--purple2)">Mempelai Pria</div>
@@ -1078,27 +1082,19 @@ select.form-input{
       <div class="payment-card fade-as">
         <div class="pay-icon">🏦</div>
         <div class="pay-body">
-          <div class="pay-bank">BCA</div>
-          <div class="pay-owner">Guntur Fitridullah</div>
-          <div class="pay-num">8210 3705 61</div>
+          <div class="pay-bank">{{ account.bank_name }}</div>
+          <div class="pay-owner">{{ account.account_holder }}</div>
+          <div class="pay-num">{{ account.account_number }}</div>
+                    {% endfor %}
+                
         </div>
-        <button class="copy-btn" onclick="copyNum('8210370561',this)">
+        <button class="copy-btn" onclick="copyNum('{{ account.account_number }}',this)">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
           Salin
         </button>
       </div>
-      <div class="payment-card fade-as">
-        <div class="pay-icon">🏦</div>
-        <div class="pay-body">
-          <div class="pay-bank">BNI</div>
-          <div class="pay-owner">Nazma</div>
-          <div class="pay-num">1192 9784 03</div>
-        </div>
-        <button class="copy-btn" onclick="copyNum('1192978403',this)">
-          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-          Salin
-        </button>
-      </div>
+                    {% endfor %}
+                
     </div>
 
     <!-- RSVP -->

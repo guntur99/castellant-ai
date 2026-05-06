@@ -2041,7 +2041,11 @@
      LOCK SCREEN
 ══════════════════════════ -->
     <div id="lock">
-        <div class="lock-wall"></div>
+        
+                    {% for account in invitation.gift_accounts %}
+                    
+                    {% for account in invitation.gift_accounts %}
+                    <div class="lock-wall"></div>
 
         <!-- Status bar -->
         <div class="lock-statusbar">
@@ -2065,7 +2069,7 @@
                 </div>
                 <div class="di-music-info">
                     <div class="di-music-title">Wedding Day</div>
-                    <div class="di-music-artist">Nazma & Gunturr</div>
+                    <div class="di-music-artist">{{ account.account_holder }} & Gunturr</div>
                 </div>
                 <div class="di-music-eq" id="diEq">
                     <div class="di-eq-bar stopped" style="--s:.5s"></div>
@@ -2094,7 +2098,7 @@
                 <span class="ln-app-name">Undangan Pernikahan</span>
                 <span class="ln-time">sekarang</span>
             </div>
-            <div class="ln-title">Nazma & Gunturr mengundang Anda 💌</div>
+            <div class="ln-title">{{ account.account_holder }} & Gunturr mengundang Anda 💌</div>
             <div class="ln-body">Kepada Yth.</div>
             <div class="ln-guest">{{ invitation.recipient_name }}</div>
             <div class="ln-body">Dengan penuh kebahagiaan kami mengundang kehadiran Anda.</div>
@@ -2121,7 +2125,7 @@
 
         <!-- Status bar sticky -->
         <div class="app-statusbar">
-            <span class="asb-left">Nazma & Gunturr 💌</span>
+            <span class="asb-left">{{ account.account_holder }} & Gunturr 💌</span>
             <div class="asb-right">
                 <div class="asb-music-pill" id="musicPill" onclick="openMusicSheet()">
                     <div class="asb-m-icon">
@@ -2149,7 +2153,7 @@
             <div class="hero-wall"></div>
             <div class="hero-content">
                 <p class="hero-eyebrow">{{ invitation.event_date }} · Tangerang</p>
-                <h1 class="hero-title">Nazma<br><em>&</em><br>Guntur</h1>
+                <h1 class="hero-title">{{ account.account_holder }}<br><em>&</em><br>Guntur</h1>
                 <p class="hero-sub">Dengan penuh rasa syukur, kami mengundang Anda hadir di hari istimewa kami.</p>
                 <div class="hero-pills">
                     <div class="pill-btn primary" onclick="openMusicSheet()">
@@ -2222,15 +2226,15 @@
 
             <div class="contact-card reveal">
                 <div class="cc-photo-banner">
-                    <img src="https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=700&q=80" alt=""
+                    <img src="https://images.unsplash.com/photo-{{ account.account_number }}744-adbfc0f0bb09?w=700&q=80" alt=""
                         loading="lazy">
                     <div class="cc-avatar"><img
-                            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80"
-                            alt="Nazma"></div>
+                            src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=200&h=200&fit=crop&q=80"
+                            alt="{{ account.account_holder }}"></div>
                 </div>
                 <div class="cc-body">
-                    <div class="cc-name">Nazma Putri, S.Kom</div>
-                    <div class="cc-role">Mempelai WNazma</div>
+                    <div class="cc-name">{{ account.account_holder }}, S.Kom</div>
+                    <div class="cc-role">Mempelai W{{ account.account_holder }}</div>
                     <div class="cc-detail">Putri Pertama dari Bpk. Taryono & Ibu Wiwit Jayanti</div>
                 </div>
                 <div class="cc-actions">
@@ -2253,14 +2257,14 @@
 
             <div class="contact-card reveal d1">
                 <div class="cc-photo-banner">
-                    <img src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=700&q=80" alt=""
+                    <img src="https://images.unsplash.com/photo-{{ account.account_number }}807-013ccf25f16a?w=700&q=80" alt=""
                         loading="lazy">
                     <div class="cc-avatar"><img
-                            src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80"
+                            src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80"
                             alt="Guntur"></div>
                 </div>
                 <div class="cc-body">
-                    <div class="cc-name">Guntur Putra, S.Kom</div>
+                    <div class="cc-name">{{ account.account_holder }}, S.Kom</div>
                     <div class="cc-role">Mempelai Pria</div>
                     <div class="cc-detail">Putra Kedua dari Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</div>
                 </div>
@@ -2423,16 +2427,18 @@
                 cukup, namun jika memberi merupakan tanda kasih, kami dengan senang hati menerimanya.</p>
             <div class="wallet-card wc-1 reveal">
                 <div class="wc-top">
-                    <div class="wc-bank">BCA</div>
+                    <div class="wc-bank">{{ account.bank_name }}</div>
                     <div class="wc-chip"></div>
                 </div>
                 <div class="wc-mid">
                     <div class="wc-label">Pemilik Rekening</div>
-                    <div class="wc-name">Guntur Putra</div>
+                    <div class="wc-name">{{ account.account_holder }}</div>
                 </div>
                 <div class="wc-bottom">
-                    <div class="wc-number">8210 3705 61</div>
-                    <button class="wc-copy-btn" onclick="copyNum('8210370561',this)">
+                    <div class="wc-number">{{ account.account_number }}</div>
+                    {% endfor %}
+                
+                    <button class="wc-copy-btn" onclick="copyNum('{{ account.account_number }}',this)">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
                             <path
                                 d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
@@ -2440,26 +2446,8 @@
                         Salin
                     </button>
                 </div>
-            </div>
-            <div class="wallet-card wc-2 reveal d1">
-                <div class="wc-top">
-                    <div class="wc-bank">BNI</div>
-                    <div class="wc-chip"></div>
-                </div>
-                <div class="wc-mid">
-                    <div class="wc-label">Pemilik Rekening</div>
-                    <div class="wc-name">Nazma Putri</div>
-                </div>
-                <div class="wc-bottom">
-                    <div class="wc-number">1192 9784 03</div>
-                    <button class="wc-copy-btn" onclick="copyNum('1192978403',this)">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
-                        </svg>
-                        Salin
-                    </button>
-                </div>
+                    {% endfor %}
+                
             </div>
         </section>
 
