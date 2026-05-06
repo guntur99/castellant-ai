@@ -8,6 +8,10 @@ use axum::{
 use askama::Template;
 use crate::models::{Invitation, Person, EventDetails, Quote, GiftAccount, RsvpForm, Rsvp, InvitationRow, Song, User, AiSession, Guest, GuestGroup, Booking, Voucher};
 use crate::AppState;
+mod filters {
+    pub use crate::filters::*;
+}
+
 use crate::mailer::{self, PaymentSuccessEmail};
 use serde_json::{from_value, json};
 use sqlx::Row;
@@ -1598,28 +1602,36 @@ pub async fn dashboard(
             .await
             .unwrap_or_default()
             .into_iter()
-            .map(|r| Invitation {
-                slug: r.slug,
-                template_name: r.template_name,
-                couple_name_short: r.couple_name_short,
-                bride: from_value(r.bride_data).unwrap_or_default(),
-                groom: from_value(r.groom_data).unwrap_or_default(),
-                event_date: r.event_date,
-                ceremony: from_value(r.ceremony_data).unwrap_or_default(),
-                reception: from_value(r.reception_data).unwrap_or_default(),
-                quote: from_value(r.quote_data).unwrap_or_default(),
-                gallery_images: Vec::new(),
-                gift_accounts: Vec::new(),
-                song_url: String::new(),
-                plan_name: r.plan_name.unwrap_or_else(|| "NOBLE".to_string()),
-                ai_chat_enabled: r.ai_chat_enabled,
-                ai_usage_count: r.ai_usage_count,
-                ai_custom_knowledge: r.ai_custom_knowledge.unwrap_or_default(),
-                ai_language: r.ai_language.clone(),
-                recipient_name: "Guest Guest & Partner".to_string(),
-                event_date_iso: "2026-05-24T08:00:00".to_string(),
-                rsvps: Vec::new(),
-                is_preview: false,
+            .map(|r| {
+                let bride: Person = from_value(r.bride_data.clone()).unwrap_or_default();
+                let groom: Person = from_value(r.groom_data.clone()).unwrap_or_default();
+                let bride_name_short = bride.name.clone();
+                let groom_name_short = groom.name.clone();
+                Invitation {
+                    slug: r.slug,
+                    template_name: r.template_name,
+                    couple_name_short: r.couple_name_short,
+                    bride_name_short,
+                    groom_name_short,
+                    bride,
+                    groom,
+                    event_date: r.event_date,
+                    ceremony: from_value(r.ceremony_data).unwrap_or_default(),
+                    reception: from_value(r.reception_data).unwrap_or_default(),
+                    quote: from_value(r.quote_data).unwrap_or_default(),
+                    gallery_images: Vec::new(),
+                    gift_accounts: Vec::new(),
+                    song_url: String::new(),
+                    plan_name: r.plan_name.unwrap_or_else(|| "NOBLE".to_string()),
+                    ai_chat_enabled: r.ai_chat_enabled,
+                    ai_usage_count: r.ai_usage_count,
+                    ai_custom_knowledge: r.ai_custom_knowledge.unwrap_or_default(),
+                    ai_language: r.ai_language.clone(),
+                    recipient_name: "Guest Guest & Partner".to_string(),
+                    event_date_iso: "2026-05-24T08:00:00".to_string(),
+                    rsvps: Vec::new(),
+                    is_preview: false,
+                }
             })
             .collect();
 
@@ -1840,12 +1852,19 @@ pub async fn invitation_detail(
             }
             reception.date = format_date_for_display(&reception.date);
 
+            let bride: Person = from_value(row.bride_data).unwrap_or_default();
+            let groom: Person = from_value(row.groom_data).unwrap_or_default();
+            let bride_name_short = bride.name.clone();
+            let groom_name_short = groom.name.clone();
+
             let invitation = Invitation {
                 slug: row.slug.clone(),
                 template_name: template_name.clone(),
                 couple_name_short: row.couple_name_short,
-                bride: from_value(row.bride_data).unwrap_or_default(),
-                groom: from_value(row.groom_data).unwrap_or_default(),
+                bride_name_short,
+                groom_name_short,
+                bride,
+                groom,
                 event_date,
                 ceremony,
                 reception,
@@ -1980,6 +1999,8 @@ pub async fn invitation_detail(
                     slug: slug.clone(),
                     template_name: template_name.to_string(),
                     couple_name_short: couple_name.to_string(),
+                    bride_name_short: "Nazma".to_string(),
+                    groom_name_short: "Guntur".to_string(),
                     bride: Person {
                         name: "Nazma".to_string(),
                         full_name: "Nazma Putri".to_string(),
@@ -2167,12 +2188,19 @@ pub async fn manage_invitation(
     match row {
         Some(row) => {
             let event_date_iso = parse_event_date_to_iso(&row.event_date);
+            let bride: Person = from_value(row.bride_data).unwrap_or_default();
+            let groom: Person = from_value(row.groom_data).unwrap_or_default();
+            let bride_name_short = bride.name.clone();
+            let groom_name_short = groom.name.clone();
+
             let invitation = Invitation {
                 slug: row.slug,
                 template_name: row.template_name,
                 couple_name_short: row.couple_name_short,
-                bride: from_value(row.bride_data).unwrap_or_default(),
-                groom: from_value(row.groom_data).unwrap_or_default(),
+                bride_name_short,
+                groom_name_short,
+                bride,
+                groom,
                 event_date: row.event_date,
                 ceremony: from_value(row.ceremony_data).unwrap_or_default(),
                 reception: from_value(row.reception_data).unwrap_or_default(),
@@ -2522,6 +2550,8 @@ pub async fn preview(
         slug: "preview".to_string(),
         template_name: payload.template_name.clone(),
         couple_name_short: payload.couple_name_short,
+        bride_name_short: payload.bride_name.clone(),
+        groom_name_short: payload.groom_name.clone(),
         bride: Person {
             name: payload.bride_name,
             full_name: payload.bride_full_name,

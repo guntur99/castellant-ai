@@ -793,11 +793,7 @@ body::after {
 
 <!-- ═══ BOOT SCREEN ═══ -->
 <div id="bootScreen">
-  
-                    {% for account in invitation.gift_accounts %}
-                    
-                    {% for account in invitation.gift_accounts %}
-                    <div class="boot-logo">
+  <div class="boot-logo">
     <div class="boot-win-logo">
       <div style="background:#f00"></div>
       <div style="background:#0f0"></div>
@@ -965,19 +961,19 @@ body::after {
       <div class="w95-tab-content" id="tc-couple" style="border-top:2px solid #fff">
         <div class="w95-section-head">👥 Featured Artists — Pasangan Kami</div>
         <div class="couple-card-w95">
-          <img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=120&h=120&fit=crop&q=80" alt="Anita">
+          <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=120&h=120&fit=crop&q=80" alt="Anita">
           <div class="couple-card-body">
             <div class="role">MEMPELAI WANITA</div>
-            <div class="cname">{{ account.account_holder }}, S.Kom</div>
+            <div class="cname">{{ invitation.bride.name }}, S.Kom</div>
             <div class="parents">Putri Pertama dari<br><b>Bpk. Taryono & Ibu Wiwit Jayanti</b></div>
           </div>
         </div>
         <div style="text-align:center;font-size:28px;margin:6px 0;color:#000080">⊕</div>
         <div class="couple-card-w95">
-          <img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=120&h=120&fit=crop&q=80" alt="Zarda">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&h=120&fit=crop&q=80" alt="Zarda">
           <div class="couple-card-body">
             <div class="role">MEMPELAI PRIA</div>
-            <div class="cname">{{ account.account_holder }}, S.Kom</div>
+            <div class="cname">{{ invitation.groom.name }}, S.Kom</div>
             <div class="parents">Putra Kedua dari<br><b>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</b></div>
           </div>
         </div>
@@ -1103,7 +1099,7 @@ body::after {
       <div class="paint-tool" onclick="nextGallery()">▶</div>
     </div>
     <div class="paint-canvas" style="height:260px">
-      <img id="paintImg" src="https://images.unsplash.com/photo-{{ account.account_number }}674-{{ account.account_number }}52?w=600&h=400&fit=crop&q=80" alt="Gallery" onclick="openLB95(curGalleryIdx)">
+      <img id="paintImg" src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=600&h=400&fit=crop&q=80" alt="Gallery" onclick="openLB95(curGalleryIdx)">
     </div>
     <div style="padding:4px 6px;display:grid;grid-template-columns:repeat(4,1fr);gap:3px;background:var(--w95-silver);border-top:1px solid #808080" id="galleryThumbs"></div>
     <div class="w95-statusbar">
@@ -1160,13 +1156,13 @@ body::after {
    {{ invitation.event_date }} | Tangerang
 
 MEMPELAI WANITA:
-  {{ account.account_holder }}, S.Kom
+  {{ invitation.bride.name }}, S.Kom
   Putri Pertama dari:
     Bpk. Taryono
     Ibu Wiwit Jayanti
 
 MEMPELAI PRIA:
-  {{ account.account_holder }}, S.Kom
+  {{ invitation.groom.name }}, S.Kom
   Putra Kedua dari:
     Bpk. Wan Sabran, M.MAR
     Ibu Titik Sundari, M.Si
@@ -1278,17 +1274,27 @@ VERSE:
       <div class="w95-menu-item" onclick="toggleMenu('mnu-gift-help',this)">Help</div>
       <!-- File -->
       <div class="w95-dropdown" id="mnu-gift-file" style="top:22px;left:0">
-        <div class="w95-dd-item" onclick="copyGift('{{ account.account_number }}',{textContent:''});closeAllMenus()"><span class="w95-dd-icon">📋</span>Copy No. {{ account.bank_name }}</div>
-                    {% endfor %}
-                
-          <button class="w95-btn" style="margin-top:5px;font-size:12px" onclick="copyGift('{{ account.account_number }}',this)">📋 Copy</button>
-        </div>
-                    {% endfor %}
-                
+        {% for account in invitation.gift_accounts %}
+        <div class="w95-dd-item" onclick="copyGift('{{ account.account_number }}',this);closeAllMenus()"><span class="w95-dd-icon">📋</span>Copy No. {{ account.bank_name }}</div>
+        {% endfor %}
+        <div class="w95-dd-sep"></div>
+        <div class="w95-dd-item" onclick="closeWindow('winGift');closeAllMenus()"><span class="w95-dd-icon">✕</span>Tutup</div>
       </div>
     </div>
+    <div class="w95-content" style="background:white;padding:12px">
+      {% for account in invitation.gift_accounts %}
+      <div class="gift-card-w95">
+        <div style="flex:1">
+          <div class="gift-bank-name">{{ account.bank_name }}</div>
+          <div style="font-size:12px;color:#404040;margin-bottom:4px">{{ account.account_holder }}</div>
+          <div class="gift-number-w95">{{ account.account_number }}</div>
+        </div>
+        <button class="w95-btn" onclick="copyGift('{{ account.account_number }}',this)">📋 Copy</button>
+      </div>
+      {% endfor %}
+    </div>
     <div class="w95-statusbar">
-      <div class="w95-status-panel">2 rekening tersedia</div>
+      <div class="w95-status-panel">{{ invitation.gift_accounts.len() }} rekening tersedia</div>
     </div>
   </div>
 
@@ -1335,15 +1341,15 @@ VERSE:
       <!-- RSVP Stats -->
       <div style="display:flex;gap:8px;margin-bottom:12px">
         <div style="flex:1;text-align:center;background:white;border-top:1px solid #808080;border-left:1px solid #808080;border-right:1px solid #fff;border-bottom:1px solid #fff;padding:6px">
-          <div style="font-size:28px;color:#000080;font-weight:bold" id="stR">7</div>
+          <div style="font-size:28px;color:#000080;font-weight:bold" id="stR">{{ invitation.total_rsvps() }}</div>
           <div style="font-size:11px;color:#808080">RESPONS</div>
         </div>
         <div style="flex:1;text-align:center;background:white;border-top:1px solid #808080;border-left:1px solid #808080;border-right:1px solid #fff;border-bottom:1px solid #fff;padding:6px">
-          <div style="font-size:28px;color:#000080;font-weight:bold" id="stH">7</div>
+          <div style="font-size:28px;color:#000080;font-weight:bold" id="stH">{{ invitation.total_rsvps() }}</div>
           <div style="font-size:11px;color:#808080">HADIR</div>
         </div>
         <div style="flex:1;text-align:center;background:white;border-top:1px solid #808080;border-left:1px solid #808080;border-right:1px solid #fff;border-bottom:1px solid #fff;padding:6px">
-          <div style="font-size:28px;color:#000080;font-weight:bold" id="stT">13</div>
+          <div style="font-size:28px;color:#000080;font-weight:bold" id="stT">{{ invitation.total_guest_count() }}</div>
           <div style="font-size:11px;color:#808080">TOTAL TAMU</div>
         </div>
       </div>
@@ -1384,35 +1390,27 @@ VERSE:
 
       <div class="w95-section-head" style="margin-top:12px">💬 Ucapan & Doa</div>
       <div id="wishesList">
-                {% if invitation.is_preview %}
-                
-                <!-- RSVPs will be loaded here -->
-            
-                {% else %}
-                {% for rsvp in invitation.rsvps %}
-                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
-                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
-                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
-                        <div>
-                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
-                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
-                        </div>
-                    </div>
-                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
-                </div>
-                {% endfor %}
-                {% endif %}
-</div><div class="wish-name-w95">Ayu Rahmawati</div><div class="wish-status-w95">✓ Hadir · 2</div></div>
+        {% if invitation.is_preview %}
+        <div class="wish-item-w95">
+          <div class="wish-header-w95"><div class="wish-avatar-w95" style="background:#000080">A</div><div class="wish-name-w95">Ayu Rahmawati</div><div class="wish-status-w95">✓ Hadir · 2</div></div>
           <div class="wish-text-w95">Selamat menempuh hidup baru! Sakinah mawaddah wa rahmah 🌿</div>
         </div>
         <div class="wish-item-w95">
           <div class="wish-header-w95"><div class="wish-avatar-w95" style="background:#004080">R</div><div class="wish-name-w95">Reza Firmansyah</div><div class="wish-status-w95">✓ Hadir · 1</div></div>
           <div class="wish-text-w95">Alhamdulillah! Semoga berkah dan bahagia selalu. Aamiin! 🤲</div>
         </div>
+        {% else %}
+        {% for rsvp in invitation.rsvps %}
         <div class="wish-item-w95">
-          <div class="wish-header-w95"><div class="wish-avatar-w95" style="background:#800000">S</div><div class="wish-name-w95">Sinta Dewi</div><div class="wish-status-w95">✓ Hadir · 2</div></div>
-          <div class="wish-text-w95">Semoga langkah kalian selalu diberkahi Allah SWT 💚</div>
+          <div class="wish-header-w95">
+            <div class="wish-avatar-w95">{{ rsvp.initial() }}</div>
+            <div class="wish-name-w95">{{ rsvp.name }}</div>
+            <div class="wish-status-w95">{{ rsvp.display_attendance() }} · {{ rsvp.guests }}</div>
+          </div>
+          <div class="wish-text-w95">{{ rsvp.display_message() }}</div>
         </div>
+        {% endfor %}
+        {% endif %}
       </div>
     </div>
   </div>
@@ -1986,6 +1984,13 @@ function submitRSVP(){
   if(!name){ showErrMsg('Input Error','Nama tidak boleh kosong!'); return; }
   if(!rsvpSt){ showErrMsg('Input Error','Pilih status kehadiran!'); return; }
   const guestCt=parseInt(document.getElementById('guestSelect')?.value||1);
+  
+  fetch('/api/rsvp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(rsvpSt)}&guests=${guestCt}&message=${encodeURIComponent(msg)}`
+  });
+
   const stTxt=rsvpSt==='hadir'?`✓ Hadir · ${guestCt}`:'✗ Tidak Hadir';
   const colors=['#000080','#004080','#800000','#004000','#400080'];
   const col=colors[Math.floor(Math.random()*colors.length)];
@@ -1993,12 +1998,7 @@ function submitRSVP(){
   const item=document.createElement('div'); item.className='wish-item-w95';
   item.innerHTML=`<div class="wish-header-w95"><div class="wish-avatar-w95" style="background:${col}">${init}</div><div class="wish-name-w95">${name}</div><div class="wish-status-w95">${stTxt}</div></div><div class="wish-text-w95">${msg||'Selamat dan bahagia selalu! 💍'}</div>`;
   document.getElementById('wishesList')?.prepend(item);
-  // update stats
-  const r=document.getElementById('stR'); if(r) r.textContent=parseInt(r.textContent)+1;
-  if(rsvpSt==='hadir'){
-    const h=document.getElementById('stH'); if(h) h.textContent=parseInt(h.textContent)+1;
-    const t=document.getElementById('stT'); if(t) t.textContent=parseInt(t.textContent)+guestCt;
-  }
+  
   if(document.getElementById('rName')) document.getElementById('rName').value='';
   if(document.getElementById('rMsg')) document.getElementById('rMsg').value='';
   rsvpSt='';
@@ -2006,6 +2006,7 @@ function submitRSVP(){
   document.getElementById('rad-tidak')?.classList.remove('checked');
   document.getElementById('rsvpOkMsg').textContent=`RSVP berhasil!\n${name} — ${stTxt}\nTerima kasih! 🎉`;
   document.getElementById('dlgRsvpOk').classList.add('open');
+  setTimeout(()=>location.reload(),1500);
 }
 function showErrMsg(title,msg){
   document.getElementById('errTitle').textContent=title;

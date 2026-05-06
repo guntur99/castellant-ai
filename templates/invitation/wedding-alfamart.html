@@ -1721,17 +1721,13 @@
    OPENING
 ══════════════════════════════════ -->
     <div id="opening">
-        
-                    {% for account in invitation.gift_accounts %}
-                    
-                    {% for account in invitation.gift_accounts %}
-                    <div class="opening-inner">
+        <div class="opening-inner">
             <div class="alfamart-logo-opening">
                 <span class="logo-alf">Alfamart</span>
                 <span class="logo-tagline">Belanja Puas, Harga Pas</span>
             </div>
             <p class="opening-title">Struk Undangan Pernikahan</p>
-            <h1 class="opening-names">{{ account.account_holder }}<br>&amp; Guntur</h1>
+            <h1 class="opening-names">{{ invitation.bride.name }}<br>&amp; {{ invitation.groom.name }}</h1>
             <p class="opening-sub">No. Struk: WED-2026-05-24 | 1 lembar</p>
             <div class="opening-dear">
                 <p class="opening-dear-lbl">Pelanggan Setia:</p>
@@ -1755,7 +1751,7 @@
                     <span class="store-logo-text">Alfamart</span>
                     <span class="store-logo-sub">Wedding Edition</span>
                 </div>
-                <div class="store-names">{{ account.account_holder }}<br>&amp; Guntur</div>
+                <div class="store-names">{{ invitation.bride.name }}<br>&amp; {{ invitation.groom.name }}</div>
                 <div class="store-subtitle">Cabang: Hati ke Hati · Kode Toko: WED-2026</div>
             </div>
             <div class="store-blue">
@@ -1810,16 +1806,16 @@
                     <div class="kasir-row"><span>Tgl Transaksi</span><span>24 MEI 2026</span></div>
                     <div class="kasir-row"><span>Operator</span><span>TUHAN YME</span></div>
                     <div class="kasir-row"><span>Terminal</span><span>AKAD-NIKAH-001</span></div>
-                    <div class="kasir-row"><span>Member ID</span><span>{{ account.account_holder }}-X-Guntur-4EVER</span></div>
+                    <div class="kasir-row"><span>Member ID</span><span>{{ invitation.bride_name_short }}-X-{{ invitation.groom_name_short }}-4EVER</span></div>
                 </div>
 
                 <!-- ITEMS -->
                 <div class="items-section">
 
                     <div class="item-row">
-                        <div class="item-name">1x PENGANTIN W{{ account.account_holder }}</div>
+                        <div class="item-name">1x PENGANTIN WANITA</div>
                         <div class="item-detail">
-                            <span class="item-qty-price">{{ account.account_holder }}, S.Kom</span>
+                            <span class="item-qty-price">{{ invitation.bride.name }}</span>
                             <span class="item-total">SATU HATI</span>
                         </div>
                         <div class="item-promo">★ LIMITED EDITION · BEST WIFE MATERIAL</div>
@@ -1830,10 +1826,10 @@
                     <div class="item-row">
                         <div class="item-name">1x PENGANTIN PRIA</div>
                         <div class="item-detail">
-                            <span class="item-qty-price">{{ account.account_holder }}, S.Kom</span>
+                            <span class="item-qty-price">{{ invitation.groom.name }}</span>
                             <span class="item-total">SATU HATI</span>
                         </div>
-                        <div class="item-promo">★ STOK TERBATAS · SUDAH DIPESAN {{ account.account_holder }}</div>
+                        <div class="item-promo">★ STOK TERBATAS · SUDAH DIPESAN {{ invitation.bride_name_short }}</div>
                     </div>
 
                     <hr class="item-divider">
@@ -1930,22 +1926,22 @@
                     <div class="couple-cards">
                         <div class="couple-card">
                             <div class="couple-avatar">
-                                <img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=200&h=200&fit=crop&q=80"
-                                    alt="{{ account.account_holder }}">
+                                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=200&h=200&fit=crop&q=80"
+                                    alt="{{ invitation.bride.name }}">
                             </div>
-                            <div class="couple-role">Mempelai W{{ account.account_holder }}</div>
-                            <div class="couple-name">{{ account.account_holder }}</div>
-                            <div class="couple-parents">S.Kom<br>Putri Pertama<br>Bpk. Taryono<br>& Ibu Wiwit Jayanti
+                            <div class="couple-role">Mempelai Wanita</div>
+                            <div class="couple-name">{{ invitation.bride.name }}</div>
+                            <div class="couple-parents">Putri Pertama<br>Bpk. Taryono<br>& Ibu Wiwit Jayanti
                             </div>
                         </div>
                         <div class="couple-card">
                             <div class="couple-avatar">
-                                <img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80"
-                                    alt="Guntur">
+                                <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=200&h=200&fit=crop&q=80"
+                                    alt="{{ invitation.groom.name }}">
                             </div>
                             <div class="couple-role">Mempelai Pria</div>
-                            <div class="couple-name">{{ account.account_holder }}</div>
-                            <div class="couple-parents">S.Kom<br>Putra Kedua<br>Bpk. Wan Sabran<br>& Ibu Titik Sundari
+                            <div class="couple-name">{{ invitation.groom.name }}</div>
+                            <div class="couple-parents">Putra Kedua<br>Bpk. Wan Sabran<br>& Ibu Titik Sundari
                             </div>
                         </div>
                     </div>
@@ -2073,34 +2069,21 @@
                 <div class="gift-section" id="gift">
                     <div class="section-label">Metode Pembayaran Kado</div>
                     <div class="gift-cards">
-                    {% for account in invitation.gift_accounts %}
-                    <div class="gift-card">
+                        {% for account in invitation.gift_accounts %}
+                        <div class="gift-card">
                             <div class="gift-left">
                                 <div class="gift-bank-badge">{{ account.bank_name }}</div>
-                    {% endfor %}
-                </div>
+                                <div class="gift-num" id="acc_{{ account.account_number }}">{{ account.account_number }}</div>
+                                <div class="gift-holder">{{ account.account_holder }}</div>
                             </div>
                             <button class="copy-btn" onclick="copyText('{{ account.account_number }}',this)">
                                 <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path
-                                        d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                                    <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
                                 </svg>
                                 SALIN
                             </button>
                         </div>
-                    {% endfor %}
-                
-                            </div>
-                            <button class="copy-btn" onclick="copyText('{{ account.account_number }}',this)">
-                                <svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path
-                                        d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
-                                </svg>
-                                SALIN
-                            </button>
-                        </div>
-                    {% endfor %}
-                
+                        {% endfor %}
                     </div>
                 </div>
 

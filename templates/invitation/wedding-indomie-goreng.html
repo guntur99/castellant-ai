@@ -166,10 +166,7 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 </head>
 <body>
 
-                    {% for account in invitation.gift_accounts %}
-                    
-                    {% for account in invitation.gift_accounts %}
-                    <div class="pack">
+<div class="pack">
   <div class="pack-top">
     <div class="top-white-bar">
       <div class="halal-box">HALAL</div>
@@ -290,20 +287,27 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 
     <div class="spill" style="margin-top:8px">💳 Amplop Digital</div>
     <div class="amp-box">
-      <div class="sachet"><div class="sachet-band" style="background:#CC0000">{{ account.bank_name }}</div><div class="sachet-body"><div class="s-bank">{{ account.bank_name }}</div><div class="s-name">{{ account.account_holder }}</div><div class="s-num">{{ account.account_number }}</div>
-                    {% endfor %}
-                <button class="copy-btn" onclick="copyText('{{ account.account_number }}',this)">📋 Salin</button></div>
-                    {% endfor %}
-                </div>
+      {% for account in invitation.gift_accounts %}
+      <div class="sachet">
+        <div class="sachet-band" style="background:#CC0000">{{ account.bank_name }}</div>
+        <div class="sachet-body">
+          <div class="s-bank">{{ account.bank_name }}</div>
+          <div class="s-name">{{ account.account_holder }}</div>
+          <div class="s-num">{{ account.account_number }}</div>
+          <button class="copy-btn" onclick="copyText('{{ account.account_number }}',this)">📋 Salin</button>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
     </div>
 
     <div class="spill" style="margin-top:8px">📝 Konfirmasi Kehadiran</div>
     <div class="rsvp-box">
       <div class="rsvp-hdr"><div class="rsvp-hdr-t">🍜 Form Pemesanan</div><div class="rsvp-hdr-s">● OPEN 24/7</div></div>
       <div class="rsvp-stats">
-        <div class="rs"><div class="rs-n">7</div><div class="rs-l">Respons</div></div>
-        <div class="rs"><div class="rs-n">7</div><div class="rs-l">Hadir</div></div>
-        <div class="rs"><div class="rs-n">13</div><div class="rs-l">Tamu</div></div>
+        <div class="rs"><div class="rs-n">{{ invitation.total_rsvps() }}</div><div class="rs-l">Respons</div></div>
+        <div class="rs"><div class="rs-n">{{ invitation.total_rsvps() }}</div><div class="rs-l">Hadir</div></div>
+        <div class="rs"><div class="rs-n">{{ invitation.total_guest_count() }}</div><div class="rs-l">Tamu</div></div>
       </div>
       <div class="rsvp-form">
         <div class="fg"><label class="fl">Nama Pemesan</label><input type="text" class="fi" placeholder="Nama Anda" id="rsvpName"></div>
@@ -325,8 +329,17 @@ body::before{content:'';position:fixed;inset:0;background:repeating-linear-gradi
 
                 {% else %}
                 {% for rsvp in invitation.rsvps %}
-                        <div class="rv-card vis"><div class="rv-head"><div class="rv-av" style="background:#CC0000">{{ rsvp.initial() }}</div><div><div class="rv-name">{{ rsvp.name }}</div><div class="rv-stars">★★★★★</div></div><div class="rv-st">✓ HADIR · 2P</div></div>{{ rsvp.display_message() }}</div></div>
-
+                <div class="rv-card vis">
+                  <div class="rv-head">
+                    <div class="rv-av" style="background:#CC0000">{{ rsvp.initial() }}</div>
+                    <div>
+                      <div class="rv-name">{{ rsvp.name }}</div>
+                      <div class="rv-stars">★★★★★</div>
+                    </div>
+                    <div class="rv-st">{{ rsvp.display_attendance() }} · {{ rsvp.guests }}P</div>
+                  </div>
+                  <div class="rv-text">{{ rsvp.display_message() }}</div>
+                </div>
                 {% endfor %}
                 {% endif %}
                       </div>
@@ -354,7 +367,9 @@ let gC=1,toastT;
 (function(){const t=new Date('{{ invitation.event_date_iso }}');function tick(){const d=t-new Date();if(d<=0){['cdD','cdH','cdM','cdS'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent='00'});return}const v=[Math.floor(d/86400000),Math.floor((d%86400000)/3600000),Math.floor((d%3600000)/60000),Math.floor((d%60000)/1000)];['cdD','cdH','cdM','cdS'].forEach((id,i)=>{const e=document.getElementById(id);if(e)e.textContent=String(v[i]).padStart(2,'0')})}tick();setInterval(tick,1000)})();
 (function(){const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.1});document.querySelectorAll('.cs,.rv-card').forEach(el=>obs.observe(el))})();
 function sg(n,btn){gC=n;document.querySelectorAll('.gb').forEach(b=>b.classList.remove('active'));btn.classList.add('active')}
-function submitRSVP(){const name=document.getElementById('rsvpName').value.trim();const status=document.getElementById('rsvpStatus').value;const msg=document.getElementById('rsvpMsg').value.trim();if(!name||!status){showToast('⚠ Mohon isi nama & status!');return}const ini=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);const cols=['#CC0000','#003399','#00802B','#F5A623','#6a1b9a'];const bg=cols[Math.floor(Math.random()*cols.length)];const st=status==='hadir'?`✓ HADIR · ${gC}P`:'✗ TDK HADIR';const card=document.createElement('div');card.className='rv-card';card.innerHTML=`<div class="rv-head"><div class="rv-av" style="background:${bg}">${ini}</div><div><div class="rv-name">${name}</div><div class="rv-stars">★★★★★</div></div><div class="rv-st">${st}</div></div><div class="rv-text">${msg||'Selamat & bahagia selalu! Cintanya awet kayak Indomie! 🍜❤️'}</div>`;document.getElementById('rvList').prepend(card);setTimeout(()=>card.classList.add('vis'),50);document.getElementById('rsvpName').value='';document.getElementById('rsvpStatus').value='';document.getElementById('rsvpMsg').value='';showToast('🍜 Pesanan diterima! Makasih!');document.querySelector('.rv-box').scrollIntoView({behavior:'smooth',block:'start'})}
+function submitRSVP(){const name=document.getElementById('rsvpName').value.trim();const status=document.getElementById('rsvpStatus').value;const msg=document.getElementById('rsvpMsg').value.trim();if(!name||!status){showToast('⚠ Mohon isi nama & status!');return}
+fetch('/api/rsvp',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:`invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${gC}&message=${encodeURIComponent(msg)}`});
+const ini=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);const cols=['#CC0000','#003399','#00802B','#F5A623','#6a1b9a'];const bg=cols[Math.floor(Math.random()*cols.length)];const st=status==='hadir'?`✓ HADIR · ${gC}P`:'✗ TDK HADIR';const card=document.createElement('div');card.className='rv-card';card.innerHTML=`<div class="rv-head"><div class="rv-av" style="background:${bg}">${ini}</div><div><div class="rv-name">${name}</div><div class="rv-stars">★★★★★</div></div><div class="rv-st">${st}</div></div><div class="rv-text">${msg||'Selamat & bahagia selalu! Cintanya awet kayak Indomie! 🍜❤️'}</div>`;document.getElementById('rvList').prepend(card);setTimeout(()=>card.classList.add('vis'),50);document.getElementById('rsvpName').value='';document.getElementById('rsvpStatus').value='';document.getElementById('rsvpMsg').value='';showToast('🍜 Pesanan diterima! Makasih!');setTimeout(()=>location.reload(),1500)}
 function copyText(text,btn){navigator.clipboard.writeText(text).then(()=>{btn.classList.add('copied');btn.textContent='✓ Tersalin!';showToast('✓ Nomor tersalin!');setTimeout(()=>{btn.classList.remove('copied');btn.textContent='📋 Salin'},2500)}).catch(()=>showToast('Nomor: '+text))}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2800)}
 </script>

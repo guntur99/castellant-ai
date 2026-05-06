@@ -785,10 +785,7 @@ textarea.ip-input{min-height:80px;resize:vertical}
 <!-- ══ OPENING ══ -->
 <div id="opening">
   
-                    {% for account in invitation.gift_accounts %}
-                    
-                    {% for account in invitation.gift_accounts %}
-                    <div class="op-card">
+  <div class="op-card">
     <div class="op-header">
       <div class="op-ppt-icon">
         <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 6h-3v2h3v2h-3v2H9V7h5v2z"/></svg>
@@ -807,7 +804,10 @@ textarea.ip-input{min-height:80px;resize:vertical}
     </div>
     <div class="op-body">
       <div class="op-label">Presentation</div>
-      <div class="op-title">The Wedding of Anita &amp; Zarda</div>
+      <div class="op-capsule-title">
+        <span>The Wedding of</span><br>
+        {{ invitation.bride_name_short }} & {{ invitation.groom_name_short }}
+      </div>
       <div class="op-meta">
         <span>Minggu, {{ invitation.event_date }}</span>
         <span class="op-meta-dot"></span>
@@ -828,7 +828,7 @@ textarea.ip-input{min-height:80px;resize:vertical}
         <span class="op-to-label">To:</span>
         <div class="op-to-chip">
           <div class="op-to-dot">AG</div>
-          <span>{{ account.account_holder }} Fitridullah &amp; Partner</span>
+          <span>Invitees</span>
         </div>
       </div>
       <button class="op-btn" onclick="openInvitation()">
@@ -928,13 +928,13 @@ textarea.ip-input{min-height:80px;resize:vertical}
       <div class="rib-group">
         <div class="rib-btn-lg" style="background:var(--ms-orange3);border:1px solid var(--ms-orange)" onclick="ribSlideShow()" title="Slide Show — fullscreen!">
           <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="var(--ms-orange)"/></svg>
-          <span style="color:var(--ms-orange)">Slide Show</span>
+          <span style="color:var(--ms-orange)">{{ invitation.couple_name_short }}</span>
         </div>
       </div>
     </div>
 
     <!-- RIBBON NOTIFICATION BAR -->
-    <div id="ribNotif" style="display:none;background:#fff4ce;border-bottom:1px solid #f0d060;padding:5px 16px;font-family:var(--fUI);font-size:12px;color:#5d4037;display:none;align-items:center;justify-content:space-between">
+    <div id="ribNotif" style="display:none;background:#fff4ce;border-bottom:1px solid #f0d060;padding:5px 16px;font-family:var(--fUI);font-size:12px;color:#5d4037;align-items:center;justify-content:space-between">
       <span id="ribNotifMsg"></span>
       <button onclick="closeRibNotif()" style="border:none;background:none;font-size:14px;cursor:pointer;color:#5d4037;padding:0 4px">✕</button>
     </div>
@@ -992,13 +992,13 @@ textarea.ip-input{min-height:80px;resize:vertical}
 
       <!-- SLIDE 1: Title -->
       <div class="slide s1 fade-slide" id="s-1" onclick="setActiveSlide(this,1)">
-        <img class="s1-photo" src="https://images.unsplash.com/photo-{{ account.account_number }}674-{{ account.account_number }}52?w=1000&h=600&fit=crop&q=85" alt="">
+        <img class="s1-photo" src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1000&h=600&fit=crop&q=85" alt="">
         <div class="s1-overlay"></div>
         <div class="s1-shape"></div>
         <div class="s1-shape2"></div>
         <div class="s1-content">
           <div class="s1-eyebrow">Wedding Invitation · 2026</div>
-          <div class="s1-title">The Wedding of<br><strong>Anita &amp; Zarda</strong></div>
+          <div class="s1-title">The Wedding of<br><strong>{{ invitation.couple_name_short }}</strong></div>
           <div class="s1-subtitle">Minggu · {{ invitation.event_date }} · Tangerang</div>
         </div>
         <div class="s1-circle">
@@ -1016,14 +1016,13 @@ textarea.ip-input{min-height:80px;resize:vertical}
           <span class="s2-header-title" style="opacity:.7">{{ invitation.event_date }}</span>
         </div>
         <div class="s2-content">
-          <div class="s2-title">Menuju Hari Istimewa</div>
+          <div class="s2-title">{{ invitation.couple_name_short }}: Forever Edition</div>
           <div class="s2-grid">
             <div class="s2-box"><div class="s2-num" id="cdD">00</div><div class="s2-unit">Hari</div></div>
             <div class="s2-box"><div class="s2-num" id="cdH">00</div><div class="s2-unit">Jam</div></div>
             <div class="s2-box"><div class="s2-num" id="cdM">00</div><div class="s2-unit">Menit</div></div>
             <div class="s2-box"><div class="s2-num" id="cdS">00</div><div class="s2-unit">Detik</div></div>
           </div>
-          <img src="https://images.unsplash.com/photo-{{ account.account_number }}579-730e3918a45a?w=600&h=120&fit=crop&q=80" style="width:85%;height:clamp(30px,12%,50px);object-fit:cover;border-radius:1px;opacity:.5" alt="" loading="lazy">
         </div>
         <div class="slide-number" style="color:var(--ms-lgray)">2 / 10</div>
       </div>
@@ -1035,32 +1034,37 @@ textarea.ip-input{min-height:80px;resize:vertical}
         <div class="s3-quote-mark">"</div>
         <div class="s3-content">
           <div class="s3-line"></div>
-          <div class="s3-text">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya..."</div>
-          <div class="s3-ref">— Surah Ar-Rum : 21 —</div>
+          <div class="s3-text" style="font-size:14px">
+            Dengan penuh rasa syukur dan bahagia, kami mengundang Anda untuk hadir dan menjadi bagian dari <b>hari paling istimewa dalam hidup kami.</b><br><br>
+            "Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya..." — <b>Surah Ar-Rum : 21</b>
+          </div>
+          <div class="s3-ref">— {{ invitation.couple_name_short }} —</div>
         </div>
         <div class="slide-number" style="color:var(--ms-lgray)">3 / 10</div>
       </div>
 
       <!-- SLIDE 4: Couple -->
-      <div class="slide s4 fade-slide" id="s-4" onclick="setActiveSlide(this,4)" id="couple">
-        <div class="s4-header">
-          <span class="s4-title">FEATURED SPEAKERS — PASANGAN KAMI</span>
-        </div>
+      <div class="slide s4 fade-slide" id="s-4" onclick="setActiveSlide(this,4)">
+        <div class="s4-header"><span class="s4-title">FEATURED SPEAKERS — PASANGAN KAMI</span></div>
         <div class="s4-cols">
           <div class="s4-col">
-            <img class="s4-col-photo" src="https://images.unsplash.com/photo-{{ account.account_number }}594-4ff0802cfb7e?w=400&h=250&fit=crop&q=80" alt="Anita" loading="lazy">
-            <div class="s4-col-body">
+            <div class="pc-avatar" id="nazmAv" style="position:relative;margin:20px auto;width:80px;height:80px;background:linear-gradient(135deg,#1b3a5c,#0e2540);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:var(--ms-blue);border-radius:50%">
+              {{ invitation.bride_name_short|first }}
+              <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&h=200&fit=crop&q=80" alt="{{ invitation.bride_name_short }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.style.display='none'">
+            </div>
+            <div class="s4-col-body" style="text-align:center">
               <div class="s4-col-role">Mempelai Wanita</div>
-              <div class="s4-col-name">{{ account.account_holder }}, S.Kom</div>
-              <div class="s4-col-parents">Putri Pertama dari<br><strong>Bpk. Taryono & Ibu Wiwit Jayanti</strong></div>
+              <div class="s4-col-name">{{ invitation.bride_name_short }}</div>
             </div>
           </div>
           <div class="s4-col">
-            <img class="s4-col-photo" src="https://images.unsplash.com/photo-{{ account.account_number }}202-cad84cf45f1d?w=400&h=250&fit=crop&q=80" alt="Zarda" loading="lazy">
-            <div class="s4-col-body">
+            <div class="pc-avatar" style="position:relative;margin:20px auto;width:80px;height:80px;background:linear-gradient(135deg,#1b3a5c,#0e2540);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;color:var(--ms-blue);border-radius:50%">
+              {{ invitation.groom_name_short|first }}
+              <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="{{ invitation.groom_name_short }}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:50%" onerror="this.style.display='none'">
+            </div>
+            <div class="s4-col-body" style="text-align:center">
               <div class="s4-col-role">Mempelai Pria</div>
-              <div class="s4-col-name">{{ account.account_holder }}, S.Kom</div>
-              <div class="s4-col-parents">Putra Kedua dari<br><strong>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</strong></div>
+              <div class="s4-col-name">{{ invitation.groom_name_short }}</div>
             </div>
           </div>
         </div>
@@ -1069,7 +1073,7 @@ textarea.ip-input{min-height:80px;resize:vertical}
       </div>
 
       <!-- SLIDE 5: Event -->
-      <div class="slide s5 fade-slide" id="s-5" onclick="setActiveSlide(this,5)" id="event">
+      <div class="slide s5 fade-slide" id="s-5" onclick="setActiveSlide(this,5)">
         <div class="s5-stripe"></div>
         <div class="s5-content">
           <div class="s5-heading">Waktu &amp; Tempat</div>
@@ -1078,13 +1082,11 @@ textarea.ip-input{min-height:80px;resize:vertical}
               <div class="s5-card-type">Akad Nikah</div>
               <div class="s5-card-date">Minggu, {{ invitation.event_date }}</div>
               <div class="s5-card-time">08:00 WIB</div>
-              <div class="s5-card-loc">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div>
             </div>
             <div class="s5-card">
               <div class="s5-card-type">Resepsi</div>
               <div class="s5-card-date">Minggu, {{ invitation.event_date }}</div>
               <div class="s5-card-time">11:00 – 13:00 WIB</div>
-              <div class="s5-card-loc">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div>
             </div>
           </div>
         </div>
@@ -1093,39 +1095,21 @@ textarea.ip-input{min-height:80px;resize:vertical}
 
       <!-- SLIDE 6: Timeline -->
       <div class="slide s6 fade-slide" id="s-6" onclick="setActiveSlide(this,6)">
-        <div class="s6-header">
-          <span class="s6-htitle">LOVE STORY — SMARTART TIMELINE</span>
-        </div>
+        <div class="s6-header"><span class="s6-htitle">LOVE STORY — SMARTART TIMELINE</span></div>
         <div class="s6-content">
           <div class="s6-timeline">
             <div class="s6-tl-item">
-              <div class="s6-tl-dot">
-                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
-              </div>
+              <div class="s6-tl-dot"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>
               <div class="s6-tl-body">
-                <div class="s6-tl-date">Jun 2025</div>
-                <div class="s6-tl-title">Awal Pertemuan</div>
-                <div class="s6-tl-desc">Bowling, sushi, dan es krim bersama</div>
+                <div class="s6-tl-title">{{ invitation.couple_name_short }}</div>
+                <div class="s6-tl-desc">The Beginning of Our Journey</div>
               </div>
             </div>
             <div class="s6-tl-item">
-              <div class="s6-tl-dot">
-                <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-              </div>
+              <div class="s6-tl-dot"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div>
               <div class="s6-tl-body">
-                <div class="s6-tl-date">Nov 2025</div>
-                <div class="s6-tl-title">Lamaran</div>
-                <div class="s6-tl-desc">Di hadapan kedua keluarga</div>
-              </div>
-            </div>
-            <div class="s6-tl-item">
-              <div class="s6-tl-dot">
-                <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
-              </div>
-              <div class="s6-tl-body">
-                <div class="s6-tl-date">Mei 2026</div>
-                <div class="s6-tl-title">Pernikahan</div>
-                <div class="s6-tl-desc">Ikatan suci pernikahan selamanya</div>
+                <div class="s6-tl-title">Engagement</div>
+                <div class="s6-tl-desc">Forever Starts Here</div>
               </div>
             </div>
           </div>
@@ -1135,70 +1119,43 @@ textarea.ip-input{min-height:80px;resize:vertical}
 
       <!-- SLIDE 7: Gallery -->
       <div class="slide s7 fade-slide" id="s-7" onclick="setActiveSlide(this,7)">
-        <div class="s7-title-row">
-          <div class="s7-title">Galeri Foto — Picture Layout</div>
-        </div>
-        <div class="s7-grid" id="s7Grid">
-          <!-- Filled by JS -->
-        </div>
+        <div class="s7-title-row"><div class="s7-title">Galeri Foto</div></div>
+        <div class="s7-grid" id="s7Grid"></div>
         <div class="slide-number">7 / 10</div>
       </div>
 
       <!-- SLIDE 8: Gift -->
-      <div class="slide s8 fade-slide" id="s-8" onclick="setActiveSlide(this,8)" id="gift">
+      <div class="slide s8 fade-slide" id="s-8" onclick="setActiveSlide(this,8)">
         <div class="s8-accent"></div>
         <div class="s8-content">
-          <div class="s8-heading">Amplop Digital — Rekening Bank</div>
-          <div class="s8-cards-row">
+          <div class="s8-heading">Amplop Digital</div>
+          <div class="gift-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+            {% for account in invitation.gift_accounts %}
             <div class="s8-giftcard">
               <div class="s8-bank">{{ account.bank_name }}</div>
               <div class="s8-holder">{{ account.account_holder }}</div>
               <div class="s8-num">{{ account.account_number }}</div>
-                    {% endfor %}
-                
               <button class="s8-copy" onclick="cp('{{ account.account_number }}',this);event.stopPropagation()">
                 <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
                 Copy
               </button>
             </div>
-                    {% endfor %}
-                
+            {% endfor %}
           </div>
         </div>
         <div class="slide-number" style="color:var(--ms-lgray)">8 / 10</div>
       </div>
 
       <!-- SLIDE 9: RSVP -->
-      <div class="slide s9 fade-slide" id="s-9" onclick="setActiveSlide(this,9)" id="rsvp">
-        <div class="s9-header">
-          <span class="s9-htitle">RSVP — KONFIRMASI KEHADIRAN</span>
-        </div>
+      <div class="slide s9 fade-slide" id="s-9" onclick="setActiveSlide(this,9)">
+        <div class="s9-header"><span class="s9-htitle">RSVP — KONFIRMASI KEHADIRAN</span></div>
         <div class="s9-content">
           <div class="s9-left">
-            <div class="s9-form-title">Konfirmasi Kehadiran</div>
-            <div class="s9-field">
-              <div class="s9-flabel">Nama</div>
-              <div class="s9-fval">— Isi form di bawah —</div>
-            </div>
-            <div class="s9-field">
-              <div class="s9-flabel">Kehadiran</div>
-              <div class="s9-fval">— Hadir / Tidak Hadir —</div>
-            </div>
-            <div class="s9-field">
-              <div class="s9-flabel">Ucapan</div>
-              <div class="s9-fval">— Tuliskan pesan Anda —</div>
-            </div>
-          </div>
-          <div class="s9-right">
-            <div class="s9-donut">
-              <div class="s9-donut-label">
-                <span class="s9-donut-num">7</span>
-                <span class="s9-donut-sub">Responses</span>
-              </div>
-            </div>
-            <div class="s9-stat-row">
-              <div class="s9-stat"><div class="s9-stat-n">7</div><div class="s9-stat-l">Hadir</div></div>
-              <div class="s9-stat"><div class="s9-stat-n">13</div><div class="s9-stat-l">Tamu</div></div>
+            <div class="s9-form-title">Lobby Stats</div>
+            <div class="rsvp-stats-row" style="display:flex;gap:10px">
+              <div class="rs-stat"><span class="rs-num" id="rsRes">{{ invitation.rsvps.len() }}</span><span class="rs-label">Respons</span></div>
+              <div class="rs-stat"><span class="rs-num" id="rsHadir">{{ invitation.total_rsvps() }}</span><span class="rs-label">Hadir</span></div>
+              <div class="rs-stat"><span class="rs-num" id="rsTamu">{{ invitation.total_guest_count() }}</span><span class="rs-label">Total Tamu</span></div>
             </div>
           </div>
         </div>
@@ -1210,7 +1167,7 @@ textarea.ip-input{min-height:80px;resize:vertical}
         <div class="s10-shape"></div>
         <div class="s10-shape2"></div>
         <div class="s10-content">
-          <div class="s10-main">Thank You for Coming! 💍<br><strong>Anita &amp; Zarda</strong></div>
+          <div class="s10-main">Thank You for Coming! 💍<br><strong>{{ invitation.couple_name_short }}</strong></div>
           <div class="s10-sub">Minggu · {{ invitation.event_date }} · Tangerang</div>
         </div>
         <div class="slide-number">10 / 10</div>
@@ -1223,7 +1180,7 @@ textarea.ip-input{min-height:80px;resize:vertical}
   <div class="ppt-statusbar">
     <div class="psb-left">
       <span class="psb-slide-info" id="slideInfo">Slide 1 of 10</span>
-      <span class="psb-theme">Office Theme · Wedding</span>
+      <span class="tn-title">{{ invitation.couple_name_short }} · Wedding Store</span>
     </div>
     <div class="psb-right">
       <button class="psb-view-btn active"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="1" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5"/></svg></button>
@@ -1239,8 +1196,8 @@ textarea.ip-input{min-height:80px;resize:vertical}
       <svg id="pauseIco" viewBox="0 0 24 24" style="display:none"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
     </button>
     <div class="pf-info">
-      <div class="pf-title" id="pTitle">Wedding Day <span class="eq paused" id="eqB"><span class="eq-b"></span><span class="eq-b"></span><span class="eq-b"></span></span></div>
-      <div class="pf-artist" id="pArtist">Anita & Zarda · Wedding OST</div>
+      <div class="pf-title" id="pTitle">Wedding Song <span class="eq paused" id="eqB"><span class="eq-b"></span><span class="eq-b"></span><span class="eq-b"></span></span></div>
+      <div class="pf-artist" id="pArtist">{{ invitation.couple_name_short }} · Wedding OST</div>
     </div>
     <div class="pf-prog">
       <div class="pf-times"><span id="curT">0:00</span><span id="totT">3:24</span></div>
@@ -1256,16 +1213,14 @@ textarea.ip-input{min-height:80px;resize:vertical}
   <!-- INTERACTIVE RSVP PANEL -->
   <div class="interactive-panel" id="rsvp-panel">
     <div class="ip-title">RSVP Form</div>
-    <div class="ip-sub">Konfirmasi kehadiran Anda untuk pernikahan Anita & Zarda</div>
     <div class="ip-form">
       <div class="ip-field">
         <label class="ip-label">Nama Lengkap *</label>
-        <input type="text" class="ip-input" placeholder="Masukkan nama Anda" id="rN">
+        <input type="text" class="ip-input" placeholder="Masukkan nama Anda" id="rName">
       </div>
       <div class="ip-field">
         <label class="ip-label">Konfirmasi Kehadiran *</label>
         <select class="ip-input" id="rS">
-          <option value="">Pilih status kehadiran</option>
           <option value="hadir">✓ Hadir</option>
           <option value="tidak">✕ Tidak Hadir</option>
         </select>
@@ -1281,51 +1236,37 @@ textarea.ip-input{min-height:80px;resize:vertical}
       </div>
       <div class="ip-field">
         <label class="ip-label">Ucapan & Pesan</label>
-        <textarea class="ip-input" placeholder="Tuliskan ucapan untuk Anita & Zarda..." id="rM"></textarea>
+        <textarea class="ip-input" placeholder="Tuliskan ucapan untuk {{ invitation.couple_name_short }}..." id="rMsg"></textarea>
       </div>
-      <button class="ip-submit" onclick="submitR()">
-        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-        Submit Response
-      </button>
+      <button class="ip-submit" onclick="submitRSVP()">Submit Response</button>
     </div>
   </div>
 
   <!-- WISHES PANEL -->
   <div class="wishes-panel">
-    <div class="wp-title">
-      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-      Comments — Ucapan & Doa
-    </div>
+    <div class="wp-title">Comments — Ucapan & Doa</div>
     <div class="wish-list" id="wList">
+      {% if invitation.is_preview %}
       <div class="wish-item visible">
-
-                {% if invitation.is_preview %}
-                        <div class="wi-header"><div class="wi-av" style="background:#0078d4">A</div><div><div class="wi-name">Ayu Rahmawati</div><div class="wi-status">✓ Hadir · 2 tamu</div></div></div>
-        <div class="wi-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu Anita & Zarda! 🌿</div>
+        <div class="wi-header"><div class="wi-av" style="background:#0078d4">A</div><div><div class="wi-name">Ayu Rahmawati</div><div class="wi-status">✓ Hadir · 2 tamu</div></div></div>
+        <div class="wi-text">Selamat menempuh hidup baru! Semoga bahagia selalu {{ invitation.couple_name_short }}! 🌿</div>
       </div>
+      {% else %}
+      {% for rsvp in invitation.rsvps %}
       <div class="wish-item visible">
-        <div class="wi-header"><div class="wi-av" style="background:#107c10">R</div><div><div class="wi-name">Reza Firmansyah</div><div class="wi-status">✓ Hadir · 1 tamu</div></div></div>
-        <div class="wi-text">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan kebahagiaan yang tidak pernah habis. Aamiin!</div>
+        <div class="wi-header"><div class="wi-av" style="background:#0078d4">{{ rsvp.initial() }}</div><div><div class="wi-name">{{ rsvp.name }}</div><div class="wi-status">✓ Hadir · {{ rsvp.guests }} tamu</div></div></div>
+        <div class="wi-text">{{ rsvp.display_message() }}</div>
       </div>
-      <div class="wish-item visible">
-        <div class="wi-header"><div class="wi-av" style="background:#8764b8">S</div><div><div class="wi-name">Sinta Dewi</div><div class="wi-status">✓ Hadir · 2 tamu</div></div></div>
-
-                {% else %}
-                {% for rsvp in invitation.rsvps %}
-                        <div class="wi-header"><div class="wi-av" style="background:#0078d4">{{ rsvp.initial() }}</div><div><div class="wi-name">{{ rsvp.name }}</div><div class="wi-status">✓ {{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div></div></div>
-
-                {% endfor %}
-                {% endif %}
-                        <div class="wi-text">Wishing you both a lifetime of love and laughter. Semoga langkah kalian selalu diberkahi Allah SWT 💚</div>
-      </div>
+      {% endfor %}
+      {% endif %}
     </div>
   </div>
 
   <!-- FOOTER -->
   <div class="ppt-footer">
-    <div class="pf-names">Anita &amp; Zarda</div>
-    <div class="pf-msg">Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu kepada kami.</div>
-    <div class="pf-brand">Digital Invitation by <a href="#">BridesSpace</a> · Microsoft PowerPoint Theme</div>
+    <div class="pf-names">{{ invitation.couple_name_short }}</div>
+    <div class="pf-msg">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu kepada kami.</div>
+    <div class="pf-brand">© 2026 {{ invitation.couple_name_short }} Wedding. All rights reserved.</div>
   </div>
 
 </div><!-- /main -->
@@ -1351,24 +1292,19 @@ textarea.ip-input{min-height:80px;resize:vertical}
 
 <script>
 const TRACKS=[
-  {title:"Wedding Day",artist:"Anita & Zarda · Wedding OST",dur:"3:24",secs:204},
-  {title:"First Look",artist:"Anita & Zarda · Wedding OST",dur:"2:58",secs:178},
-  {title:"Lamaran",artist:"Anita & Zarda · Wedding OST",dur:"4:12",secs:252},
+  {title:"Wedding Song",artist:"{{ invitation.couple_name_short }} · Wedding OST",dur:"3:24",secs:204},
+  {title:"First Look",artist:"{{ invitation.couple_name_short }} · Wedding OST",dur:"2:58",secs:178},
+  {title:"Lamaran",artist:"{{ invitation.couple_name_short }} · Wedding OST",dur:"4:12",secs:252},
 ];
 const IMGS=[
   "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=650&fit=crop&q=80",
   "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=650&fit=crop&q=80",
   "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&h=650&fit=crop&q=80",
   "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=500&h=650&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=500&h=650&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=500&h=650&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=500&h=650&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=650&fit=crop&q=80",
 ];
 
 let tIdx=0,isPlaying=false,prog=0,pTimer=null,lbIdx=0,gCnt=1,activeSlide=1;
 
-/* ── Build gallery slide ── */
 (function(){
   const grid=document.getElementById('s7Grid');
   if(!grid) return;
@@ -1381,7 +1317,6 @@ let tIdx=0,isPlaying=false,prog=0,pTimer=null,lbIdx=0,gCnt=1,activeSlide=1;
   });
 })();
 
-/* ── OPEN ── */
 function openInvitation(){
   document.getElementById('opening').classList.add('hide');
   setTimeout(()=>document.getElementById('main').classList.add('show'),100);
@@ -1395,12 +1330,10 @@ function init(){
   navHL();
 }
 
-/* ── SLIDE NAVIGATION ── */
 function scrollToSlide(id){
   const el=document.getElementById(id);
   if(!el) return;
   el.scrollIntoView({behavior:'smooth',block:'center'});
-  // update slide panel active
   const idx=parseInt(id.split('-')[1])||0;
   if(idx) setActiveSlide(el,idx);
 }
@@ -1415,7 +1348,6 @@ function setActiveSlide(el,num){
   document.getElementById('slideInfo').textContent=`Slide ${num} of 10`;
 }
 
-/* ── PLAYER ── */
 function togglePlay(){isPlaying?pause():play()}
 function play(){setPlay(true)}
 function pause(){clearInterval(pTimer);setPlay(false)}
@@ -1444,7 +1376,6 @@ function sw(idx,btn){
 function nextTrack(){const n=(tIdx+1)%TRACKS.length;const pill=document.querySelectorAll('.pf-pill')[n];if(pill)sw(n,pill)}
 document.addEventListener('click',e=>{const tr=document.getElementById('pTrack');if(tr&&tr.contains(e.target)){const r=tr.getBoundingClientRect();prog=Math.max(0,Math.min(100,((e.clientX-r.left)/r.width)*100));updProg()}});
 
-/* ── COUNTDOWN ── */
 function countdown(){
   const t=new Date('{{ invitation.event_date_iso }}');
   function tick(){
@@ -1458,276 +1389,39 @@ function countdown(){
   tick();setInterval(tick,1000);
 }
 
-/* ── LIGHTBOX ── */
 function openLb(idx){lbIdx=idx;updLb();document.getElementById('lb').classList.add('open');document.body.style.overflow='hidden'}
 function closeLb(){document.getElementById('lb').classList.remove('open');document.body.style.overflow=''}
 function lbPrev(){lbIdx=(lbIdx-1+IMGS.length)%IMGS.length;updLb()}
 function lbNext(){lbIdx=(lbIdx+1)%IMGS.length;updLb()}
 function updLb(){document.getElementById('lbI').src=IMGS[lbIdx];document.getElementById('lbC').textContent=`${lbIdx+1} / ${IMGS.length}`}
-document.addEventListener('keydown',e=>{if(!document.getElementById('lb').classList.contains('open'))return;if(e.key==='Escape')closeLb();if(e.key==='ArrowLeft')lbPrev();if(e.key==='ArrowRight')lbNext()});
 
-/* ── SCROLL ANIMS ── */
 function scrollAnims(){
   const obs=new IntersectionObserver(en=>en.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')}),{threshold:.06});
   document.querySelectorAll('.fade-slide,.wish-item').forEach(el=>obs.observe(el));
-  // Active slide tracking
-  const slideObs=new IntersectionObserver(en=>{
-    en.forEach(e=>{
-      if(e.isIntersecting&&e.intersectionRatio>.3){
-        const id=e.target.id;
-        const num=parseInt(id.split('-')[1]);
-        if(num&&num!==activeSlide){
-          setActiveSlide(e.target,num);
-        }
-      }
-    });
-  },{threshold:.3});
-  document.querySelectorAll('.slide').forEach(el=>slideObs.observe(el));
 }
 
-/* ── NAV ── */
 function navHL(){
   const items=document.querySelectorAll('.n-item');
-  const panels=[
-    document.getElementById('s-1'),
-    document.getElementById('s-4'),
-    document.getElementById('s-5'),
-    document.getElementById('s-8'),
-    document.getElementById('rsvp-panel'),
-  ];
-  const obs=new IntersectionObserver(en=>{
-    en.forEach(e=>{
-      if(e.isIntersecting){
-        const idx=panels.indexOf(e.target);
-        if(idx>=0){
-          items.forEach(n=>n.classList.remove('active'));
-          items[idx].classList.add('active');
-        }
-      }
-    });
-  },{rootMargin:'-30% 0px -30% 0px'});
+  const panels=[document.getElementById('s-1'),document.getElementById('s-4'),document.getElementById('s-5'),document.getElementById('s-8'),document.getElementById('rsvp-panel')];
+  const obs=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting){const idx=panels.indexOf(e.target);if(idx>=0){items.forEach(n=>n.classList.remove('active'));items[idx].classList.add('active')}}})},{rootMargin:'-30% 0px -30% 0px'});
   panels.forEach(p=>{if(p)obs.observe(p)});
 }
 
-/* ── RSVP ── */
 function adj(delta){gCnt=Math.max(1,Math.min(5,gCnt+delta));document.getElementById('gNum').textContent=gCnt}
-function submitR(){
-  const name=document.getElementById('rN').value.trim();
-  const status=document.getElementById('rS').value;
-  const msg=document.getElementById('rM').value.trim();
-  if(!name||!status){showT('Mohon isi nama dan status kehadiran');return}
-  const init=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  const colors=['#0078d4','#107c10','#d83b01','#8764b8','#00b7c3'];
-  const color=colors[Math.floor(Math.random()*colors.length)];
-  const stxt=status==='hadir'?`✓ Hadir · ${gCnt} tamu`:'✕ Tidak Hadir';
-  const item=document.createElement('div');item.className='wish-item';
-  item.innerHTML=`<div class="wi-header"><div class="wi-av" style="background:${color}">${init}</div><div><div class="wi-name">${name}</div><div class="wi-status">${stxt}</div></div></div><div class="wi-text">${msg||'Selamat dan semoga bahagia selalu! 🎉'}</div>`;
-  document.getElementById('wList').prepend(item);
-  setTimeout(()=>item.classList.add('visible'),50);
-  document.getElementById('rN').value='';document.getElementById('rS').value='';document.getElementById('rM').value='';
-  gCnt=1;document.getElementById('gNum').textContent='1';
+function submitRSVP(){
+  const name=document.getElementById('rName').value.trim();
+  const attStatus=document.getElementById('rS').value;
+  const msg=document.getElementById('rMsg').value.trim();
+  if(!name){showT('Please enter your name');return;}
+  fetch('/api/rsvp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(attStatus)}&guests=${gCnt}&message=${encodeURIComponent(msg)}`
+  });
   showT('Response submitted ✓ Thank you!');
-  setTimeout(()=>document.querySelector('.wishes-panel').scrollIntoView({behavior:'smooth',block:'start'}),300);
+  setTimeout(()=>location.reload(),2000);
 }
-
-/* ── COPY ── */
 function cp(txt,btn){
-  navigator.clipboard.writeText(txt).then(()=>{
-    const orig=btn.innerHTML;
-    btn.innerHTML='✓ Copied!';
-    showT('Nomor rekening tersalin ✓');
-    setTimeout(()=>{btn.innerHTML=orig},2500);
-  }).catch(()=>showT('Salin manual: '+txt));
-}
-
-/* ── TOAST ── */
-let tT;
-function showT(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(tT);tT=setTimeout(()=>t.classList.remove('show'),2800)}
-
-/* ════════════════════════════════
-   RIBBON GIMMICK FUNCTIONS
-════════════════════════════════ */
-
-/* PASTE — muncul sticky note ucapan manis di tengah layar */
-const PASTE_MSGS = [
-  "Semoga pernikahan Anita & Zarda dipenuhi cinta dan kebahagiaan yang tak pernah habis! 💕",
-  "Barakallahu laka wa baraka alaika wa jama'a bainakuma fi khair. Aamiin! 🌿",
-  "Congrats! Semoga menjadi keluarga sakinah, mawaddah, wa rahmah. 🤍",
-  "Doa terbaik untuk kalian berdua! Semoga langkah menuju pelaminan diberkahi Allah SWT.",
-  "Selamat menempuh hidup baru! May your love story be the best chapter yet. 💍",
-];
-let pasteIdx = 0;
-function ribPaste(){
-  // Remove old sticky notes
-  document.querySelectorAll('.sticky-note').forEach(n=>n.remove());
-  const note = document.createElement('div');
-  note.className = 'sticky-note';
-  const msg = PASTE_MSGS[pasteIdx % PASTE_MSGS.length];
-  pasteIdx++;
-  note.innerHTML = `<button class="sticky-close" onclick="this.parentElement.remove()">✕</button>${msg}`;
-  // Random position near center
-  const x = 30 + Math.random()*40;
-  const y = 25 + Math.random()*30;
-  note.style.cssText = `left:${x}%;top:${y}%;`;
-  note.addEventListener('click',e=>{if(e.target.tagName!=='BUTTON') note.remove()});
-  document.body.appendChild(note);
-  showT('📋 Pasted! Ucapan manis ditambahkan');
-  document.getElementById('ribPasteBtn').classList.add('rib-btn-active');
-  setTimeout(()=>document.getElementById('ribPasteBtn').classList.remove('rib-btn-active'),300);
-}
-
-/* COPY — copy teks undangan ke clipboard */
-function ribCopy(){
-  const text = `💍 Anda diundang ke pernikahan Anita & Zarda\n📅 Minggu, {{ invitation.event_date }} · 08:00 WIB\n📍 Graha Yadika, Karang Tengah, Ciledug, Tangerang\n\nBuka undangan digital: ${window.location.href}`;
-  navigator.clipboard.writeText(text).then(()=>{
-    showT('📋 Link undangan tersalin ke clipboard!');
-    ribNotif('Undangan berhasil disalin! Bagikan ke teman & keluarga. ✓');
-  }).catch(()=>showT('Gagal menyalin — coba manual'));
-}
-
-/* FORMAT PAINTER — cycling visual themes */
-const THEMES = [
-  {name:'Calibri (Body)', label:'Default', cls:'theme-warm'},
-  {name:'Garamond', label:'Warm', cls:'theme-cool'},
-  {name:'Arial Black', label:'Cool', cls:'theme-mono'},
-  {name:'Comic Sans MS', label:'Mono', cls:'theme-vivid'},
-  {name:'Calibri (Body)', label:'Default', cls:''},
-];
-let themeIdx = 0;
-function ribFormat(){
-  themeIdx = (themeIdx+1) % THEMES.length;
-  const t = THEMES[themeIdx];
-  document.querySelectorAll('.slide').forEach(s=>{
-    s.classList.remove('theme-warm','theme-cool','theme-mono','theme-vivid');
-    if(t.cls) s.classList.add(t.cls);
-  });
-  document.getElementById('fontLabel').textContent = t.name;
-  showT(`🖌️ Format diterapkan: ${t.name}`);
-  ribNotif(`Format Painter: Tema "${t.name}" diterapkan ke semua slide.`);
-  const btn = document.getElementById('ribFormatBtn');
-  btn.classList.add('rib-btn-active');
-  setTimeout(()=>btn.classList.remove('rib-btn-active'),600);
-}
-
-/* NEW SLIDE — confetti explosion 🎉 */
-const CONFETTI_COLORS = ['#d83b01','#0078d4','#107c10','#ffd335','#8764b8','#00b7c3','#ea4a1a','#c8960c'];
-function ribNewSlide(){
-  const count = 60;
-  for(let i=0;i<count;i++){
-    const piece = document.createElement('div');
-    piece.className = 'confetti-piece';
-    piece.style.cssText = `
-      left:${Math.random()*100}vw;
-      top:-20px;
-      background:${CONFETTI_COLORS[Math.floor(Math.random()*CONFETTI_COLORS.length)]};
-      width:${6+Math.random()*8}px;
-      height:${8+Math.random()*14}px;
-      border-radius:${Math.random()>0.5?'50%':'2px'};
-      animation-duration:${1.2+Math.random()*2}s;
-      animation-delay:${Math.random()*0.5}s;
-    `;
-    document.body.appendChild(piece);
-    piece.addEventListener('animationend',()=>piece.remove());
-  }
-  showT('🎉 Slide baru! Selamat Anita & Zarda!');
-  ribNotif('New Slide: Confetti ditambahkan untuk merayakan momen istimewa! 🎊');
-}
-
-/* LAYOUT — acak / shuffle tampilan slide di panel */
-let shuffleState = false;
-function ribLayout(){
-  const panel = document.querySelector('.slides-panel');
-  const thumbs = [...panel.querySelectorAll('.slide-thumb-wrap')];
-  thumbs.forEach(t=>{
-    t.classList.add('shuffling');
-    setTimeout(()=>t.classList.remove('shuffling'),400);
-  });
-  if(!shuffleState){
-    // Shuffle slide thumbnails visually
-    for(let i=thumbs.length-1;i>0;i--){
-      const j=Math.floor(Math.random()*(i+1));
-      panel.insertBefore(thumbs[j],thumbs[i]);
-    }
-    showT('🔀 Layout diacak! Klik lagi untuk reset.');
-    ribNotif('Layout: Urutan thumbnail diacak secara random. Klik lagi untuk mengembalikan.');
-  } else {
-    // Re-sort by data order
-    thumbs.sort((a,b)=>{
-      const na=parseInt(a.querySelector('.slide-num')?.textContent||0);
-      const nb=parseInt(b.querySelector('.slide-num')?.textContent||0);
-      return na-nb;
-    });
-    thumbs.forEach(t=>panel.appendChild(t));
-    showT('↩️ Layout direset ke urutan awal.');
-    ribNotif('Layout: Urutan slide dikembalikan ke posisi semula.');
-  }
-  shuffleState = !shuffleState;
-}
-
-/* FONT — cycling font family */
-const FONTS = ['Calibri (Body)','Georgia','Arial','Comic Sans MS','Courier New','Impact'];
-let fontIdx = 0;
-function ribFont(){
-  fontIdx = (fontIdx+1) % FONTS.length;
-  const f = FONTS[fontIdx];
-  document.getElementById('fontLabel').textContent = f;
-  // Apply to slide titles
-  document.querySelectorAll('.s1-title,.s4-col-name,.s5-heading,.s6-tl-title').forEach(el=>{
-    el.style.fontFamily = `"${f}", serif`;
-  });
-  showT(`🔤 Font diganti ke: ${f}`);
-}
-
-/* BOLD — semua judul slide shake */
-let boldOn = false;
-function ribBold(){
-  boldOn = !boldOn;
-  const btn = document.getElementById('ribBoldBtn');
-  document.querySelectorAll('.slide').forEach(s=>{
-    s.classList.add('shaking');
-    setTimeout(()=>s.classList.remove('shaking'),500);
-  });
-  // Also make active slide title bold/unbold
-  document.querySelectorAll('.s1-title,.s4-col-name,.s5-heading').forEach(el=>{
-    el.style.fontWeight = boldOn ? '900' : '';
-  });
-  btn.querySelector('span').style.color = boldOn ? 'var(--ms-orange)' : 'var(--ms-mid)';
-  showT(boldOn ? '💪 Bold ON — slide goyang!' : '💤 Bold OFF');
-  ribNotif(boldOn ? 'Bold: Semua judul slide dipertebal dan digoyang! Gyahahaha.' : 'Bold: Dikembalikan ke normal.');
-}
-
-/* ITALIC — semua slide miring sebentar */
-let italicOn = false;
-function ribItalic(){
-  italicOn = !italicOn;
-  const btn = document.getElementById('ribItalicBtn');
-  document.querySelectorAll('.slide').forEach(s=>{
-    s.classList.add('tilting');
-    setTimeout(()=>s.classList.remove('tilting'),400);
-    s.style.transition = 'transform .4s ease';
-    s.style.transform = italicOn ? 'skewX(-3deg)' : 'skewX(0deg)';
-  });
-  btn.querySelector('span').style.color = italicOn ? 'var(--ms-orange)' : 'var(--ms-mid)';
-  showT(italicOn ? '↗️ Italic ON — slide miring!' : '↕️ Italic OFF');
-  ribNotif(italicOn ? 'Italic: Semua slide dimiringkan 3 derajat. Terlihat lebih dramatis!' : 'Italic: Slide dikembalikan tegak lurus.');
-}
-
-/* UNDERLINE — garis oranye di bawah setiap slide */
-let ulineOn = false;
-function ribUnderline(){
-  ulineOn = !ulineOn;
-  const btn = document.getElementById('ribUlineBtn');
-  document.querySelectorAll('.slide').forEach(s=>{
-    s.classList.toggle('underlined', ulineOn);
-  });
-  btn.querySelector('span').style.color = ulineOn ? 'var(--ms-orange)' : 'var(--ms-mid)';
-  btn.querySelector('span').style.borderBottom = ulineOn ? '2px solid var(--ms-orange)' : '';
-  showT(ulineOn ? '📏 Underline ON — garis oranye!' : '📏 Underline OFF');
-  ribNotif(ulineOn ? 'Underline: Garis aksen oranye ditambahkan di bawah setiap slide.' : 'Underline: Garis dihapus dari semua slide.');
-}
-
-/* SLIDE SHOW — fullscreen mode with arrow navigation */
-const SS_SLIDES = [
   {src:'https://images.unsplash.com/photo-1519741497674-611481863552?w=1200&h=675&fit=crop&q=85',title:'Slide 1 — Title'},
   {src:'https://images.unsplash.com/photo-1606800052052-a08af7148866?w=1200&h=675&fit=crop&q=85',title:'Slide 2 — Countdown'},
   {src:'https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1200&h=675&fit=crop&q=85',title:'Slide 3 — Verse'},

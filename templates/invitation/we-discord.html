@@ -1987,11 +1987,7 @@
      OPENING SCREEN
 ══════════════════════════════════════ -->
     <div id="opening">
-        
-                    {% for account in invitation.gift_accounts %}
-                    
-                    {% for account in invitation.gift_accounts %}
-                    <div class="dc-wordmark">
+        <div class="dc-wordmark">
             <div class="dc-wordmark-logo">
                 <!-- Discord clyde-like icon -->
                 <svg width="32" height="24" viewBox="0 0 32 24" fill="white">
@@ -2004,7 +2000,7 @@
 
         <div class="opening-server-badge">
             <div class="server-icon-big">A&Z</div>
-            <div class="opening-server-name">💍 {{ account.account_holder }} & Gunturr</div>
+            <div class="opening-server-name">💍 {{ invitation.bride_name_short }} & {{ invitation.groom_name_short }}</div>
             <div class="opening-server-desc">Forever Server · Est. {{ invitation.event_date }}</div>
             <div class="opening-server-stats">
                 <span><span class="stat-dot stat-online"></span>2 Online</span>
@@ -2013,7 +2009,7 @@
             <div class="dear-invite-box">
                 <div style="font-size:12px;color:var(--dc-muted);font-family:var(--font-ui);margin-bottom:4px">📨 Kamu
                     mendapat undangan dari</div>
-                <div class="at">@{{ account.account_holder }} & Gunturr</div>
+                <div class="at">@{{ invitation.couple_name_short }}</div>
                 <div class="dear-invite-name" id="dearName">{{ invitation.recipient_name }}</div>
             </div>
         </div>
@@ -2064,7 +2060,7 @@
         <!-- CHANNEL SIDEBAR -->
         <div class="channel-sidebar">
             <div class="sidebar-header">
-                <span class="sidebar-server-name">💍 {{ account.account_holder }} & Gunturr</span>
+                <span class="sidebar-server-name">💍 {{ invitation.couple_name_short }}</span>
                 <span class="sidebar-server-chevron">∨</span>
             </div>
 
@@ -2138,7 +2134,7 @@
                         <span class="channel-header-hash">#</span>
                         <span class="channel-header-name">welcome</span>
                         <div class="channel-header-sep"></div>
-                        <span class="channel-header-topic">Selamat datang di server pernikahan {{ account.account_holder }} & Gunturr 💍</span>
+                        <span class="channel-header-topic">Selamat datang di server pernikahan {{ invitation.couple_name_short }} 💍</span>
                         <div class="channel-header-icons">
                             <button class="header-icon-btn" title="Anggota"
                                 onclick="showToast('2 member aktif online 💚')">
@@ -2161,7 +2157,7 @@
                             <div class="welcome-icon">💍</div>
                             <h2 class="welcome-title">#welcome</h2>
                             <p class="welcome-desc">Ini adalah awal dari channel <strong>#welcome</strong>.<br>Server
-                                ini dibuat untuk merayakan hari bahagia <strong>{{ account.account_holder }} & Gunturr</strong>.</p>
+                                ini dibuat untuk merayakan hari bahagia <strong>{{ invitation.couple_name_short }}</strong>.</p>
                         </div>
 
                         <div class="sys-divider">Hari ini</div>
@@ -2179,8 +2175,8 @@
                                     <span class="msg-timestamp">Today at 08:00 AM</span>
                                 </div>
                                 <div class="msg-text">📨 <span class="mention">@everyone</span> — Kamu mendapat undangan
-                                    pernikahan dari <span class="mention">@{{ account.account_holder }}</span> dan <span
-                                        class="mention">@Guntur</span>!</div>
+                                    pernikahan dari <span class="mention">@{{ invitation.bride_name_short }}</span> dan <span
+                                        class="mention">@{{ invitation.groom_name_short }}</span>!</div>
                                 <div class="embed">
                                     <div class="embed-provider">Wedding Server · Invitation Notification</div>
                                     <div class="embed-title">💍 Undangan Pernikahan</div>
@@ -2188,12 +2184,12 @@
                                         Anda untuk hadir dan menjadi bagian dari momen sakral pernikahan kami.</div>
                                     <div class="embed-fields">
                                         <div>
-                                            <div class="embed-field-name">👰 Mempelai W{{ account.account_holder }}</div>
-                                            <div class="embed-field-val">{{ account.account_holder }}, S.Kom</div>
+                                            <div class="embed-field-name">👰 Mempelai Wanita</div>
+                                            <div class="embed-field-val">{{ invitation.bride.full_name }}</div>
                                         </div>
                                         <div>
                                             <div class="embed-field-name">🤵 Mempelai Pria</div>
-                                            <div class="embed-field-val">{{ account.account_holder }}, S.Kom</div>
+                                            <div class="embed-field-val">{{ invitation.groom.full_name }}</div>
                                         </div>
                                         <div>
                                             <div class="embed-field-name">📅 Tanggal</div>
@@ -2278,17 +2274,16 @@
 
                         <div class="msg-group fade-in-msg">
                             <div class="msg-avatar">
-                                <img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=80&h=80&fit=crop&q=80"
-                                    alt="{{ account.account_holder }}">
+                                <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride_name_short }}">
                             </div>
                             <div class="msg-content-wrap">
                                 <div class="msg-header">
-                                    <span class="msg-username bride">{{ account.account_holder }}</span>
-                                    <span class="msg-badge" style="background:#EB459E">👰 Mempelai W{{ account.account_holder }}</span>
+                                    <span class="msg-username bride">{{ invitation.bride_name_short }}</span>
+                                    <span class="msg-badge" style="background:#EB459E">👰 Mempelai Wanita</span>
                                     <span class="msg-timestamp">Today at 09:00 AM</span>
                                 </div>
-                                <div class="msg-text">Haii semuanya! 👋 Aku <strong>{{ account.account_holder }}, S.Kom</strong> — putri
-                                    pertama dari Bpk. Taryono & Ibu Wiwit Jayanti. Seneng banget akhirnya hari ini tiba!
+                                <div class="msg-text">Haii semuanya! 👋 Aku <strong>{{ invitation.bride.full_name }}</strong> — putri
+                                    pertama dari {{ invitation.bride.father_name }} & {{ invitation.bride.mother_name }}. Seneng banget akhirnya hari ini tiba!
                                     💕</div>
                                 <div class="reactions">
                                     <span class="reaction active" onclick="toggleReaction(this)">👰
@@ -2300,17 +2295,16 @@
 
                         <div class="msg-group fade-in-msg">
                             <div class="msg-avatar">
-                                <img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=80&h=80&fit=crop&q=80"
-                                    alt="Guntur">
+                                <img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom_name_short }}">
                             </div>
                             <div class="msg-content-wrap">
                                 <div class="msg-header">
-                                    <span class="msg-username groom">{{ account.account_holder }}</span>
+                                    <span class="msg-username groom">{{ invitation.groom_name_short }}</span>
                                     <span class="msg-badge" style="background:#4752C4">🤵 Mempelai Pria</span>
                                     <span class="msg-timestamp">Today at 09:01 AM</span>
                                 </div>
-                                <div class="msg-text">Heyy! Aku <strong>{{ account.account_holder }}, S.Kom</strong> — putra kedua dari
-                                    Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si. Excited banget sama hari ini! 🎉
+                                <div class="msg-text">Heyy! Aku <strong>{{ invitation.groom.full_name }}</strong> — putra kedua dari
+                                    {{ invitation.groom.father_name }} & {{ invitation.groom.mother_name }}. Excited banget sama hari ini! 🎉
                                 </div>
                                 <div class="reactions">
                                     <span class="reaction" onclick="toggleReaction(this)">🤵 <span>72</span></span>
@@ -2336,25 +2330,19 @@
                                 <div class="couple-embed-cards">
                                     <div class="couple-embed-card">
                                         <div class="couple-card-avatar bride-border">
-                                            <img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=150&h=150&fit=crop&q=80"
-                                                alt="{{ account.account_holder }}">
+                                            <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride_name_short }}">
                                         </div>
-                                        <div class="couple-card-role bride-role">Mempelai W{{ account.account_holder }}</div>
-                                        <div class="couple-card-name">{{ account.account_holder }}</div>
-                                        <div class="couple-card-parents">S.Kom<br>Putri Pertama dari<br><strong
-                                                style="color:var(--dc-text)">Bpk. Taryono &<br>Ibu Wiwit
-                                                Jayanti</strong></div>
+                                        <div class="couple-card-role bride-role">Mempelai Wanita</div>
+                                        <div class="couple-card-name">{{ invitation.bride_name_short }}</div>
+                                        <div class="couple-card-parents">{{ invitation.bride.full_name }}<br>Putri Pertama dari<br><strong style="color:var(--dc-text)">{{ invitation.bride.father_name }} &<br>{{ invitation.bride.mother_name }}</strong></div>
                                     </div>
                                     <div class="couple-embed-card">
                                         <div class="couple-card-avatar">
-                                            <img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=150&h=150&fit=crop&q=80"
-                                                alt="Guntur">
+                                            <img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom_name_short }}">
                                         </div>
                                         <div class="couple-card-role">Mempelai Pria</div>
-                                        <div class="couple-card-name">{{ account.account_holder }}</div>
-                                        <div class="couple-card-parents">S.Kom<br>Putra Kedua dari<br><strong
-                                                style="color:var(--dc-text)">Bpk. Wan Sabran, M.MAR &<br>Ibu Titik
-                                                Sundari, M.Si</strong></div>
+                                        <div class="couple-card-name">{{ invitation.groom_name_short }}</div>
+                                        <div class="couple-card-parents">{{ invitation.groom.full_name }}<br>Putra Kedua dari<br><strong style="color:var(--dc-text)">{{ invitation.groom.father_name }} &<br>{{ invitation.groom.mother_name }}</strong></div>
                                     </div>
                                 </div>
                             </div>
@@ -2575,12 +2563,11 @@
                     <div class="message-area" style="padding-top:16px">
                         <div class="msg-group fade-in-msg">
                             <div class="msg-avatar">
-                                <img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=80&h=80&fit=crop&q=80"
-                                    alt="{{ account.account_holder }}">
+                                <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride_name_short }}">
                             </div>
                             <div class="msg-content-wrap">
                                 <div class="msg-header">
-                                    <span class="msg-username bride">{{ account.account_holder }}</span>
+                                    <span class="msg-username bride">{{ invitation.bride_name_short }}</span>
                                     <span class="msg-badge" style="background:#EB459E">👰</span>
                                     <span class="msg-timestamp">Today at 11:00 AM</span>
                                 </div>
@@ -2622,23 +2609,20 @@
                                 <div class="msg-text">💝 Doa restu sudah sangat cukup, namun jika memberi merupakan
                                     tanda kasih, kami dengan senang hati menerimanya 🙏</div>
                                 <div class="gift-card-row">
+                                    {% for account in invitation.gift_accounts %}
                                     <div class="gift-dc-card">
                                         <div class="gift-bank-label">Bank</div>
                                         <div class="gift-bank-name">{{ account.bank_name }}</div>
                                         <div class="gift-holder">{{ account.account_holder }}</div>
                                         <div class="gift-number-box">{{ account.account_number }}</div>
-                    {% endfor %}
-                
                                         <button class="copy-btn" onclick="copyText('{{ account.account_number }}',this)">
                                             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                                                <path
-                                                    d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                                                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
                                             </svg>
                                             Salin Nomor
                                         </button>
                                     </div>
-                    {% endfor %}
-                
+                                    {% endfor %}
                                 </div>
                                 <div class="reactions">
                                     <span class="reaction" onclick="toggleReaction(this)">💸 <span>29</span></span>
@@ -2775,7 +2759,7 @@
 
                 <!-- ────── FOOTER ────── -->
                 <div class="footer-msg">
-                    <div class="footer-names">Nazma & Gunturr 💍</div>
+                    <div class="footer-names">{{ invitation.couple_name_short }} 💍</div>
                     <div class="footer-sub"
                         style="font-family:var(--font-body);font-size:15px;color:var(--dc-muted);line-height:1.6">
                         {{ invitation.event_date }} · Selamanya bersama<br>
@@ -2813,23 +2797,21 @@
             <div class="members-cat">Online — 2</div>
             <div class="member-item">
                 <div class="member-av">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=64&h=64&fit=crop&q=80"
-                        alt="Nazma">
+                    <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride_name_short }}">
                     <div class="member-status"></div>
                 </div>
                 <div class="member-info">
-                    <div class="member-name bride">Nazma Putri</div>
-                    <div class="member-role-tag">👰 Mempelai WNazma</div>
+                    <div class="member-name bride">{{ invitation.bride_name_short }}</div>
+                    <div class="member-role-tag">👰 Mempelai Wanita</div>
                 </div>
             </div>
             <div class="member-item">
                 <div class="member-av">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&q=80"
-                        alt="Guntur">
+                    <img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom_name_short }}">
                     <div class="member-status"></div>
                 </div>
                 <div class="member-info">
-                    <div class="member-name groom">Guntur Putra</div>
+                    <div class="member-name groom">{{ invitation.groom_name_short }}</div>
                     <div class="member-role-tag">🤵 Mempelai Pria</div>
                 </div>
             </div>
@@ -3046,13 +3028,14 @@
             const name = document.getElementById('rsvpName').value.trim();
             const status = document.getElementById('rsvpStatus').value;
             const msg = document.getElementById('rsvpMsg').value.trim();
+            
+            if (!name || !status) { showToast('⚠️ Mohon isi nama dan status kehadiran'); return; }
+
             fetch('/api/rsvp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
             });
-
-            if (!name || !status) { showToast('⚠️ Mohon isi nama dan status kehadiran'); return; }
 
             const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             const colors = ['#5865F2', '#23A55A', '#EB459E', '#F0B232', '#4752C4', '#2D7D46'];
@@ -3084,7 +3067,7 @@
             document.getElementById('rsvpStatus').value = '';
             document.getElementById('rsvpMsg').value = '';
             showToast('✅ Konfirmasi berhasil dikirim! Terima kasih 🎉');
-            setTimeout(() => document.getElementById('wishes').scrollIntoView({ behavior: 'smooth' }), 800);
+            setTimeout(() => location.reload(), 2000);
         }
 
         /* ═══════════════════════════════════

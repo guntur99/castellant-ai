@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Instagram Live · Nazma & Gunturr 💍</title>
+    <title>Instagram Live · {{ invitation.couple_name_short }} 💍</title>
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Cormorant+Garamond:ital,wght@0,500;1,400;1,600;1,700&display=swap"
         rel="stylesheet">
@@ -1722,11 +1722,7 @@
 
     <!-- ══ OPENING ══ -->
     <div id="opening">
-        
-                    {% for account in invitation.gift_accounts %}
-                    
-                    {% for account in invitation.gift_accounts %}
-                    <div class="op-logo-ring">
+        <div class="op-logo-ring">
             <div class="op-logo-inner">
                 <!-- Instagram icon -->
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1752,7 +1748,7 @@
         <div class="op-live-tag">
             <div class="live-dot"></div>LIVE NOW
         </div>
-        <h1 class="op-title"><span>{{ account.account_holder }} & Gunturr</span></h1>
+        <h1 class="op-title"><span>{{ invitation.groom.name }} & {{ invitation.bride.name }}</span></h1>
         <p class="op-sub">Undangan Pernikahan · {{ invitation.event_date }}</p>
         <div class="op-dear">
             <div class="op-dear-l">Untuk</div>
@@ -1770,7 +1766,7 @@
     <div id="app">
 
         <div class="bg-layer">
-            <img class="bg-img" id="bgImg" src="https://images.unsplash.com/photo-{{ account.account_number }}674-{{ account.account_number }}52?w=800&q=80"
+            <img class="bg-img" id="bgImg" src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80"
                 alt="">
             <div class="bg-vignette"></div>
             <div class="bg-glow"></div>
@@ -1781,14 +1777,14 @@
             <div class="tb-av-wrap">
                 <div class="tb-av-ring">
                     <div class="tb-av-inner">
-                        <img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=80&h=80&fit=crop&q=80"
+                        <img src="{{ invitation.bride.image_url }}"
                             alt="">
                     </div>
                 </div>
                 <div class="live-sticker">LIVE</div>
             </div>
             <div class="tb-meta">
-                <div class="tb-name">{{ account.account_holder }}_Guntur_wedding</div>
+                <div class="tb-name">@{{ invitation.couple_name_short|lower }}</div>
                 <div class="tb-sub">Pernikahan · {{ invitation.event_date }} 🌸</div>
             </div>
             <div class="tb-viewers">
@@ -1805,7 +1801,7 @@
         <div class="pinned-comment" onclick="openSheet('event')">
             <div class="pinned-inner">
                 <span class="pin-icon">📍</span>
-                <span class="pin-text"><strong>Lokasi:</strong> Graha Yadika, Tangerang · {{ invitation.event_date }}</span>
+                <span class="pin-text"><strong>Lokasi:</strong> {{ invitation.ceremony.venue }} · {{ invitation.event_date }}</span>
                 <span class="pin-cta">Detail</span>
             </div>
         </div>
@@ -1980,25 +1976,23 @@
                     <div class="c-card">
                         <div class="c-av-ring">
                             <div class="c-av-inner"><img
-                                    src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=200&h=200&fit=crop&q=80"
-                                    alt="{{ account.account_holder }}"></div>
+                                    src="{{ invitation.bride.image_url }}"
+                                    alt="{{ invitation.bride.name }}"></div>
                         </div>
-                        <div class="c-role">🌸 Mempelai W{{ account.account_holder }}</div>
-                        <div class="c-name">{{ account.account_holder }}, S.Kom</div>
-                        <div class="c-parents">Putri Pertama dari<br><strong style="color:rgba(255,255,255,.6)">Bpk.
-                                Taryono &<br>Ibu Wiwit Jayanti</strong></div>
+                        <div class="c-role">🌸 Mempelai Wanita</div>
+                        <div class="c-name">{{ invitation.bride.name }}</div>
+                        <div class="c-parents">Putri dari<br><strong style="color:rgba(255,255,255,.6)">Bpk. {{ invitation.bride.father_name }} & Ibu {{ invitation.bride.mother_name }}</strong></div>
                     </div>
                     <div class="c-amp">&</div>
                     <div class="c-card">
                         <div class="c-av-ring">
                             <div class="c-av-inner"><img
-                                    src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80"
-                                    alt="Guntur"></div>
+                                    src="{{ invitation.groom.image_url }}"
+                                    alt="{{ invitation.groom.name }}"></div>
                         </div>
                         <div class="c-role">🤵 Mempelai Pria</div>
-                        <div class="c-name">{{ account.account_holder }}, S.Kom</div>
-                        <div class="c-parents">Putra Kedua dari<br><strong style="color:rgba(255,255,255,.6)">Bpk. Wan
-                                Sabran, M.MAR &<br>Ibu Titik Sundari, M.Si</strong></div>
+                        <div class="c-name">{{ invitation.groom.name }}</div>
+                        <div class="c-parents">Putra dari<br><strong style="color:rgba(255,255,255,.6)">Bpk. {{ invitation.groom.father_name }} & Ibu {{ invitation.groom.mother_name }}</strong></div>
                     </div>
                 </div>
             </div>
@@ -2008,37 +2002,31 @@
                 <div class="ev-card">
                     <div class="ev-head">
                         <div class="ev-type">Akad Nikah</div>
-                        <div class="ev-date">Minggu, {{ invitation.event_date }}</div>
+                        <div class="ev-date">{{ invitation.event_date }}</div>
                     </div>
                     <div class="ev-body">
                         <div class="ev-row"><svg class="ev-ic" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
-                            </svg>08.00 WIB s/d Selesai</div>
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
+                            </svg>{{ invitation.ceremony.time }}</div>
                         <div class="ev-row"><svg class="ev-ic" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                            </svg>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div>
-                        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-map">📍 Buka
-                            Google Maps</a>
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                            </svg>{{ invitation.ceremony.venue }}</div>
+                        <a href="https://maps.google.com/?q={{ invitation.ceremony.venue }}" target="_blank" class="ev-map">📍 Buka Google Maps</a>
                     </div>
                 </div>
                 <div class="ev-card">
                     <div class="ev-head">
                         <div class="ev-type">Resepsi</div>
-                        <div class="ev-date">Minggu, {{ invitation.event_date }}</div>
+                        <div class="ev-date">{{ invitation.event_date }}</div>
                     </div>
                     <div class="ev-body">
                         <div class="ev-row"><svg class="ev-ic" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
-                            </svg>11.00 – 13.00 WIB</div>
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
+                            </svg>{{ invitation.reception.time }}</div>
                         <div class="ev-row"><svg class="ev-ic" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                            </svg>Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div>
-                        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-map">📍 Buka
-                            Google Maps</a>
+                                <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                            </svg>{{ invitation.reception.venue }}</div>
+                        <a href="https://maps.google.com/?q={{ invitation.reception.venue }}" target="_blank" class="ev-map">📍 Buka Google Maps</a>
                     </div>
                 </div>
             </div>
@@ -2046,28 +2034,6 @@
             <!-- STORY -->
             <div class="panel" id="p-story">
                 <div class="tl">
-                    <div class="tl-item">
-                        <div class="tl-dot">1</div>
-                        <div class="tl-body">
-                            <div class="tl-track">Chapter 01</div>
-                            <div class="tl-when">Juni 2025</div>
-                            <div class="tl-title">Awal Pertemuan</div>
-                            <div class="tl-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling,
-                                cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah
-                                kami.</div>
-                        </div>
-                    </div>
-                    <div class="tl-item">
-                        <div class="tl-dot">2</div>
-                        <div class="tl-body">
-                            <div class="tl-track">Chapter 02</div>
-                            <div class="tl-when">November 2025</div>
-                            <div class="tl-title">Lamaran</div>
-                            <div class="tl-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga,
-                                kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div>
-                        </div>
-                    </div>
-                    <div class="tl-item">
                         <div class="tl-dot">3</div>
                         <div class="tl-body">
                             <div class="tl-track">Chapter 03</div>
@@ -2090,17 +2056,17 @@
             <div class="panel" id="p-gift">
                 <p style="font-size:12px;color:rgba(255,255,255,.35);line-height:1.7;margin-bottom:16px">Doa restu sudah
                     sangat cukup. Namun jika memberi adalah tanda kasih sayang, kami dengan tulus menerimanya 🌸</p>
+                
+                {% for acc in invitation.gift_accounts %}
                 <div class="gift-card">
                     <div class="gc-bank">Bank</div>
-                    <div class="gc-name">{{ account.bank_name }}</div>
-                    <div class="gc-holder">{{ account.account_holder }}</div>
-                    <div class="gc-num">{{ account.account_number }}</div>
-                    {% endfor %}
-                <br>
-                    <button class="copy-btn" onclick="copyAcc('{{ account.account_number }}',this)">Salin Nomor</button>
+                    <div class="gc-name">{{ acc.bank_name }}</div>
+                    <div class="gc-holder">{{ acc.account_holder }}</div>
+                    <div class="gc-num">{{ acc.account_number }}</div>
+                    <br>
+                    <button class="copy-btn" onclick="copyAcc('{{ acc.account_number }}',this)">Salin Nomor</button>
                 </div>
-                    {% endfor %}
-                
+                {% endfor %}
             </div>
 
             <!-- RSVP -->
@@ -2427,7 +2393,7 @@
         /* ── SHARE ── */
         function doShare() {
             if (navigator.share) {
-                navigator.share({ title: 'Undangan Nazma & Gunturr', url: location.href }).catch(() => { });
+                navigator.share({ title: 'Undangan Pernikahan {{ invitation.couple_name_short }}', url: location.href }).catch(() => { });
             } else {
                 navigator.clipboard.writeText(location.href)
                     .then(() => igToast('Link undangan disalin! 🔗'))
@@ -2450,18 +2416,6 @@
             document.querySelectorAll('.panel').forEach(el => el.classList.toggle('on', el.id === 'p-' + p));
         }
 
-        /* ── LIGHTBOX ── */
-        function openLb(i) { lbIdx = i; updLb(); document.getElementById('lb').classList.add('open'); }
-        function closeLb() { document.getElementById('lb').classList.remove('open'); }
-        function lbGo(d) { lbIdx = (lbIdx + d + GALLERY.length) % GALLERY.length; updLb(); }
-        function updLb() { document.getElementById('lbImg').src = GALLERY[lbIdx]; document.getElementById('lbCtr').textContent = `${lbIdx + 1} / ${GALLERY.length}`; }
-        document.addEventListener('keydown', e => {
-            if (!document.getElementById('lb').classList.contains('open')) return;
-            if (e.key === 'Escape') closeLb();
-            if (e.key === 'ArrowLeft') lbGo(-1);
-            if (e.key === 'ArrowRight') lbGo(1);
-        });
-
         /* ── RSVP ── */
         function setG(n, btn) {
             guestN = n;
@@ -2474,10 +2428,15 @@
             const msg = document.getElementById('rMsg').value.trim();
             if (!name || !stat) { igToast('Mohon isi nama dan status kehadiran'); return; }
 
+            fetch('/api/rsvp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(stat)}&guests=${guestN}&message=${encodeURIComponent(msg)}`
+            });
+
             const ini = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             const stTxt = stat === 'hadir' ? `✓ Hadir · ${guestN} tamu` : '✗ Tidak Hadir';
 
-            // add to wishlist
             const card = document.createElement('div');
             card.className = 'wcard';
             card.innerHTML = `
@@ -2490,23 +2449,16 @@
             const wl = document.getElementById('wList');
             if (wl) wl.prepend(card);
 
-            // bump stats
-            const bump = (id, n = 1) => { const e = document.getElementById(id); if (e) e.textContent = parseInt(e.textContent) + n; };
-            bump('stR');
-            if (stat === 'hadir') { bump('stH'); bump('stT', guestN); }
-
-            // inject to chat
             const c = ["#E1306C", "#833AB4", "#F77737"][Math.floor(Math.random() * 3)];
-            pushMsg({ u: name.toLowerCase().replace(/\s+/g, '_'), t: stat === 'hadir' ? `🎉 Konfirmasi hadir ${guestN} orang!` : 'Tidak bisa hadir tapi selalu mendoakan 🤲', c });
+            pushMsg({ u: name.toLowerCase().replace(/\s/g, '_'), t: stat === 'hadir' ? `🎉 Konfirmasi hadir ${guestN} orang!` : 'Tidak bisa hadir tapi selalu mendoakan 🤲', c });
             for (let i = 0; i < 4; i++) setTimeout(spawnHeart, i * 120);
 
-            // reset
             document.getElementById('rName').value = '';
             document.getElementById('rStat').value = '';
             document.getElementById('rMsg').value = '';
 
             igToast('Terima kasih! Konfirmasi berhasil 🎉');
-            setTimeout(() => sw('wishes'), 900);
+            setTimeout(() => location.reload(), 2000);
         }
 
         /* ── COPY ── */

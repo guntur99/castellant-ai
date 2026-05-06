@@ -1961,10 +1961,7 @@
 
     <!-- ════ WAITING ROOM ════ -->
     <div id="waitingRoom">
-        
-                    {% for account in invitation.gift_accounts %}
                     
-                    {% for account in invitation.gift_accounts %}
                     <div class="wr-rings">
             <div class="wr-ring" style="width:300px;height:300px;animation-delay:0s"></div>
             <div class="wr-ring" style="width:500px;height:500px;animation-delay:.6s;border-color:rgba(45,140,255,.08)">
@@ -1984,11 +1981,11 @@
         </div>
 
         <p class="wr-meeting-id">Meeting ID: 826 4531 9072 · Passcode: 💍</p>
-        <h1 class="wr-title">Wedding of<br>{{ account.account_holder }} & Gunturr</h1>
+        <h1 class="wr-title">Wedding of<br>{{ invitation.bride.name }} & {{ invitation.groom.name }}</h1>
         <p class="wr-sub">{{ invitation.event_date }} · Tangerang · Forever Anthem</p>
 
         <div class="wr-camera-preview">
-            <img src="https://images.unsplash.com/photo-{{ account.account_number }}674-{{ account.account_number }}52?w=500&h=400&fit=crop&q=80"
+            <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=400&fit=crop&q=80"
                 alt="preview">
             <div class="wr-cam-label">📹 Kamera Anda — Siap bergabung?</div>
             <div class="wr-cam-controls">
@@ -2018,7 +2015,7 @@
         <div class="zoom-topbar">
             <div class="topbar-left">
                 <div class="meeting-info">
-                    <span class="meeting-name">💍 Wedding {{ account.account_holder }} & Gunturr</span>
+                    <span class="meeting-name">💍 Wedding {{ invitation.bride.name }} & {{ invitation.groom.name }}</span>
                     <span class="meeting-time" id="meetingTimer">00:00:00</span>
                 </div>
                 <div class="encrypt-badge">🔒 End-to-end encrypted</div>
@@ -2187,31 +2184,31 @@
     <script>
         /* ════ DATA ════ */
         const GALLERY_IMGS = [
-            "https://images.unsplash.com/photo-{{ account.account_number }}674-{{ account.account_number }}52?w=800&h=700&fit=crop&q=80",
-            "https://images.unsplash.com/photo-{{ account.account_number }}052-a08af7148866?w=800&h=700&fit=crop&q=80",
-            "https://images.unsplash.com/photo-{{ account.account_number }}579-730e3918a45a?w=800&h=700&fit=crop&q=80",
-            "https://images.unsplash.com/photo-{{ account.account_number }}807-013ccf25f16a?w=800&h=700&fit=crop&q=80",
-            "https://images.unsplash.com/photo-{{ account.account_number }}744-adbfc0f0bb09?w=800&h=700&fit=crop&q=80",
-            "https://images.unsplash.com/photo-{{ account.account_number }}897-18fb9b6b7bf1?w=800&h=700&fit=crop&q=80",
-            "https://images.unsplash.com/photo-{{ account.account_number }}-91ad75fb315f?w=800&h=700&fit=crop&q=80",
-            "https://images.unsplash.com/photo-{{ account.account_number }}063-178a50c2df87?w=800&h=700&fit=crop&q=80",
-            "https://images.unsplash.com/photo-{{ account.account_number }}929-80b456fea0bc?w=800&h=700&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=700&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&h=700&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=800&h=700&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=700&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&h=700&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=800&h=700&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=700&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&h=700&fit=crop&q=80",
+            "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=800&h=700&fit=crop&q=80",
         ];
 
         const PARTICIPANTS = [
-            { name: "{{ account.account_holder }}", role: "Host · Mempelai W{{ account.account_holder }}", color: "#2d8cff", mic: true, cam: true, speaking: true, img: "https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=300&h=300&fit=crop&q=80" },
-            { name: "Gunturrian Ahadika", role: "Host · Mempelai Pria", color: "#5ac8fa", mic: true, cam: true, speaking: false, img: "https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=300&h=300&fit=crop&q=80" },
-            { name: "{{ account.account_holder }}", role: "Tamu", color: "#30d158", mic: false, cam: true, speaking: false, img: "https://images.unsplash.com/photo-{{ account.account_number }}785-5658abf4ff4e?w=300&h=300&fit=crop&q=80" },
-            { name: "Ayu Rahmawati", role: "Tamu", color: "#ff6b6b", mic: false, cam: false, speaking: false, img: "https://images.unsplash.com/photo-{{ account.account_number }}377-be9c29b29330?w=300&h=300&fit=crop&q=80" },
-            { name: "Reza Firmansyah", role: "Tamu", color: "#ff9500", mic: true, cam: false, speaking: false, img: "https://images.unsplash.com/photo-{{ account.account_number }}791-00dcc994a43e?w=300&h=300&fit=crop&q=80" },
-            { name: "Sinta Dewi", role: "Tamu", color: "#c084fc", mic: false, cam: true, speaking: false, img: "https://images.unsplash.com/photo-{{ account.account_number }}033-6461ffad8d80?w=300&h=300&fit=crop&q=80" },
+            { name: "{{ invitation.bride.name }}", role: "Host · Mempelai Wanita", color: "#2d8cff", mic: true, cam: true, speaking: true, img: "https://images.unsplash.com/photo-1519741497674-611481863552?w=300&h=300&fit=crop&q=80" },
+            { name: "{{ invitation.groom.name }}", role: "Host · Mempelai Pria", color: "#5ac8fa", mic: true, cam: true, speaking: false, img: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=300&h=300&fit=crop&q=80" },
+            { name: "Sinta Dewi", role: "Tamu", color: "#30d158", mic: false, cam: true, speaking: false, img: "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=300&h=300&fit=crop&q=80" },
+            { name: "Ayu Rahmawati", role: "Tamu", color: "#ff6b6b", mic: false, cam: false, speaking: false, img: "https://images.unsplash.com/photo-1519741497674-611481863552?w=300&h=300&fit=crop&q=80" },
+            { name: "Reza Firmansyah", role: "Tamu", color: "#ff9500", mic: true, cam: false, speaking: false, img: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=300&h=300&fit=crop&q=80" },
+            { name: "Sinta Dewi", role: "Tamu", color: "#c084fc", mic: false, cam: true, speaking: false, img: "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=300&h=300&fit=crop&q=80" },
         ];
 
         const CHAT_INIT = [
-            { name: "{{ account.account_holder }}", color: "#2d8cff", msg: "Selamat datang di pernikahan kami! 💍 Terima kasih sudah hadir! ❤️", time: "10:02", self: false },
-            { name: "Guntur", color: "#5ac8fa", msg: "Kami sangat bahagia bisa merayakan momen ini bersama kalian semua! 🥹", time: "10:03", self: false },
-            { name: "Ayu", color: "#ff6b6b", msg: "Selamat ya {{ account.account_holder }} & Gunturr!! 🎉🎊 Semoga bahagia selalu!", time: "10:04", self: false },
-            { name: "Reza", color: "#ff9500", msg: "MasyaAllah, cantik banget {{ account.account_holder }}! 😍 Semoga langgeng!", time: "10:05", self: false },
+            { name: "{{ invitation.bride.name }}", color: "#2d8cff", msg: "Selamat datang di pernikahan kami! 💍 Terima kasih sudah hadir! ❤️", time: "10:02", self: false },
+            { name: "{{ invitation.groom.name }}", color: "#5ac8fa", msg: "Kami sangat bahagia bisa merayakan momen ini bersama kalian semua! 🥹", time: "10:03", self: false },
+            { name: "Ayu", color: "#ff6b6b", msg: "Selamat ya {{ invitation.bride.name }} & {{ invitation.groom.name }}!! 🎉🎊 Semoga bahagia selalu!", time: "10:04", self: false },
+            { name: "Reza", color: "#ff9500", msg: "MasyaAllah, cantik banget {{ invitation.bride.name }}! 😍 Semoga langgeng!", time: "10:05", self: false },
             { name: "Sinta", color: "#c084fc", msg: "Sakinah mawaddah wa rahmah ya! 🌿🤍 Aamiin!", time: "10:06", self: false },
         ];
 
@@ -2348,12 +2345,7 @@
         function sendChat() {
             const inp = document.getElementById('chatInput');
             const msg = inp.value.trim();
-            fetch('/api/rsvp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
-            });
- if (!msg) return;
+            if (!msg) return;
             addChatMsg('Anda', '#30d158', msg, now(), true);
             inp.value = '';
             if (!chatOpen) toggleChat();
@@ -2363,7 +2355,7 @@
                 { name: 'Ayu', color: '#ff6b6b', msg: 'Video prewedding-nya bagus banget! 😍' },
                 { name: 'Reza', color: '#ff9500', msg: 'Akad nikahnya jam berapa ya? 🕗' },
                 { name: 'Sinta', color: '#c084fc', msg: 'Congrats!! Semoga langgeng sampai tua ❤️' },
-                { name: '{{ account.account_holder }}', color: '#2d8cff', msg: 'Makasih semuanya udah hadir! 🥹💍' },
+                { name: '{{ invitation.bride.name }}', color: '#2d8cff', msg: 'Makasih semuanya udah hadir! 🥹💍' },
             ];
             let idx = 0;
             setInterval(() => {
@@ -2463,18 +2455,18 @@
     </div>
     <div class="panel-couple">
       <div class="p-couple-card">
-        <img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=400&h=280&fit=crop&q=80" alt="{{ account.account_holder }}">
+        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=280&fit=crop&q=80" alt="{{ invitation.bride.name }}">
         <div class="p-couple-body">
-          <div class="p-couple-role">Mempelai W{{ account.account_holder }}</div>
-          <div class="p-couple-name">{{ account.account_holder }}, S.Kom</div>
+          <div class="p-couple-role">Mempelai Wanita</div>
+          <div class="p-couple-name">{{ invitation.bride.name }}</div>
           <div class="p-couple-parents">Putri Pertama dari<br><strong style="color:#e5e5e5">Bpk. Taryono & Ibu Wiwit Jayanti</strong></div>
         </div>
       </div>
       <div class="p-couple-card">
-        <img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=400&h=280&fit=crop&q=80" alt="Guntur">
+        <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=400&h=280&fit=crop&q=80" alt="{{ invitation.groom.name }}">
         <div class="p-couple-body">
           <div class="p-couple-role">Mempelai Pria</div>
-          <div class="p-couple-name">{{ account.account_holder }}, S.Kom</div>
+          <div class="p-couple-name">{{ invitation.groom.name }}</div>
           <div class="p-couple-parents">Putra Kedua dari<br><strong style="color:#e5e5e5">Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</strong></div>
         </div>
       </div>
@@ -2571,17 +2563,15 @@
     <h2 class="panel-title">Amplop Digital</h2>
     <p style="font-size:14px;color:#a0a0a0;line-height:1.75;margin-bottom:4px">Doa restu sudah sangat cukup, namun jika memberi merupakan tanda kasih, kami dengan senang hati menerimanya. 🙏</p>
     <div class="panel-gift">
+      {% for account in invitation.gift_accounts %}
       <div class="p-gift-card">
         <div style="font-size:28px">🏦</div>
         <div class="p-gift-bank">{{ account.bank_name }}</div>
         <div class="p-gift-holder">{{ account.account_holder }}</div>
         <div class="p-gift-num">{{ account.account_number }}</div>
-                    {% endfor %}
-                
         <button class="p-gift-copy" onclick="copyGift('{{ account.account_number }}',this)">📋 Salin</button>
       </div>
-                    {% endfor %}
-                
+      {% endfor %}
     </div>
   </div>
 </div>`;

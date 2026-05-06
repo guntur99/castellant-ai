@@ -635,11 +635,7 @@ select.form-input{
 
 <!-- ─── OPENING ─── -->
 <div id="opening">
-  
-                    {% for account in invitation.gift_accounts %}
-                    
-                    {% for account in invitation.gift_accounts %}
-                    <div class="op-grad-bg"></div>
+  <div class="op-grad-bg"></div>
   <div class="op-inner" style="position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;width:100%">
 
     <div class="op-logo-wrap">
@@ -658,7 +654,7 @@ select.form-input{
     </div>
 
     <h1 class="op-title">
-      <span class="highlight">{{ account.account_holder }} & Guntur</span><br>
+      <span class="highlight">{{ invitation.couple_name_short }}</span><br>
       Wedding Dashboard
     </h1>
     <p class="op-sub">{{ invitation.event_date }} · Graha Yadika, Tangerang</p>
@@ -707,12 +703,12 @@ select.form-input{
         <span class="dh-greeting-text">Selamat datang di</span>
         <span class="dh-wave">👋</span>
       </div>
-      <h1 class="dh-title">Wedding Dashboard<br>{{ account.account_holder }} & Guntur</h1>
+      <h1 class="dh-title">Wedding Dashboard<br>{{ invitation.couple_name_short }}</h1>
       <p class="dh-sub">{{ invitation.event_date }} · Graha Yadika, Tangerang</p>
       <div class="dh-stats">
-        <div class="dh-stat"><span class="dhs-num" id="heroRes">7</span><span class="dhs-label">Respons</span></div>
-        <div class="dh-stat"><span class="dhs-num" id="heroHadir">7</span><span class="dhs-label">Konfirmasi Hadir</span></div>
-        <div class="dh-stat"><span class="dhs-num" id="heroTamu">13</span><span class="dhs-label">Total Tamu</span></div>
+        <div class="dh-stat"><span class="dhs-num" id="heroRes">{{ invitation.rsvps.len() }}</span><span class="dhs-label">Respons</span></div>
+        <div class="dh-stat"><span class="dhs-num" id="heroHadir">{{ invitation.total_rsvps() }}</span><span class="dhs-label">Konfirmasi Hadir</span></div>
+        <div class="dh-stat"><span class="dhs-num" id="heroTamu">{{ invitation.total_guest_count() }}</span><span class="dhs-label">Total Tamu</span></div>
         <div class="dh-stat"><span class="dhs-num">21</span><span class="dhs-label">Hari Lagi</span></div>
       </div>
     </div>
@@ -779,11 +775,11 @@ select.form-input{
             <!-- Bride -->
             <div class="emp-card">
               <div class="emp-avatar">
-                N
-                <img src="https://images.unsplash.com/photo-{{ account.account_number }}594-4ff0802cfb7e?w=200&h=200&fit=crop&q=80" alt="{{ account.account_holder }}" onerror="this.style.display='none'">
+                {{ invitation.bride_name_short|first }}
+                <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&h=200&fit=crop&q=80" alt="{{ invitation.bride_name_short }}" onerror="this.style.display='none'">
               </div>
               <div class="emp-info">
-                <div class="emp-name">{{ account.account_holder }}</div>
+                <div class="emp-name">{{ invitation.bride_name_short }}</div>
                 <div class="emp-role">Mempelai Wanita</div>
                 <span class="emp-dept">Dept. Kebahagiaan</span>
               </div>
@@ -802,11 +798,11 @@ select.form-input{
             <!-- Groom -->
             <div class="emp-card">
               <div class="emp-avatar" style="background:var(--primary3);color:var(--primary)">
-                G
-                <img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Guntur" onerror="this.style.display='none'">
+                {{ invitation.groom_name_short|first }}
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="{{ invitation.groom_name_short }}" onerror="this.style.display='none'">
               </div>
               <div class="emp-info">
-                <div class="emp-name">Guntur</div>
+                <div class="emp-name">{{ invitation.groom_name_short }}</div>
                 <div class="emp-role">Mempelai Pria</div>
                 <span class="emp-dept" style="background:var(--primary3);color:var(--primary)">Dept. Cinta</span>
               </div>
@@ -1000,20 +996,18 @@ select.form-input{
         <div class="widget-body">
           <p style="font-size:12px;color:var(--sub);margin-bottom:14px;line-height:1.6">Doa restu sudah sangat cukup. Namun jika ingin memberi tanda kasih, kami menerimanya 🤍</p>
           <div class="payroll-grid">
+            {% for account in invitation.gift_accounts %}
             <div class="payroll-card">
               <div class="pay-bank-label">Bank</div>
               <div class="pay-bank">{{ account.bank_name }}</div>
               <div class="pay-owner">{{ account.account_holder }}</div>
               <div class="pay-num">{{ account.account_number }}</div>
-                    {% endfor %}
-                
               <button class="copy-btn" onclick="copyNum('{{ account.account_number }}',this)">
                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                 Salin
               </button>
             </div>
-                    {% endfor %}
-                
+            {% endfor %}
           </div>
         </div>
       </div>
@@ -1032,9 +1026,9 @@ select.form-input{
         </div>
         <div class="widget-body">
           <div class="rsvp-stat-row">
-            <div class="rss"><span class="rss-num" id="rsRes">7</span><span class="rss-label">Respons</span></div>
-            <div class="rss"><span class="rss-num" id="rsHadir">7</span><span class="rss-label">Hadir</span></div>
-            <div class="rss"><span class="rss-num" id="rsTamu">13</span><span class="rss-label">Total Tamu</span></div>
+            <div class="rss"><span class="rss-num" id="rsRes">{{ invitation.rsvps.len() }}</span><span class="rss-label">Respons</span></div>
+            <div class="rss"><span class="rss-num" id="rsHadir">{{ invitation.total_rsvps() }}</span><span class="rss-label">Hadir</span></div>
+            <div class="rss"><span class="rss-num" id="rsTamu">{{ invitation.total_guest_count() }}</span><span class="rss-label">Total Tamu</span></div>
           </div>
           <div class="form-row">
             <label class="form-label">Nama Lengkap</label>
@@ -1074,48 +1068,29 @@ select.form-input{
               <div class="wh-sub">Ucapan & Doa</div>
             </div>
           </div>
-          <span class="wh-badge badge-yellow" id="wishCount">3 Ucapan</span>
+          <span class="wh-badge badge-yellow" id="wishCount">{{ invitation.rsvps.len() }} Ucapan</span>
         </div>
         <div class="widget-body">
           <div class="wish-feed" id="wishesList">
-                {% if invitation.is_preview %}
-                
-                <!-- RSVPs will be loaded here -->
-            
-                {% else %}
-                {% for rsvp in invitation.rsvps %}
-                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
-                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
-                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
-                        <div>
-                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
-                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
-                        </div>
-                    </div>
-                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
-                </div>
-                {% endfor %}
-                {% endif %}
-</div>
+            {% if invitation.is_preview %}
+            <div class="wish-item visible">
+              <div class="wi-av" style="background:#E8192C;border-radius:8px">AR</div>
               <div class="wi-body">
                 <div class="wi-top"><span class="wi-name">Ayu Rahmawati</span><span class="wi-status">Hadir · 2</span></div>
                 <div class="wi-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah 🌿</div>
               </div>
             </div>
+            {% else %}
+            {% for rsvp in invitation.rsvps %}
             <div class="wish-item visible">
-              <div class="wi-av" style="background:#4a9eff;border-radius:8px">R</div>
+              <div class="wi-av" style="background:#E8192C;border-radius:8px">{{ rsvp.initial() }}</div>
               <div class="wi-body">
-                <div class="wi-top"><span class="wi-name">Reza Firmansyah</span><span class="wi-status">Hadir · 1</span></div>
-                <div class="wi-text">Alhamdulillah, akhirnya! Semoga membawa keberkahan yang tidak pernah habis. Aamiin!</div>
+                <div class="wi-top"><span class="wi-name">{{ rsvp.name }}</span><span class="wi-status">Hadir · {{ rsvp.guests }}</span></div>
+                <div class="wi-text">{{ rsvp.display_message() }}</div>
               </div>
             </div>
-            <div class="wish-item visible">
-              <div class="wi-av" style="background:#22C55E;border-radius:8px">S</div>
-              <div class="wi-body">
-                <div class="wi-top"><span class="wi-name">Sinta Dewi</span><span class="wi-status">Hadir · 2</span></div>
-                <div class="wi-text">Wishing you a lifetime of love! Semoga langkah kalian selalu diberkahi 💕</div>
-              </div>
-            </div>
+            {% endfor %}
+            {% endif %}
           </div>
         </div>
       </div>
@@ -1132,11 +1107,11 @@ select.form-input{
         </div>
         <div class="df-logo-text">Mekari Talenta Wedding</div>
       </div>
-      <div class="df-names"><span>Nazma & Guntur</span></div>
+      <div class="df-names"><span>{{ invitation.couple_name_short }}</span></div>
       <p class="df-msg">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu kepada kami.</p>
-      <p class="df-sign">Kami yang berbahagia, <b>Nazma & Guntur</b></p>
+      <p class="df-sign">Kami yang berbahagia, <b>{{ invitation.couple_name_short }}</b></p>
       <div class="df-divider"></div>
-      <p class="df-copy">© 2026 Nazma & Guntur Wedding · Powered by Love</p>
+      <p class="df-copy">© 2026 {{ invitation.couple_name_short }} Wedding · Powered by Love</p>
     </div>
   </div>
 
@@ -1277,6 +1252,13 @@ function submitRSVP(){
   const name=document.getElementById('rName').value.trim();
   if(!name){showToast('Masukkan nama Anda');return;}
   const msg=document.getElementById('rMsg').value.trim();
+
+  fetch('/api/rsvp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(attStatus)}&guests=${guestCount}&message=${encodeURIComponent(msg)}`
+  });
+
   const inits=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
   const colors=['#E8192C','#FFD600','#22C55E','#F59E0B','#EF4444','#8B5CF6'];
   const color=colors[Math.floor(Math.random()*colors.length)];
@@ -1288,21 +1270,11 @@ function submitRSVP(){
   document.getElementById('wishesList').prepend(item);
   setTimeout(()=>item.classList.add('visible'),50);
 
-  // update all stats
-  const add=(id,n=1)=>{const el=document.getElementById(id);if(el)el.textContent=parseInt(el.textContent)+n};
-  ['rsRes','heroRes'].forEach(id=>add(id));
-  if(attStatus==='hadir'){
-    ['rsHadir','heroHadir'].forEach(id=>add(id));
-    ['rsTamu','heroTamu'].forEach(id=>add(id,guestCount));
-  }
-  wishCount++;
-  const wc=document.getElementById('wishCount');
-  if(wc)wc.textContent=`${wishCount} Ucapan`;
-
   document.getElementById('rName').value='';
   document.getElementById('rMsg').value='';
   showToast('Check-in berhasil! Terima kasih 🎉');
   setTimeout(()=>document.getElementById('wishes').scrollIntoView({behavior:'smooth',block:'start'}),400);
+  setTimeout(()=>location.reload(),2000);
 }
 
 function copyNum(text,btn){

@@ -659,7 +659,7 @@ select.rf-input{
     WEDDING
   </div>
   <p class="op-label">The Wedding of</p>
-  <h1 class="op-names">Nazma<br><span>&</span><br>Guntur</h1>
+  <h1 class="op-names">{{ invitation.bride_name_short }}<br><span>&</span><br>{{ invitation.groom_name_short }}</h1>
   <p class="op-date">24 · 05 · 2026 · Tangerang</p>
   <div class="op-card">
     <p class="op-card-label">Invitation for</p>
@@ -672,7 +672,7 @@ select.rf-input{
 <header class="top-nav" id="topNav">
   <div class="tn-logo">
     <div class="tn-logo-box">UQ</div>
-    Nazma & Guntur
+    {{ invitation.couple_name_short }}
   </div>
   <div class="tn-right">
     <a href="#event" class="tn-link" onclick="setNav(document.querySelector('.bn-item[href=\'#event\']'))">Event</a>
@@ -693,7 +693,7 @@ select.rf-input{
     </div>
     <div class="hero-content">
       <p class="hero-season">Wedding Season 2026</p>
-      <h1 class="hero-title">Nazma<br><span class="amp">&</span><br>Guntur</h1>
+      <h1 class="hero-title">{{ invitation.bride_name_short }}<br><span class="amp">&</span><br>{{ invitation.groom_name_short }}</h1>
       <p class="hero-subtitle">Forever Edition · Tangerang</p>
       <div class="hero-divider"></div>
       <p class="hero-desc">Dengan penuh rasa syukur dan bahagia, kami mengundang Anda untuk hadir merayakan hari paling istimewa dalam hidup kami.</p>
@@ -738,21 +738,21 @@ select.rf-input{
       <div class="couple-card fade-uq">
         <div class="cc-num">01</div>
         <div class="cc-avatar">
-          N
-          <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&h=200&fit=crop&q=80" alt="Nazma" onerror="this.style.display='none'">
+          {{ invitation.bride_name_short|first }}
+          <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&h=200&fit=crop&q=80" alt="{{ invitation.bride_name_short }}" onerror="this.style.display='none'">
         </div>
         <div class="cc-role">Mempelai Wanita</div>
-        <div class="cc-name">Nazma</div>
+        <div class="cc-name">{{ invitation.bride_name_short }}</div>
         <div class="cc-parents">Putri Pertama dari<br><strong>Bpk. Taryono & Ibu Wiwit Jayanti</strong></div>
       </div>
       <div class="couple-card fade-uq">
         <div class="cc-num">02</div>
         <div class="cc-avatar">
-          G
-          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Guntur" onerror="this.style.display='none'">
+          {{ invitation.groom_name_short|first }}
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="{{ invitation.groom_name_short }}" onerror="this.style.display='none'">
         </div>
         <div class="cc-role">Mempelai Pria</div>
-        <div class="cc-name">Guntur</div>
+        <div class="cc-name">{{ invitation.groom_name_short }}</div>
         <div class="cc-parents">Putra Kedua dari<br><strong>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</strong></div>
       </div>
     </div>
@@ -857,10 +857,16 @@ select.rf-input{
       <p class="sec-sub" style="margin-top:8px">Doa restu sudah sangat cukup. Namun jika ingin memberi tanda kasih, kami menerimanya dengan senang hati.</p>
     </div>
     <div class="gift-grid">
-                    {% for account in invitation.gift_accounts %}
-                    <div class="gf-label">Bank</div>
-                    {% endfor %}
-                </div>
+      {% for account in invitation.gift_accounts %}
+      <div class="gift-card">
+        <div class="gf-label">Bank</div>
+        <div class="gf-bank">{{ account.bank_name }}</div>
+        <div class="gf-owner">{{ account.account_holder }}</div>
+        <div class="gf-num">{{ account.account_number }}</div>
+        <button class="copy-btn" onclick="copyNum('{{ account.account_number }}',this)">Salin Nomor</button>
+      </div>
+      {% endfor %}
+    </div>
     </div>
   </div>
 
@@ -873,9 +879,9 @@ select.rf-input{
     <div class="rsvp-layout">
       <div>
         <div class="rsvp-stats fade-uq">
-          <div class="rs-row"><span class="rs-label">Respons</span><span class="rs-val" id="rsRes">7</span></div>
-          <div class="rs-row"><span class="rs-label">Hadir</span><span class="rs-val" id="rsHadir">7</span></div>
-          <div class="rs-row"><span class="rs-label">Total Tamu</span><span class="rs-val" id="rsTamu">13</span></div>
+          <div class="rs-row"><span class="rs-label">Respons</span><span class="rs-val" id="rsRes">{{ invitation.rsvps.len() }}</span></div>
+          <div class="rs-row"><span class="rs-label">Hadir</span><span class="rs-val" id="rsHadir">{{ invitation.total_rsvps() }}</span></div>
+          <div class="rs-row"><span class="rs-label">Total Tamu</span><span class="rs-val" id="rsTamu">{{ invitation.total_guest_count() }}</span></div>
         </div>
         <div style="margin-top:24px;padding:20px;background:var(--white);border:1px solid var(--grey1)" class="fade-uq">
           <p style="font-size:11px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--grey3);margin-bottom:8px">Detail Acara</p>
@@ -919,32 +925,20 @@ select.rf-input{
       <h2 class="sec-title">Ucapan & Doa</h2>
     </div>
     <div class="wish-grid" id="wishesList">
-                {% if invitation.is_preview %}
-                    <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); opacity: 0.7;">
-                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
-                            <div style="width: 35px; height: 35px; border-radius: 50%; background: #666; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">A</div>
-                            <div>
-                                <div style="font-weight: bold; font-size: 14px;">Ayu Rahmawati (Contoh)</div>
-                                <div style="font-size: 11px; opacity: 0.7;">Hadir · 2 tamu</div>
-                            </div>
-                        </div>
-                        <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"Selamat menempuh hidup baru! Semoga bahagia selalu."</div>
-                    </div>
-                {% else %}
-                {% for rsvp in invitation.rsvps %}
-                <div class="wish-card visible" style="margin-bottom: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 10px;">
-                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(45deg, #E50914, #b00710); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: white; box-shadow: 0 2px 8px rgba(229, 9, 20, 0.4);">{{ rsvp.initial() }}</div>
-                        <div>
-                            <div style="font-weight: bold; font-size: 15px; color: #fff;">{{ rsvp.name }}</div>
-                            <div style="font-size: 12px; color: #00AA13; font-weight: 500;">✓ {{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
-                        </div>
-                    </div>
-                    <div style="font-size: 14px; line-height: 1.6; font-style: italic; color: rgba(255,255,255,0.9); padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">"{{ rsvp.display_message() }}"</div>
-                </div>
-                {% endfor %}
-                {% endif %}
-                </div>
+      {% if invitation.is_preview %}
+      <div class="wish-card visible">
+        <div class="wc-header"><div class="wc-av" style="background:#c4a96a">AR</div><div><div class="wc-name">Ayu Rahmawati</div><div class="wc-status">Hadir · 2 tamu</div></div></div>
+        <p class="wc-text">Selamat menempuh hidup baru! Semoga bahagia selalu. 🤍</p>
+      </div>
+      {% else %}
+      {% for rsvp in invitation.rsvps %}
+      <div class="wish-card visible">
+        <div class="wc-header"><div class="wc-av" style="background:#c4a96a">{{ rsvp.initial() }}</div><div><div class="wc-name">{{ rsvp.name }}</div><div class="wc-status">Hadir · {{ rsvp.guests }} tamu</div></div></div>
+        <p class="wc-text">{{ rsvp.display_message() }}</p>
+      </div>
+      {% endfor %}
+      {% endif %}
+    </div>
                 <footer class="uq-footer">
     <div class="uf-inner">
       <div class="uf-logo"><div class="uf-logo-box">UQ</div>WEDDING · 2026</div>
@@ -1123,6 +1117,13 @@ function submitRSVP(){
   const name=document.getElementById('rName').value.trim();
   if(!name){showToast('Masukkan nama Anda');return;}
   const msg=document.getElementById('rMsg').value.trim();
+
+  fetch('/api/rsvp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(attStatus)}&guests=${guestCount}&message=${encodeURIComponent(msg)}`
+  });
+
   const inits=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
   const colors=['#c4a96a','#4a9eff','#e40026','#333','#888','#5ba32b'];
   const color=colors[Math.floor(Math.random()*colors.length)];
@@ -1134,14 +1135,11 @@ function submitRSVP(){
   document.getElementById('wishesList').prepend(card);
   setTimeout(()=>card.classList.add('visible'),50);
 
-  const add=(id,n=1)=>{const el=document.getElementById(id);if(el)el.textContent=parseInt(el.textContent)+n};
-  add('rsRes');
-  if(attStatus==='hadir'){add('rsHadir');add('rsTamu',guestCount)}
-
   document.getElementById('rName').value='';
   document.getElementById('rMsg').value='';
   showToast('Terima kasih! Konfirmasi berhasil');
   setTimeout(()=>document.getElementById('wishes').scrollIntoView({behavior:'smooth',block:'start'}),400);
+  setTimeout(()=>location.reload(),2000);
 }
 
 /* ── COPY ── */

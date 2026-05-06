@@ -44,6 +44,8 @@ pub struct Invitation {
     pub slug: String,
     pub template_name: String,
     pub couple_name_short: String,
+    pub bride_name_short: String,
+    pub groom_name_short: String,
     pub bride: Person,
     pub groom: Person,
     pub event_date: String,

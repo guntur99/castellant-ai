@@ -723,10 +723,7 @@ select.rf-input{
 <div id="opening">
   <!-- floating circles bg -->
   
-                    {% for account in invitation.gift_accounts %}
-                    
-                    {% for account in invitation.gift_accounts %}
-                    <div class="hero-circle" style="width:300px;height:300px;background:var(--red);top:-100px;left:-80px;--dur:7s"></div>
+  <div class="hero-circle" style="width:300px;height:300px;background:var(--red);top:-100px;left:-80px;--dur:7s"></div>
   <div class="hero-circle" style="width:200px;height:200px;background:var(--blue);bottom:-60px;right:-60px;--dur:5s;animation-delay:.5s"></div>
 
   <div class="jc-logo">
@@ -746,7 +743,7 @@ select.rf-input{
   <p class="op-system">Wedding Edition · 2026</p>
   <p class="op-title">The Wedding of</p>
   <h1 class="op-names">
-    {{ account.account_holder }}<span class="hero-amp" style="color:var(--red);-webkit-text-fill-color:var(--red)">&</span>Guntur
+    {{ invitation.couple_name_short }}
   </h1>
   <p class="op-date">24 · 05 · 2026 · Tangerang</p>
 
@@ -766,7 +763,7 @@ select.rf-input{
 <header class="top-bar" id="topBar">
   <div class="tb-logo">
     <div class="tb-jcl"></div>
-    {{ account.account_holder }} & Guntur
+    {{ invitation.couple_name_short }}
     <div class="tb-jcr"></div>
   </div>
   <div class="tb-right">
@@ -791,9 +788,7 @@ select.rf-input{
     </div>
 
     <h1 class="hero-title">
-      {{ account.account_holder }}
-      <span class="hero-amp">~</span>
-      Guntur
+      {{ invitation.couple_name_short }}
     </h1>
     <p class="hero-tagline">Forever Edition · {{ invitation.event_date }}</p>
 
@@ -859,9 +854,9 @@ select.rf-input{
     <div class="char-grid">
       <div class="char-card p1 fade-sw">
         <div class="char-player">P1</div>
-        <div class="char-avatar"><img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="{{ account.account_holder }}"></div>
+        <div class="char-avatar"><img src="https://images.unsplash.com/photo-{{ invitation.couple_name_short|length }}775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="{{ invitation.bride_name_short }}"></div>
         <div class="char-role">Mempelai Wanita</div>
-        <div class="char-name">{{ account.account_holder }} Pangestuti</div>
+        <div class="char-name">{{ invitation.bride_name_short }}</div>
         <div class="char-parents">S.Kom<br><br>Putri Pertama dari<br><b style="color:var(--text)">Bpk. Taryono &<br>Ibu Wiwit Jayanti</b></div>
         <div class="char-hp">
           <div class="char-hp-label"><span>❤️ Love</span><span>MAX</span></div>
@@ -870,9 +865,9 @@ select.rf-input{
       </div>
       <div class="char-card p2 fade-sw">
         <div class="char-player">P2</div>
-        <div class="char-avatar"><img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Guntur"></div>
+        <div class="char-avatar"><img src="https://images.unsplash.com/photo-{{ invitation.couple_name_short|length }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="{{ invitation.groom_name_short }}"></div>
         <div class="char-role">Mempelai Pria</div>
-        <div class="char-name">{{ account.account_holder }}</div>
+        <div class="char-name">{{ invitation.groom_name_short }}</div>
         <div class="char-parents">N, S.Kom<br><br>Putra Kedua dari<br><b style="color:var(--text)">Bpk. Wan Sabran, M.MAR &<br>Ibu Titik Sundari, M.Si</b></div>
         <div class="char-hp">
           <div class="char-hp-label"><span>❤️ Love</span><span>MAX</span></div>
@@ -996,20 +991,18 @@ select.rf-input{
     </div>
     <p style="font-size:14px;color:var(--sub);font-weight:600;margin-bottom:16px;line-height:1.6">Doa restu sudah sangat cukup. Namun jika ingin memberi tanda kasih, kami menerimanya 🤍</p>
     <div class="coin-grid">
+      {% for account in invitation.gift_accounts %}
       <div class="coin-card fade-sw">
         <div class="coin-bank-label">Bank</div>
         <div class="coin-bank">{{ account.bank_name }}</div>
         <div class="coin-owner">{{ account.account_holder }}</div>
         <div class="coin-num">{{ account.account_number }}</div>
-                    {% endfor %}
-                
         <button class="copy-btn" onclick="copyNum('{{ account.account_number }}',this)">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
           Salin
         </button>
       </div>
-                    {% endfor %}
-                
+      {% endfor %}
     </div>
   </div>
 
@@ -1023,9 +1016,9 @@ select.rf-input{
       </div>
     </div>
     <div class="lobby-row fade-sw">
-      <div class="lobby-block lb-1"><span class="lb-num" id="lbRes">7</span><span class="lb-label">Respons</span></div>
-      <div class="lobby-block lb-2"><span class="lb-num" id="lbHadir">7</span><span class="lb-label">Hadir</span></div>
-      <div class="lobby-block lb-3"><span class="lb-num" id="lbTamu">13</span><span class="lb-label">Tamu</span></div>
+      <div class="lobby-block lb-1"><span class="lb-num" id="lbRes">{{ invitation.rsvps.len() }}</span><span class="lb-label">Respons</span></div>
+      <div class="lobby-block lb-2"><span class="lb-num" id="lbHadir">{{ invitation.total_rsvps() }}</span><span class="lb-label">Hadir</span></div>
+      <div class="lobby-block lb-3"><span class="lb-num" id="lbTamu">{{ invitation.total_guest_count() }}</span><span class="lb-label">Tamu</span></div>
     </div>
     <div class="rsvp-form-card fade-sw">
       <div class="rf-field">
@@ -1066,35 +1059,19 @@ select.rf-input{
       </div>
     </div>
     <div id="wishesList">
-                {% if invitation.is_preview %}
-                
-                <!-- RSVPs will be loaded here -->
-            
-                {% else %}
-                {% for rsvp in invitation.rsvps %}
-                <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
-                    <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
-                        <div style="width: 35px; height: 35px; border-radius: 50%; background: #E50914; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">{{ rsvp.initial() }}</div>
-                        <div>
-                            <div style="font-weight: bold; font-size: 14px;">{{ rsvp.name }}</div>
-                            <div style="font-size: 11px; opacity: 0.7;">{{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
-                        </div>
-                    </div>
-                    <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"{{ rsvp.display_message() }}"</div>
-                </div>
-                {% endfor %}
-                {% endif %}
-</div><div><div class="wc-name">Ayu Rahmawati</div><div class="wc-status">✅ Hadir · 2 tamu</div></div></div>
+      {% if invitation.is_preview %}
+      <div class="wish-card visible">
+        <div class="wc-header"><div class="wc-av" style="background:var(--red)">AR</div><div><div class="wc-name">Ayu Rahmawati</div><div class="wc-status">✅ Hadir · 2 tamu</div></div></div>
         <p class="wc-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu! 🌿</p>
       </div>
+      {% else %}
+      {% for rsvp in invitation.rsvps %}
       <div class="wish-card visible">
-        <div class="wc-header"><div class="wc-av" style="background:var(--blue)">R</div><div><div class="wc-name">Reza Firmansyah</div><div class="wc-status">✅ Hadir · 1 tamu</div></div></div>
-        <p class="wc-text">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan kebahagiaan yang tidak pernah habis. Aamiin!</p>
+        <div class="wc-header"><div class="wc-av" style="background:var(--blue)">{{ rsvp.initial() }}</div><div><div class="wc-name">{{ rsvp.name }}</div><div class="wc-status">✅ {{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div></div></div>
+        <p class="wc-text">{{ rsvp.display_message() }}</p>
       </div>
-      <div class="wish-card visible">
-        <div class="wc-header"><div class="wc-av" style="background:var(--red)">S</div><div><div class="wc-name">Sinta Dewi</div><div class="wc-status">✅ Hadir · 2 tamu</div></div></div>
-        <p class="wc-text">Wishing you both a lifetime of love and laughter. Semoga langkah kalian selalu diberkahi Allah SWT 💚</p>
-      </div>
+      {% endfor %}
+      {% endif %}
     </div>
   </div>
 
@@ -1258,6 +1235,13 @@ function submitRSVP(){
   const name=document.getElementById('rName').value.trim();
   if(!name){showToast('Masukkan nama dulu ya! 😊');return;}
   const msg=document.getElementById('rMsg').value.trim();
+
+  fetch('/api/rsvp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(attStatus)}&guests=${guestCount}&message=${encodeURIComponent(msg)}`
+  });
+
   const inits=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
   const colors=['#FFCC00','#0AB9E6','#E4000F','#5AC531','#a070ff','#ff9900'];
   const color=colors[Math.floor(Math.random()*colors.length)];
@@ -1267,15 +1251,11 @@ function submitRSVP(){
   card.innerHTML=`<div class="wc-header"><div class="wc-av" style="background:${color}">${inits}</div><div><div class="wc-name">${name}</div><div class="wc-status">${stText}</div></div></div><p class="wc-text">${msg||'Selamat dan semoga bahagia selalu! 🎮❤️'}</p>`;
   document.getElementById('wishesList').prepend(card);
   setTimeout(()=>card.classList.add('visible'),50);
-  const r=document.getElementById('lbRes');if(r)r.textContent=parseInt(r.textContent)+1;
-  if(attStatus==='hadir'){
-    const h=document.getElementById('lbHadir');if(h)h.textContent=parseInt(h.textContent)+1;
-    const t=document.getElementById('lbTamu');if(t)t.textContent=parseInt(t.textContent)+guestCount;
-  }
   document.getElementById('rName').value='';
   document.getElementById('rMsg').value='';
   showToast('Yeay! Konfirmasi berhasil 🎉');
   setTimeout(()=>document.getElementById('wishes').scrollIntoView({behavior:'smooth',block:'start'}),400);
+  setTimeout(()=>location.reload(),2000);
 }
 
 function copyNum(text,btn){

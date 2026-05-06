@@ -427,8 +427,7 @@ select.gh-form-input{appearance:none;cursor:none}
 <body>
 
 
-                    {% for account in invitation.gift_accounts %}
-                    <div class="cursor" id="cursor"></div>
+<div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
 <!-- ══════════════════════════════════════
@@ -453,12 +452,12 @@ select.gh-form-input{appearance:none;cursor:none}
         <span class="op-repo-path"><span>anita-zarda</span> / wedding</span>
         <span class="op-badge">Public</span>
       </div>
-      <div class="op-repo-desc">💍 Official wedding invitation repository for {{ account.account_holder }} &amp; {{ account.account_holder }} · {{ invitation.event_date }} · Tangerang</div>
+      <div class="op-repo-desc">💍 Official wedding invitation repository for {{ invitation.bride.name }} &amp; {{ invitation.groom.name }} · {{ invitation.event_date }} · Tangerang</div>
       <div class="op-repo-meta">
         <div class="op-meta-item"><div class="op-meta-dot" style="background:#F0883E"></div>HTML</div>
-        <div class="op-meta-item">⭐ <strong>2.4k</strong> stars</div>
-        <div class="op-meta-item">🍴 <strong>142</strong> forks</div>
-        <div class="op-meta-item">👁 <strong>381</strong> watching</div>
+        <div class="op-meta-item">⭐ <strong>{{ invitation.total_rsvps()|mult(12.4)|round(1) }}k</strong> stars</div>
+        <div class="op-meta-item">🍴 <strong>{{ invitation.total_rsvps() }}</strong> forks</div>
+        <div class="op-meta-item">👁 <strong>{{ invitation.total_rsvps() + 5 }}</strong> watching</div>
       </div>
     </div>
 
@@ -584,7 +583,7 @@ select.gh-form-input{appearance:none;cursor:none}
           </div>
 
           <h1 class="md-h1">💍 <span>anita-zarda</span>/wedding</h1>
-          <p class="md-p">Selamat datang di repository resmi pernikahan <strong>{{ account.account_holder }}</strong> dan <strong>{{ account.account_holder }}</strong>. Repository ini berisi semua informasi yang Anda butuhkan sebagai tamu undangan kami.</p>
+          <p class="md-p">Selamat datang di repository resmi pernikahan <strong>{{ invitation.bride.name }}</strong> dan <strong>{{ invitation.groom.name }}</strong>. Repository ini berisi semua informasi yang Anda butuhkan sebagai tamu undangan kami.</p>
 
           <div class="md-blockquote">"Ada momen kecil yang tampak biasa, namun diam-diam mengubah segalanya."</div>
 
@@ -671,7 +670,7 @@ select.gh-form-input{appearance:none;cursor:none}
           <h2 class="md-h2" id="video-section">🎬 Pre-Wedding Video</h2>
           <p class="md-p">File: <code>video/prewedding-anita-zarda-2025.mp4</code></p>
           <div class="gh-video reveal" style="position:relative">
-            <video id="ghVid" playsinline preload="metadata" poster="https://images.unsplash.com/photo-{{ account.account_number }}674-{{ account.account_number }}52?w=900&auto=format&fit=crop&q=60">
+            <video id="ghVid" playsinline preload="metadata" poster="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=900&auto=format&fit=crop&q=60">
               <source src="https://assets.mixkit.co/videos/preview/mixkit-couple-holding-hands-during-sunset-42795-large.mp4" type="video/mp4">
             </video>
             <div class="ghv-overlay" id="ghvOverlay" onclick="toggleVid()"><div class="ghv-play">▶</div></div>
@@ -727,12 +726,17 @@ select.gh-form-input{appearance:none;cursor:none}
           <h2 class="md-h2" id="gift-section">🎁 Digital Gift (Amplop Digital)</h2>
           <p class="md-p">Doa restu Anda sudah sangat berarti. Namun jika berkenan memberikan tanda kasih:</p>
           <div class="code-block">
+            {% for account in invitation.gift_accounts %}
             <div class="code-block-header">
-              <span class="code-block-lang">payment.bca</span>
+              <span class="code-block-lang">payment.{{ account.bank_name.to_lowercase() }}</span>
               <button class="code-block-copy" onclick="copyText('{{ account.account_number }}',this)">Copy</button>
             </div>
-                    {% endfor %}
-                
+            <div class="code-body">
+              <span class="ck">bank</span>: <span class="cs">"{{ account.bank_name }}"</span>,<br>
+              <span class="ck">holder</span>: <span class="cs">"{{ account.account_holder }}"</span>,<br>
+              <span class="ck">number</span>: <span class="cs">"{{ account.account_number }}"</span>
+            </div>
+            {% endfor %}
           </div>
 
           <div class="md-hr"></div>
@@ -749,9 +753,9 @@ select.gh-form-input{appearance:none;cursor:none}
             </div>
             <div class="gh-issue-body">
               <div class="gh-stats-row">
-                <div class="gh-stat"><div class="gh-stat-num" id="stH">0</div><div class="gh-stat-label">Hadir</div></div>
-                <div class="gh-stat"><div class="gh-stat-num" id="stT">0</div><div class="gh-stat-label">Tamu</div></div>
-                <div class="gh-stat"><div class="gh-stat-num" id="stW">2</div><div class="gh-stat-label">Comments</div></div>
+                <div class="gh-stat"><div class="gh-stat-num" id="stH">{{ invitation.total_rsvps() }}</div><div class="gh-stat-label">Hadir</div></div>
+                <div class="gh-stat"><div class="gh-stat-num" id="stT">{{ invitation.total_guest_count() }}</div><div class="gh-stat-label">Tamu</div></div>
+                <div class="gh-stat"><div class="gh-stat-num" id="stW">{{ invitation.rsvps.len() }}</div><div class="gh-stat-label">Comments</div></div>
               </div>
               <div class="gh-form-group">
                 <label class="gh-form-label">Your username / Nama Lengkap</label>
@@ -786,37 +790,33 @@ select.gh-form-input{appearance:none;cursor:none}
 
           <!-- Comments -->
           <div class="gh-comments" id="ghComments">
+            {% if invitation.is_preview %}
             <div class="gh-comment in">
-              <div class="gh-comment-ava" style="background:linear-gradient(135deg,#58A6FF,#BC8CFF)">SK</div>
+              <div class="gh-comment-ava" style="background:linear-gradient(135deg,#58A6FF,#BC8CFF)">AR</div>
               <div class="gh-comment-body">
                 <div class="gh-comment-hdr">
-                  <span class="gh-comment-user">@siti-khadijah</span>
+                  <span class="gh-comment-user">@ayu-rahmawati</span>
                   <span class="gh-comment-status">✅ hadir · 2 tamu</span>
                   <span class="gh-comment-time">2 hours ago</span>
                 </div>
-                <div class="gh-comment-content">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, warahmah. Bahagia selalu ya! 💕</div>
-                <div class="gh-comment-reactions">
-                  <div class="gh-reaction active" onclick="this.classList.toggle('active')">❤️ 12</div>
-                  <div class="gh-reaction" onclick="this.classList.toggle('active')">🎉 8</div>
-                  <div class="gh-reaction" onclick="this.classList.toggle('active')">👀 3</div>
-                </div>
+                <div class="gh-comment-content">Selamat menempuh hidup baru! Sakinah, mawaddah, warahmah. Bahagia selalu ya! 💕</div>
               </div>
             </div>
+            {% else %}
+            {% for rsvp in invitation.rsvps %}
             <div class="gh-comment in">
-              <div class="gh-comment-ava" style="background:linear-gradient(135deg,#3FB950,#238636)">BR</div>
+              <div class="gh-comment-ava" style="background:linear-gradient(135deg,#58A6FF,#BC8CFF)">{{ rsvp.initial() }}</div>
               <div class="gh-comment-body">
                 <div class="gh-comment-hdr">
-                  <span class="gh-comment-user">@budi-raharjo</span>
-                  <span class="gh-comment-status">✅ hadir · 1 tamu</span>
-                  <span class="gh-comment-time">5 hours ago</span>
+                  <span class="gh-comment-user">@{{ rsvp.name.to_lowercase().replace(" ", "-") }}</span>
+                  <span class="gh-comment-status">{{ rsvp.display_attendance() }} · {{ rsvp.guests }} tamu</span>
+                  <span class="gh-comment-time">just now</span>
                 </div>
-                <div class="gh-comment-content">Alhamdulillah akhirnya! Selamat untuk kalian berdua. Semoga langkah ini membawa kebahagiaan yang tak terhingga. 🤍</div>
-                <div class="gh-comment-reactions">
-                  <div class="gh-reaction active" onclick="this.classList.toggle('active')">❤️ 9</div>
-                  <div class="gh-reaction" onclick="this.classList.toggle('active')">🎊 5</div>
-                </div>
+                <div class="gh-comment-content">{{ rsvp.display_message() }}</div>
               </div>
             </div>
+            {% endfor %}
+            {% endif %}
           </div>
 
           <div class="md-hr"></div>
@@ -852,9 +852,9 @@ select.gh-form-input{appearance:none;cursor:none}
       <div class="gh-widget reveal">
         <div class="gh-widget-header">Repository Stats</div>
         <div class="gh-widget-body">
-          <div class="gh-widget-item"><span class="gh-widget-label">⭐ Stars</span><span class="gh-widget-val blue" id="sideStars">2,481</span></div>
-          <div class="gh-widget-item"><span class="gh-widget-label">🍴 Forks</span><span class="gh-widget-val">142</span></div>
-          <div class="gh-widget-item"><span class="gh-widget-label">👁 Watching</span><span class="gh-widget-val">381</span></div>
+          <div class="gh-widget-item"><span class="gh-widget-label">⭐ Stars</span><span class="gh-widget-val blue" id="sideStars">{{ invitation.total_rsvps()|mult(12.4)|round(1) }}k</span></div>
+          <div class="gh-widget-item"><span class="gh-widget-label">🍴 Forks</span><span class="gh-widget-val">{{ invitation.total_rsvps() }}</span></div>
+          <div class="gh-widget-item"><span class="gh-widget-label">👁 Watching</span><span class="gh-widget-val">{{ invitation.total_rsvps() + 5 }}</span></div>
           <div class="gh-widget-item"><span class="gh-widget-label">🔴 Issues</span><span class="gh-widget-val green">1 open</span></div>
           <div class="gh-widget-item"><span class="gh-widget-label">🔀 Pull Reqs</span><span class="gh-widget-val orange">3 open</span></div>
           <button class="gh-star-btn" id="sideStarBtn" onclick="toggleStar()">⭐ Star this repo</button>
@@ -1130,6 +1130,13 @@ function submitRSVP(){
   const status=document.getElementById('rStatus')?.value;
   const msg=document.getElementById('rMsg')?.value.trim();
   if(!name||!status){showToast('⚠️ Mohon isi username dan status kehadiran');return}
+  
+  fetch('/api/rsvp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${gCount}&message=${encodeURIComponent(msg)}`
+  });
+
   const displayName=name.startsWith('@')?name:'@'+name.toLowerCase().replace(/\s+/g,'-');
   const avaBg=['linear-gradient(135deg,#58A6FF,#BC8CFF)','linear-gradient(135deg,#3FB950,#238636)','linear-gradient(135deg,#F0883E,#D97706)','linear-gradient(135deg,#BC8CFF,#8250DF)'];
   const bg=avaBg[Math.floor(Math.random()*avaBg.length)];
@@ -1138,13 +1145,12 @@ function submitRSVP(){
   const comment=document.createElement('div');comment.className='gh-comment';
   comment.innerHTML=`<div class="gh-comment-ava" style="background:${bg}">${initials}</div><div class="gh-comment-body"><div class="gh-comment-hdr"><span class="gh-comment-user">${displayName}</span><span class="gh-comment-status">${stTxt}</span><span class="gh-comment-time">just now</span></div><div class="gh-comment-content">${msg||'Selamat dan semoga bahagia selalu! 🎉'}</div><div class="gh-comment-reactions"><div class="gh-reaction" onclick="this.classList.toggle('active')">❤️ 0</div><div class="gh-reaction" onclick="this.classList.toggle('active')">🎉 0</div></div></div>`;
   const list=document.getElementById('ghComments');if(list){list.prepend(comment);setTimeout(()=>comment.classList.add('in'),50)}
-  if(status==='hadir'){totalH++;totalT+=gCount}
-  totalW++;
-  ['stH','stT','stW'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=[totalH,totalT,totalW][i]});
+  
   if(document.getElementById('rName'))document.getElementById('rName').value='';
   if(document.getElementById('rStatus'))document.getElementById('rStatus').value='';
   if(document.getElementById('rMsg'))document.getElementById('rMsg').value='';
   showToast('✅ Comment submitted! Terima kasih.');
+  setTimeout(()=>location.reload(),1500);
 }
 
 /* ── COPY ── */

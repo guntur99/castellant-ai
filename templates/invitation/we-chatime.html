@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Wedding of Anita & Zarda · Chatime</title>
+<title>The Wedding of {{ invitation.couple_name_short }} · Chatime</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,600&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -990,10 +990,10 @@ textarea.f-input{min-height:90px;resize:vertical}
   </div>
 
   <p class="op-eyebrow">Chatime Wedding · Digital Invitation</p>
-  <h1 class="op-names">Anita<br>&amp; Zarda</h1>
+  <div class="op-names">{{ invitation.couple_name_short }}</div>
   <p class="op-date">{{ invitation.event_date }} · Tangerang · Indonesia</p>
   <div class="op-tag-box">
-    <div class="op-tag-left">Kepada Yth.</div>
+    <div class="op-tag-name">{{ invitation.recipient_name }}</div>
     <div class="op-tag-divider"></div>
     <div class="op-tag-name">Ade Guntur Fitridullah &amp; Partner</div>
   </div>
@@ -1038,9 +1038,9 @@ textarea.f-input{min-height:90px;resize:vertical}
     </div>
 
     <div class="hero-names">
-      <span class="hero-name-line">Anita</span>
-      <span class="hero-name-line hero-amp">and</span>
-      <span class="hero-name-line">Zarda</span>
+      <span class="hero-name-line">{{ invitation.bride_name_short }}</span>
+      <span class="hero-amp">&amp;</span>
+      <span class="hero-name-line">{{ invitation.groom_name_short }}</span>
     </div>
 
     <div class="hero-meta-row">
@@ -1064,13 +1064,13 @@ textarea.f-input{min-height:90px;resize:vertical}
 
       <div class="order-couple">
         <div class="order-person">
-          <div class="order-ava"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita"></div>
-          <div><div class="order-p-name">Anita P.</div><div class="order-p-role">Mempelai ♀</div></div>
+          <div class="order-ava"><img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride_name_short }}"></div>
+          <div><div class="order-p-name">{{ invitation.bride_name_short }}</div><div class="order-p-role">Mempelai Wanita</div></div>
           <div class="order-p-check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
         </div>
         <div class="order-person">
-          <div class="order-ava"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda"></div>
-          <div><div class="order-p-name">Zarda A.</div><div class="order-p-role">Mempelai ♂</div></div>
+          <div class="order-ava"><img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom_name_short }}"></div>
+          <div><div class="order-p-name">{{ invitation.groom_name_short }}</div><div class="order-p-role">Mempelai Pria</div></div>
           <div class="order-p-check"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
         </div>
       </div>
@@ -1104,9 +1104,9 @@ textarea.f-input{min-height:90px;resize:vertical}
       </div>
 
       <div class="order-meta">
-        <div class="meta-item"><div class="meta-val">1 ∞</div><div class="meta-label">Seumur Hidup</div></div>
-        <div class="meta-item"><div class="meta-val">5.0 ★</div><div class="meta-label">Rating</div></div>
-        <div class="meta-item"><div class="meta-val">08:00</div><div class="meta-label">WIB</div></div>
+        <div class="meta-item"><div class="meta-val">{{ invitation.total_rsvps() }}</div><div class="meta-label">Reviews</div></div>
+        <div class="meta-item"><div class="meta-val">{{ invitation.total_hadir() }}</div><div class="meta-label">Orders</div></div>
+        <div class="meta-item"><div class="meta-val">{{ invitation.total_guest_count() }}</div><div class="meta-label">Cups</div></div>
       </div>
 
       <div class="order-cta">
@@ -1121,7 +1121,7 @@ textarea.f-input{min-height:90px;resize:vertical}
     <div class="eta-inner">
       <div class="eta-left-col">
         <div class="eta-left-label">ETA · Countdown</div>
-        <div class="eta-left-title">Menuju<br>Hari <em>Bahagia</em></div>
+        <div class="eta-left-title">Menuju Hari <em>Istimewa</em></div>
       </div>
       <div class="eta-right">
         <div class="eta-block"><div class="eta-n" id="cdDays">00</div><div class="eta-u">Hari</div></div>
@@ -1170,39 +1170,31 @@ textarea.f-input{min-height:90px;resize:vertical}
         <div class="couple-card-glow"></div>
         <div class="couple-card-num">01</div>
         <div class="couple-ava">
-          <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=300&fit=crop&q=80" alt="Anita" loading="lazy">
+          <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride_name_short }}">
           <div class="couple-ava-gold"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
         </div>
         <div class="couple-role">Mempelai Wanita</div>
-        <div class="couple-name">Anita Pangestuti,<br>S.Kom</div>
+        <div class="couple-name">{{ invitation.bride.full_name }}</div>
         <div class="couple-stars">
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          {% for i in 0..5 %}<svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>{% endfor %}
         </div>
         <div class="couple-sep"></div>
-        <div class="couple-parents">Putri Pertama dari<br><strong>Bpk. Taryono &amp;<br>Ibu Wiwit Jayanti</strong></div>
+        <div class="couple-parents">Putri Pertama dari Bapak <strong>{{ invitation.bride.father_name }}</strong> &amp; Ibu <strong>{{ invitation.bride.mother_name }}</strong></div>
       </div>
       <div class="couple-card reveal" style="transition-delay:.12s">
         <div class="couple-card-glow"></div>
         <div class="couple-card-num">02</div>
         <div class="couple-ava">
-          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&q=80" alt="Zarda" loading="lazy">
+          <img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom_name_short }}">
           <div class="couple-ava-gold"><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></div>
         </div>
-        <div class="couple-role">Mempelai Pria</div>
-        <div class="couple-name">Zardarian Ahadika<br>N, S.Kom</div>
+        <div class="couple-role">The Groom</div>
+        <div class="couple-name">{{ invitation.groom.full_name }}</div>
         <div class="couple-stars">
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
-          <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          {% for i in 0..5 %}<svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>{% endfor %}
         </div>
         <div class="couple-sep"></div>
-        <div class="couple-parents">Putra Kedua dari<br><strong>Bpk. Wan Sabran, M.MAR &amp;<br>Ibu Titik Sundari, M.Si</strong></div>
+        <div class="couple-parents">Putra Kedua dari Bapak <strong>{{ invitation.groom.father_name }}</strong> &amp; Ibu <strong>{{ invitation.groom.mother_name }}</strong></div>
       </div>
     </div>
   </section>
@@ -1275,7 +1267,7 @@ textarea.f-input{min-height:90px;resize:vertical}
           </div>
         </div>
         <div class="tl-body">
-          <div class="tl-tag">First Sip · Juni 2025</div>
+          <div class="op-date">{{ invitation.event_date }}</div>
           <div class="tl-date-sm">Awal yang manis</div>
           <div class="tl-title">Awal Pertemuan</div>
           <div class="tl-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami. Seperti tegukan pertama teh yang selalu dikenang.</div>
@@ -1344,12 +1336,22 @@ textarea.f-input{min-height:90px;resize:vertical}
       <p class="sec-p" style="max-width:420px;margin:0 auto">Doa restu sudah sangat cukup, namun jika memberi merupakan tanda kasih, kami dengan senang hati menerimanya.</p>
     </div>
     <div class="gift-grid">
-                    {% for account in invitation.gift_accounts %}
-                    <div class="gift-card-aura"></div>
+      {% for account in invitation.gift_accounts %}
+      <div class="gift-card">
+        <div class="gift-card-aura"></div>
         <div class="gift-bank-row">
-          <div class="gift-bank-sq" style="background:#005BAA;color:white;font-size:7px;font-weight:900">{{ account.bank_name }}</div>
-                    {% endfor %}
-                </div>
+          <div class="gift-bank-sq" style="background:#0039A6;color:white">{{ account.bank_name }}</div>
+          <div class="gift-bank-label">{{ account.bank_name }}</div>
+        </div>
+        <div class="gift-acct">{{ account.account_holder }}</div>
+        <div class="gift-number">{{ account.account_number }}</div>
+        <button class="copy-btn" onclick="copyText('{{ account.account_number }}',this)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+          Copy
+        </button>
+      </div>
+      {% endfor %}
+    </div>
   </section>
 
   <!-- RSVP -->
@@ -1363,9 +1365,18 @@ textarea.f-input{min-height:90px;resize:vertical}
       <h2 class="sec-h">Konfirmasi Kehadiran</h2>
     </div>
     <div class="rsvp-stats">
-      <div class="rsvp-stat reveal"><div class="rsvp-stat-n">7</div><div class="rsvp-stat-l">Respons</div></div>
-      <div class="rsvp-stat reveal" style="transition-delay:.08s"><div class="rsvp-stat-n">7</div><div class="rsvp-stat-l">Hadir</div></div>
-      <div class="rsvp-stat reveal" style="transition-delay:.16s"><div class="rsvp-stat-n">13</div><div class="rsvp-stat-l">Tamu</div></div>
+      <div class="rsvp-stat">
+        <div class="rsvp-stat-n">{{ invitation.total_rsvps() }}</div>
+        <div class="rsvp-stat-l">Reviews</div>
+      </div>
+      <div class="rsvp-stat">
+        <div class="rsvp-stat-n">{{ invitation.total_hadir() }}</div>
+        <div class="rsvp-stat-l">Hadir</div>
+      </div>
+      <div class="rsvp-stat">
+        <div class="rsvp-stat-n">{{ invitation.total_guest_count() }}</div>
+        <div class="rsvp-stat-l">Total Cups</div>
+      </div>
     </div>
     <div class="rsvp-form reveal" style="margin-top:32px">
       <div class="f-group">
@@ -1451,14 +1462,14 @@ textarea.f-input{min-height:90px;resize:vertical}
     <div class="footer-logo-sq">
       <svg viewBox="0 0 24 24" fill="var(--ct-white)"><path d="M20 3H4v10c0 2.21 1.79 4 4 4h6c2.21 0 4-1.79 4-4v-3h2c1.11 0 2-.89 2-2V5c0-1.11-.89-2-2-2zm0 5h-2V5h2v3zM4 19h16v2H4z"/></svg>
     </div>
-    <p class="footer-names">Anita &amp; Zarda</p>
+    <p class="footer-names">{{ invitation.couple_name_short }}</p>
     <p class="footer-body">Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu kepada kami.</p>
     <div class="footer-rule">
       <div class="footer-rule-line"></div>
       <div class="footer-rule-diamond"></div>
       <div class="footer-rule-line"></div>
     </div>
-    <p class="footer-sig">Kami yang berbahagia,<br><strong>Anita &amp; Zarda</strong></p>
+    <p class="footer-sig">Kami yang berbahagia,<br><strong>{{ invitation.couple_name_short }}</strong></p>
     <p class="footer-brand">Digital Invitation by <a href="#">Chatime Wedding × BridesSpace</a></p>
   </footer>
 </div>
@@ -1599,16 +1610,17 @@ function submitRSVP(){
   const name=document.getElementById('rsvpName').value.trim();
   const status=document.getElementById('rsvpStatus').value;
   const msg=document.getElementById('rsvpMsg').value.trim();
+  
   if(!name||!status){showToast('Please fill in name & status');return;}
-  const initials=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  const statusText=status==='hadir'?`✓ Hadir · ${guestCount} tamu`:'✗ Tidak Hadir';
-  const card=document.createElement('div');card.className='wish-card';
-  card.innerHTML=`<div class="wish-head"><div class="wish-sq" style="background:var(--ct-card2);color:var(--ct-gold);border:1px solid var(--ct-border2)">${initials}</div><div><div class="wish-name">${name}</div><div class="wish-status">${statusText}</div></div></div><div class="wish-text">${msg||'Selamat dan semoga bahagia selalu!'}</div>`;
-  document.getElementById('wishesList').prepend(card);
-  setTimeout(()=>card.classList.add('visible'),50);
-  document.getElementById('rsvpName').value='';document.getElementById('rsvpStatus').value='';document.getElementById('rsvpMsg').value='';
+
+  fetch('/api/rsvp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
+  });
+
   showToast('Confirmed · Thank You');
-  window.scrollTo({top:document.querySelector('.wishes-section').offsetTop-80,behavior:'smooth'});
+  setTimeout(() => location.reload(), 2000);
 }
 function copyText(text,btn){
   navigator.clipboard.writeText(text).then(()=>{

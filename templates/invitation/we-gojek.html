@@ -2404,14 +2404,22 @@
                     memberi merupakan tanda kasih, kami dengan senang hati menerimanya.</p>
             </div>
             <div class="gift-cards">
-                    {% for account in invitation.gift_accounts %}
+                {% for account in invitation.gift_accounts %}
+                <div class="gift-card reveal">
                     <div class="gift-card-glow"></div>
                     <div class="gift-bank-chip">
-                        <div class="gift-bank-chip-icon"
-                            style="background:#005BAA;color:white;font-size:9px;font-weight:900;border-radius:4px;padding:2px">
-                            {{ account.bank_name }}</div>
-                    {% endfor %}
+                        <div class="gift-bank-chip-icon" style="background:#005BAA;color:white;font-size:9px;font-weight:900;border-radius:4px;padding:2px">{{ account.bank_name }}</div>
+                        <div class="gift-bank-chip-name">{{ account.bank_name }}</div>
+                    </div>
+                    <div class="gift-acct-name">{{ account.account_holder }}</div>
+                    <div class="gift-number">{{ account.account_number }}</div>
+                    <button class="copy-btn" onclick="copyText('{{ account.account_number }}', this)">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                        Salin Nomor
+                    </button>
                 </div>
+                {% endfor %}
+            </div>
         </section>
 
         <!-- RSVP -->
@@ -2764,13 +2772,15 @@
             const name = document.getElementById('rsvpName').value.trim();
             const status = document.getElementById('rsvpStatus').value;
             const msg = document.getElementById('rsvpMsg').value.trim();
+            
+            if (!name || !status) { showToast('⚠️ Mohon isi nama dan status kehadiran'); return; }
+
             fetch('/api/rsvp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
             });
 
-            if (!name || !status) { showToast('⚠️ Mohon isi nama dan status kehadiran'); return; }
             const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             const colors = ['#00AA13', '#4a9eff', '#ff6b6b', '#FFD600', '#c084fc', '#FF6D00'];
             const color = colors[Math.floor(Math.random() * colors.length)];
@@ -2780,11 +2790,12 @@
             card.innerHTML = `<div class="wish-header"><div class="wish-avatar" style="background:${color};color:${color === '#FFD600' ? '#000' : '#fff'}">${initials}</div><div><div class="wish-name">${name}</div><div class="wish-status">${statusText}</div></div></div><div class="wish-text">${msg || 'Selamat dan semoga bahagia selalu! 💚'}</div>`;
             document.getElementById('wishesList').prepend(card);
             setTimeout(() => card.classList.add('visible'), 50);
+            
             document.getElementById('rsvpName').value = '';
             document.getElementById('rsvpStatus').value = '';
             document.getElementById('rsvpMsg').value = '';
             showToast('🎉 Terima kasih! Konfirmasi berhasil');
-            window.scrollTo({ top: document.querySelector('.wishes-section').offsetTop - 80, behavior: 'smooth' });
+            setTimeout(() => location.reload(), 2000);
         }
 
         /* ── COPY ── */

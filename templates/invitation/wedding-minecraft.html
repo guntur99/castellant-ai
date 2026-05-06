@@ -1242,9 +1242,6 @@ option { font-family: sans-serif; font-size: 14px; }
 <div id="opening">
   <!-- Stars -->
   
-                    {% for account in invitation.gift_accounts %}
-                    
-                    {% for account in invitation.gift_accounts %}
                     <div class="stars" id="starsEl"></div>
   <div class="moon"></div>
 
@@ -1430,7 +1427,7 @@ option { font-family: sans-serif; font-size: 14px; }
       </div>
       <div class="pc-body">
         <div class="pc-skin">
-          <img src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="Anita">
+          <img src="{{ invitation.bride.image_url }}" alt="Anita">
         </div>
         <div class="pc-info">
           <p class="pc-role">Mempelai Wanita</p>
@@ -1457,7 +1454,7 @@ option { font-family: sans-serif; font-size: 14px; }
       </div>
       <div class="pc-body">
         <div class="pc-skin">
-          <img src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="Zarda">
+          <img src="{{ invitation.groom.image_url }}" alt="Zarda">
         </div>
         <div class="pc-info">
           <p class="pc-role">Mempelai Pria</p>
@@ -1554,6 +1551,7 @@ option { font-family: sans-serif; font-size: 14px; }
     Doa restu sudah lebih dari cukup.<br>Namun jika berkenan, kami menerimanya.
   </p>
   <div class="chest-cards">
+    {% for account in invitation.gift_accounts %}
     <div class="chest reveal rd1">
       <div class="chest-lid">
         <span class="chest-lid-txt">TREASURE CHEST</span>
@@ -1563,13 +1561,10 @@ option { font-family: sans-serif; font-size: 14px; }
         <div class="chest-bank">{{ account.bank_name }}</div>
         <div class="chest-holder">{{ account.account_holder }}</div>
         <div class="chest-number">{{ account.account_number }}</div>
-                    {% endfor %}
-                
         <button class="chest-copy" onclick="copyNum('{{ account.account_number }}',this)">⬡ SALIN NOMOR</button>
       </div>
-                    {% endfor %}
-                
     </div>
+    {% endfor %}
   </div>
 </section>
 
@@ -1579,9 +1574,9 @@ option { font-family: sans-serif; font-size: 14px; }
     <p class="mc-eyebrow reveal" style="justify-content:flex-start">Inventory</p>
     <h2 class="mc-heading reveal" style="margin-bottom:32px">KONFIRMASI<br>KEHADIRAN</h2>
     <div class="rsvp-stats reveal">
-      <div class="rs-slot"><div class="rs-n">7</div><div class="rs-l">Respons</div></div>
-      <div class="rs-slot"><div class="rs-n">7</div><div class="rs-l">Hadir</div></div>
-      <div class="rs-slot"><div class="rs-n">13</div><div class="rs-l">Tamu</div></div>
+      <div class="rs-slot"><div class="rs-n">{{ invitation.total_rsvps() }}</div><div class="rs-l">Respons</div></div>
+      <div class="rs-slot"><div class="rs-n">{{ invitation.total_hadir() }}</div><div class="rs-l">Hadir</div></div>
+      <div class="rs-slot"><div class="rs-n">{{ invitation.total_guest_count() }}</div><div class="rs-l">Tamu</div></div>
     </div>
     <div class="fg"><label class="fl">Nama Lengkap</label><input class="fi" id="rName" type="text" placeholder="Enter name..."></div>
     <div class="fg"><label class="fl">Konfirmasi Hadir</label>
@@ -1822,10 +1817,17 @@ function submitRSVP(){
   const st=document.getElementById('rStatus').value;
   const msg=document.getElementById('rMsg').value.trim();
   if(!nm||!st){showToast('Fill in name & status first!');return;}
+
+  fetch('/api/rsvp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(nm)}&attendance=${encodeURIComponent(st)}&guests=${typeof guestN !== 'undefined' ? guestN : 1}&message=${encodeURIComponent(msg)}`
+  });
+
   const init=nm.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
   const cols=['var(--grass-dark)','var(--diamond)','var(--lava)','var(--gold)','#6600AA'];
   const col=cols[Math.floor(Math.random()*cols.length)];
-  const stTxt=st==='hadir'?`✔ Hadir · ${guestN} tamu`:'✘ Tidak Hadir';
+  const stTxt=st==='hadir'?`✔ Hadir · ${typeof guestN !== 'undefined' ? guestN : 1} tamu`:'✘ Tidak Hadir';
   const card=document.createElement('div');
   card.className='wish-card';
   card.innerHTML=`<div class="wh"><div class="wa" style="background:${col}">${init}</div><div><div class="wn">${nm}</div><div class="ws">${stTxt}</div></div></div><p class="wt">${msg||'Selamat & bahagia selalu! ⚔'}</p>`;

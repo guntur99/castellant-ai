@@ -1753,9 +1753,6 @@
     <!-- ══ OPENING ══ -->
     <div id="opening">
         
-                    {% for account in invitation.gift_accounts %}
-                    
-                    {% for account in invitation.gift_accounts %}
                     <div class="op-qris-logo">
             <div class="qris-letter qris-q">Q</div>
             <div class="qris-letter qris-r">R</div>
@@ -1788,7 +1785,7 @@
             <div class="op-tag-dot"></div>Scan untuk hadir
         </div>
         <div class="op-title">UNDANGAN PERNIKAHAN · INDONESIA</div>
-        <div class="op-names">{{ account.account_holder }} & Gunturr</div>
+        <div class="op-names">{{ invitation.couple_name_short }}</div>
         <div class="op-nominal">Rp <span>HADIR</span></div>
 
         <div class="op-dear">
@@ -1847,7 +1844,7 @@
                 <div class="card-header">
                     <div class="ch-merchant">
                         <div class="ch-merchant-label">Nama Merchant</div>
-                        <div class="ch-merchant-name">{{ account.account_holder }} & Gunturr</div>
+                        <div class="ch-merchant-name">{{ invitation.couple_name_short }}</div>
                         <div class="ch-merchant-id">MID: WEDDING·24052026·TANGERANG</div>
                     </div>
                     <div class="ch-status">
@@ -1968,8 +1965,8 @@
 
                     <!-- Bank logos -->
                     <div class="bank-logos-row">
-                        <span class="bank-logo-pill bca">{{ account.bank_name }}</span>
-                        <span class="bank-logo-pill bni">{{ account.bank_name }}</span>
+                        <span class="bank-logo-pill bca"></span>
+                        <span class="bank-logo-pill bni"></span>
                         <span class="bank-logo-pill bri">BRI</span>
                         <span class="bank-logo-pill mandiri">MANDIRI</span>
                         <span class="bank-logo-pill gopay">GoPay</span>
@@ -2001,7 +1998,7 @@
                     </div>
                     <div class="info-row">
                         <span class="ir-key">Merchant</span>
-                        <span class="ir-val">{{ account.account_holder }} & Gunturr Wedding</span>
+                        <span class="ir-val">{{ invitation.couple_name_short }} Wedding</span>
                     </div>
                     <div class="info-row">
                         <span class="ir-key">Tanggal</span>
@@ -2092,20 +2089,20 @@
                     <div class="couple-grid">
                         <div class="c-card">
                             <div class="c-av"><img
-                                    src="https://images.unsplash.com/photo-{{ account.account_number }}775-53994a69daeb?w=200&h=200&fit=crop&q=80"
-                                    alt="{{ account.account_holder }}"></div>
-                            <div class="c-role">🌸 Mempelai W{{ account.account_holder }}</div>
-                            <div class="c-name">{{ account.account_holder }}, S.Kom</div>
+                                    src="{{ invitation.bride.image_url }}"
+                                    alt="{{ invitation.bride.name }}"></div>
+                            <div class="c-role">🌸 Mempelai Wanita</div>
+                            <div class="c-name">{{ invitation.bride.name }}, S.Kom</div>
                             <div class="c-parents">Putri Pertama dari<br><strong>Bpk. Taryono &<br>Ibu Wiwit
                                     Jayanti</strong></div>
                         </div>
                         <div class="c-amp">&</div>
                         <div class="c-card">
                             <div class="c-av"><img
-                                    src="https://images.unsplash.com/photo-{{ account.account_number }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80"
-                                    alt="Guntur"></div>
+                                    src="{{ invitation.groom.image_url }}"
+                                    alt="{{ invitation.groom.name }}"></div>
                             <div class="c-role">🤵 Mempelai Pria</div>
-                            <div class="c-name">{{ account.account_holder }}, S.Kom</div>
+                            <div class="c-name">{{ invitation.groom.name }}, S.Kom</div>
                             <div class="c-parents">Putra Kedua dari<br><strong>Bpk. Wan Sabran, M.MAR &<br>Ibu Titik
                                     Sundari, M.Si</strong></div>
                         </div>
@@ -2162,7 +2159,7 @@
                     <div class="sc-head-icon" style="background:var(--qr-blue)">💛</div>
                     <div>
                         <div class="sc-head-title">Riwayat Transaksi</div>
-                        <div class="sc-head-sub">Love Story {{ account.account_holder }} & Gunturr</div>
+                        <div class="sc-head-sub">Love Story {{ invitation.couple_name_short }}</div>
                     </div>
                 </div>
                 <div class="sc-body">
@@ -2229,17 +2226,16 @@
                 <div class="sc-body">
                     <p style="font-size:12px;color:var(--qr-sub);line-height:1.7;margin-bottom:14px">Doa restu sudah
                         sangat cukup. Namun jika memberi adalah tanda kasih, kami dengan tulus menerimanya.</p>
+                    {% for account in invitation.gift_accounts %}
                     <div class="gift-receipt">
                         <div class="gr-bank">Bank</div>
                         <div class="gr-name">{{ account.bank_name }}</div>
                         <div class="gr-holder">{{ account.account_holder }}</div>
                         <div class="gr-num">{{ account.account_number }}</div>
-                    {% endfor %}
-                <br>
+                        <br>
                         <button class="copy-btn" onclick="copyAcc('{{ account.account_number }}',this)">Salin Nomor</button>
                     </div>
                     {% endfor %}
-                
                 </div>
             </div>
 
