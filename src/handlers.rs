@@ -6,7 +6,7 @@ use axum::{
     Json,
 };
 use askama::Template;
-use crate::models::{Invitation, Person, EventDetails, Quote, GiftAccount, RsvpForm, Rsvp, InvitationRow, Song, User, AiSession, Guest, GuestGroup, Booking, Voucher};
+use crate::models::{Invitation, Person, EventDetails, Quote, GiftAccount, RsvpForm, Rsvp, InvitationRow, Song, User, AiSession, Guest, GuestGroup, Booking, Voucher, InvitationTemplate};
 use crate::AppState;
 mod filters {
     pub use crate::filters::*;
@@ -30,9 +30,54 @@ struct MayarInvoiceRequest {
     mobile: String,
     #[serde(rename = "redirectUrl")]
     redirect_url: String,
-    items: Vec<MayarItem>,
+    pub items: Vec<MayarItem>,
     #[serde(rename = "extraData")]
-    extra_data: HashMap<String, String>,
+    pub extra_data: HashMap<String, String>,
+}
+
+async fn process_and_save_image(
+    s3: &aws_sdk_s3::Client,
+    bucket: &str,
+    data: axum::body::Bytes,
+    save_path: String,
+    max_dim: u32,
+) -> bool {
+    // 1. Process image in blocking task (CPU intensive)
+    let processed_data = tokio::task::spawn_blocking(move || {
+        if let Ok(img) = image::load_from_memory(&data) {
+            let scaled = if img.width() > max_dim || img.height() > max_dim {
+                img.resize(max_dim, max_dim, image::imageops::FilterType::Lanczos3)
+            } else {
+                img
+            };
+            
+            let mut buffer = std::io::Cursor::new(Vec::new());
+            if scaled.write_to(&mut buffer, image::ImageFormat::WebP).is_ok() {
+                return Some(buffer.into_inner());
+            }
+        }
+        None
+    }).await.unwrap_or(None);
+
+    // 2. Upload to S3 if processed successfully
+    if let Some(bytes) = processed_data {
+        let body = aws_sdk_s3::primitives::ByteStream::from(bytes);
+        // Remove leading slash for S3 key if present
+        let key = save_path.trim_start_matches('/');
+        
+        let res = s3
+            .put_object()
+            .bucket(bucket)
+            .key(key)
+            .body(body)
+            .content_type("image/webp")
+            .send()
+            .await;
+            
+        return res.is_ok();
+    }
+    
+    false
 }
 
 #[derive(Serialize)]
@@ -60,7 +105,7 @@ struct MayarInvoiceResponse {
 #[template(path = "invitation/create.html")]
 pub struct CreateInvitationTemplate {
     pub user: Option<User>,
-    pub all_templates: Vec<TemplateMetadata>,
+    pub all_templates: Vec<InvitationTemplate>,
     pub is_dev: bool,
 }
 
@@ -105,37 +150,27 @@ pub struct AiGenerateResponse {
 }
 
 #[derive(Serialize, Clone, sqlx::FromRow, Debug)]
-pub struct TemplateMetadata {
-    pub id: String,
-    pub slug: String,
-    pub title: String,
-    #[sqlx(rename = "description")]
-    pub desc: String,
-    pub category: String,
-    pub preview_img: String,
-    pub status: String,
-    pub is_featured: bool,
-}
+
 
 #[derive(Template)]
 #[template(path = "invitation/templates_list.html")]
 pub struct TemplatesListTemplate {
     pub user: Option<User>,
     pub active_category: String,
-    pub templates: Vec<TemplateMetadata>,
+    pub templates: Vec<InvitationTemplate>,
     pub current_page: i32,
     pub total_pages: i32,
     pub search_query: String,
     pub is_dev: bool,
 }
 
-pub async fn get_all_templates(db: &sqlx::PgPool, only_published: bool) -> Vec<TemplateMetadata> {
+pub async fn get_all_templates(db: &sqlx::PgPool, only_published: bool) -> Vec<InvitationTemplate> {
     let query = if only_published {
         "SELECT * FROM templates WHERE status = 'PUBLISHED' ORDER BY created_at DESC"
     } else {
         "SELECT * FROM templates ORDER BY created_at DESC"
     };
-    sqlx::query_as::<_, TemplateMetadata>(query)
+    sqlx::query_as::<_, InvitationTemplate>(query)
         .fetch_all(db)
         .await
         .unwrap_or_default()
@@ -168,7 +203,7 @@ pub async fn templates_list(
     let page = params.get("page").and_then(|p| p.parse::<i32>().ok()).unwrap_or(1);
     let per_page = 6;
 
-    let filtered: Vec<TemplateMetadata> = templates_data.into_iter()
+    let filtered: Vec<InvitationTemplate> = templates_data.into_iter()
         .filter(|t| category == "all" || t.category == category)
         .filter(|t| search.is_empty() || t.title.to_lowercase().contains(&search) || t.desc.to_lowercase().contains(&search))
         .collect();
@@ -702,7 +737,7 @@ pub struct HomeTemplate {
     pub user: Option<User>,
     #[allow(dead_code)]
     pub invitations: Vec<InvitationRow>,
-    pub templates: Vec<TemplateMetadata>,
+    pub templates: Vec<InvitationTemplate>,
     #[allow(dead_code)]
     pub is_dev: bool,
 }
@@ -1548,7 +1583,7 @@ pub struct WeddingIndomieGorengTemplate {
 #[template(path = "invitation/manage.html")]
 pub struct ManageInvitationTemplate {
     pub invitation: Invitation,
-    pub all_templates: Vec<TemplateMetadata>,
+    pub all_templates: Vec<InvitationTemplate>,
     pub is_dev: bool,
     pub user: Option<User>,
     pub guests: Vec<Guest>,
@@ -1724,7 +1759,7 @@ pub async fn home(
         }
     }
 
-    let templates = sqlx::query_as::<_, TemplateMetadata>(
+    let templates = sqlx::query_as::<_, InvitationTemplate>(
         "SELECT * FROM templates WHERE status = 'PUBLISHED' AND is_featured = TRUE ORDER BY id ASC"
     )
     .fetch_all(&state.db)
@@ -2308,22 +2343,22 @@ pub async fn update_invitation(
         let name = field.name().unwrap().to_string();
         
         if name == "gallery[]" {
-            let filename = Uuid::new_v4().to_string() + ".jpg";
+            let filename = Uuid::new_v4().to_string() + ".webp";
             let path = format!("static/uploads/{}", filename);
-            let data = field.bytes().await.unwrap();
+            let data = field.bytes().await.unwrap_or_default();
             if !data.is_empty() {
-                std::fs::create_dir_all("static/uploads").unwrap();
-                std::fs::write(&path, data).unwrap();
-                gallery_paths.push(format!("/{}", path));
+                if process_and_save_image(&state.s3_client, &state.s3_bucket, data, path.clone(), 1600).await {
+                    gallery_paths.push(format!("https://{}.t3.storageapi.dev/{}", state.s3_bucket, path));
+                }
             }
         } else if name.ends_with("_photo") {
-            let filename = Uuid::new_v4().to_string() + ".jpg";
+            let filename = Uuid::new_v4().to_string() + ".webp";
             let path = format!("static/uploads/{}", filename);
-            let data = field.bytes().await.unwrap();
+            let data = field.bytes().await.unwrap_or_default();
             if !data.is_empty() {
-                std::fs::create_dir_all("static/uploads").unwrap();
-                std::fs::write(&path, data).unwrap();
-                photo_paths.insert(name, format!("/{}", path));
+                if process_and_save_image(&state.s3_client, &state.s3_bucket, data, path.clone(), 1600).await {
+                    photo_paths.insert(name, format!("https://{}.t3.storageapi.dev/{}", state.s3_bucket, path));
+                }
             }
         } else if name == "bank_name[]" {
             bank_names.push(field.text().await.unwrap_or_default());
@@ -3920,4 +3955,390 @@ fn format_date_for_display(date_str: &str) -> String {
     }
 
     date_str.to_string()
+}
+
+// --- Admin Template Management ---
+
+#[derive(Template)]
+#[template(path = "admin/templates.html")]
+pub struct AdminTemplatesTemplate {
+    pub user: Option<User>,
+    pub templates: Vec<InvitationTemplate>,
+    pub is_dev: bool,
+    pub current_page: i32,
+    pub total_pages: i32,
+    pub total_count: i64,
+    pub published_count: i64,
+    pub draft_count: i64,
+    pub pagination_range: Vec<String>,
+}
+
+#[derive(Template)]
+#[template(path = "admin/template_form.html")]
+pub struct AdminTemplateFormTemplate {
+    pub user: Option<User>,
+    pub template: Option<InvitationTemplate>,
+    pub is_dev: bool,
+}
+
+pub async fn admin_templates(
+    State(state): State<AppState>,
+    Query(params): Query<HashMap<String, String>>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user = get_user_from_jar(&state.db, &jar).await;
+    if !is_superadmin(&user) {
+        return (StatusCode::FORBIDDEN, "Admin access required").into_response();
+    }
+
+    let page = params.get("page").and_then(|p| p.parse::<i32>().ok()).unwrap_or(1);
+    let per_page = 10;
+    let offset = (page - 1) * per_page;
+
+    let templates = sqlx::query_as::<_, InvitationTemplate>("SELECT * FROM templates ORDER BY is_featured DESC, created_at DESC LIMIT $1 OFFSET $2")
+        .bind(per_page as i64)
+        .bind(offset as i64)
+        .fetch_all(&state.db)
+        .await
+        .unwrap_or_default();
+
+    let stats: (i64, i64, i64) = sqlx::query_as(
+        "SELECT COUNT(*), COUNT(*) FILTER (WHERE status = 'PUBLISHED'), COUNT(*) FILTER (WHERE status = 'DRAFT') FROM templates"
+    )
+    .fetch_one(&state.db)
+    .await
+    .unwrap_or((0, 0, 0));
+    
+    let total_count = stats.0;
+    let published_count = stats.1;
+    let draft_count = stats.2;
+    let total_pages = (total_count as f64 / per_page as f64).ceil() as i32;
+
+    // Smart Pagination Range (e.g. 1, 2, ..., 5, 6, 7, ..., 18)
+    let mut pagination_range = Vec::new();
+    if total_pages <= 7 {
+        for i in 1..=total_pages {
+            pagination_range.push(i.to_string());
+        }
+    } else {
+        pagination_range.push("1".to_string());
+        
+        let start = if page > 3 { page - 1 } else { 2 };
+        let end = if page < total_pages - 2 { page + 1 } else { total_pages - 1 };
+        
+        if start > 2 {
+            pagination_range.push("...".to_string());
+        }
+        
+        for i in start..=end {
+            pagination_range.push(i.to_string());
+        }
+        
+        if end < total_pages - 1 {
+            pagination_range.push("...".to_string());
+        }
+        
+        pagination_range.push(total_pages.to_string());
+    }
+
+    HtmlTemplate(AdminTemplatesTemplate {
+        user,
+        templates,
+        is_dev: state.is_dev,
+        current_page: page,
+        total_pages,
+        total_count,
+        published_count,
+        draft_count,
+        pagination_range,
+    }).into_response()
+}
+
+pub async fn admin_templates_new(
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user = get_user_from_jar(&state.db, &jar).await;
+    if !is_superadmin(&user) {
+        return (StatusCode::FORBIDDEN, "Admin access required").into_response();
+    }
+
+    HtmlTemplate(AdminTemplateFormTemplate {
+        user,
+        template: None,
+        is_dev: state.is_dev,
+    }).into_response()
+}
+
+pub async fn admin_templates_create(
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+    mut multipart: Multipart,
+) -> impl IntoResponse {
+    let user = get_user_from_jar(&state.db, &jar).await;
+    if !is_superadmin(&user) {
+        return (StatusCode::FORBIDDEN, "Admin access required").into_response();
+    }
+
+    let mut id = String::new();
+    let mut slug = String::new();
+    let mut title = String::new();
+    let mut desc = String::new();
+    let mut category = String::new();
+    let mut preview_img = String::new();
+    let mut status = String::new();
+    let mut is_featured = false;
+
+    while let Some(field) = multipart.next_field().await.unwrap_or(None) {
+        let name = field.name().unwrap_or("").to_string();
+        
+        match name.as_str() {
+            "id" => id = field.text().await.unwrap_or_default(),
+            "slug" => slug = field.text().await.unwrap_or_default(),
+            "title" => title = field.text().await.unwrap_or_default(),
+            "desc" => desc = field.text().await.unwrap_or_default(),
+            "category" => category = field.text().await.unwrap_or_default(),
+            "preview_img" => {
+                let text = field.text().await.unwrap_or_default();
+                if !text.is_empty() {
+                    preview_img = text;
+                }
+            },
+            "status" => status = field.text().await.unwrap_or_default(),
+            "is_featured" => is_featured = true,
+            "preview_file" => {
+                if let Some(file_name) = field.file_name().map(|s| s.to_string()) {
+                    if !file_name.is_empty() {
+                        let data = field.bytes().await.unwrap_or_default();
+                        if !data.is_empty() {
+                            let save_name = if !id.is_empty() { id.clone() } else { Uuid::new_v4().to_string() };
+                            let path = format!("static/img/templates/{}.webp", save_name);
+                            if process_and_save_image(&state.s3_client, &state.s3_bucket, data, path.clone(), 1200).await {
+                                preview_img = format!("https://{}.t3.storageapi.dev/{}", state.s3_bucket, path);
+                            }
+                        }
+                    }
+                }
+            },
+            _ => {}
+        }
+    }
+
+    let res = sqlx::query(
+        "INSERT INTO templates (id, slug, title, description, category, preview_img, status, is_featured) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)"
+    )
+    .bind(&id)
+    .bind(&slug)
+    .bind(&title)
+    .bind(&desc)
+    .bind(&category)
+    .bind(&preview_img)
+    .bind(&status)
+    .bind(is_featured)
+    .execute(&state.db)
+    .await;
+
+    match res {
+        Ok(_) => Redirect::to("/admin/templates").into_response(),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to create template: {}", e)).into_response(),
+    }
+}
+
+pub async fn admin_templates_edit(
+    State(state): State<AppState>,
+    Path(id): Path<String>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user = get_user_from_jar(&state.db, &jar).await;
+    if !is_superadmin(&user) {
+        return (StatusCode::FORBIDDEN, "Admin access required").into_response();
+    }
+
+    let template = sqlx::query_as::<_, InvitationTemplate>("SELECT * FROM templates WHERE id = $1")
+        .bind(&id)
+        .fetch_optional(&state.db)
+        .await
+        .unwrap_or(None);
+
+    if let Some(t) = template {
+        HtmlTemplate(AdminTemplateFormTemplate {
+            user,
+            template: Some(t),
+            is_dev: state.is_dev,
+        }).into_response()
+    } else {
+        (StatusCode::NOT_FOUND, "Template not found").into_response()
+    }
+}
+
+pub async fn admin_templates_update(
+    State(state): State<AppState>,
+    Path(id): Path<String>,
+    jar: PrivateCookieJar,
+    mut multipart: Multipart,
+) -> impl IntoResponse {
+    let user = get_user_from_jar(&state.db, &jar).await;
+    if !is_superadmin(&user) {
+        return (StatusCode::FORBIDDEN, "Admin access required").into_response();
+    }
+
+    let mut slug = String::new();
+    let mut title = String::new();
+    let mut desc = String::new();
+    let mut category = String::new();
+    let mut preview_img = String::new();
+    let mut status = String::new();
+    let mut is_featured = false;
+
+    // First fetch current template to get existing preview_img as fallback
+    let current = sqlx::query!("SELECT preview_img FROM templates WHERE id = $1", id)
+        .fetch_optional(&state.db)
+        .await
+        .unwrap_or(None);
+    
+    if let Some(c) = current {
+        preview_img = c.preview_img;
+    }
+
+    while let Some(field) = multipart.next_field().await.unwrap_or(None) {
+        let name = field.name().unwrap_or("").to_string();
+        
+        match name.as_str() {
+            "slug" => slug = field.text().await.unwrap_or_default(),
+            "title" => title = field.text().await.unwrap_or_default(),
+            "desc" => desc = field.text().await.unwrap_or_default(),
+            "category" => category = field.text().await.unwrap_or_default(),
+            "preview_img" => {
+                let text = field.text().await.unwrap_or_default();
+                if !text.is_empty() {
+                    preview_img = text;
+                }
+            },
+            "status" => status = field.text().await.unwrap_or_default(),
+            "is_featured" => is_featured = true,
+            "preview_file" => {
+                if let Some(file_name) = field.file_name().map(|s| s.to_string()) {
+                    if !file_name.is_empty() {
+                        let data = field.bytes().await.unwrap_or_default();
+                        if !data.is_empty() {
+                            let path = format!("static/img/templates/{}.webp", id);
+                            if process_and_save_image(&state.s3_client, &state.s3_bucket, data, path.clone(), 1200).await {
+                                preview_img = format!("https://{}.t3.storageapi.dev/{}", state.s3_bucket, path);
+                            }
+                        }
+                    }
+                }
+            },
+            _ => {}
+        }
+    }
+
+    let res = sqlx::query(
+        "UPDATE templates SET slug = $1, title = $2, description = $3, category = $4, preview_img = $5, status = $6, is_featured = $7, updated_at = NOW() WHERE id = $8"
+    )
+    .bind(&slug)
+    .bind(&title)
+    .bind(&desc)
+    .bind(&category)
+    .bind(&preview_img)
+    .bind(&status)
+    .bind(is_featured)
+    .bind(&id)
+    .execute(&state.db)
+    .await;
+
+    match res {
+        Ok(_) => Redirect::to("/admin/templates").into_response(),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to update template: {}", e)).into_response(),
+    }
+}
+
+pub async fn admin_templates_toggle_status(
+    State(state): State<AppState>,
+    Path(id): Path<String>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user = get_user_from_jar(&state.db, &jar).await;
+    if !is_superadmin(&user) {
+        return (StatusCode::FORBIDDEN, "Admin access required").into_response();
+    }
+
+    let res = sqlx::query(
+        "UPDATE templates SET status = CASE WHEN status = 'PUBLISHED' THEN 'DRAFT' ELSE 'PUBLISHED' END, updated_at = NOW() WHERE id = $1"
+    )
+    .bind(&id)
+    .execute(&state.db)
+    .await;
+
+    match res {
+        Ok(_) => Redirect::to("/admin/templates").into_response(),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to toggle status: {}", e)).into_response(),
+    }
+}
+
+pub async fn admin_templates_toggle_featured(
+    State(state): State<AppState>,
+    Path(id): Path<String>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user = get_user_from_jar(&state.db, &jar).await;
+    if !is_superadmin(&user) {
+        return (StatusCode::FORBIDDEN, "Admin access required").into_response();
+    }
+
+    let res = sqlx::query(
+        "UPDATE templates SET is_featured = NOT is_featured, updated_at = NOW() WHERE id = $1"
+    )
+    .bind(&id)
+    .execute(&state.db)
+    .await;
+
+    match res {
+        Ok(_) => Redirect::to("/admin/templates").into_response(),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to toggle featured: {}", e)).into_response(),
+    }
+}
+
+pub async fn admin_templates_delete(
+    State(state): State<AppState>,
+    Path(id): Path<String>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user = get_user_from_jar(&state.db, &jar).await;
+    if !is_superadmin(&user) {
+        return (StatusCode::FORBIDDEN, "Admin access required").into_response();
+    }
+
+    let res = sqlx::query("DELETE FROM templates WHERE id = $1")
+        .bind(&id)
+        .execute(&state.db)
+        .await;
+
+    match res {
+        Ok(_) => Redirect::to("/admin/templates").into_response(),
+        Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to delete template: {}", e)).into_response(),
+    }
+}
+
+// --- Helpers ---
+
+async fn get_user_from_jar(db: &sqlx::PgPool, jar: &PrivateCookieJar) -> Option<User> {
+    if let Some(cookie) = jar.get("user_id") {
+        let uid = Uuid::parse_str(cookie.value()).ok();
+        if let Some(id) = uid {
+            sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
+                .bind(id)
+                .fetch_optional(db)
+                .await
+                .unwrap_or(None)
+        } else { None }
+    } else { None }
+}
+
+fn is_superadmin(user: &Option<User>) -> bool {
+    if let Some(u) = user {
+        u.role == "SUPERADMIN"
+    } else {
+        false
+    }
 }

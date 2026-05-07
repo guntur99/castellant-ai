@@ -1,0 +1,228 @@
+{% extends "site_base.html" %}
+
+{% block site_content %}
+<section class="container" style="padding: 100px 0;">
+    <div style="margin-bottom: 4rem;" class="animate__animated animate__fadeIn">
+        <a href="/admin/templates" style="color: var(--color-accent-rose); text-decoration: none; font-size: 0.9rem; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 1.5rem;">
+            <i class="fas fa-arrow-left"></i> Back to Templates
+        </a>
+        <h1 class="serif" style="font-size: 3rem; margin-bottom: 1rem;">
+            {% if template.is_some() %} Edit <em>Template</em> {% else %} Add <em>New Template</em> {% endif %}
+        </h1>
+        <p style="color: var(--color-text-muted);">Define the architectural identity of this invitation estate.</p>
+    </div>
+
+    <div class="form-container animate__animated animate__fadeInUp">
+        <form action="{% if let Some(t) = template %} /admin/templates/{{ t.id }}/update {% else %} /admin/templates/create {% endif %}" method="POST" enctype="multipart/form-data">
+            <div class="form-grid">
+                <!-- Core Identity -->
+                <div class="form-section">
+                    <h3 class="section-title">Core Identity</h3>
+                    
+                    <div class="input-group">
+                        <label for="id">Template ID (Askama Struct Name)</label>
+                        <input type="text" id="id" name="id" value="{% if let Some(t) = template %}{{ t.id }}{% endif %}" placeholder="e.g. wedding-github" required {% if template.is_some() %} readonly style="background: #f5f5f5;" {% endif %}>
+                        <small>Must match the Rust struct name in <code>handlers.rs</code>.</small>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="slug">Public Slug</label>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="color: #999;">/invitation/</span>
+                            <input type="text" id="slug" name="slug" value="{% if let Some(t) = template %}{{ t.slug }}{% endif %}" placeholder="e.g. github-theme" required style="flex: 1;">
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="title">Friendly Title</label>
+                        <input type="text" id="title" name="title" value="{% if let Some(t) = template %}{{ t.title }}{% endif %}" placeholder="e.g. Code Love (GitHub Theme)" required>
+                    </div>
+                </div>
+
+                <!-- Visuals & Categorization -->
+                <div class="form-section">
+                    <h3 class="section-title">Visuals & Category</h3>
+
+                    <div class="input-group">
+                        <label for="category">Category</label>
+                        <select id="category" name="category" required>
+                            <option value="social" {% if let Some(t) = template %}{% if t.category == "social" %} selected {% endif %}{% endif %}>Social</option>
+                            <option value="entertainment" {% if let Some(t) = template %}{% if t.category == "entertainment" %} selected {% endif %}{% endif %}>Entertainment</option>
+                            <option value="e-commerce" {% if let Some(t) = template %}{% if t.category == "e-commerce" %} selected {% endif %}{% endif %}>E-Commerce</option>
+                            <option value="on-demand" {% if let Some(t) = template %}{% if t.category == "on-demand" %} selected {% endif %}{% endif %}>On-Demand</option>
+                            <option value="productivity" {% if let Some(t) = template %}{% if t.category == "productivity" %} selected {% endif %}{% endif %}>Productivity</option>
+                            <option value="comic" {% if let Some(t) = template %}{% if t.category == "comic" %} selected {% endif %}{% endif %}>Comic</option>
+                            <option value="game" {% if let Some(t) = template %}{% if t.category == "game" %} selected {% endif %}{% endif %}>Game</option>
+                        </select>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Preview Image</label>
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <div>
+                                <label for="preview_img" style="font-size: 0.6rem; margin-bottom: 4px; opacity: 0.7;">Option 1: CDN / URL Link</label>
+                                <input type="text" id="preview_img" name="preview_img" value="{% if let Some(t) = template %}{{ t.preview_img }}{% endif %}" placeholder="/static/img/preview.png">
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div style="flex: 1;">
+                                    <label for="preview_file" style="font-size: 0.6rem; margin-bottom: 4px; opacity: 0.7;">Option 2: Upload Local File</label>
+                                    <input type="file" id="preview_file" name="preview_file" accept="image/*" style="padding: 0.8rem 1rem;">
+                                </div>
+                                {% if let Some(t) = template %}
+                                <div style="text-align: center;">
+                                    <img src="{{ t.preview_img }}" style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid #eee;">
+                                    <div style="font-size: 0.5rem; color: #999; margin-top: 4px;">Current</div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <small style="display: block; margin-top: 8px; color: #999;">If a file is uploaded, it will take priority over the URL link.</small>
+                    </div>
+
+                    <div class="input-group">
+                        <label for="desc">Description</label>
+                        <textarea id="desc" name="desc" rows="4" placeholder="Marketing description for the template gallery..." required>{% if let Some(t) = template %}{{ t.desc }}{% endif %}</textarea>
+                    </div>
+                </div>
+
+                <!-- Settings -->
+                <div class="form-section full-width">
+                    <h3 class="section-title">Visibility & Status</h3>
+                    
+                    <div style="display: flex; gap: 40px; align-items: center;">
+                        <div class="input-group">
+                            <label for="status">Publish Status</label>
+                            <select id="status" name="status" style="width: 200px;">
+                                <option value="PUBLISHED" {% if let Some(t) = template %}{% if t.status == "PUBLISHED" %} selected {% endif %}{% else %} selected {% endif %}>PUBLISHED</option>
+                                <option value="DRAFT" {% if let Some(t) = template %}{% if t.status == "DRAFT" %} selected {% endif %}{% endif %}>DRAFT</option>
+                            </select>
+                        </div>
+
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="is_featured" name="is_featured" {% if let Some(t) = template %}{% if t.is_featured %} checked {% endif %}{% endif %}>
+                            <label for="is_featured">Feature on Homepage</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 3rem; display: flex; justify-content: flex-end; gap: 1.5rem;">
+                <button type="reset" class="btn-cancel">Reset Changes</button>
+                <button type="submit" class="btn-luxury" style="padding: 1.2rem 4rem;">
+                    {% if template.is_some() %} Save Changes {% else %} Create Template {% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<style>
+    .form-container {
+        background: white;
+        padding: 4rem;
+        border-radius: 40px;
+        box-shadow: 0 25px 70px rgba(0,0,0,0.04);
+        border: 1px solid #f0f0f0;
+        max-width: 1000px;
+        margin: 0 auto;
+    }
+
+    .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4rem;
+    }
+
+    .form-section.full-width {
+        grid-column: span 2;
+        border-top: 1px solid #f5f5f5;
+        padding-top: 3rem;
+    }
+
+    .section-title {
+        font-family: var(--font-serif);
+        font-size: 1.3rem;
+        color: #4A3728;
+        margin-bottom: 2rem;
+        border-bottom: 2px solid var(--color-accent-rose);
+        display: inline-block;
+        padding-bottom: 0.5rem;
+    }
+
+    .input-group {
+        margin-bottom: 2rem;
+    }
+
+    .input-group label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        color: var(--color-text-muted);
+        margin-bottom: 0.8rem;
+    }
+
+    .input-group input, 
+    .input-group select, 
+    .input-group textarea {
+        width: 100%;
+        padding: 1.2rem 1.5rem;
+        border-radius: 15px;
+        border: 1px solid #e0e0e0;
+        font-family: var(--font-sans);
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+        background: #fafafa;
+    }
+
+    .input-group input:focus, 
+    .input-group select:focus, 
+    .input-group textarea:focus {
+        outline: none;
+        border-color: var(--color-accent-rose);
+        background: white;
+        box-shadow: 0 10px 25px rgba(212, 163, 163, 0.1);
+    }
+
+    .checkbox-group {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+    }
+
+    .checkbox-group input[type="checkbox"] {
+        width: 22px;
+        height: 22px;
+        cursor: pointer;
+        accent-color: var(--color-accent-red);
+    }
+
+    .checkbox-group label {
+        font-weight: 700;
+        color: #4A3728;
+        cursor: pointer;
+    }
+
+    .btn-cancel {
+        background: none;
+        border: none;
+        color: #999;
+        font-weight: 700;
+        font-size: 0.9rem;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+
+    .btn-cancel:hover {
+        color: #4A3728;
+    }
+
+    @media (max-width: 768px) {
+        .form-grid { grid-template-columns: 1fr; gap: 2rem; }
+        .form-section.full-width { grid-column: span 1; }
+        .form-container { padding: 2rem; }
+    }
+</style>
+{% endblock %}

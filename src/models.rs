@@ -246,3 +246,17 @@ pub struct Voucher {
     pub is_active: bool,
     pub created_at: DateTime<Utc>,
 }
+#[derive(Debug, Serialize, Deserialize, Clone, FromRow)]
+pub struct InvitationTemplate {
+    pub id: String,
+    pub slug: String,
+    pub title: String,
+    #[sqlx(rename = "description")]
+    pub desc: String,
+    pub category: String,
+    pub preview_img: String,
+    pub status: String,
+    pub is_featured: bool,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}

@@ -1,0 +1,265 @@
+{% extends "site_base.html" %}
+
+{% block site_content %}
+<section class="container" style="padding: 100px 0;">
+    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem;" class="animate__animated animate__fadeIn">
+        <div>
+            <h1 class="serif" style="font-size: 3rem; margin-bottom: 1rem;">All <em>Templates</em></h1>
+            <p style="color: var(--color-text-muted);">Curate and control your collection of digital masterpieces.</p>
+        </div>
+        <div style="display: flex; gap: 20px; align-items: center;">
+            <div class="stat-card">
+                <div class="stat-value">{{ total_count }}</div>
+                <div class="stat-label">Total</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" style="color: #2e7d32;">{{ published_count }}</div>
+                <div class="stat-label">Published</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" style="color: #ed6c02;">{{ draft_count }}</div>
+                <div class="stat-label">Draft</div>
+            </div>
+            <a href="/admin/templates/new" class="btn-luxury" style="padding: 1rem 2.5rem; font-size: 0.8rem; letter-spacing: 2px; margin-left: 20px;">
+                <i class="fas fa-plus" style="margin-right: 10px;"></i> NEW TEMPLATE
+            </a>
+        </div>
+    </div>
+
+    <!-- Templates Table -->
+    <div class="table-container animate__animated animate__fadeInUp">
+        <table class="luxe-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Preview</th>
+                    <th>ID / Slug</th>
+                    <th>Title & Category</th>
+                    <th>Status</th>
+                    <th>Featured</th>
+                    <th style="text-align: right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in templates %}
+                <tr>
+                    <td style="color: #999; font-weight: 700; font-size: 0.8rem;">
+                        {{ (current_page - 1) * 10 + loop.index|i32 }}
+                    </td>
+                    <td style="width: 80px;">
+                        <img src="{{ t.preview_img }}" style="width: 60px; height: 60px; border-radius: 12px; object-fit: cover; border: 1px solid #f0f0f0; background: #fafafa;">
+                    </td>
+                    <td>
+                        <div style="font-family: monospace; font-size: 0.8rem; color: #999;">ID: {{ t.id }}</div>
+                        <div style="font-weight: 700; color: var(--color-accent-rose);">/{{ t.slug }}</div>
+                    </td>
+                    <td>
+                        <div style="font-weight: 700; font-size: 1.1rem; color: #4A3728; margin-bottom: 4px;">{{ t.title }}</div>
+                        <span class="badge-category">{{ t.category }}</span>
+                    </td>
+                    <td>
+                        <form action="/admin/templates/{{ t.id }}/toggle-status" method="POST" style="display: inline;">
+                            <button type="submit" class="status-pill status-{{ t.status|lower }}" style="cursor: pointer; border: none;">
+                                {{ t.status }}
+                            </button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/admin/templates/{{ t.id }}/toggle-featured" method="POST" style="display: inline;">
+                            <button type="submit" style="background: none; border: none; cursor: pointer; font-size: 1.2rem;">
+                                {% if t.is_featured %}
+                                    <span title="Featured" style="color: #FFD700;">★</span>
+                                {% else %}
+                                    <span title="Not Featured" style="color: #ddd;">☆</span>
+                                {% endif %}
+                            </button>
+                        </form>
+                    </td>
+                    <td style="text-align: right;">
+                        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                            <a href="/invitation/{{ t.slug }}-sample" target="_blank" class="action-btn" title="View Sample">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="/admin/templates/{{ t.id }}/edit" class="action-btn edit" title="Edit Metadata">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="/admin/templates/{{ t.id }}/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete this template registration? This won\'t delete physical files.')" style="display: inline;">
+                                <button type="submit" class="action-btn delete" title="Delete">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        {% if total_pages > 1 %}
+        <div class="pagination">
+            {% if current_page > 1 %}
+            <a href="/admin/templates?page={{ current_page - 1 }}" class="page-btn"><i class="fas fa-chevron-left"></i></a>
+            {% endif %}
+
+            {% for item in pagination_range %}
+                {% if item == "..." %}
+                    <span class="page-dots">...</span>
+                {% else %}
+                    <a href="/admin/templates?page={{ item }}" class="page-btn {% if item|eq(current_page|string) %} active {% endif %}">{{ item }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if current_page < total_pages %}
+            <a href="/admin/templates?page={{ current_page + 1 }}" class="page-btn"><i class="fas fa-chevron-right"></i></a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<style>
+    .stat-card {
+        background: #f8f9fa;
+        padding: 0.8rem 1.5rem;
+        border-radius: 12px;
+        text-align: center;
+        border: 1px solid #eee;
+    }
+    .stat-value { font-weight: 800; font-size: 1.2rem; }
+    .stat-label { font-size: 0.65rem; text-transform: uppercase; color: #999; letter-spacing: 1px; }
+
+    .table-container {
+        background: white;
+        padding: 2rem 1.5rem;
+        border-radius: 35px;
+        box-shadow: 0 15px 45px rgba(0,0,0,0.03);
+        border: 1px solid #f0f0f0;
+    }
+
+    .luxe-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+    }
+
+    .luxe-table th {
+        padding: 1.2rem 1rem;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #999;
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+    .luxe-table td {
+        padding: 1.5rem 1rem;
+        font-size: 0.95rem;
+        border-bottom: 1px solid #fafafa;
+        vertical-align: middle;
+    }
+
+    .badge-category {
+        background: rgba(142, 110, 83, 0.08);
+        color: #8E6E53;
+        padding: 0.3rem 0.8rem;
+        border-radius: 50px;
+        font-size: 0.65rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-pill {
+        padding: 0.5rem 1.2rem;
+        border-radius: 100px;
+        font-size: 0.7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+    }
+
+    .status-published { background: #e6fffa; color: #2c7a7b; }
+    .status-published:hover { background: #2c7a7b; color: white; }
+    
+    .status-draft { background: #f7fafc; color: #4a5568; }
+    .status-draft:hover { background: #4a5568; color: white; }
+
+    .action-btn {
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: #f8f9fa;
+        color: #666;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: 1px solid #eee;
+    }
+
+    .action-btn:hover {
+        background: white;
+        color: var(--color-accent-red);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        transform: translateY(-2px);
+    }
+
+    .action-btn.edit:hover { color: #2b6cb0; border-color: #2b6cb0; }
+    .action-btn.delete { color: #e53e3e; }
+    .action-btn.delete:hover { background: #fff5f5; border-color: #e53e3e; }
+
+    .btn-luxury:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(212, 48, 48, 0.2);
+    }
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-top: 3rem;
+    }
+
+    .page-btn {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 12px;
+        background: #f8f9fa;
+        color: #666;
+        text-decoration: none;
+        font-weight: 700;
+        transition: all 0.3s ease;
+        border: 1px solid #eee;
+    }
+
+    .page-btn:hover {
+        background: white;
+        color: var(--color-accent-red);
+        border-color: var(--color-accent-red);
+        transform: translateY(-2px);
+    }
+
+    .page-btn.active {
+        background: var(--color-accent-red);
+        color: white;
+        border-color: var(--color-accent-red);
+        box-shadow: 0 8px 20px rgba(212, 48, 48, 0.2);
+    }
+
+    .page-dots {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        color: #999;
+        font-weight: 700;
+        letter-spacing: 2px;
+    }
+</style>
+{% endblock %}

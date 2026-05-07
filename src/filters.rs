@@ -13,3 +13,15 @@ pub fn first(s: &str) -> askama::Result<String> {
 pub fn length(s: &str) -> askama::Result<usize> {
     Ok(s.len())
 }
+
+pub fn string(s: &dyn std::fmt::Display) -> askama::Result<String> {
+    Ok(s.to_string())
+}
+
+pub fn i32(s: &usize) -> askama::Result<i32> {
+    Ok(*s as i32)
+}
+
+pub fn eq(s: &str, other: &str) -> askama::Result<bool> {
+    Ok(s == other)
+}

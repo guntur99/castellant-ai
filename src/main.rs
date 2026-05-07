@@ -29,6 +29,8 @@ pub struct AppState {
     pub sumopod_api_key: String,
     pub sumopod_base_url: String,
     pub sumopod_model: String,
+    pub s3_client: aws_sdk_s3::Client,
+    pub s3_bucket: String,
 }
 
 impl FromRef<AppState> for Key {
@@ -91,6 +93,30 @@ async fn main() {
     let sumopod_base_url = env::var("SUMOPOD_BASE_URL").unwrap_or_else(|_| "https://ai.sumopod.com/v1/chat/completions".to_string());
     let sumopod_model = env::var("SUMOPOD_MODEL").unwrap_or_else(|_| "gemini/gemini-2.5-flash-lite".to_string());
 
+    // S3 Config
+    let s3_endpoint = env::var("S3_ENDPOINT").unwrap_or_default();
+    let s3_region = env::var("S3_REGION").unwrap_or_else(|_| "auto".to_string());
+    let s3_bucket = env::var("S3_BUCKET").unwrap_or_default();
+    let s3_access_key = env::var("S3_ACCESS_KEY_ID").unwrap_or_default();
+    let s3_secret_key = env::var("S3_SECRET_ACCESS_KEY").unwrap_or_default();
+
+    let credentials = aws_sdk_s3::config::Credentials::new(
+        s3_access_key,
+        s3_secret_key,
+        None,
+        None,
+        "static",
+    );
+
+    let s3_config = aws_config::defaults(aws_config::BehaviorVersion::latest())
+        .credentials_provider(credentials)
+        .region(aws_config::Region::new(s3_region))
+        .endpoint_url(s3_endpoint)
+        .load()
+        .await;
+
+    let s3_client = aws_sdk_s3::Client::new(&s3_config);
+
     let state = AppState {
         db: db_pool,
         redis: redis_pool,
@@ -103,6 +129,8 @@ async fn main() {
         sumopod_api_key,
         sumopod_base_url,
         sumopod_model,
+        s3_client,
+        s3_bucket,
     };
 
     // build our application with a route
@@ -120,6 +148,14 @@ async fn main() {
         .route("/create", get(handlers::create_invitation_page))
         .route("/templates", get(handlers::templates_list))
         .route("/admin/revenue", get(handlers::admin_revenue))
+        .route("/admin/templates", get(handlers::admin_templates))
+        .route("/admin/templates/new", get(handlers::admin_templates_new))
+        .route("/admin/templates/create", post(handlers::admin_templates_create))
+        .route("/admin/templates/{id}/edit", get(handlers::admin_templates_edit))
+        .route("/admin/templates/{id}/update", post(handlers::admin_templates_update))
+        .route("/admin/templates/{id}/toggle-status", post(handlers::admin_templates_toggle_status))
+        .route("/admin/templates/{id}/toggle-featured", post(handlers::admin_templates_toggle_featured))
+        .route("/admin/templates/{id}/delete", post(handlers::admin_templates_delete))
         .route("/api/invitation", post(handlers::create_invitation))
         .route("/api/preview", post(handlers::preview))
         .route("/api/ai/generate-text", post(handlers::ai_generate_text))
