@@ -3971,6 +3971,10 @@ pub struct AdminTemplatesTemplate {
     pub published_count: i64,
     pub draft_count: i64,
     pub pagination_range: Vec<String>,
+    pub search: String,
+    pub category: String,
+    pub status_filter: String,
+    pub sort: String,
 }
 
 #[derive(Template)]
@@ -3995,13 +3999,75 @@ pub async fn admin_templates(
     let per_page = 10;
     let offset = (page - 1) * per_page;
 
-    let templates = sqlx::query_as::<_, InvitationTemplate>("SELECT * FROM templates ORDER BY is_featured DESC, created_at DESC LIMIT $1 OFFSET $2")
-        .bind(per_page as i64)
-        .bind(offset as i64)
+    let search = params.get("search").cloned().unwrap_or_default();
+    let category = params.get("category").cloned().unwrap_or_default();
+    let status_filter = params.get("status").cloned().unwrap_or_default();
+    let sort = params.get("sort").cloned().unwrap_or_else(|| "newest".to_string());
+
+    // 1. Fetch filtered templates using QueryBuilder
+    let mut qb = sqlx::QueryBuilder::new("SELECT * FROM templates WHERE TRUE");
+    
+    if !search.is_empty() {
+        qb.push(" AND (title ILIKE ");
+        qb.push_bind(format!("%{}%", search));
+        qb.push(" OR id ILIKE ");
+        qb.push_bind(format!("%{}%", search));
+        qb.push(")");
+    }
+    if !category.is_empty() && category != "All" {
+        qb.push(" AND category = ");
+        qb.push_bind(&category);
+    }
+    if !status_filter.is_empty() && status_filter != "All" {
+        qb.push(" AND status = ");
+        qb.push_bind(&status_filter);
+    }
+
+    // Sort order
+    qb.push(" ORDER BY ");
+    match sort.as_str() {
+        "oldest" => qb.push("created_at ASC"),
+        "title_asc" => qb.push("title ASC"),
+        "title_desc" => qb.push("title DESC"),
+        "featured" => qb.push("is_featured DESC, created_at DESC"),
+        _ => qb.push("created_at DESC"),
+    };
+
+    // Pagination
+    qb.push(" LIMIT ");
+    qb.push_bind(per_page as i64);
+    qb.push(" OFFSET ");
+    qb.push_bind(offset as i64);
+
+    let templates = qb.build_query_as::<InvitationTemplate>()
         .fetch_all(&state.db)
         .await
         .unwrap_or_default();
 
+    // 2. Count filtered results for pagination
+    let mut count_qb = sqlx::QueryBuilder::new("SELECT COUNT(*) FROM templates WHERE TRUE");
+    if !search.is_empty() {
+        count_qb.push(" AND (title ILIKE ");
+        count_qb.push_bind(format!("%{}%", search));
+        count_qb.push(" OR id ILIKE ");
+        count_qb.push_bind(format!("%{}%", search));
+        count_qb.push(")");
+    }
+    if !category.is_empty() && category != "All" {
+        count_qb.push(" AND category = ");
+        count_qb.push_bind(&category);
+    }
+    if !status_filter.is_empty() && status_filter != "All" {
+        count_qb.push(" AND status = ");
+        count_qb.push_bind(&status_filter);
+    }
+
+    let total_count: i64 = count_qb.build_query_scalar()
+        .fetch_one(&state.db)
+        .await
+        .unwrap_or(0);
+
+    // 3. Overall Stats (unfiltered)
     let stats: (i64, i64, i64) = sqlx::query_as(
         "SELECT COUNT(*), COUNT(*) FILTER (WHERE status = 'PUBLISHED'), COUNT(*) FILTER (WHERE status = 'DRAFT') FROM templates"
     )
@@ -4009,7 +4075,6 @@ pub async fn admin_templates(
     .await
     .unwrap_or((0, 0, 0));
     
-    let total_count = stats.0;
     let published_count = stats.1;
     let draft_count = stats.2;
     let total_pages = (total_count as f64 / per_page as f64).ceil() as i32;
@@ -4051,6 +4116,10 @@ pub async fn admin_templates(
         published_count,
         draft_count,
         pagination_range,
+        search,
+        category,
+        status_filter,
+        sort,
     }).into_response()
 }
 
@@ -4261,6 +4330,19 @@ pub async fn admin_templates_toggle_status(
     let user = get_user_from_jar(&state.db, &jar).await;
     if !is_superadmin(&user) {
         return (StatusCode::FORBIDDEN, "Admin access required").into_response();
+    }
+
+    // Check if it's featured
+    let template = sqlx::query!("SELECT status, is_featured FROM templates WHERE id = $1", id)
+        .fetch_optional(&state.db)
+        .await
+        .unwrap_or(None);
+
+    if let Some(t) = template {
+        if t.is_featured && t.status == "PUBLISHED" {
+            // Cannot toggle to DRAFT if featured
+            return Redirect::to("/admin/templates").into_response();
+        }
     }
 
     let res = sqlx::query(

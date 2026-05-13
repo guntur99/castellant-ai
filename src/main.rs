@@ -117,11 +117,17 @@ async fn main() {
 
     let s3_client = aws_sdk_s3::Client::new(&s3_config);
 
+    // Cookie Key (Persistent across restarts)
+    let session_secret = env::var("SESSION_SECRET").unwrap_or_else(|_| {
+        "temporary_dev_key_that_is_at_least_64_bytes_long_so_axum_extra_x64".to_string()
+    });
+    let cookie_key = Key::from(session_secret.as_bytes());
+
     let state = AppState {
         db: db_pool,
         redis: redis_pool,
         oauth: oauth_client,
-        cookie_key: Key::generate(),
+        cookie_key,
         http_client: reqwest::Client::new(),
         is_dev,
         mayar_api_key,
