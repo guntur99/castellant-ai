@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>BRIDGEFLIX — Nazma & Gunturr</title>
+    <title>CINEMARRY — {{ invitation.couple_name_short }}</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Barlow+Condensed:wght@400;600;700&display=swap"
         rel="stylesheet">
@@ -113,11 +113,11 @@
             animation: logo-in .8s var(--ease) both;
         }
 
-        .logo-nf .logo-bridge {
+        .logo-nf .logo-cine {
             color: var(--nf-white);
         }
 
-        .logo-nf .logo-flix {
+        .logo-nf .logo-marry {
             color: var(--nf-red);
         }
 
@@ -310,10 +310,11 @@
         .nav-logo {
             font-family: var(--font-title);
             font-size: 32px;
-            letter-spacing: -1px;
+            letter-spacing: -1.5px;
             color: var(--nf-red);
             text-shadow: 0 0 20px var(--nf-red-glow);
             flex-shrink: 0;
+            font-weight: 900;
         }
 
         .nav-links {
@@ -383,7 +384,7 @@
         .hero-bg {
             position: absolute;
             inset: 0;
-            background: url('https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&q=85') center/cover no-repeat;
+            background: url('{{ invitation.gallery_images|first_image }}') center/cover no-repeat;
         }
 
         .hero-bg::after {
@@ -2125,7 +2126,7 @@
 
     <!-- AUDIO -->
     <audio id="bgAudio" loop preload="none">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" type="audio/mpeg">
+        <source src="{{ invitation.song_url }}" type="audio/mpeg">
     </audio>
 
     <!-- ══════════════════════════════════════
@@ -2134,7 +2135,7 @@
     <div id="splash">
         <div class="splash-logo">
             <div class="logo-nf">
-                <span class="logo-bridge">BRIDGE</span><span class="logo-flix">FLIX</span>
+                <span class="logo-cine">CINE</span><span class="logo-marry">MARRY</span>
             </div>
             <div class="logo-tagline">The Wedding Streaming Series</div>
         </div>
@@ -2142,32 +2143,23 @@
         <p class="profiles-label">Siapa yang menonton?</p>
 
         <div class="profiles-row">
-            <div class="profile-item" onclick="selectProfile(this, 'Ade Guntur')">
+            <div class="profile-item" onclick="selectProfile(this, '{{ invitation.bride.name }}')">
                 <div class="profile-avatar">
-                    <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80"
-                        alt="">
+                    <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride.name }}">
                 </div>
-                <span class="profile-name">Ade Guntur</span>
+                <span class="profile-name">{{ invitation.bride.name }}</span>
             </div>
-            <div class="profile-item" onclick="selectProfile(this, 'Partner')">
+            <div class="profile-item" onclick="selectProfile(this, '{{ invitation.groom.name }}')">
                 <div class="profile-avatar">
-                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80"
-                        alt="">
+                    <img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom.name }}">
                 </div>
-                <span class="profile-name">Partner</span>
+                <span class="profile-name">{{ invitation.groom.name }}</span>
             </div>
-            <div class="profile-item" onclick="selectProfile(this, 'Tamu')">
+            <div class="profile-item" onclick="selectProfile(this, 'Guest')">
                 <div class="profile-avatar">
-                    <div class="profile-letter" style="background:linear-gradient(135deg,#1a3a2e,#0d2318)">T</div>
+                    <div class="profile-letter" style="background:linear-gradient(135deg,#1a3a2e,#0d2318)">{{ invitation.recipient_name|first }}</div>
                 </div>
-                <span class="profile-name">Tamu</span>
-            </div>
-            <div class="profile-item" onclick="selectProfile(this, 'Keluarga')">
-                <div class="profile-avatar">
-                    <div class="profile-letter" style="background:linear-gradient(135deg,#3a1a1a,#1a0808)">K</div>
-                    <span class="profile-kids-badge">FAM</span>
-                </div>
-                <span class="profile-name">Keluarga</span>
+                <span class="profile-name">{{ invitation.recipient_name }}</span>
             </div>
         </div>
 
@@ -2182,7 +2174,7 @@
 
         <!-- NAVBAR -->
         <nav class="nf-nav" id="nfNav">
-            <div class="nav-logo">BRIDGEFLIX</div>
+            <div class="nav-logo">CINEMARRY</div>
             <ul class="nav-links">
                 <li><a href="#" class="on">Beranda</a></li>
                 <li><a href="#couple">Pasangan</a></li>
@@ -2213,7 +2205,7 @@
 
             <div class="hero-content">
                 <div class="hero-eyebrow">Series Perdana 2026</div>
-                <h1 class="hero-title">Nazma<br>& Guntur</h1>
+                <h1 class="hero-title">{{ invitation.couple_name_short|replace("&", "<br>&")|safe }}</h1>
                 <div class="hero-meta">
                     <span class="hero-match">98% Match</span>
                     <span class="hero-year">2026</span>
@@ -2221,10 +2213,9 @@
                     <span class="hero-year">1 Season</span>
                     <span class="hero-year">HD</span>
                 </div>
-                <p class="hero-desc">
-                    Kisah cinta yang dimulai dari sebuah pertemuan tak terduga di meja bowling, berkembang menjadi
-                    komitmen seumur hidup. Sebuah series tentang cinta, keluarga, dan janji yang tak tergoyahkan.
-                </p>
+                <div class="hero-desc">
+                    {{ invitation.quote.text }}
+                </div>
                 <div class="hero-btns">
                     <button class="nf-btn nf-btn-play" onclick="togglePlay()">
                         <svg viewBox="0 0 24 24" fill="currentColor">
@@ -2448,25 +2439,24 @@
                     <div class="pb-content">
                         <div class="pb-label">Siaran Langsung</div>
                         <div class="pb-title">Season Finale<br>Premiere</div>
-                        <div class="pb-meta">Minggu, {{ invitation.event_date }} · Graha Yadika, Tangerang</div>
+                        <div class="pb-meta">Minggu, {{ invitation.event_date }} · {{ invitation.ceremony.venue }}, {{ invitation.ceremony.address }}</div>
                         <div class="premiere-grid">
                             <div class="pb-info-card">
                                 <div class="pb-ic-icon">🕗</div>
                                 <div class="pb-ic-label">Akad Nikah</div>
-                                <div class="pb-ic-val">08.00 WIB</div>
+                                <div class="pb-ic-val">{{ invitation.ceremony.time }}</div>
                             </div>
                             <div class="pb-info-card">
                                 <div class="pb-ic-icon">🎉</div>
                                 <div class="pb-ic-label">Resepsi</div>
-                                <div class="pb-ic-val">11.00–13.00</div>
-                                <div class="pb-ic-sub">WIB</div>
+                                <div class="pb-ic-val">{{ invitation.reception.time }}</div>
                             </div>
                             <div class="pb-info-card" style="grid-column:1/-1">
                                 <div class="pb-ic-icon">📍</div>
                                 <div class="pb-ic-label">Lokasi</div>
-                                <div class="pb-ic-val" style="font-size:14px">Graha Yadika</div>
-                                <div class="pb-ic-sub">Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</div>
-                                <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="maps-link">
+                                <div class="pb-ic-val" style="font-size:14px">{{ invitation.ceremony.venue }}</div>
+                                <div class="pb-ic-sub">{{ invitation.ceremony.address }}</div>
+                                <a href="{{ invitation.ceremony.maps_url }}" target="_blank" class="maps-link">
                                     <svg viewBox="0 0 24 24" fill="currentColor">
                                         <path
                                             d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
@@ -2491,14 +2481,14 @@
                 <div class="cast-grid">
                     <div class="cast-card">
                         <div class="cast-photo">
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=530&fit=crop&q=80"
-                                alt="Nazma" loading="lazy">
+                            <img src="{{ invitation.bride.image_url }}"
+                                alt="{{ invitation.bride.name }}" loading="lazy">
                             <div class="cast-photo-overlay"></div>
                         </div>
                         <div class="cast-body">
-                            <div class="cast-role">Mempelai WNazma</div>
-                            <div class="cast-name">Nazma Putri</div>
-                            <div class="cast-info">S.Kom · Putri Pertama Bpk. Taryono & Ibu Wiwit Jayanti</div>
+                            <div class="cast-role">Mempelai Wanita</div>
+                            <div class="cast-name">{{ invitation.bride.full_name }}</div>
+                            <div class="cast-info">{{ invitation.bride.father_name }} & Ibu {{ invitation.bride.mother_name }}</div>
                             <div class="cast-imdb">
                                 <span class="imdb-badge">IMDb</span>
                                 <span class="imdb-score">⭐ 9.8 / 10</span>
@@ -2507,14 +2497,14 @@
                     </div>
                     <div class="cast-card">
                         <div class="cast-photo">
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=530&fit=crop&q=80"
-                                alt="Guntur" loading="lazy">
+                            <img src="{{ invitation.groom.image_url }}"
+                                alt="{{ invitation.groom.name }}" loading="lazy">
                             <div class="cast-photo-overlay"></div>
                         </div>
                         <div class="cast-body">
                             <div class="cast-role">Mempelai Pria</div>
-                            <div class="cast-name">Gunturrian Ahadika</div>
-                            <div class="cast-info">S.Kom · Putra Kedua Bpk. Wan Sabran & Ibu Titik Sundari</div>
+                            <div class="cast-name">{{ invitation.groom.full_name }}</div>
+                            <div class="cast-info">{{ invitation.groom.father_name }} & Ibu {{ invitation.groom.mother_name }}</div>
                             <div class="cast-imdb">
                                 <span class="imdb-badge">IMDb</span>
                                 <span class="imdb-score">⭐ 9.7 / 10</span>
@@ -2588,7 +2578,16 @@
                 <div class="gift-grid">
                     {% for account in invitation.gift_accounts %}
                     <div class="gift-card">
-                        <div class="gc-label">Bank</div>
+                        <div class="gc-label">{{ account.bank_name }}</div>
+                        <div class="gc-num" id="bankNum{{ loop.index }}">{{ account.account_number }}</div>
+                        <div class="gc-holder">a.n {{ account.account_holder }}</div>
+                        <button class="gc-copy" onclick="copyNum('{{ account.account_number }}', this)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                            </svg>
+                            Salin Nomor
+                        </button>
+                    </div>
                     {% endfor %}
                 </div>
                 </div>
@@ -2605,15 +2604,15 @@
                 </div>
                 <div class="review-stats">
                     <div class="rs-item">
-                        <div class="rs-num">7</div>
+                        <div class="rs-num">{{ invitation.total_rsvps() }}</div>
                         <div class="rs-lbl">Respons</div>
                     </div>
                     <div class="rs-item">
-                        <div class="rs-num">7</div>
+                        <div class="rs-num">{{ invitation.total_hadir() }}</div>
                         <div class="rs-lbl">Hadir</div>
                     </div>
                     <div class="rs-item">
-                        <div class="rs-num">13</div>
+                        <div class="rs-num">{{ invitation.total_guest_count() }}</div>
                         <div class="rs-lbl">Tamu</div>
                     </div>
                 </div>
@@ -2716,8 +2715,8 @@
 
             <!-- FOOTER -->
             <footer class="nf-footer">
-                <div class="footer-logo-big">BRIDGEFLIX</div>
-                <div class="footer-names">Nazma & GunturR</div>
+                <div class="footer-logo-big">CINEMARRY</div>
+                <div class="footer-names">{{ invitation.couple_name_short }}</div>
                 <p class="footer-body">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu berkenan
                     hadir dan memberikan do'a restu kepada kami.</p>
                 <div class="footer-links">
@@ -2778,8 +2777,8 @@
                 src="https://images.unsplash.com/photo-1519741497674-611481863552?w=100&h=100&fit=crop&q=80" alt="">
         </div>
         <div class="mb-info">
-            <div class="mb-title">Wedding Day — Nazma & Gunturr</div>
-            <div class="mb-sub">BridgeFlix Original Soundtrack</div>
+            <div class="mb-title">Wedding Day — {{ invitation.couple_name_short }}</div>
+            <div class="mb-sub">Cinemarry Original Soundtrack</div>
         </div>
         <div class="mb-eq" id="mbEq">
             <div class="mb-eq-bar stop" style="--s:.5s"></div>
@@ -2828,14 +2827,9 @@
     <script>
         /* ══ DATA ══ */
         const IMGS = [
-            "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=340&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&h=340&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=340&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&h=340&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=600&h=340&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=600&h=340&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=600&h=340&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=340&fit=crop&q=80",
+            {% for url in invitation.gallery_images %}
+            "{{ url }}",
+            {% endfor %}
         ];
 
         /* ══ STATE ══ */

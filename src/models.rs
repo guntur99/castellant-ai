@@ -55,6 +55,7 @@ pub struct Invitation {
     pub gallery_images: Vec<String>,
     pub gift_accounts: Vec<GiftAccount>,
     pub song_url: String,
+    pub song_id: Option<Uuid>,
     pub plan_name: String,
     pub ai_chat_enabled: bool,
     pub ai_usage_count: i32,
@@ -206,6 +207,7 @@ pub struct Guest {
     pub slug: String,
     pub is_sent: bool,
     pub ai_language: String,
+    pub song_id: Option<Uuid>,
     pub created_at: DateTime<Utc>,
 }
 
@@ -216,6 +218,7 @@ pub struct GuestGroup {
     pub name: String,
     pub template_name: String,
     pub ai_language: String,
+    pub song_id: Option<Uuid>,
     pub created_at: DateTime<Utc>,
 }
 

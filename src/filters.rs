@@ -25,3 +25,26 @@ pub fn i32(s: &usize) -> askama::Result<i32> {
 pub fn eq(s: &str, other: &str) -> askama::Result<bool> {
     Ok(s == other)
 }
+
+pub fn replace(s: &str, from: &str, to: &str) -> askama::Result<String> {
+    Ok(s.replace(from, to))
+}
+
+pub fn first_image(images: &[String]) -> askama::Result<String> {
+    if let Some(img) = images.first() {
+        Ok(img.clone())
+    } else {
+        Ok("https://images.unsplash.com/photo-1519741497674-611481863552?w=1400&q=85".to_string())
+    }
+}
+
+pub fn default<T: std::fmt::Display>(s: &Option<T>, default_val: &str) -> askama::Result<String> {
+    match s {
+        Some(v) => Ok(v.to_string()),
+        None => Ok(default_val.to_string()),
+    }
+}
+
+pub fn eq_uuid_opt(opt: &Option<uuid::Uuid>, val: &uuid::Uuid) -> askama::Result<bool> {
+    Ok(opt.as_ref() == Some(val))
+}

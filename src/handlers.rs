@@ -42,27 +42,34 @@ async fn process_and_save_image(
     save_path: String,
     max_dim: u32,
 ) -> bool {
+    tracing::info!("Processing image for path: {}", save_path);
     // 1. Process image in blocking task (CPU intensive)
     let processed_data = tokio::task::spawn_blocking(move || {
-        if let Ok(img) = image::load_from_memory(&data) {
-            let scaled = if img.width() > max_dim || img.height() > max_dim {
-                img.resize(max_dim, max_dim, image::imageops::FilterType::Lanczos3)
-            } else {
-                img
-            };
-            
-            let mut buffer = std::io::Cursor::new(Vec::new());
-            if scaled.write_to(&mut buffer, image::ImageFormat::WebP).is_ok() {
-                return Some(buffer.into_inner());
+        match image::load_from_memory(&data) {
+            Ok(img) => {
+                let scaled = if img.width() > max_dim || img.height() > max_dim {
+                    img.resize(max_dim, max_dim, image::imageops::FilterType::Lanczos3)
+                } else {
+                    img
+                };
+                
+                let mut buffer = std::io::Cursor::new(Vec::new());
+                if let Err(e) = scaled.write_to(&mut buffer, image::ImageFormat::WebP) {
+                    tracing::error!("Failed to write WebP: {}", e);
+                    return None;
+                }
+                Some(buffer.into_inner())
+            },
+            Err(e) => {
+                tracing::error!("Failed to load image from memory: {}", e);
+                None
             }
         }
-        None
     }).await.unwrap_or(None);
 
     // 2. Upload to S3 if processed successfully
     if let Some(bytes) = processed_data {
         let body = aws_sdk_s3::primitives::ByteStream::from(bytes);
-        // Remove leading slash for S3 key if present
         let key = save_path.trim_start_matches('/');
         
         let res = s3
@@ -71,13 +78,52 @@ async fn process_and_save_image(
             .key(key)
             .body(body)
             .content_type("image/webp")
+            .acl(aws_sdk_s3::types::ObjectCannedAcl::PublicRead)
             .send()
             .await;
             
+        if let Err(e) = &res {
+            tracing::error!("Failed to upload to S3: {}", e);
+        } else {
+            tracing::info!("Successfully uploaded to S3: {}", key);
+        }
         return res.is_ok();
     }
     
+    tracing::error!("Image processing failed for path: {}", save_path);
     false
+}
+
+pub async fn serve_upload(
+    Path(key): Path<String>,
+    State(state): State<AppState>,
+) -> impl IntoResponse {
+    let s3_key = format!("static/uploads/{}", key);
+    
+    match state.s3_client
+        .get_object()
+        .bucket(&state.s3_bucket)
+        .key(&s3_key)
+        .send()
+        .await
+    {
+        Ok(resp) => {
+            let content_type = resp.content_type().unwrap_or("image/webp").to_string();
+            let body_bytes = resp.body.collect().await
+                .map(|b| b.into_bytes())
+                .unwrap_or_default();
+            
+            Response::builder()
+                .status(StatusCode::OK)
+                .header("Content-Type", content_type)
+                .header("Cache-Control", "public, max-age=31536000, immutable")
+                .body(axum::body::Body::from(body_bytes))
+                .unwrap_or_else(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Error").into_response())
+        },
+        Err(_) => {
+            (StatusCode::NOT_FOUND, "File not found").into_response()
+        }
+    }
 }
 
 #[derive(Serialize)]
@@ -1607,6 +1653,7 @@ pub struct ManageInvitationTemplate {
     pub guests: Vec<Guest>,
     pub groups: Vec<GuestGroup>,
     pub rsvps: Vec<Rsvp>,
+    pub all_songs: Vec<Song>,
 }
 
 #[derive(Template)]
@@ -1675,6 +1722,7 @@ pub async fn dashboard(
                     gallery_images: Vec::new(),
                     gift_accounts: Vec::new(),
                     song_url: String::new(),
+                    song_id: r.song_id,
                     plan_name: r.plan_name.unwrap_or_else(|| "NOBLE".to_string()),
                     ai_chat_enabled: r.ai_chat_enabled,
                     ai_usage_count: r.ai_usage_count,
@@ -1837,6 +1885,7 @@ pub async fn invitation_detail(
 
             let mut template_name = row.template_name.clone();
             let mut ai_language = row.ai_language.clone();
+            let mut final_song_id = row.song_id;
             
             let mut recipient_name = "Guest Guest & Partner".to_string();
             
@@ -1859,6 +1908,10 @@ pub async fn invitation_detail(
                         ai_language = g.ai_language.clone();
                     }
 
+                    if let Some(sid) = g.song_id {
+                        final_song_id = Some(sid);
+                    }
+
                     let mut found_override = false;
                     
                     // 1. Check individual override
@@ -1871,7 +1924,7 @@ pub async fn invitation_detail(
                     
                     // 2. Check group template if no individual override
                     if let Some(cat) = g.category {
-                        let group = sqlx::query_as::<_, GuestGroup>("SELECT id, invitation_id, name, template_name, COALESCE(ai_language, '') as ai_language, created_at FROM invitation_groups WHERE invitation_id = $1 AND name = $2")
+                        let group = sqlx::query_as::<_, GuestGroup>("SELECT id, invitation_id, name, template_name, COALESCE(ai_language, '') as ai_language, song_id, created_at FROM invitation_groups WHERE invitation_id = $1 AND name = $2")
                             .bind(row.id)
                             .bind(&cat)
                             .fetch_optional(&state.db)
@@ -1885,6 +1938,11 @@ pub async fn invitation_detail(
                             // If guest lang is empty, use group lang
                             if g.ai_language.is_empty() && !grp.ai_language.is_empty() {
                                 ai_language = grp.ai_language;
+                            }
+
+                            // If guest song is empty, use group song
+                            if g.song_id.is_none() && grp.song_id.is_some() {
+                                final_song_id = grp.song_id;
                             }
                         }
                     }
@@ -1910,6 +1968,18 @@ pub async fn invitation_detail(
             let bride_name_short = bride.name.clone();
             let groom_name_short = groom.name.clone();
 
+            let mut final_song_url = song_url.clone();
+            if let Some(sid) = final_song_id {
+                let song = sqlx::query_as::<_, Song>("SELECT * FROM songs WHERE id = $1")
+                    .bind(sid)
+                    .fetch_optional(&state.db)
+                    .await
+                    .unwrap_or_default();
+                if let Some(s) = song {
+                    final_song_url = s.file_path;
+                }
+            }
+
             let invitation = Invitation {
                 slug: row.slug.clone(),
                 template_name: template_name.clone(),
@@ -1924,7 +1994,8 @@ pub async fn invitation_detail(
                 quote: from_value(row.quote_data).unwrap_or_default(),
                 gallery_images,
                 gift_accounts,
-                song_url,
+                song_url: final_song_url,
+                song_id: final_song_id,
                 plan_name: row.plan_name.unwrap_or_else(|| "NOBLE".to_string()),
                 ai_chat_enabled: row.ai_chat_enabled,
                 ai_usage_count: row.ai_usage_count,
@@ -2100,6 +2171,7 @@ pub async fn invitation_detail(
                         },
                     ],
                     song_url,
+                    song_id: None,
                     plan_name: "NOBLE".to_string(),
                     ai_chat_enabled: false,
                     ai_usage_count: 0,
@@ -2246,6 +2318,14 @@ pub async fn manage_invitation(
             let bride_name_short = bride.name.clone();
             let groom_name_short = groom.name.clone();
 
+            let gallery_images = sqlx::query_scalar::<_, String>(
+                "SELECT url FROM invitation_photos WHERE invitation_id = $1 AND photo_type = 'gallery' ORDER BY \"order\" ASC"
+            )
+            .bind(row.id)
+            .fetch_all(&state.db)
+            .await
+            .unwrap_or_default();
+
             let invitation = Invitation {
                 slug: row.slug,
                 template_name: row.template_name,
@@ -2258,9 +2338,10 @@ pub async fn manage_invitation(
                 ceremony: from_value(row.ceremony_data).unwrap_or_default(),
                 reception: from_value(row.reception_data).unwrap_or_default(),
                 quote: from_value(row.quote_data).unwrap_or_default(),
-                gallery_images: Vec::new(),
+                gallery_images,
                 gift_accounts: sqlx::query_as::<_, GiftAccount>("SELECT bank_name, account_number, account_holder FROM gift_accounts WHERE invitation_id = $1").bind(row.id).fetch_all(&state.db).await.unwrap_or_default(),
                 song_url: String::new(),
+                song_id: row.song_id,
                 plan_name: row.plan_name.unwrap_or_else(|| "NOBLE".to_string()),
                 ai_chat_enabled: row.ai_chat_enabled,
                 ai_usage_count: row.ai_usage_count,
@@ -2287,13 +2368,18 @@ pub async fn manage_invitation(
             } else { None };
 
             let all_templates = get_all_templates(&state.db, false).await;
-            let guests = sqlx::query_as::<_, Guest>("SELECT id, invitation_id, name, category, template_override, slug, is_sent, COALESCE(ai_language, '') as ai_language, created_at FROM guests WHERE invitation_id = $1 ORDER BY created_at DESC")
+            let all_songs = sqlx::query_as::<_, Song>("SELECT * FROM songs WHERE is_active = true ORDER BY title ASC")
+                .fetch_all(&state.db)
+                .await
+                .unwrap_or_default();
+
+            let guests = sqlx::query_as::<_, Guest>("SELECT id, invitation_id, name, category, template_override, slug, is_sent, COALESCE(ai_language, '') as ai_language, song_id, created_at FROM guests WHERE invitation_id = $1 ORDER BY created_at DESC")
                 .bind(row.id)
                 .fetch_all(&state.db)
                 .await
                 .unwrap_or_default();
             
-            let groups = sqlx::query_as::<_, GuestGroup>("SELECT id, invitation_id, name, template_name, COALESCE(ai_language, '') as ai_language, created_at FROM invitation_groups WHERE invitation_id = $1 ORDER BY name ASC")
+            let groups = sqlx::query_as::<_, GuestGroup>("SELECT id, invitation_id, name, template_name, COALESCE(ai_language, '') as ai_language, song_id, created_at FROM invitation_groups WHERE invitation_id = $1 ORDER BY name ASC")
                 .bind(row.id)
                 .fetch_all(&state.db)
                 .await
@@ -2313,6 +2399,7 @@ pub async fn manage_invitation(
                 guests,
                 groups,
                 rsvps,
+                all_songs,
             }).into_response()
         },
         None => (StatusCode::NOT_FOUND, "Invitation not found or unauthorized").into_response(),
@@ -2353,29 +2440,33 @@ pub async fn update_invitation(
     let mut fields = HashMap::new();
     let mut photo_paths = HashMap::new();
     let mut gallery_paths = Vec::new();
+    let mut existing_gallery = Vec::new();
     let mut bank_names = Vec::new();
     let mut account_numbers = Vec::new();
     let mut account_holders = Vec::new();
 
     while let Some(field) = multipart.next_field().await.unwrap() {
         let name = field.name().unwrap().to_string();
+        tracing::info!("Received multipart field: {}", name);
         
         if name == "gallery[]" {
             let filename = Uuid::new_v4().to_string() + ".webp";
             let path = format!("static/uploads/{}", filename);
             let data = field.bytes().await.unwrap_or_default();
+            tracing::info!("Gallery photo size: {} bytes", data.len());
             if !data.is_empty() {
                 if process_and_save_image(&state.s3_client, &state.s3_bucket, data, path.clone(), 1600).await {
-                    gallery_paths.push(format!("https://{}.t3.storageapi.dev/{}", state.s3_bucket, path));
+                    gallery_paths.push(format!("/uploads/{}", filename));
                 }
             }
         } else if name.ends_with("_photo") {
             let filename = Uuid::new_v4().to_string() + ".webp";
             let path = format!("static/uploads/{}", filename);
             let data = field.bytes().await.unwrap_or_default();
+            tracing::info!("Couple photo size ({}): {} bytes", name, data.len());
             if !data.is_empty() {
                 if process_and_save_image(&state.s3_client, &state.s3_bucket, data, path.clone(), 1600).await {
-                    photo_paths.insert(name, format!("https://{}.t3.storageapi.dev/{}", state.s3_bucket, path));
+                    photo_paths.insert(name, format!("/uploads/{}", filename));
                 }
             }
         } else if name == "bank_name[]" {
@@ -2384,6 +2475,8 @@ pub async fn update_invitation(
             account_numbers.push(field.text().await.unwrap_or_default());
         } else if name == "account_holder[]" {
             account_holders.push(field.text().await.unwrap_or_default());
+        } else if name == "existing_gallery[]" {
+            existing_gallery.push(field.text().await.unwrap_or_default());
         } else {
             let value = field.text().await.unwrap();
             fields.insert(name, value);
@@ -2428,9 +2521,12 @@ pub async fn update_invitation(
     let ai_custom_knowledge = fields.get("ai_custom_knowledge").cloned().unwrap_or(row.ai_custom_knowledge.unwrap_or_default());
     let template_name = fields.get("template_name").cloned().unwrap_or(row.template_name);
     let final_ai_language = fields.get("ai_language").cloned().unwrap_or(row.ai_language.clone());
-
+    let song_id = fields.get("song_id")
+        .and_then(|s| if s.is_empty() { None } else { Uuid::parse_str(s).ok() })
+        .or(row.song_id);
+    
     sqlx::query(
-        "UPDATE invitations SET couple_name_short = $1, event_date = $2, bride_data = $3, groom_data = $4, ceremony_data = $5, reception_data = $6, quote_data = $7, ai_chat_enabled = $8, ai_custom_knowledge = $9, ai_language = $10, template_name = $11 WHERE id = $12"
+        "UPDATE invitations SET couple_name_short = $1, event_date = $2, bride_data = $3, groom_data = $4, ceremony_data = $5, reception_data = $6, quote_data = $7, ai_chat_enabled = $8, ai_custom_knowledge = $9, ai_language = $10, template_name = $11, song_id = $12 WHERE id = $13"
     )
     .bind(couple_name_short)
     .bind(event_date)
@@ -2443,24 +2539,34 @@ pub async fn update_invitation(
     .bind(ai_custom_knowledge)
     .bind(final_ai_language)
     .bind(template_name)
+    .bind(song_id)
     .bind(row.id)
     .execute(&state.db)
     .await
     .unwrap();
 
-    // Handle Gallery
-    if !gallery_paths.is_empty() {
-        for (i, path) in gallery_paths.into_iter().enumerate() {
-            sqlx::query(
-                "INSERT INTO invitation_photos (invitation_id, url, \"order\") VALUES ($1, $2, $3)"
-            )
-            .bind(row.id)
-            .bind(path)
-            .bind(i as i32)
-            .execute(&state.db)
-            .await
-            .unwrap();
-        }
+    tracing::info!("Successfully updated invitation record for id: {}", row.id);
+
+    // Handle Gallery Management: Delete all existing gallery photos and re-insert (kept + new)
+    let _ = sqlx::query("DELETE FROM invitation_photos WHERE invitation_id = $1 AND photo_type = 'gallery'")
+        .bind(row.id)
+        .execute(&state.db)
+        .await;
+
+    let mut final_gallery = existing_gallery;
+    final_gallery.extend(gallery_paths);
+
+    for (i, path) in final_gallery.into_iter().enumerate() {
+        sqlx::query(
+            "INSERT INTO invitation_photos (invitation_id, url, photo_type, \"order\") VALUES ($1, $2, $3, $4)"
+        )
+        .bind(row.id)
+        .bind(path)
+        .bind("gallery")
+        .bind(i as i32)
+        .execute(&state.db)
+        .await
+        .unwrap();
     }
 
     // Update Gift Accounts: Delete existing and insert new ones
@@ -2651,6 +2757,7 @@ pub async fn preview(
             },
         ],
         song_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3".to_string(),
+        song_id: None,
         plan_name: "NOBLE".to_string(),
         ai_chat_enabled: false,
         ai_usage_count: 0,
@@ -3091,6 +3198,7 @@ pub struct AddGuestRequest {
     pub category: Option<String>,
     pub template_override: Option<String>,
     pub ai_language: Option<String>,
+    pub song_id: Option<Uuid>,
 }
 
 pub async fn add_guest(
@@ -3123,7 +3231,7 @@ pub async fn add_guest(
     };
 
     sqlx::query(
-        "INSERT INTO guests (invitation_id, name, category, slug, template_override, ai_language) VALUES ($1, $2, $3, $4, $5, $6)"
+        "INSERT INTO guests (invitation_id, name, category, slug, template_override, ai_language, song_id) VALUES ($1, $2, $3, $4, $5, $6, $7)"
     )
     .bind(invitation.id)
     .bind(&payload.name)
@@ -3131,6 +3239,7 @@ pub async fn add_guest(
     .bind(&guest_slug)
     .bind(&payload.template_override)
     .bind(&ai_language)
+    .bind(&payload.song_id)
     .execute(&state.db)
     .await
     .unwrap();
@@ -3162,12 +3271,13 @@ pub async fn update_guest(
     };
 
     sqlx::query(
-        "UPDATE guests SET name = $1, category = $2, template_override = $3, ai_language = $4 WHERE id = $5 AND invitation_id = $6"
+        "UPDATE guests SET name = $1, category = $2, template_override = $3, ai_language = $4, song_id = $5 WHERE id = $6 AND invitation_id = $7"
     )
     .bind(&payload.name)
     .bind(&payload.category)
     .bind(&payload.template_override)
     .bind(&ai_language)
+    .bind(&payload.song_id)
     .bind(guest_id)
     .bind(invitation.id)
     .execute(&state.db)
@@ -3235,6 +3345,7 @@ pub struct AddGroupRequest {
     pub name: String,
     pub template_name: String,
     pub ai_language: Option<String>,
+    pub song_id: Option<Uuid>,
 }
 
 pub async fn add_group(
@@ -3292,13 +3403,14 @@ pub async fn add_group(
     };
 
     sqlx::query(
-        "INSERT INTO invitation_groups (invitation_id, name, template_name, ai_language) VALUES ($1, $2, $3, $4)
-         ON CONFLICT (invitation_id, name) DO UPDATE SET template_name = $3, ai_language = $4"
+        "INSERT INTO invitation_groups (invitation_id, name, template_name, ai_language, song_id) VALUES ($1, $2, $3, $4, $5)
+         ON CONFLICT (invitation_id, name) DO UPDATE SET template_name = $3, ai_language = $4, song_id = $5"
     )
     .bind(invitation_id)
     .bind(&payload.name)
     .bind(&payload.template_name)
     .bind(&ai_language)
+    .bind(&payload.song_id)
     .execute(&state.db)
     .await
     .unwrap();
@@ -3331,11 +3443,12 @@ pub async fn update_group(
     if !exists { return Redirect::to("/").into_response(); }
 
     sqlx::query(
-        "UPDATE invitation_groups SET name = $1, template_name = $2, ai_language = $3 WHERE id = $4"
+        "UPDATE invitation_groups SET name = $1, template_name = $2, ai_language = $3, song_id = $4 WHERE id = $5"
     )
     .bind(&payload.name)
     .bind(&payload.template_name)
     .bind(&payload.ai_language)
+    .bind(&payload.song_id)
     .bind(group_id)
     .execute(&state.db)
     .await

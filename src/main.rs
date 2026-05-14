@@ -8,6 +8,7 @@ use axum::{
     Router,
     extract::FromRef,
 };
+use axum::extract::DefaultBodyLimit;
 use std::net::SocketAddr;
 use tower_http::{services::ServeDir, trace::TraceLayer};
 use sqlx::postgres::PgPoolOptions;
@@ -184,11 +185,13 @@ async fn main() {
         .route("/api/check-slug/{slug}", get(handlers::check_slug))
         .route("/receipt/{invoice_id}", get(handlers::receipt_detail))
         .route("/sitemap.xml", get(handlers::sitemap))
+        .route("/uploads/{*key}", get(handlers::serve_upload))
         .route("/robots.txt", get(|| async { 
             tokio::fs::read_to_string("static/robots.txt").await.unwrap_or_else(|_| "".to_string()) 
         }))
         .with_state(state)
         .nest_service("/static", ServeDir::new("static"))
+        .layer(DefaultBodyLimit::max(20 * 1024 * 1024)) // 20MB limit for photo uploads
         .layer(TraceLayer::new_for_http());
 
     // run our app with hyper
