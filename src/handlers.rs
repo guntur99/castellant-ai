@@ -161,6 +161,7 @@ pub struct TemplatesListTemplate {
     pub current_page: i32,
     pub total_pages: i32,
     pub search_query: String,
+    pub sort: String,
     pub is_dev: bool,
 }
 
@@ -181,7 +182,7 @@ pub async fn templates_list(
     Query(params): Query<HashMap<String, String>>,
     jar: PrivateCookieJar,
 ) -> impl IntoResponse {
-    let templates_data = get_all_templates(&state.db, true).await;
+    let templates_data = get_all_templates(&state.db, false).await;
     let user = match jar.get("user_id") {
         Some(cookie) => {
             let uid = Uuid::parse_str(cookie.value()).ok();
@@ -200,13 +201,29 @@ pub async fn templates_list(
 
     let category = params.get("category").cloned().unwrap_or_else(|| "all".to_string());
     let search = params.get("search").cloned().unwrap_or_default().to_lowercase();
+    let sort = params.get("sort").cloned().unwrap_or_else(|| "featured".to_string());
     let page = params.get("page").and_then(|p| p.parse::<i32>().ok()).unwrap_or(1);
     let per_page = 6;
 
-    let filtered: Vec<InvitationTemplate> = templates_data.into_iter()
+    let mut filtered: Vec<InvitationTemplate> = templates_data.into_iter()
         .filter(|t| category == "all" || t.category == category)
         .filter(|t| search.is_empty() || t.title.to_lowercase().contains(&search) || t.desc.to_lowercase().contains(&search))
         .collect();
+
+    // Apply Sorting
+    match sort.as_str() {
+        "newest" => filtered.sort_by(|a, b| b.created_at.cmp(&a.created_at)),
+        "oldest" => filtered.sort_by(|a, b| a.created_at.cmp(&b.created_at)),
+        "title_asc" => filtered.sort_by(|a, b| a.title.cmp(&b.title)),
+        "featured" => filtered.sort_by(|a, b| {
+            // Featured first, then newest
+            match b.is_featured.cmp(&a.is_featured) {
+                std::cmp::Ordering::Equal => b.created_at.cmp(&a.created_at),
+                other => other,
+            }
+        }),
+        _ => filtered.sort_by(|a, b| b.created_at.cmp(&a.created_at)),
+    }
 
     let total_pages = ((filtered.len() as f32) / (per_page as f32)).ceil() as i32;
     let start_idx = ((page - 1) * per_page) as usize;
@@ -222,6 +239,7 @@ pub async fn templates_list(
         current_page: page,
         total_pages,
         search_query: search,
+        sort,
         is_dev: state.is_dev
     }).into_response()
 }
@@ -4002,7 +4020,7 @@ pub async fn admin_templates(
     let search = params.get("search").cloned().unwrap_or_default();
     let category = params.get("category").cloned().unwrap_or_default();
     let status_filter = params.get("status").cloned().unwrap_or_default();
-    let sort = params.get("sort").cloned().unwrap_or_else(|| "newest".to_string());
+    let sort = params.get("sort").cloned().unwrap_or_else(|| "featured".to_string());
 
     // 1. Fetch filtered templates using QueryBuilder
     let mut qb = sqlx::QueryBuilder::new("SELECT * FROM templates WHERE TRUE");

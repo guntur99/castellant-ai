@@ -10,6 +10,19 @@
         border: 1px solid #f0f0f0;
         min-width: 90px;
         box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-decoration: none;
+        display: block;
+    }
+    .stat-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+        border-color: #ddd;
+    }
+    .stat-card.active {
+        border-color: var(--color-accent-rose);
+        background: rgba(212, 163, 163, 0.05);
     }
     .stat-value { font-weight: 800; font-size: 1.1rem; }
     .stat-label { font-size: 0.6rem; text-transform: uppercase; color: #aaa; letter-spacing: 1px; margin-top: 2px; }
@@ -285,6 +298,38 @@
         font-size: 1.8rem !important;
         font-weight: 700 !important;
     }
+    /* HTMX Loading Indicator */
+    .htmx-indicator {
+        opacity: 0;
+        transition: all 0.4s ease;
+        pointer-events: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(10px);
+        z-index: 9999;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .htmx-indicator.htmx-request {
+        opacity: 1;
+        pointer-events: all;
+    }
+    .loading-spinner {
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(142, 110, 83, 0.1);
+        border-radius: 50%;
+        border-top-color: #8E6E53;
+        animation: spin 1s ease-in-out infinite;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
 </style>
 
 <script>
@@ -332,22 +377,29 @@ function confirmDelete(id) {
 
 {% block site_content %}
 <section class="container" style="margin-top: 100px; padding-bottom: 80px;">
-    <div id="templates-display-area">
+    <div id="templates-display-area" style="position: relative;">
+        <!-- Loading Indicator -->
+        <div class="htmx-indicator">
+            <div class="loading-spinner"></div>
+        </div>
         <div class="header-content animate__animated animate__fadeIn" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem;">
             <div>
                 <h1 style="font-family: var(--font-serif); font-size: 2.8rem; margin-bottom: 0.5rem;">All Templates</h1>
                 <p style="color: #888; font-size: 0.9rem;">Manage your architectural legacy and design curation.</p>
             </div>
         <div style="display: flex; gap: 1.5rem; align-items: center;">
-            <div class="stat-card">
+            <div class="stat-card {% if status_filter == "All" || status_filter == "" %}active{% endif %}" 
+                 hx-get="/admin/templates?status=All" hx-target="#templates-display-area" hx-select="#templates-display-area" hx-push-url="true" hx-include=".filter-form" hx-indicator=".htmx-indicator">
                 <div class="stat-value">{{ total_count }}</div>
                 <div class="stat-label">Total</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card {% if status_filter == "PUBLISHED" %}active{% endif %}"
+                 hx-get="/admin/templates?status=PUBLISHED" hx-target="#templates-display-area" hx-select="#templates-display-area" hx-push-url="true" hx-include=".filter-form" hx-indicator=".htmx-indicator">
                 <div class="stat-value" style="color: #2c7a7b;">{{ published_count }}</div>
                 <div class="stat-label">Published</div>
             </div>
-            <div class="stat-card">
+            <div class="stat-card {% if status_filter == "DRAFT" %}active{% endif %}"
+                 hx-get="/admin/templates?status=DRAFT" hx-target="#templates-display-area" hx-select="#templates-display-area" hx-push-url="true" hx-include=".filter-form" hx-indicator=".htmx-indicator">
                 <div class="stat-value" style="color: #e53e3e;">{{ draft_count }}</div>
                 <div class="stat-label">Draft</div>
             </div>
@@ -359,7 +411,7 @@ function confirmDelete(id) {
 
         <!-- Filter & Search Bar -->
         <div class="filter-bar animate__animated animate__fadeInUp">
-            <form hx-get="/admin/templates" hx-target="#templates-display-area" hx-select="#templates-display-area" hx-push-url="true" hx-trigger="change, keyup delay:400ms from:input[name='search']" class="filter-form">
+            <form hx-get="/admin/templates" hx-target="#templates-display-area" hx-select="#templates-display-area" hx-push-url="true" hx-trigger="submit, change from:select" hx-indicator=".htmx-indicator" class="filter-form">
                 <div class="search-group">
                     <i class="fas fa-search"></i>
                     <input type="text" name="search" placeholder="Search title or ID..." value="{{ search }}" autocomplete="off">

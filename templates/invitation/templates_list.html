@@ -31,13 +31,25 @@
         <button type="button" class="filter-chip {% if active_category == "productivity" %}active{% endif %}" onclick="filterTemplates('productivity')">Productivity</button>
     </div>
 
-    <!-- Search Bar -->
-    <div style="max-width: 600px; margin: 0 auto 4rem; position: relative;" class="animate__animated animate__fadeInUp">
-        <input type="text" id="template-search" placeholder="Search for your dream design..." 
-               value="{{ search_query }}"
-               style="width: 100%; padding: 1.4rem 4rem 1.4rem 2.5rem; border-radius: 100px; border: 1px solid #eee; background: white; font-family: var(--font-sans); box-shadow: 0 15px 35px rgba(0,0,0,0.05); outline: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 1.1rem;">
-        <div style="position: absolute; right: 2.2rem; top: 50%; transform: translateY(-50%); opacity: 0.4; color: var(--color-accent-red);">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    <!-- Search & Sort Bar -->
+    <div style="max-width: 800px; margin: 0 auto 4rem; display: flex; gap: 1rem; align-items: center;" class="animate__animated animate__fadeInUp">
+        <div style="position: relative; flex: 2;">
+            <input type="text" id="template-search" placeholder="Search for your dream design..." 
+                   value="{{ search_query }}"
+                   style="width: 100%; padding: 1.4rem 4rem 1.4rem 2.5rem; border-radius: 100px; border: 1px solid #eee; background: white; font-family: var(--font-sans); box-shadow: 0 15px 35px rgba(0,0,0,0.05); outline: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 1.1rem;">
+            <div style="position: absolute; right: 2.2rem; top: 50%; transform: translateY(-50%); opacity: 0.4; color: var(--color-accent-red);">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+        </div>
+        
+        <div style="flex: 1; min-width: 200px;">
+            <select id="template-sort" onchange="sortTemplates(this.value)"
+                    style="width: 100%; padding: 1.4rem 2.5rem; border-radius: 100px; border: 1px solid #eee; background: white; font-family: var(--font-sans); box-shadow: 0 15px 35px rgba(0,0,0,0.05); outline: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); font-size: 1rem; appearance: none; cursor: pointer; background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'%23888\' stroke-width=\'2\' stroke-linecap=\'round\' stroke-linejoin=\'round\'%3e%3cpolyline points=\'6 9 12 15 18 9\'%3e%3c/polyline%3e%3c/svg%3e'); background-repeat: no-repeat; background-position: right 1.5rem center; background-size: 1.2rem;">
+                <option value="featured" {% if sort == "featured" %}selected{% endif %}>Featured First</option>
+                <option value="newest" {% if sort == "newest" %}selected{% endif %}>Newest Design</option>
+                <option value="oldest" {% if sort == "oldest" %}selected{% endif %}>Classical First</option>
+                <option value="title_asc" {% if sort == "title_asc" %}selected{% endif %}>Name (A-Z)</option>
+            </select>
         </div>
     </div>
 
@@ -60,6 +72,12 @@
                 <div class="collection-card">
                     <div class="card-preview">
                         <img src="{{ t.preview_img }}" alt="{{ t.title }}">
+                        {% if t.is_featured %}
+                        <div class="badge-featured">FEATURED</div>
+                        {% endif %}
+                        {% if t.status == "DRAFT" %}
+                        <div class="badge-draft">DRAFT</div>
+                        {% endif %}
                     </div>
                     <div style="padding: 2rem; text-align: left;">
                         <div style="margin-bottom: 1rem;">
@@ -73,10 +91,16 @@
                                 style="flex: 1; justify-content: center; padding: 1rem; font-size: 0.85rem;">
                                 <span data-i18n="templates.preview">Preview</span>
                             </a>
+                            {% if t.status == "DRAFT" %}
+                            <button disabled class="btn-luxe-primary" style="flex: 1.5; justify-content: center; padding: 1.1rem; font-size: 0.9rem; opacity: 0.5; cursor: not-allowed; background: #999;">
+                                <span>Coming Soon</span>
+                            </button>
+                            {% else %}
                             <a href="/create?template={{ t.id }}" class="btn-luxe-primary btn-plan-{{ t.category }}"
                                 style="flex: 1.5; justify-content: center; padding: 1.1rem; font-size: 0.9rem;">
                                 <span data-i18n="templates.choose">Choose Design</span>
                             </a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -89,7 +113,7 @@
     {% if total_pages > 1 %}
     <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; margin-top: 5rem;">
         {% if current_page > 1 %}
-        <a href="?category={{ active_category }}&search={{ search_query }}&page={{ current_page - 1 }}" class="page-nav">
+        <a href="?category={{ active_category }}&search={{ search_query }}&sort={{ sort }}&page={{ current_page - 1 }}" class="page-nav">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
         </a>
         {% endif %}
@@ -97,7 +121,7 @@
         <div style="display: flex; gap: 0.5rem;">
             {% for i in 1..total_pages + 1 %}
                 {% if i == 1 || i == total_pages || (i >= current_page - 1 && i <= current_page + 1) %}
-                <a href="?category={{ active_category }}&search={{ search_query }}&page={{ i }}" 
+                <a href="?category={{ active_category }}&search={{ search_query }}&sort={{ sort }}&page={{ i }}" 
                    class="page-num {% if i == current_page %}active{% endif %}">
                     {{ i }}
                 </a>
@@ -110,7 +134,7 @@
         </div>
 
         {% if current_page < total_pages %}
-        <a href="?category={{ active_category }}&search={{ search_query }}&page={{ current_page + 1 }}" class="page-nav">
+        <a href="?category={{ active_category }}&search={{ search_query }}&sort={{ sort }}&page={{ current_page + 1 }}" class="page-nav">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </a>
         {% endif %}
@@ -225,6 +249,36 @@
         color: #D4A373;
         box-shadow: 0 10px 25px rgba(212, 163, 115, 0.1);
         transform: translateY(-3px);
+    }
+
+    .badge-featured {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+        font-size: 0.65rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
+        z-index: 2;
+    }
+
+    .badge-draft {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(5px);
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+        font-size: 0.65rem;
+        font-weight: 800;
+        letter-spacing: 1px;
+        z-index: 2;
     }
 
     .btn-luxe-primary {
@@ -387,27 +441,111 @@
         gap: 15px;
         align-items: center;
     }
+    /* Loading Overlay */
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.4);
+        backdrop-filter: blur(10px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+    }
+    .loading-overlay.active {
+        display: flex;
+        opacity: 1;
+    }
+    .premium-loader {
+        width: 64px;
+        height: 64px;
+        border: 4px solid rgba(212, 48, 48, 0.1);
+        border-radius: 50%;
+        display: inline-block;
+        position: relative;
+        box-sizing: border-box;
+        animation: rotation 1.2s linear infinite;
+    }
+    .premium-loader::after {
+        content: '';  
+        box-sizing: border-box;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        border: 4px solid transparent;
+        border-bottom-color: var(--color-accent-red);
+        filter: drop-shadow(0 0 10px rgba(212, 48, 48, 0.3));
+    }
+    @keyframes rotation {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .loading-text {
+        position: absolute;
+        bottom: -40px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: var(--font-serif);
+        font-style: italic;
+        color: var(--color-accent-red);
+        letter-spacing: 2px;
+        font-size: 0.9rem;
+        white-space: nowrap;
+        opacity: 0.8;
+    }
 </style>
+
+<div id="global-loader" class="loading-overlay">
+    <div style="position: relative;">
+        <div class="premium-loader"></div>
+        <div class="loading-text">Curating your legacy...</div>
+    </div>
+</div>
 
 <script>
     const searchInput = document.getElementById('template-search');
     let searchTimeout;
 
-    searchInput.addEventListener('input', (e) => {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
+    function showLoader() {
+        const loader = document.getElementById('global-loader');
+        loader.style.display = 'flex';
+        // Small timeout to allow display change before opacity transition
+        setTimeout(() => loader.classList.add('active'), 10);
+    }
+
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            showLoader();
             const query = e.target.value;
             const url = new URL(window.location.href);
             url.searchParams.set('search', query);
             url.searchParams.set('page', '1'); // Reset to page 1 on search
             window.location.href = url.toString();
-        }, 800);
+        }
     });
 
     function filterTemplates(category) {
+        showLoader();
         const url = new URL(window.location.href);
         url.searchParams.set('category', category);
-        url.searchParams.set('page', '1'); // Reset to page 1 on filter
+        url.searchParams.set('page', '1');
+        window.location.href = url.toString();
+    }
+
+    function sortTemplates(sort) {
+        showLoader();
+        const url = new URL(window.location.href);
+        url.searchParams.set('sort', sort);
+        url.searchParams.set('page', '1');
         window.location.href = url.toString();
     }
 
