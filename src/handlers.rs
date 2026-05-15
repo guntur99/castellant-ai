@@ -6,7 +6,7 @@ use axum::{
     Json,
 };
 use askama::Template;
-use crate::models::{Invitation, Person, EventDetails, Quote, GiftAccount, RsvpForm, Rsvp, InvitationRow, Song, User, AiSession, Guest, GuestGroup, Booking, Voucher, InvitationTemplate};
+use crate::models::{Invitation, Person, EventDetails, Quote, GiftAccount, RsvpForm, Rsvp, Story, InvitationRow, Song, User, AiSession, Guest, GuestGroup, Booking, Voucher, InvitationTemplate};
 use crate::AppState;
 mod filters {
     pub use crate::filters::*;
@@ -94,6 +94,36 @@ async fn process_and_save_image(
     false
 }
 
+pub async fn process_and_save_file(
+    s3: &aws_sdk_s3::Client,
+    bucket: &str,
+    data: axum::body::Bytes,
+    save_path: String,
+    content_type: &str,
+) -> bool {
+    tracing::info!("Uploading file to path: {} (type: {})", save_path, content_type);
+    
+    let body = aws_sdk_s3::primitives::ByteStream::from(data);
+    let key = save_path.trim_start_matches('/');
+    
+    let res = s3
+        .put_object()
+        .bucket(bucket)
+        .key(key)
+        .body(body)
+        .content_type(content_type)
+        .acl(aws_sdk_s3::types::ObjectCannedAcl::PublicRead)
+        .send()
+        .await;
+        
+    if let Err(e) = &res {
+        tracing::error!("Failed to upload file to S3: {}", e);
+    } else {
+        tracing::info!("Successfully uploaded file to S3: {}", key);
+    }
+    res.is_ok()
+}
+
 pub async fn serve_upload(
     Path(key): Path<String>,
     State(state): State<AppState>,
@@ -108,7 +138,14 @@ pub async fn serve_upload(
         .await
     {
         Ok(resp) => {
-            let content_type = resp.content_type().unwrap_or("image/webp").to_string();
+            let extension = key.split('.').last().unwrap_or("");
+            let content_type = match extension {
+                "mp3" => "audio/mpeg",
+                "mp4" => "video/mp4",
+                "webp" => "image/webp",
+                _ => resp.content_type().unwrap_or("application/octet-stream"),
+            }.to_string();
+
             let body_bytes = resp.body.collect().await
                 .map(|b| b.into_bytes())
                 .unwrap_or_default();
@@ -445,6 +482,7 @@ pub async fn create_invitation(
     });
 
     let ceremony_data = json!(EventDetails {
+        enabled: true,
         date: fields.get("event_date").cloned().unwrap_or_default(),
         time: "09:00 - selesai".to_string(),
         venue: fields.get("ceremony_venue").cloned().unwrap_or_default(),
@@ -453,6 +491,7 @@ pub async fn create_invitation(
     });
 
     let reception_data = json!(EventDetails {
+        enabled: true,
         date: fields.get("event_date").cloned().unwrap_or_default(),
         time: "11:00 - selesai".to_string(),
         venue: fields.get("reception_venue").cloned().unwrap_or_default(),
@@ -1720,6 +1759,7 @@ pub async fn dashboard(
                     reception: from_value(r.reception_data).unwrap_or_default(),
                     quote: from_value(r.quote_data).unwrap_or_default(),
                     gallery_images: Vec::new(),
+                    gallery_videos: Vec::new(),
                     gift_accounts: Vec::new(),
                     song_url: String::new(),
                     song_id: r.song_id,
@@ -1731,6 +1771,9 @@ pub async fn dashboard(
                     recipient_name: "Guest Guest & Partner".to_string(),
                     event_date_iso: "2026-05-24T08:00:00".to_string(),
                     rsvps: Vec::new(),
+                    custom_song_url: r.custom_song_url.unwrap_or_default(),
+                    background_video_url: r.background_video_url.unwrap_or_default(),
+                    stories: from_value(r.stories_data.unwrap_or(json!([]))).unwrap_or_default(),
                     is_preview: false,
                 }
             })
@@ -1872,14 +1915,20 @@ pub async fn invitation_detail(
             .unwrap_or_default();
 
             let photos = sqlx::query(
-                "SELECT url FROM invitation_photos WHERE invitation_id = $1 ORDER BY \"order\" ASC"
+                "SELECT url, photo_type FROM invitation_photos WHERE invitation_id = $1 ORDER BY \"order\" ASC"
             )
             .bind(row.id)
             .fetch_all(&state.db)
             .await
             .unwrap_or_default();
             
-            let gallery_images: Vec<String> = photos.into_iter()
+            let gallery_images: Vec<String> = photos.iter()
+                .filter(|p| p.get::<&str, _>("photo_type") == "gallery")
+                .map(|p| p.get::<String, _>("url"))
+                .collect();
+
+            let gallery_videos: Vec<String> = photos.into_iter()
+                .filter(|p| p.get::<&str, _>("photo_type") == "gallery_video")
                 .map(|p| p.get::<String, _>("url"))
                 .collect();
 
@@ -1968,8 +2017,9 @@ pub async fn invitation_detail(
             let bride_name_short = bride.name.clone();
             let groom_name_short = groom.name.clone();
 
-            let mut final_song_url = song_url.clone();
+            let mut final_song_url = row.custom_song_url.clone().unwrap_or_else(|| song_url.clone());
             if let Some(sid) = final_song_id {
+                // If there's a specific song_id (from guest/group), it overrides the invitation's custom song
                 let song = sqlx::query_as::<_, Song>("SELECT * FROM songs WHERE id = $1")
                     .bind(sid)
                     .fetch_optional(&state.db)
@@ -1993,9 +2043,13 @@ pub async fn invitation_detail(
                 reception,
                 quote: from_value(row.quote_data).unwrap_or_default(),
                 gallery_images,
+                gallery_videos,
                 gift_accounts,
                 song_url: final_song_url,
                 song_id: final_song_id,
+                custom_song_url: row.custom_song_url.unwrap_or_default(),
+                background_video_url: row.background_video_url.unwrap_or_default(),
+                stories: from_value(row.stories_data.unwrap_or(json!([]))).unwrap_or_default(),
                 plan_name: row.plan_name.unwrap_or_else(|| "NOBLE".to_string()),
                 ai_chat_enabled: row.ai_chat_enabled,
                 ai_usage_count: row.ai_usage_count,
@@ -2141,6 +2195,7 @@ pub async fn invitation_detail(
                     },
                     event_date: "12 Desember 2026".to_string(),
                     ceremony: EventDetails {
+                        enabled: true,
                         date: "Sabtu, 12 Desember 2026".to_string(),
                         time: "09:00 - 10:00 WIB".to_string(),
                         venue: "Masjid Raya".to_string(),
@@ -2148,6 +2203,7 @@ pub async fn invitation_detail(
                         maps_url: "https://maps.app.goo.gl/xxx".to_string(),
                     },
                     reception: EventDetails {
+                        enabled: true,
                         date: "Sabtu, 12 Desember 2026".to_string(),
                         time: "11:00 - 13:00 WIB".to_string(),
                         venue: "Grand Ballroom".to_string(),
@@ -2163,6 +2219,7 @@ pub async fn invitation_detail(
                         "/static/img/gallery2.jpg".to_string(),
                         "/static/img/gallery3.jpg".to_string(),
                     ],
+                    gallery_videos: Vec::new(),
                     gift_accounts: vec![
                         GiftAccount {
                             bank_name: "BCA".to_string(),
@@ -2170,7 +2227,7 @@ pub async fn invitation_detail(
                             account_holder: "Nazma Putri".to_string(),
                         },
                     ],
-                    song_url,
+                    song_url: song_url.clone(),
                     song_id: None,
                     plan_name: "NOBLE".to_string(),
                     ai_chat_enabled: false,
@@ -2180,6 +2237,9 @@ pub async fn invitation_detail(
                     recipient_name: "Guest Guest & Partner".to_string(),
                     event_date_iso: "2026-12-12T08:00:00".to_string(),
                     rsvps: Vec::new(),
+                    custom_song_url: String::new(),
+                    background_video_url: String::new(),
+                    stories: vec![],
                     is_preview: true,
                 };
                 
@@ -2326,6 +2386,14 @@ pub async fn manage_invitation(
             .await
             .unwrap_or_default();
 
+            let gallery_videos = sqlx::query_scalar::<_, String>(
+                "SELECT url FROM invitation_photos WHERE invitation_id = $1 AND photo_type = 'gallery_video' ORDER BY \"order\" ASC"
+            )
+            .bind(row.id)
+            .fetch_all(&state.db)
+            .await
+            .unwrap_or_default();
+
             let invitation = Invitation {
                 slug: row.slug,
                 template_name: row.template_name,
@@ -2339,6 +2407,7 @@ pub async fn manage_invitation(
                 reception: from_value(row.reception_data).unwrap_or_default(),
                 quote: from_value(row.quote_data).unwrap_or_default(),
                 gallery_images,
+                gallery_videos,
                 gift_accounts: sqlx::query_as::<_, GiftAccount>("SELECT bank_name, account_number, account_holder FROM gift_accounts WHERE invitation_id = $1").bind(row.id).fetch_all(&state.db).await.unwrap_or_default(),
                 song_url: String::new(),
                 song_id: row.song_id,
@@ -2354,6 +2423,9 @@ pub async fn manage_invitation(
                     .fetch_all(&state.db)
                     .await
                     .unwrap_or_default(),
+                custom_song_url: row.custom_song_url.unwrap_or_default(),
+                background_video_url: row.background_video_url.unwrap_or_default(),
+                stories: from_value(row.stories_data.unwrap_or(json!([]))).unwrap_or_default(),
                 is_preview: false,
             };
 
@@ -2444,6 +2516,16 @@ pub async fn update_invitation(
     let mut bank_names = Vec::new();
     let mut account_numbers = Vec::new();
     let mut account_holders = Vec::new();
+    let mut custom_song_url = row.custom_song_url.clone();
+    let mut background_video_url = row.background_video_url.clone();
+    let mut gallery_video_paths = Vec::new();
+    let mut existing_gallery_videos = Vec::new();
+    
+    let mut story_titles = Vec::new();
+    let mut story_dates = Vec::new();
+    let mut story_descriptions = Vec::new();
+    let mut story_image_urls = Vec::new();
+    let mut story_image_files = Vec::new();
 
     while let Some(field) = multipart.next_field().await.unwrap() {
         let name = field.name().unwrap().to_string();
@@ -2477,6 +2559,64 @@ pub async fn update_invitation(
             account_holders.push(field.text().await.unwrap_or_default());
         } else if name == "existing_gallery[]" {
             existing_gallery.push(field.text().await.unwrap_or_default());
+        } else if name == "custom_song" {
+            let filename = Uuid::new_v4().to_string() + ".mp3";
+            let path = format!("static/uploads/{}", filename);
+            let data = field.bytes().await.unwrap_or_default();
+            if !data.is_empty() && data.len() < 10 * 1024 * 1024 { // 10MB limit
+                if process_and_save_file(&state.s3_client, &state.s3_bucket, data, path.clone(), "audio/mpeg").await {
+                    custom_song_url = Some(format!("/uploads/{}", filename));
+                }
+            }
+        } else if name == "background_video" {
+            let filename = Uuid::new_v4().to_string() + ".mp4";
+            let path = format!("static/uploads/{}", filename);
+            let data = field.bytes().await.unwrap_or_default();
+            if !data.is_empty() && data.len() < 25 * 1024 * 1024 { // 25MB limit
+                if process_and_save_file(&state.s3_client, &state.s3_bucket, data, path.clone(), "video/mp4").await {
+                    background_video_url = Some(format!("/uploads/{}", filename));
+                }
+            }
+        } else if name == "gallery_video[]" {
+            let plan = row.plan_name.as_deref().unwrap_or("NOBLE");
+            let (_, max_size) = match plan {
+                "DYNASTY" => (10, 25 * 1024 * 1024),
+                "ROYAL" => (5, 20 * 1024 * 1024),
+                _ => (3, 10 * 1024 * 1024),
+            };
+
+            let filename = Uuid::new_v4().to_string() + ".mp4";
+            let path = format!("static/uploads/{}", filename);
+            let data = field.bytes().await.unwrap_or_default();
+            
+            if !data.is_empty() && data.len() <= max_size {
+                if process_and_save_file(&state.s3_client, &state.s3_bucket, data, path.clone(), "video/mp4").await {
+                    gallery_video_paths.push(format!("/uploads/{}", filename));
+                }
+            }
+        } else if name == "existing_gallery_video[]" {
+            existing_gallery_videos.push(field.text().await.unwrap_or_default());
+        } else if name == "story_title[]" {
+            story_titles.push(field.text().await.unwrap_or_default());
+        } else if name == "story_date[]" {
+            story_dates.push(field.text().await.unwrap_or_default());
+        } else if name == "story_description[]" {
+            story_descriptions.push(field.text().await.unwrap_or_default());
+        } else if name == "story_image_url[]" {
+            story_image_urls.push(field.text().await.unwrap_or_default());
+        } else if name == "story_image_file[]" {
+            let filename = Uuid::new_v4().to_string() + ".webp";
+            let path = format!("static/uploads/{}", filename);
+            let data = field.bytes().await.unwrap_or_default();
+            if !data.is_empty() {
+                if process_and_save_image(&state.s3_client, &state.s3_bucket, data, path.clone(), 1200).await {
+                    story_image_files.push(Some(format!("/uploads/{}", filename)));
+                } else {
+                    story_image_files.push(None);
+                }
+            } else {
+                story_image_files.push(None);
+            }
         } else {
             let value = field.text().await.unwrap();
             fields.insert(name, value);
@@ -2499,12 +2639,14 @@ pub async fn update_invitation(
     if let Some(val) = photo_paths.get("groom_photo") { groom.image_url = val.clone(); }
 
     let mut ceremony: EventDetails = from_value(row.ceremony_data).unwrap_or_default();
+    ceremony.enabled = fields.get("ceremony_enabled").map(|v| v == "on").unwrap_or(false);
     if let Some(val) = fields.get("ceremony_time") { ceremony.time = val.clone(); }
     if let Some(val) = fields.get("ceremony_venue") { ceremony.venue = val.clone(); }
     if let Some(val) = fields.get("ceremony_address") { ceremony.address = val.clone(); }
     if let Some(val) = fields.get("ceremony_maps") { ceremony.maps_url = val.clone(); }
 
     let mut reception: EventDetails = from_value(row.reception_data).unwrap_or_default();
+    reception.enabled = fields.get("reception_enabled").map(|v| v == "on").unwrap_or(false);
     if let Some(val) = fields.get("reception_date") { reception.date = val.clone(); }
     if let Some(val) = fields.get("reception_time") { reception.time = val.clone(); }
     if let Some(val) = fields.get("reception_venue") { reception.venue = val.clone(); }
@@ -2525,8 +2667,34 @@ pub async fn update_invitation(
         .and_then(|s| if s.is_empty() { None } else { Uuid::parse_str(s).ok() })
         .or(row.song_id);
     
+    // Process Stories
+    let mut final_stories = Vec::new();
+    let story_count = story_titles.len();
+    for i in 0..story_count {
+        let title = story_titles.get(i).cloned().unwrap_or_default();
+        let date = story_dates.get(i).cloned().unwrap_or_default();
+        let description = story_descriptions.get(i).cloned().unwrap_or_default();
+        
+        // Image logic: use new file if provided, otherwise fallback to existing url
+        let image_url = if let Some(Some(new_path)) = story_image_files.get(i) {
+            new_path.clone()
+        } else {
+            story_image_urls.get(i).cloned().unwrap_or_default()
+        };
+
+        if !title.is_empty() {
+            final_stories.push(Story {
+                id: Uuid::new_v4().to_string(),
+                title,
+                date,
+                description,
+                image_url,
+            });
+        }
+    }
+
     sqlx::query(
-        "UPDATE invitations SET couple_name_short = $1, event_date = $2, bride_data = $3, groom_data = $4, ceremony_data = $5, reception_data = $6, quote_data = $7, ai_chat_enabled = $8, ai_custom_knowledge = $9, ai_language = $10, template_name = $11, song_id = $12 WHERE id = $13"
+        "UPDATE invitations SET couple_name_short = $1, event_date = $2, bride_data = $3, groom_data = $4, ceremony_data = $5, reception_data = $6, quote_data = $7, ai_chat_enabled = $8, ai_custom_knowledge = $9, ai_language = $10, template_name = $11, song_id = $12, custom_song_url = $13, background_video_url = $14, stories_data = $15 WHERE id = $16"
     )
     .bind(couple_name_short)
     .bind(event_date)
@@ -2540,6 +2708,9 @@ pub async fn update_invitation(
     .bind(final_ai_language)
     .bind(template_name)
     .bind(song_id)
+    .bind(custom_song_url)
+    .bind(background_video_url)
+    .bind(json!(final_stories))
     .bind(row.id)
     .execute(&state.db)
     .await
@@ -2563,6 +2734,35 @@ pub async fn update_invitation(
         .bind(row.id)
         .bind(path)
         .bind("gallery")
+        .bind(i as i32)
+        .execute(&state.db)
+        .await
+        .unwrap();
+    }
+
+    // Handle Gallery Video Management
+    let _ = sqlx::query("DELETE FROM invitation_photos WHERE invitation_id = $1 AND photo_type = 'gallery_video'")
+        .bind(row.id)
+        .execute(&state.db)
+        .await;
+
+    let mut final_gallery_videos = existing_gallery_videos;
+    final_gallery_videos.extend(gallery_video_paths);
+
+    let plan = row.plan_name.as_deref().unwrap_or("NOBLE");
+    let max_count = match plan {
+        "DYNASTY" => 10,
+        "ROYAL" => 5,
+        _ => 3,
+    };
+
+    for (i, path) in final_gallery_videos.into_iter().take(max_count).enumerate() {
+        sqlx::query(
+            "INSERT INTO invitation_photos (invitation_id, url, photo_type, \"order\") VALUES ($1, $2, $3, $4)"
+        )
+        .bind(row.id)
+        .bind(path)
+        .bind("gallery_video")
         .bind(i as i32)
         .execute(&state.db)
         .await
@@ -2727,6 +2927,7 @@ pub async fn preview(
         },
         event_date: payload.ceremony_date.clone(),
         ceremony: EventDetails {
+            enabled: true,
             date: payload.ceremony_date,
             time: payload.ceremony_time,
             venue: payload.ceremony_venue,
@@ -2734,6 +2935,7 @@ pub async fn preview(
             maps_url: payload.ceremony_maps,
         },
         reception: EventDetails {
+            enabled: true,
             date: payload.reception_date,
             time: payload.reception_time,
             venue: payload.reception_venue,
@@ -2749,6 +2951,7 @@ pub async fn preview(
             "/static/img/gallery2.jpg".to_string(),
             "/static/img/gallery3.jpg".to_string(),
         ],
+        gallery_videos: Vec::new(),
         gift_accounts: vec![
             GiftAccount {
                 bank_name: "BCA".to_string(),
@@ -2758,6 +2961,8 @@ pub async fn preview(
         ],
         song_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3".to_string(),
         song_id: None,
+        stories: vec![],
+        is_preview: true,
         plan_name: "NOBLE".to_string(),
         ai_chat_enabled: false,
         ai_usage_count: 0,
@@ -2766,7 +2971,8 @@ pub async fn preview(
         recipient_name: "Guest Guest & Partner".to_string(),
         event_date_iso: "2026-05-24T08:00:00".to_string(),
         rsvps: Vec::new(),
-        is_preview: true,
+        custom_song_url: String::new(),
+        background_video_url: String::new(),
     };
 
     match payload.template_name.as_str() {

@@ -48,3 +48,7 @@ pub fn default<T: std::fmt::Display>(s: &Option<T>, default_val: &str) -> askama
 pub fn eq_uuid_opt(opt: &Option<uuid::Uuid>, val: &uuid::Uuid) -> askama::Result<bool> {
     Ok(opt.as_ref() == Some(val))
 }
+
+pub fn split_last(s: &str, sep: &str) -> askama::Result<String> {
+    Ok(s.split(sep).last().unwrap_or(s).to_string())
+}

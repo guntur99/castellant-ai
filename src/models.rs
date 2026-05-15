@@ -35,6 +35,9 @@ pub struct InvitationRow {
     pub ai_usage_count: i32,
     pub ai_custom_knowledge: Option<String>,
     pub ai_language: String,
+    pub custom_song_url: Option<String>,
+    pub background_video_url: Option<String>,
+    pub stories_data: Option<serde_json::Value>,
     pub created_at: DateTime<Utc>,
 }
 
@@ -53,6 +56,7 @@ pub struct Invitation {
     pub reception: EventDetails,
     pub quote: Quote,
     pub gallery_images: Vec<String>,
+    pub gallery_videos: Vec<String>,
     pub gift_accounts: Vec<GiftAccount>,
     pub song_url: String,
     pub song_id: Option<Uuid>,
@@ -64,6 +68,9 @@ pub struct Invitation {
     pub recipient_name: String,
     pub event_date_iso: String,
     pub rsvps: Vec<Rsvp>,
+    pub custom_song_url: String,
+    pub background_video_url: String,
+    pub stories: Vec<Story>,
     pub is_preview: bool,
 }
 
@@ -96,11 +103,21 @@ pub struct Person {
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]
 pub struct EventDetails {
+    pub enabled: bool,
     pub date: String,
     pub time: String,
     pub venue: String,
     pub address: String,
     pub maps_url: String,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, Default)]
+pub struct Story {
+    pub id: String,
+    pub image_url: String,
+    pub title: String,
+    pub date: String,
+    pub description: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone, Default)]

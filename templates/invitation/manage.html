@@ -979,25 +979,40 @@
             <div class="dashboard-main">
                 <!-- Details Card -->
                 <div id="details" class="creation-container">
-                <div class="progress-steps" style="background: #fdfdfd; border-bottom: 1px solid #f0f0f0;">
+                <div class="progress-steps" style="background: #fdfdfd; border-bottom: 1px solid #f0f0f0; overflow-x: auto; white-space: nowrap; padding: 1rem 2rem;">
                     <div class="step-item active" id="step-1-indicator" onclick="goToStep(1)">
                         <span class="step-num">01</span>
-                        <span class="step-label">General</span>
+                        <span class="step-label">Dasar</span>
                     </div>
                     <div class="step-divider"></div>
                     <div class="step-item" id="step-2-indicator" onclick="goToStep(2)">
                         <span class="step-num">02</span>
-                        <span class="step-label">Couple</span>
+                        <span class="step-label">Mempelai</span>
                     </div>
                     <div class="step-divider"></div>
                     <div class="step-item" id="step-3-indicator" onclick="goToStep(3)">
                         <span class="step-num">03</span>
-                        <span class="step-label">Details</span>
+                        <span class="step-label">Acara</span>
                     </div>
                     <div class="step-divider"></div>
                     <div class="step-item" id="step-4-indicator" onclick="goToStep(4)">
                         <span class="step-num">04</span>
-                        <span class="step-label">Preview</span>
+                        <span class="step-label">Cerita</span>
+                    </div>
+                    <div class="step-divider"></div>
+                    <div class="step-item" id="step-5-indicator" onclick="goToStep(5)">
+                        <span class="step-num">05</span>
+                        <span class="step-label">Media</span>
+                    </div>
+                    <div class="step-divider"></div>
+                    <div class="step-item" id="step-6-indicator" onclick="goToStep(6)">
+                        <span class="step-num">06</span>
+                        <span class="step-label">Galeri</span>
+                    </div>
+                    <div class="step-divider"></div>
+                    <div class="step-item" id="step-7-indicator" onclick="goToStep(7)">
+                        <span class="step-num">07</span>
+                        <span class="step-label">Hadiah</span>
                     </div>
                 </div>
 
@@ -1005,7 +1020,12 @@
                     <input type="hidden" name="template_name" id="template_name_input" value="{{ invitation.template_name }}">
                     <!-- Step 1: General -->
                     <div class="form-step active" id="step-1">
-                        <h3 class="serif accent-title">Informasi Dasar</h3>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h3 class="serif accent-title" style="margin: 0;">Informasi Dasar</h3>
+                            <button type="submit" class="btn-elegant" style="background: #10b981; color: white; border: none; padding: 0.6rem 1.5rem; border-radius: 12px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-save"></i> <span>Simpan Progres</span>
+                            </button>
+                        </div>
                         
                         <div class="ai-onboarding-promo">
                             <div style="font-size: 2.5rem;">🤖</div>
@@ -1071,18 +1091,6 @@
                                 <input type="hidden" name="ai_language" id="ai_language_hidden" value="{{ invitation.ai_language }}">
                             </div>
 
-                            <div style="background: rgba(0,0,0,0.2); padding: 10px 14px; border-radius: 10px; display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
-                                <div style="display: flex; align-items: center; justify-content: space-between;">
-                                    <div style="font-size: 0.8rem; font-weight: 700; color: #D4A373;">🎵 Lagu Background (Default)</div>
-                                    <select name="song_id" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(212,163,115,0.3); color: white; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; outline: none; cursor: pointer; width: 60%;">
-                                        <option value="" style="background: #2A1E14;">Pilih Lagu...</option>
-                                        {% for song in all_songs %}
-                                        <option value="{{ song.id }}" style="background: #2A1E14;" {% if invitation.song_id|eq_uuid_opt(song.id) %}selected{% endif %}>
-                                            {{ song.title }} - {{ song.artist }}
-                                        </option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
                             </div>
 
                             <div style="margin-top: 0.5rem;">
@@ -1183,6 +1191,7 @@
         }
     </script>
                         {% endif %}
+                        
 
                         <div class="form-group" style="margin-top: 1rem;">
                             <label>Couple Name (Short Version)</label>
@@ -1200,9 +1209,24 @@
                             </div>
                         </div>
 
+                        <!-- Moved Wedding Quote to Step 1 -->
+                        <div class="glass" style="padding: 2.5rem; border-radius: 30px; background: rgba(255, 255, 255, 0.8); border: 2px solid white; box-shadow: 0 20px 50px rgba(142, 110, 83, 0.05); text-align: left; margin-top: 3rem;">
+                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; justify-content: center;">
+                                <div style="width: 42px; height: 42px; background: #fff7ed; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #f59e0b; font-size: 1.2rem;">✍️</div>
+                                <h4 class="serif" style="color: #4A3728; font-size: 1.6rem; margin: 0;">Wedding Quote</h4>
+                            </div>
+                            <div class="form-group">
+                                <textarea name="quote_text" rows="4" style="background: white; font-style: italic; text-align: center; font-family: 'Georgia', serif; font-size: 1.2rem; color: #4A3728; border-radius: 20px; padding: 1.5rem; line-height: 1.6; width: 100%; border: 1px solid rgba(0,0,0,0.05);">{{ invitation.quote.text }}</textarea>
+                            </div>
+                            <div class="form-group">
+                                <label style="text-align: center; display: block; margin-top: 1.2rem; font-weight: 600; color: #8E6E53;">— Quote Source —</label>
+                                <input type="text" name="quote_source" value="{{ invitation.quote.source }}" style="text-align: center; font-weight: 800; width: 100%; font-size: 1.1rem; border: none; background: transparent; border-bottom: 2px solid #eee; border-radius: 0;">
+                            </div>
+                        </div>
+
                         <div style="margin-top: 3rem; display: flex; justify-content: flex-end;">
                             <button type="button" class="btn-elegant primary" onclick="goToStep(2)">
-                                <span>Lanjut ke Couple</span>
+                                <span>Lanjut ke Mempelai</span>
                                 <i class="fas fa-arrow-right"></i>
                             </button>
                         </div>
@@ -1210,7 +1234,12 @@
 
                     <!-- Step 2: Couple -->
                     <div class="form-step" id="step-2">
-                        <h3 class="serif accent-title">The Couple Details</h3>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h3 class="serif accent-title" style="margin: 0;">The Couple Details</h3>
+                            <button type="submit" class="btn-elegant" style="background: #10b981; color: white; border: none; padding: 0.6rem 1.5rem; border-radius: 12px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-save"></i> <span>Simpan Progres</span>
+                            </button>
+                        </div>
                         <div class="form-grid" style="gap: 4rem;">
                             <!-- Bride -->
                             <div>
@@ -1299,30 +1328,31 @@
                         </div>
 
                         <div style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
-                            <button type="button" class="btn-back" onclick="goToStep(1)">← Back</button>
+                            <button type="button" class="btn-back" onclick="goToStep(1)">← Kembali</button>
                             <button type="button" class="btn-elegant primary" onclick="goToStep(3)">
-                                <span>Lanjut ke Event</span>
+                                <span>Lanjut ke Jadwal</span>
                                 <i class="fas fa-arrow-right"></i>
                             </button>
                         </div>
                     </div>
 
                     <!-- Step 3: Event & Gallery -->
+                    <!-- Step 3: Acara -->
                     <div class="form-step" id="step-3">
-                        <h3 class="serif accent-title" style="margin-bottom: 2.5rem; font-size: 2rem;">Events & Gallery</h3>
-                        
-                        <div style="display: flex; flex-direction: column; gap: 3rem;">
-                            <!-- Section: Ceremony & Reception -->
-                            <div class="glass" style="padding: 2.5rem; border-radius: 30px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(255,255,255,0.8);">
-                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
-                                    <div style="width: 42px; height: 42px; background: #fef2f2; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: var(--color-accent-red); font-size: 1.2rem;">📅</div>
-                                    <h4 class="serif" style="color: #4A3728; font-size: 1.4rem; margin: 0;">Ceremony & Reception</h4>
-                                </div>
-
-                                <div style="display: flex; flex-direction: column; gap: 3rem;">
-                                    <!-- Ceremony -->
-                                    <div>
-                                        <h5 style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem; color: #8E6E53; margin-bottom: 1.5rem; font-weight: 800; border-bottom: 1px solid rgba(142, 110, 83, 0.2); padding-bottom: 0.5rem; display: inline-block;">Akad Nikah / Ceremony</h5>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h3 class="serif accent-title" style="margin: 0; font-size: 2rem;">Detail Acara</h3>
+                            <button type="submit" class="btn-elegant" style="background: #10b981; color: white; border: none; padding: 0.6rem 1.5rem; border-radius: 12px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-save"></i> <span>Simpan Progres</span>
+                            </button>
+                        </div>
+                        <div class="glass" style="padding: 2.5rem; border-radius: 30px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(255,255,255,0.8);">
+                            <div style="display: flex; flex-direction: column; gap: 3rem;">
+                                <!-- Ceremony -->
+                                <div id="ceremony_section">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(142, 110, 83, 0.2); padding-bottom: 0.5rem;">
+                                        <h5 style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem; color: #8E6E53; margin: 0; font-weight: 800; display: inline-block;">Akad Nikah / Ceremony</h5>
+                                    </div>
+                                    <div class="section-content" style="transition: all 0.3s;">
                                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
                                             <div class="form-group">
                                                 <label>Ceremony Time</label>
@@ -1342,10 +1372,24 @@
                                             <input type="text" name="ceremony_maps" value="{{ invitation.ceremony.maps_url }}" placeholder="https://maps.google.com/...">
                                         </div>
                                     </div>
+                                </div>
 
-                                    <!-- Reception -->
-                                    <div>
-                                        <h5 style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem; color: #8E6E53; margin-bottom: 1.5rem; font-weight: 800; border-bottom: 1px solid rgba(142, 110, 83, 0.2); padding-bottom: 0.5rem; display: inline-block;">Resepsi / Reception</h5>
+                                <!-- Reception -->
+                                <div id="reception_section">
+                                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(142, 110, 83, 0.2); padding-bottom: 0.5rem;">
+                                        <h5 style="text-transform: uppercase; letter-spacing: 2px; font-size: 0.7rem; color: #8E6E53; margin: 0; font-weight: 800; display: inline-block;">Resepsi / Reception</h5>
+                                        <div style="display: flex; align-items: center; gap: 20px;">
+                                            <div style="display: flex; align-items: center; gap: 10px;">
+                                                <span style="font-size: 0.65rem; font-weight: 700; color: #8E6E53; text-transform: uppercase; letter-spacing: 1px;">Sama dengan Akad</span>
+                                                {% set is_same = invitation.reception.venue == invitation.ceremony.venue && invitation.reception.address == invitation.ceremony.address && invitation.reception.maps_url == invitation.ceremony.maps_url && !invitation.reception.venue.is_empty() %}
+                                                <label class="switch">
+                                                    <input type="checkbox" id="same_as_ceremony_toggle" onchange="syncCeremonyToReception(this)" {% if is_same %}checked{% endif %}>
+                                                    <span class="slider round"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="section-content" style="transition: all 0.3s;">
                                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
                                             <div class="form-group">
                                                 <label>Reception Date</label>
@@ -1358,182 +1402,332 @@
                                         </div>
                                         <div class="form-group" style="margin-top: 1rem;">
                                             <label>Reception Venue</label>
-                                            <input type="text" name="reception_venue" value="{{ invitation.reception.venue }}" placeholder="Nama Gedung/Tempat">
+                                            <input type="text" name="reception_venue" value="{{ invitation.reception.venue }}" placeholder="Nama Gedung/Tempat" {% if is_same %}readonly style="background: #f8f9fa;"{% endif %}>
                                         </div>
                                         <div class="form-group">
                                             <label>Reception Address</label>
-                                            <textarea name="reception_address" rows="2" placeholder="Alamat lengkap lokasi resepsi">{{ invitation.reception.address }}</textarea>
+                                            <textarea name="reception_address" rows="2" placeholder="Alamat lengkap lokasi resepsi" {% if is_same %}readonly style="background: #f8f9fa;"{% endif %}>{{ invitation.reception.address }}</textarea>
                                         </div>
                                         <div class="form-group">
                                             <label>Google Maps URL</label>
-                                            <input type="text" name="reception_maps" value="{{ invitation.reception.maps_url }}" placeholder="https://maps.google.com/...">
+                                            <input type="text" name="reception_maps" value="{{ invitation.reception.maps_url }}" placeholder="https://maps.google.com/..." {% if is_same %}readonly style="background: #f8f9fa;"{% endif %}>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-
-                            <!-- Section: Media & Quote -->
-                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;">
-                                <div class="glass" style="padding: 2.5rem; border-radius: 30px; background: rgba(255, 255, 255, 0.6);">
-                                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
-                                        <div style="width: 42px; height: 42px; background: #fff7ed; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #f59e0b; font-size: 1.2rem;">✍️</div>
-                                        <h4 class="serif" style="color: #4A3728; font-size: 1.4rem; margin: 0;">Wedding Quote</h4>
-                                    </div>
-                                    <div class="form-group">
-                                        <textarea name="quote_text" rows="4" style="background: white; font-style: italic; text-align: center; font-family: 'Georgia', serif; font-size: 1.1rem; color: #4A3728; border-radius: 15px; padding: 1.5rem; line-height: 1.6; width: 100%;">{{ invitation.quote.text }}</textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label style="text-align: center; display: block;">Quote Source</label>
-                                        <input type="text" name="quote_source" value="{{ invitation.quote.source }}" style="text-align: center; font-weight: 700; width: 100%;">
-                                    </div>
-                                </div>
-
-                                <div class="glass" style="padding: 2.5rem; border-radius: 30px; background: rgba(255, 255, 255, 0.6);">
-                                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
-                                        <div style="width: 42px; height: 42px; background: #f0f9ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #0ea5e9; font-size: 1.2rem;">🖼️</div>
-                                        <h4 class="serif" style="color: #4A3728; font-size: 1.4rem; margin: 0;">Gallery Photos</h4>
-                                    </div>
-                                    <div id="gallery-upload-zone" style="border: 2px dashed #cbd5e1; background: #f8fafc; border-radius: 20px; padding: 2rem 1.5rem; text-align: center; cursor: pointer; position: relative; transition: all 0.2s;" ondragover="galleryDragOver(event)" ondragleave="galleryDragLeave(event)" ondrop="galleryDrop(event)" onclick="document.getElementById('gallery_file_input').click()">
-                                        <div style="pointer-events: none;">
-                                            <div style="font-size: 2rem; margin-bottom: 0.5rem;">🖼️</div>
-                                            <p style="font-size: 0.85rem; color: #475569; margin: 0; font-weight: 600;">Klik atau seret foto ke sini</p>
-                                            <p style="font-size: 0.75rem; color: #94a3b8; margin: 4px 0 0;">JPG, PNG, WebP — bisa pilih banyak sekaligus</p>
-                                        </div>
-                                        <input type="file" id="gallery_file_input" name="gallery[]" accept="image/*" multiple style="display: none;" onchange="handleGalleryUpload(this.files)">
-                                    </div>
-                                    <div class="gallery-preview-grid" id="gallery-grid" style="margin-top: 1.5rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 1rem; width: 100%;">
-                                        {% for img in invitation.gallery_images %}
-                                        <div class="gallery-item-container" style="position: relative; aspect-ratio: 1/1; border-radius: 12px; overflow: hidden; border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                                            <img src="{{ img }}" style="width: 100%; height: 100%; object-fit: cover;" alt="Gallery">
-                                            <input type="hidden" name="existing_gallery[]" value="{{ img }}">
-                                            <button type="button" onclick="this.parentElement.remove()" style="position: absolute; top: 8px; right: 8px; background: rgba(220, 38, 38, 0.85); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.2); font-weight: bold; font-size: 14px;">
-                                                ×
-                                            </button>
-                                        </div>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Section: Amplop Digital -->
-                            <div class="glass" style="padding: 2.5rem; border-radius: 30px; background: rgba(255, 255, 255, 0.6);">
-                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
-                                    <div style="width: 42px; height: 42px; background: #f8f9ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #4338ca; font-size: 1.2rem;">💰</div>
-                                    <h4 class="serif" style="color: #4A3728; font-size: 1.4rem; margin: 0;">Amplop Digital (Gift)</h4>
-                                </div>
-                                <div id="gift-accounts-container">
-                                    <div class="gift-accounts-list">
-                                        {% for account in invitation.gift_accounts %}
-                                        <div class="gift-account-item" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; padding: 1.5rem; background: white; border-radius: 15px; border: 1px solid rgba(0,0,0,0.05); position: relative;">
-                                            <div class="form-group mb-0">
-                                                <label>Bank/E-Wallet</label>
-                                                <input type="text" name="bank_name[]" value="{{ account.bank_name }}" placeholder="BCA, Dana...">
-                                            </div>
-                                            <div class="form-group mb-0">
-                                                <label>No. Rekening</label>
-                                                <input type="text" name="account_number[]" value="{{ account.account_number }}" placeholder="8210370xxx">
-                                            </div>
-                                            <div class="form-group mb-0" style="grid-column: 1 / -1;">
-                                                <label>Atas Nama</label>
-                                                <input type="text" name="account_holder[]" value="{{ account.account_holder }}" placeholder="Nama Lengkap">
-                                            </div>
-                                            <button type="button" onclick="this.parentElement.remove()" style="position: absolute; top: 0.5rem; right: 0.5rem; width: 24px; height: 24px; border-radius: 6px; background: #fff1f2; color: #ef4444; border: none; cursor: pointer; font-size: 0.7rem;"><i class="fas fa-trash-alt"></i></button>
-                                        </div>
-                                        {% endfor %}
-                                        {% if invitation.gift_accounts.len() == 0 %}
-                                        <div class="gift-account-item" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; padding: 1.5rem; background: white; border-radius: 15px; border: 1px solid rgba(0,0,0,0.05); position: relative;">
-                                            <div class="form-group mb-0">
-                                                <label>Bank/E-Wallet</label>
-                                                <input type="text" name="bank_name[]" placeholder="BCA, Dana...">
-                                            </div>
-                                            <div class="form-group mb-0">
-                                                <label>No. Rekening</label>
-                                                <input type="text" name="account_number[]" placeholder="8210370xxx">
-                                            </div>
-                                            <div class="form-group mb-0" style="grid-column: 1 / -1;">
-                                                <label>Atas Nama</label>
-                                                <input type="text" name="account_holder[]" placeholder="Nama Lengkap">
-                                            </div>
-                                        </div>
-                                        {% endif %}
-                                    </div>
-                                    <button type="button" class="btn-elegant" style="width: 100%; padding: 0.8rem; font-size: 0.8rem; margin-top: 1rem;" onclick="addGiftAccount()">
-                                        <i class="fas fa-plus"></i> Tambah Rekening Lain
-                                    </button>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Step Navigation Buttons -->
-                        <div class="step-navigation" style="margin-top: 5rem; padding-top: 2rem; border-top: 1px solid rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center;">
-                            <button type="button" class="btn-back" onclick="goToStep(2)">
-                                <i class="fas fa-arrow-left"></i> Kembali
-                            </button>
-                            <button type="button" class="btn-elegant primary" style="min-width: 200px;" onclick="goToStep(4)">
-                                <span>Preview Draft</span>
-                                <i class="fas fa-eye"></i>
+                        <div class="step-navigation" style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
+                            <button type="button" class="btn-back" onclick="goToStep(2)">← Kembali</button>
+                            <button type="button" class="btn-elegant primary" onclick="goToStep(4)">
+                                <span>Lanjut ke Cerita</span>
+                                <i class="fas fa-arrow-right"></i>
                             </button>
                         </div>
                     </div>
 
-
-
-                    <!-- Step 4: Preview -->
+                    <!-- Step 4: Love Story -->
                     <div class="form-step" id="step-4">
-                        <h3 class="serif accent-title text-center">
-                            Summary Preview 
-                            <span id="current-template-badge" style="background: rgba(142, 110, 83, 0.1); color: #8E6E53; padding: 4px 14px; border-radius: 50px; font-size: 0.75rem; vertical-align: middle; margin-left: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; border: 1px solid rgba(142, 110, 83, 0.2);">
-                                {% if invitation.template_name == "bereal-wedding" %}BIRIL
-                                {% else if invitation.template_name == "cairide" %}GOJACK
-                                {% else if invitation.template_name == "trendvibe" %}TOKTIK
-                                {% else if invitation.template_name == "instagram-live-wedding" %}INSTAGREM
-                                {% else if invitation.template_name == "cinemarry" %}NITFLAX
-                                {% else %}{{ invitation.template_name }}
-                                {% endif %}
-                            </span>
-                        </h3>
-                        <div class="template-switcher-container">
-                            <button type="button" class="template-pill {% if groups.len() == 0 %}active{% endif %}" onclick="switchPreviewTheme('{{ invitation.template_name }}', this)">DEFAULT</button>
-                            {% for group in groups %}
-                            <button type="button" class="template-pill" onclick="switchPreviewTheme('{{ group.template_name }}', this)">
-                                {% if group.template_name == "instagram-live-wedding" %}INSTAGREM
-                                {% else if group.template_name == "trendvibe" %}TOKTIK
-                                {% else if group.template_name == "cinemarry" %}NITFLAX
-                                {% else if group.template_name == "bereal-wedding" %}BIRIL
-                                {% else if group.template_name == "cairide" %}GOJACK
-                                {% else %}{{ group.template_name.to_uppercase() }}
-                                {% endif %}
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h3 class="serif accent-title" style="margin: 0; font-size: 2rem;">Love Story / Episodes</h3>
+                            <button type="submit" class="btn-elegant" style="background: #10b981; color: white; border: none; padding: 0.6rem 1.5rem; border-radius: 12px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-save"></i> <span>Simpan Progres</span>
                             </button>
-                            {% endfor %}
                         </div>
-                        <div style="display: flex; flex-direction: column; align-items: center; gap: 3rem; margin-top: 2rem;">
-                            <div class="phone-mockup-container">
-                                <div style="width: 300px; height: 600px; background: #111; border-radius: 40px; padding: 10px; position: relative; border: 4px solid #222; box-shadow: 0 30px 60px rgba(0,0,0,0.2);">
-                                    <div id="preview-loader" style="display:none; position: absolute; inset: 10px; background: rgba(255,255,255,0.9); border-radius: 30px; z-index: 10; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px);">
-                                        <div style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #8E6E53; border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 15px;"></div>
-                                        <p style="font-weight: 800; color: #8E6E53; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; margin: 0;">Updating Theme</p>
+                        <div class="glass" style="padding: 2.5rem; border-radius: 30px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(255,255,255,0.8);">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem;">
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div style="width: 42px; height: 42px; background: #fef2f2; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #ef4444; font-size: 1.2rem;">🎞️</div>
+                                    <h4 class="serif" style="color: #4A3728; font-size: 1.4rem; margin: 0;">Timeline Cerita</h4>
+                                </div>
+                                <button type="button" onclick="addStory()" style="background: #ef4444; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 12px; font-size: 0.85rem; cursor: pointer; font-weight: 700; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2); transition: all 0.3s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(239, 68, 68, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(239, 68, 68, 0.2)'">
+                                    <i class="fas fa-plus-circle" style="margin-right: 6px;"></i> Tambah Cerita
+                                </button>
+                            </div>
+                            
+                            <div id="story_container" style="display: flex; flex-direction: column; gap: 2rem;">
+                                {% for story in invitation.stories %}
+                                <div class="story-item glass" style="padding: 2rem; border-radius: 25px; background: white; position: relative; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.03);">
+                                    <button type="button" onclick="this.parentElement.remove()" style="position: absolute; top: 15px; right: 15px; background: #fef2f2; border: none; color: #ef4444; cursor: pointer; font-size: 0.9rem; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" onmouseover="this.style.background='#fee2e2'" onmouseout="this.style.background='#fef2f2'">&times;</button>
+                                    
+                                    <div style="display: grid; grid-template-columns: 200px 1fr; gap: 2rem;">
+                                        <div style="display: flex; flex-direction: column; gap: 12px;">
+                                            <div style="position: relative; width: 200px; height: 120px; background: #f1f5f9; border-radius: 18px; overflow: hidden; border: 2px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">
+                                                {% if !story.image_url.is_empty() %}
+                                                <img src="{{ story.image_url }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                                {% else %}
+                                                <div style="text-align: center; color: #94a3b8;">
+                                                    <i class="fas fa-image" style="font-size: 1.5rem; margin-bottom: 5px; display: block;"></i>
+                                                    <span style="font-size: 0.7rem; font-weight: 600;">Thumbnail</span>
+                                                </div>
+                                                {% endif %}
+                                                <input type="hidden" name="story_image_url[]" value="{{ story.image_url }}">
+                                            </div>
+                                            <div style="position: relative;">
+                                                <input type="file" name="story_image_file[]" accept="image/*" style="position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%;" onchange="this.nextElementSibling.innerText = '✓ Terpilih'">
+                                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; text-align: center; color: #64748b;">
+                                                    <i class="fas fa-upload" style="margin-right: 5px;"></i> Unggah Foto
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                                            <div class="form-group mb-0">
+                                                <label style="font-size: 0.7rem; font-weight: 800; color: #8E6E53; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Judul Cerita</label>
+                                                <input type="text" name="story_title[]" value="{{ story.title }}" placeholder="Contoh: Awal Pertemuan" style="font-weight: 700; font-size: 1rem; border: none; background: #f8fafc; padding: 12px 15px; border-radius: 12px; width: 100%;">
+                                            </div>
+                                            <div class="form-group mb-0">
+                                                <label style="font-size: 0.7rem; font-weight: 800; color: #8E6E53; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Tanggal / Waktu</label>
+                                                <input type="text" name="story_date[]" value="{{ story.date }}" placeholder="Contoh: Juni 2025" style="font-weight: 600; font-size: 0.9rem; border: none; background: #f8fafc; padding: 12px 15px; border-radius: 12px; width: 100%;">
+                                            </div>
+                                            <div class="form-group mb-0">
+                                                <label style="font-size: 0.7rem; font-weight: 800; color: #8E6E53; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Deskripsi Cerita</label>
+                                                <textarea name="story_description[]" rows="3" placeholder="Ceritakan momen indah ini..." style="border: none; background: #f8fafc; padding: 12px 15px; border-radius: 12px; width: 100%; font-size: 0.9rem; line-height: 1.5;">{{ story.description }}</textarea>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div style="width: 100%; height: 100%; background: #fff; border-radius: 30px; overflow: hidden;">
-                                        <iframe src="/invitation/{{ invitation.slug }}" style="width: 100%; height: 100%; border: none;"></iframe>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="step-navigation" style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
+                            <button type="button" class="btn-back" onclick="goToStep(3)">← Kembali</button>
+                            <button type="button" class="btn-elegant primary" onclick="goToStep(5)">
+                                <span>Lanjut ke Media</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Multimedia -->
+                    <div class="form-step" id="step-5">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h3 class="serif accent-title" style="margin: 0; font-size: 2rem;">Multimedia Kustom</h3>
+                            <button type="submit" class="btn-elegant" style="background: #10b981; color: white; border: none; padding: 0.6rem 1.5rem; border-radius: 12px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-save"></i> <span>Simpan Progres</span>
+                            </button>
+                        </div>
+                        <div class="glass" style="padding: 2.5rem; border-radius: 35px; background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 20px 40px rgba(74, 55, 40, 0.05);">
+                            <div style="display: flex; align-items: center; gap: 1.2rem; margin-bottom: 2.5rem;">
+                                <div style="width: 48px; height: 48px; background: linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center; color: #f43f5e; font-size: 1.4rem; box-shadow: 0 8px 16px rgba(244, 63, 94, 0.1);">🎵</div>
+                                <div>
+                                    <h4 class="serif" style="color: #4A3728; font-size: 1.5rem; margin: 0;">Musik & Video Background</h4>
+                                    <p style="font-size: 0.85rem; color: #8E6E53; margin: 4px 0 0; opacity: 0.8;">Sesuaikan atmosfer cinematic undangan Anda</p>
+                                </div>
+                            </div>
+
+                            <!-- Music Library Selection -->
+                            <div class="form-group" style="margin-bottom: 2.5rem;">
+                                <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; font-weight: 600; color: #4A3728;">
+                                    <span style="font-size: 1rem;">Lagu Background (Library)</span>
+                                    <span style="font-size: 0.75rem; color: #D4A373; background: #FEF9E7; padding: 4px 12px; border-radius: 20px; border: 1px solid #FCF3CF;">Pilih dari koleksi kami</span>
+                                </label>
+                                <div style="position: relative;">
+                                    <select name="song_id" style="width: 100%; padding: 14px 20px; border-radius: 18px; border: 1.5px solid rgba(212, 163, 115, 0.2); outline: none; font-size: 0.95rem; background: white; appearance: none; transition: all 0.3s; cursor: pointer; color: #4A3728; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
+                                        <option value="">Pilih Lagu...</option>
+                                        {% for song in all_songs %}
+                                        <option value="{{ song.id }}" {% if invitation.song_id|eq_uuid_opt(song.id) %}selected{% endif %}>
+                                            {{ song.title }} — {{ song.artist }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                    <div style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #D4A373;">
+                                        <i class="fas fa-chevron-down"></i>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <div style="width: 100%; max-width: 600px; background: #fdf6f0; border-radius: 30px; padding: 2.5rem; border: 1px dashed #d4c4b5;">
-                                <h4 class="serif mb-4" style="color: #4A3728;">Ready to Publish?</h4>
-                                <p style="font-size: 0.9rem; line-height: 1.6; color: #666; margin-bottom: 2rem;">
-                                    Tinjau kembali semua detail di atas. Anda dapat menyimpan perubahan ini kapan saja dan undangan akan langsung terupdate untuk tamu Anda.
-                                </p>
-                                <button type="submit" class="btn-elegant primary" style="width: 100%; justify-content: center; padding: 1.5rem;">
-                                    <span>SIMPAN SEMUA PERUBAHAN ✨</span>
+
+                            <!-- Upload Grid -->
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem;">
+                                <!-- MP3 Upload -->
+                                <div class="form-group">
+                                    <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; font-weight: 600; color: #4A3728;">
+                                        <span style="font-size: 1rem;">Upload MP3 Sendiri</span>
+                                        <span style="font-size: 0.7rem; color: #8E6E53; opacity: 0.6;">Max 10MB</span>
+                                    </label>
+                                    <div style="position: relative; padding: 1.5rem; background: #fafafa; border: 2px dashed rgba(212, 163, 115, 0.2); border-radius: 20px; transition: all 0.3s; text-align: center;">
+                                        <input type="file" name="custom_song" accept="audio/mpeg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2;">
+                                        <div style="color: #D4A373; margin-bottom: 0.5rem;">
+                                            <i class="fas fa-cloud-upload-alt" style="font-size: 1.8rem;"></i>
+                                        </div>
+                                        <p style="font-size: 0.85rem; color: #4A3728; margin: 0; font-weight: 500;">Klik untuk pilih file MP3</p>
+                                        
+                                        {% if !invitation.custom_song_url.is_empty() %}
+                                            <div style="margin-top: 1rem; padding: 8px 12px; background: #E6FFFA; border-radius: 12px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #B2F5EA;">
+                                                <div style="width: 8px; height: 8px; background: #38B2AC; border-radius: 50%; box-shadow: 0 0 8px #38B2AC;"></div>
+                                                <span style="font-size: 0.75rem; color: #2C7A7B; font-weight: 600; text-overflow: ellipsis; max-width: 150px; overflow: hidden; white-space: nowrap;">
+                                                    {{ invitation.custom_song_url|split_last("/") }}
+                                                </span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Video Background Upload -->
+                                <div class="form-group">
+                                    <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; font-weight: 600; color: #4A3728;">
+                                        <span style="font-size: 1rem;">Upload Video (MP4)</span>
+                                        <span style="font-size: 0.7rem; color: #8E6E53; opacity: 0.6;">Max 25MB</span>
+                                    </label>
+                                    <div style="position: relative; padding: 1.5rem; background: #fafafa; border: 2px dashed rgba(212, 163, 115, 0.2); border-radius: 20px; transition: all 0.3s; text-align: center;">
+                                        <input type="file" name="background_video" accept="video/mp4" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2;">
+                                        <div style="color: #D4A373; margin-bottom: 0.5rem;">
+                                            <i class="fas fa-video" style="font-size: 1.8rem;"></i>
+                                        </div>
+                                        <p style="font-size: 0.85rem; color: #4A3728; margin: 0; font-weight: 500;">Klik untuk pilih file MP4</p>
+                                        
+                                        {% if !invitation.background_video_url.is_empty() %}
+                                            <div style="margin-top: 1rem; padding: 8px 12px; background: #E6FFFA; border-radius: 12px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #B2F5EA;">
+                                                <div style="width: 8px; height: 8px; background: #38B2AC; border-radius: 50%; box-shadow: 0 0 8px #38B2AC;"></div>
+                                                <span style="font-size: 0.75rem; color: #2C7A7B; font-weight: 600; text-overflow: ellipsis; max-width: 150px; overflow: hidden; white-space: nowrap;">
+                                                    {{ invitation.background_video_url|split_last("/") }}
+                                                </span>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="step-navigation" style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
+                            <button type="button" class="btn-back" onclick="goToStep(4)">← Kembali</button>
+                            <button type="button" class="btn-elegant primary" onclick="goToStep(6)">
+                                <span>Lanjut ke Galeri</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 6: Galeri -->
+                    <div class="form-step" id="step-6">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h3 class="serif accent-title" style="margin: 0; font-size: 2rem;">Galeri Foto & Video</h3>
+                            <button type="submit" class="btn-elegant" style="background: #10b981; color: white; border: none; padding: 0.6rem 1.5rem; border-radius: 12px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-save"></i> <span>Simpan Progres</span>
+                            </button>
+                        </div>
+                        <div class="glass" style="padding: 2.5rem; border-radius: 30px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(255,255,255,0.8);">
+                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                                <div style="width: 42px; height: 42px; background: #f0f9ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #0ea5e9; font-size: 1.2rem;">🖼️</div>
+                                <h4 class="serif" style="color: #4A3728; font-size: 1.4rem; margin: 0;">Gallery Photos</h4>
+                            </div>
+                            <div id="gallery-upload-zone" style="border: 2px dashed #cbd5e1; background: white; border-radius: 20px; padding: 3rem 2rem; text-align: center; cursor: pointer; position: relative; transition: all 0.2s;" ondragover="galleryDragOver(event)" ondragleave="galleryDragLeave(event)" ondrop="galleryDrop(event)" onclick="document.getElementById('gallery_file_input').click()">
+                                <div style="pointer-events: none;">
+                                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">📸</div>
+                                    <p style="font-size: 1rem; color: #475569; margin: 0; font-weight: 700;">Klik atau seret foto ke sini</p>
+                                    <p style="font-size: 0.85rem; color: #94a3b8; margin: 8px 0 0;">JPG, PNG, WebP — bisa pilih banyak sekaligus</p>
+                                </div>
+                                <input type="file" id="gallery_file_input" name="gallery[]" accept="image/*" multiple style="display: none;" onchange="handleGalleryUpload(this.files)">
+                            </div>
+                            <div class="gallery-preview-grid" id="gallery-grid" style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1.5rem; width: 100%;">
+                                {% for img in invitation.gallery_images %}
+                                <div class="gallery-item-container" style="position: relative; aspect-ratio: 1/1; border-radius: 15px; overflow: hidden; border: 2px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+                                    <img src="{{ img }}" style="width: 100%; height: 100%; object-fit: cover;" alt="Gallery">
+                                    <input type="hidden" name="existing_gallery[]" value="{{ img }}">
+                                    <button type="button" onclick="this.parentElement.remove()" style="position: absolute; top: 10px; right: 10px; background: rgba(220, 38, 38, 0.9); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-weight: bold;">
+                                        ×
+                                    </button>
+                                </div>
+                                {% endfor %}
+                            </div>
+
+                            <!-- Video Gallery Section -->
+                            <div style="display: flex; align-items: center; gap: 1rem; margin: 3rem 0 2rem;">
+                                <div style="width: 42px; height: 42px; background: #fef2f2; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #ef4444; font-size: 1.2rem;">🎥</div>
+                                <h4 class="serif" style="color: #4A3728; font-size: 1.4rem; margin: 0;">Gallery Videos</h4>
+                            </div>
+                            <div id="video-upload-zone" style="border: 2px dashed #cbd5e1; background: white; border-radius: 20px; padding: 2.5rem 2rem; text-align: center; cursor: pointer; position: relative; transition: all 0.2s;" onclick="document.getElementById('video_file_input').click()">
+                                <div style="pointer-events: none;">
+                                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎞️</div>
+                                    <p style="font-size: 1rem; color: #475569; margin: 0; font-weight: 700;">Klik untuk unggah video</p>
+                                    <p style="font-size: 0.85rem; color: #94a3b8; margin: 8px 0 0;">
+                                        MP4 (Maksimal {% if invitation.plan_name == "DYNASTY" %}10{% else if invitation.plan_name == "ROYAL" %}5{% else %}3{% endif %} video, 
+                                        Max {% if invitation.plan_name == "DYNASTY" %}25{% else if invitation.plan_name == "ROYAL" %}20{% else %}10{% endif %}MB per file)
+                                    </p>
+                                </div>
+                                <input type="file" id="video_file_input" name="gallery_video[]" accept="video/mp4" multiple style="display: none;" onchange="handleVideoGalleryUpload(this.files)">
+                            </div>
+                            <div class="gallery-preview-grid" id="video-gallery-grid" style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1.5rem; width: 100%;">
+                                {% for video in invitation.gallery_videos %}
+                                <div class="gallery-item-container" style="position: relative; aspect-ratio: 16/9; border-radius: 15px; overflow: hidden; border: 2px solid white; box-shadow: 0 10px 25px rgba(0,0,0,0.1);">
+                                    <video src="{{ video }}" style="width: 100%; height: 100%; object-fit: cover;" muted></video>
+                                    <input type="hidden" name="existing_gallery_video[]" value="{{ video }}">
+                                    <button type="button" onclick="this.parentElement.remove()" style="position: absolute; top: 10px; right: 10px; background: rgba(220, 38, 38, 0.9); color: white; border: none; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-weight: bold;">
+                                        ×
+                                    </button>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="step-navigation" style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
+                            <button type="button" class="btn-back" onclick="goToStep(5)">← Kembali</button>
+                            <button type="button" class="btn-elegant primary" onclick="goToStep(7)">
+                                <span>Lanjut ke Hadiah</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 7: Hadiah -->
+                    <div class="form-step" id="step-7">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h3 class="serif accent-title" style="margin: 0; font-size: 2rem;">Amplop Digital</h3>
+                            <button type="submit" class="btn-elegant" style="background: #10b981; color: white; border: none; padding: 0.6rem 1.5rem; border-radius: 12px; font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+                                <i class="fas fa-save"></i> <span>Simpan Progres</span>
+                            </button>
+                        </div>
+                        <div class="glass" style="padding: 2.5rem; border-radius: 30px; background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(255,255,255,0.8);">
+                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+                                <div style="width: 42px; height: 42px; background: #f8f9ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #4338ca; font-size: 1.2rem;">💰</div>
+                                <h4 class="serif" style="color: #4A3728; font-size: 1.4rem; margin: 0;">Informasi Rekening (Gift)</h4>
+                            </div>
+                            <div id="gift-accounts-container">
+                                <div class="gift-accounts-list">
+                                    {% for account in invitation.gift_accounts %}
+                                    <div class="gift-account-item" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; padding: 2rem; background: white; border-radius: 20px; border: 1px solid rgba(0,0,0,0.05); position: relative;">
+                                        <div class="form-group mb-0">
+                                            <label>Bank/E-Wallet</label>
+                                            <input type="text" name="bank_name[]" value="{{ account.bank_name }}" placeholder="BCA, Dana...">
+                                        </div>
+                                        <div class="form-group mb-0">
+                                            <label>No. Rekening</label>
+                                            <input type="text" name="account_number[]" value="{{ account.account_number }}" placeholder="8210370xxx">
+                                        </div>
+                                        <div class="form-group mb-0" style="grid-column: 1 / -1;">
+                                            <label>Atas Nama</label>
+                                            <input type="text" name="account_holder[]" value="{{ account.account_holder }}" placeholder="Nama Lengkap">
+                                        </div>
+                                        <button type="button" onclick="this.parentElement.remove()" style="position: absolute; top: 1rem; right: 1rem; width: 32px; height: 32px; border-radius: 10px; background: #fff1f2; color: #ef4444; border: none; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center;"><i class="fas fa-trash-alt"></i></button>
+                                    </div>
+                                    {% endfor %}
+                                    {% if invitation.gift_accounts.len() == 0 %}
+                                    <div class="gift-account-item" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 1.5rem; padding: 2rem; background: white; border-radius: 20px; border: 1px solid rgba(0,0,0,0.05); position: relative;">
+                                        <div class="form-group mb-0">
+                                            <label>Bank/E-Wallet</label>
+                                            <input type="text" name="bank_name[]" placeholder="BCA, Dana...">
+                                        </div>
+                                        <div class="form-group mb-0">
+                                            <label>No. Rekening</label>
+                                            <input type="text" name="account_number[]" placeholder="8210370xxx">
+                                        </div>
+                                        <div class="form-group mb-0" style="grid-column: 1 / -1;">
+                                            <label>Atas Nama</label>
+                                            <input type="text" name="account_holder[]" placeholder="Nama Lengkap">
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <button type="button" class="btn-elegant" style="width: 100%; padding: 1.2rem; font-size: 0.9rem; margin-top: 1rem; background: white; border-style: dashed; border-width: 2px; color: #8E6E53;" onclick="addGiftAccount()">
+                                    <i class="fas fa-plus"></i> Tambah Rekening Lain
                                 </button>
                             </div>
                         </div>
-
                         <div class="step-navigation" style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
-                            <button type="button" class="btn-back" onclick="goToStep(3)">← Back</button>
+                            <button type="button" class="btn-back" onclick="goToStep(6)">← Kembali</button>
+                            <button type="submit" class="btn-elegant primary" style="padding: 1rem 3rem;">
+                                <span>Simpan Semua Perubahan ✨</span>
+                                <i class="fas fa-check-circle"></i>
+                            </button>
                         </div>
                     </div>
+
                 </form>
             </div>
 
@@ -2260,6 +2454,38 @@
         });
     }
 
+    function handleVideoGalleryUpload(files) {
+        const grid = document.getElementById('video-gallery-grid');
+        if (!grid) return;
+        
+        const plan = "{{ invitation.plan_name }}";
+        const maxCount = plan === "DYNASTY" ? 10 : (plan === "ROYAL" ? 5 : 3);
+        const maxSize = (plan === "DYNASTY" ? 25 : (plan === "ROYAL" ? 20 : 10)) * 1024 * 1024;
+
+        const currentCount = grid.querySelectorAll('.gallery-item-container').length;
+        if (currentCount + files.length > maxCount) {
+            alert(`Maksimal ${maxCount} video diperbolehkan untuk paket ${plan}.`);
+            return;
+        }
+
+        Array.from(files).forEach(file => {
+            if (file.size > maxSize) {
+                alert(`File ${file.name} terlalu besar. Maksimal ${(maxSize / (1024 * 1024)).toFixed(0)}MB.`);
+                return;
+            }
+            const url = URL.createObjectURL(file);
+            const div = document.createElement('div');
+            div.className = 'gallery-item-container';
+            div.style.cssText = 'position: relative; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden; border: 2px solid #ef4444; box-shadow: 0 4px 10px rgba(0,0,0,0.1);';
+            div.innerHTML = `
+                <video src="${url}" style="width:100%;height:100%;object-fit:cover;" muted></video>
+                <div style="position:absolute;top:6px;left:6px;background:#22c55e;color:white;font-size:0.6rem;font-weight:800;padding:2px 6px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;">Baru</div>
+                <button type="button" onclick="this.parentElement.remove()" style="position:absolute;top:6px;right:6px;background:rgba(220,38,38,0.9);color:white;border:none;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:13px;font-weight:bold;line-height:1;">×</button>
+            `;
+            grid.appendChild(div);
+        });
+    }
+
     function galleryDragOver(e) {
         e.preventDefault();
         const zone = document.getElementById('gallery-upload-zone');
@@ -2848,12 +3074,100 @@
         document.getElementById('editGroupModal').classList.remove('active');
     }
 
+    function addStory() {
+        const container = document.getElementById('story_container');
+        const div = document.createElement('div');
+        div.className = 'story-item glass';
+        div.style = 'padding: 2rem; border-radius: 25px; background: white; position: relative; border: 1px solid rgba(0,0,0,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.03); margin-bottom: 2rem;';
+        div.innerHTML = `
+            <button type="button" onclick="this.parentElement.remove()" style="position: absolute; top: 15px; right: 15px; background: #fef2f2; border: none; color: #ef4444; cursor: pointer; font-size: 0.9rem; width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">&times;</button>
+            
+            <div style="display: grid; grid-template-columns: 200px 1fr; gap: 2rem;">
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    <div style="position: relative; width: 200px; height: 120px; background: #f1f5f9; border-radius: 18px; overflow: hidden; border: 2px dashed #cbd5e1; display: flex; align-items: center; justify-content: center; color: #94a3b8; transition: all 0.3s;">
+                        <div style="text-align: center;">
+                            <i class="fas fa-image" style="font-size: 1.5rem; margin-bottom: 5px; display: block;"></i>
+                            <span style="font-size: 0.7rem; font-weight: 600;">Thumbnail</span>
+                        </div>
+                        <input type="hidden" name="story_image_url[]" value="">
+                    </div>
+                    <div style="position: relative;">
+                        <input type="file" name="story_image_file[]" accept="image/*" style="position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%;" onchange="this.nextElementSibling.innerText = '✓ Terpilih'">
+                        <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; text-align: center; color: #64748b;">
+                            <i class="fas fa-upload" style="margin-right: 5px;"></i> Unggah Foto
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    <div class="form-group mb-0">
+                        <label style="font-size: 0.7rem; font-weight: 800; color: #8E6E53; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Judul Cerita</label>
+                        <input type="text" name="story_title[]" value="" placeholder="Contoh: Awal Pertemuan" style="font-weight: 700; font-size: 1rem; border: none; background: #f8fafc; padding: 12px 15px; border-radius: 12px; width: 100%;">
+                    </div>
+                    <div class="form-group mb-0">
+                        <label style="font-size: 0.7rem; font-weight: 800; color: #8E6E53; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Tanggal / Waktu</label>
+                        <input type="text" name="story_date[]" value="" placeholder="Contoh: Juni 2025" style="font-weight: 600; font-size: 0.9rem; border: none; background: #f8fafc; padding: 12px 15px; border-radius: 12px; width: 100%;">
+                    </div>
+                    <div class="form-group mb-0">
+                        <label style="font-size: 0.7rem; font-weight: 800; color: #8E6E53; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px;">Deskripsi Cerita</label>
+                        <textarea name="story_description[]" rows="3" placeholder="Ceritakan momen indah ini..." style="border: none; background: #f8fafc; padding: 12px 15px; border-radius: 12px; width: 100%; font-size: 0.9rem; line-height: 1.5;"></textarea>
+                    </div>
+                </div>
+            </div>
+        `;
+        container.appendChild(div);
+        div.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
     // Initialize Select2 for modals
     $(document).ready(function() {
         $('.select2-enable-modal').select2({
             dropdownParent: $('#editGroupModal')
         });
     });
+
+    function syncCeremonyToReception(checkbox) {
+        const rVenue = document.querySelector('input[name="reception_venue"]');
+        const rAddress = document.querySelector('textarea[name="reception_address"]');
+        const rMaps = document.querySelector('input[name="reception_maps"]');
+        
+        if (checkbox.checked) {
+            const cVenue = document.querySelector('input[name="ceremony_venue"]').value;
+            const cAddress = document.querySelector('textarea[name="ceremony_address"]').value;
+            const cMaps = document.querySelector('input[name="ceremony_maps"]').value;
+            
+            rVenue.value = cVenue;
+            rAddress.value = cAddress;
+            rMaps.value = cMaps;
+            
+            rVenue.readOnly = true;
+            rAddress.readOnly = true;
+            rMaps.readOnly = true;
+            
+            rVenue.style.background = '#f8f9fa';
+            rAddress.style.background = '#f8f9fa';
+            rMaps.style.background = '#f8f9fa';
+        } else {
+            rVenue.readOnly = false;
+            rAddress.readOnly = false;
+            rMaps.readOnly = false;
+            
+            rVenue.style.background = 'white';
+            rAddress.style.background = 'white';
+            rMaps.style.background = 'white';
+        }
+    }
+
+    function toggleSection(type, checkbox) {
+        const section = checkbox.closest('div[id$="_section"]') || checkbox.closest('div').parentElement;
+        const content = section.querySelector('.section-content');
+        if (checkbox.checked) {
+            content.style.opacity = '1';
+            content.style.pointerEvents = 'auto';
+        } else {
+            content.style.opacity = '0.5';
+            content.style.pointerEvents = 'none';
+        }
+    }
 </script>
 
 <!-- AI ASSISTANT MODAL MIRROR -->

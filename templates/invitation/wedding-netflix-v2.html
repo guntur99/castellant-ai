@@ -5,6 +5,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>CINEMARRY — {{ invitation.couple_name_short }}</title>
+    
+    <!-- SEO & Metadata -->
+    <meta name="description" content="Wedding Invitation of {{ invitation.bride.name }} & {{ invitation.groom.name }} - {{ invitation.event_date }}. Watch their love story unfold.">
+    <meta name="keywords" content="wedding invitation, cinemarry, {{ invitation.bride.name }}, {{ invitation.groom.name }}, digital invitation">
+    <meta name="author" content="Cinemarry">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://castellant.ai/i/{{ invitation.slug }}">
+    <meta property="og:title" content="CINEMARRY — {{ invitation.couple_name_short }}">
+    <meta property="og:description" content="Pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }} - {{ invitation.event_date }}. Klik untuk melihat trailer kebahagiaan kami.">
+    <meta property="og:image" content="{{ invitation.gallery_images|first_image }}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://castellant.ai/i/{{ invitation.slug }}">
+    <meta property="twitter:title" content="CINEMARRY — {{ invitation.couple_name_short }}">
+    <meta property="twitter:description" content="Pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }} - {{ invitation.event_date }}. Klik untuk melihat trailer kebahagiaan kami.">
+    <meta property="twitter:image" content="{{ invitation.gallery_images|first_image }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/static/img/favicon_cinemarry.png">
+    <link rel="apple-touch-icon" href="/static/img/favicon_cinemarry.png">
+
+    <!-- Schema.org Wedding Event -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Event",
+      "name": "Pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }}",
+      "startDate": "{{ invitation.event_date_iso }}",
+      "location": {
+        "@type": "Place",
+        "name": "{{ invitation.ceremony.venue }}",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "{{ invitation.ceremony.address }}"
+        }
+      },
+      "image": "{{ invitation.gallery_images|first_image }}",
+      "description": "Undangan Pernikahan Eksklusif {{ invitation.bride.name }} & {{ invitation.groom.name }}"
+    }
+    </script>
+
     <link
         href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Barlow+Condensed:wght@400;600;700&display=swap"
         rel="stylesheet">
@@ -318,42 +362,43 @@
         }
 
         .nav-links {
-            display: flex;
-            gap: 24px;
-            align-items: center;
-            list-style: none;
-        }
-
-        .nav-links a {
-            font-size: 14px;
-            color: var(--nf-gray2);
-            text-decoration: none;
-            transition: color .15s;
-            font-weight: 400;
-        }
-
-        .nav-links a:hover,
-        .nav-links a.on {
-            color: var(--nf-white);
+            display: none;
         }
 
         .nav-right {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
 
-        .nav-search {
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 5px 12px;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+
+        .search-box:focus-within {
+            background: rgba(0, 0, 0, 0.7);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .search-box input {
             background: none;
             border: none;
-            color: var(--nf-gray2);
-            cursor: pointer;
-            padding: 4px;
-            transition: color .15s;
+            color: var(--nf-white);
+            margin-left: 10px;
+            outline: none;
+            font-size: 13px;
+            font-family: var(--font-body);
+            width: clamp(100px, 20vw, 180px);
         }
 
-        .nav-search:hover {
-            color: var(--nf-white);
+        .search-box input::placeholder {
+            color: var(--nf-gray3);
         }
 
         .nav-avatar {
@@ -385,6 +430,16 @@
             position: absolute;
             inset: 0;
             background: url('{{ invitation.gallery_images|first_image }}') center/cover no-repeat;
+            overflow: hidden;
+        }
+
+        .hero-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
         .hero-bg::after {
@@ -653,7 +708,8 @@
             z-index: 10;
         }
 
-        .nf-card img {
+        .nf-card img,
+        .nf-card video {
             width: 100%;
             aspect-ratio: 2/3;
             object-fit: cover;
@@ -804,7 +860,7 @@
         .ep-thumb {
             flex-shrink: 0;
             width: clamp(100px, 25vw, 140px);
-            aspect-ratio: 16/9;
+            aspect-ratio: 1/1;
             border-radius: 4px;
             overflow: hidden;
             background: var(--nf-card);
@@ -1065,24 +1121,30 @@
         .cd-headline {
             font-family: var(--font-title);
             font-size: clamp(20px, 5vw, 32px);
+            text-transform: uppercase;
+            color: var(--nf-white);
+            letter-spacing: 1px;
         }
 
         .cd-nums {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 100%;
         }
 
         .cd-box {
-            min-width: 72px;
-            padding: 14px 12px 12px;
+            min-width: 0;
+            padding: 16px 4px;
             background: var(--nf-card);
             border-radius: 6px;
             border: 1px solid var(--nf-border);
             text-align: center;
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .cd-box::before {
@@ -1098,9 +1160,10 @@
 
         .cd-n {
             font-family: var(--font-title);
-            font-size: 44px;
+            font-size: clamp(28px, 7vw, 44px);
             line-height: 1;
             color: var(--nf-white);
+            margin-bottom: 4px;
         }
 
         .cd-u {
@@ -1722,7 +1785,7 @@
    FOOTER
 ═══════════════════════════════════════ */
         .nf-footer {
-            padding: 48px 4% max(32px, env(safe-area-inset-bottom, 32px));
+            padding: 48px 4% calc(max(32px, env(safe-area-inset-bottom, 32px)) + 160px);
             border-top: 1px solid var(--nf-border);
             text-align: center;
         }
@@ -1983,8 +2046,9 @@
             flex-direction: column;
         }
 
-        .lb.open {
-            display: flex;
+        .lb.open,
+        #vidModal.open {
+            display: block;
         }
 
         .lb-header {
@@ -2004,12 +2068,30 @@
         }
 
         .lb-close {
-            font-size: 14px;
-            color: var(--nf-red);
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            font-size: 32px;
+            color: var(--nf-white);
             cursor: pointer;
-            font-family: var(--font-cond);
-            letter-spacing: .1em;
-            padding: 4px 8px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            transition: all 0.2s var(--ease);
+            z-index: 1000;
+            line-height: 1;
+        }
+
+        .lb-close:hover {
+            background: rgba(229, 9, 20, 0.8);
+            transform: scale(1.1);
+            border-color: transparent;
         }
 
         .lb-main {
@@ -2140,7 +2222,7 @@
             <div class="logo-tagline">The Wedding Streaming Series</div>
         </div>
 
-        <p class="profiles-label">Siapa yang menonton?</p>
+        <p class="profiles-label">Klik profil Anda untuk menonton</p>
 
         <div class="profiles-row">
             <div class="profile-item" onclick="selectProfile(this, '{{ invitation.bride.name }}')">
@@ -2155,16 +2237,14 @@
                 </div>
                 <span class="profile-name">{{ invitation.groom.name }}</span>
             </div>
-            <div class="profile-item" onclick="selectProfile(this, 'Guest')">
+            <div class="profile-item" onclick="selectProfile(this, '{{ invitation.recipient_name }}')">
                 <div class="profile-avatar">
-                    <div class="profile-letter" style="background:linear-gradient(135deg,#1a3a2e,#0d2318)">{{ invitation.recipient_name|first }}</div>
+                    <div class="profile-letter" style="background:linear-gradient(135deg,#1a3a2e,#0d2318)">{{
+                        invitation.recipient_name|first }}</div>
                 </div>
                 <span class="profile-name">{{ invitation.recipient_name }}</span>
             </div>
         </div>
-
-        <button class="splash-btn" id="splashBtn" onclick="openApp()" style="opacity:.4;pointer-events:none">Tonton
-            Sekarang</button>
     </div>
 
     <!-- ══════════════════════════════════════
@@ -2175,26 +2255,29 @@
         <!-- NAVBAR -->
         <nav class="nf-nav" id="nfNav">
             <div class="nav-logo">CINEMARRY</div>
-            <ul class="nav-links">
-                <li><a href="#" class="on">Beranda</a></li>
-                <li><a href="#couple">Pasangan</a></li>
-                <li><a href="#event">Jadwal</a></li>
-                <li><a href="#rsvp">RSVP</a></li>
-            </ul>
             <div class="nav-right">
-                <button class="nav-search" onclick="toast('🔍 Cari undangan...')">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <div class="search-box">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="color: var(--nf-gray2);">
                         <path
                             d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
                     </svg>
-                </button>
-                <div class="nav-avatar" id="navAvatar">?</div>
+                    <input type="text" placeholder="Judul, Orang, atau Genre"
+                        onkeyup="if(event.key === 'Enter') toast('Mencari: ' + this.value)">
+                </div>
+                <div class="nav-avatar" id="navAvatar">{% if invitation.recipient_name != "Guest Guest & Partner" %}{{ invitation.recipient_name|first }}{% else %}G{% endif %}</div>
             </div>
         </nav>
 
         <!-- HERO -->
         <section class="hero" id="home">
-            <div class="hero-bg"></div>
+            <div class="hero-bg">
+                {% if !invitation.background_video_url.is_empty() %}
+                <video class="hero-video" autoplay muted loop playsinline
+                    poster="{{ invitation.gallery_images|first_image }}">
+                    <source src="{{ invitation.background_video_url }}" type="video/mp4">
+                </video>
+                {% endif %}
+            </div>
 
             <div class="hero-badges">
                 <div class="genre-badge hot">🔥 Trending #1</div>
@@ -2204,11 +2287,11 @@
             </div>
 
             <div class="hero-content">
-                <div class="hero-eyebrow">Series Perdana 2026</div>
+                <div class="hero-eyebrow">Series Perdana {{ invitation.event_date|split_last(" ") }}</div>
                 <h1 class="hero-title">{{ invitation.couple_name_short|replace("&", "<br>&")|safe }}</h1>
                 <div class="hero-meta">
                     <span class="hero-match">98% Match</span>
-                    <span class="hero-year">2026</span>
+                    <span class="hero-year">{{ invitation.event_date|split_last(" ") }}</span>
                     <span class="hero-rating-badge">17+</span>
                     <span class="hero-year">1 Season</span>
                     <span class="hero-year">HD</span>
@@ -2244,8 +2327,8 @@
             <div class="countdown-section reveal">
                 <div class="cd-card">
                     <div class="cd-top">
-                        <div class="cd-eyebrow">📡 Live Premiere Countdown</div>
-                        <div class="cd-headline">Season Finale Tayang dalam:</div>
+                        <div class="cd-eyebrow">🛰️ LIVE PREMIERE COUNTDOWN</div>
+                        <div class="cd-headline">Season Finale Tayang Dalam:</div>
                     </div>
                     <div class="cd-nums">
                         <div class="cd-box">
@@ -2271,67 +2354,35 @@
             <!-- TOP PICKS ROW -->
             <div class="row-section reveal">
                 <div class="row-label">
-                    Populer di BridgeFlix
-                    <span class="row-label-red">● LIVE</span>
-                    <span class="row-see-all">Lihat Semua</span>
+                    Populer di
+                    <span class="row-label-red">CINEMARRY</span>
                 </div>
                 <div class="row-strip">
-                    <div class="nf-card" onclick="toast('💍 Akad Nikah — {{ invitation.event_date }}')">
+                    {% for video in invitation.gallery_videos %}
+                    <div class="nf-card" onclick="playGalVideo('{{ video }}')">
+                        <video src="{{ video }}" muted loop autoplay playsinline
+                            poster="{{ invitation.gallery_images|first_image }}"
+                            style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;"></video>
+                    </div>
+                    {% else %}
+                    <!-- Fallback if no videos -->
+                    <div class="nf-card" onclick="toast('💍 Akad Nikah')">
                         <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=300&h=450&fit=crop&q=80"
                             alt="Akad">
                         <div class="card-overlay">
                             <div class="card-title">Akad Nikah</div>
-                            <div class="card-tags"><span class="card-tag">Sacred</span><span
-                                    class="card-tag">Live</span></div>
+                            <div class="card-tags"><span class="card-tag">Sacred</span></div>
                         </div>
-                        <div class="card-mini-btn"><svg viewBox="0 0 24 24" fill="white">
-                                <path d="M8 5v14l11-7z" />
-                            </svg></div>
                     </div>
-                    <div class="nf-card" onclick="toast('🎊 Resepsi — {{ invitation.event_date }}')">
+                    <div class="nf-card" onclick="toast('🎊 Resepsi')">
                         <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=300&h=450&fit=crop&q=80"
                             alt="Resepsi">
                         <div class="card-overlay">
                             <div class="card-title">Resepsi Pernikahan</div>
                             <div class="card-tags"><span class="card-tag">Celebration</span></div>
                         </div>
-                        <div class="card-mini-btn"><svg viewBox="0 0 24 24" fill="white">
-                                <path d="M8 5v14l11-7z" />
-                            </svg></div>
                     </div>
-                    <div class="nf-card" onclick="toast('💞 Love Story — Mulai Juni 2025')">
-                        <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=300&h=450&fit=crop&q=80"
-                            alt="Story">
-                        <div class="card-overlay">
-                            <div class="card-title">Our Love Story</div>
-                            <div class="card-tags"><span class="card-tag">Romance</span></div>
-                        </div>
-                        <div class="card-mini-btn"><svg viewBox="0 0 24 24" fill="white">
-                                <path d="M8 5v14l11-7z" />
-                            </svg></div>
-                    </div>
-                    <div class="nf-card" onclick="toast('💍 The Proposal — Nov 2025')">
-                        <img src="https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=300&h=450&fit=crop&q=80"
-                            alt="Proposal">
-                        <div class="card-overlay">
-                            <div class="card-title">The Proposal</div>
-                            <div class="card-tags"><span class="card-tag">Drama</span></div>
-                        </div>
-                        <div class="card-mini-btn"><svg viewBox="0 0 24 24" fill="white">
-                                <path d="M8 5v14l11-7z" />
-                            </svg></div>
-                    </div>
-                    <div class="nf-card" onclick="toast('🌹 Behind The Scenes')">
-                        <img src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=300&h=450&fit=crop&q=80"
-                            alt="BTS">
-                        <div class="card-overlay">
-                            <div class="card-title">Behind The Love</div>
-                            <div class="card-tags"><span class="card-tag">Documentary</span></div>
-                        </div>
-                        <div class="card-mini-btn"><svg viewBox="0 0 24 24" fill="white">
-                                <path d="M8 5v14l11-7z" />
-                            </svg></div>
-                    </div>
+                    {% endfor %}
                 </div>
             </div>
 
@@ -2344,11 +2395,11 @@
                     </select>
                 </div>
 
+                {% for story in invitation.stories %}
                 <div class="episode-card">
-                    <div class="ep-num">1</div>
+                    <div class="ep-num">{{ loop.index }}</div>
                     <div class="ep-thumb">
-                        <img src="https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=280&h=158&fit=crop&q=80"
-                            alt="">
+                        <img src="{{ story.image_url }}" alt="{{ story.title }}">
                         <div class="ep-thumb-overlay">
                             <div class="ep-thumb-play"><svg viewBox="0 0 24 24" fill="currentColor">
                                     <path d="M8 5v14l11-7z" />
@@ -2356,81 +2407,15 @@
                         </div>
                     </div>
                     <div class="ep-body">
-                        <div class="ep-name">Awal Pertemuan</div>
-                        <div class="ep-duration">Juni 2025 · 42m</div>
-                        <div class="ep-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling. Sebuah
-                            pertemuan yang mengubah segalanya.</div>
+                        <div class="ep-name">{{ story.title }}</div>
+                        <div class="ep-duration">{{ story.date }}</div>
+                        <div class="ep-desc">{{ story.description }}</div>
                         <div class="ep-progress">
                             <div class="ep-progress-fill" style="width:100%"></div>
                         </div>
                     </div>
                 </div>
-
-                <div class="episode-card">
-                    <div class="ep-num">2</div>
-                    <div class="ep-thumb">
-                        <img src="https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=280&h=158&fit=crop&q=80"
-                            alt="">
-                        <div class="ep-thumb-overlay">
-                            <div class="ep-thumb-play"><svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M8 5v14l11-7z" />
-                                </svg></div>
-                        </div>
-                    </div>
-                    <div class="ep-body">
-                        <div class="ep-name">Rasa yang Tumbuh</div>
-                        <div class="ep-duration">Agustus 2025 · 38m</div>
-                        <div class="ep-desc">Dari sekadar teman menjadi lebih dari itu. Momen-momen kecil yang perlahan
-                            membangun sesuatu yang besar.</div>
-                        <div class="ep-progress">
-                            <div class="ep-progress-fill" style="width:100%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="episode-card">
-                    <div class="ep-num">3</div>
-                    <div class="ep-thumb">
-                        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=280&h=158&fit=crop&q=80"
-                            alt="">
-                        <div class="ep-thumb-overlay">
-                            <div class="ep-thumb-play"><svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M8 5v14l11-7z" />
-                                </svg></div>
-                        </div>
-                    </div>
-                    <div class="ep-body">
-                        <div class="ep-name">Lamaran — Season Finale Bagian 1</div>
-                        <div class="ep-duration">November 2025 · 55m</div>
-                        <div class="ep-desc">Di hadapan keluarga, Guntur berlutut dan mengucapkan kata-kata yang telah
-                            lama ia simpan dalam hati.</div>
-                        <div class="ep-progress">
-                            <div class="ep-progress-fill" style="width:60%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="episode-card">
-                    <div class="ep-num">4</div>
-                    <div class="ep-thumb">
-                        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=280&h=158&fit=crop&q=80"
-                            alt="">
-                        <div class="ep-thumb-overlay">
-                            <div class="ep-thumb-play"><svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M8 5v14l11-7z" />
-                                </svg></div>
-                        </div>
-                    </div>
-                    <div class="ep-body">
-                        <div class="ep-name">Pernikahan — Season Finale 🔴 LIVE</div>
-                        <div class="ep-duration">{{ invitation.event_date }} · Segera Hadir</div>
-                        <div class="ep-desc">Episode penutup yang telah dinantikan. Saksikan momen bersejarah mereka
-                            secara langsung.</div>
-                        <div class="ep-progress" style="background:rgba(229,9,20,.15)">
-                            <div class="ep-progress-fill" style="width:0%"></div>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
 
             <!-- PREMIERE INFO -->
@@ -2439,21 +2424,36 @@
                     <div class="pb-content">
                         <div class="pb-label">Siaran Langsung</div>
                         <div class="pb-title">Season Finale<br>Premiere</div>
-                        <div class="pb-meta">Minggu, {{ invitation.event_date }} · {{ invitation.ceremony.venue }}, {{ invitation.ceremony.address }}</div>
+                        <div class="pb-meta">
+                            Minggu, {{ invitation.event_date }}
+                            {% if invitation.ceremony.enabled %}
+                            · {{ invitation.ceremony.venue }}, {{ invitation.ceremony.address }}
+                            {% else if invitation.reception.enabled %}
+                            · {{ invitation.reception.venue }}, {{ invitation.reception.address }}
+                            {% endif %}
+                        </div>
                         <div class="premiere-grid">
+                            {% if invitation.ceremony.enabled %}
                             <div class="pb-info-card">
                                 <div class="pb-ic-icon">🕗</div>
                                 <div class="pb-ic-label">Akad Nikah</div>
                                 <div class="pb-ic-val">{{ invitation.ceremony.time }}</div>
                             </div>
+                            {% endif %}
+
+                            {% if invitation.reception.enabled %}
                             <div class="pb-info-card">
                                 <div class="pb-ic-icon">🎉</div>
                                 <div class="pb-ic-label">Resepsi</div>
                                 <div class="pb-ic-val">{{ invitation.reception.time }}</div>
                             </div>
+                            {% endif %}
+
+                            {% if invitation.ceremony.enabled || invitation.reception.enabled %}
                             <div class="pb-info-card" style="grid-column:1/-1">
                                 <div class="pb-ic-icon">📍</div>
                                 <div class="pb-ic-label">Lokasi</div>
+                                {% if invitation.ceremony.enabled %}
                                 <div class="pb-ic-val" style="font-size:14px">{{ invitation.ceremony.venue }}</div>
                                 <div class="pb-ic-sub">{{ invitation.ceremony.address }}</div>
                                 <a href="{{ invitation.ceremony.maps_url }}" target="_blank" class="maps-link">
@@ -2463,7 +2463,19 @@
                                     </svg>
                                     Buka di Maps
                                 </a>
+                                {% else %}
+                                <div class="pb-ic-val" style="font-size:14px">{{ invitation.reception.venue }}</div>
+                                <div class="pb-ic-sub">{{ invitation.reception.address }}</div>
+                                <a href="{{ invitation.reception.maps_url }}" target="_blank" class="maps-link">
+                                    <svg viewBox="0 0 24 24" fill="currentColor">
+                                        <path
+                                            d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                                    </svg>
+                                    Buka di Maps
+                                </a>
+                                {% endif %}
                             </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -2481,14 +2493,15 @@
                 <div class="cast-grid">
                     <div class="cast-card">
                         <div class="cast-photo">
-                            <img src="{{ invitation.bride.image_url }}"
-                                alt="{{ invitation.bride.name }}" loading="lazy">
+                            <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride.name }}"
+                                loading="lazy">
                             <div class="cast-photo-overlay"></div>
                         </div>
                         <div class="cast-body">
                             <div class="cast-role">Mempelai Wanita</div>
                             <div class="cast-name">{{ invitation.bride.full_name }}</div>
-                            <div class="cast-info">{{ invitation.bride.father_name }} & Ibu {{ invitation.bride.mother_name }}</div>
+                            <div class="cast-info">{{ invitation.bride.father_name }} & Ibu {{
+                                invitation.bride.mother_name }}</div>
                             <div class="cast-imdb">
                                 <span class="imdb-badge">IMDb</span>
                                 <span class="imdb-score">⭐ 9.8 / 10</span>
@@ -2497,52 +2510,19 @@
                     </div>
                     <div class="cast-card">
                         <div class="cast-photo">
-                            <img src="{{ invitation.groom.image_url }}"
-                                alt="{{ invitation.groom.name }}" loading="lazy">
+                            <img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom.name }}"
+                                loading="lazy">
                             <div class="cast-photo-overlay"></div>
                         </div>
                         <div class="cast-body">
                             <div class="cast-role">Mempelai Pria</div>
                             <div class="cast-name">{{ invitation.groom.full_name }}</div>
-                            <div class="cast-info">{{ invitation.groom.father_name }} & Ibu {{ invitation.groom.mother_name }}</div>
+                            <div class="cast-info">{{ invitation.groom.father_name }} & Ibu {{
+                                invitation.groom.mother_name }}</div>
                             <div class="cast-imdb">
                                 <span class="imdb-badge">IMDb</span>
                                 <span class="imdb-score">⭐ 9.7 / 10</span>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- MORE LIKE THIS ROW -->
-            <div class="row-section reveal">
-                <div class="row-label">
-                    Konten Serupa
-                    <span class="row-see-all">Lihat Semua</span>
-                </div>
-                <div class="row-strip">
-                    <div class="nf-card-wide nf-card" onclick="toast('🌸 Perjalanan Cinta')">
-                        <img src="https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=400&h=225&fit=crop&q=80"
-                            alt="">
-                        <div class="card-overlay">
-                            <div class="card-title">Perjalanan Cinta</div>
-                            <div class="card-tags"><span class="card-tag">Romance</span></div>
-                        </div>
-                    </div>
-                    <div class="nf-card-wide nf-card" onclick="toast('💍 Sebuah Janji')">
-                        <img src="https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=400&h=225&fit=crop&q=80"
-                            alt="">
-                        <div class="card-overlay">
-                            <div class="card-title">Sebuah Janji</div>
-                            <div class="card-tags"><span class="card-tag">Drama</span></div>
-                        </div>
-                    </div>
-                    <div class="nf-card-wide nf-card" onclick="toast('🎊 Hari Bahagia')">
-                        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=225&fit=crop&q=80"
-                            alt="">
-                        <div class="card-overlay">
-                            <div class="card-title">Hari Bahagia</div>
-                            <div class="card-tags"><span class="card-tag">Special</span></div>
                         </div>
                     </div>
                 </div>
@@ -2583,151 +2563,153 @@
                         <div class="gc-holder">a.n {{ account.account_holder }}</div>
                         <button class="gc-copy" onclick="copyNum('{{ account.account_number }}', this)">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                                <path
+                                    d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
                             </svg>
                             Salin Nomor
                         </button>
                     </div>
                     {% endfor %}
                 </div>
+            </div>
+        </div>
+
+        <!-- RSVP -->
+        <div class="rsvp-section reveal" id="rsvp">
+            <div class="row-label" style="padding:0 0 14px">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+                </svg>
+                Konfirmasi Kehadiran
+            </div>
+            <div class="review-stats">
+                <div class="rs-item">
+                    <div class="rs-num">{{ invitation.total_rsvps() }}</div>
+                    <div class="rs-lbl">Respons</div>
+                </div>
+                <div class="rs-item">
+                    <div class="rs-num">{{ invitation.total_hadir() }}</div>
+                    <div class="rs-lbl">Hadir</div>
+                </div>
+                <div class="rs-item">
+                    <div class="rs-num">{{ invitation.total_guest_count() }}</div>
+                    <div class="rs-lbl">Tamu</div>
                 </div>
             </div>
-
-            <!-- RSVP -->
-            <div class="rsvp-section reveal" id="rsvp">
-                <div class="row-label" style="padding:0 0 14px">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
-                    </svg>
-                    Konfirmasi Kehadiran
+            <div class="nf-form">
+                <div class="nf-field">
+                    <div class="nf-field-label">Nama Lengkap</div>
+                    <input type="text" class="nf-input" placeholder="Nama Anda" id="rsvpName">
                 </div>
-                <div class="review-stats">
-                    <div class="rs-item">
-                        <div class="rs-num">{{ invitation.total_rsvps() }}</div>
-                        <div class="rs-lbl">Respons</div>
-                    </div>
-                    <div class="rs-item">
-                        <div class="rs-num">{{ invitation.total_hadir() }}</div>
-                        <div class="rs-lbl">Hadir</div>
-                    </div>
-                    <div class="rs-item">
-                        <div class="rs-num">{{ invitation.total_guest_count() }}</div>
-                        <div class="rs-lbl">Tamu</div>
+                <div class="nf-field">
+                    <div class="nf-field-label">Rating Bintang</div>
+                    <div class="rating-row">
+                        <button class="star-btn" onclick="rateStar(1)">⭐</button>
+                        <button class="star-btn" onclick="rateStar(2)">⭐</button>
+                        <button class="star-btn" onclick="rateStar(3)">⭐</button>
+                        <button class="star-btn" onclick="rateStar(4)">⭐</button>
+                        <button class="star-btn" onclick="rateStar(5)">⭐</button>
                     </div>
                 </div>
-                <div class="nf-form">
-                    <div class="nf-field">
-                        <div class="nf-field-label">Nama Lengkap</div>
-                        <input type="text" class="nf-input" placeholder="Nama Anda" id="rsvpName">
-                    </div>
-                    <div class="nf-field">
-                        <div class="nf-field-label">Rating Bintang</div>
-                        <div class="rating-row">
-                            <button class="star-btn" onclick="rateStar(1)">⭐</button>
-                            <button class="star-btn" onclick="rateStar(2)">⭐</button>
-                            <button class="star-btn" onclick="rateStar(3)">⭐</button>
-                            <button class="star-btn" onclick="rateStar(4)">⭐</button>
-                            <button class="star-btn" onclick="rateStar(5)">⭐</button>
-                        </div>
-                    </div>
-                    <div class="nf-field">
-                        <div class="nf-field-label">Konfirmasi Kehadiran</div>
-                        <select class="nf-input nf-select" id="rsvpStatus">
-                            <option value="">Pilih...</option>
-                            <option value="hadir">Hadir</option>
-                            <option value="tidak">Tidak Hadir</option>
-                        </select>
-                    </div>
-                    <div class="nf-field">
-                        <div class="nf-field-label">Jumlah Tamu</div>
-                        <div class="guest-btns">
-                            <button class="gb-btn on" onclick="selG(1,this)">1 orang</button>
-                            <button class="gb-btn" onclick="selG(2,this)">2 orang</button>
-                        </div>
-                    </div>
-                    <div class="nf-field">
-                        <div class="nf-field-label">Ulasan & Ucapan</div>
-                        <textarea class="nf-input" placeholder="Tuliskan ucapan untuk Nazma & Gunturr..."
-                            id="rsvpMsg"></textarea>
+                <div class="nf-field">
+                    <div class="nf-field-label">Konfirmasi Kehadiran</div>
+                    <select class="nf-input nf-select" id="rsvpStatus">
+                        <option value="">Pilih...</option>
+                        <option value="hadir">Hadir</option>
+                        <option value="tidak">Tidak Hadir</option>
+                    </select>
+                </div>
+                <div class="nf-field">
+                    <div class="nf-field-label">Jumlah Tamu</div>
+                    <div class="guest-btns">
+                        <button class="gb-btn on" onclick="selG(1,this)">1 orang</button>
+                        <button class="gb-btn" onclick="selG(2,this)">2 orang</button>
                     </div>
                 </div>
-                <button class="nf-submit" onclick="submitRSVP()">Kirim Konfirmasi</button>
-            </div>
-
-            <!-- REVIEWS -->
-            <div class="reviews-section reveal">
-                <div class="row-label" style="padding:0 0 14px">Reviews Penonton</div>
-                <div class="review-list" id="reviewList">
-                    <div class="review-card vis">
-                        <div class="rc-top">
-                            <div class="rc-avatar" style="background:rgba(229,9,20,.15);color:#e50914">A</div>
-                            <div>
-
-                {% if invitation.is_preview %}
-                                                <div class="rc-name">Ayu Rahmawati</div>
-                                <div class="rc-stars"><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span
-                                        class="rc-star">⭐</span><span class="rc-star">⭐</span><span
-                                        class="rc-star">⭐</span></div>
-                            </div>
-                            <span class="rc-status hadir">✓ Hadir · 2 orang</span>
-                        </div>
-                        <div class="rc-body">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah,
-                            mawaddah, wa rahmah. 10/10 would recommend!</div>
-                    </div>
-                    <div class="review-card vis">
-                        <div class="rc-top">
-                            <div class="rc-avatar" style="background:rgba(94,92,230,.15);color:#5E5CE6">R</div>
-                            <div>
-                                <div class="rc-name">Reza Firmansyah</div>
-                                <div class="rc-stars"><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span
-                                        class="rc-star">⭐</span><span class="rc-star">⭐</span><span
-                                        class="rc-star">⭐</span></div>
-                            </div>
-                            <span class="rc-status hadir">✓ Hadir · 1 orang</span>
-                        </div>
-                        <div class="rc-body">Alhamdulillah! Ini adalah series terbaik yang pernah saya saksikan. Plot
-                            twist lamaran benar-benar membuat terharu!</div>
-                    </div>
-                    <div class="review-card vis">
-                        <div class="rc-top">
-                            <div class="rc-avatar" style="background:rgba(255,149,0,.15);color:#FF9500">S</div>
-                            <div>
-                                <div class="rc-name">Sinta Dewi</div>
-
-                {% else %}
-                {% for rsvp in invitation.rsvps %}
-                                                <div class="rc-name">{{ rsvp.name }}</div>
-
-                {% endfor %}
-                {% endif %}
-                                                <div class="rc-stars"><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span
-                                        class="rc-star">⭐</span><span class="rc-star">⭐</span><span
-                                        class="rc-star">⭐</span></div>
-                            </div>
-                            <span class="rc-status hadir">✓ Hadir · 2 orang</span>
-                        </div>
-                        <div class="rc-body">Cinematic, emosional, dan penuh cinta. Semoga season 2 nya (kehidupan
-                            berumah tangga) lebih seru! 💙</div>
-                    </div>
+                <div class="nf-field">
+                    <div class="nf-field-label">Ulasan & Ucapan</div>
+                    <textarea class="nf-input" placeholder="Tuliskan ucapan untuk Nazma & Gunturr..."
+                        id="rsvpMsg"></textarea>
                 </div>
             </div>
+            <button class="nf-submit" onclick="submitRSVP()">Kirim Konfirmasi</button>
+        </div>
 
-            <!-- FOOTER -->
-            <footer class="nf-footer">
-                <div class="footer-logo-big">CINEMARRY</div>
-                <div class="footer-names">{{ invitation.couple_name_short }}</div>
-                <p class="footer-body">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu berkenan
-                    hadir dan memberikan do'a restu kepada kami.</p>
-                <div class="footer-links">
-                    <span onclick="toast('FAQ tersedia segera')">FAQ</span>
-                    <span onclick="toast('Hubungi panitia')">Kontak</span>
-                    <span onclick="window.scrollTo({top:0,behavior:\'smooth\'})">Kembali ke Atas</span>
-                    <span onclick="toast('🍪 Cookies: Cinta saja')">Cookie Preferences</span>
+        <!-- REVIEWS -->
+        <div class="reviews-section reveal">
+            <div class="row-label" style="padding:0 0 14px">Reviews Penonton</div>
+            <div class="review-list" id="reviewList">
+                <div class="review-card vis">
+                    <div class="rc-top">
+                        <div class="rc-avatar" style="background:rgba(229,9,20,.15);color:#e50914">A</div>
+                        <div>
+
+                            {% if invitation.is_preview %}
+                            <div class="rc-name">Ayu Rahmawati</div>
+                            <div class="rc-stars"><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span
+                                    class="rc-star">⭐</span><span class="rc-star">⭐</span><span class="rc-star">⭐</span>
+                            </div>
+                        </div>
+                        <span class="rc-status hadir">✓ Hadir · 2 orang</span>
+                    </div>
+                    <div class="rc-body">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah,
+                        mawaddah, wa rahmah. 10/10 would recommend!</div>
                 </div>
-            </footer>
+                <div class="review-card vis">
+                    <div class="rc-top">
+                        <div class="rc-avatar" style="background:rgba(94,92,230,.15);color:#5E5CE6">R</div>
+                        <div>
+                            <div class="rc-name">Reza Firmansyah</div>
+                            <div class="rc-stars"><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span
+                                    class="rc-star">⭐</span><span class="rc-star">⭐</span><span class="rc-star">⭐</span>
+                            </div>
+                        </div>
+                        <span class="rc-status hadir">✓ Hadir · 1 orang</span>
+                    </div>
+                    <div class="rc-body">Alhamdulillah! Ini adalah series terbaik yang pernah saya saksikan. Plot
+                        twist lamaran benar-benar membuat terharu!</div>
+                </div>
+                <div class="review-card vis">
+                    <div class="rc-top">
+                        <div class="rc-avatar" style="background:rgba(255,149,0,.15);color:#FF9500">S</div>
+                        <div>
+                            <div class="rc-name">Sinta Dewi</div>
 
-        </div><!-- /content-area -->
+                            {% else %}
+                            {% for rsvp in invitation.rsvps %}
+                            <div class="rc-name">{{ rsvp.name }}</div>
+
+                            {% endfor %}
+                            {% endif %}
+                            <div class="rc-stars"><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span
+                                    class="rc-star">⭐</span><span class="rc-star">⭐</span><span class="rc-star">⭐</span>
+                            </div>
+                        </div>
+                        <span class="rc-status hadir">✓ Hadir · 2 orang</span>
+                    </div>
+                    <div class="rc-body">Cinematic, emosional, dan penuh cinta. Semoga season 2 nya (kehidupan
+                        berumah tangga) lebih seru! 💙</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="nf-footer">
+            <div class="footer-logo-big">CINEMARRY</div>
+            <div class="footer-names">{{ invitation.couple_name_short }}</div>
+            <p class="footer-body">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila 
+                {% if invitation.recipient_name != "Guest Guest & Partner" %}{{ invitation.recipient_name }}{% else %}Bapak/Ibu{% endif %} 
+                berkenan hadir dan memberikan do'a restu kepada kami.</p>
+            <div class="footer-links">
+                <span onclick="toast('FAQ tersedia segera')">FAQ</span>
+                <span onclick="toast('Hubungi panitia')">Kontak</span>
+                <span onclick="window.scrollTo({top: 0, behavior: 'smooth'})">Kembali ke Atas</span>
+                <span onclick="toast('🍪 Cookies: Cinta saja')">Cookie Preferences</span>
+            </div>
+        </footer>
+
+    </div><!-- /content-area -->
 
     </div><!-- /app -->
 
@@ -2806,10 +2788,19 @@
     </div>
 
     <!-- LIGHTBOX -->
+    <!-- VIDEO MODAL -->
+    <div class="lb" id="vidModal" onclick="if(event.target===this) closeVidModal()">
+        <div class="lb-close" onclick="closeVidModal()">&times;</div>
+        <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; padding:20px;">
+            <video id="galVideo" controls
+                style="max-width:100%; max-height:100%; border-radius:8px; box-shadow:0 0 50px rgba(0,0,0,0.5);"></video>
+        </div>
+    </div>
+
     <div class="lb" id="lb">
         <div class="lb-header">
             <span class="lb-h-title">Gallery</span>
-            <span class="lb-close" onclick="closeLB()">TUTUP</span>
+            <span class="lb-close" onclick="closeLB()">&times;</span>
         </div>
         <div class="lb-main"><img class="lb-img" id="lbImg" src="" alt=""></div>
         <div class="lb-footer">
@@ -2828,7 +2819,7 @@
         /* ══ DATA ══ */
         const IMGS = [
             {% for url in invitation.gallery_images %}
-            "{{ url }}",
+        "{{ url }}",
             {% endfor %}
         ];
 
@@ -2843,9 +2834,9 @@
             selectedProfile = name;
             document.querySelectorAll('.profile-item').forEach(p => p.classList.remove('selected'));
             el.classList.add('selected');
-            const btn = document.getElementById('splashBtn');
-            btn.style.opacity = '1'; btn.style.pointerEvents = 'auto';
-            btn.textContent = 'Menonton sebagai ' + name;
+
+            // Auto open after short delay for feedback
+            setTimeout(openApp, 300);
         }
 
         function openApp() {
@@ -2976,7 +2967,37 @@
         function lbP() { lbI = (lbI - 1 + IMGS.length) % IMGS.length; showLB(); }
         function lbN() { lbI = (lbI + 1) % IMGS.length; showLB(); }
         function showLB() { document.getElementById('lbImg').src = IMGS[lbI]; document.getElementById('lbCt').textContent = (lbI + 1) + ' / ' + IMGS.length; }
-        document.addEventListener('keydown', e => { if (!document.getElementById('lb').classList.contains('open')) return; if (e.key === 'Escape') closeLB(); if (e.key === 'ArrowLeft') lbP(); if (e.key === 'ArrowRight') lbN(); });
+
+        /* ══ VIDEO MODAL ══ */
+        function playGalVideo(url) {
+            const m = document.getElementById('vidModal');
+            const v = document.getElementById('galVideo');
+            v.src = url;
+            m.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            pauseGal();
+            v.play();
+        }
+        function closeVidModal() {
+            const m = document.getElementById('vidModal');
+            const v = document.getElementById('galVideo');
+            v.pause();
+            v.src = "";
+            m.classList.remove('open');
+            document.body.style.overflow = '';
+            resumeGal();
+        }
+
+        document.addEventListener('keydown', e => {
+            if (document.getElementById('lb').classList.contains('open')) {
+                if (e.key === 'Escape') closeLB();
+                if (e.key === 'ArrowLeft') lbP();
+                if (e.key === 'ArrowRight') lbN();
+            }
+            if (document.getElementById('vidModal').classList.contains('open')) {
+                if (e.key === 'Escape') closeVidModal();
+            }
+        });
 
         /* ══ STAR RATING ══ */
         function rateStar(n) {
@@ -3055,7 +3076,7 @@
         let _tt;
         function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(_tt); _tt = setTimeout(() => t.classList.remove('on'), 2800); }
     </script>
-{% include "invitation/ai_concierge_snippet.html" %}
+    {% include "invitation/ai_concierge_snippet.html" %}
 </body>
 
 </html>
