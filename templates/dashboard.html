@@ -41,6 +41,9 @@
                     <a href="/invitation/{{ inv.slug }}/manage" class="btn-action primary">
                         <i class="fas fa-edit"></i> Manage
                     </a>
+                    <button onclick="confirmDelete('{{ inv.slug }}')" class="btn-action danger">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
                 </div>
             </div>
             {% endfor %}
@@ -205,6 +208,19 @@
     background: rgba(0,0,0,0.03);
 }
 
+.btn-action.danger {
+    flex: 0 0 50px;
+    color: #ef4444;
+    border-color: #fecdd3;
+    background: #fff1f2;
+}
+
+.btn-action.danger:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+    color: #dc2626;
+}
+
 @media (max-width: 768px) {
     .page-header {
         flex-direction: column;
@@ -220,4 +236,30 @@
     }
 }
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+function confirmDelete(slug) {
+    Swal.fire({
+        title: 'Hapus Undangan?',
+        text: "Undangan yang dihapus tidak dapat diakses lagi oleh tamu.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal',
+        background: 'rgba(255, 255, 255, 0.9)',
+        backdrop: `rgba(0,0,0,0.4) blur(4px)`
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/invitation/${slug}/delete`;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    })
+}
+</script>
 {% endblock %}

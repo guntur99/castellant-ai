@@ -13,6 +13,7 @@ mod filters {
 }
 
 use crate::mailer::{self, PaymentSuccessEmail};
+use chrono::Utc;
 use serde_json::{from_value, json};
 use sqlx::Row;
 use oauth2::{AuthorizationCode, TokenResponse, CsrfToken, Scope};
@@ -734,6 +735,42 @@ pub async fn create_invitation(
         Redirect::to(&link).into_response()
     } else {
         Redirect::to(&format!("/invitation/{}", slug)).into_response()
+    }
+}
+
+pub async fn delete_invitation(
+    Path(slug): Path<String>,
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user_id = match jar.get("user_id") {
+        Some(c) => Uuid::parse_str(c.value()).ok(),
+        None => None,
+    };
+
+    if user_id.is_none() {
+        return (StatusCode::UNAUTHORIZED, "Unauthorized").into_response();
+    }
+
+    // Soft delete by setting deleted_at and renaming slug to free it up
+    let new_slug = format!("deleted-{}-{}", slug, Utc::now().timestamp());
+    
+    let res = sqlx::query(
+        "UPDATE invitations SET deleted_at = NOW(), slug = $1 WHERE slug = $2 AND user_id = $3 AND deleted_at IS NULL"
+    )
+    .bind(new_slug)
+    .bind(&slug)
+    .bind(user_id.unwrap())
+    .execute(&state.db)
+    .await;
+
+    match res {
+        Ok(r) if r.rows_affected() > 0 => Redirect::to("/dashboard").into_response(),
+        Ok(_) => (StatusCode::NOT_FOUND, "Invitation not found or already deleted").into_response(),
+        Err(e) => {
+            eprintln!("Failed to delete invitation: {}", e);
+            (StatusCode::INTERNAL_SERVER_ERROR, "Database error").into_response()
+        }
     }
 }
 
@@ -1765,7 +1802,7 @@ pub async fn dashboard(
             .await
             .unwrap_or(None);
 
-        let invitations = sqlx::query_as::<_, InvitationRow>("SELECT * FROM invitations WHERE user_id = $1 ORDER BY created_at DESC")
+        let invitations = sqlx::query_as::<_, InvitationRow>("SELECT * FROM invitations WHERE user_id = $1 AND deleted_at IS NULL ORDER BY created_at DESC")
             .bind(uid)
             .fetch_all(&state.db)
             .await
@@ -1890,7 +1927,7 @@ pub async fn home(
 
             if user.is_some() {
                 invitations = sqlx::query_as::<_, InvitationRow>(
-                    "SELECT * FROM invitations WHERE user_id = $1 ORDER BY created_at DESC"
+                    "SELECT * FROM invitations WHERE user_id = $1 AND deleted_at IS NULL ORDER BY created_at DESC"
                 )
                 .bind(uid)
                 .fetch_all(&state.db)
@@ -1929,7 +1966,7 @@ pub async fn invitation_detail(
 
     // 2. Fetch from DB
     let row = sqlx::query_as::<_, InvitationRow>(
-        "SELECT * FROM invitations WHERE slug = $1"
+        "SELECT * FROM invitations WHERE slug = $1 AND deleted_at IS NULL"
     )
     .bind(&slug)
     .fetch_optional(&state.db)
@@ -2404,7 +2441,7 @@ pub async fn manage_invitation(
     }
 
     let row = sqlx::query_as::<_, InvitationRow>(
-        "SELECT * FROM invitations WHERE slug = $1 AND user_id = $2"
+        "SELECT * FROM invitations WHERE slug = $1 AND user_id = $2 AND deleted_at IS NULL"
     )
     .bind(&slug)
     .bind(user_id.unwrap())
@@ -2540,7 +2577,7 @@ pub async fn update_invitation(
     }
 
     let row = sqlx::query_as::<_, InvitationRow>(
-        "SELECT * FROM invitations WHERE slug = $1 AND user_id = $2"
+        "SELECT * FROM invitations WHERE slug = $1 AND user_id = $2 AND deleted_at IS NULL"
     )
     .bind(&slug)
     .bind(user_id.unwrap())
@@ -3218,7 +3255,7 @@ pub async fn ai_guest_chat(
     Json(payload): Json<AiGenerateRequest>,
 ) -> impl IntoResponse {
     let row = sqlx::query_as::<_, InvitationRow>(
-        "SELECT * FROM invitations WHERE slug = $1"
+        "SELECT * FROM invitations WHERE slug = $1 AND deleted_at IS NULL"
     )
     .bind(&slug)
     .fetch_optional(&state.db)
@@ -3556,7 +3593,9 @@ pub async fn add_guest(
 
     if user_id.is_none() { return Redirect::to("/").into_response(); }
 
-    let invitation = sqlx::query!("SELECT id, plan_name FROM invitations WHERE slug = $1 AND user_id = $2", slug, user_id.unwrap())
+    let (invitation_id, plan_name): (Uuid, Option<String>) = sqlx::query_as("SELECT id, plan_name FROM invitations WHERE slug = $1 AND user_id = $2 AND deleted_at IS NULL")
+        .bind(&slug)
+        .bind(user_id.unwrap())
         .fetch_one(&state.db)
         .await
         .unwrap();
@@ -3567,7 +3606,7 @@ pub async fn add_guest(
         .collect::<String>()
         .replace(" ", "-");
     
-    let ai_language = if invitation.plan_name.as_deref().unwrap_or("NOBLE") == "DYNASTY" {
+    let ai_language = if plan_name.as_deref().unwrap_or("NOBLE") == "DYNASTY" {
         payload.ai_language.unwrap_or_default()
     } else {
         "".to_string()
@@ -3576,7 +3615,7 @@ pub async fn add_guest(
     sqlx::query(
         "INSERT INTO guests (invitation_id, name, category, slug, template_override, ai_language, song_id) VALUES ($1, $2, $3, $4, $5, $6, $7)"
     )
-    .bind(invitation.id)
+    .bind(invitation_id)
     .bind(&payload.name)
     .bind(&payload.category)
     .bind(&guest_slug)
@@ -3602,12 +3641,14 @@ pub async fn update_guest(
 
     if user_id.is_none() { return Redirect::to("/").into_response(); }
 
-    let invitation = sqlx::query!("SELECT id, plan_name FROM invitations WHERE slug = $1 AND user_id = $2", slug, user_id.unwrap())
+    let (invitation_id, plan_name): (Uuid, Option<String>) = sqlx::query_as("SELECT id, plan_name FROM invitations WHERE slug = $1 AND user_id = $2 AND deleted_at IS NULL")
+        .bind(&slug)
+        .bind(user_id.unwrap())
         .fetch_one(&state.db)
         .await
         .unwrap();
 
-    let ai_language = if invitation.plan_name.as_deref().unwrap_or("NOBLE") == "DYNASTY" {
+    let ai_language = if plan_name.as_deref().unwrap_or("NOBLE") == "DYNASTY" {
         payload.ai_language.unwrap_or_default()
     } else {
         "".to_string()
@@ -3622,7 +3663,7 @@ pub async fn update_guest(
     .bind(&ai_language)
     .bind(&payload.song_id)
     .bind(guest_id)
-    .bind(invitation.id)
+    .bind(invitation_id)
     .execute(&state.db)
     .await
     .unwrap();
@@ -3704,7 +3745,7 @@ pub async fn add_group(
     if user_id.is_none() { return Redirect::to("/").into_response(); }
 
     let (invitation_id, plan_name): (Uuid, Option<String>) = sqlx::query_as(
-        "SELECT id, plan_name FROM invitations WHERE slug = $1 AND user_id = $2"
+        "SELECT id, plan_name FROM invitations WHERE slug = $1 AND user_id = $2 AND deleted_at IS NULL"
     )
     .bind(&slug)
     .bind(user_id.unwrap())

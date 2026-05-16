@@ -41,6 +41,7 @@ pub struct InvitationRow {
     pub stories_data: Option<serde_json::Value>,
     pub playlist: Option<serde_json::Value>,
     pub created_at: DateTime<Utc>,
+    pub deleted_at: Option<DateTime<Utc>>,
 }
 
 // Template Views (what the frontend sees)

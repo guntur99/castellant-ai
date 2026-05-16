@@ -170,6 +170,7 @@ async fn main() {
         .route("/api/ai/parse-form", post(handlers::ai_parse_form))
         .route("/api/ai/session/{id}", get(handlers::get_ai_session))
         .route("/invitation/{slug}/manage", get(handlers::manage_invitation).post(handlers::update_invitation))
+        .route("/invitation/{slug}/delete", post(handlers::delete_invitation))
         .route("/invitation/{slug}/update-theme", post(handlers::update_theme))
         .route("/invitation/{slug}/guests", post(handlers::add_guest))
         .route("/invitation/{slug}/guests/{guest_id}/update", post(handlers::update_guest))
