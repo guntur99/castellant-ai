@@ -94,6 +94,27 @@ async fn process_and_save_image(
     false
 }
 
+async fn delete_s3_file(s3: &aws_sdk_s3::Client, bucket: &str, url: &str) {
+    if url.is_empty() || !url.starts_with("/uploads/") {
+        return;
+    }
+    
+    // Convert /uploads/... to static/uploads/...
+    let key = format!("static{}", url);
+    let key = key.trim_start_matches('/');
+    
+    tracing::info!("Deleting file from S3: {}", key);
+    let res = s3.delete_object()
+        .bucket(bucket)
+        .key(key)
+        .send()
+        .await;
+        
+    if let Err(e) = res {
+        tracing::error!("Failed to delete from S3: {}", e);
+    }
+}
+
 pub async fn process_and_save_file(
     s3: &aws_sdk_s3::Client,
     bucket: &str,
@@ -500,16 +521,9 @@ pub async fn create_invitation(
     });
 
     let quote_data = json!({
-        "text": fields.get("quote_text").cloned().unwrap_or_else(|| "Sesungguhnya dalam penciptaan langit dan bumi...".to_string()),
-        "source": fields.get("quote_source").cloned().unwrap_or_else(|| "Ali Imran: 190".to_string())
+        "text": fields.get("quote_text").cloned().unwrap_or_else(|| "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu isteri-isteri dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya, dan dijadikan-Nya diantaramu rasa kasih dan sayang. Sesungguhnya pada yang demikian itu benar-benar terdapat tanda-tanda bagi kaum yang berfikir.".to_string()),
+        "source": fields.get("quote_source").cloned().unwrap_or_else(|| "QS. Ar-Rum: 21".to_string())
     });
-
-    let plan_name = fields.get("plan_name").cloned().unwrap_or_else(|| "NOBLE".to_string());
-    let amount = match plan_name.as_str() {
-        "ROYAL" => 100000,
-        "DYNASTY" => 300000,
-        _ => 50000,
-    };
 
     let user_row = match sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
         .bind(user_id)
@@ -522,78 +536,94 @@ pub async fn create_invitation(
             }
         };
 
+    let mut plan_name = fields.get("plan_name").cloned().unwrap_or_else(|| "NOBLE".to_string());
+    
+    // Superadmin is always ROYAL
+    if user_row.role == "SUPERADMIN" {
+        plan_name = "ROYAL".to_string();
+    }
+
+    let amount = match plan_name.as_str() {
+        "ROYAL" => 100000,
+        "DYNASTY" => 300000,
+        _ => 50000,
+    };
+
     let mut extra_data = HashMap::new();
     extra_data.insert("invitation_slug".to_string(), slug.clone());
     extra_data.insert("target_plan".to_string(), plan_name.clone());
 
-    let items = vec![MayarItem {
-        quantity: 1,
-        rate: amount,
-        description: format!("Digital Invitation - {} Plan", plan_name.to_uppercase()),
-    }];
+    let (payment_link, invoice_id) = if user_row.role == "SUPERADMIN" {
+        // Skip Mayar for Superadmin
+        (Some(format!("{}/invitation/{}/manage", std::env::var("REDIRECT_APP_BASE_URL").unwrap_or_else(|_| "http://localhost:3000".to_string()), slug)), Some("SUPERADMIN-BYPASS".to_string()))
+    } else {
+        let items = vec![MayarItem {
+            quantity: 1,
+            rate: amount,
+            description: format!("Digital Invitation - {} Plan", plan_name.to_uppercase()),
+        }];
 
-    // Call Mayar API
-    let mayar_req = MayarInvoiceRequest {
-        name: user_row.name.clone().unwrap_or_else(|| "Customer".to_string()),
-        email: user_row.email.clone(),
-        amount,
-        description: format!("Digital Invitation - {} Plan ({})", plan_name.to_uppercase(), fields.get("couple_name_short").unwrap()),
-        mobile: "08123456789".to_string(), // Fallback mobile
-        redirect_url: format!("{}/invitation/{}/manage", std::env::var("REDIRECT_APP_BASE_URL").unwrap_or_else(|_| "http://localhost:3000".to_string()), slug),
-        items,
-        extra_data,
-    };
+        // Call Mayar API
+        let mayar_req = MayarInvoiceRequest {
+            name: user_row.name.clone().unwrap_or_else(|| "Customer".to_string()),
+            email: user_row.email.clone(),
+            amount,
+            description: format!("Digital Invitation - {} Plan ({})", plan_name.to_uppercase(), fields.get("couple_name_short").unwrap()),
+            mobile: "08123456789".to_string(), // Fallback mobile
+            redirect_url: format!("{}/invitation/{}/manage", std::env::var("REDIRECT_APP_BASE_URL").unwrap_or_else(|_| "http://localhost:3000".to_string()), slug),
+            items,
+            extra_data,
+        };
 
-    let res = match state.http_client
-        .post(&state.mayar_base_url)
-        .header("Authorization", format!("Bearer {}", state.mayar_api_key))
-        .json(&mayar_req)
-        .send()
-        .await {
-            Ok(r) => r,
+        let res = match state.http_client
+            .post(&state.mayar_base_url)
+            .header("Authorization", format!("Bearer {}", state.mayar_api_key))
+            .json(&mayar_req)
+            .send()
+            .await {
+                Ok(r) => r,
+                Err(e) => {
+                    eprintln!("Failed to send request to Mayar: {}", e);
+                    return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to connect to payment gateway").into_response();
+                }
+            };
+
+        let status = res.status();
+        let body_text = match res.text().await {
+            Ok(t) => t,
             Err(e) => {
-                eprintln!("Failed to send request to Mayar: {}", e);
-                return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to connect to payment gateway").into_response();
+                eprintln!("Failed to get body from Mayar response: {}", e);
+                return (StatusCode::INTERNAL_SERVER_ERROR, "Invalid response from payment gateway").into_response();
+            }
+        };
+        
+        let mayar_res: MayarInvoiceResponse = match serde_json::from_str(&body_text) {
+            Ok(data) => data,
+            Err(e) => {
+                eprintln!("Failed to decode Mayar response (status {}): {}. Body: {}", status, e, body_text);
+                if let Ok(err_json) = serde_json::from_str::<serde_json::Value>(&body_text) {
+                    if let Some(msg) = err_json.get("messages").and_then(|m| m.as_str()) {
+                        return (StatusCode::INTERNAL_SERVER_ERROR, format!("Payment Gateway Error: {}", msg)).into_response();
+                    }
+                }
+                return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to process payment response").into_response();
             }
         };
 
-    let status = res.status();
-    let body_text = match res.text().await {
-        Ok(t) => t,
-        Err(e) => {
-            eprintln!("Failed to get body from Mayar response: {}", e);
-            return (StatusCode::INTERNAL_SERVER_ERROR, "Invalid response from payment gateway").into_response();
-        }
-    };
-    
-    let mayar_res: MayarInvoiceResponse = match serde_json::from_str(&body_text) {
-        Ok(data) => data,
-        Err(e) => {
-            eprintln!("Failed to decode Mayar response (status {}): {}. Body: {}", status, e, body_text);
-            // If we can't decode it, let's see if it's a simple error message
-            if let Ok(err_json) = serde_json::from_str::<serde_json::Value>(&body_text) {
-                if let Some(msg) = err_json.get("messages").and_then(|m| m.as_str()) {
-                    return (StatusCode::INTERNAL_SERVER_ERROR, format!("Payment Gateway Error: {}", msg)).into_response();
+        let (link, mut id) = if let Some(data) = mayar_res.data {
+            let l = data.get("link").and_then(|l| l.as_str().map(|s| s.to_string()));
+            let mut rid = data.get("id").and_then(|i| i.as_str().map(|s| s.to_string()));
+            
+            if let Some(ref link_str) = l {
+                if let Some(readable_id) = link_str.split('/').last() {
+                    rid = Some(readable_id.to_string());
                 }
             }
-            return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to process payment response").into_response();
-        }
-    };
-
-    let (payment_link, invoice_id) = if let Some(data) = mayar_res.data {
-        let link = data.get("link").and_then(|l| l.as_str().map(|s| s.to_string()));
-        let mut id = data.get("id").and_then(|i| i.as_str().map(|s| s.to_string()));
-        
-        // Extract readable ID from link (e.g., ix0x43nel8) to ensure better webhook matching
-        if let Some(ref l) = link {
-            if let Some(readable_id) = l.split('/').last() {
-                // If we have a readable ID, let's use it as the primary identifier for bookings
-                id = Some(readable_id.to_string());
-            }
-        }
+            (l, rid)
+        } else {
+            (None, None)
+        };
         (link, id)
-    } else {
-        (None, None)
     };
 
     let template_name = fields.get("template_name").cloned().unwrap_or_else(|| "caiktok".to_string());
@@ -1773,7 +1803,9 @@ pub async fn dashboard(
                     rsvps: Vec::new(),
                     custom_song_url: r.custom_song_url.unwrap_or_default(),
                     background_video_url: r.background_video_url.unwrap_or_default(),
+                    hero_video_position: r.hero_video_position.unwrap_or(50),
                     stories: from_value(r.stories_data.unwrap_or(json!([]))).unwrap_or_default(),
+                    playlist: from_value(r.playlist.unwrap_or(json!([]))).unwrap_or_default(),
                     is_preview: false,
                 }
             })
@@ -2045,11 +2077,19 @@ pub async fn invitation_detail(
                 gallery_images,
                 gallery_videos,
                 gift_accounts,
-                song_url: final_song_url,
+                song_url: final_song_url.clone(),
                 song_id: final_song_id,
                 custom_song_url: row.custom_song_url.unwrap_or_default(),
                 background_video_url: row.background_video_url.unwrap_or_default(),
+                hero_video_position: row.hero_video_position.unwrap_or(50),
                 stories: from_value(row.stories_data.unwrap_or(json!([]))).unwrap_or_default(),
+                playlist: {
+                    let mut list: Vec<String> = from_value(row.playlist.unwrap_or(json!([]))).unwrap_or_default();
+                    if list.is_empty() && !final_song_url.is_empty() {
+                        list.push(final_song_url.clone());
+                    }
+                    list
+                },
                 plan_name: row.plan_name.unwrap_or_else(|| "NOBLE".to_string()),
                 ai_chat_enabled: row.ai_chat_enabled,
                 ai_usage_count: row.ai_usage_count,
@@ -2239,7 +2279,9 @@ pub async fn invitation_detail(
                     rsvps: Vec::new(),
                     custom_song_url: String::new(),
                     background_video_url: String::new(),
+                    hero_video_position: 50,
                     stories: vec![],
+                    playlist: vec![],
                     is_preview: true,
                 };
                 
@@ -2425,7 +2467,9 @@ pub async fn manage_invitation(
                     .unwrap_or_default(),
                 custom_song_url: row.custom_song_url.unwrap_or_default(),
                 background_video_url: row.background_video_url.unwrap_or_default(),
+                hero_video_position: row.hero_video_position.unwrap_or(50),
                 stories: from_value(row.stories_data.unwrap_or(json!([]))).unwrap_or_default(),
+                playlist: from_value(row.playlist.unwrap_or(json!([]))).unwrap_or_default(),
                 is_preview: false,
             };
 
@@ -2526,6 +2570,8 @@ pub async fn update_invitation(
     let mut story_descriptions = Vec::new();
     let mut story_image_urls = Vec::new();
     let mut story_image_files = Vec::new();
+    let mut playlist_paths = Vec::new();
+    let mut existing_playlist = Vec::new();
 
     while let Some(field) = multipart.next_field().await.unwrap() {
         let name = field.name().unwrap().to_string();
@@ -2617,6 +2663,17 @@ pub async fn update_invitation(
             } else {
                 story_image_files.push(None);
             }
+        } else if name == "playlist[]" {
+            let filename = Uuid::new_v4().to_string() + ".mp3";
+            let path = format!("static/uploads/{}", filename);
+            let data = field.bytes().await.unwrap_or_default();
+            if !data.is_empty() && data.len() < 10 * 1024 * 1024 {
+                if process_and_save_file(&state.s3_client, &state.s3_bucket, data, path.clone(), "audio/mpeg").await {
+                    playlist_paths.push(format!("/uploads/{}", filename));
+                }
+            }
+        } else if name == "existing_playlist[]" {
+            existing_playlist.push(field.text().await.unwrap_or_default());
         } else {
             let value = field.text().await.unwrap();
             fields.insert(name, value);
@@ -2624,28 +2681,28 @@ pub async fn update_invitation(
     }
 
     // Update JSON Data
-    let mut bride: Person = from_value(row.bride_data).unwrap_or_default();
+    let mut bride: Person = from_value(row.bride_data.clone()).unwrap_or_default();
     if let Some(val) = fields.get("bride_name") { bride.name = val.clone(); }
     if let Some(val) = fields.get("bride_full_name") { bride.full_name = val.clone(); }
     if let Some(val) = fields.get("bride_father") { bride.father_name = val.clone(); }
     if let Some(val) = fields.get("bride_mother") { bride.mother_name = val.clone(); }
     if let Some(val) = photo_paths.get("bride_photo") { bride.image_url = val.clone(); }
 
-    let mut groom: Person = from_value(row.groom_data).unwrap_or_default();
+    let mut groom: Person = from_value(row.groom_data.clone()).unwrap_or_default();
     if let Some(val) = fields.get("groom_name") { groom.name = val.clone(); }
     if let Some(val) = fields.get("groom_full_name") { groom.full_name = val.clone(); }
     if let Some(val) = fields.get("groom_father") { groom.father_name = val.clone(); }
     if let Some(val) = fields.get("groom_mother") { groom.mother_name = val.clone(); }
     if let Some(val) = photo_paths.get("groom_photo") { groom.image_url = val.clone(); }
 
-    let mut ceremony: EventDetails = from_value(row.ceremony_data).unwrap_or_default();
+    let mut ceremony: EventDetails = from_value(row.ceremony_data.clone()).unwrap_or_default();
     ceremony.enabled = fields.get("ceremony_enabled").map(|v| v == "on").unwrap_or(false);
     if let Some(val) = fields.get("ceremony_time") { ceremony.time = val.clone(); }
     if let Some(val) = fields.get("ceremony_venue") { ceremony.venue = val.clone(); }
     if let Some(val) = fields.get("ceremony_address") { ceremony.address = val.clone(); }
     if let Some(val) = fields.get("ceremony_maps") { ceremony.maps_url = val.clone(); }
 
-    let mut reception: EventDetails = from_value(row.reception_data).unwrap_or_default();
+    let mut reception: EventDetails = from_value(row.reception_data.clone()).unwrap_or_default();
     reception.enabled = fields.get("reception_enabled").map(|v| v == "on").unwrap_or(false);
     if let Some(val) = fields.get("reception_date") { reception.date = val.clone(); }
     if let Some(val) = fields.get("reception_time") { reception.time = val.clone(); }
@@ -2653,7 +2710,7 @@ pub async fn update_invitation(
     if let Some(val) = fields.get("reception_address") { reception.address = val.clone(); }
     if let Some(val) = fields.get("reception_maps") { reception.maps_url = val.clone(); }
 
-    let mut quote: Quote = from_value(row.quote_data).unwrap_or_default();
+    let mut quote: Quote = from_value(row.quote_data.clone()).unwrap_or_default();
     if let Some(val) = fields.get("quote_text") { quote.text = val.clone(); }
     if let Some(val) = fields.get("quote_source") { quote.source = val.clone(); }
 
@@ -2663,6 +2720,9 @@ pub async fn update_invitation(
     let ai_custom_knowledge = fields.get("ai_custom_knowledge").cloned().unwrap_or(row.ai_custom_knowledge.unwrap_or_default());
     let template_name = fields.get("template_name").cloned().unwrap_or(row.template_name);
     let final_ai_language = fields.get("ai_language").cloned().unwrap_or(row.ai_language.clone());
+    let hero_video_position = fields.get("hero_video_position")
+        .and_then(|v| v.parse::<i32>().ok())
+        .unwrap_or(row.hero_video_position.unwrap_or(50));
     let song_id = fields.get("song_id")
         .and_then(|s| if s.is_empty() { None } else { Uuid::parse_str(s).ok() })
         .or(row.song_id);
@@ -2692,9 +2752,65 @@ pub async fn update_invitation(
             });
         }
     }
+    
+    // S3 Cleanup for stories
+    let old_stories: Vec<Story> = from_value(row.stories_data.clone().unwrap_or(serde_json::json!([]))).unwrap_or_default();
+    let new_story_image_urls: Vec<String> = final_stories.iter().map(|s| s.image_url.clone()).collect();
+    for os in old_stories {
+        if !os.image_url.is_empty() && !new_story_image_urls.contains(&os.image_url) {
+            delete_s3_file(&state.s3_client, &state.s3_bucket, &os.image_url).await;
+        }
+    }
+
+    // Pre-Cleanup: Handle Song and Background Video
+    if custom_song_url != row.custom_song_url {
+        if let Some(old_url) = &row.custom_song_url {
+            delete_s3_file(&state.s3_client, &state.s3_bucket, old_url).await;
+        }
+    }
+    if background_video_url != row.background_video_url {
+        if let Some(old_url) = &row.background_video_url {
+            delete_s3_file(&state.s3_client, &state.s3_bucket, old_url).await;
+        }
+    }
+
+    // Pre-Cleanup: Handle Couple Photos
+    let old_bride: Person = from_value(row.bride_data.clone()).unwrap_or_default();
+    if let Some(new_url) = photo_paths.get("bride_photo") {
+        if &old_bride.image_url != new_url {
+            delete_s3_file(&state.s3_client, &state.s3_bucket, &old_bride.image_url).await;
+        }
+    }
+    let old_groom: Person = from_value(row.groom_data.clone()).unwrap_or_default();
+    if let Some(new_url) = photo_paths.get("groom_photo") {
+        if &old_groom.image_url != new_url {
+            delete_s3_file(&state.s3_client, &state.s3_bucket, &old_groom.image_url).await;
+        }
+    }
+
+    // Handle Playlist (Plan-based limits)
+    let plan = row.plan_name.as_deref().unwrap_or("NOBLE");
+    let song_limit = match plan {
+        "DYNASTY" => 5,
+        "ROYAL" => 3,
+        _ => 1,
+    };
+    
+    let mut final_playlist = existing_playlist;
+    final_playlist.extend(playlist_paths);
+    
+    // If playlist is empty but there's a custom song, use it as fallback
+    if final_playlist.is_empty() {
+        if let Some(url) = &custom_song_url {
+            if !url.is_empty() {
+                final_playlist.push(url.clone());
+            }
+        }
+    }
+    final_playlist.truncate(song_limit);
 
     sqlx::query(
-        "UPDATE invitations SET couple_name_short = $1, event_date = $2, bride_data = $3, groom_data = $4, ceremony_data = $5, reception_data = $6, quote_data = $7, ai_chat_enabled = $8, ai_custom_knowledge = $9, ai_language = $10, template_name = $11, song_id = $12, custom_song_url = $13, background_video_url = $14, stories_data = $15 WHERE id = $16"
+        "UPDATE invitations SET couple_name_short = $1, event_date = $2, bride_data = $3, groom_data = $4, ceremony_data = $5, reception_data = $6, quote_data = $7, ai_chat_enabled = $8, ai_custom_knowledge = $9, ai_language = $10, template_name = $11, song_id = $12, custom_song_url = $13, background_video_url = $14, stories_data = $15, hero_video_position = $16, playlist = $17 WHERE id = $18"
     )
     .bind(couple_name_short)
     .bind(event_date)
@@ -2711,6 +2827,8 @@ pub async fn update_invitation(
     .bind(custom_song_url)
     .bind(background_video_url)
     .bind(json!(final_stories))
+    .bind(hero_video_position)
+    .bind(json!(final_playlist))
     .bind(row.id)
     .execute(&state.db)
     .await
@@ -2719,10 +2837,27 @@ pub async fn update_invitation(
     tracing::info!("Successfully updated invitation record for id: {}", row.id);
 
     // Handle Gallery Management: Delete all existing gallery photos and re-insert (kept + new)
+    let old_gallery_items = sqlx::query("SELECT url, photo_type FROM invitation_photos WHERE invitation_id = $1")
+        .bind(row.id)
+        .fetch_all(&state.db)
+        .await
+        .unwrap_or_default();
+
     let _ = sqlx::query("DELETE FROM invitation_photos WHERE invitation_id = $1 AND photo_type = 'gallery'")
         .bind(row.id)
         .execute(&state.db)
         .await;
+
+    // S3 Cleanup for removed gallery items
+    for p in old_gallery_items {
+        let url: String = p.get("url");
+        let ptype: String = p.get("photo_type");
+        if ptype == "gallery" && !existing_gallery.contains(&url) {
+            delete_s3_file(&state.s3_client, &state.s3_bucket, &url).await;
+        } else if ptype == "gallery_video" && !existing_gallery_videos.contains(&url) {
+            delete_s3_file(&state.s3_client, &state.s3_bucket, &url).await;
+        }
+    }
 
     let mut final_gallery = existing_gallery;
     final_gallery.extend(gallery_paths);
@@ -2961,7 +3096,6 @@ pub async fn preview(
         ],
         song_url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3".to_string(),
         song_id: None,
-        stories: vec![],
         is_preview: true,
         plan_name: "NOBLE".to_string(),
         ai_chat_enabled: false,
@@ -2973,6 +3107,9 @@ pub async fn preview(
         rsvps: Vec::new(),
         custom_song_url: String::new(),
         background_video_url: String::new(),
+        hero_video_position: 50,
+        stories: Vec::new(),
+        playlist: Vec::new(),
     };
 
     match payload.template_name.as_str() {

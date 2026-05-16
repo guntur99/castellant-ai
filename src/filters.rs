@@ -1,3 +1,10 @@
+use serde::Serialize;
+use serde_json;
+
+pub fn json_encode<T: Serialize>(val: &T) -> askama::Result<String> {
+    Ok(serde_json::to_string(val).unwrap_or_else(|_| "[]".to_string()))
+}
+
 pub fn round(s: &f64, precision: usize) -> askama::Result<String> {
     Ok(format!("{:.1$}", s, precision))
 }

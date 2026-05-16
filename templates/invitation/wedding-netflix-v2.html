@@ -4,25 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>CINEMARRY — {{ invitation.couple_name_short }}</title>
-    
+    <title>Nitflax — {{ invitation.couple_name_short }} | Castellant</title>
+
     <!-- SEO & Metadata -->
-    <meta name="description" content="Wedding Invitation of {{ invitation.bride.name }} & {{ invitation.groom.name }} - {{ invitation.event_date }}. Watch their love story unfold.">
-    <meta name="keywords" content="wedding invitation, cinemarry, {{ invitation.bride.name }}, {{ invitation.groom.name }}, digital invitation">
-    <meta name="author" content="Cinemarry">
-    
+    <meta name="description"
+        content="Wedding Invitation of {{ invitation.bride.name }} & {{ invitation.groom.name }} - {{ invitation.event_date }}. Watch their love story unfold on Nitflax by Castellant.">
+    <meta name="keywords"
+        content="wedding invitation, nitflax, {{ invitation.bride.name }}, {{ invitation.groom.name }}, digital invitation, castellant">
+    <meta name="author" content="Nitflax by Castellant">
+
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://castellant.ai/i/{{ invitation.slug }}">
-    <meta property="og:title" content="CINEMARRY — {{ invitation.couple_name_short }}">
-    <meta property="og:description" content="Pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }} - {{ invitation.event_date }}. Klik untuk melihat trailer kebahagiaan kami.">
+    <meta property="og:title" content="NITFLAX — {{ invitation.couple_name_short }} | Castellant">
+    <meta property="og:description"
+        content="Pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }} - {{ invitation.event_date }}. Saksikan trailer kebahagiaan kami hanya di Nitflax by Castellant.">
     <meta property="og:image" content="{{ invitation.gallery_images|first_image }}">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="https://castellant.ai/i/{{ invitation.slug }}">
-    <meta property="twitter:title" content="CINEMARRY — {{ invitation.couple_name_short }}">
-    <meta property="twitter:description" content="Pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }} - {{ invitation.event_date }}. Klik untuk melihat trailer kebahagiaan kami.">
+    <meta property="twitter:title" content="NITFLAX — {{ invitation.couple_name_short }}">
+    <meta property="twitter:description"
+        content="Pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }} - {{ invitation.event_date }}. Klik untuk melihat trailer kebahagiaan kami.">
     <meta property="twitter:image" content="{{ invitation.gallery_images|first_image }}">
 
     <!-- Favicon -->
@@ -130,31 +134,83 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start;
             transition: opacity .8s var(--ease), transform .8s var(--ease);
+            overflow-y: auto;
+            scrollbar-width: none;
         }
 
-        #splash.out {
+        #splash::-webkit-scrollbar {
+            display: none;
+        }
+
+        .splash-poster {
+            width: 100%;
+            height: 65vh;
+            position: relative;
+            flex-shrink: 0;
+            background: #000;
+            overflow: hidden;
+        }
+
+        .splash-video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
             opacity: 0;
-            transform: scale(1.04);
-            pointer-events: none;
+            transition: opacity 1s var(--ease);
+        }
+
+        .splash-video.active {
+            opacity: 1;
+        }
+
+        .poster-fade {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom,
+                    rgba(0, 0, 0, 0.2) 0%,
+                    transparent 30%,
+                    transparent 60%,
+                    rgba(0, 0, 0, 0.9) 100%);
+        }
+
+        .poster-content {
+            position: absolute;
+            bottom: 40px;
+            left: 0;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 5;
+            padding: 0 20px;
         }
 
         .splash-logo {
             position: relative;
-            margin-bottom: 60px;
+            margin-bottom: 20px;
+            animation: logo-in .8s var(--ease) both;
+        }
+
+        #splash.out {
+            opacity: 0;
+            transform: scale(1.05);
+            pointer-events: none;
         }
 
         .logo-nf {
             font-family: var(--font-title);
-            font-size: clamp(48px, 14vw, 80px);
-            letter-spacing: -2px;
+            font-size: clamp(40px, 12vw, 64px);
+            letter-spacing: -1px;
             color: var(--nf-red);
             display: flex;
             align-items: center;
-            gap: 6px;
-            text-shadow: 0 0 60px var(--nf-red-glow);
-            animation: logo-in .8s var(--ease) both;
+            gap: 4px;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.8);
         }
 
         .logo-nf .logo-cine {
@@ -163,6 +219,39 @@
 
         .logo-nf .logo-marry {
             color: var(--nf-red);
+        }
+
+        .top10-wrap {
+            display: flex;
+            align-items: center;
+            font-family: var(--font-body);
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--nf-white);
+            margin-top: 8px;
+            animation: fade-up .8s var(--ease) .3s both;
+        }
+
+        .top10-badge {
+            background: var(--nf-red);
+            color: #fff;
+            width: 22px;
+            height: 22px;
+            font-size: 8px;
+            font-weight: 900;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            line-height: 0.9;
+            border-radius: 2px;
+            margin-right: 8px;
+            flex-shrink: 0;
+            box-shadow: 0 2px 10px rgba(229, 9, 20, 0.4);
+        }
+
+        .top10-badge span {
+            font-size: 11px;
         }
 
         .logo-tagline {
@@ -203,12 +292,24 @@
         }
 
         /* Profiles row */
+        .profiles-container {
+            width: 100%;
+            padding: 20px 20px 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
         .profiles-label {
             font-family: var(--font-body);
-            font-weight: 400;
-            font-size: clamp(20px, 4vw, 28px);
-            color: var(--nf-gray1);
-            margin-bottom: 32px;
+            font-weight: 500;
+            font-size: 14px;
+            letter-spacing: 0.02em;
+            color: var(--nf-gray2);
+            margin-bottom: 24px;
+            text-transform: none;
+            opacity: 0.8;
             animation: fade-up .7s var(--ease) .4s both;
         }
 
@@ -339,11 +440,15 @@
             z-index: 100;
             padding: 0 4%;
             background: linear-gradient(180deg, rgba(0, 0, 0, .85) 0%, transparent 100%);
-            transition: background .4s;
+            transition: background .4s, transform .4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: space-between;
             height: 68px;
+        }
+
+        .nf-nav.nav-hidden {
+            transform: translateY(-100%);
         }
 
         .nf-nav.solid {
@@ -401,6 +506,45 @@
             color: var(--nf-gray3);
         }
 
+        .nav-logo-mobile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-n {
+            color: #E50914;
+            font-size: 28px;
+            font-weight: 900;
+            line-height: 1;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            text-shadow: 0 0 10px rgba(229, 9, 20, 0.3);
+        }
+
+        .nav-current-title {
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-icons-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: #fff;
+            font-size: 18px;
+        }
+
+        .nav-icon-btn {
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .nav-icon-btn:hover {
+            opacity: 0.7;
+        }
+
         .nav-avatar {
             width: 32px;
             height: 32px;
@@ -417,38 +561,168 @@
         /* ═══════════════════════════════════════
    HERO BANNER
 ═══════════════════════════════════════ */
-        .hero {
-            position: relative;
-            height: 100svh;
-            min-height: 560px;
-            overflow: hidden;
+        /* ═══════════════════════════════════════
+   NAV PILLS
+═══════════════════════════════════════ */
+        .nav-pills {
             display: flex;
-            align-items: flex-end;
+            gap: 8px;
+            padding: 8px 20px 16px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            position: fixed;
+            top: 68px;
+            left: 0;
+            right: 0;
+            z-index: 900;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+            transition: opacity 0.3s, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        .hero-bg {
+        .nav-pills.nav-hidden {
+            transform: translateY(-150px);
+        }
+
+        .nav-pills::-webkit-scrollbar {
+            display: none;
+        }
+
+        .pill {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--nf-white);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            backdrop-filter: blur(10px);
+        }
+
+        /* ═══════════════════════════════════════
+   FEATURED CARD (Modern Hero)
+═══════════════════════════════════════ */
+        .hero {
+            padding-top: 130px;
+            padding-bottom: 40px;
+            background: #000;
+            display: block;
+            height: auto;
+        }
+
+        .featured-card {
+            margin: 0 16px;
+            height: 65vh;
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(255,255,255,0.05);
+        }
+
+        .featured-card .hero-bg {
             position: absolute;
             inset: 0;
-            background: url('{{ invitation.gallery_images|first_image }}') center/cover no-repeat;
-            overflow: hidden;
         }
 
-        .hero-video {
+        .hero-meta-new {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            padding: 0 16px;
+            box-sizing: border-box;
+        }
+
+        /* ═══════════════════════════════════════
+   UNIFIED SECTION TITLES
+═══════════════════════════════════════ */
+        .nf-section-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: #fff;
+            margin: 24px 0 12px;
+            padding-left: 20px;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: -0.4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nf-section-title svg {
+            color: var(--nf-red);
+        }
+
+        /* ═══════════════════════════════════════
+   TOP 10 RANKING
+═══════════════════════════════════════ */
+        .top10-row {
+            display: flex;
+            gap: 35px;
+            padding: 10px 20px 30px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .top10-row::-webkit-scrollbar {
+            display: none;
+        }
+
+        .top10-item {
+            position: relative;
+            flex-shrink: 0;
+            width: 130px;
+            height: 190px;
+            margin-left: 20px;
+        }
+
+        .rank-num {
+            position: absolute;
+            left: -40px;
+            bottom: -15px;
+            font-size: 110px;
+            font-weight: 900;
+            line-height: 1;
+            color: #000;
+            -webkit-text-stroke: 2px #555;
+            z-index: 1;
+            font-family: var(--font-title);
+        }
+
+        .top10-poster {
+            width: 100%;
+            height: 100%;
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+            z-index: 2;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .top10-poster img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            position: absolute;
-            top: 0;
-            left: 0;
         }
 
-        .hero-bg::after {
-            content: '';
+        .badge-recent {
             position: absolute;
-            inset: 0;
-            background:
-                linear-gradient(90deg, rgba(0, 0, 0, .85) 0%, rgba(0, 0, 0, .2) 60%, transparent 100%),
-                linear-gradient(0deg, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, .4) 25%, transparent 60%);
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--nf-red);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 800;
+            text-align: center;
+            padding: 4px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         /* Floating genre badges */
@@ -1345,7 +1619,7 @@
 
         .gal-item {
             flex-shrink: 0;
-            width: clamp(180px, 45vw, 240px);
+            width: clamp(240px, 60vw, 340px);
             aspect-ratio: 16/9;
             border-radius: 4px;
             overflow: hidden;
@@ -1923,6 +2197,10 @@
             transform: translateY(0);
         }
 
+        .music-bar.scrolling {
+            transition: transform 0.3s ease !important;
+        }
+
         .mb-art {
             width: 44px;
             height: 44px;
@@ -2011,6 +2289,84 @@
         .mb-btn svg {
             width: 20px;
             height: 20px;
+        }
+
+        .gift-card {
+            background: linear-gradient(145deg, #1a1a1a 0%, #111 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 24px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s var(--ease), border-color 0.3s;
+        }
+
+        .gift-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(229, 9, 20, 0.4);
+        }
+
+        .gift-card::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(229, 9, 20, 0.1) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .gc-label {
+            font-family: var(--font-cond);
+            font-size: 11px;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--nf-red);
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .gc-num {
+            font-size: 22px;
+            font-weight: 900;
+            color: var(--nf-white);
+            letter-spacing: 1.5px;
+            margin-bottom: 4px;
+            font-family: var(--font-title);
+        }
+
+        .gc-holder {
+            font-size: 12px;
+            color: var(--nf-gray2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            opacity: 0.8;
+        }
+
+        .gc-copy {
+            background: var(--nf-red);
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .gc-copy:active {
+            transform: scale(0.96);
+            background: #b20710;
         }
 
         .mb-play-btn {
@@ -2201,10 +2557,129 @@
         .d3 {
             transition-delay: .3s
         }
+
+        /* --- NETFLIX INTRO STYLES --- */
+        .netflix-intro {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            z-index: 10001;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 1s cubic-bezier(0.4, 0, 0.2, 1), visibility 1s;
+
+            /* Hidden by default */
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .netflix-intro.active {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: all;
+        }
+
+        .netflix-intro.fade-out {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .n-logo-container {
+            width: 100px;
+            height: 150px;
+            position: relative;
+            transform-origin: center;
+            transition: transform 1.5s cubic-bezier(0.4, 0, 0.2, 1), opacity 1s ease-in;
+        }
+
+        @keyframes n-cinematic {
+            0% { transform: scale(0.9); opacity: 0; }
+            15% { transform: scale(1); opacity: 1; }
+            85% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .n-logo-container.zoom {
+            animation: n-cinematic 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        /* Stylized N made of CSS */
+        .n-bar {
+            position: absolute;
+            width: 30px;
+            height: 100%;
+            background: #E50914;
+            box-shadow: 0 0 20px rgba(229, 9, 20, 0.4);
+        }
+
+        .n-bar-left {
+            left: 0;
+        }
+
+        .n-bar-right {
+            right: 0;
+        }
+
+        .n-bar-diag {
+            left: 0;
+            width: 100%;
+            background: linear-gradient(to bottom right, #E50914 50%, #B20710 50%);
+            clip-path: polygon(0 0, 30px 0, 100% 100%, calc(100% - 30px) 100%);
+            z-index: 2;
+        }
+
+        .btn-open-netflix {
+            margin-top: 50px;
+            background: #E50914;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 4px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+            animation: fadeIn 1s ease-out 1s both;
+        }
+
+        .btn-open-netflix:hover {
+            transform: scale(1.05);
+            background: #ff0f1a;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
     </style>
 </head>
 
 <body>
+    <!-- Netflix Intro Splash -->
+    <div class="netflix-intro" id="intro-overlay">
+        <div class="n-logo-container" id="n-logo">
+            <div class="n-bar n-bar-left"></div>
+            <div class="n-bar n-bar-diag"></div>
+            <div class="n-bar n-bar-right"></div>
+        </div>
+        <audio id="tadum-sfx" preload="auto">
+            <source src="/static/sfx/netflix-tudum-sfx.mp3" type="audio/mpeg">
+        </audio>
+    </div>
 
     <!-- AUDIO -->
     <audio id="bgAudio" loop preload="none">
@@ -2215,36 +2690,51 @@
      SPLASH — Profile Select
 ══════════════════════════════════════ -->
     <div id="splash">
-        <div class="splash-logo">
-            <div class="logo-nf">
-                <span class="logo-cine">CINE</span><span class="logo-marry">MARRY</span>
+        <div class="splash-poster" id="splashPoster">
+            <video id="splashVid1" class="splash-video active" autoplay muted playsinline></video>
+            <video id="splashVid2" class="splash-video" autoplay muted playsinline></video>
+            <div class="poster-fade"></div>
+            <div class="poster-content">
+                <div class="splash-logo">
+                    <div class="logo-nf">
+                        <span style="color: #fff;">{{ invitation.bride_name_short }}</span>
+                        <span style="color: #E50914;">& {{ invitation.groom_name_short }}</span>
+                    </div>
+                </div>
+                <div id="splashTagline" class="top10-wrap">
+                    <div class="top10-badge">TOP<span>{% let count = invitation.gallery_images.len() %}{% if count > 10
+                            %}10{% else %}{{ count }}{% endif %}</span></div>
+                    #1 in Weddings Today
+                </div>
             </div>
-            <div class="logo-tagline">The Wedding Streaming Series</div>
         </div>
 
-        <p class="profiles-label">Klik profil Anda untuk menonton</p>
+        <div class="profiles-container">
+            <p class="profiles-label">Choose Your Profile</p>
 
-        <div class="profiles-row">
-            <div class="profile-item" onclick="selectProfile(this, '{{ invitation.bride.name }}')">
-                <div class="profile-avatar">
-                    <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride.name }}">
+            <div class="profiles-row">
+                <div class="profile-item" onclick="selectProfile(this, '{{ invitation.bride.name }}')">
+                    <div class="profile-avatar">
+                        <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride.name }}">
+                    </div>
+                    <span class="profile-name">{{ invitation.bride.name }}</span>
                 </div>
-                <span class="profile-name">{{ invitation.bride.name }}</span>
-            </div>
-            <div class="profile-item" onclick="selectProfile(this, '{{ invitation.groom.name }}')">
-                <div class="profile-avatar">
-                    <img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom.name }}">
+                <div class="profile-item" onclick="selectProfile(this, '{{ invitation.groom.name }}')">
+                    <div class="profile-avatar">
+                        <img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom.name }}">
+                    </div>
+                    <span class="profile-name">{{ invitation.groom.name }}</span>
                 </div>
-                <span class="profile-name">{{ invitation.groom.name }}</span>
-            </div>
-            <div class="profile-item" onclick="selectProfile(this, '{{ invitation.recipient_name }}')">
-                <div class="profile-avatar">
-                    <div class="profile-letter" style="background:linear-gradient(135deg,#1a3a2e,#0d2318)">{{
-                        invitation.recipient_name|first }}</div>
+                <div class="profile-item" onclick="selectProfile(this, '{{ invitation.recipient_name }}')">
+                    <div class="profile-avatar">
+                        <div class="profile-letter" style="background:linear-gradient(135deg,#1a3a2e,#0d2318)">{{
+                            invitation.recipient_name|first }}</div>
+                    </div>
+                    <span class="profile-name">{{ invitation.recipient_name }}</span>
                 </div>
-                <span class="profile-name">{{ invitation.recipient_name }}</span>
             </div>
         </div>
+    </div>
     </div>
 
     <!-- ══════════════════════════════════════
@@ -2252,462 +2742,511 @@
 ══════════════════════════ -->
     <div id="app">
 
-        <!-- NAVBAR -->
-        <nav class="nf-nav" id="nfNav">
-            <div class="nav-logo">CINEMARRY</div>
-            <div class="nav-right">
-                <div class="search-box">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="color: var(--nf-gray2);">
-                        <path
-                            d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" />
+        <!-- NAVBAR (Mobile Style) -->
+        <nav class="nf-nav" id="nfNav"
+            style="background: linear-gradient(180deg, rgba(0, 0, 0, 0.9) 0%, transparent 100%);">
+            <div class="nav-logo-mobile">
+                <div class="logo-n">N</div>
+                <div class="nav-current-title">Home</div>
+            </div>
+            <div class="nav-icons-right">
+                <div class="nav-icon-btn" onclick="toast('Membuka Unduhan...')">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
                     </svg>
-                    <input type="text" placeholder="Judul, Orang, atau Genre"
-                        onkeyup="if(event.key === 'Enter') toast('Mencari: ' + this.value)">
                 </div>
-                <div class="nav-avatar" id="navAvatar">{% if invitation.recipient_name != "Guest Guest & Partner" %}{{ invitation.recipient_name|first }}{% else %}G{% endif %}</div>
+                <div class="nav-icon-btn" onclick="toast('Notifikasi: Menuju Hari Bahagia!')">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                    </svg>
+                </div>
             </div>
         </nav>
 
+        <div class="nav-pills" id="navPills">
+            <div class="pill">Shows</div>
+            <div class="pill">Movies</div>
+            <div class="pill">Games</div>
+            <div class="pill">New & Hot</div>
+        </div>
+
         <!-- HERO -->
         <section class="hero" id="home">
-            <div class="hero-bg">
-                {% if !invitation.background_video_url.is_empty() %}
-                <video class="hero-video" autoplay muted loop playsinline
-                    poster="{{ invitation.gallery_images|first_image }}">
-                    <source src="{{ invitation.background_video_url }}" type="video/mp4">
-                </video>
-                {% endif %}
-            </div>
+            <div class="featured-card reveal">
+                <div class="hero-bg" style="background: #000;">
+                    {% if !invitation.background_video_url.is_empty() %}
+                    <video class="hero-video" autoplay muted loop playsinline
+                        poster="{{ invitation.gallery_images|first_image }}"
+                        style="opacity:1; position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position: center {{ invitation.hero_video_position }}%; z-index: 2;">
+                        <source src="{{ invitation.background_video_url }}" type="video/mp4">
+                    </video>
+                    {% else %}
+                    <img src="{{ invitation.gallery_images|first_image }}" alt="Hero"
+                        style="width:100%; height:100%; object-fit:cover;">
+                    {% endif %}
+                    <div class="poster-fade" style="z-index: 3;"></div>
+                </div>
 
-            <div class="hero-badges">
-                <div class="genre-badge hot">🔥 Trending #1</div>
-                <div class="genre-badge">Romance</div>
-                <div class="genre-badge">Drama</div>
-                <div class="genre-badge">Halal</div>
-            </div>
-
-            <div class="hero-content">
-                <div class="hero-eyebrow">Series Perdana {{ invitation.event_date|split_last(" ") }}</div>
-                <h1 class="hero-title">{{ invitation.couple_name_short|replace("&", "<br>&")|safe }}</h1>
-                <div class="hero-meta">
-                    <span class="hero-match">98% Match</span>
-                    <span class="hero-year">{{ invitation.event_date|split_last(" ") }}</span>
-                    <span class="hero-rating-badge">17+</span>
-                    <span class="hero-year">1 Season</span>
-                    <span class="hero-year">HD</span>
+                <div class="hero-meta-new">
+                    <div class="top10-ranking-line"
+                        style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px;">
+                        <div class="top10-badge-modern"
+                            style="background: #E50914; color: #fff; padding: 2px 4px; border-radius: 2px; font-weight: 900; font-size: 10px; display: flex; flex-direction: column; align-items: center; line-height: 1.1; letter-spacing: -0.5px;">
+                            <span style="font-size: 7px; opacity: 0.9;">TOP</span>
+                            <span>1</span>
+                        </div>
+                        <span
+                            style="font-weight: 700; color: #fff; font-size: 14px; text-shadow: 0 1px 3px rgba(0,0,0,0.8);">Top
+                            1 in Indonesia Today</span>
+                    </div>
+                    <h1 class="hero-title"
+                        style="font-size: clamp(32px, 8vw, 48px); margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">
+                        {{
+                        invitation.couple_name_short }}</h1>
+                    <div class="hero-btns" style="margin-top: 20px; display: flex; gap: 10px; width: 100%;">
+                        <button class="nf-btn-modern-play" id="heroPlayBtn" onclick="togglePlay()"
+                            style="flex: 1; background: #fff; color: #000; border: none; padding: 10px; border-radius: 4px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 15px;">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                            Play
+                        </button>
+                        <button class="nf-btn-modern-list" onclick="toast('Menyimpan ke Daftar Keinginan...')"
+                            style="flex: 1; background: rgba(255,255,255,0.25); color: #fff; border: none; padding: 10px; border-radius: 4px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 15px; backdrop-filter: blur(5px);">
+                            <svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22">
+                                <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                            </svg>
+                            My List
+                        </button>
+                    </div>
                 </div>
-                <div class="hero-desc">
-                    {{ invitation.quote.text }}
-                </div>
-                <div class="hero-btns">
-                    <button class="nf-btn nf-btn-play" onclick="togglePlay()">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M8 5v14l11-7z" />
-                        </svg>
-                        <span id="heroPlayText">Putar</span>
-                    </button>
-                    <a href="#episode" class="nf-btn nf-btn-info">
-                        <svg viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
-                        </svg>
-                        Info Lainnya
-                    </a>
-                </div>
-            </div>
-            <div class="hero-progress">
-                <div class="hero-progress-fill" id="heroProgFill"></div>
             </div>
         </section>
 
-        <!-- CONTENT AREA -->
-        <div class="content-area">
-
-            <!-- COUNTDOWN -->
-            <div class="countdown-section reveal">
-                <div class="cd-card">
-                    <div class="cd-top">
-                        <div class="cd-eyebrow">🛰️ LIVE PREMIERE COUNTDOWN</div>
-                        <div class="cd-headline">Season Finale Tayang Dalam:</div>
+        <!-- TOP 10 SECTION -->
+        <section class="nf-section" style="padding-top: 0; padding-bottom: 20px;">
+            <h2 class="section-title">Top {% let count = invitation.gallery_images.len() %}{% if count > 10 %}10{% else
+                %}{{ count }}{% endif %} in Indonesia Today</h2>
+            <div class="top10-row">
+                {% for img in invitation.gallery_images %}
+                {% if loop.index0 < 10 %} <div class="top10-item reveal d{{ loop.index0 }}">
+                    <div class="rank-num">{{ loop.index }}</div>
+                    <div class="top10-poster">
+                        <img src="{{ img }}" alt="Top {{ loop.index }}">
+                        <!-- <div class="badge-recent">Recently Added</div> -->
                     </div>
-                    <div class="cd-nums">
-                        <div class="cd-box">
-                            <div class="cd-n" id="cdD">00</div>
-                            <div class="cd-u">Hari</div>
-                        </div>
-                        <div class="cd-box">
-                            <div class="cd-n" id="cdH">00</div>
-                            <div class="cd-u">Jam</div>
-                        </div>
-                        <div class="cd-box">
-                            <div class="cd-n" id="cdM">00</div>
-                            <div class="cd-u">Menit</div>
-                        </div>
-                        <div class="cd-box">
-                            <div class="cd-n" id="cdS">00</div>
-                            <div class="cd-u">Detik</div>
-                        </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+    </div>
+    </section>
+
+    <!-- SYNOPSIS / QUOTE SECTION -->
+    <section class="nf-section reveal" style="margin-top: 50px; margin-bottom: 50px;">
+        <div style="padding: 0 20px;">
+            <h2 class="section-title" style="margin-bottom: 20px; font-size: 20px; letter-spacing: 0.5px;">About This
+                Wedding</h2>
+            <div class="synopsis-box"
+                style="background: rgba(255,255,255,0.03); padding: 24px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); box-shadow: 0 10px 30px rgba(0,0,0,0.2); text-align: center;">
+                <div class="hero-meta"
+                    style="margin-bottom: 12px; font-size: 13px; display: flex; gap: 12px; align-items: center; justify-content: center;">
+                    <span class="hero-match" style="color: #46d369; font-weight: 800;">98% Match</span>
+                    <span class="hero-year" style="color: var(--nf-gray2);">{{ invitation.event_date|split_last(" ")
+                        }}</span>
+                    <span class="hero-rating-badge"
+                        style="border: 1px solid var(--nf-gray3); padding: 0 6px; font-size: 11px; color: var(--nf-gray2); border-radius: 2px;">13+</span>
+                    <span class="hero-year" style="color: var(--nf-gray2);">1 Season</span>
+                </div>
+                <p class="synopsis-text"
+                    style="color: #e5e5e5; line-height: 1.7; font-size: 15px; font-family: 'Inter', sans-serif;">
+                    {{ invitation.quote.text }}
+                </p>
+                {% if !invitation.quote.source.is_empty() %}
+                <p class="synopsis-source"
+                    style="color: var(--nf-red); font-size: 12px; margin-top: 16px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; display: flex; align-items: center; gap: 8px; justify-content: center;">
+                    <span style="width: 20px; height: 1px; background: var(--nf-red); display: inline-block;"></span>
+                    {{ invitation.quote.source }}
+                    <span style="width: 20px; height: 1px; background: var(--nf-red); display: inline-block;"></span>
+                </p>
+                {% endif %}
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTENT AREA -->
+    <div class="content-area">
+
+        <!-- COUNTDOWN -->
+        <div class="countdown-section reveal">
+            <div class="cd-card">
+                <div class="cd-top">
+                    <div class="cd-eyebrow"
+                        style="color: #46d369; font-weight: 800; font-size: 11px; margin-bottom: 4px; letter-spacing: 1px;">
+                        🛰️ LIVE PREMIERE</div>
+                    <div class="nf-section-title" style="padding:0; margin:0">Season Finale Premiering In:</div>
+                </div>
+                <div class="cd-nums">
+                    <div class="cd-box">
+                        <div class="cd-n" id="cdD">00</div>
+                        <div class="cd-u">Days</div>
+                    </div>
+                    <div class="cd-box">
+                        <div class="cd-n" id="cdH">00</div>
+                        <div class="cd-u">Hours</div>
+                    </div>
+                    <div class="cd-box">
+                        <div class="cd-n" id="cdM">00</div>
+                        <div class="cd-u">Minutes</div>
+                    </div>
+                    <div class="cd-box">
+                        <div class="cd-n" id="cdS">00</div>
+                        <div class="cd-u">Seconds</div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- TOP PICKS ROW -->
-            <div class="row-section reveal">
-                <div class="row-label">
-                    Populer di
-                    <span class="row-label-red">CINEMARRY</span>
+        <!-- TOP PICKS ROW -->
+        <div class="row-section reveal">
+            <div class="nf-section-title">Popular on Nitflax</div>
+            <div class="row-strip">
+                {% for video in invitation.gallery_videos %}
+                <div class="nf-card" onclick="playGalVideo('{{ video }}')">
+                    <video src="{{ video }}" muted loop autoplay playsinline
+                        poster="{{ invitation.gallery_images|first_image }}"
+                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;"></video>
                 </div>
-                <div class="row-strip">
-                    {% for video in invitation.gallery_videos %}
-                    <div class="nf-card" onclick="playGalVideo('{{ video }}')">
-                        <video src="{{ video }}" muted loop autoplay playsinline
-                            poster="{{ invitation.gallery_images|first_image }}"
-                            style="width: 100%; height: 100%; object-fit: cover; border-radius: 4px;"></video>
+                {% else %}
+                <!-- Fallback if no videos -->
+                <div class="nf-card" onclick="toast('💍 Akad Nikah')">
+                    <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=300&h=450&fit=crop&q=80"
+                        alt="Akad">
+                    <div class="card-overlay">
+                        <div class="card-title">Akad Nikah</div>
+                        <div class="card-tags"><span class="card-tag">Sacred</span></div>
                     </div>
-                    {% else %}
-                    <!-- Fallback if no videos -->
-                    <div class="nf-card" onclick="toast('💍 Akad Nikah')">
-                        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=300&h=450&fit=crop&q=80"
-                            alt="Akad">
-                        <div class="card-overlay">
-                            <div class="card-title">Akad Nikah</div>
-                            <div class="card-tags"><span class="card-tag">Sacred</span></div>
-                        </div>
-                    </div>
-                    <div class="nf-card" onclick="toast('🎊 Resepsi')">
-                        <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=300&h=450&fit=crop&q=80"
-                            alt="Resepsi">
-                        <div class="card-overlay">
-                            <div class="card-title">Resepsi Pernikahan</div>
-                            <div class="card-tags"><span class="card-tag">Celebration</span></div>
-                        </div>
-                    </div>
-                    {% endfor %}
                 </div>
-            </div>
-
-            <!-- EPISODE LIST — Love Story -->
-            <div class="episode-section reveal" id="episode">
-                <div class="ep-header">
-                    <div class="ep-title-row">Episode</div>
-                    <select class="ep-season-sel">
-                        <option>Season 1: Our Story</option>
-                    </select>
-                </div>
-
-                {% for story in invitation.stories %}
-                <div class="episode-card">
-                    <div class="ep-num">{{ loop.index }}</div>
-                    <div class="ep-thumb">
-                        <img src="{{ story.image_url }}" alt="{{ story.title }}">
-                        <div class="ep-thumb-overlay">
-                            <div class="ep-thumb-play"><svg viewBox="0 0 24 24" fill="currentColor">
-                                    <path d="M8 5v14l11-7z" />
-                                </svg></div>
-                        </div>
-                    </div>
-                    <div class="ep-body">
-                        <div class="ep-name">{{ story.title }}</div>
-                        <div class="ep-duration">{{ story.date }}</div>
-                        <div class="ep-desc">{{ story.description }}</div>
-                        <div class="ep-progress">
-                            <div class="ep-progress-fill" style="width:100%"></div>
-                        </div>
+                <div class="nf-card" onclick="toast('🎊 Resepsi')">
+                    <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=300&h=450&fit=crop&q=80"
+                        alt="Resepsi">
+                    <div class="card-overlay">
+                        <div class="card-title">Resepsi Pernikahan</div>
+                        <div class="card-tags"><span class="card-tag">Celebration</span></div>
                     </div>
                 </div>
                 {% endfor %}
             </div>
-
-            <!-- PREMIERE INFO -->
-            <div class="premiere-section reveal" id="event">
-                <div class="premiere-banner">
-                    <div class="pb-content">
-                        <div class="pb-label">Siaran Langsung</div>
-                        <div class="pb-title">Season Finale<br>Premiere</div>
-                        <div class="pb-meta">
-                            Minggu, {{ invitation.event_date }}
-                            {% if invitation.ceremony.enabled %}
-                            · {{ invitation.ceremony.venue }}, {{ invitation.ceremony.address }}
-                            {% else if invitation.reception.enabled %}
-                            · {{ invitation.reception.venue }}, {{ invitation.reception.address }}
-                            {% endif %}
-                        </div>
-                        <div class="premiere-grid">
-                            {% if invitation.ceremony.enabled %}
-                            <div class="pb-info-card">
-                                <div class="pb-ic-icon">🕗</div>
-                                <div class="pb-ic-label">Akad Nikah</div>
-                                <div class="pb-ic-val">{{ invitation.ceremony.time }}</div>
-                            </div>
-                            {% endif %}
-
-                            {% if invitation.reception.enabled %}
-                            <div class="pb-info-card">
-                                <div class="pb-ic-icon">🎉</div>
-                                <div class="pb-ic-label">Resepsi</div>
-                                <div class="pb-ic-val">{{ invitation.reception.time }}</div>
-                            </div>
-                            {% endif %}
-
-                            {% if invitation.ceremony.enabled || invitation.reception.enabled %}
-                            <div class="pb-info-card" style="grid-column:1/-1">
-                                <div class="pb-ic-icon">📍</div>
-                                <div class="pb-ic-label">Lokasi</div>
-                                {% if invitation.ceremony.enabled %}
-                                <div class="pb-ic-val" style="font-size:14px">{{ invitation.ceremony.venue }}</div>
-                                <div class="pb-ic-sub">{{ invitation.ceremony.address }}</div>
-                                <a href="{{ invitation.ceremony.maps_url }}" target="_blank" class="maps-link">
-                                    <svg viewBox="0 0 24 24" fill="currentColor">
-                                        <path
-                                            d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                                    </svg>
-                                    Buka di Maps
-                                </a>
-                                {% else %}
-                                <div class="pb-ic-val" style="font-size:14px">{{ invitation.reception.venue }}</div>
-                                <div class="pb-ic-sub">{{ invitation.reception.address }}</div>
-                                <a href="{{ invitation.reception.maps_url }}" target="_blank" class="maps-link">
-                                    <svg viewBox="0 0 24 24" fill="currentColor">
-                                        <path
-                                            d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                                    </svg>
-                                    Buka di Maps
-                                </a>
-                                {% endif %}
-                            </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- CAST -->
-            <div class="cast-section reveal" id="couple">
-                <div class="cast-label">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
-                    </svg>
-                    Cast Utama
-                </div>
-                <div class="cast-grid">
-                    <div class="cast-card">
-                        <div class="cast-photo">
-                            <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride.name }}"
-                                loading="lazy">
-                            <div class="cast-photo-overlay"></div>
-                        </div>
-                        <div class="cast-body">
-                            <div class="cast-role">Mempelai Wanita</div>
-                            <div class="cast-name">{{ invitation.bride.full_name }}</div>
-                            <div class="cast-info">{{ invitation.bride.father_name }} & Ibu {{
-                                invitation.bride.mother_name }}</div>
-                            <div class="cast-imdb">
-                                <span class="imdb-badge">IMDb</span>
-                                <span class="imdb-score">⭐ 9.8 / 10</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="cast-card">
-                        <div class="cast-photo">
-                            <img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom.name }}"
-                                loading="lazy">
-                            <div class="cast-photo-overlay"></div>
-                        </div>
-                        <div class="cast-body">
-                            <div class="cast-role">Mempelai Pria</div>
-                            <div class="cast-name">{{ invitation.groom.full_name }}</div>
-                            <div class="cast-info">{{ invitation.groom.father_name }} & Ibu {{
-                                invitation.groom.mother_name }}</div>
-                            <div class="cast-imdb">
-                                <span class="imdb-badge">IMDb</span>
-                                <span class="imdb-score">⭐ 9.7 / 10</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- GALLERY -->
-            <div class="gallery-section reveal">
-                <div class="gal-header">
-                    <div class="row-label" style="padding:0;font-size:clamp(16px,3.5vw,22px)">
-                        Screenshots & Trailers
-                    </div>
-                </div>
-                <div class="gal-strip-wrap" id="galWrap" onmouseenter="pauseGal()" onmouseleave="resumeGal()"
-                    ontouchstart="pauseGal()" ontouchend="resumeGal()">
-                    <div class="gal-fade-l"></div>
-                    <div class="gal-fade-r"></div>
-                    <div class="gal-track" id="galTrack"></div>
-                </div>
-                <div class="gal-dots" id="galDots"></div>
-            </div>
-
-            <!-- GIFT -->
-            <div class="gift-section reveal" id="gift">
-                <div class="row-label" style="padding:0 0 14px">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M20 6h-2.18c.07-.23.18-.46.18-.71C18 3.47 16.53 2 14.71 2c-.87 0-1.65.36-2.22.93L12 3.4l-.49-.47C10.94 2.36 10.16 2 9.29 2 7.47 2 6 3.47 6 5.29c0 .25.11.48.18.71H4c-1.11 0-2 .89-2 2v13c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z" />
-                    </svg>
-                    Amplop Digital
-                </div>
-                <p style="font-size:14px;color:var(--nf-gray2);margin-bottom:16px;line-height:1.6">Doa restu sudah
-                    sangat cukup. Namun jika ingin memberi, kami terima dengan sepenuh hati.</p>
-                <div class="gift-grid">
-                    {% for account in invitation.gift_accounts %}
-                    <div class="gift-card">
-                        <div class="gc-label">{{ account.bank_name }}</div>
-                        <div class="gc-num" id="bankNum{{ loop.index }}">{{ account.account_number }}</div>
-                        <div class="gc-holder">a.n {{ account.account_holder }}</div>
-                        <button class="gc-copy" onclick="copyNum('{{ account.account_number }}', this)">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                                <path
-                                    d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
-                            </svg>
-                            Salin Nomor
-                        </button>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
         </div>
 
-        <!-- RSVP -->
-        <div class="rsvp-section reveal" id="rsvp">
-            <div class="row-label" style="padding:0 0 14px">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                    <path
-                        d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
-                </svg>
-                Konfirmasi Kehadiran
+        <!-- EPISODE LIST — Love Story -->
+        <div class="episode-section reveal" id="episode">
+            <div class="ep-header">
+                <div class="nf-section-title" style="padding:0; margin-bottom:16px;">Episodes</div>
+                <select class="ep-season-sel">
+                    <option>Season 1: Our Story</option>
+                </select>
             </div>
-            <div class="review-stats">
-                <div class="rs-item">
-                    <div class="rs-num">{{ invitation.total_rsvps() }}</div>
-                    <div class="rs-lbl">Respons</div>
-                </div>
-                <div class="rs-item">
-                    <div class="rs-num">{{ invitation.total_hadir() }}</div>
-                    <div class="rs-lbl">Hadir</div>
-                </div>
-                <div class="rs-item">
-                    <div class="rs-num">{{ invitation.total_guest_count() }}</div>
-                    <div class="rs-lbl">Tamu</div>
-                </div>
-            </div>
-            <div class="nf-form">
-                <div class="nf-field">
-                    <div class="nf-field-label">Nama Lengkap</div>
-                    <input type="text" class="nf-input" placeholder="Nama Anda" id="rsvpName">
-                </div>
-                <div class="nf-field">
-                    <div class="nf-field-label">Rating Bintang</div>
-                    <div class="rating-row">
-                        <button class="star-btn" onclick="rateStar(1)">⭐</button>
-                        <button class="star-btn" onclick="rateStar(2)">⭐</button>
-                        <button class="star-btn" onclick="rateStar(3)">⭐</button>
-                        <button class="star-btn" onclick="rateStar(4)">⭐</button>
-                        <button class="star-btn" onclick="rateStar(5)">⭐</button>
+
+            {% for story in invitation.stories %}
+            <div class="episode-card">
+                <div class="ep-num">{{ loop.index }}</div>
+                <div class="ep-thumb">
+                    <img src="{{ story.image_url }}" alt="{{ story.title }}">
+                    <div class="ep-thumb-overlay">
+                        <div class="ep-thumb-play"><svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8 5v14l11-7z" />
+                            </svg></div>
                     </div>
                 </div>
-                <div class="nf-field">
-                    <div class="nf-field-label">Konfirmasi Kehadiran</div>
-                    <select class="nf-input nf-select" id="rsvpStatus">
-                        <option value="">Pilih...</option>
-                        <option value="hadir">Hadir</option>
-                        <option value="tidak">Tidak Hadir</option>
-                    </select>
-                </div>
-                <div class="nf-field">
-                    <div class="nf-field-label">Jumlah Tamu</div>
-                    <div class="guest-btns">
-                        <button class="gb-btn on" onclick="selG(1,this)">1 orang</button>
-                        <button class="gb-btn" onclick="selG(2,this)">2 orang</button>
+                <div class="ep-body">
+                    <div class="ep-name">{{ story.title }}</div>
+                    <div class="ep-duration">{{ story.date }}</div>
+                    <div class="ep-desc">{{ story.description }}</div>
+                    <div class="ep-progress">
+                        <div class="ep-progress-fill" style="width:100%"></div>
                     </div>
                 </div>
-                <div class="nf-field">
-                    <div class="nf-field-label">Ulasan & Ucapan</div>
-                    <textarea class="nf-input" placeholder="Tuliskan ucapan untuk Nazma & Gunturr..."
-                        id="rsvpMsg"></textarea>
-                </div>
             </div>
-            <button class="nf-submit" onclick="submitRSVP()">Kirim Konfirmasi</button>
+            {% endfor %}
         </div>
 
-        <!-- REVIEWS -->
-        <div class="reviews-section reveal">
-            <div class="row-label" style="padding:0 0 14px">Reviews Penonton</div>
-            <div class="review-list" id="reviewList">
-                <div class="review-card vis">
-                    <div class="rc-top">
-                        <div class="rc-avatar" style="background:rgba(229,9,20,.15);color:#e50914">A</div>
-                        <div>
-
-                            {% if invitation.is_preview %}
-                            <div class="rc-name">Ayu Rahmawati</div>
-                            <div class="rc-stars"><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span
-                                    class="rc-star">⭐</span><span class="rc-star">⭐</span><span class="rc-star">⭐</span>
-                            </div>
-                        </div>
-                        <span class="rc-status hadir">✓ Hadir · 2 orang</span>
+        <!-- PREMIERE INFO -->
+        <div class="premiere-section reveal" id="event">
+            <div class="premiere-banner">
+                <div class="pb-content">
+                    <div class="pb-label">Siaran Langsung</div>
+                    <div class="pb-title">Season Finale<br>Premiere</div>
+                    <div class="pb-meta">
+                        Minggu, {{ invitation.event_date }}
+                        {% if invitation.ceremony.enabled %}
+                        · {{ invitation.ceremony.venue }}, {{ invitation.ceremony.address }}
+                        {% else if invitation.reception.enabled %}
+                        · {{ invitation.reception.venue }}, {{ invitation.reception.address }}
+                        {% endif %}
                     </div>
-                    <div class="rc-body">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah,
-                        mawaddah, wa rahmah. 10/10 would recommend!</div>
-                </div>
-                <div class="review-card vis">
-                    <div class="rc-top">
-                        <div class="rc-avatar" style="background:rgba(94,92,230,.15);color:#5E5CE6">R</div>
-                        <div>
-                            <div class="rc-name">Reza Firmansyah</div>
-                            <div class="rc-stars"><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span
-                                    class="rc-star">⭐</span><span class="rc-star">⭐</span><span class="rc-star">⭐</span>
-                            </div>
+                    <div class="premiere-grid">
+                        {% if invitation.ceremony.enabled %}
+                        <div class="pb-info-card">
+                            <div class="pb-ic-icon">🕗</div>
+                            <div class="pb-ic-label">Akad Nikah</div>
+                            <div class="pb-ic-val">{{ invitation.ceremony.time }}</div>
                         </div>
-                        <span class="rc-status hadir">✓ Hadir · 1 orang</span>
-                    </div>
-                    <div class="rc-body">Alhamdulillah! Ini adalah series terbaik yang pernah saya saksikan. Plot
-                        twist lamaran benar-benar membuat terharu!</div>
-                </div>
-                <div class="review-card vis">
-                    <div class="rc-top">
-                        <div class="rc-avatar" style="background:rgba(255,149,0,.15);color:#FF9500">S</div>
-                        <div>
-                            <div class="rc-name">Sinta Dewi</div>
+                        {% endif %}
 
+                        {% if invitation.reception.enabled %}
+                        <div class="pb-info-card">
+                            <div class="pb-ic-icon">🎉</div>
+                            <div class="pb-ic-label">Resepsi</div>
+                            <div class="pb-ic-val">{{ invitation.reception.time }}</div>
+                        </div>
+                        {% endif %}
+
+                        {% if invitation.ceremony.enabled || invitation.reception.enabled %}
+                        <div class="pb-info-card" style="grid-column:1/-1">
+                            <div class="pb-ic-icon">📍</div>
+                            <div class="pb-ic-label">Lokasi</div>
+                            {% if invitation.ceremony.enabled %}
+                            <div class="pb-ic-val" style="font-size:14px">{{ invitation.ceremony.venue }}</div>
+                            <div class="pb-ic-sub">{{ invitation.ceremony.address }}</div>
+                            <a href="{{ invitation.ceremony.maps_url }}" target="_blank" class="maps-link">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                                </svg>
+                                Buka di Maps
+                            </a>
                             {% else %}
-                            {% for rsvp in invitation.rsvps %}
-                            <div class="rc-name">{{ rsvp.name }}</div>
-
-                            {% endfor %}
+                            <div class="pb-ic-val" style="font-size:14px">{{ invitation.reception.venue }}</div>
+                            <div class="pb-ic-sub">{{ invitation.reception.address }}</div>
+                            <a href="{{ invitation.reception.maps_url }}" target="_blank" class="maps-link">
+                                <svg viewBox="0 0 24 24" fill="currentColor">
+                                    <path
+                                        d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                                </svg>
+                                Buka di Maps
+                            </a>
                             {% endif %}
-                            <div class="rc-stars"><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span
-                                    class="rc-star">⭐</span><span class="rc-star">⭐</span><span class="rc-star">⭐</span>
-                            </div>
                         </div>
-                        <span class="rc-status hadir">✓ Hadir · 2 orang</span>
+                        {% endif %}
                     </div>
-                    <div class="rc-body">Cinematic, emosional, dan penuh cinta. Semoga season 2 nya (kehidupan
-                        berumah tangga) lebih seru! 💙</div>
                 </div>
             </div>
         </div>
 
-        <!-- FOOTER -->
-        <footer class="nf-footer">
-            <div class="footer-logo-big">CINEMARRY</div>
-            <div class="footer-names">{{ invitation.couple_name_short }}</div>
-            <p class="footer-body">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila 
-                {% if invitation.recipient_name != "Guest Guest & Partner" %}{{ invitation.recipient_name }}{% else %}Bapak/Ibu{% endif %} 
-                berkenan hadir dan memberikan do'a restu kepada kami.</p>
-            <div class="footer-links">
-                <span onclick="toast('FAQ tersedia segera')">FAQ</span>
-                <span onclick="toast('Hubungi panitia')">Kontak</span>
-                <span onclick="window.scrollTo({top: 0, behavior: 'smooth'})">Kembali ke Atas</span>
-                <span onclick="toast('🍪 Cookies: Cinta saja')">Cookie Preferences</span>
+        <!-- CAST -->
+        <div class="cast-section reveal" id="couple">
+            <div class="nf-section-title">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M16 11c1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 3-1.34 3-3S9.66 5 8 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5C15 14.17 10.33 13 8 13zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z" />
+                </svg>
+                Main Cast
             </div>
-        </footer>
+            <div class="cast-grid">
+                <div class="cast-card">
+                    <div class="cast-photo">
+                        <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride.name }}" loading="lazy">
+                        <div class="cast-photo-overlay"></div>
+                    </div>
+                    <div class="cast-body">
+                        <div class="cast-role">Mempelai Wanita</div>
+                        <div class="cast-name">{{ invitation.bride.full_name }}</div>
+                        <div class="cast-info">{{ invitation.bride.father_name }} & Ibu {{
+                            invitation.bride.mother_name }}</div>
+                        <div class="cast-imdb">
+                            <span class="imdb-badge">IMDb</span>
+                            <span class="imdb-score">⭐ 9.8 / 10</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="cast-card">
+                    <div class="cast-photo">
+                        <img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom.name }}" loading="lazy">
+                        <div class="cast-photo-overlay"></div>
+                    </div>
+                    <div class="cast-body">
+                        <div class="cast-role">Mempelai Pria</div>
+                        <div class="cast-name">{{ invitation.groom.full_name }}</div>
+                        <div class="cast-info">{{ invitation.groom.father_name }} & Ibu {{
+                            invitation.groom.mother_name }}</div>
+                        <div class="cast-imdb">
+                            <span class="imdb-badge">IMDb</span>
+                            <span class="imdb-score">⭐ 9.7 / 10</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GALLERY -->
+        <div class="gallery-section reveal">
+            <div class="nf-section-title">Screenshots & Trailers</div>
+            <div class="gal-strip-wrap" id="galWrap" onmouseenter="pauseGal()" onmouseleave="resumeGal()"
+                ontouchstart="pauseGal()" ontouchend="resumeGal()">
+                <div class="gal-fade-l"></div>
+                <div class="gal-fade-r"></div>
+                <div class="gal-track" id="galTrack"></div>
+            </div>
+            <div class="gal-dots" id="galDots"></div>
+        </div>
+
+        <!-- GIFT -->
+        <div class="gift-section reveal" id="gift">
+            <div class="nf-section-title">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                    <path
+                        d="M20 6h-2.18c.07-.23.18-.46.18-.71C18 3.47 16.53 2 14.71 2c-.87 0-1.65.36-2.22.93L12 3.4l-.49-.47C10.94 2.36 10.16 2 9.29 2 7.47 2 6 3.47 6 5.29c0 .25.11.48.18.71H4c-1.11 0-2 .89-2 2v13c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2z" />
+                </svg>
+                Wedding Gift
+            </div>
+            <p style="font-size:14px;color:var(--nf-gray2);margin-bottom:16px;line-height:1.6">Doa restu sudah
+                sangat cukup. Namun jika ingin memberi, kami terima dengan sepenuh hati.</p>
+            <div class="gift-grid">
+                {% for account in invitation.gift_accounts %}
+                <div class="gift-card">
+                    <div class="gc-label">{{ account.bank_name }}</div>
+                    <div class="gc-num" id="bankNum{{ loop.index }}">{{ account.account_number }}</div>
+                    <div class="gc-holder">a.n {{ account.account_holder }}</div>
+                    <button class="gc-copy" onclick="copyNum('{{ account.account_number }}', this)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                        </svg>
+                        Salin Nomor
+                    </button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- RSVP -->
+    <div class="rsvp-section reveal" id="rsvp">
+        <div class="nf-section-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            RSVP
+        </div>
+        <div class="review-stats">
+            <div class="rs-item">
+                <div class="rs-num">{{ invitation.total_rsvps() }}</div>
+                <div class="rs-lbl">Responses</div>
+            </div>
+            <div class="rs-item">
+                <div class="rs-num">{{ invitation.total_hadir() }}</div>
+                <div class="rs-lbl">Attending</div>
+            </div>
+            <div class="rs-item">
+                <div class="rs-num">{{ invitation.total_guest_count() }}</div>
+                <div class="rs-lbl">Guests</div>
+            </div>
+        </div>
+        <div class="nf-form">
+            <div class="nf-field">
+                <div class="nf-field-label">Nama Lengkap</div>
+                <input type="text" class="nf-input" placeholder="Nama Anda" id="rsvpName">
+            </div>
+            <div class="nf-field">
+                <div class="nf-field-label">Rating Bintang</div>
+                <div class="rating-row">
+                    <button class="star-btn" onclick="rateStar(1)">⭐</button>
+                    <button class="star-btn" onclick="rateStar(2)">⭐</button>
+                    <button class="star-btn" onclick="rateStar(3)">⭐</button>
+                    <button class="star-btn" onclick="rateStar(4)">⭐</button>
+                    <button class="star-btn" onclick="rateStar(5)">⭐</button>
+                </div>
+            </div>
+            <div class="nf-field">
+                <div class="nf-field-label">Konfirmasi Kehadiran</div>
+                <select class="nf-input nf-select" id="rsvpStatus">
+                    <option value="">Pilih...</option>
+                    <option value="hadir">Hadir</option>
+                    <option value="tidak">Tidak Hadir</option>
+                </select>
+            </div>
+            <div class="nf-field">
+                <div class="nf-field-label">Jumlah Tamu</div>
+                <div class="guest-btns">
+                    <button class="gb-btn on" onclick="selG(1,this)">1 orang</button>
+                    <button class="gb-btn" onclick="selG(2,this)">2 orang</button>
+                </div>
+            </div>
+            <div class="nf-field">
+                <div class="nf-field-label">Ulasan & Ucapan</div>
+                <textarea class="nf-input" placeholder="Tuliskan ucapan untuk Nazma & Gunturr..."
+                    id="rsvpMsg"></textarea>
+            </div>
+        </div>
+        <button class="nf-submit" onclick="submitRSVP()">Kirim Konfirmasi</button>
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="reviews-section reveal">
+        <div class="nf-section-title">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z" />
+            </svg>
+            Audience Reviews
+        </div>
+        <div class="review-list" id="reviewList">
+            {% if invitation.is_preview %}
+            <!-- PREVIEW MODE: Mockup Data -->
+            <div class="review-card vis">
+                <div class="rc-top">
+                    <div class="rc-avatar" style="background:rgba(229,9,20,.15);color:#e50914">A</div>
+                    <div>
+                        <div class="rc-name">Ayu Rahmawati</div>
+                        <div class="rc-stars">
+                            <span class="rc-star">⭐</span><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span class="rc-star">⭐</span><span class="rc-star">⭐</span>
+                        </div>
+                    </div>
+                    <span class="rc-status hadir">✓ Attending · 2 guests</span>
+                </div>
+                <div class="rc-body">Congratulations on your new journey! May your marriage be filled with love and happiness. 10/10 would recommend!</div>
+            </div>
+            {% else %}
+            <!-- LIVE MODE: Real Guest Data -->
+            {% for rsvp in invitation.rsvps %}
+            <div class="review-card vis">
+                <div class="rc-top">
+                    <div class="rc-avatar" style="background:rgba(229,9,20,.15);color:#e50914">{{ rsvp.initial() }}</div>
+                    <div>
+                        <div class="rc-name">{{ rsvp.name }}</div>
+                        <div class="rc-stars">
+                            {% for i in 1..5 %}
+                            <span class="rc-star">⭐</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <span class="rc-status {% if rsvp.attendance == "hadir" %}hadir{% else %}tidak{% endif %}">
+                        {% if rsvp.attendance == "hadir" %}✓ Attending{% else %}✕ Declined{% endif %} · {{ rsvp.guests }} guests
+                    </span>
+                </div>
+                <div class="rc-body">{{ rsvp.display_message() }}</div>
+            </div>
+            {% endfor %}
+            {% endif %}
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="nf-footer">
+        <div class="footer-logo-big">NITFLAX</div>
+        <div class="footer-names">{{ invitation.couple_name_short }}</div>
+        <p class="footer-body">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila
+            {% if invitation.recipient_name != "Guest Guest & Partner" %}{{ invitation.recipient_name }}{% else
+            %}Bapak/Ibu{% endif %}
+            berkenan hadir dan memberikan do'a restu kepada kami.</p>
+        <div class="footer-links">
+            <span onclick="toast('FAQ tersedia segera')">FAQ</span>
+            <span onclick="toast('Hubungi panitia')">Kontak</span>
+            <span onclick="window.scrollTo({top: 0, behavior: 'smooth'})">Kembali ke Atas</span>
+            <span onclick="toast('🍪 Cookies: Cinta saja')">Cookie Preferences</span>
+        </div>
+    </footer>
 
     </div><!-- /content-area -->
 
@@ -2760,7 +3299,7 @@
         </div>
         <div class="mb-info">
             <div class="mb-title">Wedding Day — {{ invitation.couple_name_short }}</div>
-            <div class="mb-sub">Cinemarry Original Soundtrack</div>
+            <div class="mb-sub">Nitflax Original Soundtrack</div>
         </div>
         <div class="mb-eq" id="mbEq">
             <div class="mb-eq-bar stop" style="--s:.5s"></div>
@@ -2770,9 +3309,16 @@
             <div class="mb-eq-bar stop" style="--s:.6s;animation-delay:.18s"></div>
         </div>
         <div class="mb-ctrl">
+            {% if invitation.playlist.len() > 1 %}
+            <button class="mb-btn" onclick="changeTrack(-1)"><svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M6 6h2v12H6zm3.5 6 8.5 6V6z" />
+                </svg></button>
+            {% else %}
             <button class="mb-btn" onclick="seek(-10)"><svg viewBox="0 0 24 24" fill="currentColor">
                     <path d="M6 6h2v12H6zm3.5 6 8.5 6V6z" />
                 </svg></button>
+            {% endif %}
+            
             <button class="mb-btn mb-play-btn" onclick="togglePlay()">
                 <svg id="mbPI" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M8 5v14l11-7z" />
@@ -2781,9 +3327,16 @@
                     <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
                 </svg>
             </button>
+
+            {% if invitation.playlist.len() > 1 %}
+            <button class="mb-btn" onclick="changeTrack(1)"><svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z" />
+                </svg></button>
+            {% else %}
             <button class="mb-btn" onclick="seek(10)"><svg viewBox="0 0 24 24" fill="currentColor">
                     <path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z" />
                 </svg></button>
+            {% endif %}
         </div>
     </div>
 
@@ -2841,14 +3394,24 @@
 
         function openApp() {
             if (!selectedProfile) { toast('Pilih profil terlebih dahulu'); return; }
-            document.getElementById('splash').classList.add('out');
-            const app = document.getElementById('app');
-            setTimeout(() => app.classList.add('show'), 100);
-            document.getElementById('nfBottomNav').classList.add('show');
-            setTimeout(() => document.getElementById('musicBar').classList.add('show'), 800);
-            setTimeout(initApp, 400);
-            // Update nav avatar
-            document.getElementById('navAvatar').textContent = selectedProfile[0].toUpperCase();
+
+            // Trigger Netflix Intro first
+            startCinematicExperience();
+
+            // Then show the app after intro finishes (~2s)
+            setTimeout(() => {
+                // Ensure we start at the top
+                window.scrollTo(0, 0);
+
+                document.getElementById('splash').classList.add('out');
+                const app = document.getElementById('app');
+                app.classList.add('show');
+                document.getElementById('nfBottomNav').classList.add('show');
+                setTimeout(() => document.getElementById('musicBar').classList.add('show'), 800);
+                setTimeout(initApp, 400);
+                // Update nav avatar
+                document.getElementById('navAvatar').textContent = selectedProfile[0].toUpperCase();
+            }, 2000);
         }
 
         function initApp() {
@@ -2858,9 +3421,130 @@
             initNavHL();
             initNavSolid();
             initHeroProgress();
+            initMusicScroll();
+            initScrollNav();
+        }
+
+        function initScrollNav() {
+            let lastS = window.scrollY;
+            const nav = document.getElementById('nfNav');
+            const pills = document.getElementById('navPills');
+            if (!nav || !pills) return;
+
+            window.addEventListener('scroll', () => {
+                let currS = window.scrollY;
+                if (currS > 150) {
+                    if (currS > lastS) {
+                        nav.classList.add('nav-hidden');
+                        pills.classList.add('nav-hidden');
+                    } else {
+                        nav.classList.remove('nav-hidden');
+                        pills.classList.remove('nav-hidden');
+                    }
+                } else {
+                    nav.classList.remove('nav-hidden');
+                    pills.classList.remove('nav-hidden');
+                }
+                lastS = currS;
+            }, { passive: true });
+        }
+
+        /* ══ MUSIC SCROLL ══ */
+        let lastScrollY = window.scrollY;
+        function initMusicScroll() {
+            const musicBar = document.getElementById('musicBar');
+            window.addEventListener('scroll', () => {
+                if (!musicBar) return;
+                const currentScrollY = window.scrollY;
+
+                // Add a helper class to remove the initial spring delay
+                musicBar.classList.add('scrolling');
+
+                if (currentScrollY > lastScrollY && currentScrollY > 150) {
+                    // Scrolling down - Hide
+                    musicBar.classList.remove('show');
+                } else {
+                    // Scrolling up - Show
+                    musicBar.classList.add('show');
+                }
+                lastScrollY = currentScrollY;
+            }, { passive: true });
         }
 
         /* ══ NAV SOLID ══ */
+        // Splash Video Slideshow
+        const splashVideos = [];
+        {% if !invitation.background_video_url.is_empty() %}
+        splashVideos.push("{{ invitation.background_video_url }}");
+        {% endif %}
+        {% for v in invitation.gallery_videos %}
+        splashVideos.push("{{ v }}");
+        {% endfor %}
+
+        let currentVidIdx = 0;
+        let activeVid = 1;
+
+        const splashTaglines = [
+            `<div class="top10-badge">TOP<span>10</span></div> #1 in Weddings Today`,
+            `Coming {{ invitation.event_date }}`,
+            `Streaming Exclusively on Nitflax`,
+            `The Most Anticipated Love Story`
+        ];
+
+        function startSplashVideo() {
+            const v1 = document.getElementById('splashVid1');
+            const v2 = document.getElementById('splashVid2');
+            const poster = document.getElementById('splashPoster');
+            const tagline = document.getElementById('splashTagline');
+
+            if (splashVideos.length === 0) {
+                poster.style.background = "url('{{ invitation.gallery_images|first_image }}') center/cover no-repeat";
+                v1.style.display = 'none';
+                v2.style.display = 'none';
+                return;
+            }
+
+            v1.src = splashVideos[0];
+            v1.load();
+            v1.play().catch(() => { });
+
+            if (splashVideos.length > 1) {
+                setInterval(() => {
+                    currentVidIdx = (currentVidIdx + 1) % splashVideos.length;
+                    const nextSrc = splashVideos[currentVidIdx];
+
+                    // Update Tagline
+                    tagline.style.opacity = '0';
+                    setTimeout(() => {
+                        tagline.innerHTML = splashTaglines[currentVidIdx % splashTaglines.length];
+                        tagline.style.opacity = '1';
+                        tagline.style.transition = 'opacity 0.5s';
+                    }, 500);
+
+                    if (activeVid === 1) {
+                        v2.src = nextSrc;
+                        v2.load();
+                        v2.play().catch(() => { });
+                        v2.classList.add('active');
+                        v1.classList.remove('active');
+                        activeVid = 2;
+                    } else {
+                        v1.src = nextSrc;
+                        v1.play().catch(() => { });
+                        v1.classList.add('active');
+                        v2.classList.remove('active');
+                        activeVid = 1;
+                    }
+                }, 3000);
+            }
+        }
+
+        // Initialize everything
+        window.addEventListener('load', () => {
+            startSplashVideo();
+            initNavSolid();
+        });
+
         function initNavSolid() {
             window.addEventListener('scroll', () => {
                 document.getElementById('nfNav').classList.toggle('solid', window.scrollY > 80);
@@ -2876,6 +3560,9 @@
         }
 
         /* ══ MUSIC ══ */
+        let playlist = {{ invitation.playlist|json_encode|safe }};
+        let currentTrack = 0;
+
         function togglePlay() {
             playing = !playing;
             const audio = document.getElementById('bgAudio');
@@ -2887,13 +3574,43 @@
                 setPlayUI(false);
             }
         }
+        function changeTrack(dir) {
+            if (playlist.length <= 1) {
+                toast('Hanya ada 1 lagu tersedia');
+                return;
+            }
+            currentTrack = (currentTrack + dir + playlist.length) % playlist.length;
+            const audio = document.getElementById('bgAudio');
+            audio.src = playlist[currentTrack];
+            audio.load();
+            if (playing) {
+                audio.play().catch(e => console.log("Play failed", e));
+            }
+            toast(`Memutar Lagu ${currentTrack + 1} / ${playlist.length}`);
+        }
         function setPlayUI(on) {
-            document.getElementById('mbPI').style.display = on ? 'none' : 'block';
-            document.getElementById('mbPause').style.display = on ? 'block' : 'none';
-            document.getElementById('heroPlayText').textContent = on ? 'Jeda' : 'Putar';
+            // Bottom Bar Icons
+            const playIcon = document.getElementById('mbPI');
+            const pauseIcon = document.getElementById('mbPause');
+            if (playIcon) playIcon.style.display = on ? 'none' : 'block';
+            if (pauseIcon) pauseIcon.style.display = on ? 'block' : 'none';
+
+            // Hero Button
+            const hpb = document.getElementById('heroPlayBtn');
+            if (hpb) {
+                hpb.innerHTML = on
+                    ? '<svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg> Pause'
+                    : '<svg viewBox="0 0 24 24" fill="currentColor" width="22" height="22"><path d="M8 5v14l11-7z"/></svg> Play';
+            }
+
+            // EQ Animation
             document.querySelectorAll('.mb-eq-bar').forEach(b => b.classList.toggle('stop', !on));
         }
-        function seek(s) { /* visual only */ toast(s > 0 ? '⏩ Maju 10 detik' : '⏪ Mundur 10 detik'); }
+        function seek(s) {
+            const audio = document.getElementById('bgAudio');
+            audio.currentTime += s;
+            toast(s > 0 ? '⏩ Maju 10 detik' : '⏪ Mundur 10 detik');
+        }
 
         /* ══ COUNTDOWN ══ */
         function countdown() {
@@ -3075,6 +3792,40 @@
         /* ══ TOAST ══ */
         let _tt;
         function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(_tt); _tt = setTimeout(() => t.classList.remove('on'), 2800); }
+    </script>
+    <script>
+        function startCinematicExperience() {
+            const overlay = document.getElementById('intro-overlay');
+            const logo = document.getElementById('n-logo');
+            const sfx = document.getElementById('tadum-sfx');
+
+            // Reset states
+            if (logo) logo.classList.remove('zoom');
+            if (overlay) overlay.classList.remove('fade-out');
+
+            // Show intro
+            if (overlay) overlay.classList.add('active');
+
+            // Play Ta-dum (Will work now because user just clicked a profile)
+            if (sfx) sfx.play().catch(e => console.log("Audio failed", e));
+
+            // Small delay so the "N" is clearly visible before zooming
+            setTimeout(() => {
+                if (logo) logo.classList.add('zoom');
+            }, 400);
+
+            // Fade out overlay after logo animation finishes (400ms delay + 3000ms animation)
+            setTimeout(() => {
+                if (overlay) overlay.classList.add('fade-out');
+                
+                // Start background music logic
+                setTimeout(() => {
+                    if (typeof togglePlay === 'function' && !playing) {
+                        togglePlay();
+                    }
+                }, 500);
+            }, 3400);
+        }
     </script>
     {% include "invitation/ai_concierge_snippet.html" %}
 </body>

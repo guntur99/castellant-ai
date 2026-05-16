@@ -37,7 +37,9 @@ pub struct InvitationRow {
     pub ai_language: String,
     pub custom_song_url: Option<String>,
     pub background_video_url: Option<String>,
+    pub hero_video_position: Option<i32>,
     pub stories_data: Option<serde_json::Value>,
+    pub playlist: Option<serde_json::Value>,
     pub created_at: DateTime<Utc>,
 }
 
@@ -70,7 +72,9 @@ pub struct Invitation {
     pub rsvps: Vec<Rsvp>,
     pub custom_song_url: String,
     pub background_video_url: String,
+    pub hero_video_position: i32,
     pub stories: Vec<Story>,
+    pub playlist: Vec<String>,
     pub is_preview: bool,
 }
 

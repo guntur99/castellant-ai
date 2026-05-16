@@ -5,6 +5,8 @@
 {% block head_extra %}
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 <style>
     /* Select2 Glassmorphism */
     .select2-container--default .select2-selection--single {
@@ -1091,8 +1093,6 @@
                                 <input type="hidden" name="ai_language" id="ai_language_hidden" value="{{ invitation.ai_language }}">
                             </div>
 
-                            </div>
-
                             <div style="margin-top: 0.5rem;">
                                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
                                     <label style="font-size: 0.8rem; font-weight: 800; color: #D4A373; text-transform: uppercase; letter-spacing: 0.5px;">
@@ -1537,28 +1537,52 @@
 
                             <!-- Upload Grid -->
                             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem;">
-                                <!-- MP3 Upload -->
+                                <!-- Playlist & MP3 Upload -->
                                 <div class="form-group">
                                     <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; font-weight: 600; color: #4A3728;">
-                                        <span style="font-size: 1rem;">Upload MP3 Sendiri</span>
-                                        <span style="font-size: 0.7rem; color: #8E6E53; opacity: 0.6;">Max 10MB</span>
+                                        <span style="font-size: 1rem;">Daftar Lagu (Playlist)</span>
+                                        <span style="font-size: 0.75rem; color: #8E6E53; opacity: 0.6;">Limit Paket: {{ invitation.plan_name }}</span>
                                     </label>
-                                    <div style="position: relative; padding: 1.5rem; background: #fafafa; border: 2px dashed rgba(212, 163, 115, 0.2); border-radius: 20px; transition: all 0.3s; text-align: center;">
-                                        <input type="file" name="custom_song" accept="audio/mpeg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2;">
-                                        <div style="color: #D4A373; margin-bottom: 0.5rem;">
-                                            <i class="fas fa-cloud-upload-alt" style="font-size: 1.8rem;"></i>
-                                        </div>
-                                        <p style="font-size: 0.85rem; color: #4A3728; margin: 0; font-weight: 500;">Klik untuk pilih file MP3</p>
-                                        
-                                        {% if !invitation.custom_song_url.is_empty() %}
-                                            <div style="margin-top: 1rem; padding: 8px 12px; background: #E6FFFA; border-radius: 12px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #B2F5EA;">
-                                                <div style="width: 8px; height: 8px; background: #38B2AC; border-radius: 50%; box-shadow: 0 0 8px #38B2AC;"></div>
-                                                <span style="font-size: 0.75rem; color: #2C7A7B; font-weight: 600; text-overflow: ellipsis; max-width: 150px; overflow: hidden; white-space: nowrap;">
-                                                    {{ invitation.custom_song_url|split_last("/") }}
-                                                </span>
+                                    
+                                    <!-- Current Playlist Items -->
+                                    <div id="playlist-list" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.5rem;">
+                                        {% for song_url in invitation.playlist %}
+                                            <div class="playlist-item glass" style="padding: 12px 16px; border-radius: 18px; background: rgba(255,255,255,0.6); border: 1px solid rgba(212, 163, 115, 0.15); display: flex; align-items: center; justify-content: space-between; gap: 12px; transition: all 0.3s;">
+                                                <div style="display: flex; align-items: center; gap: 12px; overflow: hidden;">
+                                                    <div class="playing-status" style="width: 8px; height: 8px; background: #D4A373; border-radius: 50%; display: none;"></div>
+                                                    <div style="width: 32px; height: 32px; background: #FEF9E7; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #D4A373; flex-shrink: 0;">
+                                                        <i class="fas fa-music"></i>
+                                                    </div>
+                                                    <span style="font-size: 0.85rem; color: #4A3728; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; overflow: hidden;">
+                                                        Lagu {{ loop.index }}
+                                                    </span>
+                                                    <input type="hidden" name="existing_playlist[]" value="{{ song_url }}">
+                                                </div>
+                                                <div style="display: flex; gap: 8px;">
+                                                    <button type="button" onclick="previewAudio('{{ song_url }}', this)" class="btn-preview-audio" 
+                                                            style="background: #D4A373; color: white; border: none; border-radius: 12px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s;">
+                                                        <i class="fas fa-play" style="font-size: 0.8rem;"></i>
+                                                    </button>
+                                                    <button type="button" onclick="this.closest('.playlist-item').remove()" 
+                                                            style="background: #FFF5F5; color: #F56565; border: none; border-radius: 12px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                                                        <i class="fas fa-trash-alt" style="font-size: 0.8rem;"></i>
+                                                    </button>
+                                                </div>
                                             </div>
-                                        {% endif %}
+                                        {% endfor %}
                                     </div>
+
+                                    <!-- Upload New Song Box -->
+                                    <div style="position: relative; padding: 1.5rem; background: #fafafa; border: 2px dashed rgba(212, 163, 115, 0.2); border-radius: 20px; transition: all 0.3s; text-align: center; cursor: pointer;"
+                                         onclick="document.getElementById('playlist-upload').click()">
+                                        <input type="file" id="playlist-upload" name="playlist[]" multiple accept="audio/mpeg" style="display: none;" onchange="handlePlaylistChange(this)">
+                                        <div style="color: #D4A373; margin-bottom: 0.5rem;">
+                                            <i class="fas fa-plus-circle" style="font-size: 1.8rem;"></i>
+                                        </div>
+                                        <p style="font-size: 0.85rem; color: #4A3728; margin: 0; font-weight: 500;">Tambah lagu baru (.mp3)</p>
+                                        <p style="font-size: 0.7rem; color: #8E6E53; margin-top: 4px; opacity: 0.6;">Dukungan multi-upload tersedia</p>
+                                    </div>
+                                    <div id="new-songs-preview" style="margin-top: 10px; display: flex; flex-direction: column; gap: 8px;"></div>
                                 </div>
 
                                 <!-- Video Background Upload -->
@@ -1583,6 +1607,55 @@
                                             </div>
                                         {% endif %}
                                     </div>
+
+                                 <!-- Video Focal Point Slider -->
+                                 <div class="form-group" style="margin-top: 1.5rem;">
+                                     <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; font-weight: 600; color: #4A3728;">
+                                         <span style="font-size: 0.95rem;">Video Vertical Focal Point</span>
+                                         <span id="focal-val" style="font-size: 0.8rem; color: #8E6E53; font-family: monospace;">{{ invitation.hero_video_position }}%</span>
+                                     </label>
+
+                                     <!-- REALTIME PREVIEW BOX -->
+                                     <div style="width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; position: relative; margin-bottom: 15px; border: 2px solid #D4A373;">
+                                        {% if !invitation.background_video_url.is_empty() %}
+                                         <video id="focal-preview-vid" autoplay muted loop playsinline 
+                                                style="width: 100%; height: 100%; object-fit: cover; object-position: center {{ invitation.hero_video_position }}%;">
+                                             <source src="{{ invitation.background_video_url }}" type="video/mp4">
+                                         </video>
+                                        {% else %}
+                                         <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #8E6E53; font-size: 0.8rem; text-align: center; padding: 20px;">
+                                             Preview akan muncul setelah Anda mengunggah video.
+                                         </div>
+                                        {% endif %}
+                                         <div style="position: absolute; inset: 0; pointer-events: none; border: 1px dashed rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center;">
+                                             <div style="width: 100%; height: 2px; background: rgba(255,255,255,0.2);"></div>
+                                         </div>
+                                         <div style="position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.6); color: #fff; font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">Preview</div>
+                                     </div>
+
+                                     <input type="range" name="hero_video_position" min="0" max="100" value="{{ invitation.hero_video_position }}" 
+                                            class="range-slider" style="width: 100%; cursor: pointer;"
+                                            oninput="updateFocalPreview(this.value)">
+                                     
+                                     <script>
+                                         function updateFocalPreview(val) {
+                                             document.getElementById('focal-val').innerText = val + '%';
+                                             const vid = document.getElementById('focal-preview-vid');
+                                             if (vid) {
+                                                 vid.style.objectPosition = `center ${val}%`;
+                                             }
+                                         }
+                                     </script>
+
+                                     <div style="display: flex; justify-content: space-between; margin-top: 5px; font-size: 0.7rem; color: #a0aec0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                                         <span>Atas (Top)</span>
+                                         <span>Tengah (Center)</span>
+                                         <span>Bawah (Bottom)</span>
+                                     </div>
+                                     <p class="text-muted small" style="margin-top: 10px; font-style: italic;">
+                                         <i class="fas fa-info-circle"></i> Geser untuk mengatur bagian video mana yang ingin difokuskan (untuk mode Full Cover).
+                                     </p>
+                                 </div>
                                 </div>
                             </div>
                         </div>
@@ -2280,6 +2353,37 @@
     </div>
 </div>
 
+<!-- CROPPER MODAL -->
+<div id="cropper-modal" class="modal-overlay">
+    <div class="modal-content glass" style="max-width: 800px; padding: 20px;">
+        <div class="modal-header">
+            <h3 class="serif">Crop Your Image</h3>
+            <button class="close-modal" onclick="closeCropper()">&times;</button>
+        </div>
+        <div style="max-height: 500px; overflow: hidden; background: #000; border-radius: 8px;">
+            <img id="cropper-image" style="max-width: 100%; display: block;">
+        </div>
+        <div class="modal-footer">
+            <div style="flex: 1; display: flex; gap: 10px;">
+                <button type="button" class="btn-icon" onclick="cropper.rotate(-90)" title="Rotate Left"><i class="fas fa-undo"></i></button>
+                <button type="button" class="btn-icon" onclick="cropper.rotate(90)" title="Rotate Right"><i class="fas fa-redo"></i></button>
+                <button type="button" class="btn-icon" onclick="cropper.setAspectRatio(1)" title="Square (1:1)">1:1</button>
+                <button type="button" class="btn-icon" onclick="cropper.setAspectRatio(2/3)" title="Poster (2:3)">2:3</button>
+                <button type="button" class="btn-icon" onclick="cropper.setAspectRatio(NaN)" title="Free">Free</button>
+            </div>
+            <button type="button" class="btn btn-outline" onclick="closeCropper()">Cancel</button>
+            <button type="button" class="btn btn-primary" id="crop-save-btn" style="padding: 0.8rem 2rem;">Save Crop</button>
+        </div>
+    </div>
+</div>
+
+<style>
+    .cropper-view-box,
+    .cropper-face {
+      border-radius: 4px;
+    }
+</style>
+
 {% endblock %}
 
 {% block scripts_extra %}
@@ -2424,14 +2528,65 @@
         }
     }
 
+    /* ══ CROPPER LOGIC ══ */
+    let cropper = null;
+    let currentInput = null;
+    let currentPreviewId = null;
+
     window.previewImage = function(input, previewId) {
         if (input.files && input.files[0]) {
+            currentInput = input;
+            currentPreviewId = previewId;
+            
+            // Set Aspect Ratio based on target
+            let ratio = 1; // Default square for bride/groom
+            if (previewId.includes('gallery') || previewId.includes('story')) ratio = 2/3;
+
             const reader = new FileReader();
             reader.onload = function(e) {
-                document.getElementById(previewId).src = e.target.result;
+                const modal = document.getElementById('cropper-modal');
+                const image = document.getElementById('cropper-image');
+                image.src = e.target.result;
+                modal.classList.add('active');
+                
+                if (cropper) cropper.destroy();
+                cropper = new Cropper(image, {
+                    aspectRatio: ratio,
+                    viewMode: 2,
+                    dragMode: 'move',
+                    background: false,
+                    autoCropArea: 1,
+                });
+
+                document.getElementById('crop-save-btn').onclick = function() {
+                    const canvas = cropper.getCroppedCanvas({
+                        width: 1200, // Good resolution for S3
+                        height: 1800,
+                    });
+                    
+                    canvas.toBlob((blob) => {
+                        // Create a new File object from the blob
+                        const file = new File([blob], "cropped_image.jpg", { type: "image/jpeg" });
+                        
+                        // Replace the file in the input using DataTransfer
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        currentInput.files = dataTransfer.files;
+
+                        // Update Preview
+                        document.getElementById(currentPreviewId).src = URL.createObjectURL(blob);
+                        
+                        closeCropper();
+                    }, 'image/jpeg', 0.9);
+                };
             }
             reader.readAsDataURL(input.files[0]);
         }
+    }
+
+    window.closeCropper = function() {
+        document.getElementById('cropper-modal').classList.remove('active');
+        if (cropper) cropper.destroy();
     }
 
     function handleGalleryUpload(files) {
@@ -2942,6 +3097,68 @@
             iframe.onload = () => {
                 if (loader) loader.style.display = 'none';
             };
+        }
+    }
+
+    /* --- AUDIO PREVIEW LOGIC --- */
+    let previewAudioObj = null;
+    let currentPreviewBtn = null;
+
+    window.previewAudio = function(url, btn) {
+        if (previewAudioObj && !previewAudioObj.paused && currentPreviewBtn === btn) {
+            previewAudioObj.pause();
+            btn.innerHTML = '<i class="fas fa-play"></i>';
+            return;
+        }
+
+        if (previewAudioObj) {
+            previewAudioObj.pause();
+            if (currentPreviewBtn) currentPreviewBtn.innerHTML = '<i class="fas fa-play"></i>';
+        }
+
+        previewAudioObj = new Audio(url);
+        previewAudioObj.play();
+        currentPreviewBtn = btn;
+        btn.innerHTML = '<i class="fas fa-pause"></i>';
+
+        previewAudioObj.onended = () => {
+            btn.innerHTML = '<i class="fas fa-play"></i>';
+        };
+    }
+
+    window.handlePlaylistChange = function(input) {
+        const previewContainer = document.getElementById('new-songs-preview');
+        const existingCount = document.querySelectorAll('#playlist-list .playlist-item').length;
+        const planName = "{{ invitation.plan_name }}";
+        
+        let limit = 1;
+        if (planName === "ROYAL") limit = 3;
+        else if (planName === "DYNASTY") limit = 5;
+
+        const remaining = limit - existingCount;
+        
+        previewContainer.innerHTML = '';
+        
+        if (input.files.length > remaining) {
+            alert(`Maaf, limit lagu untuk paket ${planName} adalah ${limit} lagu. Anda sudah memiliki ${existingCount} lagu dan mencoba mengunggah ${input.files.length} lagu baru.`);
+            input.value = ''; // Reset
+            return;
+        }
+
+        if (input.files.length > 0) {
+            Array.from(input.files).forEach((file, index) => {
+                const div = document.createElement('div');
+                div.style = 'padding: 10px 14px; background: #FFFBEB; border-radius: 15px; display: flex; align-items: center; justify-content: space-between; border: 1px solid #FEF3C7; margin-bottom: 5px;';
+                
+                div.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-file-audio" style="color: #D4A373;"></i>
+                        <span style="font-size: 0.75rem; color: #92400E; font-weight: 600;">${file.name} (Siap Upload)</span>
+                    </div>
+                    <i class="fas fa-check-circle" style="color: #059669;"></i>
+                `;
+                previewContainer.appendChild(div);
+            });
         }
     }
 </script>
