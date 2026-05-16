@@ -33,9 +33,6 @@ pub fn eq(s: &str, other: &str) -> askama::Result<bool> {
     Ok(s == other)
 }
 
-pub fn replace(s: &str, from: &str, to: &str) -> askama::Result<String> {
-    Ok(s.replace(from, to))
-}
 
 pub fn first_image(images: &[String]) -> askama::Result<String> {
     if let Some(img) = images.first() {

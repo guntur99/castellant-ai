@@ -610,7 +610,7 @@ pub async fn create_invitation(
             }
         };
 
-        let (link, mut id) = if let Some(data) = mayar_res.data {
+        let (link, id) = if let Some(data) = mayar_res.data {
             let l = data.get("link").and_then(|l| l.as_str().map(|s| s.to_string()));
             let mut rid = data.get("id").and_then(|i| i.as_str().map(|s| s.to_string()));
             
