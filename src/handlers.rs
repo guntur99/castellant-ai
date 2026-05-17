@@ -2763,6 +2763,27 @@ pub async fn update_invitation(
     let song_id = fields.get("song_id")
         .and_then(|s| if s.is_empty() { None } else { Uuid::parse_str(s).ok() })
         .or(row.song_id);
+
+    let mut final_slug = row.slug.clone();
+    if let Some(new_slug) = fields.get("slug") {
+        let new_slug = new_slug.trim().to_lowercase();
+        if !new_slug.is_empty() && new_slug != row.slug {
+            // Validate slug format
+            if new_slug.chars().all(|c| c.is_alphanumeric() || c == '-') {
+                // Check uniqueness
+                let count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM invitations WHERE slug = $1 AND id != $2")
+                    .bind(&new_slug)
+                    .bind(row.id)
+                    .fetch_one(&state.db)
+                    .await
+                    .unwrap_or(0);
+                
+                if count == 0 {
+                    final_slug = new_slug;
+                }
+            }
+        }
+    }
     
     // Process Stories
     let mut final_stories = Vec::new();
@@ -2847,7 +2868,7 @@ pub async fn update_invitation(
     final_playlist.truncate(song_limit);
 
     sqlx::query(
-        "UPDATE invitations SET couple_name_short = $1, event_date = $2, bride_data = $3, groom_data = $4, ceremony_data = $5, reception_data = $6, quote_data = $7, ai_chat_enabled = $8, ai_custom_knowledge = $9, ai_language = $10, template_name = $11, song_id = $12, custom_song_url = $13, background_video_url = $14, stories_data = $15, hero_video_position = $16, playlist = $17 WHERE id = $18"
+        "UPDATE invitations SET couple_name_short = $1, event_date = $2, bride_data = $3, groom_data = $4, ceremony_data = $5, reception_data = $6, quote_data = $7, ai_chat_enabled = $8, ai_custom_knowledge = $9, ai_language = $10, template_name = $11, song_id = $12, custom_song_url = $13, background_video_url = $14, stories_data = $15, hero_video_position = $16, playlist = $17, slug = $18 WHERE id = $19"
     )
     .bind(couple_name_short)
     .bind(event_date)
@@ -2866,6 +2887,7 @@ pub async fn update_invitation(
     .bind(json!(final_stories))
     .bind(hero_video_position)
     .bind(json!(final_playlist))
+    .bind(&final_slug)
     .bind(row.id)
     .execute(&state.db)
     .await
@@ -2961,7 +2983,7 @@ pub async fn update_invitation(
         }
     }
 
-    Redirect::to(&format!("/invitation/{}/manage", slug)).into_response()
+    Redirect::to(&format!("/invitation/{}/manage", final_slug)).into_response()
 }
 
 pub async fn update_theme(

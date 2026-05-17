@@ -1001,6 +1001,113 @@
             transform: rotate(360deg);
         }
     }
+
+    /* Video Section Enhancements */
+    .video-upload-box {
+        position: relative; 
+        padding: 2.5rem; 
+        background: #fafafa; 
+        border: 2px dashed #e5e7eb; 
+        border-radius: 24px; 
+        transition: all 0.3s ease; 
+        text-align: center;
+        cursor: pointer;
+    }
+    
+    .video-upload-box:hover {
+        border-color: #3b82f6;
+        background: #f8fafc;
+    }
+
+    .video-pill {
+        margin-top: 1rem; 
+        padding: 8px 16px; 
+        background: #ecfdf5; 
+        border-radius: 50px; 
+        display: inline-flex; 
+        align-items: center; 
+        gap: 8px; 
+        border: 1px solid #d1fae5;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+    }
+
+    .video-preview-container {
+        width: 100%; 
+        aspect-ratio: 16/9; 
+        background: #0f172a; 
+        border-radius: 20px; 
+        overflow: hidden; 
+        position: relative; 
+        margin-bottom: 20px; 
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    }
+
+    .preview-badge {
+        position: absolute; 
+        top: 12px; 
+        right: 12px; 
+        background: #475569; 
+        color: #fff; 
+        font-size: 0.65rem; 
+        padding: 4px 10px; 
+        border-radius: 6px; 
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        z-index: 10;
+    }
+
+    .focal-line {
+        position: absolute; 
+        top: 50%; 
+        left: 0; 
+        right: 0; 
+        height: 1.5px; 
+        background: rgba(255,255,255,0.4); 
+        box-shadow: 0 0 10px rgba(0,0,0,0.3);
+        pointer-events: none; 
+        z-index: 5;
+    }
+
+    /* Range Slider Styling */
+    .blue-slider {
+        -webkit-appearance: none;
+        width: 100%;
+        height: 8px;
+        border-radius: 10px;
+        background: #e2e8f0;
+        outline: none;
+        margin: 20px 0;
+    }
+
+    .blue-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #3b82f6;
+        cursor: pointer;
+        border: 3px solid #fff;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+        transition: all 0.2s;
+    }
+
+    .blue-slider::-webkit-slider-thumb:hover {
+        transform: scale(1.1);
+        background: #2563eb;
+    }
+
+    .blue-slider::-moz-range-thumb {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #3b82f6;
+        cursor: pointer;
+        border: 3px solid #fff;
+        box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+    }
 </style>
 {% endblock %}
 
@@ -1094,7 +1201,7 @@
                     </div>
 
                     <form action="/invitation/{{ invitation.slug }}/manage" method="POST" class="manage-form"
-                        enctype="multipart/form-data">
+                        enctype="multipart/form-data" onsubmit="return validateManageForm()">
                         <input type="hidden" name="template_name" id="template_name_input"
                             value="{{ invitation.template_name }}">
                         <!-- Step 1: General -->
@@ -1329,8 +1436,10 @@
                             <div class="form-grid">
                                 <div class="form-group">
                                     <label>Custom URL Slug</label>
-                                    <input type="text" name="slug" value="{{ invitation.slug }}" readonly
-                                        style="background: #f5f5f5; cursor: not-allowed;">
+                                    <input type="text" name="slug" id="in-slug" value="{{ invitation.slug }}" 
+                                        oninput="checkSlugAvailability()" required
+                                        style="font-family: 'Inter', sans-serif; font-weight: 500;">
+                                    <div id="slug-status" style="font-size: 0.75rem; margin-top: 0.5rem; min-height: 1.2rem; transition: all 0.3s;"></div>
                                 </div>
                                 <div class="form-group">
                                     <label>Wedding Date</label>
@@ -1768,44 +1877,24 @@
                                     </div>
                                 </div>
 
-                                <!-- Music Library Selection -->
-                                <div class="form-group" style="margin-bottom: 2.5rem;">
-                                    <label
-                                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; font-weight: 600; color: #4A3728;">
-                                        <span style="font-size: 1rem;">Lagu Background (Library)</span>
-                                        <span
-                                            style="font-size: 0.75rem; color: #D4A373; background: #FEF9E7; padding: 4px 12px; border-radius: 20px; border: 1px solid #FCF3CF;">Pilih
-                                            dari koleksi kami</span>
-                                    </label>
-                                    <div style="position: relative;">
-                                        <select name="song_id"
-                                            style="width: 100%; padding: 14px 20px; border-radius: 18px; border: 1.5px solid rgba(212, 163, 115, 0.2); outline: none; font-size: 0.95rem; background: white; appearance: none; transition: all 0.3s; cursor: pointer; color: #4A3728; box-shadow: 0 4px 12px rgba(0,0,0,0.02);">
-                                            <option value="">Pilih Lagu...</option>
-                                            {% for song in all_songs %}
-                                            <option value="{{ song.id }}" {% if invitation.song_id|eq_uuid_opt(song.id)
-                                                %}selected{% endif %}>
-                                                {{ song.title }} — {{ song.artist }}
-                                            </option>
-                                            {% endfor %}
-                                        </select>
-                                        <div
-                                            style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); pointer-events: none; color: #D4A373;">
-                                            <i class="fas fa-chevron-down"></i>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <!-- Upload Grid -->
                                 <div
-                                    style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2.5rem;">
+                                    style="display: grid; grid-template-columns: 1fr; gap: 2.5rem;">
                                     <!-- Playlist & MP3 Upload -->
                                     <div class="form-group">
-                                        <label
-                                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; font-weight: 600; color: #4A3728;">
-                                            <span style="font-size: 1rem;">Daftar Lagu (Playlist)</span>
-                                            <span style="font-size: 0.75rem; color: #8E6E53; opacity: 0.6;">Limit Paket:
-                                                {{ invitation.plan_name }}</span>
-                                        </label>
+                                                                                 <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.2rem;">
+                                             <h4 class="serif" style="color: #4A3728; font-size: 1.3rem; margin: 0;">Daftar Lagu (Playlist)</h4>
+                                             <span style="font-size: 0.8rem; color: #94a3b8; font-weight: 600;">
+                                                 Limit Paket: {{ invitation.plan_name }}
+                                                 {% if invitation.plan_name == "DYNASTY" %}
+                                                     (Sisa {{ 5 - invitation.playlist.len() }} dari 5 lagu)
+                                                 {% else if invitation.plan_name == "ROYAL" %}
+                                                     (Sisa {{ 3 - invitation.playlist.len() }} dari 3 lagu)
+                                                 {% else %}
+                                                     (Sisa {{ 1 - invitation.playlist.len() }} dari 1 lagu)
+                                                 {% endif %}
+                                             </span>
+                                         </div>
 
                                         <!-- Current Playlist Items -->
                                         <div id="playlist-list"
@@ -1866,98 +1955,89 @@
                                     </div>
 
                                     <!-- Video Background Upload -->
-                                    <div class="form-group">
-                                        <label
-                                            style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; font-weight: 600; color: #4A3728;">
-                                            <span style="font-size: 1rem;">Upload Video (MP4)</span>
-                                            <span style="font-size: 0.7rem; color: #8E6E53; opacity: 0.6;">Max
-                                                25MB</span>
-                                        </label>
-                                        <div
-                                            style="position: relative; padding: 1.5rem; background: #fafafa; border: 2px dashed rgba(212, 163, 115, 0.2); border-radius: 20px; transition: all 0.3s; text-align: center;">
-                                            <input type="file" name="background_video" accept="video/mp4"
-                                                style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2;">
-                                            <div style="color: #D4A373; margin-bottom: 0.5rem;">
-                                                <i class="fas fa-video" style="font-size: 1.8rem;"></i>
-                                            </div>
-                                            <p style="font-size: 0.85rem; color: #4A3728; margin: 0; font-weight: 500;">
-                                                Klik untuk pilih file MP4</p>
-
-                                            {% if !invitation.background_video_url.is_empty() %}
-                                            <div
-                                                style="margin-top: 1rem; padding: 8px 12px; background: #E6FFFA; border-radius: 12px; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #B2F5EA;">
-                                                <div
-                                                    style="width: 8px; height: 8px; background: #38B2AC; border-radius: 50%; box-shadow: 0 0 8px #38B2AC;">
-                                                </div>
-                                                <span
-                                                    style="font-size: 0.75rem; color: #2C7A7B; font-weight: 600; text-overflow: ellipsis; max-width: 150px; overflow: hidden; white-space: nowrap;">
-                                                    {{ invitation.background_video_url|split_last("/") }}
+                                    <div class="form-group" style="margin-top: 2.5rem;">
+                                         <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1rem;">
+                                            <h4 class="serif" style="color: #4A3728; font-size: 1.3rem; margin: 0;">Video Background</h4>
+                                            <span style="font-size: 0.8rem; color: #94a3b8; font-weight: 600;">Max 25MB</span>
+                                         </div>
+                                        
+                                        
+                                         <div class="video-upload-box" onclick="this.querySelector('input').click()">
+                                             <input type="file" name="background_video" accept="video/mp4" style="display: none;" onchange="updateVideoFileName(this)">
+                                             
+                                             <div style="color: #cbd5e1; margin-bottom: 1rem;">
+                                                 <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #D4A373; opacity: 0.6;">
+                                                    <path d="M23 7l-7 5 7 5V7z"></path>
+                                                    <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                                                 </svg>
+                                             </div>
+                                             
+                                             <p style="font-size: 0.95rem; color: #475569; margin: 0; font-weight: 600;">Klik untuk pilih file MP4</p>
+                                             
+                                             <div id="video-file-pill" class="video-pill" style="{% if invitation.background_video_url.is_empty() %}display: none;{% endif %}">
+                                                <div style="width: 8px; height: 8px; background: #10b981; border-radius: 50%;"></div>
+                                                <span id="video-filename" style="font-size: 0.8rem; color: #065f46; font-weight: 700; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                    {% if !invitation.background_video_url.is_empty() %}{{ invitation.background_video_url|split_last("/") }}{% endif %}
                                                 </span>
-                                            </div>
-                                            {% endif %}
-                                        </div>
+                                             </div>
+                                         </div>
 
-                                        <!-- Video Focal Point Slider -->
-                                        <div class="form-group" style="margin-top: 1.5rem;">
-                                            <label
-                                                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; font-weight: 600; color: #4A3728;">
-                                                <span style="font-size: 0.95rem;">Video Vertical Focal Point</span>
-                                                <span id="focal-val"
-                                                    style="font-size: 0.8rem; color: #8E6E53; font-family: monospace;">{{
-                                                    invitation.hero_video_position }}%</span>
-                                            </label>
+                                         <!-- Video Focal Point Slider -->
+                                         <div class="form-group" style="margin-top: 3.5rem;">
+                                             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.2rem;">
+                                                 <h4 class="serif" style="color: #4A3728; font-size: 1.3rem; margin: 0;">Video Vertical Focal Point</h4>
+                                                 <span id="focal-val" style="font-size: 0.95rem; color: #3b82f6; font-weight: 800; font-family: 'Inter', sans-serif;">{{ invitation.hero_video_position }}%</span>
+                                             </div>
 
-                                            <!-- REALTIME PREVIEW BOX -->
-                                            <div
-                                                style="width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 12px; overflow: hidden; position: relative; margin-bottom: 15px; border: 2px solid #D4A373;">
-                                                {% if !invitation.background_video_url.is_empty() %}
-                                                <video id="focal-preview-vid" autoplay muted loop playsinline
-                                                    style="width: 100%; height: 100%; object-fit: cover; object-position: center {{ invitation.hero_video_position }}%;">
-                                                    <source src="{{ invitation.background_video_url }}"
-                                                        type="video/mp4">
-                                                </video>
-                                                {% else %}
-                                                <div
-                                                    style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #8E6E53; font-size: 0.8rem; text-align: center; padding: 20px;">
-                                                    Preview akan muncul setelah Anda mengunggah video.
-                                                </div>
-                                                {% endif %}
-                                                <div
-                                                    style="position: absolute; inset: 0; pointer-events: none; border: 1px dashed rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center;">
-                                                    <div
-                                                        style="width: 100%; height: 2px; background: rgba(255,255,255,0.2);">
-                                                    </div>
-                                                </div>
-                                                <div
-                                                    style="position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.6); color: #fff; font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; text-transform: uppercase;">
-                                                    Preview</div>
-                                            </div>
+                                             <!-- REALTIME PREVIEW BOX -->
+                                             <div class="video-preview-container">
+                                                 {% if !invitation.background_video_url.is_empty() %}
+                                                 <video id="focal-preview-vid" autoplay muted loop playsinline
+                                                     style="width: 100%; height: 100%; object-fit: cover; object-position: center {{ invitation.hero_video_position }}%;">
+                                                     <source src="{{ invitation.background_video_url }}" type="video/mp4">
+                                                 </video>
+                                                 {% else %}
+                                                 <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 0.85rem; text-align: center; padding: 2rem; background: #f1f5f9;">
+                                                     Preview akan muncul setelah Anda mengunggah video.
+                                                 </div>
+                                                 {% endif %}
+                                                 
+                                                 <div class="focal-line" id="focal-indicator-line" style="top: {{ invitation.hero_video_position }}%;"></div>
+                                                 <div class="preview-badge">Preview</div>
+                                             </div>
 
-                                            <input type="range" name="hero_video_position" min="0" max="100"
-                                                value="{{ invitation.hero_video_position }}" class="range-slider"
-                                                style="width: 100%; cursor: pointer;"
-                                                oninput="updateFocalPreview(this.value)">
-
-                                            <script>
-                                                function updateFocalPreview(val) {
-                                                    document.getElementById('focal-val').innerText = val + '%';
-                                                    const vid = document.getElementById('focal-preview-vid');
-                                                    if (vid) {
-                                                        vid.style.objectPosition = `center ${val}%`;
-                                                    }
-                                                }
-                                            </script>
-
-                                            <div
-                                                style="display: flex; justify-content: space-between; margin-top: 5px; font-size: 0.7rem; color: #a0aec0; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+                                             <input type="range" name="hero_video_position" min="0" max="100"
+                                                 value="{{ invitation.hero_video_position }}" class="blue-slider"
+                                                 oninput="updateFocalPreview(this.value)">
+                                             
+                                             <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.75rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
                                                 <span>Atas (Top)</span>
                                                 <span>Tengah (Center)</span>
                                                 <span>Bawah (Bottom)</span>
-                                            </div>
-                                            <p class="text-muted small" style="margin-top: 10px; font-style: italic;">
-                                                <i class="fas fa-info-circle"></i> Geser untuk mengatur bagian video
-                                                mana yang ingin difokuskan (untuk mode Full Cover).
-                                            </p>
+                                             </div>
+
+                                             <script>
+                                                 function updateFocalPreview(val) {
+                                                     document.getElementById('focal-val').innerText = val + '%';
+                                                     const vid = document.getElementById('focal-preview-vid');
+                                                     const line = document.getElementById('focal-indicator-line');
+                                                     if (vid) {
+                                                         vid.style.objectPosition = `center ${val}%`;
+                                                     }
+                                                     if (line) {
+                                                         line.style.top = val + '%';
+                                                     }
+                                                 }
+                                                 
+                                                 function updateVideoFileName(input) {
+                                                     if (input.files && input.files[0]) {
+                                                         const pill = document.getElementById('video-file-pill');
+                                                         const nameSpan = document.getElementById('video-filename');
+                                                         nameSpan.innerText = input.files[0].name;
+                                                         pill.style.display = 'inline-flex';
+                                                     }
+                                                 }
+                                             </script>
                                         </div>
                                     </div>
                                 </div>
@@ -2834,6 +2914,79 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
+    let slugCheckTimeout = null;
+    let isSlugAvailable = true;
+    const originalSlug = "{{ invitation.slug }}";
+
+    function checkSlugAvailability() {
+        const slugInput = document.getElementById('in-slug');
+        const statusEl = document.getElementById('slug-status');
+        if (!slugInput || !statusEl) return;
+        
+        const slug = slugInput.value.trim().toLowerCase();
+        
+        // Remove spaces and special characters, keep letters, numbers, and dashes
+        const cleanSlug = slug.replace(/[^a-z0-9-]/g, '');
+        if (slugInput.value !== cleanSlug) {
+            slugInput.value = cleanSlug;
+        }
+
+        if (!cleanSlug) {
+            statusEl.innerHTML = '';
+            isSlugAvailable = false;
+            return;
+        }
+
+        if (cleanSlug === originalSlug.toLowerCase()) {
+            statusEl.innerHTML = '<span style="color: #10b981; font-weight: 700;">✓ Ini adalah slug Anda saat ini.</span>';
+            isSlugAvailable = true;
+            return;
+        }
+
+        statusEl.innerHTML = '<span style="color: #64748b;">Mengecek ketersediaan...</span>';
+
+        if (slugCheckTimeout) clearTimeout(slugCheckTimeout);
+
+        slugCheckTimeout = setTimeout(async () => {
+            try {
+                const res = await fetch(`/api/check-slug/${encodeURIComponent(cleanSlug)}`);
+                const data = await res.json();
+                
+                if (data.available) {
+                    statusEl.innerHTML = '<span style="color: #10b981; font-weight: 700;">✓ URL slug tersedia!</span>';
+                    isSlugAvailable = true;
+                } else {
+                    isSlugAvailable = false;
+                    const randomSuffix = Math.floor(100 + Math.random() * 900);
+                    const alternative = `${cleanSlug}-${randomSuffix}`;
+                    statusEl.innerHTML = `<span style="color: #ef4444; font-weight: 700;">❌ ${data.message}.</span> <br><span style="color: #64748b; font-size: 0.75rem;">Saran: <a href="#" onclick="applySlug('${alternative}'); return false;" style="color: #3b82f6; font-weight: 800; text-decoration: underline;">${alternative}</a></span>`;
+                }
+            } catch (e) {
+                console.error("Failed to check slug", e);
+            }
+        }, 500);
+    }
+
+    function applySlug(slug) {
+        const slugInput = document.getElementById('in-slug');
+        if (slugInput) {
+            slugInput.value = slug;
+            checkSlugAvailability();
+        }
+    }
+
+    function validateManageForm() {
+        if (!isSlugAvailable) {
+            Swal.fire({
+                icon: 'error',
+                title: 'URL Slug Tidak Tersedia',
+                text: 'Silakan gunakan slug lain sebelum menyimpan perubahan.'
+            });
+            return false;
+        }
+        return true;
+    }
+
     $(document).ready(function () {
         $('.select2-enable').select2({ width: '100%' });
 
