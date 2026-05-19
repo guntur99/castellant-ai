@@ -420,6 +420,15 @@ pub async fn create_invitation(
     let mut account_numbers = Vec::new();
     let mut account_holders = Vec::new();
 
+    let mut playlist_paths = Vec::new();
+    let mut background_video_url = None;
+    let mut gallery_video_paths = Vec::new();
+    let mut story_titles = Vec::new();
+    let mut story_dates = Vec::new();
+    let mut story_descriptions = Vec::new();
+    let mut story_image_urls = Vec::new();
+    let mut story_image_files = Vec::new();
+
     while let Ok(Some(field)) = multipart.next_field().await {
         let name = match field.name() {
             Some(n) => n.to_string(),
@@ -427,31 +436,31 @@ pub async fn create_invitation(
         };
         
         if name == "gallery[]" || name == "gallery_photo" {
-            let filename = Uuid::new_v4().to_string() + ".jpg";
+            let filename = Uuid::new_v4().to_string() + ".webp";
             let path = format!("static/uploads/{}", filename);
             let data = field.bytes().await.unwrap_or_default();
             if !data.is_empty() {
-                let _ = std::fs::create_dir_all("static/uploads");
-                let _ = std::fs::write(&path, data);
-                gallery_paths.push(format!("/{}", path));
+                if process_and_save_image(&state.s3_client, &state.s3_bucket, data, path.clone(), 1600).await {
+                    gallery_paths.push(format!("/uploads/{}", filename));
+                }
             }
         } else if name.ends_with("_photo") {
-            let filename = Uuid::new_v4().to_string() + ".jpg";
+            let filename = Uuid::new_v4().to_string() + ".webp";
             let path = format!("static/uploads/{}", filename);
             let data = field.bytes().await.unwrap_or_default();
             if !data.is_empty() {
-                let _ = std::fs::create_dir_all("static/uploads");
-                let _ = std::fs::write(&path, data);
-                photo_paths.insert(name, format!("/{}", path));
+                if process_and_save_image(&state.s3_client, &state.s3_bucket, data, path.clone(), 1600).await {
+                    photo_paths.insert(name, format!("/uploads/{}", filename));
+                }
             }
         } else if name == "payment_proof" {
-            let filename = Uuid::new_v4().to_string() + "_payment.jpg";
+            let filename = Uuid::new_v4().to_string() + "_payment.webp";
             let path = format!("static/uploads/{}", filename);
             let data = field.bytes().await.unwrap_or_default();
             if !data.is_empty() {
-                let _ = std::fs::create_dir_all("static/uploads");
-                let _ = std::fs::write(&path, data);
-                fields.insert("payment_proof".to_string(), format!("/{}", path));
+                if process_and_save_image(&state.s3_client, &state.s3_bucket, data, path.clone(), 1600).await {
+                    fields.insert("payment_proof".to_string(), format!("/uploads/{}", filename));
+                }
             }
         } else if name == "bank_name[]" {
             bank_names.push(field.text().await.unwrap_or_default());
@@ -459,6 +468,54 @@ pub async fn create_invitation(
             account_numbers.push(field.text().await.unwrap_or_default());
         } else if name == "account_holder[]" {
             account_holders.push(field.text().await.unwrap_or_default());
+        } else if name == "playlist[]" {
+            let filename = Uuid::new_v4().to_string() + ".mp3";
+            let path = format!("static/uploads/{}", filename);
+            let data = field.bytes().await.unwrap_or_default();
+            if !data.is_empty() && data.len() < 10 * 1024 * 1024 {
+                if process_and_save_file(&state.s3_client, &state.s3_bucket, data, path.clone(), "audio/mpeg").await {
+                    playlist_paths.push(format!("/uploads/{}", filename));
+                }
+            }
+        } else if name == "background_video" {
+            let filename = Uuid::new_v4().to_string() + ".mp4";
+            let path = format!("static/uploads/{}", filename);
+            let data = field.bytes().await.unwrap_or_default();
+            if !data.is_empty() && data.len() < 25 * 1024 * 1024 {
+                if process_and_save_file(&state.s3_client, &state.s3_bucket, data, path.clone(), "video/mp4").await {
+                    background_video_url = Some(format!("/uploads/{}", filename));
+                }
+            }
+        } else if name == "gallery_video[]" {
+            let filename = Uuid::new_v4().to_string() + ".mp4";
+            let path = format!("static/uploads/{}", filename);
+            let data = field.bytes().await.unwrap_or_default();
+            if !data.is_empty() && data.len() < 25 * 1024 * 1024 {
+                if process_and_save_file(&state.s3_client, &state.s3_bucket, data, path.clone(), "video/mp4").await {
+                    gallery_video_paths.push(format!("/uploads/{}", filename));
+                }
+            }
+        } else if name == "story_title[]" {
+            story_titles.push(field.text().await.unwrap_or_default());
+        } else if name == "story_date[]" {
+            story_dates.push(field.text().await.unwrap_or_default());
+        } else if name == "story_description[]" {
+            story_descriptions.push(field.text().await.unwrap_or_default());
+        } else if name == "story_image_url[]" {
+            story_image_urls.push(field.text().await.unwrap_or_default());
+        } else if name == "story_image_file[]" {
+            let filename = Uuid::new_v4().to_string() + ".webp";
+            let path = format!("static/uploads/{}", filename);
+            let data = field.bytes().await.unwrap_or_default();
+            if !data.is_empty() {
+                if process_and_save_image(&state.s3_client, &state.s3_bucket, data, path.clone(), 1200).await {
+                    story_image_files.push(Some(format!("/uploads/{}", filename)));
+                } else {
+                    story_image_files.push(None);
+                }
+            } else {
+                story_image_files.push(None);
+            }
         } else {
             let value = field.text().await.unwrap_or_default();
             fields.insert(name, value);
@@ -506,19 +563,19 @@ pub async fn create_invitation(
     let ceremony_data = json!(EventDetails {
         enabled: true,
         date: fields.get("event_date").cloned().unwrap_or_default(),
-        time: "09:00 - selesai".to_string(),
+        time: fields.get("ceremony_time").cloned().unwrap_or_else(|| "09:00 - selesai".to_string()),
         venue: fields.get("ceremony_venue").cloned().unwrap_or_default(),
         address: fields.get("ceremony_address").cloned().unwrap_or_default(),
-        maps_url: "".to_string(),
+        maps_url: fields.get("ceremony_maps").cloned().unwrap_or_default(),
     });
 
     let reception_data = json!(EventDetails {
         enabled: true,
-        date: fields.get("event_date").cloned().unwrap_or_default(),
-        time: "11:00 - selesai".to_string(),
+        date: fields.get("reception_date").cloned().unwrap_or_else(|| fields.get("event_date").cloned().unwrap_or_default()),
+        time: fields.get("reception_time").cloned().unwrap_or_else(|| "11:00 - selesai".to_string()),
         venue: fields.get("reception_venue").cloned().unwrap_or_default(),
         address: fields.get("reception_address").cloned().unwrap_or_default(),
-        maps_url: "".to_string(),
+        maps_url: fields.get("reception_maps").cloned().unwrap_or_default(),
     });
 
     let quote_data = json!({
@@ -632,6 +689,45 @@ pub async fn create_invitation(
     let couple_name_short = fields.get("couple_name_short").cloned().unwrap_or_else(|| "Couple".to_string());
     let event_date = fields.get("event_date").cloned().unwrap_or_else(|| "TBA".to_string());
 
+    // Process Stories
+    let mut final_stories = Vec::new();
+    let story_count = story_titles.len();
+    for i in 0..story_count {
+        let title = story_titles.get(i).cloned().unwrap_or_default();
+        let date = story_dates.get(i).cloned().unwrap_or_default();
+        let description = story_descriptions.get(i).cloned().unwrap_or_default();
+        
+        let image_url = if let Some(Some(new_path)) = story_image_files.get(i) {
+            new_path.clone()
+        } else {
+            story_image_urls.get(i).cloned().unwrap_or_default()
+        };
+
+        if !title.is_empty() {
+            final_stories.push(Story {
+                id: Uuid::new_v4().to_string(),
+                title,
+                date,
+                description,
+                image_url,
+            });
+        }
+    }
+
+    // Process Playlist limits
+    let song_limit = match plan_name.as_str() {
+        "DYNASTY" => 5,
+        "ROYAL" => 3,
+        _ => 1,
+    };
+    let mut final_playlist = playlist_paths;
+    final_playlist.truncate(song_limit);
+
+    // Get hero video vertical position
+    let hero_video_position = fields.get("hero_video_position")
+        .and_then(|v| v.parse::<i32>().ok())
+        .unwrap_or(50);
+
     // START TRANSACTION
     let mut tx = match state.db.begin().await {
         Ok(t) => t,
@@ -642,8 +738,8 @@ pub async fn create_invitation(
     };
 
     let invitation_id = match sqlx::query_scalar::<_, Uuid>(
-        "INSERT INTO invitations (user_id, slug, couple_name_short, event_date, template_name, bride_data, groom_data, ceremony_data, reception_data, quote_data, plan_name, language, payment_link, payment_invoice_id) 
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14) RETURNING id"
+        "INSERT INTO invitations (user_id, slug, couple_name_short, event_date, template_name, bride_data, groom_data, ceremony_data, reception_data, quote_data, plan_name, language, payment_link, payment_invoice_id, playlist, background_video_url, hero_video_position, stories_data) 
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18) RETURNING id"
     )
     .bind(user_id)
     .bind(&slug)
@@ -659,6 +755,10 @@ pub async fn create_invitation(
     .bind(language)
     .bind(payment_link.clone())
     .bind(invoice_id.clone())
+    .bind(json!(final_playlist))
+    .bind(background_video_url)
+    .bind(hero_video_position)
+    .bind(json!(final_stories))
     .fetch_one(&mut *tx)
     .await {
         Ok(id) => id,
@@ -683,6 +783,23 @@ pub async fn create_invitation(
             let _ = tx.rollback().await;
             eprintln!("Failed to insert photo: {}", e);
             return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to save photos").into_response();
+        }
+    }
+
+    // Insert Gallery Videos
+    for (i, path) in gallery_video_paths.into_iter().enumerate() {
+        if let Err(e) = sqlx::query(
+            "INSERT INTO invitation_photos (invitation_id, url, photo_type, \"order\") VALUES ($1, $2, $3, $4)"
+        )
+        .bind(invitation_id)
+        .bind(path)
+        .bind("gallery_video")
+        .bind(i as i32)
+        .execute(&mut *tx)
+        .await {
+            let _ = tx.rollback().await;
+            eprintln!("Failed to insert gallery video: {}", e);
+            return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to save gallery videos").into_response();
         }
     }
 

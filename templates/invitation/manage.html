@@ -304,6 +304,19 @@
             flex-direction: column-reverse !important;
             gap: 1rem !important;
         }
+
+        .progress-steps {
+            padding: 1.2rem 1.5rem !important;
+            margin-left: 0 !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch;
+            justify-content: flex-start !important;
+        }
+
+        .step-divider {
+            width: 15px !important;
+            margin: 0 4px !important;
+        }
     }
 
     .group-visual-card {
@@ -591,45 +604,133 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 1rem;
+        gap: 0;
         padding: 1.5rem;
         background: rgba(255, 255, 255, 0.3);
         border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         overflow-x: auto;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(139, 42, 42, 0.15) transparent;
+        -webkit-overflow-scrolling: touch;
+        width: 100%;
+        margin: 0;
+    }
+    
+    .progress-steps::before,
+    .progress-steps::after {
+        content: '';
+        margin: auto;
+    }
+    
+    .progress-steps::-webkit-scrollbar {
+        height: 4px;
+    }
+    
+    .progress-steps::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .progress-steps::-webkit-scrollbar-thumb {
+        background: rgba(139, 42, 42, 0.12);
+        border-radius: 10px;
+        transition: background 0.3s;
+    }
+    
+    .progress-steps:hover::-webkit-scrollbar-thumb {
+        background: rgba(139, 42, 42, 0.25);
     }
 
     .step-item {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        opacity: 0.3;
-        transition: all 0.3s;
-        cursor: pointer;
+        gap: 0;
+        opacity: 0.5;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         flex-shrink: 0;
+        cursor: pointer;
+        padding: 6px 10px;
+        border-radius: 50px;
+        border: 1px solid transparent;
+    }
+
+    .step-item .step-label {
+        font-family: var(--font-sans);
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #64748b;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        max-width: 0;
+        opacity: 0;
+        overflow: hidden;
+        white-space: nowrap;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), color 0.3s ease;
+        margin-left: 0;
+    }
+    
+    .step-item.active .step-label {
+        max-width: 200px;
+        opacity: 1;
+        margin-left: 0.5rem;
+        color: var(--color-accent-red);
+        font-weight: 700;
+    }
+
+    .step-item.adjacent {
+        opacity: 0.8 !important;
+    }
+
+    .step-item.adjacent .step-label {
+        max-width: 150px;
+        opacity: 0.55;
+        margin-left: 0.5rem;
+        color: #64748b;
+        font-weight: 600;
+    }
+    
+    .step-item:hover {
+        opacity: 0.85;
+        background: rgba(139, 42, 42, 0.02);
     }
 
     .step-item.active {
         opacity: 1;
+        background: rgba(139, 42, 42, 0.06);
+        border: 1px solid rgba(139, 42, 42, 0.15);
+        box-shadow: 0 4px 15px rgba(139, 42, 42, 0.03);
+        padding: 6px 16px;
     }
 
     .step-num {
-        font-weight: 800;
-        font-family: var(--font-serif);
-        color: var(--color-accent-red);
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1.5px solid #cbd5e1;
+        color: #94a3b8;
+        font-weight: 700;
+        font-size: 0.75rem;
+        font-family: var(--font-sans);
+        background: white;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        flex-shrink: 0;
     }
 
-    .step-label {
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 1px;
-        font-weight: 700;
-        color: #666;
+    .step-item.active .step-num {
+        background: var(--color-accent-red);
+        color: white;
+        border-color: var(--color-accent-red);
+        box-shadow: 0 3px 8px rgba(139, 42, 42, 0.25);
     }
 
     .step-divider {
-        width: 20px;
-        height: 1px;
-        background: rgba(0, 0, 0, 0.1);
+        width: 15px;
+        height: 2px;
+        background: rgba(0, 0, 0, 0.15);
+        margin: 0 4px;
+        flex-shrink: 0;
     }
 
     .form-step {
@@ -1163,13 +1264,13 @@
                 <!-- Details Card -->
                 <div id="details" class="creation-container">
                     <div class="progress-steps"
-                        style="background: #fdfdfd; border-bottom: 1px solid #f0f0f0; overflow-x: auto; white-space: nowrap; padding: 1rem 2rem;">
+                        style="background: #fdfdfd; border-bottom: 1px solid #f0f0f0; overflow-x: auto; padding: 1rem 2rem;">
                         <div class="step-item active" id="step-1-indicator" onclick="goToStep(1)">
                             <span class="step-num">01</span>
                             <span class="step-label">Dasar</span>
                         </div>
                         <div class="step-divider"></div>
-                        <div class="step-item" id="step-2-indicator" onclick="goToStep(2)">
+                        <div class="step-item adjacent" id="step-2-indicator" onclick="goToStep(2)">
                             <span class="step-num">02</span>
                             <span class="step-label">Mempelai</span>
                         </div>
@@ -1983,7 +2084,7 @@
                                          </div>
 
                                          <!-- Video Focal Point Slider -->
-                                         <div class="form-group" style="margin-top: 3.5rem;">
+                                         <div class="form-group" style="margin-top: 3.5rem; display: none !important;">
                                              <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.2rem;">
                                                  <h4 class="serif" style="color: #4A3728; font-size: 1.3rem; margin: 0;">Video Vertical Focal Point</h4>
                                                  <span id="focal-val" style="font-size: 0.95rem; color: #3b82f6; font-weight: 800; font-family: 'Inter', sans-serif;">{{ invitation.hero_video_position }}%</span>
@@ -3115,8 +3216,21 @@
     window.goToStep = function (n) {
         $('.form-step').removeClass('active');
         $(`#step-${n}`).addClass('active');
-        $('.step-item').removeClass('active');
-        $(`#step-${n}-indicator`).addClass('active');
+        
+        document.querySelectorAll('.step-item').forEach((i, idx) => {
+            const stepNum = idx + 1;
+            i.classList.remove('active', 'adjacent');
+            if (stepNum === n) {
+                i.classList.add('active');
+            } else if (stepNum === n - 1 || stepNum === n + 1) {
+                i.classList.add('adjacent');
+            }
+        });
+
+        const indicator = document.getElementById(`step-${n}-indicator`);
+        if (indicator) {
+            indicator.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        }
 
         // Scroll to top of card smoothly
         const card = document.getElementById('details');
