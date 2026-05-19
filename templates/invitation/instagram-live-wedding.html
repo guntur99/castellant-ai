@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Instagram Live · {{ invitation.couple_name_short }} 💍</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💍</text></svg>">
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Cormorant+Garamond:ital,wght@0,500;1,400;1,600;1,700&display=swap"
         rel="stylesheet">
@@ -53,8 +54,11 @@
             justify-content: center;
             padding: 32px;
             text-align: center;
-            background: var(--ig-bg);
+            background: rgba(8, 8, 8, 0.45); /* translucent low-opacity background */
+            backdrop-filter: blur(8px); /* glassmorphic blur so the video shows beautifully */
+            -webkit-backdrop-filter: blur(8px);
             transition: opacity .65s ease, transform .65s ease;
+            overflow: hidden;
         }
 
         #opening.hide {
@@ -63,59 +67,120 @@
             pointer-events: none;
         }
 
+        /* Ambient Glow Background */
+        .op-bg-glows {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .op-glow-1 {
+            position: absolute;
+            top: -15%;
+            left: -15%;
+            width: 70vw;
+            height: 70vw;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(240, 148, 51, 0.12) 0%, transparent 70%);
+            animation: float-glow-1 12s ease-in-out infinite alternate;
+        }
+
+        .op-glow-2 {
+            position: absolute;
+            bottom: -15%;
+            right: -15%;
+            width: 80vw;
+            height: 80vw;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(188, 24, 136, 0.15) 0%, transparent 70%);
+            animation: float-glow-2 15s ease-in-out infinite alternate;
+        }
+
+        .op-glow-3 {
+            position: absolute;
+            top: 35%;
+            left: 20%;
+            width: 50vw;
+            height: 50vw;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(225, 48, 108, 0.1) 0%, transparent 70%);
+            animation: float-glow-3 18s ease-in-out infinite alternate;
+        }
+
+        @keyframes float-glow-1 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(8vw, 6vh) scale(1.1); }
+        }
+
+        @keyframes float-glow-2 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(-6vw, -8vh) scale(0.95); }
+        }
+
+        @keyframes float-glow-3 {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(4vw, 5vh) scale(1.15); }
+        }
+
         .op-logo-ring {
-            width: 88px;
-            height: 88px;
+            width: 96px;
+            height: 96px;
             border-radius: 50%;
             background: var(--ig-grad);
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px;
-            animation: ring-spin 6s linear infinite;
+            margin: 0 auto 24px;
             position: relative;
+            z-index: 2;
+            box-shadow: 0 0 20px rgba(225, 48, 108, 0.3);
+            animation: ring-pulse 3s infinite alternate;
         }
 
-        @keyframes ring-spin {
-
-            0%,
-            100% {
-                filter: hue-rotate(0deg) brightness(1.1);
+        @keyframes ring-pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 20px rgba(225, 48, 108, 0.3);
             }
-
-            50% {
-                filter: hue-rotate(30deg) brightness(1.3);
+            100% {
+                transform: scale(1.05);
+                box-shadow: 0 0 35px rgba(225, 48, 108, 0.5), 0 0 15px rgba(240, 148, 51, 0.3);
             }
         }
 
         .op-logo-inner {
-            width: 80px;
-            height: 80px;
+            width: 88px;
+            height: 88px;
             border-radius: 50%;
-            background: #111;
+            background: #000;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .op-logo-inner svg {
-            width: 42px;
-            height: 42px;
+            width: 44px;
+            height: 44px;
         }
 
         .op-live-tag {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: var(--ig-pink);
+            background: var(--ig-grad);
             color: #fff;
             font-size: 11px;
-            font-weight: 700;
-            letter-spacing: .12em;
+            font-weight: 800;
+            letter-spacing: .15em;
             text-transform: uppercase;
-            padding: 5px 14px;
+            padding: 6px 16px;
             border-radius: 20px;
-            margin-bottom: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 15px rgba(225, 48, 108, 0.4);
+            z-index: 2;
+            position: relative;
         }
 
         .live-dot {
@@ -127,24 +192,20 @@
         }
 
         @keyframes blink {
-
-            0%,
-            100% {
-                opacity: 1
-            }
-
-            50% {
-                opacity: .25
-            }
+            0%, 100% { opacity: 1 }
+            50% { opacity: .25 }
         }
 
         .op-title {
             font-family: var(--serif);
-            font-size: clamp(30px, 8vw, 52px);
-            font-style: italic;
+            font-size: clamp(34px, 8vw, 56px);
+            font-weight: 600;
             color: #fff;
-            line-height: 1.15;
-            margin-bottom: 5px;
+            line-height: 1.2;
+            margin-bottom: 8px;
+            z-index: 2;
+            position: relative;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
         }
 
         .op-title span {
@@ -156,24 +217,38 @@
 
         .op-sub {
             font-size: 12px;
-            color: rgba(255, 255, 255, .4);
-            letter-spacing: .18em;
+            color: rgba(255, 255, 255, .5);
+            letter-spacing: .22em;
             text-transform: uppercase;
-            margin-bottom: 28px;
+            margin-bottom: 36px;
+            z-index: 2;
+            position: relative;
+            text-shadow: 0 1px 5px rgba(0,0,0,0.3);
         }
 
         .op-dear {
-            background: rgba(255, 255, 255, .05);
-            border: 1px solid rgba(255, 255, 255, .1);
-            border-radius: 14px;
-            padding: 14px 22px;
-            margin-bottom: 28px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 16px 28px;
+            margin-bottom: 32px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            z-index: 2;
+            position: relative;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .op-dear:hover {
+            transform: translateY(-2px);
+            border-color: rgba(225, 48, 108, 0.3);
         }
 
         .op-dear-l {
             font-size: 10px;
-            color: rgba(255, 255, 255, .35);
-            letter-spacing: .1em;
+            color: rgba(255, 255, 255, .4);
+            letter-spacing: .12em;
             text-transform: uppercase;
             margin-bottom: 4px;
         }
@@ -181,40 +256,89 @@
         .op-dear-n {
             font-family: var(--serif);
             font-style: italic;
-            font-size: 19px;
+            font-size: 21px;
             color: #fff;
         }
 
         .op-btn {
+            position: relative;
+            overflow: hidden;
             border: none;
             cursor: pointer;
             background: var(--ig-grad);
             color: #fff;
-            padding: 14px 44px;
-            border-radius: 8px;
+            padding: 16px 52px;
+            border-radius: 50px;
             font-family: var(--font);
             font-size: 15px;
             font-weight: 700;
-            letter-spacing: .04em;
-            transition: transform .15s, opacity .15s;
+            letter-spacing: .06em;
+            transition: transform .2s, box-shadow .2s;
             display: inline-flex;
             align-items: center;
             gap: 9px;
+            z-index: 2;
+            box-shadow: 0 6px 20px rgba(225, 48, 108, 0.4);
         }
 
         .op-btn:hover {
-            opacity: .9;
-            transform: scale(1.03);
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 10px 30px rgba(225, 48, 108, 0.6), 0 0 10px rgba(240, 148, 51, 0.3);
         }
 
         .op-btn:active {
             transform: scale(.97);
         }
 
+        .op-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.25), transparent);
+            transform: skewX(-25deg);
+        }
+
+        .op-btn:hover::before {
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            100% { left: 150%; }
+        }
+
         .op-btn svg {
             width: 18px;
             height: 18px;
             fill: #fff;
+        }
+
+        /* Opening Entrance Animation Flow */
+        #opening > div:not(.op-bg-glows), 
+        #opening > h1, 
+        #opening > p,
+        #opening > button {
+            animation: op-fade-in 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        #opening .op-logo-ring { animation-delay: 0.1s; }
+        #opening .op-live-tag { animation-delay: 0.25s; }
+        #opening .op-title { animation-delay: 0.4s; }
+        #opening .op-sub { animation-delay: 0.55s; }
+        #opening .op-dear { animation-delay: 0.7s; }
+        #opening .op-btn { animation-delay: 0.85s; }
+
+        @keyframes op-fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* ════════════════════════
@@ -225,7 +349,7 @@
             inset: 0;
             display: flex;
             flex-direction: column;
-            background: #000;
+            background: transparent; /* transparent to let global bg-layer show through */
             opacity: 0;
             transition: opacity .6s .15s;
         }
@@ -236,9 +360,10 @@
 
         /* Background */
         .bg-layer {
-            position: absolute;
+            position: fixed; /* fixed cover */
             inset: 0;
             overflow: hidden;
+            z-index: 0;
         }
 
         .bg-img {
@@ -1289,6 +1414,41 @@
             line-height: 1.65;
         }
 
+        .tl-media {
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            margin: 8px 0 8px 0;
+            cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tl-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .tl-media:hover img {
+            transform: scale(1.05);
+        }
+
+        .tl-media-overlay {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 9px;
+            backdrop-filter: blur(4px);
+            font-weight: 500;
+        }
+
         /* Gallery */
         .gal-grid {
             display: grid;
@@ -1323,6 +1483,39 @@
             position: absolute;
             inset: 0;
             background: rgba(225, 48, 108, .12);
+        }
+
+        /* Videos */
+        .vid-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 4px;
+        }
+
+        .vid-item {
+            aspect-ratio: 9 / 16;
+            border-radius: 6px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, .05);
+            position: relative;
+        }
+
+        .vid-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .vid-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30%;
+            background: linear-gradient(to top, rgba(0,0,0,0.6), transparent);
+            pointer-events: none;
         }
 
         /* Gift */
@@ -1720,8 +1913,23 @@
 
 <body>
 
+    <!-- Global Background Layer -->
+    <div class="bg-layer">
+        <img class="bg-img" id="bgImg" src="{{ invitation.gallery_images|first_image }}" alt="" style="display: block;">
+        <video class="bg-img" id="bgVideo" style="display: none; object-fit: cover; width: 100%; height: 100%; position: absolute; inset: 0;" playsinline muted></video>
+        <div class="bg-vignette"></div>
+        <div class="bg-glow"></div>
+    </div>
+
     <!-- ══ OPENING ══ -->
     <div id="opening">
+        <!-- Floating Ambient Glows -->
+        <div class="op-bg-glows">
+            <div class="op-glow-1"></div>
+            <div class="op-glow-2"></div>
+            <div class="op-glow-3"></div>
+        </div>
+
         <div class="op-logo-ring">
             <div class="op-logo-inner">
                 <!-- Instagram icon -->
@@ -1764,13 +1972,6 @@
 
     <!-- ══ MAIN APP ══ -->
     <div id="app">
-
-        <div class="bg-layer">
-            <img class="bg-img" id="bgImg" src="{{ invitation.gallery_images|first_image }}" alt="" style="display: block;">
-            <video class="bg-img" id="bgVideo" style="display: none; object-fit: cover; width: 100%; height: 100%; position: absolute; inset: 0;" playsinline muted></video>
-            <div class="bg-vignette"></div>
-            <div class="bg-glow"></div>
-        </div>
 
         <!-- Top bar -->
         <div class="top-bar">
@@ -1927,6 +2128,7 @@
             <button class="tab" data-p="event" onclick="sw('event')">📅 Event</button>
             <button class="tab" data-p="story" onclick="sw('story')">💛 Story</button>
             <button class="tab" data-p="gallery" onclick="sw('gallery')">📸 Galeri</button>
+            <button class="tab" data-p="videos" onclick="sw('videos')">🎬 Videos</button>
             <button class="tab" data-p="gift" onclick="sw('gift')">🎁 Gift</button>
             <button class="tab" data-p="rsvp" onclick="sw('rsvp')">✉️ RSVP</button>
             <button class="tab" data-p="wishes" onclick="sw('wishes')">⭐ Ucapan</button>
@@ -1939,10 +2141,8 @@
                 <div class="verse-wrap">
                     <div class="verse-accent"></div>
                     <div class="verse-body">
-                        <div class="verse-txt">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan
-                            pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram
-                            kepadanya..."</div>
-                        <div class="verse-ref">— Surah Ar-Rum : 21</div>
+                        <div class="verse-txt">"{{ invitation.quote.text }}"</div>
+                        <div class="verse-ref">— {{ invitation.quote.source }}</div>
                     </div>
                 </div>
                 <div class="divider"></div>
@@ -2034,22 +2234,99 @@
             <!-- STORY -->
             <div class="panel" id="p-story">
                 <div class="tl">
-                        <div class="tl-dot">3</div>
+                    {% if invitation.stories.is_empty() %}
+                    <div class="tl-item">
+                        <div class="tl-dot">1</div>
                         <div class="tl-body">
-                            <div class="tl-track">Chapter 03</div>
-                            <div class="tl-when">Mei 2026</div>
-                            <div class="tl-title">Pernikahan 🎉</div>
-                            <div class="tl-desc">Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan suci
-                                pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.
+                            <div class="tl-track">Chapter 01</div>
+                            <div class="tl-when">Juni 2025</div>
+                            <div class="tl-title">Awal Pertemuan</div>
+                            
+                            <div class="tl-media" onclick="openStoryLb(0)">
+                                <img src="/uploads/03780469-279b-406c-9df3-d166921e6e0c.webp" alt="Awal Pertemuan" loading="lazy">
+                                <div class="tl-media-overlay">🔍 Tap to Zoom</div>
+                            </div>
+
+                            <div class="tl-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling,
+                                cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.
                             </div>
                         </div>
                     </div>
+                    <div class="tl-item">
+                        <div class="tl-dot">2</div>
+                        <div class="tl-body">
+                            <div class="tl-track">Chapter 02</div>
+                            <div class="tl-when">November 2025</div>
+                            <div class="tl-title">Lamaran</div>
+
+                            <div class="tl-media" onclick="openStoryLb(1)">
+                                <img src="/uploads/dbba6a8b-c8d8-46dd-ba81-b58acf326c1b.webp" alt="Lamaran" loading="lazy">
+                                <div class="tl-media-overlay">🔍 Tap to Zoom</div>
+                            </div>
+
+                            <div class="tl-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan
+                                keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div>
+                        </div>
+                    </div>
+                    <div class="tl-item">
+                        <div class="tl-dot">3</div>
+                        <div class="tl-body">
+                            <div class="tl-track">Chapter 03</div>
+                            <div class="tl-when" id="weddingStoryMonth">Mei 2026</div>
+                            <div class="tl-title">Pernikahan 🎉</div>
+
+                            <div class="tl-media" onclick="openStoryLb(2)">
+                                <img src="/uploads/f2d7c64b-ef8d-424a-b248-e4d2c046c73a.webp" alt="Pernikahan" loading="lazy">
+                                <div class="tl-media-overlay">🔍 Tap to Zoom</div>
+                            </div>
+
+                            <div class="tl-desc">Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan suci
+                                pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.</div>
+                        </div>
+                    </div>
+                    {% else %}
+                    {% for story in invitation.stories %}
+                    <div class="tl-item">
+                        <div class="tl-dot">{{ loop.index }}</div>
+                        <div class="tl-body">
+                            <div class="tl-track">Chapter {{ loop.index }}</div>
+                            <div class="tl-when">{{ story.date }}</div>
+                            <div class="tl-title">{{ story.title }}</div>
+                            
+                            {% if !story.image_url.is_empty() %}
+                            <div class="tl-media" onclick="openStoryLb({{ loop.index0 }})">
+                                <img src="{{ story.image_url }}" alt="{{ story.title }}" loading="lazy">
+                                <div class="tl-media-overlay">🔍 Tap to Zoom</div>
+                            </div>
+                            {% endif %}
+
+                            <div class="tl-desc">{{ story.description }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
                 </div>
             </div>
 
             <!-- GALLERY -->
             <div class="panel" id="p-gallery">
                 <div class="gal-grid" id="galGrid"></div>
+            </div>
+
+            <!-- VIDEOS -->
+            <div class="panel" id="p-videos">
+                <div class="vid-grid">
+                {% for video in invitation.gallery_videos %}
+                    <div class="vid-item" onclick="openVidLb({{ loop.index0 }})" style="cursor:pointer;">
+                        <video autoplay loop muted playsinline preload="metadata">
+                            <source src="{{ video }}" type="video/mp4">
+                        </video>
+                    </div>
+                {% endfor %}
+                </div>
+                {% if invitation.gallery_videos.is_empty() %}
+                    <p style="font-size:12px;color:rgba(255,255,255,.35);text-align:center;margin-top:20px;">Belum ada video.</p>
+                {% endif %}
             </div>
 
             <!-- GIFT -->
@@ -2110,13 +2387,12 @@
             <!-- WISHES -->
             <div class="panel" id="p-wishes">
                 <div class="wlist" id="wList">
+                {% if invitation.is_preview %}
                     <div class="wcard">
                         <div class="wh">
                             <div class="wav">A</div>
                             <div>
-
-                {% if invitation.is_preview %}
-                                                <div class="wn">Ayu Rahmawati</div>
+                                <div class="wn">Ayu Rahmawati</div>
                                 <div class="ws">✓ Hadir · 2 tamu</div>
                             </div>
                         </div>
@@ -2141,20 +2417,28 @@
                             <div class="wav">S</div>
                             <div>
                                 <div class="wn">Sinta Dewi</div>
-
-                {% else %}
-                {% for rsvp in invitation.rsvps %}
-                                                <div class="wn">{{ rsvp.name }}</div>
-
-                {% endfor %}
-                {% endif %}
-                                                <div class="ws">✓ Hadir · 2 tamu</div>
+                                <div class="ws">✓ Hadir · 2 tamu</div>
                             </div>
                         </div>
                         <div class="wstars">★★★★★</div>
                         <div class="wtxt">Wishing you both a lifetime of love and laughter. Semoga langkah kalian selalu
                             diberkahi 💚</div>
                     </div>
+                {% else %}
+                {% for rsvp in invitation.rsvps %}
+                    <div class="wcard">
+                        <div class="wh">
+                            <div class="wav">{{ rsvp.name.get(0..1).unwrap_or("?").to_uppercase() }}</div>
+                            <div>
+                                <div class="wn">{{ rsvp.name }}</div>
+                                <div class="ws">{% if rsvp.attendance == "hadir" %}✓ Hadir{% else %}✗ Tidak Hadir{% endif %}{% if rsvp.guests > 0 %} · {{ rsvp.guests }} tamu{% endif %}</div>
+                            </div>
+                        </div>
+                        <div class="wstars">★★★★★</div>
+                        <div class="wtxt">{{ rsvp.message.as_deref().unwrap_or("") }}</div>
+                    </div>
+                {% endfor %}
+                {% endif %}
                 </div>
             </div>
 
@@ -2162,12 +2446,30 @@
     </div>
 
     <!-- Lightbox -->
-    <div class="lb" id="lb">
+    <div class="lb" id="lb" onclick="closeLb()">
         <button class="lb-close" onclick="closeLb()">✕</button>
-        <button class="lb-nav lb-prev" onclick="lbGo(-1)">‹</button>
-        <img class="lb-img" id="lbImg" src="" alt="">
-        <button class="lb-nav lb-next" onclick="lbGo(1)">›</button>
-        <div class="lb-ctr" id="lbCtr"></div>
+        <button class="lb-nav lb-prev" onclick="event.stopPropagation(); lbGo(-1)">‹</button>
+        <img class="lb-img" id="lbImg" src="" alt="" onclick="event.stopPropagation()">
+        <button class="lb-nav lb-next" onclick="event.stopPropagation(); lbGo(1)">›</button>
+        <div class="lb-ctr" id="lbCtr" onclick="event.stopPropagation()"></div>
+    </div>
+
+    <!-- Story Lightbox -->
+    <div class="lb" id="storyLb" onclick="closeStoryLb()">
+        <button class="lb-close" onclick="closeStoryLb()">✕</button>
+        <button class="lb-nav lb-prev" onclick="event.stopPropagation(); storyLbGo(-1)">‹</button>
+        <img class="lb-img" id="storyLbImg" src="" alt="" onclick="event.stopPropagation()">
+        <button class="lb-nav lb-next" onclick="event.stopPropagation(); storyLbGo(1)">›</button>
+        <div class="lb-ctr" id="storyLbCtr" onclick="event.stopPropagation()"></div>
+    </div>
+
+    <!-- Video Lightbox -->
+    <div class="lb" id="vidLb" onclick="closeVidLb()">
+        <button class="lb-close" onclick="closeVidLb()">✕</button>
+        <button class="lb-nav lb-prev" onclick="event.stopPropagation(); vidLbGo(-1)">‹</button>
+        <video class="lb-img" id="vidLbVideo" controls playsinline autoplay loop onclick="event.stopPropagation()"></video>
+        <button class="lb-nav lb-next" onclick="event.stopPropagation(); vidLbGo(1)">›</button>
+        <div class="lb-ctr" id="vidLbCtr" onclick="event.stopPropagation()"></div>
     </div>
 
     <div class="ig-toast" id="toast"></div>
@@ -2210,8 +2512,19 @@
             {% endfor %}
             {% endif %}
         ];
+        {% if !invitation.rsvps.is_empty() %}
         const MSGS = [
-            { u: "ayu_rahmawati", t: "Selamat kak Nazma & Gunturr! 🥂✨", c: "#E1306C" },
+            {% for rsvp in invitation.rsvps %}
+            { 
+                u: "{{ rsvp.name }}".toLowerCase().replace(/\s+/g, '_').substring(0, 15), 
+                t: "{{ rsvp.message.as_deref().unwrap_or("Hadir!").replace('\"', "\\\"").replace('\n', " ") }}", 
+                c: ["#E1306C", "#833AB4", "#F77737"][Math.floor(Math.random() * 3)] 
+            },
+            {% endfor %}
+        ];
+        {% else %}
+        const MSGS = [
+            { u: "ayu_rahmawati", t: "Selamat kak {{ invitation.couple_name_short }}! 🥂✨", c: "#E1306C" },
             { u: "reza.fw", t: "Akhirnya resmi yaa!! Bahagia selalu 💛", c: "#833AB4" },
             { u: "dimas_official", t: "Masya Allah cantik banget acaranya 😍", c: "#F77737" },
             { u: "sari.ayu22", t: "Selamat menempuh hidup baru kakak 🌸", c: "#E1306C" },
@@ -2220,12 +2533,13 @@
             { u: "hendra_m", t: "Langgeng sampai kakek nenek yaa 👴👵", c: "#E1306C" },
             { u: "lia.nur", t: "Nangis sendiri liat ini 😭❤️", c: "#833AB4" },
             { u: "toni_s", t: "Siap hadir kak! Tunggu kami ya 🎉", c: "#F77737" },
-            { u: "mega.r", t: "Cantik banget kak Nazma 😍🌹", c: "#E1306C" },
+            { u: "mega.r", t: "Cantik banget kak 😍🌹", c: "#E1306C" },
             { u: "rizki_a", t: "Semoga jadi keluarga yang berkah 🙏", c: "#833AB4" },
             { u: "andin_c", t: "Undangannya aesthetic banget ih 🔥", c: "#F77737" },
             { u: "yuli.s", t: "Selamat kak! Love you both 💕", c: "#E1306C" },
             { u: "bagas.p", t: "Rezeki melimpah terus ya kak 🙏", c: "#833AB4" },
         ];
+        {% endif %}
         const JOINS = ["baru bergabung 👋", "mulai nonton Live ✨", "hadir di sini! 🎉", "join sekarang 💛"];
         const GIFTS = [
             { u: "ayu_rahmawati", g: "💍 Wedding Ring" },
@@ -2253,7 +2567,7 @@
             startCountdown();
             startChat();
             startViewers();
-            initBgVideo();
+            // initBgVideo is already initialized on window load
         }
 
         /* ── GALLERY ── */
@@ -2267,6 +2581,87 @@
                 g.appendChild(d);
             });
         }
+
+        /* ── LIGHTBOX (GALLERY) ── */
+        function openLb(i) {
+            lbIdx = i;
+            document.getElementById('lbImg').src = GALLERY[lbIdx];
+            document.getElementById('lbCtr').textContent = `${lbIdx + 1} / ${GALLERY.length}`;
+            document.getElementById('lb').classList.add('open');
+        }
+        function closeLb() {
+            document.getElementById('lb').classList.remove('open');
+        }
+        function lbGo(dir) {
+            lbIdx = (lbIdx + dir + GALLERY.length) % GALLERY.length;
+            document.getElementById('lbImg').src = GALLERY[lbIdx];
+            document.getElementById('lbCtr').textContent = `${lbIdx + 1} / ${GALLERY.length}`;
+        }
+
+        /* ── STORY LIGHTBOX (LOVE STORY) ── */
+        let storyLbIdx = 0;
+        let storyImgs = [];
+        function openStoryLb(idx) {
+            const imgEls = document.querySelectorAll('.tl-media img');
+            storyImgs = Array.from(imgEls).map(img => img.src);
+            if (storyImgs.length === 0) return;
+            storyLbIdx = idx;
+            document.getElementById('storyLbImg').src = storyImgs[storyLbIdx];
+            document.getElementById('storyLbCtr').textContent = `${storyLbIdx + 1} / ${storyImgs.length}`;
+            document.getElementById('storyLb').classList.add('open');
+        }
+        function closeStoryLb() {
+            document.getElementById('storyLb').classList.remove('open');
+        }
+        function storyLbGo(dir) {
+            storyLbIdx = (storyLbIdx + dir + storyImgs.length) % storyImgs.length;
+            document.getElementById('storyLbImg').src = storyImgs[storyLbIdx];
+            document.getElementById('storyLbCtr').textContent = `${storyLbIdx + 1} / ${storyImgs.length}`;
+        }
+
+        /* ── VIDEO LIGHTBOX ── */
+        let vidLbIdx = 0;
+        function openVidLb(i) {
+            vidLbIdx = i;
+            const videoEl = document.getElementById('vidLbVideo');
+            videoEl.src = GALLERY_VIDEOS[vidLbIdx];
+            videoEl.play().catch(e => console.log(e));
+            document.getElementById('vidLbCtr').textContent = `${vidLbIdx + 1} / ${GALLERY_VIDEOS.length}`;
+            document.getElementById('vidLb').classList.add('open');
+        }
+        function closeVidLb() {
+            const videoEl = document.getElementById('vidLbVideo');
+            videoEl.pause();
+            videoEl.src = "";
+            document.getElementById('vidLb').classList.remove('open');
+        }
+        function vidLbGo(dir) {
+            vidLbIdx = (vidLbIdx + dir + GALLERY_VIDEOS.length) % GALLERY_VIDEOS.length;
+            const videoEl = document.getElementById('vidLbVideo');
+            videoEl.src = GALLERY_VIDEOS[vidLbIdx];
+            videoEl.play().catch(e => console.log(e));
+            document.getElementById('vidLbCtr').textContent = `${vidLbIdx + 1} / ${GALLERY_VIDEOS.length}`;
+        }
+
+        /* ── KEYBOARD CONTROLS ── */
+        document.addEventListener('keydown', e => {
+            const lb = document.getElementById('lb');
+            const slb = document.getElementById('storyLb');
+            const vlb = document.getElementById('vidLb');
+            if (lb.classList.contains('open')) {
+                if (e.key === 'Escape') closeLb();
+                if (e.key === 'ArrowLeft') lbGo(-1);
+                if (e.key === 'ArrowRight') lbGo(1);
+            } else if (slb.classList.contains('open')) {
+                if (e.key === 'Escape') closeStoryLb();
+                if (e.key === 'ArrowLeft') storyLbGo(-1);
+                if (e.key === 'ArrowRight') storyLbGo(1);
+            } else if (vlb && vlb.classList.contains('open')) {
+                if (e.key === 'Escape') closeVidLb();
+                if (e.key === 'ArrowLeft') vidLbGo(-1);
+                if (e.key === 'ArrowRight') vidLbGo(1);
+            }
+        });
 
         /* ── COUNTDOWN ── */
         function startCountdown() {
@@ -2294,15 +2689,26 @@
             }, 1700 + Math.random() * 1300);
         }
 
+        const AV_COLORS = ["#E1306C", "#833AB4", "#F77737", "#405DE6", "#5851DB", "#C13584", "#FD1D1D", "#1DA1F2", "#00B906", "#3B5998"];
+
+        function getAvatarColor(username) {
+            let hash = 0;
+            for (let i = 0; i < username.length; i++) {
+                hash = username.charCodeAt(i) + ((hash << 5) - hash);
+            }
+            return AV_COLORS[Math.abs(hash) % AV_COLORS.length];
+        }
+
         function pushMsg(d) {
             const feed = document.getElementById('chatFeed');
             if (!feed) return;
+            const bg = getAvatarColor(d.u);
             const el = document.createElement('div');
             el.className = 'cm';
             el.innerHTML = `
-    <div class="cm-av" style="background:${d.c}">${d.u[0].toUpperCase()}</div>
+    <div class="cm-av" style="background:${bg}">${d.u[0].toUpperCase()}</div>
     <div class="cm-bubble">
-      <div class="cm-username" style="color:${d.c}">@${d.u}</div>
+      <div class="cm-username" style="color:${bg}">@${d.u}</div>
       <div class="cm-text">${d.t}</div>
     </div>
     <div class="cm-heart" onclick="spawnHeart()">❤️</div>`;
@@ -2327,13 +2733,13 @@
             const feed = document.getElementById('chatFeed');
             if (!feed) return;
             const gd = GIFTS[Math.floor(Math.random() * GIFTS.length)];
-            const c = ["#E1306C", "#833AB4", "#F77737"][Math.floor(Math.random() * 3)];
+            const bg = getAvatarColor(gd.u);
             const el = document.createElement('div');
             el.className = 'cm gift';
             el.innerHTML = `
-    <div class="cm-av" style="background:${c}">${gd.u[0].toUpperCase()}</div>
+    <div class="cm-av" style="background:${bg}">${gd.u[0].toUpperCase()}</div>
     <div class="cm-bubble">
-      <div class="cm-username">@${gd.u}</div>
+      <div class="cm-username" style="color:${bg}">@${gd.u}</div>
       <div class="cm-text">mengirimkan ${gd.g}</div>
     </div>`;
             feed.appendChild(el);
@@ -2554,6 +2960,11 @@
             clearTimeout(toastTO);
             toastTO = setTimeout(() => t.classList.remove('show'), 2800);
         }
+
+        // Auto play background video immediately on DOM content loaded
+        window.addEventListener('DOMContentLoaded', () => {
+            initBgVideo();
+        });
     </script>
 {% include "invitation/ai_concierge_snippet.html" %}
 </body>
