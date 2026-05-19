@@ -2129,7 +2129,7 @@ pub async fn invitation_detail(
                 template_name = preview.clone();
             } else if let Some(gs) = params.get("to") {
                 recipient_name = gs.clone(); // Default to the query param value
-                let guest = sqlx::query_as::<_, Guest>("SELECT * FROM guests WHERE invitation_id = $1 AND (slug = $2 OR name = $2)")
+                let guest = sqlx::query_as::<_, Guest>("SELECT id, invitation_id, name, category, template_override, slug, is_sent, COALESCE(ai_language, '') as ai_language, song_id, created_at FROM guests WHERE invitation_id = $1 AND (slug = $2 OR name = $2)")
                     .bind(row.id)
                     .bind(gs)
                     .fetch_optional(&state.db)
@@ -3439,7 +3439,7 @@ pub async fn ai_guest_chat(
     if let Some(g_slug) = payload.guest_slug {
         // Try to find specific guest language
         let guest_row = sqlx::query_as::<_, Guest>(
-            "SELECT id, invitation_id, name, category, template_override, slug, is_sent, COALESCE(ai_language, '') as ai_language, created_at FROM guests WHERE invitation_id = $1 AND slug = $2"
+            "SELECT id, invitation_id, name, category, template_override, slug, is_sent, COALESCE(ai_language, '') as ai_language, song_id, created_at FROM guests WHERE invitation_id = $1 AND slug = $2"
         )
         .bind(invitation.id)
         .bind(&g_slug)
@@ -3867,7 +3867,9 @@ pub async fn delete_rsvp(
 pub struct AddGroupRequest {
     pub name: String,
     pub template_name: String,
+    #[serde(default)]
     pub ai_language: Option<String>,
+    #[serde(default)]
     pub song_id: Option<Uuid>,
 }
 

@@ -2436,7 +2436,7 @@
                                     <span class="group-badge">{{ group.name }}</span>
                                     <div style="display: flex; gap: 4px;">
                                         <button type="button" class="btn-icon"
-                                            onclick="openEditGroupModal('{{ group.id }}', '{{ group.name }}', '{{ group.template_name }}', '{{ group.ai_language }}', '{{ group.song_id|default("") }}')"
+                                            onclick="openEditGroupModal('{{ group.id }}', '{{ group.name }}', '{{ group.template_name }}', '{{ group.ai_language }}')"
                                             title="Edit Group">
                                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none"
                                                 stroke="currentColor" stroke-width="2">
@@ -2514,15 +2514,7 @@
                                     {% endfor %}
                                 </select>
                             </div>
-                            <div class="form-group" style="flex: 1.2;">
-                                <label>Background Music</label>
-                                <select name="song_id" class="select2-enable">
-                                    <option value="">Inherit Global</option>
-                                    {% for song in all_songs %}
-                                    <option value="{{ song.id }}">{{ song.title }} - {{ song.artist }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
+
                             {% if plan == "ROYAL" || plan == "DYNASTY" %}
                             <div class="form-group" style="flex: 1;">
                                 <label>AI Language</label>
@@ -2678,7 +2670,7 @@
                                                 onclick="openEditGuestModal('{{ guest.id }}', '{{ guest.name|escape }}', '{{ guest.category.as_deref().unwrap_or("
                                                 General")|escape
                                                 }}', '{{ guest.template_override.as_deref().unwrap_or("") }}'
-                                                , '{{ guest.ai_language }}' , '{{ guest.song_id|default("") }}' )"
+                                                , '{{ guest.ai_language }}')"
                                                 title="Edit Guest">
                                                 <i class="far fa-edit"></i>
                                             </button>
@@ -2924,16 +2916,7 @@
                     {% endfor %}
                 </select>
             </div>
-            <div class="form-group" style="margin-bottom: 1.5rem;">
-                <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #4a5568;">Background Music
-                    Override (Optional)</label>
-                <select name="song_id" id="edit_guest_song_id" class="select2-modal" style="width: 100%;">
-                    <option value="">Inherit from Group/Global</option>
-                    {% for song in all_songs %}
-                    <option value="{{ song.id }}">{{ song.title }} - {{ song.artist }}</option>
-                    {% endfor %}
-                </select>
-            </div>
+
             {% if invitation.plan_name == "DYNASTY" %}
             <div class="form-group" style="margin-bottom: 1.5rem;">
                 <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #4a5568;">AI Language
@@ -3382,13 +3365,12 @@
     function toggleEditGuestModal() {
         document.getElementById('edit-guest-modal').classList.toggle('active');
     }
-    function openEditGuestModal(id, name, category, template, aiLang, songId) {
+    function openEditGuestModal(id, name, category, template, aiLang) {
         const modal = document.getElementById('edit-guest-modal');
         const form = document.getElementById('editGuestForm');
         const nameInput = document.getElementById('edit_guest_name');
         const categorySelect = document.getElementById('edit_guest_category');
         const templateSelect = document.getElementById('edit_guest_template_override');
-        const songSelect = document.getElementById('edit_guest_song_id');
         const aiLangSelect = document.getElementById('edit_guest_ai_language_select');
         const aiLangHidden = document.getElementById('edit_guest_ai_language_hidden');
         const aiLangCustomWrapper = document.getElementById('edit_guest_custom_lang_wrapper');
@@ -3400,7 +3382,6 @@
         // Update Select2 values
         $(categorySelect).val(category).trigger('change');
         $(templateSelect).val(template).trigger('change');
-        $(songSelect).val(songId).trigger('change');
 
         if (aiLangSelect) {
             const predefinedLangs = ['', 'id', 'en', 'jv', 'su', 'ja', 'zh', 'ko', 'ar'];
@@ -3900,15 +3881,6 @@
                 </select>
             </div>
 
-            <div class="form-group">
-                <label>Group Background Music</label>
-                <select name="song_id" id="edit_group_song_id" class="select2-enable-modal" style="width: 100%;">
-                    <option value="">Inherit Global</option>
-                    {% for song in all_songs %}
-                    <option value="{{ song.id }}">{{ song.title }} - {{ song.artist }}</option>
-                    {% endfor %}
-                </select>
-            </div>
 
             {% if invitation.plan_name == "ROYAL" || invitation.plan_name == "DYNASTY" %}
             <div class="form-group">
@@ -3970,12 +3942,11 @@
         container.appendChild(newItem);
     }
 
-    function openEditGroupModal(id, name, template, aiLang, songId) {
+    function openEditGroupModal(id, name, template, aiLang) {
         const modal = document.getElementById('editGroupModal');
         const form = document.getElementById('editGroupForm');
         const nameInput = document.getElementById('edit_group_name');
         const templateSelect = document.getElementById('edit_group_template');
-        const songSelect = document.getElementById('edit_group_song_id');
         const aiLangSelect = document.getElementById('edit_group_ai_language_select');
         const aiLangHidden = document.getElementById('edit_group_ai_language_hidden');
         const aiLangCustomWrapper = document.getElementById('edit_group_custom_lang_wrapper');
@@ -3986,7 +3957,6 @@
 
         // Update Select2 values
         $(templateSelect).val(template).trigger('change');
-        $(songSelect).val(songId).trigger('change');
 
         if (aiLangSelect) {
             const predefinedLangs = ['', 'id', 'en', 'jv', 'su', 'ja', 'zh', 'ko', 'ar'];

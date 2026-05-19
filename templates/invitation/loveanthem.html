@@ -3,8 +3,16 @@
 
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" type="image/png" href="/static/img/favicon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Wedding of {{ invitation.bride.name }} & {{ invitation.groom.name }}</title>
+    <title>The Wedding of {{ invitation.bride.name }} & {{ invitation.groom.name }} | Spitapy</title>
+    <meta name="description"
+        content="Pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }} - {{ invitation.event_date }}.">
+    <meta property="og:url" content="https://castellant.ai/i/{{ invitation.slug }}">
+    <meta property="og:title" content="The Wedding of {{ invitation.couple_name_short }}">
+    <meta property="og:description"
+        content="Pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }} - {{ invitation.event_date }}.">
+    <meta property="og:image" content="{{ invitation.gallery_images|first_image }}">
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap"
         rel="stylesheet">
@@ -58,6 +66,28 @@
             opacity: 0;
             transform: scale(1.05);
             pointer-events: none
+        }
+
+        .opening-video-wrap {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .opening-video-el {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.45;
+        }
+
+        .opening-video-overlay {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at center, rgba(18, 18, 18, 0.15) 0%, rgba(18, 18, 18, 0.75) 100%);
         }
 
         .sp-logo-icon {
@@ -165,25 +195,15 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            padding: 40px 20px 100px;
+            justify-content: flex-end;
+            padding: 40px 20px 80px;
             text-align: center;
             position: relative;
             overflow: hidden;
         }
 
         .np-bars-bg {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            gap: 3px;
-            height: 140px;
-            opacity: 0.05;
-            pointer-events: none;
+            display: none !important;
         }
 
         .np-bar-bg {
@@ -205,33 +225,21 @@
 
         /* ── VIDEO PLAYER ── */
         .video-player-wrap {
-            width: clamp(280px, 90vw, 420px);
-            position: relative;
-            border-radius: 16px;
+            position: absolute;
+            inset: 0;
+            width: 100% !important;
+            height: 100% !important;
+            border-radius: 0 !important;
             overflow: hidden;
-            box-shadow: 0 32px 80px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06);
-            margin: 0 auto 28px;
+            margin: 0 !important;
+            box-shadow: none !important;
+            animation: none !important;
+            z-index: 1;
             background: #000;
-            animation: float-art 4s ease-in-out infinite;
-        }
-
-        @keyframes float-art {
-
-            0%,
-            100% {
-                transform: translateY(0)
-            }
-
-            50% {
-                transform: translateY(-8px)
-            }
         }
 
         .video-player-wrap::before {
-            content: '';
-            display: block;
-            padding-top: 56.25%;
-            /* 16:9 */
+            display: none !important;
         }
 
         .video-el {
@@ -241,6 +249,7 @@
             height: 100%;
             object-fit: cover;
             display: block;
+            opacity: 0.9;
             transition: opacity .5s ease;
         }
 
@@ -248,31 +257,18 @@
         .video-overlay {
             position: absolute;
             inset: 0;
-            background: rgba(0, 0, 0, 0.3);
+            background: linear-gradient(180deg, rgba(26, 26, 46, 0.55) 0%, rgba(45, 27, 105, 0.7) 40%, rgba(18, 18, 18, 0.95) 100%);
+            z-index: 2;
             transition: background .3s;
         }
 
         .video-overlay.playing {
-            background: rgba(0, 0, 0, 0)
+            background: linear-gradient(180deg, rgba(26, 26, 46, 0.4) 0%, rgba(45, 27, 105, 0.55) 40%, rgba(18, 18, 18, 0.9) 100%);
         }
 
         /* big play indicator centre of video */
         .video-center-play {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(8px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 1;
-            transition: opacity .4s;
-            pointer-events: none;
+            display: none !important;
         }
 
         .video-center-play.hidden {
@@ -284,6 +280,18 @@
             height: 28px;
             color: #fff;
             fill: currentColor
+        }
+
+        .np-content {
+            position: relative;
+            z-index: 3;
+            width: 100%;
+            max-width: 500px;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         /* ── TRACK META ── */
@@ -474,143 +482,350 @@
 
         .countdown-title {
             font-family: var(--font-d);
-            font-size: clamp(20px, 5vw, 30px);
+            font-size: clamp(26px, 6vw, 42px);
+            line-height: 1.2;
             margin-bottom: 32px;
-            font-style: italic
         }
 
         .countdown-grid {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap
+            gap: 8px;
+            flex-wrap: nowrap;
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
         }
 
         .countdown-item {
             background: var(--sp-card);
             border-radius: 12px;
-            padding: 20px 16px 16px;
-            min-width: 80px;
-            border: 1px solid rgba(255, 255, 255, .06)
+            padding: 16px 8px 12px;
+            flex: 1;
+            min-width: 0;
+            border: 1px solid rgba(255, 255, 255, .06);
+            text-align: center;
         }
 
         .countdown-num {
             font-family: var(--font-d);
-            font-size: 42px;
+            font-size: clamp(24px, 7.5vw, 38px);
             line-height: 1;
-            margin-bottom: 6px
+            margin-bottom: 6px;
+            font-weight: 700;
         }
 
         .countdown-unit {
-            font-size: 10px;
-            letter-spacing: .2em;
+            font-size: 9px;
+            letter-spacing: .1em;
             text-transform: uppercase;
-            color: var(--sp-gray)
-        }
-
-        /* ── VERSE ── */
-        .verse-section {
-            padding: 64px 20px;
-            text-align: center
-        }
-
-        .verse-line {
-            width: 1px;
-            height: 48px;
-            background: var(--sp-green);
-            margin: 0 auto 24px
-        }
-
-        .verse-text {
-            font-family: var(--font-d);
-            font-size: clamp(15px, 3.5vw, 21px);
-            font-style: italic;
-            line-height: 1.7;
             color: var(--sp-gray);
-            max-width: 600px;
-            margin: 0 auto 16px
+            white-space: nowrap;
         }
 
-        .verse-ref {
-            font-size: 13px;
-            color: var(--sp-lgray);
-            letter-spacing: .1em
+        /* ── EXPLORE SECTION (Spotify Carousel) ── */
+        .explore-section {
+            background: #181818;
+            padding: 24px 20px;
+            border-radius: 12px;
+            margin: 20px 15px;
+            text-align: left;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .explore-title {
+            font-family: var(--font-d);
+            font-size: clamp(26px, 6vw, 42px);
+            line-height: 1.2;
+            color: #fff;
+            margin: 0 0 20px;
+        }
+
+        .explore-carousel {
+            display: flex;
+            gap: 14px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            padding-bottom: 6px;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .explore-carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .explore-card {
+            flex: 0 0 180px;
+            height: 270px;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            scroll-snap-align: start;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            background: #282828;
+        }
+
+        .explore-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            inset: 0;
+            display: block;
+        }
+
+        .explore-card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0) 40%, rgba(0, 0, 0, 0.85) 100%);
+            display: flex;
+            align-items: flex-end;
+            padding: 12px 10px;
+            z-index: 2;
+        }
+
+        .explore-card-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.2;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+        }
+
+        /* ── LYRICS PREVIEW (Spotify Style Verse) ── */
+        .lyrics-section {
+            background: #6a1a2e;
+            /* Beautiful maroon matching the screenshot */
+            padding: 24px 20px;
+            border-radius: 12px;
+            margin: 20px 15px;
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .lyrics-eyebrow {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.8);
+            margin: 0 0 16px;
+            letter-spacing: 0.5px;
+        }
+
+        .lyrics-content {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            line-height: 1.5;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+            letter-spacing: -0.3px;
+        }
+
+        .lyrics-line {
+            opacity: 0.95;
+            transition: opacity 0.3s ease;
+        }
+
+        .lyrics-line:hover {
+            opacity: 1;
+        }
+
+        .lyrics-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lyrics-note-icon {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.6);
+            animation: float-note 3s ease-in-out infinite;
+        }
+
+        @keyframes float-note {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-4px) rotate(15deg);
+            }
+        }
+
+        .lyrics-show-btn {
+            background: #fff;
+            color: #000;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .lyrics-show-btn:hover {
+            transform: scale(1.05);
+            background: #f0f0f0;
+        }
+
+        .lyrics-source-popup {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, margin-top 0.4s ease;
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            font-style: italic;
+        }
+
+        .lyrics-source-popup.show {
+            max-height: 50px;
+            margin-top: 15px;
         }
 
         /* ── COUPLE ── */
         .couple-section {
-            padding: 64px 20px;
-            text-align: center
+            padding: 56px 20px;
+            text-align: center;
         }
 
-        .couple-ampersand {
-            font-family: var(--font-d);
-            font-size: 80px;
-            color: rgba(255, 255, 255, .05);
-            line-height: 1;
-            margin: 20px 0;
-            font-style: italic
-        }
-
-        .couple-cards {
+        /* ── SPOTIFY ARTIST PROFILE GRID & CARD ── */
+        .artist-profile-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            max-width: 600px;
-            margin: 0 auto
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 15px;
         }
 
-        @media(max-width:480px) {
-            .couple-cards {
-                grid-template-columns: 1fr
+        @media (max-width: 768px) {
+            .artist-profile-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+                max-width: 480px;
             }
         }
 
-        .couple-card {
-            background: var(--sp-dark);
-            border-radius: 16px;
-            padding: 28px 20px;
-            border: 1px solid rgba(255, 255, 255, .06);
-            transition: border-color .2s
+        .artist-profile-card {
+            background: #242424;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            text-align: left;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
-        .couple-card:hover {
-            border-color: rgba(29, 185, 84, .4)
+        .artist-image-container {
+            width: 100%;
+            height: 280px;
+            position: relative;
+            overflow: hidden;
+            background: #181818;
         }
 
-        .couple-avatar {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            margin: 0 auto 16px;
-            border: 3px solid var(--sp-green);
-            overflow: hidden
-        }
-
-        .couple-avatar img {
+        .artist-cover-img {
             width: 100%;
             height: 100%;
-            object-fit: cover
+            object-fit: cover;
+            transition: transform 0.5s ease;
         }
 
-        .couple-role {
-            font-size: 11px;
-            letter-spacing: .2em;
-            color: var(--sp-green);
+        .artist-profile-card:hover .artist-cover-img {
+            transform: scale(1.03);
+        }
+
+        .artist-overlay-title {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.72rem;
+            font-weight: 700;
             text-transform: uppercase;
-            margin-bottom: 6px
+            letter-spacing: 0.5px;
+            backdrop-filter: blur(4px);
         }
 
-        .couple-name {
-            font-family: var(--font-d);
-            font-size: 22px;
-            margin-bottom: 4px
+        .artist-profile-body {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
         }
 
-        .couple-parents {
-            font-size: 12px;
-            color: var(--sp-gray);
-            line-height: 1.6
+        .artist-profile-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .artist-profile-meta {
+            flex: 1;
+            padding-right: 12px;
+        }
+
+        .artist-profile-name {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0 0 4px;
+            letter-spacing: -0.3px;
+        }
+
+        .artist-listeners-count {
+            font-size: 0.82rem;
+            color: #a7a7a7;
+            margin: 0;
+        }
+
+        .spotify-btn-follow {
+            background: transparent;
+            color: #fff;
+            border: 1px solid #727272;
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .spotify-btn-follow:hover {
+            border-color: #fff;
+            transform: scale(1.04);
+        }
+
+        .spotify-btn-follow.active {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+
+        .artist-bio-text {
+            font-size: 0.88rem;
+            line-height: 1.5;
+            color: #b3b3b3;
+            margin: 0;
         }
 
         /* ── EVENT ── */
@@ -720,8 +935,8 @@
             left: 20px;
             top: 0;
             bottom: 0;
-            width: 1px;
-            background: linear-gradient(180deg, var(--sp-green) 0%, transparent 100%)
+            width: 2px;
+            background: linear-gradient(180deg, var(--sp-green) 0%, rgba(29, 185, 84, 0.1) 70%, transparent 100%)
         }
 
         .timeline-item {
@@ -751,11 +966,34 @@
             font-weight: 700;
             color: #000;
             position: relative;
-            z-index: 1
+            z-index: 2;
+            box-shadow: 0 0 12px rgba(29, 185, 84, 0.4), 0 0 0 4px rgba(29, 185, 84, 0.15);
         }
 
         .timeline-body {
-            padding-top: 6px
+            flex: 1;
+            padding-top: 0;
+            min-width: 0;
+        }
+
+        .timeline-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 20px;
+            transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1), background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .timeline-card:hover {
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(29, 185, 84, 0.4);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35), 0 0 15px rgba(29, 185, 84, 0.15);
         }
 
         .timeline-track {
@@ -763,25 +1001,91 @@
             letter-spacing: .2em;
             color: var(--sp-green);
             text-transform: uppercase;
-            margin-bottom: 4px
+            margin-bottom: 2px
         }
 
         .timeline-month {
             font-size: 12px;
             color: var(--sp-gray);
-            margin-bottom: 6px
+            margin-bottom: 8px
         }
 
         .timeline-title {
             font-family: var(--font-d);
             font-size: 20px;
+            color: #fff;
             margin-bottom: 8px
         }
 
         .timeline-desc {
             font-size: 14px;
             color: var(--sp-gray);
-            line-height: 1.7
+            line-height: 1.6;
+            margin-top: 4px;
+        }
+
+        .timeline-media {
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+            margin: 8px 0 12px 0;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+            background: #121212;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            cursor: pointer;
+        }
+
+        .timeline-media img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        .timeline-card:hover .timeline-media img {
+            transform: scale(1.04);
+        }
+
+        .media-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, transparent 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .timeline-card:hover .media-overlay {
+            opacity: 1;
+        }
+
+        .spotify-play-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--sp-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(29, 185, 84, 0.4);
+            transform: scale(0.9);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+        }
+
+        .timeline-card:hover .spotify-play-icon {
+            transform: scale(1);
+            box-shadow: 0 6px 16px rgba(29, 185, 84, 0.6);
+        }
+
+        .spotify-play-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: #000;
+            margin-left: 2px;
         }
 
         /* ── GALLERY ── */
@@ -836,8 +1140,8 @@
 
         .gallery-item {
             flex-shrink: 0;
-            width: clamp(150px, 38vw, 210px);
-            height: clamp(190px, 48vw, 270px);
+            width: clamp(180px, 45vw, 250px);
+            height: clamp(240px, 60vw, 350px);
             border-radius: 14px;
             overflow: hidden;
             background: var(--sp-card);
@@ -895,79 +1199,181 @@
 
         /* ── GIFT ── */
         .gift-section {
-            padding: 64px 20px
+            padding: 80px 20px;
+            background: linear-gradient(180deg, var(--sp-black) 0%, rgba(18,18,18,0.95) 100%);
         }
 
         .gift-cards {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            max-width: 500px;
-            margin: 24px auto 0
+            gap: 20px;
+            max-width: 720px;
+            margin: 32px auto 0;
+            perspective: 1000px;
         }
 
-        @media(max-width:480px) {
+        @media(max-width:640px) {
             .gift-cards {
-                grid-template-columns: 1fr
+                grid-template-columns: 1fr;
+                max-width: 350px;
             }
         }
 
         .gift-card {
-            background: var(--sp-dark);
-            border-radius: 16px;
-            padding: 24px 20px;
-            border: 1px solid rgba(255, 255, 255, .06)
+            background: linear-gradient(135deg, #2b2b2b 0%, #111111 100%);
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 200px;
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s ease, border-color 0.4s ease;
         }
 
-        .gift-bank {
-            font-size: 11px;
-            letter-spacing: .2em;
-            color: var(--sp-gray);
-            text-transform: uppercase;
-            margin-bottom: 4px
+        .gift-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 30% 30%, rgba(29, 185, 84, 0.15) 0%, transparent 60%);
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .gift-card:nth-child(even)::before {
+            background: radial-gradient(circle at 30% 30%, rgba(162, 89, 255, 0.18) 0%, transparent 60%);
+        }
+
+        .gift-card:hover {
+            transform: translateY(-8px) rotateX(4deg) rotateY(-2deg);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.7);
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+
+        .gift-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            z-index: 2;
+        }
+
+        .gift-card-chip {
+            width: 38px;
+            height: 28px;
+            background: linear-gradient(135deg, #ffd700 0%, #d4af37 40%, #f9e8a2 70%, #aa7c11 100%);
+            border-radius: 6px;
+            position: relative;
+            box-shadow: inset 0 1px 2px rgba(255,255,255,0.4), 0 2px 5px rgba(0,0,0,0.3);
+        }
+        
+        .gift-card-chip::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border: 1px solid rgba(0,0,0,0.15);
+            background: 
+                linear-gradient(90deg, transparent 48%, rgba(0,0,0,0.12) 48%, rgba(0,0,0,0.12) 52%, transparent 52%),
+                linear-gradient(0deg, transparent 48%, rgba(0,0,0,0.12) 48%, rgba(0,0,0,0.12) 52%, transparent 52%);
+            border-radius: 5px;
+        }
+
+        .gift-card-contactless {
+            color: rgba(255, 255, 255, 0.4);
+            margin-left: 12px;
+            margin-right: auto;
         }
 
         .gift-bank-name {
-            font-size: 24px;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            font-family: var(--font-b);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+        }
+
+        .gift-number-wrap {
+            z-index: 2;
+            margin-bottom: 20px;
+        }
+
+        .gift-number {
+            font-size: clamp(16px, 4.5vw, 20px);
+            font-family: 'Courier New', monospace;
             font-weight: 700;
-            margin-bottom: 4px
+            letter-spacing: 2px;
+            color: #ffffff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8), -1px -1px 2px rgba(255,255,255,0.1);
+        }
+
+        .gift-card-footer {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            z-index: 2;
+        }
+
+        .gift-holder-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .gift-holder-label {
+            font-size: 8px;
+            letter-spacing: 0.15em;
+            color: var(--sp-lgray);
+            text-transform: uppercase;
+            font-weight: 600;
         }
 
         .gift-account-name {
             font-size: 13px;
-            color: var(--sp-gray);
-            margin-bottom: 16px
-        }
-
-        .gift-number {
-            font-size: 18px;
-            font-family: monospace;
-            letter-spacing: .1em;
-            margin-bottom: 12px
+            font-weight: 600;
+            color: #ffffff;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .copy-btn {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: var(--sp-card);
-            border: none;
-            color: var(--sp-gray);
-            font-size: 12px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 600;
             font-family: var(--font-b);
             padding: 8px 14px;
             border-radius: 20px;
             cursor: pointer;
-            transition: background .15s, color .15s
+            backdrop-filter: blur(4px);
+            transition: all 0.2s ease;
         }
 
         .copy-btn:hover {
-            background: var(--sp-hover);
-            color: var(--sp-white)
+            background: #ffffff;
+            color: #121212;
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(255,255,255,0.25);
         }
 
         .copy-btn.copied {
-            color: var(--sp-green)
+            background: var(--sp-green);
+            border-color: var(--sp-green);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(29, 185, 84, 0.4);
         }
 
         /* ── RSVP ── */
@@ -981,23 +1387,27 @@
             display: flex;
             gap: 12px;
             margin-bottom: 40px;
-            flex-wrap: wrap;
-            justify-content: center
+            flex-wrap: nowrap;
+            justify-content: center;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .rsvp-stat {
             background: var(--sp-card);
             border-radius: 12px;
-            padding: 20px 24px;
+            padding: 16px 12px;
             text-align: center;
             border: 1px solid rgba(255, 255, 255, .06);
-            min-width: 100px
+            flex: 1;
+            min-width: 0;
         }
 
         .rsvp-stat-num {
             font-family: var(--font-d);
-            font-size: 36px;
-            color: var(--sp-green)
+            font-size: clamp(24px, 6.5vw, 36px);
+            color: var(--sp-green);
         }
 
         .rsvp-stat-label {
@@ -1110,73 +1520,113 @@
 
         /* ── WISHES ── */
         .wishes-section {
-            padding: 64px 20px
+            padding: 80px 20px;
+            background: linear-gradient(180deg, rgba(18,18,18,0.95) 0%, var(--sp-black) 100%);
         }
 
         .wishes-list {
-            max-width: 560px;
-            margin: 32px auto 0;
+            max-width: 580px;
+            margin: 36px auto 0;
             display: flex;
             flex-direction: column;
-            gap: 12px
+            gap: 16px;
         }
 
         .wish-card {
-            background: var(--sp-dark);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid rgba(255, 255, 255, .06);
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 20px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-left: 4px solid var(--sp-green);
             opacity: 0;
-            transform: translateY(16px);
-            transition: opacity .5s, transform .5s
+            transform: translateY(20px);
+            transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
         }
 
         .wish-card.visible {
             opacity: 1;
-            transform: translateY(0)
+            transform: translateY(0);
+        }
+
+        .wish-card:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
         }
 
         .wish-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 10px
+            gap: 14px;
+            margin-bottom: 12px;
         }
 
         .wish-avatar {
-            width: 36px;
-            height: 36px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            background: var(--sp-green);
+            background: linear-gradient(135deg, var(--sp-green) 0%, #1db954 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 700;
-            color: #000;
-            flex-shrink: 0
+            color: #121212;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(29, 185, 84, 0.3);
+            text-transform: uppercase;
+        }
+
+        .wish-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            text-align: left;
         }
 
         .wish-name {
-            font-size: 14px;
-            font-weight: 500
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .wish-verified-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            color: var(--sp-green);
         }
 
         .wish-status {
             font-size: 11px;
-            color: var(--sp-green)
+            font-weight: 600;
+            color: var(--sp-lgray);
+            letter-spacing: 0.3px;
         }
 
         .wish-text {
             font-size: 14px;
             color: var(--sp-gray);
-            line-height: 1.65
+            line-height: 1.7;
+            font-style: italic;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 10px;
+            border-left: 2px solid rgba(255, 255, 255, 0.1);
+            text-align: left;
         }
 
         /* ── FOOTER ── */
         .footer-section {
             background: linear-gradient(0deg, #0a2e17 0%, #121212 100%);
-            padding: 80px 20px 40px;
+            padding: 80px 20px 120px;
             text-align: center;
             border-top: 1px solid rgba(255, 255, 255, .06)
         }
@@ -1363,14 +1813,7 @@
 
         /* ── AUDIO VISUALIZER (behind video) ── */
         .audio-eq {
-            display: flex;
-            align-items: flex-end;
-            gap: 3px;
-            height: 40px;
-            margin-bottom: 8px;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity .4s
+            display: none !important;
         }
 
         .audio-eq.active {
@@ -1401,12 +1844,23 @@
     <!-- ── AUDIO ELEMENT ── -->
     <!-- Using a royalty-free ambient/wedding music from a CDN -->
     <audio id="bgMusic" loop preload="none">
-        <!-- Free ambient track from Pixabay / public domain -->
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        <source src="{{ invitation.song_url }}" type="audio/mpeg">
     </audio>
 
     <!-- ── OPENING ── -->
     <div id="opening">
+        <!-- Background Video for opening screen -->
+        <div class="opening-video-wrap">
+            <video class="opening-video-el" playsinline muted loop autoplay>
+                {% if !invitation.background_video_url.is_empty() %}
+                    <source src="{{ invitation.background_video_url }}" type="video/mp4">
+                {% else %}
+                    <source src="https://assets.mixkit.co/videos/preview/mixkit-wedding-couple-walking-in-a-forest-40439-large.mp4" type="video/mp4">
+                {% endif %}
+            </video>
+            <div class="opening-video-overlay"></div>
+        </div>
+
         <div class="sp-logo-icon">
             <svg viewBox="0 0 24 24" fill="none">
                 <path
@@ -1414,9 +1868,9 @@
                     fill="black" />
             </svg>
         </div>
-        <p class="opening-tagline">Stream our love story</p>
+        <!-- <p class="opening-tagline">Stream our love story</p> -->
         <h1 class="opening-names">{{ invitation.bride.name }} & {{ invitation.groom.name }}</h1>
-        <p class="opening-album">Forever Anthem · Album 2026</p>
+        <p class="opening-album">Forever Anthem · Album <span class="wedding-year-el">2026</span></p>
         <div class="dear-box">
             <p class="dear-label">Dear,</p>
             <p class="dear-name">{{ invitation.recipient_name }}</p>
@@ -1461,62 +1915,117 @@
                 <div class="aeq-bar" style="--s:.8s;animation-delay:.03s"></div>
             </div>
 
-            <p class="np-label">Now Playing</p>
-            <h2 class="np-song-title" id="npTitle">Wedding Day</h2>
-            <p class="np-artist" id="npArtist">
-                {{ invitation.bride.name }} & {{ invitation.groom.name }} · Forever Anthem
-                <span class="eq-bars paused" id="eqBars">
-                    <span class="eq-bar"></span>
-                    <span class="eq-bar"></span>
-                    <span class="eq-bar"></span>
-                </span>
-            </p>
+            <div class="np-content">
+                <p class="np-label">Now Playing</p>
+                <h2 class="np-song-title" id="npTitle">Wedding Day</h2>
+                <p class="np-artist" id="npArtist">
+                    {{ invitation.bride.name }} & {{ invitation.groom.name }} · Forever Anthem
+                    <span class="eq-bars paused" id="eqBars">
+                        <span class="eq-bar"></span>
+                        <span class="eq-bar"></span>
+                        <span class="eq-bar"></span>
+                    </span>
+                </p>
 
-            <div class="progress-wrap">
-                <div class="progress-times">
-                    <span id="currentTime">0:00</span>
-                    <span id="totalTime">3:24</span>
+                <div class="progress-wrap">
+                    <div class="progress-times">
+                        <span id="currentTime">0:00</span>
+                        <span id="totalTime">3:24</span>
+                    </div>
+                    <div class="progress-track" id="progressTrack">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
                 </div>
-                <div class="progress-track" id="progressTrack">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-            </div>
 
-            <div class="player-controls">
-                <button class="ctrl-btn" onclick="toggleShuffle(this)" title="Shuffle" id="shuffleBtn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                        <path
-                            d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z" />
-                    </svg>
-                </button>
-                <button class="ctrl-btn" onclick="prevTrack()" title="Previous">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M6 6h2v12H6zm3.5 6 8.5 6V6z" />
-                    </svg>
-                </button>
-                <button class="ctrl-btn play-btn" id="playBtn" onclick="togglePlay()" title="Play/Pause">
-                    <svg id="playIcon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8 5v14l11-7z" />
-                    </svg>
-                    <svg id="pauseIcon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"
-                        style="display:none">
-                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                    </svg>
-                </button>
-                <button class="ctrl-btn" onclick="nextTrack()" title="Next">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z" />
-                    </svg>
-                </button>
-                <button class="ctrl-btn" id="likeBtn" onclick="toggleLike(this)" title="Like">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="opacity:.5"
-                        id="likeIcon">
-                        <path
-                            d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z" />
-                    </svg>
-                </button>
+                <div class="player-controls">
+                    <button class="ctrl-btn" onclick="toggleShuffle(this)" title="Shuffle" id="shuffleBtn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M10.59 9.17L5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41l-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z" />
+                        </svg>
+                    </button>
+                    <button class="ctrl-btn" onclick="prevTrack()" title="Previous">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 6h2v12H6zm3.5 6 8.5 6V6z" />
+                        </svg>
+                    </button>
+                    <button class="ctrl-btn play-btn" id="playBtn" onclick="togglePlay()" title="Play/Pause">
+                        <svg id="playIcon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M8 5v14l11-7z" />
+                        </svg>
+                        <svg id="pauseIcon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor"
+                            style="display:none">
+                            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                        </svg>
+                    </button>
+                    <button class="ctrl-btn" onclick="nextTrack()" title="Next">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z" />
+                        </svg>
+                    </button>
+                    <button class="ctrl-btn" id="likeBtn" onclick="toggleLike(this)" title="Like">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="opacity:.5"
+                            id="likeIcon">
+                            <path
+                                d="M12 21.593c-5.63-5.539-11-10.297-11-14.402 0-3.791 3.068-5.191 5.281-5.191 1.312 0 4.151.501 5.719 4.457 1.59-3.968 4.464-4.447 5.726-4.447 2.54 0 5.274 1.621 5.274 5.181 0 4.069-5.136 8.625-11 14.402z" />
+                        </svg>
+                    </button>
+                </div>
             </div>
         </section>
+
+        <!-- EXPLORE VIDEOS SECTION (Spotify-themed horizontal swipeable video cards) -->
+        <section class="explore-section">
+            <h3 class="explore-title">Explore {{ invitation.groom.name }} & {{ invitation.bride.name }}</h3>
+            <div class="explore-carousel">
+                {% if invitation.gallery_videos.is_empty() %}
+                <!-- Beautiful wedding loop videos playing automatically -->
+                <div class="explore-card">
+                    <video class="explore-video" playsinline muted loop autoplay
+                        src="https://assets.mixkit.co/videos/preview/mixkit-wedding-couple-walking-in-a-forest-40439-large.mp4"></video>
+                    <div class="explore-card-overlay">
+                        <span class="explore-card-label">Our Romantic Journey</span>
+                    </div>
+                </div>
+                <div class="explore-card">
+                    <video class="explore-video" playsinline muted loop autoplay
+                        src="https://assets.mixkit.co/videos/preview/mixkit-holding-hands-of-a-couple-40441-large.mp4"></video>
+                    <div class="explore-card-overlay">
+                        <span class="explore-card-label">Holding Hands</span>
+                    </div>
+                </div>
+                <div class="explore-card">
+                    <video class="explore-video" playsinline muted loop autoplay
+                        src="https://assets.mixkit.co/videos/preview/mixkit-bride-holding-a-bouquet-40442-large.mp4"></video>
+                    <div class="explore-card-overlay">
+                        <span class="explore-card-label">Forever Together</span>
+                    </div>
+                </div>
+                {% else %}
+                {% for vid_url in invitation.gallery_videos %}
+                <div class="explore-card">
+                    <video class="explore-video" playsinline muted loop autoplay src="{{ vid_url }}"></video>
+                    <div class="explore-card-overlay">
+                        <span class="explore-card-label">Moment {{ loop.index }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- LYRICS PREVIEW (Spotify Style Verse Card) -->
+        <div class="lyrics-section">
+            <h4 class="lyrics-eyebrow">Lyrics preview</h4>
+            <div class="lyrics-content" id="lyricsContent"></div>
+            <div class="lyrics-footer">
+                <span class="lyrics-note-icon">♪</span>
+                <button class="lyrics-show-btn" onclick="toggleLyrics()">Show source</button>
+            </div>
+            <div class="lyrics-source-popup" id="lyricsSourcePopup">
+                <p>— {{ invitation.quote.source }}</p>
+            </div>
+        </div>
 
         <!-- COUNTDOWN -->
         <div class="countdown-section">
@@ -1542,36 +2051,56 @@
             </div>
         </div>
 
-        <!-- VERSE -->
-        <div class="verse-section">
-            <div class="verse-line"></div>
-            <p class="verse-text">"{{ invitation.quote.text }}"</p>
-            <p class="verse-ref">— {{ invitation.quote.source }}</p>
-        </div>
-
-        <!-- COUPLE -->
+        <!-- ABOUT THE ARTISTS (Spotify Double Couple Card) -->
         <section class="couple-section" id="couple">
             <p class="section-eyebrow" style="text-align:center">Featured Artists</p>
-            <h2 class="section-heading" style="text-align:center">Pasangan Kami</h2>
-            <div class="couple-ampersand">&</div>
-            <div class="couple-cards">
-                <div class="couple-card">
-                    <div class="couple-avatar">
-                        <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride.name }}" loading="lazy">
+            <h2 class="section-heading" style="text-align:center;margin-bottom:24px">Pasangan Kami</h2>
+
+            <div class="artist-profile-grid">
+                <!-- Groom Card -->
+                <div class="artist-profile-card">
+                    <div class="artist-image-container">
+                        <img class="artist-cover-img" src="{{ invitation.groom.image_url }}"
+                            alt="{{ invitation.groom.name }}">
+                        <div class="artist-overlay-title">About the groom</div>
                     </div>
-                    <div class="couple-role">Mempelai WNazma</div>
-                    <div class="couple-name">{{ invitation.bride.full_name }}</div>
-                    <div class="couple-parents">Putri dari<br><strong>{{ invitation.bride.father_name }} &<br>{{
-                            invitation.bride.mother_name }}</strong></div>
+
+                    <div class="artist-profile-body">
+                        <div class="artist-profile-header">
+                            <div class="artist-profile-meta">
+                                <h3 class="artist-profile-name">{{ invitation.groom.full_name }}</h3>
+                                <p class="artist-listeners-count">The Groom · Verified Artist</p>
+                            </div>
+                            <button class="spotify-btn-follow" onclick="toggleFollowGroom(this)">Follow</button>
+                        </div>
+                        <p class="artist-bio-text">
+                            Putra tercinta dari Bpk. <strong>{{ invitation.groom.father_name }}</strong> & Ibu
+                            <strong>{{ invitation.groom.mother_name }}</strong>.
+                        </p>
+                    </div>
                 </div>
-                <div class="couple-card">
-                    <div class="couple-avatar">
-                        <img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom.name }}" loading="lazy">
+
+                <!-- Bride Card -->
+                <div class="artist-profile-card">
+                    <div class="artist-image-container">
+                        <img class="artist-cover-img" src="{{ invitation.bride.image_url }}"
+                            alt="{{ invitation.bride.name }}">
+                        <div class="artist-overlay-title">About the bride</div>
                     </div>
-                    <div class="couple-role">Mempelai Pria</div>
-                    <div class="couple-name">{{ invitation.groom.full_name }}</div>
-                    <div class="couple-parents">Putra dari<br><strong>{{ invitation.groom.father_name }} &<br>{{
-                            invitation.groom.mother_name }}</strong></div>
+
+                    <div class="artist-profile-body">
+                        <div class="artist-profile-header">
+                            <div class="artist-profile-meta">
+                                <h3 class="artist-profile-name">{{ invitation.bride.full_name }}</h3>
+                                <p class="artist-listeners-count">The Bride · Verified Artist</p>
+                            </div>
+                            <button class="spotify-btn-follow" onclick="toggleFollowBride(this)">Follow</button>
+                        </div>
+                        <p class="artist-bio-text">
+                            Putri tercinta dari Bpk. <strong>{{ invitation.bride.father_name }}</strong> & Ibu
+                            <strong>{{ invitation.bride.mother_name }}</strong>.
+                        </p>
+                    </div>
                 </div>
             </div>
         </section>
@@ -1643,37 +2172,101 @@
                 <h2 class="section-heading">Our Love Story</h2>
             </div>
             <div class="timeline">
+                {% if invitation.stories.is_empty() %}
                 <div class="timeline-item">
                     <div class="timeline-dot">1</div>
                     <div class="timeline-body">
-                        <div class="timeline-track">Track 1</div>
-                        <div class="timeline-month">Juni 2025</div>
-                        <div class="timeline-title">Awal Pertemuan</div>
-                        <div class="timeline-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling,
-                            cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.
+                        <div class="timeline-card">
+                            <div class="timeline-track">Track 1</div>
+                            <div class="timeline-month">Juni 2025</div>
+                            <div class="timeline-title">Awal Pertemuan</div>
+                            
+                            <div class="timeline-media" onclick="openStoryLightbox(0)">
+                                <img src="/uploads/03780469-279b-406c-9df3-d166921e6e0c.webp" alt="Awal Pertemuan" loading="lazy">
+                                <div class="media-overlay">
+                                    <div class="spotify-play-icon">
+                                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling,
+                                cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-dot">2</div>
                     <div class="timeline-body">
-                        <div class="timeline-track">Track 2</div>
-                        <div class="timeline-month">November 2025</div>
-                        <div class="timeline-title">Lamaran</div>
-                        <div class="timeline-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan
-                            keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div>
+                        <div class="timeline-card">
+                            <div class="timeline-track">Track 2</div>
+                            <div class="timeline-month">November 2025</div>
+                            <div class="timeline-title">Lamaran</div>
+
+                            <div class="timeline-media" onclick="openStoryLightbox(1)">
+                                <img src="/uploads/dbba6a8b-c8d8-46dd-ba81-b58acf326c1b.webp" alt="Lamaran" loading="lazy">
+                                <div class="media-overlay">
+                                    <div class="spotify-play-icon">
+                                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan
+                                keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div>
+                        </div>
                     </div>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-dot">3</div>
                     <div class="timeline-body">
-                        <div class="timeline-track">Track 3</div>
-                        <div class="timeline-month">Mei 2026</div>
-                        <div class="timeline-title">Pernikahan</div>
-                        <div class="timeline-desc">Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan suci
-                            pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama.</div>
+                        <div class="timeline-card">
+                            <div class="timeline-track">Track 3</div>
+                            <div class="timeline-month" id="weddingStoryMonth">Mei 2026</div>
+                            <div class="timeline-title">Pernikahan</div>
+
+                            <div class="timeline-media" onclick="openStoryLightbox(2)">
+                                <img src="/uploads/f2d7c64b-ef8d-424a-b248-e4d2c046c73a.webp" alt="Pernikahan" loading="lazy">
+                                <div class="media-overlay">
+                                    <div class="spotify-play-icon">
+                                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="timeline-desc">Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan suci
+                                pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama.</div>
+                        </div>
                     </div>
                 </div>
+                {% else %}
+                {% for story in invitation.stories %}
+                <div class="timeline-item">
+                    <div class="timeline-dot">{{ loop.index }}</div>
+                    <div class="timeline-body">
+                        <div class="timeline-card">
+                            <div class="timeline-track">Track {{ loop.index }}</div>
+                            <div class="timeline-month">{{ story.date }}</div>
+                            <div class="timeline-title">{{ story.title }}</div>
+                            
+                            {% if !story.image_url.is_empty() %}
+                            <div class="timeline-media" onclick="openStoryLightbox({{ loop.index0 }})">
+                                <img src="{{ story.image_url }}" alt="{{ story.title }}" loading="lazy">
+                                <div class="media-overlay">
+                                    <div class="spotify-play-icon">
+                                        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            <div class="timeline-desc">{{ story.description }}</div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
             </div>
         </section>
 
@@ -1682,7 +2275,7 @@
             <div class="gallery-title-row">
                 <div>
                     <p class="section-eyebrow">Our Love Mix</p>
-                    <h2 class="section-heading" style="font-size:26px;margin:0">Galeri Foto</h2>
+                    <h2 class="section-heading" style="margin:0">Galeri Foto</h2>
                 </div>
                 <div style="font-size:12px;color:var(--sp-lgray);display:flex;align-items:center;gap:6px">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -1709,21 +2302,91 @@
                     jika memberi merupakan tanda kasih, kami dengan senang hati menerimanya.</p>
             </div>
             <div class="gift-cards">
+                {% if invitation.gift_accounts.is_empty() %}
+                <!-- Card 1 (BCA Contoh) -->
+                <div class="gift-card">
+                    <div class="gift-card-header">
+                        <div class="gift-card-chip"></div>
+                        <div class="gift-card-contactless">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="opacity: 0.25;">
+                                <path d="M4 12c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4-4-1.79-4-4zm12 0c0-4.42-3.58-8-8-8S0 7.58 0 12s3.58 8 8 8 8-3.58 8-8zm4 0c0-6.63-5.37-12-12-12S0 5.37 0 12s5.37 12 12 12 12-5.37 12-12z" />
+                            </svg>
+                        </div>
+                        <div class="gift-bank-name">BCA</div>
+                    </div>
+                    <div class="gift-number-wrap">
+                        <div class="gift-number">1234567890</div>
+                    </div>
+                    <div class="gift-card-footer">
+                        <div class="gift-holder-wrap">
+                            <span class="gift-holder-label">CARDHOLDER</span>
+                            <div class="gift-account-name">{{ invitation.bride.name }} (Contoh)</div>
+                        </div>
+                        <button class="copy-btn" onclick="copyText('1234567890',this)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                            </svg>
+                            Salin Nomor
+                        </button>
+                    </div>
+                </div>
+                <!-- Card 2 (Mandiri Contoh) -->
+                <div class="gift-card">
+                    <div class="gift-card-header">
+                        <div class="gift-card-chip"></div>
+                        <div class="gift-card-contactless">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="opacity: 0.25;">
+                                <path d="M4 12c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4-4-1.79-4-4zm12 0c0-4.42-3.58-8-8-8S0 7.58 0 12s3.58 8 8 8 8-3.58 8-8zm4 0c0-6.63-5.37-12-12-12S0 5.37 0 12s5.37 12 12 12 12-5.37 12-12z" />
+                            </svg>
+                        </div>
+                        <div class="gift-bank-name">Mandiri</div>
+                    </div>
+                    <div class="gift-number-wrap">
+                        <div class="gift-number">0987654321</div>
+                    </div>
+                    <div class="gift-card-footer">
+                        <div class="gift-holder-wrap">
+                            <span class="gift-holder-label">CARDHOLDER</span>
+                            <div class="gift-account-name">{{ invitation.groom.name }} (Contoh)</div>
+                        </div>
+                        <button class="copy-btn" onclick="copyText('0987654321',this)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                            </svg>
+                            Salin Nomor
+                        </button>
+                    </div>
+                </div>
+                {% else %}
                 {% for account in invitation.gift_accounts %}
                 <div class="gift-card">
-                    <div class="gift-bank">Bank</div>
-                    <div class="gift-bank-name">{{ account.bank_name }}</div>
-                    <div class="gift-account-name">{{ account.account_holder }}</div>
-                    <div class="gift-number">{{ account.account_number }}</div>
-                    <button class="copy-btn" onclick="copyText('{{ account.account_number }}',this)">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                            <path
-                                d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
-                        </svg>
-                        Salin Nomor
-                    </button>
+                    <div class="gift-card-header">
+                        <div class="gift-card-chip"></div>
+                        <div class="gift-card-contactless">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" style="opacity: 0.25;">
+                                <path d="M4 12c0-2.21 1.79-4 4-4s4 1.79 4 4-1.79 4-4 4-4-1.79-4-4zm12 0c0-4.42-3.58-8-8-8S0 7.58 0 12s3.58 8 8 8 8-3.58 8-8zm4 0c0-6.63-5.37-12-12-12S0 5.37 0 12s5.37 12 12 12 12-5.37 12-12z" />
+                            </svg>
+                        </div>
+                        <div class="gift-bank-name">{{ account.bank_name }}</div>
+                    </div>
+                    <div class="gift-number-wrap">
+                        <div class="gift-number">{{ account.account_number }}</div>
+                    </div>
+                    <div class="gift-card-footer">
+                        <div class="gift-holder-wrap">
+                            <span class="gift-holder-label">CARDHOLDER</span>
+                            <div class="gift-account-name">{{ account.account_holder }}</div>
+                        </div>
+                        <button class="copy-btn" onclick="copyText('{{ account.account_number }}',this)">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                            </svg>
+                            Salin Nomor
+                        </button>
+                    </div>
                 </div>
                 {% endfor %}
+                {% endif %}
             </div>
         </section>
 
@@ -1783,33 +2446,49 @@
                 <h2 class="section-heading">Ucapan & Doa</h2>
             </div>
             <div class="wishes-list" id="wishesList">
-                {% if invitation.is_preview %}
-                    <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); opacity: 0.7;">
-                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
-                            <div style="width: 35px; height: 35px; border-radius: 50%; background: #666; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">A</div>
-                            <div>
-                                <div style="font-weight: bold; font-size: 14px;">Ayu Rahmawati (Contoh)</div>
-                                <div style="font-size: 11px; opacity: 0.7;">Hadir · 2 tamu</div>
+                {% if invitation.rsvps.is_empty() %}
+                <div class="wish-card visible">
+                    <div class="wish-header">
+                        <div class="wish-avatar">A</div>
+                        <div class="wish-meta">
+                            <div class="wish-name">
+                                Ayu Rahmawati (Contoh)
+                                <span class="wish-verified-badge" title="Tamu Terkonfirmasi">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                </span>
                             </div>
+                            <div class="wish-status">Hadir · 2 tamu</div>
                         </div>
-                        <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"Selamat menempuh hidup baru! Semoga bahagia selalu."</div>
                     </div>
+                    <div class="wish-text">"Selamat menempuh hidup baru! Semoga bahagia selalu."</div>
+                </div>
                 {% else %}
                 {% for rsvp in invitation.rsvps %}
-                <div class="wish-card visible" style="margin-bottom: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 10px;">
-                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(45deg, #E50914, #b00710); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: white; box-shadow: 0 2px 8px rgba(229, 9, 20, 0.4);">{{ rsvp.initial() }}</div>
-                        <div>
-                            <div style="font-weight: bold; font-size: 15px; color: #fff;">{{ rsvp.name }}</div>
-                            <div style="font-size: 12px; color: #00AA13; font-weight: 500;">✓ {{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                <div class="wish-card visible">
+                    <div class="wish-header">
+                        <div class="wish-avatar">{{ rsvp.initial() }}</div>
+                        <div class="wish-meta">
+                            <div class="wish-name">
+                                {{ rsvp.name }}
+                                <span class="wish-verified-badge" title="Tamu Terkonfirmasi">
+                                    <svg viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                                </span>
+                            </div>
+                            <div class="wish-status">
+                                {% if rsvp.attendance == "Hadir" || rsvp.attendance == "hadir" %}
+                                Hadir · {{ rsvp.guests }} tamu
+                                {% else %}
+                                Berhalangan Hadir
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
-                    <div style="font-size: 14px; line-height: 1.6; font-style: italic; color: rgba(255,255,255,0.9); padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">"{{ rsvp.display_message() }}"</div>
+                    <div class="wish-text">"{{ rsvp.display_message() }}"</div>
                 </div>
                 {% endfor %}
                 {% endif %}
-                </div>
-                </section>
+            </div>
+        </section>
 
         <!-- FOOTER -->
         <footer class="footer-section">
@@ -1864,12 +2543,21 @@
     </nav>
 
     <!-- LIGHTBOX -->
-    <div class="lightbox" id="lightbox">
+    <div class="lightbox" id="lightbox" onclick="closeLightbox()">
         <button class="lightbox-close" onclick="closeLightbox()">✕</button>
-        <button class="lightbox-nav lightbox-prev" onclick="lightboxPrev()">‹</button>
-        <img class="lightbox-img" id="lightboxImg" src="" alt="">
-        <button class="lightbox-nav lightbox-next" onclick="lightboxNext()">›</button>
-        <div class="lightbox-counter" id="lightboxCounter"></div>
+        <button class="lightbox-nav lightbox-prev" onclick="event.stopPropagation(); lightboxPrev()">‹</button>
+        <img class="lightbox-img" id="lightboxImg" src="" alt="" onclick="event.stopPropagation()">
+        <button class="lightbox-nav lightbox-next" onclick="event.stopPropagation(); lightboxNext()">›</button>
+        <div class="lightbox-counter" id="lightboxCounter" onclick="event.stopPropagation()"></div>
+    </div>
+
+    <!-- STORY LIGHTBOX -->
+    <div class="lightbox" id="storyLightbox" onclick="closeStoryLightbox()">
+        <button class="lightbox-close" onclick="closeStoryLightbox()">✕</button>
+        <button class="lightbox-nav lightbox-prev" onclick="event.stopPropagation(); storyLightboxPrev()">‹</button>
+        <img class="lightbox-img" id="storyLightboxImg" src="" alt="" onclick="event.stopPropagation()">
+        <button class="lightbox-nav lightbox-next" onclick="event.stopPropagation(); storyLightboxNext()">›</button>
+        <div class="lightbox-counter" id="storyLightboxCounter" onclick="event.stopPropagation()"></div>
     </div>
 
     <!-- TOAST -->
@@ -1880,47 +2568,92 @@
            TRACK PLAYLIST — video (mp4) + metadata
            Using reliable public-domain/CC0 video sources
            ════════════════════════════════════════════════ */
-        const TRACKS = [
-            {
-                title: "Wedding Day",
-                artist: "{{ invitation.bride.name }} & {{ invitation.groom.name }} · Forever Anthem",
-                duration: "3:24",
-                durationSecs: 204,
-                // Pexels free nature/wedding-style videos (direct .mp4)
-                video: "https://www.w3schools.com/html/mov_bbb.mp4",
-                thumb: "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80",
-                gradient: "#0f3320,#1a472a"
-            },
-            {
-                title: "First Look",
-                artist: "Nazma & Gunturr · Forever Anthem",
-                duration: "2:58",
-                durationSecs: 178,
-                video: "https://www.w3schools.com/html/movie.mp4",
-                thumb: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&q=80",
-                gradient: "#1a1a2e,#2d1b69"
-            },
-            {
-                title: "Lamaran",
-                artist: "Nazma & Gunturr · Forever Anthem",
-                duration: "4:12",
-                durationSecs: 252,
-                video: "https://www.w3schools.com/html/mov_bbb.mp4",
-                thumb: "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&q=80",
-                gradient: "#2e1a0f,#6b3a1f"
-            }
+        /* ════════════════════════════════════════════════
+           DYNAMIC PLAYLIST BUILDER — pairs database videos & playlist songs
+           ════════════════════════════════════════════════ */
+        const DB_VIDEOS = [];
+        {% if !invitation.background_video_url.is_empty() %}
+        DB_VIDEOS.push("{{ invitation.background_video_url }}");
+        {% endif %}
+        {% for vid in invitation.gallery_videos %}
+        DB_VIDEOS.push("{{ vid }}");
+        {% endfor %}
+
+        const DB_AUDIOS = [];
+        {% if !invitation.song_url.is_empty() %}
+        DB_AUDIOS.push("{{ invitation.song_url }}");
+        {% endif %}
+        {% for song in invitation.playlist %}
+        DB_AUDIOS.push("{{ song }}");
+        {% endfor %}
+
+        // Fallbacks if database has no media
+        if (DB_VIDEOS.length === 0) {
+            DB_VIDEOS.push("https://assets.mixkit.co/videos/preview/mixkit-wedding-couple-walking-in-a-forest-40455-large.mp4");
+            DB_VIDEOS.push("https://assets.mixkit.co/videos/preview/mixkit-bride-and-groom-holding-hands-40456-large.mp4");
+        }
+        if (DB_AUDIOS.length === 0) {
+            DB_AUDIOS.push("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3");
+        }
+
+        const TRACKS = [];
+        const maxLen = Math.max(DB_VIDEOS.length, DB_AUDIOS.length);
+        const GRADIENTS = [
+            "#1a1a2e,#2d1b69", // Spotify Deep Indigo
+            "#2e1a0f,#6b3a1f", // Warm Sienna
+            "#0f3320,#1a472a", // Emerald
+            "#2e0854,#4b0082", // Royal Violet
+            "#4a0e17,#800c1e"  // Maroon
         ];
+
+        for (let i = 0; i < maxLen; i++) {
+            const videoUrl = DB_VIDEOS[i % DB_VIDEOS.length];
+            const audioUrl = DB_AUDIOS[i % DB_AUDIOS.length];
+
+            // Set beautiful default Spotify track titles based on playing index
+            let title = "Cinematic Moment";
+            if (i === 0) {
+                title = "Cinematic Moment";
+            } else if (i === 1) {
+                title = "Our Journey";
+            } else if (i === 2) {
+                title = "Love Story";
+            } else if (i === 3) {
+                title = "Forever Together";
+            } else if (i === 4) {
+                title = "Happy Ending";
+            } else {
+                title = `Special Track ${i + 1}`;
+            }
+
+            TRACKS.push({
+                title: title,
+                artist: "{{ invitation.bride.name }} & {{ invitation.groom.name }} · Forever Anthem",
+                duration: "3:00", // Dynamically populated on load
+                durationSecs: 180,
+                video: videoUrl,
+                audio: audioUrl,
+                thumb: "{{ invitation.gallery_images|first_image }}",
+                gradient: GRADIENTS[i % GRADIENTS.length]
+            });
+        }
 
         /* ═══ GALLERY IMAGES ═══ */
         const GALLERY_IMGS = [
-            { src: "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=650&fit=crop&q=80", seed: "g1" },
-            { src: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=650&fit=crop&q=80", seed: "g2" },
-            { src: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&h=650&fit=crop&q=80", seed: "g3" },
-            { src: "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=500&h=650&fit=crop&q=80", seed: "g4" },
-            { src: "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=500&h=650&fit=crop&q=80", seed: "g5" },
-            { src: "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=500&h=650&fit=crop&q=80", seed: "g6" },
-            { src: "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=500&h=650&fit=crop&q=80", seed: "g7" },
-            { src: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=650&fit=crop&q=80", seed: "g8" },
+            {% if invitation.gallery_images.is_empty() %}
+        { src: "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=650&fit=crop&q=80", seed: "g1" },
+        { src: "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=650&fit=crop&q=80", seed: "g2" },
+        { src: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&h=650&fit=crop&q=80", seed: "g3" },
+        { src: "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=500&h=650&fit=crop&q=80", seed: "g4" },
+        { src: "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=500&h=650&fit=crop&q=80", seed: "g5" },
+        { src: "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=500&h=650&fit=crop&q=80", seed: "g6" },
+        { src: "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=500&h=650&fit=crop&q=80", seed: "g7" },
+        { src: "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=650&fit=crop&q=80", seed: "g8" },
+        {% else %}
+        {% for img_url in invitation.gallery_images %}
+        { src: "{{ img_url }}", seed: "g{{ loop.index }}" },
+        {% endfor %}
+        {% endif %}
         ];
 
         /* ═══════════════════════════════════════════
@@ -1957,8 +2690,43 @@
             startCountdown();
             loadTrack(0, false);
             buildGallery();
+            initLyrics();
             initScrollAnim();
             initNavHighlight();
+
+            // Automatically play video and background music on invitation opened
+            playAll();
+        }
+
+        /* ── LYRICS INITIALIZER & SOURCE TOGGLE ── */
+        function initLyrics() {
+            const rawQuote = `{{ invitation.quote.text }}`;
+            const container = document.getElementById('lyricsContent');
+            if (!container) return;
+
+            // Clean up and split the quote text beautifully by punctuation or newlines for lyric display
+            const segments = rawQuote.split(/[.,;\n]+/).map(s => s.trim()).filter(s => s.length > 0);
+
+            container.innerHTML = '';
+            // Render up to 5 gorgeous lines
+            segments.slice(0, 5).forEach(seg => {
+                const line = document.createElement('div');
+                line.className = 'lyrics-line';
+                line.textContent = seg;
+                container.appendChild(line);
+            });
+        }
+
+        function toggleLyrics() {
+            const popup = document.getElementById('lyricsSourcePopup');
+            const btn = document.querySelector('.lyrics-show-btn');
+            if (popup.classList.contains('show')) {
+                popup.classList.remove('show');
+                btn.textContent = 'Show source';
+            } else {
+                popup.classList.add('show');
+                btn.textContent = 'Hide source';
+            }
         }
 
         /* ═══════════════════════════════════════════
@@ -1978,6 +2746,25 @@
         /* ═══════════════════════════════════════════
            TRACK LOADING — video + bg gradient + meta
         ═══════════════════════════════════════════ */
+        /* Helper to convert hex to translucent rgba */
+        function hexToRgba(hex, alpha) {
+            hex = hex.replace('#', '');
+            let r = parseInt(hex.substring(0, 2), 16);
+            let g = parseInt(hex.substring(2, 4), 16);
+            let b = parseInt(hex.substring(4, 6), 16);
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+
+        /* Dynamically update the Spotify dynamic linear gradient with beautiful translucency so the background video shows clearly */
+        function updateOverlayGradient(playing) {
+            const overlay = document.getElementById('videoOverlay');
+            if (!overlay) return;
+            // Always apply a faint, elegant purple gradient to keep video extremely clear
+            const c0 = "rgba(26, 26, 46, " + (playing ? "0.12" : "0.22") + ")";
+            const c1 = "rgba(55, 37, 115, " + (playing ? "0.2" : "0.35") + ")";
+            overlay.style.background = `linear-gradient(180deg, ${c0} 0%, ${c1} 45%, rgba(18, 18, 18, ${playing ? 0.8 : 0.9}) 100%)`;
+        }
+
         function loadTrack(idx, autoplay) {
             currentTrackIdx = idx;
             const t = TRACKS[idx];
@@ -1988,9 +2775,8 @@
                 `${t.artist} <span class="eq-bars paused" id="eqBars"><span class="eq-bar"></span><span class="eq-bar"></span><span class="eq-bar"></span></span>`;
             document.getElementById('totalTime').textContent = t.duration;
 
-            // update background gradient
-            const section = document.querySelector('.now-playing-section');
-            section.style.background = `linear-gradient(180deg, ${t.gradient.split(',')[0]} 0%, ${t.gradient.split(',')[1]} 30%, #121212 75%)`;
+            // update background gradient with correct transparency
+            updateOverlayGradient(autoplay);
 
             // load video
             const video = document.getElementById('heroVideo');
@@ -1998,28 +2784,84 @@
             video.src = t.video;
             video.load();
 
+            // load audio (background music)
+            const audio = document.getElementById('bgMusic');
+            if (audio && t.audio) {
+                audio.pause();
+                audio.src = t.audio;
+                audio.load();
+
+                audio.onloadedmetadata = function () {
+                    const secs = Math.floor(audio.duration) || 180;
+                    t.durationSecs = secs;
+                    const mins = Math.floor(secs / 60);
+                    const remSecs = secs % 60;
+                    t.duration = `${mins}:${remSecs < 10 ? '0' : ''}${remSecs}`;
+                    document.getElementById('totalTime').textContent = t.duration;
+                };
+            }
+
             // reset progress
             progressVal = 0;
             clearInterval(progressInterval);
             updateProgressUI();
 
             if (autoplay) {
-                video.play().then(() => {
-                    startMusicAndVideo();
-                }).catch(() => {
-                    // autoplay blocked — keep paused
-                    setPlayState(false);
-                });
+                // Play audio and video in sync
+                const playPromise = video.play();
+                if (playPromise !== undefined) {
+                    playPromise.then(() => {
+                        if (audio) {
+                            audio.volume = 0.4;
+                            audio.play().catch(() => { });
+                        }
+                        startMusicAndVideo();
+                    }).catch(() => {
+                        setPlayState(false);
+                    });
+                }
             } else {
                 setPlayState(false);
-                // show poster as background
-                video.style.opacity = '0.4';
+                video.style.opacity = '0.6';
             }
         }
 
         /* ═══════════════════════════════════════════
            PLAY / PAUSE
         ═══════════════════════════════════════════ */
+        function toggleFollowCouple(btn) {
+            if (btn.classList.contains('active')) {
+                btn.classList.remove('active');
+                btn.textContent = 'Follow';
+            } else {
+                btn.classList.add('active');
+                btn.textContent = 'Following';
+            }
+        }
+
+        function toggleFollowGroom(btn) {
+            if (btn.classList.contains('active')) {
+                btn.classList.remove('active');
+                btn.textContent = 'Follow';
+            } else {
+                btn.classList.add('active');
+                btn.textContent = 'Following';
+            }
+        }
+
+        function toggleFollowBride(btn) {
+            if (btn.classList.contains('active')) {
+                btn.classList.remove('active');
+                btn.textContent = 'Follow';
+            } else {
+                btn.classList.add('active');
+                btn.textContent = 'Following';
+            }
+        }
+
+        /* ═══════════════════════════════════════════
+           PLAY / PAUSE
+         ═══════════════════════════════════════════ */
         function togglePlay() {
             if (isPlaying) {
                 pauseAll();
@@ -2055,13 +2897,35 @@
         function startMusicAndVideo() {
             const t = TRACKS[currentTrackIdx];
             setPlayState(true);
+
+            const audio = document.getElementById('bgMusic');
+            clearInterval(progressInterval);
+
             progressInterval = setInterval(() => {
-                progressVal = Math.min(progressVal + (100 / t.durationSecs), 100);
-                updateProgressUI();
-                if (progressVal >= 100) {
-                    nextTrack();
+                if (audio && !audio.paused && audio.duration) {
+                    const cur = audio.currentTime;
+                    const dur = audio.duration;
+                    progressVal = (cur / dur) * 100;
+
+                    // Update current time text
+                    const curMins = Math.floor(cur / 60);
+                    const curSecs = Math.floor(cur % 60);
+                    document.getElementById('currentTime').textContent = `${curMins}:${curSecs < 10 ? '0' : ''}${curSecs}`;
+
+                    updateProgressUI();
+
+                    if (cur >= dur - 0.5) {
+                        nextTrack();
+                    }
+                } else {
+                    // Fallback tracker
+                    progressVal = Math.min(progressVal + (100 / t.durationSecs), 100);
+                    updateProgressUI();
+                    if (progressVal >= 100) {
+                        nextTrack();
+                    }
                 }
-            }, 1000);
+            }, 500);
         }
 
         function setPlayState(playing) {
@@ -2073,13 +2937,15 @@
             const overlay = document.getElementById('videoOverlay');
             const centerPlay = document.getElementById('videoCenterPlay');
             const video = document.getElementById('heroVideo');
+
+            // Dynamically calculate dynamic translucency for gradients
+            updateOverlayGradient(playing);
+
             if (playing) {
-                overlay.classList.add('playing');
-                centerPlay.classList.add('hidden');
-                video.style.opacity = '1';
+                if (centerPlay) centerPlay.classList.add('hidden');
+                video.style.opacity = '0.9';
             } else {
-                overlay.classList.remove('playing');
-                centerPlay.classList.remove('hidden');
+                if (centerPlay) centerPlay.classList.remove('hidden');
                 video.style.opacity = '0.6';
             }
 
@@ -2111,6 +2977,11 @@
                 // restart current
                 progressVal = 0;
                 updateProgressUI();
+
+                const video = document.getElementById('heroVideo');
+                const audio = document.getElementById('bgMusic');
+                if (video) video.currentTime = 0;
+                if (audio) audio.currentTime = 0;
                 return;
             }
             const prev = (currentTrackIdx - 1 + TRACKS.length) % TRACKS.length;
@@ -2138,7 +3009,16 @@
                 updateProgressUI();
                 const t = TRACKS[currentTrackIdx];
                 const video = document.getElementById('heroVideo');
-                video.currentTime = (progressVal / 100) * t.durationSecs;
+                const audio = document.getElementById('bgMusic');
+
+                if (audio && audio.duration) {
+                    const targetTime = (progressVal / 100) * audio.duration;
+                    if (video) video.currentTime = targetTime;
+                    audio.currentTime = targetTime;
+                } else {
+                    const targetTime = (progressVal / 100) * t.durationSecs;
+                    if (video) video.currentTime = targetTime;
+                }
             }
         });
 
@@ -2245,9 +3125,7 @@
             document.getElementById('galleryTrack').style.transform = `translateX(-${galleryOffset}px)`;
         }
 
-        /* ═══════════════════════════════════════════
-           LIGHTBOX
-        ═══════════════════════════════════════════ */
+        /* ── LIGHTBOX (GALLERY) ── */
         function openLightbox(idx) {
             lightboxIdx = idx;
             updateLightbox();
@@ -2272,22 +3150,165 @@
             document.getElementById('lightboxImg').src = LIGHTBOX_IMGS[lightboxIdx];
             document.getElementById('lightboxCounter').textContent = `${lightboxIdx + 1} / ${LIGHTBOX_IMGS.length}`;
         }
+
+        /* ── STORY LIGHTBOX (LOVE STORY) ── */
+        let storyLightboxIdx = 0;
+        let storyImgs = [];
+        function openStoryLightbox(idx) {
+            const imgEls = document.querySelectorAll('.timeline-media img');
+            storyImgs = Array.from(imgEls).map(img => img.src);
+            if (storyImgs.length === 0) return;
+            storyLightboxIdx = idx;
+            updateStoryLightbox();
+            document.getElementById('storyLightbox').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeStoryLightbox() {
+            document.getElementById('storyLightbox').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+        function storyLightboxPrev() {
+            storyLightboxIdx = (storyLightboxIdx - 1 + storyImgs.length) % storyImgs.length;
+            updateStoryLightbox();
+        }
+        function storyLightboxNext() {
+            storyLightboxIdx = (storyLightboxIdx + 1) % storyImgs.length;
+            updateStoryLightbox();
+        }
+        function updateStoryLightbox() {
+            document.getElementById('storyLightboxImg').src = storyImgs[storyLightboxIdx];
+            document.getElementById('storyLightboxCounter').textContent = `${storyLightboxIdx + 1} / ${storyImgs.length}`;
+        }
+
+        /* ── KEYBOARD CONTROLS DISPATCHER ── */
         document.addEventListener('keydown', e => {
             const lb = document.getElementById('lightbox');
-            if (!lb.classList.contains('open')) return;
-            if (e.key === 'Escape') closeLightbox();
-            if (e.key === 'ArrowLeft') lightboxPrev();
-            if (e.key === 'ArrowRight') lightboxNext();
+            const slb = document.getElementById('storyLightbox');
+            if (lb.classList.contains('open')) {
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft') lightboxPrev();
+                if (e.key === 'ArrowRight') lightboxNext();
+            } else if (slb.classList.contains('open')) {
+                if (e.key === 'Escape') closeStoryLightbox();
+                if (e.key === 'ArrowLeft') storyLightboxPrev();
+                if (e.key === 'ArrowRight') storyLightboxNext();
+            }
         });
+
+        /* ═══════════════════════════════════════════
+           DYNAMIC WEDDING DATE POPULATOR (YEAR & MONTH)
+        ═══════════════════════════════════════════ */
+        function initDynamicWeddingDate() {
+            let dateStr = '{{ invitation.event_date_iso }}'.trim();
+            if (!dateStr) {
+                dateStr = '{{ invitation.event_date }}'.trim();
+            }
+            if (!dateStr) return;
+
+            let weddingYear = new Date().getFullYear();
+            let weddingMonth = "Mei";
+
+            if (dateStr.includes('-')) {
+                const parts = dateStr.split('-');
+                if (parts.length >= 1) {
+                    weddingYear = parts[0];
+                    const m = parseInt(parts[1]);
+                    const monthsIndo = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                    if (m >= 1 && m <= 12) {
+                        weddingMonth = monthsIndo[m - 1];
+                    }
+                }
+            } else {
+                const yearMatch = dateStr.match(/\b\d{4}\b/);
+                if (yearMatch) weddingYear = yearMatch[0];
+
+                const monthsIndo = ["jan", "feb", "mar", "apr", "mei", "jun", "jul", "agu", "sep", "okt", "nov", "des"];
+                const monthsIndoFull = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+                const cleanStr = dateStr.toLowerCase();
+                for (let m = 0; m < monthsIndo.length; m++) {
+                    if (cleanStr.includes(monthsIndo[m])) {
+                        weddingMonth = monthsIndoFull[m];
+                        break;
+                    }
+                }
+            }
+
+            document.querySelectorAll('.wedding-year-el').forEach(el => {
+                el.textContent = weddingYear;
+            });
+            const storyMonthEl = document.getElementById('weddingStoryMonth');
+            if (storyMonthEl) {
+                storyMonthEl.textContent = `${weddingMonth} ${weddingYear}`;
+            }
+        }
+        initDynamicWeddingDate();
 
         /* ═══════════════════════════════════════════
            COUNTDOWN
         ═══════════════════════════════════════════ */
         function startCountdown() {
-            const target = new Date('{{ invitation.event_date_iso }}');
+            let dateStr = '{{ invitation.event_date_iso }}'.trim();
+            if (!dateStr) {
+                dateStr = '{{ invitation.event_date }}'.trim();
+            }
+
+            let target;
+            // Handle YYYY-MM-DD HH:MM:SS or YYYY-MM-DDTHH:MM:SS formats securely
+            if (dateStr.includes('-')) {
+                const cleanISO = dateStr.replace(' ', 'T');
+                if (cleanISO.includes('T')) {
+                    const [datePart, timePart] = cleanISO.split('T');
+                    const [year, month, day] = datePart.split('-').map(Number);
+                    const [hours, minutes, seconds] = timePart.split(':').map(Number);
+                    target = new Date(year, month - 1, day, hours || 8, minutes || 0, seconds || 0);
+                } else {
+                    const [year, month, day] = dateStr.split('-').map(Number);
+                    target = new Date(year, month - 1, day, 8, 0, 0);
+                }
+            } else {
+                // Fallback to manual parsing for Indonesian text dates like "24 Mei 2026"
+                const cleanStr = dateStr.toLowerCase().replace(/[,:]/g, ' ');
+                let day = 1;
+                let month = 4; // Mei
+                let year = 2026;
+
+                const dayMatch = dateStr.match(/^\d+/);
+                if (dayMatch) day = parseInt(dayMatch[0]);
+
+                const yearMatch = dateStr.match(/\b\d{4}\b/);
+                if (yearMatch) year = parseInt(yearMatch[0]);
+
+                const monthsIndo = ["jan", "feb", "mar", "apr", "mei", "jun", "jul", "agu", "sep", "okt", "nov", "des"];
+                for (let m = 0; m < monthsIndo.length; m++) {
+                    if (cleanStr.includes(monthsIndo[m])) {
+                        month = m;
+                        break;
+                    }
+                }
+                target = new Date(year, month, day, 8, 0, 0);
+            }
+
+            // If the target date is in the past (e.g. demo dates or old invitations), push it to the future dynamically so the demo/live invitation is always active and beautiful!
+            if (target && target.getTime() <= new Date().getTime()) {
+                while (target.getTime() <= new Date().getTime()) {
+                    target.setFullYear(target.getFullYear() + 1);
+                }
+            }
+
+            // Ultimate future date fallback if database date is empty or invalid
+            if (!target || isNaN(target.getTime())) {
+                target = new Date(new Date().getTime() + 5 * 86400000);
+            }
+
             function tick() {
                 const diff = target - new Date();
-                if (diff <= 0) { ['cdDays', 'cdHours', 'cdMinutes', 'cdSeconds'].forEach(id => document.getElementById(id).textContent = '00'); return; }
+                if (isNaN(diff) || diff <= 0) {
+                    ['cdDays', 'cdHours', 'cdMinutes', 'cdSeconds'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.textContent = '00';
+                    });
+                    return;
+                }
                 document.getElementById('cdDays').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
                 document.getElementById('cdHours').textContent = String(Math.floor((diff % 86400000) / 3600000)).padStart(2, '0');
                 document.getElementById('cdMinutes').textContent = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
@@ -2341,10 +3362,24 @@
             const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             const colors = ['#1DB954', '#4a9eff', '#ff6b6b', '#ffb347', '#c084fc'];
             const color = colors[Math.floor(Math.random() * colors.length)];
-            const statusText = status === 'hadir' ? `✓ Hadir · ${guestCount} tamu` : '✗ Tidak Hadir';
+            const statusText = status === 'hadir' ? `Hadir · ${guestCount} tamu` : 'Berhalangan Hadir';
             const card = document.createElement('div');
             card.className = 'wish-card';
-            card.innerHTML = `<div class="wish-header"><div class="wish-avatar" style="background:${color}">${initials}</div><div><div class="wish-name">${name}</div><div class="wish-status">${statusText}</div></div></div><div class="wish-text">${msg || 'Selamat dan semoga bahagia selalu! 💚'}</div>`;
+            card.innerHTML = `
+                <div class="wish-header">
+                    <div class="wish-avatar" style="background:${color}; color:#121212">${initials}</div>
+                    <div class="wish-meta">
+                        <div class="wish-name">
+                            ${name}
+                            <span class="wish-verified-badge" title="Tamu Terkonfirmasi">
+                                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                            </span>
+                        </div>
+                        <div class="wish-status">${statusText}</div>
+                    </div>
+                </div>
+                <div class="wish-text">"${msg || 'Selamat dan semoga bahagia selalu! 💚'}"</div>
+            `;
             const list = document.getElementById('wishesList');
             list.prepend(card);
             setTimeout(() => card.classList.add('visible'), 50);
@@ -2381,7 +3416,7 @@
             toastTimeout = setTimeout(() => t.classList.remove('show'), 2800);
         }
     </script>
-{% include "invitation/ai_concierge_snippet.html" %}
+    {% include "invitation/ai_concierge_snippet.html" %}
 </body>
 
 </html>

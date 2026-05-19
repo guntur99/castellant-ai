@@ -3614,10 +3614,27 @@
 
         /* ══ COUNTDOWN ══ */
         function countdown() {
-            const t = new Date('{{ invitation.event_date_iso }}');
+            const dateStr = '{{ invitation.event_date_iso }}';
+            let t;
+            if (dateStr.includes('T')) {
+                const [datePart, timePart] = dateStr.split('T');
+                const [year, month, day] = datePart.split('-').map(Number);
+                const [hours, minutes, seconds] = timePart.split(':').map(Number);
+                t = new Date(year, month - 1, day, hours, minutes, seconds);
+            } else {
+                const [year, month, day] = dateStr.split('-').map(Number);
+                t = new Date(year, month - 1, day, 8, 0, 0);
+            }
+
             function tick() {
                 const d = t - new Date();
-                if (d <= 0) { ['cdD', 'cdH', 'cdM', 'cdS'].forEach(id => document.getElementById(id).textContent = '00'); return; }
+                if (isNaN(d) || d <= 0) {
+                    ['cdD', 'cdH', 'cdM', 'cdS'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.textContent = '00';
+                    });
+                    return;
+                }
                 document.getElementById('cdD').textContent = String(Math.floor(d / 86400000)).padStart(2, '0');
                 document.getElementById('cdH').textContent = String(Math.floor((d % 86400000) / 3600000)).padStart(2, '0');
                 document.getElementById('cdM').textContent = String(Math.floor((d % 3600000) / 60000)).padStart(2, '0');
