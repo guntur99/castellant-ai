@@ -1316,15 +1316,16 @@
                                 </button>
                             </div>
 
-                            <div class="ai-onboarding-promo">
+                            <!-- AI Onboarding Assistant Banner -->
+                            <div class="ai-onboarding-promo" style="background: linear-gradient(135deg, #2A1E14 0%, #4A3728 100%); padding: 1.5rem; border-radius: 20px; color: white; margin-top: 1.5rem; margin-bottom: 2rem; display: flex; align-items: center; gap: 1.5rem; position: relative; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
                                 <div style="font-size: 2.5rem;">🤖</div>
                                 <div style="flex: 1;">
                                     <h4 style="margin: 0; font-weight: 800; font-size: 1.1rem;">Butuh Bantuan AI?</h4>
-                                    <p style="margin: 5px 0 0; opacity: 0.8; font-size: 0.85rem;">Ceritakan detail baru
-                                        atau biarkan AI membantu merapikan kata-kata Anda!</p>
+                                    <p style="margin: 5px 0 0; opacity: 0.8; font-size: 0.85rem;">Ceritakan detail baru atau biarkan AI membantu merapikan kata-kata Anda!</p>
                                 </div>
-                                <button type="button" class="btn-ai-magic" onclick="toggleAiAssistant()">
-                                    <span>✨ Mulai Chat AI</span>
+                                <button type="button" class="btn-ai-magic" onclick="openAiAssistant()" style="position:static; background: white; color: #2A1E14; padding: 0.7rem 1.2rem; font-size: 0.85rem;">
+                                    <span class="wand-icon">✨</span>
+                                    <span>Mulai Chat AI</span>
                                 </button>
                             </div>
 
@@ -3417,8 +3418,11 @@
         modal.classList.add('active');
     }
 
-    function toggleAiAssistant() {
-        $('#aiAssistantModal').fadeToggle();
+    function openAiAssistant() {
+        document.getElementById('aiAssistantModal').style.display = 'flex';
+    }
+    function closeAiAssistant() {
+        document.getElementById('aiAssistantModal').style.display = 'none';
     }
     function copyGuestLink(slug, guest) {
         const link = `${window.location.origin}/invitation/${slug}?to=${guest}`;
@@ -3458,7 +3462,7 @@
     }
     window.onclick = function (e) {
         if (e.target == document.getElementById('add-guest-modal')) toggleAddGuestModal();
-        if (e.target == document.getElementById('aiAssistantModal')) toggleAiAssistant();
+        if (e.target == document.getElementById('aiAssistantModal')) closeAiAssistant();
     }
 
     function showUpgradeOptions() {
@@ -4121,51 +4125,353 @@
             }
         })
     }
+
+    // --- AI Onboarding / Edit Assistant Logic ---
+    let currentAiSessionId = localStorage.getItem('ai_session_id');
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        if (currentAiSessionId) {
+            try {
+                const res = await fetch(`/api/ai/session/${currentAiSessionId}`);
+                if (res.ok) {
+                    const session = await res.json();
+                    restoreAiSession(session);
+                }
+            } catch (err) {
+                console.error("Failed to restore AI session", err);
+            }
+        }
+    });
+
+    function restoreAiSession(session) {
+        const chatBody = document.getElementById('aiChatBody');
+        
+        // Restore History
+        if (session.chat_history && Array.isArray(session.chat_history)) {
+            session.chat_history.forEach(msg => {
+                if (msg.role === 'system') return;
+                appendMessageToChat(msg.role, msg.content);
+            });
+        }
+
+        // Restore Form State
+        if (session.form_state) {
+            fillFormFromData(session.form_state);
+        }
+    }
+
+    function appendMessageToChat(role, content) {
+        const chatBody = document.getElementById('aiChatBody');
+        const isAi = role === 'assistant' || role === 'ai';
+        const wrapper = document.createElement('div');
+        
+        if (isAi) {
+            wrapper.style.cssText = 'display: flex; gap: 12px; align-self: flex-start; max-width: 85%;';
+            wrapper.innerHTML = `
+                <div style="width: 32px; height: 32px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;">🤖</div>
+                <div style="background: white; color: #2A1E14; padding: 1rem 1.2rem; border-radius: 20px; border-top-left-radius: 4px; line-height: 1.6; font-size: 0.9rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #f0f0f0;">
+                    ${content}
+                </div>
+            `;
+        } else {
+            wrapper.style.cssText = 'display: flex; gap: 12px; align-self: flex-end; max-width: 85%; flex-direction: row-reverse;';
+            wrapper.innerHTML = `
+                <div style="width: 32px; height: 32px; background: #2A1E14; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; font-weight: 700;">U</div>
+                <div style="background: #2A1E14; color: white; padding: 1rem 1.2rem; border-radius: 20px; border-top-right-radius: 4px; line-height: 1.6; font-size: 0.9rem; box-shadow: 0 10px 20px rgba(42,30,20,0.1);">
+                    ${content}
+                </div>
+            `;
+        }
+        
+        chatBody.appendChild(wrapper);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function showTypingIndicator() {
+        const chatBody = document.getElementById('aiChatBody');
+        const indicator = document.createElement('div');
+        indicator.id = 'ai-typing-indicator';
+        indicator.style.cssText = 'display: flex; gap: 12px; align-self: flex-start; max-width: 85%; margin-bottom: 1rem;';
+        indicator.innerHTML = `
+            <div style="width: 32px; height: 32px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;">🤖</div>
+            <div style="background: white; color: #2A1E14; padding: 1rem 1.5rem; border-radius: 20px; border-top-left-radius: 4px; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #f0f0f0; display: flex; gap: 5px; align-items: center;">
+                <span class="typing-dot"></span>
+                <span class="typing-dot" style="animation-delay: 0.2s;"></span>
+                <span class="typing-dot" style="animation-delay: 0.4s;"></span>
+            </div>
+        `;
+        chatBody.appendChild(indicator);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    function hideTypingIndicator() {
+        const indicator = document.getElementById('ai-typing-indicator');
+        if (indicator) indicator.remove();
+    }
+
+    function fillFormFromData(data) {
+        const nameMap = {
+            'couple_name_short': data.couple_name_short,
+            'slug': data.slug,
+            'event_date': data.ceremony_date,
+            'ceremony_time': data.ceremony_time,
+            'ceremony_venue': data.ceremony_venue,
+            'ceremony_address': data.ceremony_address,
+            'ceremony_maps': data.ceremony_maps,
+            'bride_name': data.bride_name,
+            'bride_full_name': data.bride_full_name,
+            'bride_father': data.bride_father,
+            'bride_mother': data.bride_mother,
+            'groom_name': data.groom_name,
+            'groom_full_name': data.groom_full_name,
+            'groom_father': data.groom_father,
+            'groom_mother': data.groom_mother,
+            'reception_date': data.reception_date,
+            'reception_time': data.reception_time,
+            'reception_venue': data.reception_venue,
+            'reception_address': data.reception_address,
+            'reception_maps': data.reception_maps,
+            'quote_text': data.quote_text,
+            'quote_source': data.quote_source
+        };
+
+        for (const [name, value] of Object.entries(nameMap)) {
+            const el = document.querySelector(`[name="${name}"]`);
+            if (el && value && value !== "" && value !== "null") {
+                el.value = value;
+                el.classList.add('highlight-filled');
+                setTimeout(() => el.classList.remove('highlight-filled'), 3000);
+            }
+        }
+        if (typeof checkSlugAvailability === 'function') checkSlugAvailability();
+        if (typeof syncReception === 'function') syncReception();
+        if (typeof updatePreview === 'function') updatePreview();
+    }
+
+    async function parseAndFillForm() {
+        const inputEl = document.getElementById('aiAssistantInput');
+        const prompt = inputEl.value.trim();
+        if (!prompt) return;
+
+        appendMessageToChat('user', prompt);
+        inputEl.value = '';
+        inputEl.style.height = '45px'; // Reset height
+        
+        showTypingIndicator();
+
+        try {
+            const response = await fetch('/api/ai/parse-form', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ 
+                    prompt, 
+                    session_id: currentAiSessionId 
+                })
+            });
+
+            const rawResult = await response.json();
+            
+            // Update session ID if it was newly created
+            if (rawResult.session_id) {
+                currentAiSessionId = rawResult.session_id;
+                localStorage.setItem('ai_session_id', currentAiSessionId);
+            }
+
+            let parsed;
+            try {
+                parsed = JSON.parse(rawResult.text);
+            } catch (e) {
+                console.error("JSON Parse Error:", e, rawResult.text);
+                throw new Error("Invalid AI response format");
+            }
+
+            const data = parsed.data || {};
+
+            hideTypingIndicator();
+            fillFormFromData(data);
+            appendMessageToChat('assistant', parsed.reply || "Detail undangan Anda sudah saya perbarui!");
+
+            if (parsed.missing && parsed.missing.length === 0) {
+                showAiToast("🎉 Semua data penting sudah lengkap!");
+            }
+        } catch (err) {
+            console.error("AI Process Error:", err);
+            hideTypingIndicator();
+            showAiToast("❌ Gagal memproses data. Silakan coba lagi.");
+            appendMessageToChat('assistant', "Maaf, saya gagal memproses pesan tersebut. Bisa diulangi dengan kalimat yang berbeda?");
+        }
+    }
+
+    function handleAiChatFileUpload(input) {
+        if (!input.files || input.files.length === 0) return;
+
+        const chatBody = document.getElementById('aiChatBody');
+        const file = input.files[0];
+        const isVideo = file.type.startsWith('video/');
+
+        // Append User File Message
+        const userMsgWrapper = document.createElement('div');
+        userMsgWrapper.style.cssText = 'display: flex; gap: 12px; align-self: flex-end; max-width: 85%; flex-direction: row-reverse;';
+        
+        const userAvatar = document.createElement('div');
+        userAvatar.style.cssText = 'width: 32px; height: 32px; background: #2A1E14; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; font-weight: 700;';
+        userAvatar.textContent = 'U';
+
+        const userMsg = document.createElement('div');
+        userMsg.style.cssText = 'background: #2A1E14; color: white; padding: 0.8rem; border-radius: 20px; border-top-right-radius: 4px; line-height: 1.6; font-size: 0.9rem; box-shadow: 0 10px 20px rgba(42,30,20,0.1);';
+        userMsg.innerHTML = `<div style="font-size: 10px; opacity: 0.7; margin-bottom: 5px;">Uploading ${isVideo ? 'Video' : 'Image'}...</div><div style="font-weight: 700;">${file.name}</div>`;
+        
+        userMsgWrapper.appendChild(userAvatar);
+        userMsgWrapper.appendChild(userMsg);
+        chatBody.appendChild(userMsgWrapper);
+        chatBody.scrollTop = chatBody.scrollHeight;
+
+        // Sync with main form inputs
+        if (isVideo) {
+            const videoInput = document.querySelector('input[name="video"]');
+            if (videoInput) {
+                videoInput.files = input.files;
+                if (typeof handleFileSelect === 'function') handleFileSelect(videoInput);
+            }
+        } else {
+            const galleryInput = document.querySelector('input[name="gallery[]"]');
+            if (galleryInput) {
+                galleryInput.files = input.files;
+                if (typeof handleFileSelect === 'function') handleFileSelect(galleryInput);
+            }
+        }
+
+        // AI Reply confirmation
+        setTimeout(() => {
+            const aiMsgWrapper = document.createElement('div');
+            aiMsgWrapper.style.cssText = 'display: flex; gap: 12px; align-self: flex-start; max-width: 85%;';
+            
+            const aiAvatar = document.createElement('div');
+            aiAvatar.style.cssText = 'width: 32px; height: 32px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;';
+            aiAvatar.textContent = '🤖';
+
+            const aiMsg = document.createElement('div');
+            aiMsg.style.cssText = 'background: white; color: #2A1E14; padding: 1rem 1.2rem; border-radius: 20px; border-top-left-radius: 4px; line-height: 1.6; font-size: 0.9rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #f0f0f0;';
+            aiMsg.innerHTML = `Wah, file <b>${file.name}</b> sudah saya terima dan saya masukkan ke ${isVideo ? 'Video Utama' : 'Galeri'}! ✨ Ada lagi yang mau ditambahkan?`;
+            
+            aiMsgWrapper.appendChild(aiAvatar);
+            aiMsgWrapper.appendChild(aiMsg);
+            chatBody.appendChild(aiMsgWrapper);
+            chatBody.scrollTop = chatBody.scrollHeight;
+        }, 1500);
+    }
+
+    function showAiToast(msg) {
+        let toast = document.getElementById('ai-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'ai-toast';
+            toast.className = 'ai-toast';
+            document.body.appendChild(toast);
+        }
+        toast.innerText = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 3000);
+    }
 </script>
 
 <!-- AI ASSISTANT MODAL MIRROR -->
-<div class="ai-chat-modal" id="aiAssistantModal"
-    style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 10000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(8px);">
-    <div class="ai-chat-content"
-        style="background: white; width: 100%; max-width: 500px; height: 80vh; border-radius: 35px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 40px 120px rgba(0,0,0,0.3); margin: auto;">
+<div class="ai-chat-modal" id="aiAssistantModal" style="display:none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 10000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(8px);"
+    onclick="if(event.target === this) closeAiAssistant()">
+    <div class="ai-chat-content animate__animated animate__zoomIn" style="background: white; width: 100%; max-width: 500px; height: 80vh; border-radius: 35px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 40px 120px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.2); margin: auto;">
+        
         <!-- Header -->
-        <div class="ai-chat-header"
-            style="background: linear-gradient(135deg, #2A1E14 0%, #4A3728 100%); padding: 1.5rem 2rem; display: flex; align-items: center; justify-content: space-between; color: white;">
+        <div class="ai-chat-header" style="background: linear-gradient(135deg, #2A1E14 0%, #4A3728 100%); padding: 1.5rem 2rem; display: flex; align-items: center; justify-content: space-between; color: white;">
             <div style="display:flex; align-items:center; gap:12px">
-                <div
-                    style="width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px;">
-                    🤖</div>
+                <div style="width: 40px; height: 40px; background: rgba(255,255,255,0.1); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px;">🤖</div>
                 <div>
                     <div style="font-weight:800; font-size:0.9rem; letter-spacing:0.5px;">Castellant AI</div>
-                    <div style="font-size: 0.7rem; opacity: 0.7;">Online Assistant</div>
+                    <div style="font-size: 0.7rem; opacity: 0.7; display: flex; align-items: center; gap: 4px;">
+                        <span style="width: 6px; height: 6px; background: #4ade80; border-radius: 50%;"></span> Online Assistant
+                    </div>
                 </div>
             </div>
-            <button onclick="toggleAiAssistant()"
-                style="background:transparent; border:none; color:white; font-size: 1.5rem; cursor:pointer;">&times;</button>
+            <button onclick="closeAiAssistant()" style="background:rgba(255,255,255,0.1); border:none; color:white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor:pointer; transition: 0.3s;">&times;</button>
         </div>
-        <!-- Body -->
-        <div id="aiChatBody"
-            style="background: #fafafa; padding: 2rem; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem;">
-            <div style="display: flex; gap: 12px; align-self: flex-start; max-width: 85%;">
-                <div
-                    style="width: 32px; height: 32px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">
-                    🤖</div>
-                <div
-                    style="background: white; padding: 1rem; border-radius: 20px; font-size: 0.9rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03);">
-                    Halo! Saya asisten AI Castellant. Mau bantu apa hari ini? Saya bisa bantu update detail undangan
-                    Anda atau merapikan kutipan pernikahan. ✨
+
+        <!-- Chat Body -->
+        <div class="ai-chat-body" id="aiChatBody" style="background: #fafafa; padding: 2rem; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 1.5rem; scroll-behavior: smooth;">
+            <div class="msg-ai-wrapper" style="display: flex; gap: 12px; align-self: flex-start; max-width: 85%;">
+                <div style="width: 32px; height: 32px; background: #eee; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;">🤖</div>
+                <div class="msg-ai" style="background: white; color: #2A1E14; padding: 1rem 1.2rem; border-radius: 20px; border-top-left-radius: 4px; line-height: 1.6; font-size: 0.9rem; box-shadow: 0 2px 10px rgba(0,0,0,0.03); border: 1px solid #f0f0f0;">
+                    Halo! Saya asisten AI Castellant. Ceritakan detail baru atau biarkan saya merapikan kata-kata Anda, nanti saya bantu update formnya otomatis. ✨ <br><br>
+                    <small style="opacity: 0.6; font-style: italic;">Tip: Anda bisa mengirimkan detail baru seperti perubahan tanggal, lokasi akad, atau nama mempelai.</small>
                 </div>
             </div>
         </div>
+
         <!-- Footer -->
-        <div style="padding: 1.5rem; background: white; border-top: 1px solid #f0f0f0;">
-            <div style="display: flex; gap: 10px;">
-                <textarea id="aiAssistantInput" placeholder="Ketik pesan..."
-                    style="flex: 1; height:45px; border: 1.5px solid #eee; border-radius: 20px; padding: 0.7rem 1.2rem; font-size: 0.9rem; resize: none; outline: none;"></textarea>
-                <button class="btn btn-primary"
-                    style="border-radius: 50%; width: 45px; height: 45px; padding: 0; display: flex; align-items: center; justify-content: center;">🚀</button>
+        <div class="ai-chat-footer" style="padding: 1.5rem; background: white; border-top: 1px solid #f0f0f0; display: flex; flex-direction: column; gap: 0.5rem;">
+            <div style="position: relative; display: flex; gap: 10px; align-items: flex-end;">
+                <button onclick="document.getElementById('aiChatFile').click()" style="width: 45px; height: 45px; background: #f5f5f5; border: none; border-radius: 15px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: 0.3s; flex-shrink: 0;" title="Upload Media">
+                    <span style="font-size: 20px;">📎</span>
+                </button>
+                <input type="file" id="aiChatFile" style="display: none;" accept="image/*,video/*" multiple onchange="handleAiChatFileUpload(this)">
+                
+                <div style="flex: 1; position: relative;">
+                    <textarea id="aiAssistantInput" placeholder="Ketik pesan lalu Enter..." 
+                        style="width: 100%; height:45px; border: 1.5px solid #eee; border-radius: 20px; padding: 0.7rem 1.2rem; font-family: inherit; font-size: 0.9rem; resize: none; outline: none; transition: all 0.3s; background: #fdfdfd; line-height: 1.4;"
+                        onfocus="this.style.borderColor='#2A1E14'; this.style.background='white'; this.style.height='80px';"
+                        onblur="if(!this.value) { this.style.borderColor='#eee'; this.style.background='#fdfdfd'; this.style.height='45px'; }"
+                        onkeydown="if(event.key === 'Enter' && !event.shiftKey) { event.preventDefault(); parseAndFillForm(); }"></textarea>
+                    <div style="position: absolute; right: 12px; bottom: 8px; font-size: 0.65rem; color: #bbb; pointer-events: none;">
+                        Press ↵ to send
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .highlight-filled {
+        border-color: #2A1E14 !important;
+        background-color: #fff9f5 !important;
+        box-shadow: 0 0 15px rgba(42, 30, 20, 0.2) !important;
+        transition: all 0.3s;
+    }
+
+    .typing-dot {
+        width: 6px;
+        height: 6px;
+        background: #2A1E14;
+        border-radius: 50%;
+        opacity: 0.3;
+        animation: typingAnimation 1s infinite;
+    }
+
+    @keyframes typingAnimation {
+        0%, 100% { transform: translateY(0); opacity: 0.3; }
+        50% { transform: translateY(-4px); opacity: 1; }
+    }
+
+    .ai-toast {
+        position: fixed;
+        bottom: 30px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        background: #2A1E14;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        z-index: 10000;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        opacity: 0;
+    }
+
+    .ai-toast.show {
+        transform: translateX(-50%) translateY(0);
+        opacity: 1;
+    }
+</style>
 {% endblock %}
