@@ -4,7 +4,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Nazma & Gunturr</title>
+    <title>Undangan Pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }} | Castellant</title>
+
+    <!-- SEO & Metadata -->
+    <meta name="description"
+        content="Undangan Pernikahan Digital Eksklusif {{ invitation.bride.name }} & {{ invitation.groom.name }} pada {{ invitation.event_date }}. Buka undangan interaktif bergaya iOS mewah ini untuk RSVP online, detail acara, lokasi maps, dan galeri foto romantis kami. Dibuat oleh Castellant.">
+    <meta name="keywords"
+        content="undangan pernikahan digital, {{ invitation.bride.name }}, {{ invitation.groom.name }}, castellant, digital invitation premium, undangan digital ios, rsvp online">
+    <meta name="author" content="Castellant">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://castellant.ai/i/{{ invitation.slug }}">
+    <meta property="og:title" content="Undangan Pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }} | Castellant">
+    <meta property="og:description"
+        content="Kebahagiaan kami tidak lengkap tanpa kehadiran Anda. Buka undangan digital eksklusif {{ invitation.bride.name }} & {{ invitation.groom.name }} pada {{ invitation.event_date }} di sini.">
+    {% if !invitation.gallery_images.is_empty() %}
+    <meta property="og:image" content="{{ invitation.gallery_images|first_image }}">
+    {% else if !invitation.bride.image_url.is_empty() %}
+    <meta property="og:image" content="{{ invitation.bride.image_url }}">
+    {% else %}
+    <meta property="og:image" content="/static/img/favicon.png">
+    {% endif %}
+    <meta property="og:site_name" content="Castellant">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://castellant.ai/i/{{ invitation.slug }}">
+    <meta property="twitter:title" content="Undangan Pernikahan {{ invitation.couple_name_short }} | Castellant">
+    <meta property="twitter:description"
+        content="Buka undangan digital eksklusif {{ invitation.bride.name }} & {{ invitation.groom.name }} pada {{ invitation.event_date }} bergaya iOS premium oleh Castellant.">
+    {% if !invitation.gallery_images.is_empty() %}
+    <meta property="twitter:image" content="{{ invitation.gallery_images|first_image }}">
+    {% else if !invitation.bride.image_url.is_empty() %}
+    <meta property="twitter:image" content="{{ invitation.bride.image_url }}">
+    {% else %}
+    <meta property="twitter:image" content="/static/img/favicon.png">
+    {% endif %}
+
+    <!-- Favicon & Touch Icon -->
+    <link rel="icon" type="image/png" href="/static/img/favicon.png">
+    <link rel="apple-touch-icon" href="/static/img/favicon.png">
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Event",
+      "name": "Pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }}",
+      "startDate": "{{ invitation.event_date_iso }}",
+      "location": {
+        "@type": "Place",
+        "name": "{{ invitation.ceremony.venue }}",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "{{ invitation.ceremony.address }}"
+        }
+      },
+      {% if !invitation.gallery_images.is_empty() %}
+      "image": "{{ invitation.gallery_images|first_image }}",
+      {% endif %}
+      "description": "Undangan Pernikahan Eksklusif {{ invitation.bride.name }} & {{ invitation.groom.name }} bergaya iOS premium oleh Castellant"
+    }
+    </script>
+
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap"
         rel="stylesheet">
@@ -112,6 +175,8 @@
             inset: 0;
             background:
                 url('https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=85') center/cover no-repeat;
+            z-index: 1;
+            overflow: hidden;
         }
 
         .lock-wall::after {
@@ -123,6 +188,7 @@
                     rgba(0, 0, 0, .1) 40%,
                     rgba(0, 0, 0, .45) 80%,
                     rgba(0, 0, 0, .75) 100%);
+            z-index: 2;
         }
 
         /* Status bar */
@@ -395,6 +461,14 @@
             cursor: pointer;
             position: relative;
             overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none;
+            transition: all 0.3s var(--ease);
+        }
+
+        .slide-pill:active {
+            transform: scale(0.97);
+            background: rgba(255, 255, 255, .2);
         }
 
         .slide-thumb {
@@ -409,22 +483,25 @@
             position: relative;
             z-index: 1;
             animation: slide-hint 2.5s ease-in-out 2s infinite;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-user-drag: none;
+            transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
 
         .slide-thumb svg {
             width: 20px;
             height: 20px;
             color: #000;
+            pointer-events: none;
         }
 
         @keyframes slide-hint {
-
             0%,
             70%,
             100% {
                 transform: translateX(0)
             }
-
             85% {
                 transform: translateX(12px)
             }
@@ -435,9 +512,28 @@
             text-align: center;
             font-size: 15px;
             font-weight: 500;
-            color: rgba(255, 255, 255, .7);
+            color: rgba(255, 255, 255, .4);
             padding-right: 44px;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.4) 0%, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.4) 100%);
+            background-size: 140px 100%;
+            background-clip: text;
+            -webkit-background-clip: text;
+            text-fill-color: transparent;
+            -webkit-text-fill-color: transparent;
+            animation: slide-shimmer 2.5s infinite linear;
+            user-select: none;
+            -webkit-user-select: none;
         }
+
+        @keyframes slide-shimmer {
+            0% {
+                background-position: -140px 0;
+            }
+            100% {
+                background-position: 140px 0;
+            }
+        }
+
 
         .lock-home-indicator {
             width: 134px;
@@ -559,6 +655,8 @@
             position: absolute;
             inset: 0;
             background: url('https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=85') center/cover no-repeat;
+            z-index: 1;
+            overflow: hidden;
         }
 
         .hero-wall::after {
@@ -570,6 +668,7 @@
                     rgba(0, 0, 0, .05) 30%,
                     rgba(0, 0, 0, .6) 65%,
                     rgba(0, 0, 0, 1) 100%);
+            z-index: 2;
         }
 
         /* Hero content */
@@ -873,7 +972,7 @@
         }
 
         .cc-photo-banner {
-            height: 160px;
+            height: 220px;
             position: relative;
             background: linear-gradient(135deg, #1a1a2e, #16213e);
             overflow: hidden;
@@ -981,8 +1080,8 @@
             height: 160px;
             position: relative;
             background:
-                linear-gradient(rgba(0, 0, 0, .3), rgba(0, 0, 0, .3)),
-                url('https://images.unsplash.com/photo-1568667256549-094345857637?w=600&q=80') center/cover;
+                linear-gradient(rgba(0, 0, 0, .15), rgba(0, 0, 0, .15)),
+                url('/static/img/grahayadika_map_bg.png') center/cover no-repeat;
         }
 
         .maps-overlay-badge {
@@ -1129,6 +1228,51 @@
             font-size: 14px;
             color: var(--label3);
             line-height: 1.65;
+        }
+
+        .btn-toggle-story-img {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: var(--white);
+            padding: 6px 12px;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s ease;
+            user-select: none;
+            -webkit-user-select: none;
+            margin-top: 10px;
+        }
+        .btn-toggle-story-img:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        .btn-toggle-story-img:active {
+            transform: scale(0.95);
+        }
+        .story-img-container {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            margin-top: 0;
+            border-radius: var(--r-md);
+            border: 1px solid transparent;
+            transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, margin-top 0.35s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.35s ease;
+        }
+        .story-img-container.open {
+            max-height: 320px;
+            opacity: 1;
+            margin-top: 12px;
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+        .story-img-container img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            border-radius: var(--r-md);
         }
 
         /* ─────────────────────────────────────
@@ -1584,7 +1728,7 @@
    FOOTER
 ───────────────────────────────────── */
         .footer {
-            padding: 48px 24px max(40px, env(safe-area-inset-bottom, 40px));
+            padding: 48px 24px max(110px, calc(env(safe-area-inset-bottom, 0px) + 80px));
             text-align: center;
             background: linear-gradient(0deg, rgba(10, 132, 255, .04), transparent);
             border-top: 1px solid var(--sep);
@@ -1669,14 +1813,13 @@
 
         .tab-badge {
             position: relative;
-            display: inline-block;
         }
 
         .tab-badge::after {
             content: '';
             position: absolute;
-            top: -2px;
-            right: -2px;
+            top: 2px;
+            left: calc(50% + 4px);
             width: 8px;
             height: 8px;
             border-radius: 50%;
@@ -1874,7 +2017,8 @@
             transform: scale(1.04);
         }
 
-        .music-artwork img {
+        .music-artwork img,
+        .music-artwork video {
             width: 100%;
             height: 100%;
             object-fit: cover;
@@ -2025,6 +2169,16 @@
         .d3 {
             transition-delay: .24s
         }
+
+        .bg-video {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            pointer-events: none;
+        }
     </style>
 </head>
 
@@ -2033,7 +2187,7 @@
     <!-- ══════════════════════════
      AUDIO
 ══════════════════════════ -->
-    <audio id="bgAudio" loop preload="none">
+    <audio id="bgAudio" preload="none">
         <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3" type="audio/mpeg">
     </audio>
 
@@ -2041,7 +2195,11 @@
      LOCK SCREEN
 ══════════════════════════ -->
     <div id="lock">
-                    <div class="lock-wall"></div>
+        <div class="lock-wall">
+            {% if !invitation.background_video_url.is_empty() %}
+                <video class="bg-video" autoplay muted loop playsinline src="{{ invitation.background_video_url }}"></video>
+            {% endif %}
+        </div>
 
         <!-- Status bar -->
         <div class="lock-statusbar">
@@ -2064,8 +2222,8 @@
                     </svg>
                 </div>
                 <div class="di-music-info">
-                    <div class="di-music-title">Wedding Day</div>
-                    <div class="di-music-artist">{{ invitation.bride.name }} & {{ invitation.groom.name }}</div>
+                    <div class="di-music-title" id="diTitle">Wedding Day</div>
+                    <div class="di-music-artist" id="diArtist">{{ invitation.bride.name }} & {{ invitation.groom.name }}</div>
                 </div>
                 <div class="di-music-eq" id="diEq">
                     <div class="di-eq-bar stopped" style="--s:.5s"></div>
@@ -2102,7 +2260,7 @@
 
         <!-- Slide -->
         <div class="lock-slide">
-            <div class="slide-pill" onclick="openApp()">
+            <div class="slide-pill">
                 <div class="slide-thumb">
                     <svg viewBox="0 0 24 24" fill="currentColor">
                         <path d="M8 5v14l11-7z" />
@@ -2121,7 +2279,7 @@
 
         <!-- Status bar sticky -->
         <div class="app-statusbar">
-            <span class="asb-left">{{ invitation.bride.name }} & Gunturr 💌</span>
+            <span class="asb-left">{{ invitation.bride.name }} & {{ invitation.groom.name }} 💌</span>
             <div class="asb-right">
                 <div class="asb-music-pill" id="musicPill" onclick="openMusicSheet()">
                     <div class="asb-m-icon">
@@ -2146,10 +2304,13 @@
 
         <!-- ── HERO ── -->
         <section class="hero-section" id="home">
-            <div class="hero-wall"></div>
+            <div class="hero-wall">
+                <video id="heroBgVideo1" class="bg-video" autoplay muted playsinline style="opacity: 1; transition: opacity 0.5s ease;"></video>
+                <video id="heroBgVideo2" class="bg-video" muted playsinline style="opacity: 0; transition: opacity 0.5s ease;"></video>
+            </div>
             <div class="hero-content">
                 <p class="hero-eyebrow">{{ invitation.event_date }} · Tangerang</p>
-                <h1 class="hero-title">{{ invitation.bride.name }}<br><em>&</em><br>Guntur</h1>
+                <h1 class="hero-title">{{ invitation.bride.name }}<br><em>&</em><br>{{ invitation.groom.name }}</h1>
                 <p class="hero-sub">Dengan penuh rasa syukur, kami mengundang Anda hadir di hari istimewa kami.</p>
                 <div class="hero-pills">
                     <div class="pill-btn primary" onclick="openMusicSheet()">
@@ -2222,16 +2383,28 @@
 
             <div class="contact-card reveal">
                 <div class="cc-photo-banner">
-                    <img src="https://images.unsplash.com/photo-{{ invitation.couple_name_short|length }}744-adbfc0f0bb09?w=700&q=80" alt=""
-                        loading="lazy">
-                    <div class="cc-avatar"><img
-                            src="https://images.unsplash.com/photo-{{ invitation.couple_name_short|length }}775-53994a69daeb?w=200&h=200&fit=crop&q=80"
-                            alt="{{ invitation.bride.name }}"></div>
+                    {% if !invitation.bride.image_url.is_empty() %}
+                        <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride.name }}" loading="lazy">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1549417229-aa67d3263c09?w=700&q=80" alt="{{ invitation.bride.name }}" loading="lazy">
+                    {% endif %}
                 </div>
                 <div class="cc-body">
-                    <div class="cc-name">{{ invitation.bride.name }}, S.Kom</div>
+                    <div class="cc-name">
+                        {% if !invitation.bride.full_name.is_empty() %}
+                            {{ invitation.bride.full_name }}
+                        {% else %}
+                            {{ invitation.bride.name }}
+                        {% endif %}
+                    </div>
                     <div class="cc-role">Mempelai Wanita</div>
-                    <div class="cc-detail">Putri Pertama dari Bpk. Taryono & Ibu Wiwit Jayanti</div>
+                    <div class="cc-detail">
+                        {% if !invitation.bride.father_name.is_empty() && !invitation.bride.mother_name.is_empty() %}
+                            Putri dari Bpk. {{ invitation.bride.father_name }} & Ibu {{ invitation.bride.mother_name }}
+                        {% else %}
+                            Putri Pertama dari Bpk. Taryono & Ibu Wiwit Jayanti
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="cc-actions">
                     <div class="cc-action-btn">
@@ -2253,16 +2426,28 @@
 
             <div class="contact-card reveal d1">
                 <div class="cc-photo-banner">
-                    <img src="https://images.unsplash.com/photo-{{ invitation.couple_name_short|length }}807-013ccf25f16a?w=700&q=80" alt=""
-                        loading="lazy">
-                    <div class="cc-avatar"><img
-                            src="https://images.unsplash.com/photo-{{ invitation.couple_name_short|length }}169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80"
-                            alt="Guntur"></div>
+                    {% if !invitation.groom.image_url.is_empty() %}
+                        <img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom.name }}" loading="lazy">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=700&q=80" alt="{{ invitation.groom.name }}" loading="lazy">
+                    {% endif %}
                 </div>
                 <div class="cc-body">
-                    <div class="cc-name">{{ invitation.groom.name }}, S.Kom</div>
+                    <div class="cc-name">
+                        {% if !invitation.groom.full_name.is_empty() %}
+                            {{ invitation.groom.full_name }}
+                        {% else %}
+                            {{ invitation.groom.name }}
+                        {% endif %}
+                    </div>
                     <div class="cc-role">Mempelai Pria</div>
-                    <div class="cc-detail">Putra Kedua dari Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</div>
+                    <div class="cc-detail">
+                        {% if !invitation.groom.father_name.is_empty() && !invitation.groom.mother_name.is_empty() %}
+                            Putra dari Bpk. {{ invitation.groom.father_name }} & Ibu {{ invitation.groom.mother_name }}
+                        {% else %}
+                            Putra Kedua dari Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si
+                        {% endif %}
+                    </div>
                 </div>
                 <div class="cc-actions">
                     <div class="cc-action-btn">
@@ -2357,45 +2542,113 @@
                 <span class="ios-h-title">Kisah <em>Cinta Kami</em></span>
             </div>
             <div class="activity-feed">
-                <div class="af-item">
-                    <div class="af-left">
-                        <div class="af-dot" style="background:rgba(10,132,255,.2);font-size:18px">💙</div>
-                        <div class="af-line"></div>
-                    </div>
-                    <div class="af-body">
-                        <div class="af-tag">Chapter 1</div>
-                        <div class="af-date-str">Juni 2025</div>
-                        <div class="af-title">Awal Pertemuan</div>
-                        <div class="af-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita
-                            mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</div>
-                    </div>
-                </div>
-                <div class="af-item">
-                    <div class="af-left">
-                        <div class="af-dot" style="background:rgba(255,159,10,.2);font-size:18px">💍</div>
-                        <div class="af-line"></div>
-                    </div>
-                    <div class="af-body">
-                        <div class="af-tag">Chapter 2</div>
-                        <div class="af-date-str">November 2025</div>
-                        <div class="af-title">Lamaran</div>
-                        <div class="af-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami
-                            mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div>
-                    </div>
-                </div>
-                <div class="af-item">
-                    <div class="af-left">
-                        <div class="af-dot" style="background:rgba(48,209,88,.2);font-size:18px">🤍</div>
-                    </div>
-                    <div class="af-body">
-                        <div class="af-tag">Chapter 3</div>
-                        <div class="af-date-str">Mei 2026</div>
-                        <div class="af-title">Pernikahan</div>
-                        <div class="af-desc">Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan suci
-                            pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.
+                {% if !invitation.stories.is_empty() %}
+                    {% for story in invitation.stories %}
+                    <div class="af-item">
+                        <div class="af-left">
+                            <div class="af-dot" style="background:rgba(10,132,255,.2);font-size:18px">
+                                {% if loop.index == 1 %}💙
+                                {% else if loop.index == 2 %}💍
+                                {% else if loop.index == 3 %}🤍
+                                {% else if loop.index == 4 %}✨
+                                {% else if loop.index == 5 %}🌸
+                                {% else %}💖
+                                {% endif %}
+                            </div>
+                            <div class="af-line"></div>
+                        </div>
+                        <div class="af-body">
+                            <div class="af-tag">Chapter {{ loop.index }}</div>
+                            <div class="af-date-str">{{ story.date }}</div>
+                            <div class="af-title">{{ story.title }}</div>
+                            <div class="af-desc">{{ story.description }}</div>
+                            
+                            {% if !story.image_url.is_empty() %}
+                            <div class="story-media-wrap">
+                                <button class="btn-toggle-story-img" onclick="toggleStoryImage('{{ story.id }}')">
+                                    <span class="icon-toggle-story-img-{{ story.id }}">📷</span>
+                                    <span class="text-toggle-story-img-{{ story.id }}">Lihat Foto</span>
+                                </button>
+                                <div id="story-img-container-{{ story.id }}" class="story-img-container">
+                                    <img src="{{ story.image_url }}" alt="{{ story.title }}" loading="lazy">
+                                </div>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
-                </div>
+                    {% endfor %}
+                {% else %}
+                    <!-- Fallback hardcoded if empty -->
+                    <div class="af-item">
+                        <div class="af-left">
+                            <div class="af-dot" style="background:rgba(10,132,255,.2);font-size:18px">💙</div>
+                            <div class="af-line"></div>
+                        </div>
+                        <div class="af-body">
+                            <div class="af-tag">Chapter 1</div>
+                            <div class="af-date-str">Juni 2025</div>
+                            <div class="af-title">Awal Pertemuan</div>
+                            <div class="af-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita
+                                mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</div>
+                            
+                            <div class="story-media-wrap">
+                                <button class="btn-toggle-story-img" onclick="toggleStoryImage('fallback-1')">
+                                    <span class="icon-toggle-story-img-fallback-1">📷</span>
+                                    <span class="text-toggle-story-img-fallback-1">Lihat Foto</span>
+                                </button>
+                                <div id="story-img-container-fallback-1" class="story-img-container">
+                                    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80" alt="Awal Pertemuan" loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="af-item">
+                        <div class="af-left">
+                            <div class="af-dot" style="background:rgba(255,159,10,.2);font-size:18px">💍</div>
+                            <div class="af-line"></div>
+                        </div>
+                        <div class="af-body">
+                            <div class="af-tag">Chapter 2</div>
+                            <div class="af-date-str">November 2025</div>
+                            <div class="af-title">Lamaran</div>
+                            <div class="af-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami
+                                mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div>
+                            
+                            <div class="story-media-wrap">
+                                <button class="btn-toggle-story-img" onclick="toggleStoryImage('fallback-2')">
+                                    <span class="icon-toggle-story-img-fallback-2">📷</span>
+                                    <span class="text-toggle-story-img-fallback-2">Lihat Foto</span>
+                                </button>
+                                <div id="story-img-container-fallback-2" class="story-img-container">
+                                    <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=600&q=80" alt="Lamaran" loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="af-item">
+                        <div class="af-left">
+                            <div class="af-dot" style="background:rgba(48,209,88,.2);font-size:18px">🤍</div>
+                        </div>
+                        <div class="af-body">
+                            <div class="af-tag">Chapter 3</div>
+                            <div class="af-date-str">Mei 2026</div>
+                            <div class="af-title">Pernikahan</div>
+                            <div class="af-desc">Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan suci
+                                pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.
+                            </div>
+                            
+                            <div class="story-media-wrap">
+                                <button class="btn-toggle-story-img" onclick="toggleStoryImage('fallback-3')">
+                                    <span class="icon-toggle-story-img-fallback-3">📷</span>
+                                    <span class="text-toggle-story-img-fallback-3">Lihat Foto</span>
+                                </button>
+                                <div id="story-img-container-fallback-3" class="story-img-container">
+                                    <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80" alt="Pernikahan" loading="lazy">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         </section>
 
@@ -2489,7 +2742,7 @@
                 </div>
                 <div class="form-row">
                     <div class="fr-label">Ucapan</div>
-                    <textarea class="fr-input" placeholder="Tuliskan ucapan untuk Nazma & Gunturr..."
+                    <textarea class="fr-input" placeholder="Tuliskan ucapan untuk {{ invitation.bride.name }} & {{ invitation.groom.name }}..."
                         id="rsvpMsg"></textarea>
                 </div>
             </div>
@@ -2502,56 +2755,80 @@
                 <span class="ios-h-title">Ucapan <em>& Doa</em></span>
             </div>
             <div class="msg-list" id="msgList">
-                <div class="msg-bubble-wrap vis">
-                    <div class="msg-avatar" style="background:rgba(10,132,255,.2);color:var(--blue)">A</div>
-                    <div class="msg-content">
-
                 {% if invitation.is_preview %}
-                                        <div class="msg-sender">Ayu Rahmawati</div>
-                        <div class="msg-bubble">
-                            <div class="msg-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah,
-                                mawaddah, wa rahmah. Bahagia selalu! 🌿</div>
+                    <div class="msg-bubble-wrap vis">
+                        <div class="msg-avatar" style="background:rgba(10,132,255,.2);color:var(--blue)">A</div>
+                        <div class="msg-content">
+                            <div class="msg-sender">Ayu Rahmawati</div>
+                            <div class="msg-bubble">
+                                <div class="msg-text">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah,
+                                    mawaddah, wa rahmah. Bahagia selalu! 🌿</div>
+                            </div>
+                            <div class="msg-status">✓ Hadir · 2 tamu</div>
                         </div>
-                        <div class="msg-status">✓ Hadir · 2 tamu</div>
                     </div>
-                </div>
-                <div class="msg-bubble-wrap vis">
-                    <div class="msg-avatar" style="background:rgba(94,92,230,.2);color:#5E5CE6">R</div>
-                    <div class="msg-content">
-                        <div class="msg-sender">Reza Firmansyah</div>
-                        <div class="msg-bubble">
-                            <div class="msg-text">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan
-                                kebahagiaan. Aamiin!</div>
+                    <div class="msg-bubble-wrap vis">
+                        <div class="msg-avatar" style="background:rgba(94,92,230,.2);color:#5E5CE6">R</div>
+                        <div class="msg-content">
+                            <div class="msg-sender">Reza Firmansyah</div>
+                            <div class="msg-bubble">
+                                <div class="msg-text">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan
+                                    kebahagiaan. Aamiin!</div>
+                            </div>
+                            <div class="msg-status">✓ Hadir · 1 tamu</div>
                         </div>
-                        <div class="msg-status">✓ Hadir · 1 tamu</div>
                     </div>
-                </div>
-                <div class="msg-bubble-wrap vis">
-                    <div class="msg-avatar" style="background:rgba(255,149,0,.2);color:#FF9500">S</div>
-                    <div class="msg-content">
-                        <div class="msg-sender">Sinta Dewi</div>
-
+                    <div class="msg-bubble-wrap vis">
+                        <div class="msg-avatar" style="background:rgba(255,149,0,.2);color:#FF9500">S</div>
+                        <div class="msg-content">
+                            <div class="msg-sender">Sinta Dewi</div>
+                            <div class="msg-bubble">
+                                <div class="msg-text">Wishing you a lifetime of love. Semoga langkah kalian selalu diberkahi
+                                    Allah SWT 💙</div>
+                            </div>
+                            <div class="msg-status">✓ Hadir · 2 tamu</div>
+                        </div>
+                    </div>
                 {% else %}
-                {% for rsvp in invitation.rsvps %}
-                                        <div class="msg-sender">{{ rsvp.name }}</div>
-
-                {% endfor %}
-                {% endif %}
-                                        <div class="msg-bubble">
-                            <div class="msg-text">Wishing you a lifetime of love. Semoga langkah kalian selalu diberkahi
-                                Allah SWT 💙</div>
+                    {% for rsvp in invitation.rsvps %}
+                        {% if !rsvp.display_message().is_empty() %}
+                        <div class="msg-bubble-wrap vis">
+                            <div class="msg-avatar" style="{% if loop.index % 3 == 0 %}background:rgba(10,132,255,.2);color:var(--blue){% else if loop.index % 3 == 1 %}background:rgba(94,92,230,.2);color:#5E5CE6{% else %}background:rgba(255,149,0,.2);color:#FF9500{% endif %}">
+                                {{ rsvp.initial() }}
+                            </div>
+                            <div class="msg-content">
+                                <div class="msg-sender">{{ rsvp.name }}</div>
+                                <div class="msg-bubble">
+                                    <div class="msg-text">{{ rsvp.display_message() }}</div>
+                                </div>
+                                <div class="msg-status">
+                                    {% if rsvp.attendance.to_lowercase() == "hadir" %}
+                                        ✓ Hadir · {{ rsvp.guests }} tamu
+                                    {% else %}
+                                        ✗ Tidak Hadir
+                                    {% endif %}
+                                </div>
+                            </div>
                         </div>
-                        <div class="msg-status">✓ Hadir · 2 tamu</div>
-                    </div>
-                </div>
+                        {% endif %}
+                    {% endfor %}
+                    {% if invitation.rsvps.is_empty() %}
+                        <p style="font-size:13px;color:var(--label4);text-align:center;padding:20px 0;width:100%;">Belum ada ucapan dan doa.</p>
+                    {% endif %}
+                {% endif %}
             </div>
         </section>
 
         <!-- FOOTER -->
         <footer class="footer">
-            <div class="footer-names">Nazma & Gunturr</div>
-            <p class="footer-body">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila Bapak/Ibu berkenan hadir
-                dan memberikan do'a restu.</p>
+            <div class="footer-names">{{ invitation.bride.name }} & {{ invitation.groom.name }}</div>
+            <p class="footer-body">Merupakan suatu kebahagiaan dan kehormatan bagi kami apabila 
+                {% if !invitation.recipient_name.is_empty() %}
+                    <strong>{{ invitation.recipient_name }}</strong>
+                {% else %}
+                    Bapak/Ibu
+                {% endif %}
+                berkenan hadir dan memberikan do'a restu.</p>
             <p
                 style="font-family:var(--font-serif);font-style:italic;font-size:18px;color:var(--label3);margin-bottom:24px">
                 Kami yang berbahagia ❤️</p>
@@ -2605,21 +2882,20 @@
             <div class="panel-handle"></div>
             <div class="panel-title">Now Playing</div>
             <div class="music-artwork" id="musicArtwork">
-                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=400&fit=crop&q=80"
-                    alt="">
+                <video id="musicArtworkVideo" autoplay muted playsinline></video>
             </div>
             <div class="music-meta">
-                <div class="music-title-big">Wedding Day</div>
-                <div class="music-artist-big">Nazma & Gunturr · Forever Anthem</div>
+                <div class="music-title-big" id="musicTitleBig">Wedding Day</div>
+                <div class="music-artist-big" id="musicArtistBig">{{ invitation.bride.name }} & {{ invitation.groom.name }} · Forever Anthem</div>
             </div>
             <div class="music-progress">
                 <div class="music-prog-bar" id="progBar" onclick="seekMusic(event)">
                     <div class="music-prog-fill" id="progFill" style="width:0%"></div>
                 </div>
-                <div class="music-times"><span id="progCur">0:00</span><span>3:24</span></div>
+                <div class="music-times"><span id="progCur">0:00</span><span id="progDur">3:24</span></div>
             </div>
             <div class="music-controls">
-                <button class="mc-btn" onclick="seekBack()">
+                <button class="mc-btn" onclick="prevSong()">
                     <svg viewBox="0 0 24 24" fill="currentColor">
                         <path d="M6 6h2v12H6zm3.5 6 8.5 6V6z" />
                     </svg>
@@ -2632,7 +2908,7 @@
                         <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
                     </svg>
                 </button>
-                <button class="mc-btn" onclick="seekFwd()">
+                <button class="mc-btn" onclick="nextSong()">
                     <svg viewBox="0 0 24 24" fill="currentColor">
                         <path d="M6 18l8.5-6L6 6v12zm2-8.14L11.03 12 8 14.14V9.86zM16 6h2v12h-2z" />
                     </svg>
@@ -2640,8 +2916,8 @@
             </div>
             <div class="music-vol">
                 <span class="vol-icon">🔈</span>
-                <div class="vol-bar">
-                    <div class="vol-fill"></div>
+                <div class="vol-bar" id="volBar" onclick="adjustVolume(event)">
+                    <div class="vol-fill" id="volFill" style="width:35%"></div>
                 </div>
                 <span class="vol-icon">🔊</span>
             </div>
@@ -2672,18 +2948,59 @@
     <script>
         /* ══════ DATA ══════ */
         const IMGS = [
-            "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=680&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=680&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&h=680&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=500&h=680&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=500&h=680&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=500&h=680&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=500&h=680&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=680&fit=crop&q=80",
+            {% if !invitation.gallery_images.is_empty() %}
+                {% for img in invitation.gallery_images %}
+                    "{{ img }}",
+                {% endfor %}
+            {% else %}
+                "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=680&fit=crop&q=80",
+                "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=680&fit=crop&q=80",
+                "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&h=680&fit=crop&q=80",
+                "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=500&h=680&fit=crop&q=80",
+                "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=500&h=680&fit=crop&q=80",
+                "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=500&h=680&fit=crop&q=80",
+                "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=500&h=680&fit=crop&q=80",
+                "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=680&fit=crop&q=80",
+            {% endif %}
         ];
 
+        const PLAYLIST_VIDEOS = [
+            {% if !invitation.background_video_url.is_empty() %}
+                "{{ invitation.background_video_url }}",
+            {% endif %}
+            {% for video in invitation.gallery_videos %}
+                "{{ video }}",
+            {% endfor %}
+        ].filter(v => v.trim() !== "");
+
+        const PLAYLIST_SONGS = [
+            {% if !invitation.playlist.is_empty() %}
+                {% for song in invitation.playlist %}
+                    "{{ song }}",
+                {% endfor %}
+            {% else %}
+                {% if !invitation.song_url.is_empty() %}
+                    "{{ invitation.song_url }}",
+                {% else if !invitation.custom_song_url.is_empty() %}
+                    "{{ invitation.custom_song_url }}",
+                {% else %}
+                    "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+                {% endif %}
+            {% endif %}
+        ].filter(s => s.trim() !== "");
+
+        const ARTWORK_VIDEOS = [...PLAYLIST_VIDEOS];
+        if (ARTWORK_VIDEOS.length === 0) {
+            ARTWORK_VIDEOS.push(
+                "https://assets.mixkit.co/videos/preview/mixkit-wedding-couple-walking-in-a-forest-40455-large.mp4",
+                "https://assets.mixkit.co/videos/preview/mixkit-bride-and-groom-holding-hands-40456-large.mp4"
+            );
+        }
+
         /* ══════ STATE ══════ */
-        let playing = false, progPct = 0, progTimer = null;
+        let playing = false;
+        let currentSongIdx = 0;
+        let currentArtworkVideoIdx = 0;
         let gOff = 0, gPaused = false, gOrig = 0, gIW = 0, gDot = 0;
         let lbI = 0, gCount = 1;
 
@@ -2700,22 +3017,171 @@
         }
         tickClock(); setInterval(tickClock, 15000);
 
+        /* ══════ BACKGROUND VIDEO PLAYLIST ══════ */
+        let currentVideoIdx = 0;
+        function initBackgroundVideos() {
+            const v1 = document.getElementById('heroBgVideo1');
+            const v2 = document.getElementById('heroBgVideo2');
+            if (!v1 || !v2 || PLAYLIST_VIDEOS.length === 0) return;
+
+            // Remove lock screen fallback background image once lock video starts playing
+            const lockVideo = document.querySelector('.lock-wall video');
+            if (lockVideo) {
+                lockVideo.addEventListener('playing', () => {
+                    const lockWall = document.querySelector('.lock-wall');
+                    if (lockWall) {
+                        lockWall.style.backgroundImage = 'none';
+                        lockWall.style.backgroundColor = '#000';
+                    }
+                }, { once: true });
+            }
+
+            // Remove home screen fallback background image once either home video starts playing
+            const removeHeroFallback = () => {
+                const heroWall = document.querySelector('.hero-wall');
+                if (heroWall) {
+                    heroWall.style.backgroundImage = 'none';
+                    heroWall.style.backgroundColor = '#000';
+                }
+            };
+            v1.addEventListener('playing', removeHeroFallback, { once: true });
+            v2.addEventListener('playing', removeHeroFallback, { once: true });
+
+            // Initialize style attributes explicitly for double buffering
+            v1.style.zIndex = '3';
+            v1.style.opacity = '1';
+            v2.style.zIndex = '2';
+            v2.style.opacity = '0';
+
+            if (PLAYLIST_VIDEOS.length === 1) {
+                v1.src = PLAYLIST_VIDEOS[0];
+                v1.loop = true;
+                v1.load();
+                v1.play().catch(e => console.log("Single video play failed:", e));
+                return;
+            }
+
+            // Load and play first video on active (v1)
+            v1.src = PLAYLIST_VIDEOS[0];
+            v1.load();
+            v1.play().catch(e => console.log("Video 1 autoplay failed:", e));
+
+            // Pre-load second video on inactive (v2)
+            v2.src = PLAYLIST_VIDEOS[1];
+            v2.load();
+
+            function setupTransition(activeEl, inactiveEl) {
+                activeEl.addEventListener('ended', onEndedHandler);
+
+                function onEndedHandler() {
+                    activeEl.removeEventListener('ended', onEndedHandler);
+
+                    // Increment index
+                    currentVideoIdx = (currentVideoIdx + 1) % PLAYLIST_VIDEOS.length;
+                    const nextVideoIdx = (currentVideoIdx + 1) % PLAYLIST_VIDEOS.length;
+
+                    // Double-buffering transition:
+                    // Place the incoming (inactive) video on top of the playing (active) video
+                    inactiveEl.style.zIndex = '3';
+                    inactiveEl.style.opacity = '0'; // Ensure it starts transparent
+                    activeEl.style.zIndex = '2';
+
+                    // Play pre-buffered video on the inactive element
+                    inactiveEl.play().then(() => {
+                        // Fade-in the top video cleanly
+                        inactiveEl.style.opacity = '1';
+
+                        // Pre-load the next video in the playlist onto the now-inactive element
+                        setTimeout(() => {
+                            // Once transition completes, make bottom element hidden
+                            activeEl.style.opacity = '0';
+                            activeEl.style.zIndex = '1';
+
+                            activeEl.src = PLAYLIST_VIDEOS[nextVideoIdx];
+                            activeEl.load();
+                        }, 600); // Wait for transition fade to complete
+
+                        // Swap and recurse listener setup
+                        setupTransition(inactiveEl, activeEl);
+                    }).catch(e => {
+                        console.log("Buffered video play failed, falling back:", e);
+                        activeEl.src = PLAYLIST_VIDEOS[currentVideoIdx];
+                        activeEl.load();
+                        activeEl.play().catch(() => {});
+                        setupTransition(activeEl, inactiveEl);
+                    });
+                }
+            }
+
+            setupTransition(v1, v2);
+        }
+        try { initBackgroundVideos(); } catch(e) { console.error("Error in initBackgroundVideos:", e); }
+        try { initAudioPlayer(); } catch(e) { console.error("Error in initAudioPlayer:", e); }
+        try { initArtworkVideo(); } catch(e) { console.error("Error in initArtworkVideo:", e); }
+        try { initSlider(); } catch(e) { console.error("Error in initSlider:", e); }
+
         /* ══════ OPEN APP ══════ */
         function openApp() {
             document.getElementById('lock').classList.add('unlock');
             const app = document.getElementById('app');
             setTimeout(() => app.classList.add('show'), 100);
             document.getElementById('tabBar').classList.add('show');
+            
+            // Auto play music when user opens the invitation
+            if (!playing) {
+                togglePlay();
+            }
+
             setTimeout(initApp, 400);
         }
 
+        /* ══════ SLIDE TO UNLOCK BUTTON (CLICK ONLY) ══════ */
+        function initSlider() {
+            const pill = document.querySelector('.slide-pill');
+            const thumb = document.querySelector('.slide-thumb');
+            const label = document.querySelector('.slide-label');
+            if (!pill || !thumb) return;
+
+            const triggerOpen = (e) => {
+                if (e) {
+                    if (e.cancelable) e.preventDefault();
+                    e.stopPropagation();
+                }
+                if (document.getElementById('lock').classList.contains('unlock')) return;
+
+                // Disable hint keyframe animation to let the custom sliding transition take over
+                thumb.style.animation = 'none';
+
+                let maxDistance = pill.clientWidth - thumb.clientWidth - 8;
+                if (isNaN(maxDistance) || maxDistance <= 0) {
+                    maxDistance = 220; // Safe fallback
+                }
+                thumb.style.transition = 'transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                thumb.style.transform = `translateX(${maxDistance}px)`;
+                if (label) {
+                    label.style.transition = 'opacity 0.3s';
+                    label.style.opacity = '0';
+                }
+                setTimeout(openApp, 250);
+            };
+
+            pill.addEventListener('click', triggerOpen);
+            pill.addEventListener('touchstart', triggerOpen, { passive: false });
+
+            const notif = document.querySelector('.lock-notif');
+            if (notif) {
+                notif.style.cursor = 'pointer';
+                notif.addEventListener('click', triggerOpen);
+                notif.addEventListener('touchstart', triggerOpen, { passive: false });
+            }
+        }
+
         function initApp() {
-            countdown();
-            buildGallery();
-            initReveal();
-            initTabHL();
-            // Expand Dynamic Island briefly to show music
-            expandIsland();
+            try { countdown(); } catch(e) { console.error("Error in countdown:", e); }
+            try { buildGallery(); } catch(e) { console.error("Error in buildGallery:", e); }
+            try { initReveal(); } catch(e) { console.error("Error in initReveal:", e); }
+            try { initTabHL(); } catch(e) { console.error("Error in initTabHL:", e); }
+            try { expandIsland(); } catch(e) { console.error("Error in expandIsland:", e); }
         }
 
         /* ══════ DYNAMIC ISLAND ══════ */
@@ -2739,16 +3205,12 @@
         function togglePlay() {
             playing = !playing;
             const audio = document.getElementById('bgAudio');
+            if (!audio) return;
             if (playing) {
-                audio.volume = .35; audio.play().catch(() => { });
+                audio.play().catch(() => { playing = false; setPlayUI(false); });
                 setPlayUI(true);
-                progTimer = setInterval(() => {
-                    progPct = Math.min(progPct + (100 / 204), 100);
-                    updateProg();
-                    if (progPct >= 100) { progPct = 0; }
-                }, 1000);
             } else {
-                audio.pause(); clearInterval(progTimer);
+                audio.pause();
                 setPlayUI(false);
             }
         }
@@ -2757,6 +3219,17 @@
             document.getElementById('mcPlayIcon').style.display = on ? 'none' : 'block';
             document.getElementById('mcPauseIcon').style.display = on ? 'block' : 'none';
             document.getElementById('musicArtwork').classList.toggle('playing', on);
+            
+            // Sync artwork video play state
+            const artVideo = document.getElementById('musicArtworkVideo');
+            if (artVideo) {
+                if (on) {
+                    artVideo.play().catch(() => {});
+                } else {
+                    artVideo.pause();
+                }
+            }
+            
             // Status bar
             document.getElementById('asbPlayIcon').style.display = on ? 'none' : 'block';
             document.getElementById('asbPauseIcon').style.display = on ? 'block' : 'none';
@@ -2780,30 +3253,242 @@
                 bars.forEach((b, i) => b.style.height = base[i] + 'px');
             }
         }
-        function updateProg() {
-            document.getElementById('progFill').style.width = progPct + '%';
-            const s = Math.round((progPct / 100) * 204);
-            document.getElementById('progCur').textContent = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
-        }
         function seekMusic(e) {
+            const audio = document.getElementById('bgAudio');
+            if (!audio || !audio.duration) return;
+            
             const bar = document.getElementById('progBar');
             const r = bar.getBoundingClientRect();
-            progPct = Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100));
-            updateProg();
+            const pct = Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100));
+            audio.currentTime = (pct / 100) * audio.duration;
         }
-        function seekBack() { progPct = Math.max(0, progPct - 10); updateProg(); }
-        function seekFwd() { progPct = Math.min(100, progPct + 10); updateProg(); }
+
+        /* ══════ MUSIC PLAYER CONTROLLER ══════ */
+        const ROMANTIC_TITLES = [
+            { title: "Beautiful In White", artist: "Shane Filan" },
+            { title: "A Thousand Years", artist: "Christina Perri" },
+            { title: "Marry You", artist: "Bruno Mars" },
+            { title: "Perfect Duet", artist: "Ed Sheeran & Beyoncé" },
+            { title: "All of Me", artist: "John Legend" },
+            { title: "Can't Help Falling in Love", artist: "Elvis Presley" },
+            { title: "You Are The Reason", artist: "Calum Scott" },
+            { title: "Marry Me", artist: "Train" }
+        ];
+
+        function getSongMetadata(url, index) {
+            if (!url) return { title: "Wedding Day", artist: "{{ invitation.bride.name }} & {{ invitation.groom.name }}" };
+            
+            // Check if the filename contains UUID or high-entropy hash
+            const isUuid = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i.test(url);
+            const cleanFilename = url.substring(url.lastIndexOf('/') + 1).split('.')[0];
+            const isHash = /^[0-9a-f]{20,}$/i.test(cleanFilename) || isUuid;
+
+            if (isHash) {
+                // Return a cool romantic title from our curated list based on playlist index
+                const fallbackIdx = (typeof index !== 'undefined' ? index : currentSongIdx) % ROMANTIC_TITLES.length;
+                return ROMANTIC_TITLES[fallbackIdx];
+            }
+            
+            let filename = url.substring(url.lastIndexOf('/') + 1);
+            filename = filename.substring(0, filename.lastIndexOf('.')) || filename;
+            try {
+                filename = decodeURIComponent(filename);
+            } catch (e) {
+                console.warn("Failed to decode song filename URL:", e);
+            }
+            filename = filename.replace(/[_\-+]/g, ' ');
+            filename = filename.replace(/\b\w/g, c => c.toUpperCase());
+            
+            let parts = filename.split(/\s*[-–—]\s*/);
+            if (parts.length >= 2) {
+                return {
+                    title: parts[1].trim(),
+                    artist: parts[0].trim()
+                };
+            }
+            return {
+                title: filename.trim(),
+                artist: "{{ invitation.bride.name }} & {{ invitation.groom.name }}"
+            };
+        }
+
+        function loadSong(idx) {
+            if (PLAYLIST_SONGS.length === 0) return;
+            currentSongIdx = idx;
+            const audio = document.getElementById('bgAudio');
+            if (!audio) return;
+            
+            const songUrl = PLAYLIST_SONGS[currentSongIdx];
+            audio.src = songUrl;
+            audio.load();
+            
+            audio.loop = (PLAYLIST_SONGS.length === 1);
+            
+            const meta = getSongMetadata(songUrl, idx);
+            
+            const diTitle = document.getElementById('diTitle');
+            const diArtist = document.getElementById('diArtist');
+            const asbTitle = document.getElementById('asbTitle');
+            const musicTitleBig = document.getElementById('musicTitleBig');
+            const musicArtistBig = document.getElementById('musicArtistBig');
+            
+            if (diTitle) diTitle.textContent = meta.title;
+            if (diArtist) diArtist.textContent = meta.artist;
+            if (asbTitle) asbTitle.textContent = meta.title;
+            if (musicTitleBig) musicTitleBig.textContent = meta.title;
+            if (musicArtistBig) musicArtistBig.textContent = meta.artist + " · Playlist";
+            
+            updateProgBars(0, 0);
+        }
+
+        function initAudioPlayer() {
+            const audio = document.getElementById('bgAudio');
+            if (!audio) return;
+            
+            audio.addEventListener('timeupdate', () => {
+                if (!audio.duration) return;
+                updateProgBars(audio.currentTime, audio.duration);
+            });
+            
+            audio.addEventListener('loadedmetadata', () => {
+                updateProgBars(audio.currentTime, audio.duration);
+            });
+            
+            audio.addEventListener('ended', () => {
+                if (PLAYLIST_SONGS.length > 1) {
+                    nextSong();
+                }
+            });
+            
+            // Sync volume slider to match HTML volume bar state (35% default fill)
+            audio.volume = 0.35;
+            
+            loadSong(0);
+        }
+
+        function updateProgBars(currentTime, duration) {
+            const progFill = document.getElementById('progFill');
+            const progCur = document.getElementById('progCur');
+            const progDur = document.getElementById('progDur');
+            
+            const pct = duration ? (currentTime / duration) * 100 : 0;
+            if (progFill) progFill.style.width = pct + '%';
+            
+            const formatTime = (time) => {
+                if (isNaN(time) || !isFinite(time)) return '0:00';
+                const m = Math.floor(time / 60);
+                const s = Math.floor(time % 60);
+                return m + ':' + String(s).padStart(2, '0');
+            };
+            
+            if (progCur) progCur.textContent = formatTime(currentTime);
+            if (progDur) progDur.textContent = formatTime(duration);
+        }
+
+        function nextSong() {
+            if (PLAYLIST_SONGS.length <= 1) return;
+            let nextIdx = (currentSongIdx + 1) % PLAYLIST_SONGS.length;
+            loadSong(nextIdx);
+            if (playing) {
+                const audio = document.getElementById('bgAudio');
+                audio.play().catch(e => console.log("Next song play blocked:", e));
+            }
+            toast(`Memutar: ${getSongMetadata(PLAYLIST_SONGS[nextIdx], nextIdx).title}`);
+        }
+
+        function prevSong() {
+            if (PLAYLIST_SONGS.length <= 1) return;
+            let prevIdx = (currentSongIdx - 1 + PLAYLIST_SONGS.length) % PLAYLIST_SONGS.length;
+            loadSong(prevIdx);
+            if (playing) {
+                const audio = document.getElementById('bgAudio');
+                audio.play().catch(e => console.log("Prev song play blocked:", e));
+            }
+            toast(`Memutar: ${getSongMetadata(PLAYLIST_SONGS[prevIdx], prevIdx).title}`);
+        }
+
+        function adjustVolume(e) {
+            const audio = document.getElementById('bgAudio');
+            if (!audio) return;
+            
+            const bar = document.getElementById('volBar');
+            const fill = document.getElementById('volFill');
+            if (!bar || !fill) return;
+            
+            const r = bar.getBoundingClientRect();
+            const pct = Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100));
+            fill.style.width = pct + '%';
+            audio.volume = pct / 100;
+        }
+
+        function initArtworkVideo() {
+            const vid = document.getElementById('musicArtworkVideo');
+            if (!vid || ARTWORK_VIDEOS.length === 0) return;
+            
+            vid.src = ARTWORK_VIDEOS[0];
+            vid.load();
+            vid.play().catch(e => console.log("Artwork video play blocked:", e));
+            
+            vid.addEventListener('ended', () => {
+                currentArtworkVideoIdx = (currentArtworkVideoIdx + 1) % ARTWORK_VIDEOS.length;
+                vid.src = ARTWORK_VIDEOS[currentArtworkVideoIdx];
+                vid.load();
+                vid.play().catch(e => console.log("Next artwork video play failed:", e));
+              });
+          }
 
         /* ══════ COUNTDOWN ══════ */
         function countdown() {
-            const t = new Date('{{ invitation.event_date_iso }}');
+            let t;
+            const dateStr = '{{ invitation.event_date_iso }}';
+            if (dateStr) {
+                // Manually parse YYYY-MM-DDTHH:mm:ss for absolute browser and timezone compatibility (Safari-safe)
+                const parts = dateStr.split(/[-T:]/);
+                if (parts.length >= 3) {
+                    const y = parseInt(parts[0], 10);
+                    const mo = parseInt(parts[1], 10) - 1;
+                    const d = parseInt(parts[2], 10);
+                    const h = parts[3] ? parseInt(parts[3], 10) : 0;
+                    const mi = parts[4] ? parseInt(parts[4], 10) : 0;
+                    const s = parts[5] ? parseInt(parts[5], 10) : 0;
+                    t = new Date(y, mo, d, h, mi, s);
+                } else {
+                    t = new Date(dateStr);
+                }
+            }
+            if (!t || isNaN(t.getTime())) {
+                t = new Date();
+                t.setDate(t.getDate() + 4); // Robust fallback: 4 days from now
+            } else {
+                // If the target date is in the past, dynamically project the year to the current or next year
+                // so the countdown is active and functional for demo and test invitations.
+                const now = new Date();
+                if (t < now) {
+                    t.setFullYear(now.getFullYear());
+                    if (t < now) {
+                        t.setFullYear(now.getFullYear() + 1);
+                    }
+                }
+            }
+
             function tick() {
                 const d = t - new Date();
-                if (d <= 0) { ['cdD', 'cdH', 'cdM', 'cdS'].forEach(id => document.getElementById(id).textContent = '00'); return; }
-                document.getElementById('cdD').textContent = String(Math.floor(d / 86400000)).padStart(2, '0');
-                document.getElementById('cdH').textContent = String(Math.floor((d % 86400000) / 3600000)).padStart(2, '0');
-                document.getElementById('cdM').textContent = String(Math.floor((d % 3600000) / 60000)).padStart(2, '0');
-                document.getElementById('cdS').textContent = String(Math.floor((d % 60000) / 1000)).padStart(2, '0');
+                if (d <= 0) { 
+                    ['cdD', 'cdH', 'cdM', 'cdS'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el) el.textContent = '00';
+                    });
+                    return; 
+                }
+                const cdD = document.getElementById('cdD');
+                const cdH = document.getElementById('cdH');
+                const cdM = document.getElementById('cdM');
+                const cdS = document.getElementById('cdS');
+
+                if (cdD) cdD.textContent = String(Math.floor(d / 86400000)).padStart(2, '0');
+                if (cdH) cdH.textContent = String(Math.floor((d % 86400000) / 3600000)).padStart(2, '0');
+                if (cdM) cdM.textContent = String(Math.floor((d % 3600000) / 60000)).padStart(2, '0');
+                if (cdS) cdS.textContent = String(Math.floor((d % 60000) / 1000)).padStart(2, '0');
             }
             tick(); setInterval(tick, 1000);
         }
@@ -2939,6 +3624,18 @@
         /* ══════ TOAST ══════ */
         let _tt;
         function toast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(_tt); _tt = setTimeout(() => t.classList.remove('on'), 2800); }
+
+        /* ══════ TIMELINE ACCORDION ══════ */
+        function toggleStoryImage(id) {
+            const container = document.getElementById(`story-img-container-${id}`);
+            const icon = document.querySelector(`.icon-toggle-story-img-${id}`);
+            const text = document.querySelector(`.text-toggle-story-img-${id}`);
+            if (!container) return;
+            
+            const isOpen = container.classList.toggle('open');
+            if (icon) icon.textContent = isOpen ? '🙈' : '📷';
+            if (text) text.textContent = isOpen ? 'Tutup Foto' : 'Lihat Foto';
+        }
     </script>
 {% include "invitation/ai_concierge_snippet.html" %}
 </body>
