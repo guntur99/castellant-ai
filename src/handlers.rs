@@ -1868,6 +1868,7 @@ pub struct WeddingIndomieGorengTemplate {
 
 #[derive(Template)]
 #[template(path = "invitation/manage.html")]
+#[allow(dead_code)]
 pub struct ManageInvitationTemplate {
     pub invitation: Invitation,
     pub all_templates: Vec<InvitationTemplate>,
@@ -2413,7 +2414,10 @@ pub async fn invitation_detail(
                         "/static/img/gallery2.jpg".to_string(),
                         "/static/img/gallery3.jpg".to_string(),
                     ],
-                    gallery_videos: Vec::new(),
+                    gallery_videos: vec![
+                        "https://assets.mixkit.co/videos/preview/mixkit-wedding-couple-walking-in-the-field-1234-large.mp4".to_string(),
+                        "https://assets.mixkit.co/videos/preview/mixkit-wedding-couple-walking-in-a-forest-40439-large.mp4".to_string(),
+                    ],
                     gift_accounts: vec![
                         GiftAccount {
                             bank_name: "BCA".to_string(),
@@ -2432,9 +2436,31 @@ pub async fn invitation_detail(
                     event_date_iso: "2026-12-12T08:00:00".to_string(),
                     rsvps: Vec::new(),
                     custom_song_url: String::new(),
-                    background_video_url: String::new(),
+                    background_video_url: "https://assets.mixkit.co/videos/preview/mixkit-wedding-couple-walking-in-the-field-1234-large.mp4".to_string(),
                     hero_video_position: 50,
-                    stories: vec![],
+                    stories: vec![
+                        Story {
+                            id: "1".to_string(),
+                            title: "Awal Pertemuan".to_string(),
+                            date: "Juni 2025".to_string(),
+                            description: "Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela sushi, dan es krim menjadi saksi awal kisah kami.".to_string(),
+                            image_url: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80".to_string(),
+                        },
+                        Story {
+                            id: "2".to_string(),
+                            title: "Lamaran".to_string(),
+                            date: "November 2025".to_string(),
+                            description: "Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.".to_string(),
+                            image_url: "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=600&q=80".to_string(),
+                        },
+                        Story {
+                            id: "3".to_string(),
+                            title: "Pernikahan".to_string(),
+                            date: "Desember 2026".to_string(),
+                            description: "Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama.".to_string(),
+                            image_url: "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80".to_string(),
+                        },
+                    ],
                     playlist: vec![],
                     is_preview: true,
                 };
@@ -3897,7 +3923,9 @@ pub async fn add_group(
     let plan_name = plan_name.unwrap_or_else(|| "NOBLE".to_string());
 
     // Check if group already exists (for updates)
-    let existing = sqlx::query!("SELECT id FROM invitation_groups WHERE invitation_id = $1 AND name = $2", invitation_id, payload.name)
+    let existing = sqlx::query("SELECT id FROM invitation_groups WHERE invitation_id = $1 AND name = $2")
+        .bind(invitation_id)
+        .bind(&payload.name)
         .fetch_optional(&state.db)
         .await
         .unwrap();
@@ -4382,13 +4410,20 @@ pub async fn mayar_webhook(
                         .await;
 
                     // Send Email Notification
-                    let user_info = sqlx::query!(
-                         "SELECT u.email, u.name as user_name, i.couple_name_short, i.language 
+                    #[derive(sqlx::FromRow)]
+                    struct PaymentUserInfo {
+                        email: String,
+                        user_name: Option<String>,
+                        language: Option<String>,
+                    }
+
+                    let user_info = sqlx::query_as::<_, PaymentUserInfo>(
+                         "SELECT u.email, u.name as user_name, i.language 
                           FROM invitations i 
                           JOIN users u ON i.user_id = u.id 
-                          WHERE i.slug = $1",
-                         &slug
+                          WHERE i.slug = $1"
                     )
+                    .bind(&slug)
                     .fetch_optional(&state.db)
                     .await
                     .ok()
@@ -4916,13 +4951,14 @@ pub async fn admin_templates_update(
     let mut is_featured = false;
 
     // First fetch current template to get existing preview_img as fallback
-    let current = sqlx::query!("SELECT preview_img FROM templates WHERE id = $1", id)
+    let current: Option<String> = sqlx::query_scalar("SELECT preview_img FROM templates WHERE id = $1")
+        .bind(&id)
         .fetch_optional(&state.db)
         .await
         .unwrap_or(None);
     
     if let Some(c) = current {
-        preview_img = c.preview_img;
+        preview_img = c;
     }
 
     while let Some(field) = multipart.next_field().await.unwrap_or(None) {
@@ -4989,7 +5025,14 @@ pub async fn admin_templates_toggle_status(
     }
 
     // Check if it's featured
-    let template = sqlx::query!("SELECT status, is_featured FROM templates WHERE id = $1", id)
+    #[derive(sqlx::FromRow)]
+    struct TemplateStatusInfo {
+        status: String,
+        is_featured: bool,
+    }
+
+    let template = sqlx::query_as::<_, TemplateStatusInfo>("SELECT status, is_featured FROM templates WHERE id = $1")
+        .bind(&id)
         .fetch_optional(&state.db)
         .await
         .unwrap_or(None);

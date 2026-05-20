@@ -49,12 +49,28 @@ async fn main() {
     let database_url = env::var("DATABASE_URL").expect("DATABASE_URL must be set");
     let redis_url = env::var("REDIS_URL").expect("REDIS_URL must be set");
 
-    // DB Pool
-    let db_pool = PgPoolOptions::new()
-        .max_connections(5)
-        .connect(&database_url)
-        .await
-        .expect("Failed to connect to Postgres");
+    // DB Pool with robust retry logic to handle Railway proxy connection resets on quick restarts
+    let mut db_pool = None;
+    for attempt in 1..=3 {
+        match PgPoolOptions::new()
+            .max_connections(2)
+            .connect(&database_url)
+            .await
+        {
+            Ok(pool) => {
+                db_pool = Some(pool);
+                break;
+            }
+            Err(e) => {
+                if attempt == 3 {
+                    panic!("Failed to connect to Postgres after 3 attempts: {:?}", e);
+                }
+                tracing::warn!("Failed to connect to Postgres (attempt {}/3): {}. Retrying in 1.5 seconds...", attempt, e);
+                tokio::time::sleep(tokio::time::Duration::from_secs_f32(1.5)).await;
+            }
+        }
+    }
+    let db_pool = db_pool.unwrap();
 
     // Set timezone to Jakarta for all future sessions
     let _ = sqlx::query("SET timezone TO 'Asia/Jakarta'")

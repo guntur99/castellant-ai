@@ -42,6 +42,7 @@ pub fn first_image(images: &[String]) -> askama::Result<String> {
     }
 }
 
+#[allow(dead_code)]
 pub fn default<T: std::fmt::Display>(s: &Option<T>, default_val: &str) -> askama::Result<String> {
     match s {
         Some(v) => Ok(v.to_string()),
@@ -49,6 +50,7 @@ pub fn default<T: std::fmt::Display>(s: &Option<T>, default_val: &str) -> askama
     }
 }
 
+#[allow(dead_code)]
 pub fn eq_uuid_opt(opt: &Option<uuid::Uuid>, val: &uuid::Uuid) -> askama::Result<bool> {
     Ok(opt.as_ref() == Some(val))
 }

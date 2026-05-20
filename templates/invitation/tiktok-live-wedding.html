@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LIVE · {{ invitation.couple_name_short }} 💍</title>
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💍</text></svg>">
     <link
         href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Playfair+Display:ital,wght@1,400;1,700&display=swap"
         rel="stylesheet">
@@ -50,8 +52,13 @@
             justify-content: center;
             padding: 32px;
             text-align: center;
-            background: var(--tt-black);
+            background: rgba(0, 0, 0, 0.45);
+            /* translucent low-opacity background */
+            backdrop-filter: blur(8px);
+            /* glassmorphic blur so the video shows beautifully */
+            -webkit-backdrop-filter: blur(8px);
             transition: opacity .7s, transform .7s;
+            overflow: hidden;
         }
 
         #opening.hide {
@@ -60,11 +67,99 @@
             pointer-events: none
         }
 
+        /* Ambient Glow Background */
+        .op-bg-glows {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .op-glow-1 {
+            position: absolute;
+            top: -15%;
+            left: -15%;
+            width: 70vw;
+            height: 70vw;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(37, 244, 238, 0.12) 0%, transparent 70%);
+            /* TikTok Cyan */
+            animation: float-glow-1 12s ease-in-out infinite alternate;
+        }
+
+        .op-glow-2 {
+            position: absolute;
+            bottom: -15%;
+            right: -15%;
+            width: 80vw;
+            height: 80vw;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(254, 44, 85, 0.15) 0%, transparent 70%);
+            /* TikTok Pink */
+            animation: float-glow-2 15s ease-in-out infinite alternate;
+        }
+
+        .op-glow-3 {
+            position: absolute;
+            top: 35%;
+            left: 20%;
+            width: 50vw;
+            height: 50vw;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+            animation: float-glow-3 18s ease-in-out infinite alternate;
+        }
+
+        @keyframes float-glow-1 {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(8vw, 6vh) scale(1.1);
+            }
+        }
+
+        @keyframes float-glow-2 {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(-6vw, -8vh) scale(0.95);
+            }
+        }
+
+        @keyframes float-glow-3 {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(4vw, 5vh) scale(1.15);
+            }
+        }
+
         .op-tiktok-logo {
-            width: 76px;
-            height: 76px;
-            margin: 0 auto 22px;
+            width: 88px;
+            height: 88px;
+            margin: 0 auto 24px;
             position: relative;
+            z-index: 2;
+            animation: ring-pulse 3s infinite alternate;
+        }
+
+        @keyframes ring-pulse {
+            0% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 10px rgba(37, 244, 238, 0.3));
+            }
+
+            100% {
+                transform: scale(1.05);
+                filter: drop-shadow(0 0 20px rgba(254, 44, 85, 0.6)) drop-shadow(0 0 10px rgba(37, 244, 238, 0.4));
+            }
         }
 
         .op-tiktok-logo svg {
@@ -76,15 +171,18 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: var(--tt-pink);
+            background: linear-gradient(135deg, var(--tt-pink), #ff0050);
             color: #fff;
             font-size: 11px;
-            font-weight: 700;
-            letter-spacing: .1em;
+            font-weight: 800;
+            letter-spacing: .15em;
             text-transform: uppercase;
-            padding: 5px 14px 5px 10px;
+            padding: 6px 16px 6px 12px;
             border-radius: 20px;
-            margin-bottom: 18px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 15px rgba(254, 44, 85, 0.4);
+            z-index: 2;
+            position: relative;
         }
 
         .live-pulse {
@@ -111,37 +209,54 @@
 
         .op-title {
             font-family: var(--serif);
-            font-size: clamp(30px, 8vw, 52px);
+            font-size: clamp(34px, 8vw, 56px);
             font-style: italic;
             color: #fff;
-            line-height: 1.15;
-            margin-bottom: 6px;
+            line-height: 1.2;
+            margin-bottom: 8px;
+            z-index: 2;
+            position: relative;
             background: linear-gradient(135deg, #fff 0%, rgba(255, 255, 255, .75) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
         }
 
         .op-date {
             font-size: 13px;
-            color: rgba(255, 255, 255, .45);
-            letter-spacing: .15em;
+            color: rgba(255, 255, 255, .5);
+            letter-spacing: .22em;
             text-transform: uppercase;
-            margin-bottom: 30px
+            margin-bottom: 36px;
+            z-index: 2;
+            position: relative;
+            text-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
         }
 
         .op-dear {
-            background: rgba(255, 255, 255, .06);
-            border: 1px solid rgba(255, 255, 255, .1);
-            border-radius: 12px;
-            padding: 14px 22px;
-            margin-bottom: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            padding: 16px 28px;
+            margin-bottom: 32px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            z-index: 2;
+            position: relative;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .op-dear:hover {
+            transform: translateY(-2px);
+            border-color: rgba(254, 44, 85, 0.3);
         }
 
         .op-dear-l {
             font-size: 10px;
-            color: rgba(255, 255, 255, .35);
-            letter-spacing: .1em;
+            color: rgba(255, 255, 255, .4);
+            letter-spacing: .12em;
             text-transform: uppercase;
             margin-bottom: 4px
         }
@@ -149,7 +264,7 @@
         .op-dear-n {
             font-family: var(--serif);
             font-style: italic;
-            font-size: 19px;
+            font-size: 21px;
             color: #fff
         }
 
@@ -159,30 +274,45 @@
             background: linear-gradient(135deg, var(--tt-pink), #ff0050);
             color: #fff;
             border: none;
-            padding: 15px 48px;
-            border-radius: 4px;
+            padding: 16px 52px;
+            border-radius: 50px;
             font-family: var(--font);
             font-size: 15px;
             font-weight: 700;
-            letter-spacing: .05em;
+            letter-spacing: .06em;
             cursor: pointer;
-            transition: transform .15s;
+            transition: transform .2s, box-shadow .2s;
             display: inline-flex;
             align-items: center;
             gap: 10px;
+            z-index: 2;
+            box-shadow: 0 6px 20px rgba(254, 44, 85, 0.4);
         }
 
         .op-join-btn::before {
             content: '';
             position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, var(--tt-cyan) 0%, transparent 60%);
-            opacity: .15;
-            pointer-events: none;
+            top: 0;
+            left: -100%;
+            width: 50%;
+            height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.25), transparent);
+            transform: skewX(-25deg);
+        }
+
+        .op-join-btn:hover::before {
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            100% {
+                left: 150%;
+            }
         }
 
         .op-join-btn:hover {
-            transform: scale(1.03)
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 10px 30px rgba(254, 44, 85, 0.6), 0 0 10px rgba(37, 244, 238, 0.3);
         }
 
         .op-join-btn:active {
@@ -194,6 +324,50 @@
             height: 18px
         }
 
+        /* Opening Entrance Animation Flow */
+        #opening>div:not(.op-bg-glows),
+        #opening>h1,
+        #opening>p,
+        #opening>button {
+            animation: op-fade-in 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        #opening .op-tiktok-logo {
+            animation-delay: 0.1s;
+        }
+
+        #opening .op-live-pill {
+            animation-delay: 0.25s;
+        }
+
+        #opening .op-title {
+            animation-delay: 0.4s;
+        }
+
+        #opening .op-date {
+            animation-delay: 0.55s;
+        }
+
+        #opening .op-dear {
+            animation-delay: 0.7s;
+        }
+
+        #opening .op-join-btn {
+            animation-delay: 0.85s;
+        }
+
+        @keyframes op-fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         /* ══════════════════════════════
    MAIN LIVE SCREEN
 ══════════════════════════════ */
@@ -202,7 +376,8 @@
             inset: 0;
             display: flex;
             flex-direction: column;
-            background: #000;
+            background: transparent;
+            /* transparent to let global bg show through */
             opacity: 0;
             transition: opacity .6s .15s;
         }
@@ -213,9 +388,10 @@
 
         /* VIDEO BG */
         .video-bg {
-            position: absolute;
+            position: fixed;
             inset: 0;
             overflow: hidden;
+            z-index: 0;
         }
 
         .vbg-img {
@@ -988,21 +1164,26 @@
         }
 
         .c-av {
-            width: 64px;
-            height: 64px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
-            overflow: hidden;
-            margin: 0 auto 10px;
-            position: relative
+            margin: 0 auto 12px;
+            position: relative;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .c-av:hover {
+            transform: scale(1.08) rotate(3deg);
         }
 
         .c-av::after {
             content: '';
             position: absolute;
-            inset: -2px;
+            inset: -3px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--tt-pink), var(--tt-cyan));
             z-index: -1;
+            box-shadow: 0 0 15px rgba(254, 44, 85, 0.3);
         }
 
         .c-av img {
@@ -1012,7 +1193,7 @@
             position: relative;
             z-index: 1;
             border-radius: 50%;
-            border: 2px solid #111
+            border: 3px solid #111;
         }
 
         .c-role {
@@ -1198,6 +1379,95 @@
             font-size: 11px;
             color: rgba(255, 255, 255, .45);
             line-height: 1.65
+        }
+
+        /* Timeline Image container for smooth show/hide */
+        .tl-img-container {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            margin-top: 0;
+            margin-bottom: 0;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, margin 0.4s ease;
+        }
+
+        .tl-img-container.active {
+            max-height: 200px;
+            opacity: 1;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* Timeline Image box */
+        .tl-img-box {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 260px;
+            aspect-ratio: 16 / 10;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+        }
+
+        .tl-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .tl-img-box:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 25px rgba(254, 44, 85, 0.25);
+        }
+
+        .tl-img-box:hover img {
+            transform: scale(1.06);
+        }
+
+        .tl-img-badge {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            color: #fff;
+            font-size: 9px;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .tl-btn-show {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(254, 44, 85, 0.08);
+            border: 1px solid rgba(254, 44, 85, 0.25);
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            margin-top: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tl-btn-show:hover {
+            background: var(--tt-pink);
+            border-color: var(--tt-pink);
+            box-shadow: 0 4px 12px rgba(254, 44, 85, 0.3);
+            transform: translateY(-1px);
         }
 
         /* gallery */
@@ -1610,13 +1880,67 @@
             font-size: 11px;
             color: rgba(255, 255, 255, .35)
         }
+
+        /* videos grid and items styled for Reels style */
+        .vid-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            padding: 4px;
+        }
+
+        .vid-item {
+            aspect-ratio: 9/16;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            background: #000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: transform .35s, filter .35s;
+        }
+
+        .vid-item:hover {
+            transform: translateY(-2px);
+        }
+
+        .vid-item video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .vid-item::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0%, transparent 40%);
+            pointer-events: none;
+        }
     </style>
 </head>
 
 <body>
 
+    <!-- Global Background Layer -->
+    <div class="video-bg">
+        <img class="vbg-img" id="bgImg" src="{{ invitation.gallery_images|first_image }}" alt=""
+            style="display: block;">
+        <video class="vbg-img" id="bgVideo"
+            style="display: none; object-fit: cover; width: 100%; height: 100%; position: absolute; inset: 0;"
+            playsinline muted></video>
+        <div class="vbg-noise"></div>
+        <div class="vbg-grad"></div>
+    </div>
+
     <!-- ══ OPENING ══ -->
     <div id="opening">
+        <!-- Floating Ambient Glows -->
+        <div class="op-bg-glows">
+            <div class="op-glow-1"></div>
+            <div class="op-glow-2"></div>
+            <div class="op-glow-3"></div>
+        </div>
+
         <div class="op-tiktok-logo">
             <svg viewBox="0 0 76 76" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect width="76" height="76" rx="18" fill="#111" />
@@ -1633,32 +1957,24 @@
             </svg>
         </div>
         <div class="op-live-pill">
-            <div class="live-pulse"></div>SEDANG LIVE
+            <div class="live-pulse"></div>LIVE NOW
         </div>
         <h1 class="op-title">{{ invitation.couple_name_short }}</h1>
         <p class="op-date">Pernikahan · {{ invitation.event_date }}</p>
         <div class="op-dear">
-            <div class="op-dear-l">Kepada</div>
+            <div class="op-dear-l">To</div>
             <div class="op-dear-n">{{ invitation.recipient_name }}</div>
         </div>
         <button class="op-join-btn" onclick="startLive()">
             <svg viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
             </svg>
-            Gabung Live Sekarang
+            Join Live Now
         </button>
     </div>
 
     <!-- ══ LIVE APP ══ -->
     <div id="app">
-
-        <!-- Background -->
-        <div class="video-bg">
-            <img class="vbg-img" id="bgImg"
-                src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80" alt="">
-            <div class="vbg-noise"></div>
-            <div class="vbg-grad"></div>
-        </div>
 
         <!-- Top bar -->
         <div class="top-bar">
@@ -1824,6 +2140,7 @@
             <button class="stab" data-p="event" onclick="switchPanel('event')">📅 Event</button>
             <button class="stab" data-p="story" onclick="switchPanel('story')">💛 Story</button>
             <button class="stab" data-p="gallery" onclick="switchPanel('gallery')">📸 Gallery</button>
+            <button class="stab" data-p="videos" onclick="switchPanel('videos')">🎬 Videos</button>
             <button class="stab" data-p="gift" onclick="switchPanel('gift')">🎁 Gift</button>
             <button class="stab" data-p="rsvp" onclick="switchPanel('rsvp')">✉️ RSVP</button>
             <button class="stab" data-p="wishes" onclick="switchPanel('wishes')">⭐ Ucapan</button>
@@ -1834,10 +2151,8 @@
             <div class="panel on" id="p-info">
                 <div class="s-label">Ayat Cinta</div>
                 <div class="verse-box">
-                    <div class="verse-text">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan
-                        pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram
-                        kepadanya..."</div>
-                    <div class="verse-ref">— Surah Ar-Rum : 21</div>
+                    <div class="verse-text">"{{ invitation.quote.text }}"</div>
+                    <div class="verse-ref">— {{ invitation.quote.source }}</div>
                 </div>
                 <div class="divider"></div>
                 <div class="tb-name">{{ invitation.couple_name_short }}</div>
@@ -1868,23 +2183,25 @@
             <div class="panel" id="p-couple">
                 <div class="couple-grid">
                     <div class="c-card">
-                        <div class="c-av"><img
-                                src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=200&h=200&fit=crop&q=80"
-                                alt="{{ invitation.bride.name }}"></div>
+                        <div class="c-av">
+                            <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride.name }}">
+                        </div>
                         <div class="c-role">🌸 Mempelai Wanita</div>
-                        <div class="c-name">{{ invitation.bride.name }}, S.Kom</div>
-                        <div class="c-parents">Putri Pertama dari<br><strong style="color:rgba(255,255,255,.6)">Bpk.
-                                Taryono &<br>Ibu Wiwit Jayanti</strong></div>
+                        <div class="c-name">{{ invitation.bride.full_name }}</div>
+                        <div class="c-parents">Putri dari<br><strong style="color:rgba(255,255,255,.65)">Bpk. {{
+                                invitation.bride.father_name }} &<br>Ibu {{ invitation.bride.mother_name }}</strong>
+                        </div>
                     </div>
                     <div class="c-amp">&</div>
                     <div class="c-card">
-                        <div class="c-av"><img
-                                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80"
-                                alt="{{ invitation.groom.name }}"></div>
+                        <div class="c-av">
+                            <img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom.name }}">
+                        </div>
                         <div class="c-role">🤵 Mempelai Pria</div>
-                        <div class="c-name">{{ invitation.groom.name }}, S.Kom</div>
-                        <div class="c-parents">Putra Kedua dari<br><strong style="color:rgba(255,255,255,.6)">Bpk. Wan
-                                Sabran, M.MAR &<br>Ibu Titik Sundari, M.Si</strong></div>
+                        <div class="c-name">{{ invitation.groom.full_name }}</div>
+                        <div class="c-parents">Putra dari<br><strong style="color:rgba(255,255,255,.65)">Bpk. {{
+                                invitation.groom.father_name }} &<br>Ibu {{ invitation.groom.mother_name }}</strong>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1932,470 +2249,682 @@
             <!-- STORY -->
             <div class="panel" id="p-story">
                 <div class="tl-list">
+                    {% for story in invitation.stories %}
                     <div class="tl-item">
-                        <div class="tl-dot">01</div>
-                        <div class="tl-body">
-                            <div class="tl-track">Track 01</div>
-                            <div class="tl-when">Juni 2025</div>
-                            <div class="tl-title">Awal Pertemuan</div>
-                            <div class="tl-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling,
-                                cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah
-                                kami.</div>
+                        <div class="tl-dot">{% if loop.index < 10 %}0{% endif %}{{ loop.index }}</div>
+                                <div class="tl-body">
+                                    <div class="tl-track">Track {% if loop.index < 10 %}0{% endif %}{{ loop.index
+                                            }}</div>
+                                            <div class="tl-when">{{ story.date }}</div>
+                                            <div class="tl-title">{{ story.title }}</div>
+
+                                            {% if !story.image_url.is_empty() %}
+                                            <div class="tl-img-container" id="story-img-{{ loop.index }}">
+                                                <div class="tl-img-box"
+                                                    onclick="openStoryLb('{{ story.image_url }}', '{{ story.title }}')">
+                                                    <img src="{{ story.image_url }}" alt="{{ story.title }}"
+                                                        loading="lazy">
+                                                </div>
+                                            </div>
+                                            {% endif %}
+
+                                            <div class="tl-desc">{{ story.description }}</div>
+
+                                            {% if !story.image_url.is_empty() %}
+                                            <button class="tl-btn-show"
+                                                onclick="toggleStoryPhoto({{ loop.index }}, this)">
+                                                🔍 View Photo
+                                            </button>
+                                            {% endif %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+                                {% if invitation.stories.is_empty() %}
+                                <p
+                                    style="font-size:12px;color:rgba(255,255,255,.35);text-align:center;margin-top:20px;">
+                                    Belum ada cerita yang dibagikan.</p>
+                                {% endif %}
                         </div>
                     </div>
-                    <div class="tl-item">
-                        <div class="tl-dot">02</div>
-                        <div class="tl-body">
-                            <div class="tl-track">Track 02</div>
-                            <div class="tl-when">November 2025</div>
-                            <div class="tl-title">Lamaran</div>
-                            <div class="tl-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga,
-                                kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div>
+
+                    <!-- GALLERY -->
+                    <div class="panel" id="p-gallery">
+                        <div class="gal-grid" id="galGrid"></div>
+                    </div>
+
+                    <!-- VIDEOS -->
+                    <div class="panel" id="p-videos">
+                        <div class="vid-grid">
+                            {% for video in invitation.gallery_videos %}
+                            <div class="vid-item" onclick="openVidLb({{ loop.index0 }})" style="cursor:pointer;">
+                                <video autoplay loop muted playsinline preload="metadata">
+                                    <source src="{{ video }}" type="video/mp4">
+                                </video>
+                            </div>
+                            {% endfor %}
                         </div>
+                        {% if invitation.gallery_videos.is_empty() %}
+                        <p style="font-size:12px;color:rgba(255,255,255,.35);text-align:center;margin-top:20px;">Belum
+                            ada video.</p>
+                        {% endif %}
                     </div>
-                    <div class="tl-item">
-                        <div class="tl-dot">03</div>
-                        <div class="tl-body">
-                            <div class="tl-track">Track 03</div>
-                            <div class="tl-when">Mei 2026</div>
-                            <div class="tl-title">Pernikahan 🎉</div>
-                            <div class="tl-desc">Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan suci
-                                pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama.</div>
+
+                    <!-- GIFT -->
+                    <div class="panel" id="p-gift">
+                        <p style="font-size:12px;color:rgba(255,255,255,.35);line-height:1.65;margin-bottom:16px">Doa
+                            restu
+                            sudah sangat cukup, namun jika memberi merupakan tanda kasih, kami dengan senang hati
+                            menerimanya 🧡
+                        </p>
+
+                        {% for acc in invitation.gift_accounts %}
+                        <div class="gift-card">
+                            <div class="gc-bank">Bank</div>
+                            <div class="gc-name">{{ acc.bank_name }}</div>
+                            <div class="gc-holder">{{ acc.account_holder }}</div>
+                            <div class="gc-num">{{ acc.account_number }}</div>
+                            <br>
+                            <button class="copy-btn" onclick="copyN('{{ acc.account_number }}',this)">Salin
+                                Nomor</button>
                         </div>
+                        {% endfor %}
                     </div>
-                </div>
-            </div>
 
-            <!-- GALLERY -->
-            <div class="panel" id="p-gallery">
-                <div class="gal-grid" id="galGrid"></div>
-            </div>
-
-            <!-- GIFT -->
-            <div class="panel" id="p-gift">
-                <p style="font-size:12px;color:rgba(255,255,255,.35);line-height:1.65;margin-bottom:16px">Doa restu
-                    sudah sangat cukup, namun jika memberi merupakan tanda kasih, kami dengan senang hati menerimanya 🧡
-                </p>
-                
-                {% for acc in invitation.gift_accounts %}
-                <div class="gift-card">
-                    <div class="gc-bank">Bank</div>
-                    <div class="gc-name">{{ acc.bank_name }}</div>
-                    <div class="gc-holder">{{ acc.account_holder }}</div>
-                    <div class="gc-num">{{ acc.account_number }}</div>
-                    <br>
-                    <button class="copy-btn" onclick="copyN('{{ acc.account_number }}',this)">Salin Nomor</button>
-                </div>
-                {% endfor %}
-            </div>
-
-            <!-- RSVP -->
-            <div class="panel" id="p-rsvp">
-                <div class="rsvp-stats">
-                    <div class="rs">
-                        <div class="rs-n" id="stR">7</div>
-                        <div class="rs-l">Respons</div>
-                    </div>
-                    <div class="rs">
-                        <div class="rs-n" id="stH">7</div>
-                        <div class="rs-l">Hadir</div>
-                    </div>
-                    <div class="rs">
-                        <div class="rs-n" id="stT">13</div>
-                        <div class="rs-l">Tamu</div>
-                    </div>
-                </div>
-                <div class="fg"><label class="fl-label">Nama Lengkap</label><input type="text" class="fi"
-                        placeholder="Nama kamu" id="rName"></div>
-                <div class="fg"><label class="fl-label">Kehadiran</label>
-                    <select class="fi" id="rStat">
-                        <option value="">Pilih status...</option>
-                        <option value="hadir">Hadir ✅</option>
-                        <option value="tidak">Tidak Hadir ❌</option>
-                    </select>
-                </div>
-                <div class="fg"><label class="fl-label">Jumlah Tamu</label>
-                    <div class="gbtn-row">
-                        <button class="gbtn on" onclick="setG(1,this)">1 Orang</button>
-                        <button class="gbtn" onclick="setG(2,this)">2 Orang</button>
-                    </div>
-                </div>
-                <div class="fg"><label class="fl-label">Ucapan & Doa</label><textarea class="fi"
-                        placeholder="Tulis ucapan untuk Nazma & Gunturr... 💛" id="rMsg"></textarea></div>
-                <button class="rsvp-sub" onclick="doRSVP()">Konfirmasi Sekarang</button>
-            </div>
-
-            <!-- WISHES -->
-            <div class="panel" id="p-wishes">
-                <div class="wlist" id="wList">
-                    <div class="wcard">
-                        <div class="wh">
-                            <div class="wav" style="background:#FE2C55">A</div>
-                            <div>
-
-                {% if invitation.is_preview %}
-                                                <div class="wn">Ayu Rahmawati</div>
-                                <div class="ws">✓ Hadir · 2 tamu</div>
+                    <!-- RSVP -->
+                    <div class="panel" id="p-rsvp">
+                        <div class="rsvp-stats">
+                            <div class="rs">
+                                <div class="rs-n" id="stR">
+                                    {% if invitation.is_preview %}
+                                    7
+                                    {% else %}
+                                    {{ invitation.total_rsvps() }}
+                                    {% endif %}
+                                </div>
+                                <div class="rs-l">Respons</div>
+                            </div>
+                            <div class="rs">
+                                <div class="rs-n" id="stH">
+                                    {% if invitation.is_preview %}
+                                    7
+                                    {% else %}
+                                    {{ invitation.total_hadir() }}
+                                    {% endif %}
+                                </div>
+                                <div class="rs-l">Hadir</div>
+                            </div>
+                            <div class="rs">
+                                <div class="rs-n" id="stT">
+                                    {% if invitation.is_preview %}
+                                    13
+                                    {% else %}
+                                    {{ invitation.total_guest_count() }}
+                                    {% endif %}
+                                </div>
+                                <div class="rs-l">Tamu</div>
                             </div>
                         </div>
-                        <div class="wstars">★★★★★</div>
-                        <div class="wtxt">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah,
-                            wa rahmah. Bahagia selalu Nazma & Gunturr! 🌿</div>
-                    </div>
-                    <div class="wcard">
-                        <div class="wh">
-                            <div class="wav" style="background:#25F4EE;color:#000">R</div>
-                            <div>
-                                <div class="wn">Reza Firmansyah</div>
-                                <div class="ws">✓ Hadir · 1 tamu</div>
+                        <div class="fg"><label class="fl-label">Nama Lengkap</label><input type="text" class="fi"
+                                placeholder="Nama kamu" id="rName"></div>
+                        <div class="fg"><label class="fl-label">Kehadiran</label>
+                            <select class="fi" id="rStat">
+                                <option value="">Pilih status...</option>
+                                <option value="hadir">Hadir ✅</option>
+                                <option value="tidak">Tidak Hadir ❌</option>
+                            </select>
+                        </div>
+                        <div class="fg"><label class="fl-label">Jumlah Tamu</label>
+                            <div class="gbtn-row">
+                                <button class="gbtn on" onclick="setG(1,this)">1 Orang</button>
+                                <button class="gbtn" onclick="setG(2,this)">2 Orang</button>
                             </div>
                         </div>
-                        <div class="wstars">★★★★★</div>
-                        <div class="wtxt">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan
-                            kebahagiaan yang tidak pernah habis. Aamiin!</div>
+                        <div class="fg"><label class="fl-label">Ucapan & Doa</label><textarea class="fi"
+                                placeholder="Tulis ucapan untuk Nazma & Gunturr... 💛" id="rMsg"></textarea></div>
+                        <button class="rsvp-sub" onclick="doRSVP()">Konfirmasi Sekarang</button>
                     </div>
-                    <div class="wcard">
-                        <div class="wh">
-                            <div class="wav" style="background:#7c4dff">S</div>
-                            <div>
-                                <div class="wn">Sinta Dewi</div>
 
-                {% else %}
-                {% for rsvp in invitation.rsvps %}
-                                                <div class="wn">{{ rsvp.name }}</div>
-
-                {% endfor %}
-                {% endif %}
-                                                <div class="ws">✓ Hadir · 2 tamu</div>
+                    <!-- WISHES -->
+                    <div class="panel" id="p-wishes">
+                        <div class="wlist" id="wList">
+                            {% if invitation.is_preview %}
+                            <div class="wcard">
+                                <div class="wh">
+                                    <div class="wav" style="background:#FE2C55">A</div>
+                                    <div>
+                                        <div class="wn">Ayu Rahmawati</div>
+                                        <div class="ws">✓ Hadir · 2 tamu</div>
+                                    </div>
+                                </div>
+                                <div class="wstars">★★★★★</div>
+                                <div class="wtxt">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah,
+                                    mawaddah,
+                                    wa rahmah. Bahagia selalu Nazma & Gunturr! 🌿</div>
                             </div>
+                            <div class="wcard">
+                                <div class="wh">
+                                    <div class="wav" style="background:#25F4EE;color:#000">R</div>
+                                    <div>
+                                        <div class="wn">Reza Firmansyah</div>
+                                        <div class="ws">✓ Hadir · 1 tamu</div>
+                                    </div>
+                                </div>
+                                <div class="wstars">★★★★★</div>
+                                <div class="wtxt">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan
+                                    kebahagiaan yang tidak pernah habis. Aamiin!</div>
+                            </div>
+                            <div class="wcard">
+                                <div class="wh">
+                                    <div class="wav" style="background:#7c4dff">S</div>
+                                    <div>
+                                        <div class="wn">Sinta Dewi</div>
+                                        <div class="ws">✓ Hadir · 2 tamu</div>
+                                    </div>
+                                </div>
+                                <div class="wstars">★★★★★</div>
+                                <div class="wtxt">Wishing you both a lifetime of love and laughter. Semoga langkah
+                                    kalian selalu diberkahi.</div>
+                            </div>
+                            {% else %}
+                            {% for rsvp in invitation.rsvps %}
+                            <div class="wcard">
+                                <div class="wh">
+                                    {% if loop.index0 % 3 == 0 %}
+                                    <div class="wav" style="background:#FE2C55">{{ rsvp.initial() }}</div>
+                                    {% else if loop.index0 % 3 == 1 %}
+                                    <div class="wav" style="background:#25F4EE;color:#000">{{ rsvp.initial() }}</div>
+                                    {% else %}
+                                    <div class="wav" style="background:#7c4dff">{{ rsvp.initial() }}</div>
+                                    {% endif %}
+                                    <div>
+                                        <div class="wn">{{ rsvp.name }}</div>
+                                        <div class="ws">
+                                            {% if rsvp.attendance == "hadir" %}
+                                            ✓ Hadir · {{ rsvp.guests }} tamu
+                                            {% else %}
+                                            Berhalangan
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="wstars">★★★★★</div>
+                                <div class="wtxt">{{ rsvp.display_message() }}</div>
+                            </div>
+                            {% endfor %}
+                            {% if invitation.rsvps.is_empty() %}
+                            <p style="font-size:12px;color:rgba(255,255,255,.35);text-align:center;margin-top:20px;">
+                                Belum ada ucapan.</p>
+                            {% endif %}
+                            {% endif %}
                         </div>
-                        <div class="wstars">★★★★★</div>
-                        <div class="wtxt">Wishing you both a lifetime of love and laughter. Semoga langkah kalian selalu
-                            diberkahi Allah SWT 💚</div>
                     </div>
-                </div>
-            </div>
 
-        </div>
-    </div>
-
-    <!-- Lightbox -->
-    <div class="lb" id="lb">
-        <button class="lb-close" onclick="closeLb()">✕</button>
-        <button class="lb-nav lb-prev" onclick="lbGo(-1)">‹</button>
-        <img class="lb-img" id="lbImg" src="" alt="">
-        <button class="lb-nav lb-next" onclick="lbGo(1)">›</button>
-        <div class="lb-ctr" id="lbCtr"></div>
-    </div>
-
-    <div class="tt-toast" id="ttToast"></div>
-
-    <script>
-        /* ── DATA ── */
-        const GALLERY = [
-            "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&h=800&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&h=800&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&h=800&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=600&h=800&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=600&h=800&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=600&h=800&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=600&h=800&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=600&h=800&fit=crop&q=80",
-            "https://images.unsplash.com/photo-1532712938310-34cb3982ef74?w=600&h=800&fit=crop&q=80"
+                    <script>
+                        /* ── DATA ── */
+                        const GALLERY = [
+                            {% for img in invitation.gallery_images %}
+                        "{{ img }}",
+                            {% endfor %}
         ];
-        const BGS = [
-            "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80",
-            "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&q=80",
-            "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&q=80",
-            "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&q=80"
+                        const GALLERY_VIDEOS = [
+                            {% for v_url in invitation.gallery_videos %}
+                        "{{ v_url }}",
+                            {% endfor %}
         ];
-        const CHATS = [
-            { u: "budi_s", t: "Selamat kak!! 🎉🎉", c: "#FE2C55" },
-            { u: "rini_kawaii", t: "Akhirnya!! Bahagia selalu 💛✨", c: "#25F4EE" },
-            { u: "dimas_fw", t: "Masya Allah cantik banget 😍", c: "#7c4dff" },
-            { u: "sari.ayu", t: "Selamat menempuh hidup baru!", c: "#ff9500" },
-            { u: "fajar_r", t: "Semoga sakinah mawaddah warahmah 🤲", c: "#FE2C55" },
-            { u: "dewi.p", t: "Aamiin ya rabbal alamin 💚💚", c: "#25F4EE" },
-            { u: "hendra_m", t: "Langgeng sampai kakek nenek yaa 👴👵", c: "#7c4dff" },
-            { u: "lia.nur", t: "Nangis liat ini haha 😭❤️", c: "#ff9500" },
-            { u: "toni_s", t: "Siap hadir! Kapan ngundang lagi?", c: "#FE2C55" },
-            { u: "mega.r", t: "Cantik banget kak Nazma 😍", c: "#25F4EE" },
-            { u: "rizki_a", t: "Semoga jadi keluarga bahagia dunia akhirat", c: "#7c4dff" },
-            { u: "andin_c", t: "Undangannya keren parah sih 🔥🔥", c: "#ff9500" },
-            { u: "yuli.s", t: "Selamat kakaaak! Love you both 💕", c: "#FE2C55" },
-            { u: "bagas.p", t: "Semoga banyak rejekinya ya kak 🙏", c: "#25F4EE" },
+                        const BGS = [
+                            {% if !invitation.gallery_images.is_empty() %}
+                        {% for img in invitation.gallery_images %}
+                        "{{ img }}",
+                            {% endfor %}
+                        {% else %}
+                        "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80",
+                            "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&q=80",
+                            "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&q=80",
+                            "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&q=80"
+                        {% endif %}
         ];
-        const JOINS = ["bergabung ke live 👋", "join sekarang ✨", "hadir di sini! 🎉", "masuk live 💛"];
-        const GIFTS = [
-            { u: "budi_s", g: "💍 Wedding Ring" },
-            { u: "rini_kawaii", g: "🌸 Bunga Pengantin" },
-            { u: "dimas_fw", g: "💎 Diamond Love" },
-            { u: "sari.ayu", g: "🎂 Wedding Cake" },
-            { u: "mega.r", g: "🏡 Dream Home" },
-            { u: "andin_c", g: "✨ Bintang Kebahagiaan" },
+                        const BACK_VIDEO = "{{ invitation.background_video_url }}";
+
+                        const CHATS = [
+                            {% if !invitation.rsvps.is_empty() %}
+                        {% for rsvp in invitation.rsvps %}
+                        {
+                            u: "{{ rsvp.name.replace('\\', "\\\\").replace('"', "\\\"") }}".toLowerCase().replace(/\s+/g, '_').substring(0, 15), 
+                            t: "{{ rsvp.message.as_deref().unwrap_or("").replace('\\', "\\\\").replace('\r', "").replace('\n', " ").replace('"', "\\\"") }}" 
+                        },
+                        {% endfor %}
+                        {% else %}
+                        { u: "budi_s", t: "Selamat kak!! 🎉🎉" },
+                        { u: "rini_kawaii", t: "Akhirnya!! Bahagia selalu 💛✨" },
+                        { u: "dimas_fw", t: "Masya Allah cantik banget 😍" },
+                        { u: "sari.ayu", t: "Selamat menempuh hidup baru!" },
+                        { u: "fajar_r", t: "Semoga sakinah mawaddah warahmah 🤲" },
+                        { u: "dewi.p", t: "Aamiin ya rabbal alamin 💚💚" },
+                        { u: "hendra_m", t: "Langgeng sampai kakek nenek yaa 👴👵" },
+                        { u: "lia.nur", t: "Nangis liat ini haha 😭❤️" },
+                        { u: "toni_s", t: "Siap hadir! Kapan ngundang lagi?" },
+                        { u: "mega.r", t: "Cantik banget kak Nazma 😍" },
+                        { u: "rizki_a", t: "Semoga jadi keluarga bahagia dunia akhirat" },
+                        { u: "andin_c", t: "Undangan keren parah sih 🔥🔥" },
+                        { u: "yuli.s", t: "Selamat kakaaak! Love you both 💕" },
+                        { u: "bagas.p", t: "Semoga banyak rejekinya ya kak 🙏" }
+                        {% endif %}
         ];
-        const GIFT_EMOJIS = ["💍", "🌸", "💎", "🎂", "🏡", "✨", "🎁", "💝", "🌺", "🥂"];
+                        const JOINS = ["bergabung ke live 👋", "join sekarang ✨", "hadir di sini! 🎉", "masuk live 💛"];
+                        const GIFTS = [
+                            { u: "budi_s", g: "💍 Wedding Ring" },
+                            { u: "rini_kawaii", g: "🌸 Bunga Pengantin" },
+                            { u: "dimas_fw", g: "💎 Diamond Love" },
+                            { u: "sari.ayu", g: "🎂 Wedding Cake" },
+                            { u: "mega.r", g: "🏡 Dream Home" },
+                            { u: "andin_c", g: "✨ Bintang Kebahagiaan" },
+                        ];
+                        const GIFT_EMOJIS = ["💍", "🌸", "💎", "🎂", "🏡", "✨", "🎁", "💝", "🌺", "🥂"];
 
-        /* ── STATE ── */
-        let guestN = 1, lbIdx = 0, toastTO = null;
-        let likeCnt = 12800, bgIdx = 0, chatIdx = 0;
-        let likedState = false;
+                        /* ── STATE ── */
+                        let guestN = 1, lbIdx = 0, toastTO = null;
+                        let likeCnt = 12800, bgIdx = 0, chatIdx = 0;
+                        let likedState = false;
 
-        /* ── OPEN ── */
-        function startLive() {
-            document.getElementById('opening').classList.add('hide');
-            const app = document.getElementById('app');
-            setTimeout(() => app.classList.add('show'), 120);
-            setTimeout(init, 500);
-        }
-        function init() {
-            buildGallery();
-            startCountdown();
-            startChat();
-            startViewers();
-            startBgRotate();
-        }
+                        const AV_COLORS = ["#FE2C55", "#25F4EE", "#7c4dff", "#ff9500", "#4cd964", "#ff2d55", "#5ac8fa", "#007aff", "#d63384", "#fd7e14"];
+                        function getAvatarColor(uname) {
+                            let hash = 0;
+                            for (let i = 0; i < uname.length; i++) {
+                                hash = uname.charCodeAt(i) + ((hash << 5) - hash);
+                            }
+                            const idx = Math.abs(hash) % AV_COLORS.length;
+                            return AV_COLORS[idx];
+                        }
 
-        /* ── GALLERY ── */
-        function buildGallery() {
-            const g = document.getElementById('galGrid');
-            GALLERY.forEach((src, i) => {
-                const d = document.createElement('div');
-                d.className = 'gal-item';
-                d.innerHTML = `<img src="${src}" alt="" loading="lazy">`;
-                d.onclick = () => openLb(i);
-                g.appendChild(d);
-            });
-        }
+                        /* ── OPEN ── */
+                        function startLive() {
+                            const op = document.getElementById('opening');
+                            if (op) {
+                                op.classList.add('hide');
+                                setTimeout(() => {
+                                    op.style.display = 'none';
+                                }, 750);
+                            }
+                            const app = document.getElementById('app');
+                            if (app) {
+                                setTimeout(() => app.classList.add('show'), 120);
+                            }
+                            setTimeout(init, 500);
+                        }
+                        function init() {
+                            buildGallery();
+                            startCountdown();
+                            startChat();
+                            startViewers();
+                            // initBgVideo is already initialized on page load
+                        }
 
-        /* ── COUNTDOWN ── */
-        function startCountdown() {
-            const tgt = new Date('{{ invitation.event_date_iso }}');
-            const set = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = String(v).padStart(2, '0'); };
-            function tick() {
-                const d = tgt - new Date();
-                if (d <= 0) { ['cdD', 'cdH', 'cdM', 'cdS'].forEach(id => set(id, 0)); return; }
-                set('cdD', Math.floor(d / 86400000));
-                set('cdH', Math.floor((d % 86400000) / 3600000));
-                set('cdM', Math.floor((d % 3600000) / 60000));
-                set('cdS', Math.floor((d % 60000) / 1000));
-            }
-            tick(); setInterval(tick, 1000);
-        }
+                        /* ── GALLERY ── */
+                        function buildGallery() {
+                            const g = document.getElementById('galGrid');
+                            if (!g) return;
+                            GALLERY.forEach((src, i) => {
+                                const d = document.createElement('div');
+                                d.className = 'gal-item';
+                                d.innerHTML = `<img src="${src}" alt="" loading="lazy">`;
+                                d.onclick = () => openLb(i);
+                                g.appendChild(d);
+                            });
+                        }
 
-        /* ── CHAT ── */
-        function startChat() {
-            // initial burst
-            for (let i = 0; i < 5; i++) setTimeout(() => pushChat(CHATS[chatIdx++ % CHATS.length]), i * 500);
+                        /* ── BACKGROUND VIDEO ── */
+                        let activeVideoUrl = "";
+                        let currentGalVideoIdx = 0;
 
-            setInterval(() => {
-                const r = Math.random();
-                if (r < .12) pushJoin();
-                else if (r < .2) pushGift();
-                else pushChat(CHATS[chatIdx++ % CHATS.length]);
-            }, 1600 + Math.random() * 1400);
-        }
+                        function initBgVideo() {
+                            const videoEl = document.getElementById('bgVideo');
+                            const imgEl = document.getElementById('bgImg');
+                            if (!videoEl) return;
 
-        function pushChat(d) {
-            const list = document.getElementById('chatList');
-            if (!list) return;
-            const el = document.createElement('div');
-            el.className = 'chat-item';
-            el.innerHTML = `<div class="chat-av" style="background:${d.c}">${d.u[0].toUpperCase()}</div><div class="chat-bubble"><div class="chat-uname" style="color:${d.c}">@${d.u}</div><div class="chat-txt">${d.t}</div></div>`;
-            list.appendChild(el);
-            trimList(list);
-        }
-        function pushJoin() {
-            const list = document.getElementById('chatList');
-            if (!list) return;
-            const names = ["user_andi", "bella22", "candra_x", "diah_s", "eka_f", "gilang.y"];
-            const n = names[Math.floor(Math.random() * names.length)];
-            const j = JOINS[Math.floor(Math.random() * JOINS.length)];
-            const el = document.createElement('div');
-            el.className = 'chat-item join';
-            el.innerHTML = `<div class="chat-bubble"><div class="chat-txt">👋 <strong>@${n}</strong> ${j}</div></div>`;
-            list.appendChild(el);
-            trimList(list);
-        }
-        function pushGift() {
-            const list = document.getElementById('chatList');
-            if (!list) return;
-            const gd = GIFTS[Math.floor(Math.random() * GIFTS.length)];
-            const colors = ["#FE2C55", "#25F4EE", "#7c4dff", "#ff9500"];
-            const c = colors[Math.floor(Math.random() * colors.length)];
-            const el = document.createElement('div');
-            el.className = 'chat-item gift';
-            el.innerHTML = `<div class="chat-av" style="background:${c}">${gd.u[0].toUpperCase()}</div><div class="chat-bubble"><div class="chat-uname">@${gd.u}</div><div class="chat-txt">gifted ${gd.g}</div></div>`;
-            list.appendChild(el);
-            trimList(list);
-            // show banner
-            showGiftBanner(gd.u, gd.g);
-            // spawn sticker
-            spawnSticker();
-        }
-        function trimList(list) {
-            while (list.children.length > 14) list.removeChild(list.firstChild);
-        }
+                            if (BACK_VIDEO !== "") {
+                                activeVideoUrl = BACK_VIDEO;
+                                currentGalVideoIdx = 0;
+                            } else if (GALLERY_VIDEOS.length > 0) {
+                                activeVideoUrl = GALLERY_VIDEOS[0];
+                                currentGalVideoIdx = 1;
+                            }
 
-        /* ── GIFT BANNER ── */
-        function showGiftBanner(user, item) {
-            const t = document.getElementById('giftToast');
-            const u = document.getElementById('giftToastUser');
-            const i = document.getElementById('giftToastItem');
-            if (!t || !u || !i) return;
-            u.textContent = '@' + user;
-            i.textContent = item;
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 3200);
-        }
+                            if (activeVideoUrl !== "") {
+                                imgEl.style.display = 'none';
+                                videoEl.style.display = 'block';
+                                videoEl.src = activeVideoUrl;
 
-        /* ── STICKERS ── */
-        function spawnSticker() {
-            const layer = document.getElementById('stickerLayer');
-            if (!layer) return;
-            const el = document.createElement('div');
-            el.className = 'floating-gift';
-            el.textContent = GIFT_EMOJIS[Math.floor(Math.random() * GIFT_EMOJIS.length)];
-            const r1 = ((Math.random() - .5) * 25).toFixed(1);
-            const r2 = ((Math.random() - .5) * 20).toFixed(1);
-            const r3 = ((Math.random() - .5) * 30).toFixed(1);
-            const r4 = ((Math.random() - .5) * 20).toFixed(1);
-            el.style.cssText = `--rot:${r1}deg;--rot2:${r2}deg;--rot3:${r3}deg;--rot4:${r4}deg`;
-            layer.appendChild(el);
-            el.addEventListener('animationend', () => el.remove());
-        }
+                                videoEl.play().catch(err => {
+                                    console.log("Auto-play blocked: ", err);
+                                });
 
-        /* ── LIKE ── */
-        function doLike() {
-            likedState = !likedState;
-            const btn = document.getElementById('likeBtn');
-            const ic = document.getElementById('likeNumDisplay');
-            btn.classList.toggle('liked', likedState);
-            if (likedState) {
-                likeCnt += 1;
-                // spawn hearts
-                for (let i = 0; i < 4; i++) setTimeout(spawnSticker, i * 80);
-            }
-            const el = document.getElementById('likeCount');
-            const disp = document.getElementById('likeNumDisplay');
-            const fmt = n => n >= 1000 ? (n / 1000).toFixed(1) + 'rb' : n;
-            if (el) el.textContent = fmt(likeCnt);
-            if (disp) disp.textContent = fmt(likeCnt);
-        }
+                                videoEl.onended = function () {
+                                    handleVideoEnded();
+                                };
+                            } else {
+                                startBgRotate();
+                            }
+                        }
 
-        /* ── VIEWERS ── */
-        function startViewers() {
-            let v = 2400;
-            setInterval(() => {
-                v += Math.floor((Math.random() - .35) * 20);
-                v = Math.max(1000, v);
-                const el = document.getElementById('vNum');
-                if (el) el.textContent = v >= 1000 ? (v / 1000).toFixed(1) + 'rb' : v;
-            }, 2800);
-        }
+                        function handleVideoEnded() {
+                            const videoEl = document.getElementById('bgVideo');
+                            if (!videoEl) return;
 
-        /* ── BG ROTATE ── */
-        function startBgRotate() {
-            setInterval(() => {
-                bgIdx = (bgIdx + 1) % BGS.length;
-                const el = document.getElementById('bgImg');
-                if (!el) return;
-                el.style.opacity = '0';
-                setTimeout(() => { el.src = BGS[bgIdx]; el.style.opacity = '1'; }, 700);
-            }, 7000);
-        }
+                            if (GALLERY_VIDEOS.length > 0) {
+                                const nextVideo = GALLERY_VIDEOS[currentGalVideoIdx % GALLERY_VIDEOS.length];
+                                currentGalVideoIdx++;
+                                videoEl.style.opacity = '0';
+                                setTimeout(() => {
+                                    videoEl.src = nextVideo;
+                                    videoEl.play().catch(e => console.log(e));
+                                    videoEl.style.opacity = '1';
+                                }, 400);
+                            } else if (BACK_VIDEO !== "") {
+                                videoEl.style.opacity = '0';
+                                setTimeout(() => {
+                                    videoEl.src = BACK_VIDEO;
+                                    videoEl.play().catch(e => console.log(e));
+                                    videoEl.style.opacity = '1';
+                                }, 400);
+                            }
+                        }
 
-        /* ── SHEET ── */
-        function openSheet(panel) {
-            document.getElementById('overlay').classList.add('open');
-            document.getElementById('sheet').classList.add('open');
-            if (panel) switchPanel(panel);
-        }
-        function closeSheet() {
-            document.getElementById('overlay').classList.remove('open');
-            document.getElementById('sheet').classList.remove('open');
-        }
-        function switchPanel(p) {
-            document.querySelectorAll('.stab').forEach(b => b.classList.toggle('on', b.dataset.p === p));
-            document.querySelectorAll('.panel').forEach(el => el.classList.toggle('on', el.id === 'p-' + p));
-        }
+                        /* ── COUNTDOWN ── */
+                        function startCountdown() {
+                            const tgt = new Date('{{ invitation.event_date_iso }}');
+                            const set = (id, v) => { const e = document.getElementById(id); if (e) e.textContent = String(v).padStart(2, '0'); };
+                            function tick() {
+                                const d = tgt - new Date();
+                                if (d <= 0) { ['cdD', 'cdH', 'cdM', 'cdS'].forEach(id => set(id, 0)); return; }
+                                set('cdD', Math.floor(d / 86400000));
+                                set('cdH', Math.floor((d % 86400000) / 3600000));
+                                set('cdM', Math.floor((d % 3600000) / 60000));
+                                set('cdS', Math.floor((d % 60000) / 1000));
+                            }
+                            tick(); setInterval(tick, 1000);
+                        }
 
-        /* ── SHARE ── */
-        function shareInv() {
-            if (navigator.share) {
-                navigator.share({ title: 'Undangan Pernikahan {{ invitation.couple_name_short }}', text: 'Kami mengundang Anda ke pernikahan kami pada {{ invitation.event_date }}', url: location.href }).catch(() => { });
-            } else {
-                navigator.clipboard.writeText(location.href).then(() => toast('Link undangan disalin! 🔗')).catch(() => toast('Share link: ' + location.href));
-            }
-        }
+                        /* ── CHAT ── */
+                        function startChat() {
+                            // initial burst
+                            for (let i = 0; i < 5; i++) setTimeout(() => pushChat(CHATS[chatIdx++ % CHATS.length]), i * 500);
 
-        /* ── LIGHTBOX ── */
-        function openLb(i) { lbIdx = i; updLb(); document.getElementById('lb').classList.add('open'); }
-        function closeLb() { document.getElementById('lb').classList.remove('open'); }
-        function lbGo(d) { lbIdx = (lbIdx + d + GALLERY.length) % GALLERY.length; updLb(); }
-        function updLb() { document.getElementById('lbImg').src = GALLERY[lbIdx]; document.getElementById('lbCtr').textContent = `${lbIdx + 1} / ${GALLERY.length}`; }
-        document.addEventListener('keydown', e => {
-            if (!document.getElementById('lb').classList.contains('open')) return;
-            if (e.key === 'Escape') closeLb();
-            if (e.key === 'ArrowLeft') lbGo(-1);
-            if (e.key === 'ArrowRight') lbGo(1);
-        });
+                            setInterval(() => {
+                                const r = Math.random();
+                                if (r < .12) pushJoin();
+                                else if (r < .2) pushGift();
+                                else pushChat(CHATS[chatIdx++ % CHATS.length]);
+                            }, 1600 + Math.random() * 1400);
+                        }
 
-        /* ── RSVP ── */
-        function setG(n, btn) { guestN = n; document.querySelectorAll('.gbtn').forEach(b => b.classList.remove('on')); btn.classList.add('on'); }
-        function doRSVP() {
-            const name = document.getElementById('rName').value.trim();
-            const stat = document.getElementById('rStat').value;
-            const msg = document.getElementById('rMsg').value.trim();
-            if (!name || !stat) { toast('Mohon isi nama dan status kehadiran'); return; }
+                        function pushChat(d) {
+                            const list = document.getElementById('chatList');
+                            if (!list) return;
+                            const color = getAvatarColor(d.u);
+                            const el = document.createElement('div');
+                            el.className = 'chat-item';
+                            el.innerHTML = `<div class="chat-av" style="background:${color}">${d.u[0].toUpperCase()}</div><div class="chat-bubble"><div class="chat-uname" style="color:${color}">@${d.u}</div><div class="chat-txt">${d.t}</div></div>`;
+                            list.appendChild(el);
+                            trimList(list);
+                        }
+                        function pushJoin() {
+                            const list = document.getElementById('chatList');
+                            if (!list) return;
+                            const names = ["user_andi", "bella22", "candra_x", "diah_s", "eka_f", "gilang.y"];
+                            const n = names[Math.floor(Math.random() * names.length)];
+                            const j = JOINS[Math.floor(Math.random() * JOINS.length)];
+                            const el = document.createElement('div');
+                            el.className = 'chat-item join';
+                            el.innerHTML = `<div class="chat-bubble"><div class="chat-txt">👋 <strong>@${n}</strong> ${j}</div></div>`;
+                            list.appendChild(el);
+                            trimList(list);
+                        }
+                        function pushGift() {
+                            const list = document.getElementById('chatList');
+                            if (!list) return;
+                            const gd = GIFTS[Math.floor(Math.random() * GIFTS.length)];
+                            const color = getAvatarColor(gd.u);
+                            const el = document.createElement('div');
+                            el.className = 'chat-item gift';
+                            el.innerHTML = `<div class="chat-av" style="background:${color}">${gd.u[0].toUpperCase()}</div><div class="chat-bubble"><div class="chat-uname">@${gd.u}</div><div class="chat-txt">gifted ${gd.g}</div></div>`;
+                            list.appendChild(el);
+                            trimList(list);
+                            // show banner
+                            showGiftBanner(gd.u, gd.g);
+                            // spawn sticker
+                            spawnSticker();
+                        }
+                        function trimList(list) {
+                            while (list.children.length > 14) list.removeChild(list.firstChild);
+                        }
 
-            fetch('/api/rsvp', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(stat)}&guests=${typeof guestN !== 'undefined' ? guestN : 1}&message=${encodeURIComponent(msg)}`
-            });
+                        /* ── GIFT BANNER ── */
+                        function showGiftBanner(user, item) {
+                            const t = document.getElementById('giftToast');
+                            const u = document.getElementById('giftToastUser');
+                            const i = document.getElementById('giftToastItem');
+                            if (!t || !u || !i) return;
+                            u.textContent = '@' + user;
+                            i.textContent = item;
+                            t.classList.add('show');
+                            setTimeout(() => t.classList.remove('show'), 3200);
+                        }
 
-            const ini = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-            const cols = ["#FE2C55", "#25F4EE", "#7c4dff", "#ff9500", "#1DB954"];
-            const c = cols[Math.floor(Math.random() * cols.length)];
-            const stTxt = stat === 'hadir' ? `✓ Hadir · ${guestN} tamu` : '✗ Tidak Hadir';
-            // add to wishlist
-            const card = document.createElement('div');
-            card.className = 'wcard';
-            card.innerHTML = `<div class="wh"><div class="wav" style="background:${c};${c === '#25F4EE' ? 'color:#000' : ''}">${ini}</div><div><div class="wn">${name}</div><div class="ws">${stTxt}</div></div></div><div class="wstars">★★★★★</div><div class="wtxt">${msg || 'Selamat dan semoga bahagia selalu! 💛'}</div>`;
-            const wl = document.getElementById('wList');
-            if (wl) wl.prepend(card);
-            
-            // inject to chat
-            pushChat({ u: name.toLowerCase().replace(/\s/g, '_'), t: stat === 'hadir' ? `🎉 Konfirmasi hadir ${guestN} orang!` : 'Tidak bisa hadir tapi selalu mendoakan 🤲', c });
-            // spawn celebratory stickers
-            for (let i = 0; i < 3; i++) setTimeout(spawnSticker, i * 150);
-            // reset
-            document.getElementById('rName').value = '';
-            document.getElementById('rStat').value = '';
-            document.getElementById('rMsg').value = '';
-            toast('Terima kasih! Konfirmasi berhasil 🎉');
-            setTimeout(() => location.reload(), 2000);
-        }
+                        /* ── STICKERS ── */
+                        function spawnSticker() {
+                            const layer = document.getElementById('stickerLayer');
+                            if (!layer) return;
+                            const el = document.createElement('div');
+                            el.className = 'floating-gift';
+                            el.textContent = GIFT_EMOJIS[Math.floor(Math.random() * GIFT_EMOJIS.length)];
+                            const r1 = ((Math.random() - .5) * 25).toFixed(1);
+                            const r2 = ((Math.random() - .5) * 20).toFixed(1);
+                            const r3 = ((Math.random() - .5) * 30).toFixed(1);
+                            const r4 = ((Math.random() - .5) * 20).toFixed(1);
+                            el.style.cssText = `--rot:${r1}deg;--rot2:${r2}deg;--rot3:${r3}deg;--rot4:${r4}deg`;
+                            layer.appendChild(el);
+                            el.addEventListener('animationend', () => el.remove());
+                        }
 
-        /* ── COPY ── */
-        function copyN(text, btn) {
-            navigator.clipboard.writeText(text).then(() => {
-                btn.classList.add('ok'); btn.textContent = '✓ Tersalin!';
-                toast('Nomor rekening tersalin! ✅');
-                setTimeout(() => { btn.classList.remove('ok'); btn.textContent = 'Salin Nomor'; }, 2500);
-            }).catch(() => toast('Salin: ' + text));
-        }
+                        /* ── LIKE ── */
+                        function doLike() {
+                            likedState = !likedState;
+                            const btn = document.getElementById('likeBtn');
+                            const ic = document.getElementById('likeNumDisplay');
+                            btn.classList.toggle('liked', likedState);
+                            if (likedState) {
+                                likeCnt += 1;
+                                // spawn hearts
+                                for (let i = 0; i < 4; i++) setTimeout(spawnSticker, i * 80);
+                            }
+                            const el = document.getElementById('likeCount');
+                            const disp = document.getElementById('likeNumDisplay');
+                            const fmt = n => n >= 1000 ? (n / 1000).toFixed(1) + 'rb' : n;
+                            if (el) el.textContent = fmt(likeCnt);
+                            if (disp) disp.textContent = fmt(likeCnt);
+                        }
 
-        /* ── TOAST ── */
-        function toast(msg) {
-            const t = document.getElementById('ttToast');
-            t.textContent = msg; t.classList.add('show');
-            clearTimeout(toastTO);
-            toastTO = setTimeout(() => t.classList.remove('show'), 2800);
-        }
-    </script>
-{% include "invitation/ai_concierge_snippet.html" %}
+                        /* ── VIEWERS ── */
+                        function startViewers() {
+                            let v = 2400;
+                            setInterval(() => {
+                                v += Math.floor((Math.random() - .35) * 20);
+                                v = Math.max(1000, v);
+                                const el = document.getElementById('vNum');
+                                if (el) el.textContent = v >= 1000 ? (v / 1000).toFixed(1) + 'rb' : v;
+                            }, 2800);
+                        }
+
+                        /* ── BG ROTATE ── */
+                        function startBgRotate() {
+                            setInterval(() => {
+                                bgIdx = (bgIdx + 1) % BGS.length;
+                                const el = document.getElementById('bgImg');
+                                if (!el) return;
+                                el.style.opacity = '0';
+                                setTimeout(() => { el.src = BGS[bgIdx]; el.style.opacity = '1'; }, 700);
+                            }, 7000);
+                        }
+
+                        /* ── SHEET ── */
+                        function openSheet(panel) {
+                            document.getElementById('overlay').classList.add('open');
+                            document.getElementById('sheet').classList.add('open');
+                            if (panel) switchPanel(panel);
+                        }
+                        function closeSheet() {
+                            document.getElementById('overlay').classList.remove('open');
+                            document.getElementById('sheet').classList.remove('open');
+                        }
+                        function switchPanel(p) {
+                            document.querySelectorAll('.stab').forEach(b => b.classList.toggle('on', b.dataset.p === p));
+                            document.querySelectorAll('.panel').forEach(el => el.classList.toggle('on', el.id === 'p-' + p));
+                        }
+
+                        /* ── SHARE ── */
+                        function shareInv() {
+                            if (navigator.share) {
+                                navigator.share({ title: 'Undangan Pernikahan {{ invitation.couple_name_short }}', text: 'Kami mengundang Anda ke pernikahan kami pada {{ invitation.event_date }}', url: location.href }).catch(() => { });
+                            } else {
+                                navigator.clipboard.writeText(location.href).then(() => toast('Link undangan disalin! 🔗')).catch(() => toast('Share link: ' + location.href));
+                            }
+                        }
+
+                        /* ── LIGHTBOX ── */
+                        function openLb(i) {
+                            lbIdx = i;
+                            updLb();
+                            const navs = document.querySelectorAll('.lb-nav');
+                            navs.forEach(nav => nav.style.display = 'block');
+                            document.getElementById('lb').classList.add('open');
+                        }
+                        function closeLb() { document.getElementById('lb').classList.remove('open'); }
+                        function lbGo(d) { lbIdx = (lbIdx + d + GALLERY.length) % GALLERY.length; updLb(); }
+                        function updLb() { document.getElementById('lbImg').src = GALLERY[lbIdx]; document.getElementById('lbCtr').textContent = `${lbIdx + 1} / ${GALLERY.length}`; }
+
+                        function openStoryLb(src, title) {
+                            const lbImg = document.getElementById('lbImg');
+                            const lbCtr = document.getElementById('lbCtr');
+                            const lb = document.getElementById('lb');
+                            if (!lbImg || !lb) return;
+                            lbImg.src = src;
+                            lbCtr.textContent = title;
+                            const navs = document.querySelectorAll('.lb-nav');
+                            navs.forEach(nav => nav.style.display = 'none');
+                            lb.classList.add('open');
+                        }
+
+                        function toggleStoryPhoto(idx, btn) {
+                            const container = document.getElementById(`story-img-${idx}`);
+                            if (!container) return;
+
+                            if (container.classList.contains('active')) {
+                                container.classList.remove('active');
+                                btn.innerHTML = '🔍 View Photo';
+                            } else {
+                                container.classList.add('active');
+                                btn.innerHTML = '🙈 Hide Photo';
+                            }
+                        }
+
+                        /* ── VIDEO LIGHTBOX ── */
+                        let vidLbIdx = 0;
+                        function openVidLb(i) {
+                            vidLbIdx = i;
+                            const videoEl = document.getElementById('vidLbVideo');
+                            videoEl.src = GALLERY_VIDEOS[vidLbIdx];
+                            videoEl.play().catch(e => console.log(e));
+                            document.getElementById('vidLbCtr').textContent = `${vidLbIdx + 1} / ${GALLERY_VIDEOS.length}`;
+                            document.getElementById('vidLb').classList.add('open');
+                        }
+                        function closeVidLb() {
+                            const videoEl = document.getElementById('vidLbVideo');
+                            videoEl.pause();
+                            videoEl.src = "";
+                            document.getElementById('vidLb').classList.remove('open');
+                        }
+                        function vidLbGo(dir) {
+                            vidLbIdx = (vidLbIdx + dir + GALLERY_VIDEOS.length) % GALLERY_VIDEOS.length;
+                            const videoEl = document.getElementById('vidLbVideo');
+                            videoEl.src = GALLERY_VIDEOS[vidLbIdx];
+                            videoEl.play().catch(e => console.log(e));
+                            document.getElementById('vidLbCtr').textContent = `${vidLbIdx + 1} / ${GALLERY_VIDEOS.length}`;
+                        }
+
+                        document.addEventListener('keydown', e => {
+                            const lb = document.getElementById('lb');
+                            const vlb = document.getElementById('vidLb');
+                            if (lb.classList.contains('open')) {
+                                if (e.key === 'Escape') closeLb();
+                                if (e.key === 'ArrowLeft') lbGo(-1);
+                                if (e.key === 'ArrowRight') lbGo(1);
+                            } else if (vlb && vlb.classList.contains('open')) {
+                                if (e.key === 'Escape') closeVidLb();
+                                if (e.key === 'ArrowLeft') vidLbGo(-1);
+                                if (e.key === 'ArrowRight') vidLbGo(1);
+                            }
+                        });
+
+                        /* ── RSVP ── */
+                        function setG(n, btn) { guestN = n; document.querySelectorAll('.gbtn').forEach(b => b.classList.remove('on')); btn.classList.add('on'); }
+                        function doRSVP() {
+                            const name = document.getElementById('rName').value.trim();
+                            const stat = document.getElementById('rStat').value;
+                            const msg = document.getElementById('rMsg').value.trim();
+                            if (!name || !stat) { toast('Mohon isi nama dan status kehadiran'); return; }
+
+                            fetch('/api/rsvp', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(stat)}&guests=${typeof guestN !== 'undefined' ? guestN : 1}&message=${encodeURIComponent(msg)}`
+                            });
+
+                            const ini = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+                            const cols = ["#FE2C55", "#25F4EE", "#7c4dff", "#ff9500", "#1DB954"];
+                            const c = cols[Math.floor(Math.random() * cols.length)];
+                            const stTxt = stat === 'hadir' ? `✓ Hadir · ${guestN} tamu` : '✗ Tidak Hadir';
+                            // add to wishlist
+                            const card = document.createElement('div');
+                            card.className = 'wcard';
+                            card.innerHTML = `<div class="wh"><div class="wav" style="background:${c};${c === '#25F4EE' ? 'color:#000' : ''}">${ini}</div><div><div class="wn">${name}</div><div class="ws">${stTxt}</div></div></div><div class="wstars">★★★★★</div><div class="wtxt">${msg || 'Selamat dan semoga bahagia selalu! 💛'}</div>`;
+                            const wl = document.getElementById('wList');
+                            if (wl) wl.prepend(card);
+
+                            // inject to chat
+                            pushChat({ u: name.toLowerCase().replace(/\s/g, '_'), t: stat === 'hadir' ? `🎉 Konfirmasi hadir ${guestN} orang!` : 'Tidak bisa hadir tapi selalu mendoakan 🤲', c });
+                            // spawn celebratory stickers
+                            for (let i = 0; i < 3; i++) setTimeout(spawnSticker, i * 150);
+                            // reset
+                            document.getElementById('rName').value = '';
+                            document.getElementById('rStat').value = '';
+                            document.getElementById('rMsg').value = '';
+                            toast('Terima kasih! Konfirmasi berhasil 🎉');
+                            setTimeout(() => location.reload(), 2000);
+                        }
+
+                        /* ── COPY ── */
+                        function copyN(text, btn) {
+                            navigator.clipboard.writeText(text).then(() => {
+                                btn.classList.add('ok'); btn.textContent = '✓ Tersalin!';
+                                toast('Nomor rekening tersalin! ✅');
+                                setTimeout(() => { btn.classList.remove('ok'); btn.textContent = 'Salin Nomor'; }, 2500);
+                            }).catch(() => toast('Salin: ' + text));
+                        }
+
+                        /* ── TOAST ── */
+                        function toast(msg) {
+                            const t = document.getElementById('ttToast');
+                            t.textContent = msg; t.classList.add('show');
+                            clearTimeout(toastTO);
+                            toastTO = setTimeout(() => t.classList.remove('show'), 2800);
+                        }
+
+                        // Auto play background video immediately on DOM content loaded
+                        window.addEventListener('DOMContentLoaded', () => {
+                            initBgVideo();
+                        });
+                    </script>
+                    {% include "invitation/ai_concierge_snippet.html" %}
 </body>
 
 </html>
