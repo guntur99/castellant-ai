@@ -58,3 +58,8 @@ pub fn eq_uuid_opt(opt: &Option<uuid::Uuid>, val: &uuid::Uuid) -> askama::Result
 pub fn split_last(s: &str, sep: &str) -> askama::Result<String> {
     Ok(s.split(sep).last().unwrap_or(s).to_string())
 }
+
+pub fn zero_padded_index(index: &usize) -> askama::Result<String> {
+    Ok(format!("{:02}", index))
+}
+

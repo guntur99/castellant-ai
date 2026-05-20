@@ -3,7 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>The Wedding of {{ invitation.bride.name }} & {{ invitation.groom.name }} 🎬</title>
+<title>The Wedding of {{ invitation.bride.name }} & {{ invitation.groom.name }} 🎬 | Castellant</title>
+<meta name="description" content="Undangan Pernikahan Eksklusif {{ invitation.bride.full_name }} & {{ invitation.groom.full_name }} - Dibuat dengan penuh cinta lewat Castellant.">
+<meta property="og:title" content="Undangan Pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }} | Castellant">
+<meta property="og:description" content="Kamu diundang untuk merayakan kebahagiaan kami! Hadirilah pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }} pada {{ invitation.ceremony.date }}.">
+{% if !invitation.gallery_images.is_empty() %}
+<meta property="og:image" content="{{ invitation.gallery_images|first_image }}">
+{% endif %}
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Undangan Pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }}">
+<meta name="twitter:description" content="Rayakan momen bahagia bersama {{ invitation.bride.name }} & {{ invitation.groom.name }}. Klik untuk info selengkapnya.">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,400;1,700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -24,11 +34,14 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
-body{background:var(--tt-black);color:var(--tt-white);font-family:var(--font-b);overflow-x:hidden;cursor:none}
+body{background:var(--tt-black);color:var(--tt-white);font-family:var(--font-b);overflow-x:hidden;cursor:default}
 
 /* ── CUSTOM CURSOR ── */
-.cursor{position:fixed;width:12px;height:12px;background:var(--tt-red);border-radius:50%;pointer-events:none;z-index:99999;transform:translate(-50%,-50%);transition:transform .1s,width .2s,height .2s;mix-blend-mode:difference}
+.cursor{display:none}
 .cursor-ring{position:fixed;width:36px;height:36px;border:1.5px solid var(--tt-cyan);border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%);transition:all .15s ease;mix-blend-mode:exclusion}
+@media (hover: none) or (pointer: coarse) {
+  .cursor-ring { display: none !important; }
+}
 
 /* ── PARTICLES ── */
 #particles{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
@@ -84,7 +97,7 @@ body::after{
 .dear-name{font-family:var(--font-d);font-size:clamp(22px,6vw,30px);font-style:italic;color:var(--tt-cyan)}
 .open-btn{
   background:var(--tt-red);color:#fff;border:none;padding:18px 52px;border-radius:4px;
-  font-family:var(--font-b);font-size:15px;font-weight:700;letter-spacing:.1em;cursor:none;
+  font-family:var(--font-b);font-size:15px;font-weight:700;letter-spacing:.1em;cursor:pointer;
   transition:all .2s;text-transform:uppercase;position:relative;overflow:hidden;
   box-shadow:4px 4px 0 var(--tt-cyan),-2px -2px 0 rgba(254,44,85,.5);
 }
@@ -272,7 +285,7 @@ body::after{
   display:inline-flex;align-items:center;gap:6px;margin-top:16px;
   background:var(--tt-black);border:1px solid rgba(255,255,255,.15);color:var(--tt-white);
   font-family:var(--font-m);font-size:11px;padding:10px 18px;border-radius:4px;
-  cursor:none;text-decoration:none;transition:all .2s;letter-spacing:.05em;
+  cursor:pointer;text-decoration:none;transition:all .2s;letter-spacing:.05em;
 }
 .event-card:nth-child(1) .event-maps-btn:hover{background:rgba(254,44,85,.1);border-color:var(--tt-red);color:var(--tt-red)}
 .event-card:nth-child(2) .event-maps-btn:hover{background:rgba(37,244,238,.1);border-color:var(--tt-cyan);color:var(--tt-cyan)}
@@ -310,7 +323,7 @@ body::after{
 .gallery-item{
   flex-shrink:0;width:clamp(140px,36vw,200px);height:clamp(180px,46vw,260px);
   border-radius:10px;overflow:hidden;background:var(--tt-card);position:relative;
-  cursor:none;transition:transform .3s,box-shadow .3s;border:1px solid rgba(255,255,255,.04);
+  cursor:pointer;transition:transform .3s,box-shadow .3s;border:1px solid rgba(255,255,255,.04);
 }
 .gallery-item:hover{transform:scale(1.04);box-shadow:0 20px 50px rgba(0,0,0,.6),0 0 20px rgba(254,44,85,.15)}
 .gallery-item img{width:100%;height:100%;object-fit:cover;display:block;filter:brightness(.9) saturate(1.1);transition:filter .4s}
@@ -320,7 +333,7 @@ body::after{
 .gallery-placeholder{width:100%;height:100%;background:linear-gradient(135deg,var(--tt-card),var(--tt-lgray));display:flex;align-items:center;justify-content:center;font-size:40px;flex-direction:column;gap:8px}
 .gallery-placeholder span{font-size:10px;color:var(--tt-gray);font-family:var(--font-m)}
 .gallery-dots{display:flex;justify-content:center;gap:6px;margin-top:24px;padding:0 20px}
-.gallery-dot{width:6px;height:6px;border-radius:50%;background:var(--tt-lgray);transition:all .3s;cursor:none}
+.gallery-dot{width:6px;height:6px;border-radius:50%;background:var(--tt-lgray);transition:all .3s;cursor:pointer}
 .gallery-dot.active{background:var(--tt-red);width:24px;border-radius:3px}
 
 /* ── GIFT SECTION ── */
@@ -346,7 +359,7 @@ body::after{
 .copy-btn{
   display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.05);
   border:1px solid rgba(255,255,255,.1);color:var(--tt-gray);font-family:var(--font-m);
-  font-size:11px;padding:10px 16px;border-radius:4px;cursor:none;transition:all .2s;letter-spacing:.05em;
+  font-size:11px;padding:10px 16px;border-radius:4px;cursor:pointer;transition:all .2s;letter-spacing:.05em;
 }
 .copy-btn:hover{background:rgba(254,44,85,.1);border-color:var(--tt-red);color:var(--tt-red)}
 .copy-btn.copied{color:var(--tt-cyan);border-color:var(--tt-cyan);background:rgba(37,244,238,.1)}
@@ -368,17 +381,33 @@ textarea.form-input{min-height:120px;resize:vertical}
 .guest-btn{
   flex:1;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
   border-radius:6px;padding:14px;color:var(--tt-gray);font-family:var(--font-b);font-size:15px;
-  cursor:none;transition:all .2s;
+  cursor:pointer;transition:all .2s;
 }
 .guest-btn.active{background:rgba(254,44,85,.1);border-color:var(--tt-red);color:var(--tt-red);font-weight:600}
 .rsvp-submit-btn{
   width:100%;background:var(--tt-red);border:none;border-radius:6px;padding:18px;
-  color:#fff;font-family:var(--font-b);font-size:16px;font-weight:700;cursor:none;
+  color:#fff;font-family:var(--font-b);font-size:16px;font-weight:700;cursor:pointer;
   transition:all .2s;text-transform:uppercase;letter-spacing:.1em;margin-top:8px;
   position:relative;overflow:hidden;box-shadow:0 0 0 0 rgba(254,44,85,.4);
 }
 .rsvp-submit-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,.1))}
 .rsvp-submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(254,44,85,.4)}
+
+/* ── FLOATING MUSIC BUTTON ── */
+.music-float-btn{
+  position:fixed;bottom:100px;right:25px;width:50px;height:50px;
+  background:rgba(10,10,10,.85);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border:2px solid var(--tt-red);border-radius:50%;z-index:999;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;color:var(--tt-white);box-shadow:0 0 15px rgba(254,44,85,.35);
+  transition:all .3s ease;cursor:pointer;
+}
+.music-float-btn.playing{
+  animation:spin-music 4s linear infinite;
+  border-color:var(--tt-cyan);box-shadow:0 0 15px rgba(37,244,238,.35);
+}
+.music-float-btn:hover{transform:scale(1.15)}
+@keyframes spin-music{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
 /* ── WISHES ── */
 .wishes-section{padding:72px 20px}
@@ -418,7 +447,7 @@ textarea.form-input{min-height:120px;resize:vertical}
   z-index:100;transform:translateY(100%);transition:transform .5s ease 1s;
 }
 .bottom-nav.show{transform:translateY(0)}
-.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:none;color:var(--tt-lgray);text-decoration:none;transition:color .15s;font-family:var(--font-m);font-size:9px;letter-spacing:.1em;padding:6px 16px;border-radius:6px}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:var(--tt-lgray);text-decoration:none;transition:color .15s;font-family:var(--font-m);font-size:9px;letter-spacing:.1em;padding:6px 16px;border-radius:6px}
 .nav-item:hover,.nav-item.active{color:var(--tt-white)}
 .nav-item.active .nav-icon{color:var(--tt-red)}
 .nav-icon{font-size:20px;transition:transform .2s}
@@ -430,10 +459,10 @@ textarea.form-input{min-height:120px;resize:vertical}
 .lightbox.open{display:flex}
 .lightbox-img-wrap{max-width:90vw;max-height:70vh;border-radius:10px;overflow:hidden;position:relative}
 .lightbox-img{max-width:90vw;max-height:70vh;object-fit:contain;border-radius:10px}
-.lightbox-close{position:fixed;top:20px;right:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:var(--tt-white);width:44px;height:44px;border-radius:8px;cursor:none;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.lightbox-close{position:fixed;top:20px;right:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:var(--tt-white);width:44px;height:44px;border-radius:8px;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .2s}
 .lightbox-close:hover{background:rgba(254,44,85,.2);border-color:var(--tt-red)}
 .lightbox-nav{display:flex;gap:12px;margin-top:20px}
-.lb-btn{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--tt-white);padding:10px 24px;border-radius:6px;cursor:none;font-family:var(--font-m);font-size:12px;transition:all .2s;letter-spacing:.1em}
+.lb-btn{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);color:var(--tt-white);padding:10px 24px;border-radius:6px;cursor:pointer;font-family:var(--font-m);font-size:12px;transition:all .2s;letter-spacing:.1em}
 .lb-btn:hover{background:rgba(254,44,85,.1);border-color:var(--tt-red)}
 .lightbox-counter{font-family:var(--font-m);font-size:11px;color:var(--tt-gray);margin-top:12px;letter-spacing:.15em}
 
@@ -594,19 +623,6 @@ select.form-input option{background:var(--tt-dark);color:var(--tt-white)}
     </div>
   </section>
 
-  <div class="glitch-divider"></div>
-
-  <!-- VERSE -->
-  <section class="verse-section">
-    <p class="verse-hashtag">#LoveVerse</p>
-    <blockquote class="verse-text">
-      "{{ invitation.quote.text }}"
-    </blockquote>
-    <p class="verse-ref">— {{ invitation.quote.source }}</p>
-  </section>
-
-  <div class="glitch-divider"></div>
-
   <!-- COUPLE -->
   <section class="couple-section" id="couple">
     <div class="couple-bg"></div>
@@ -615,18 +631,26 @@ select.form-input option{background:var(--tt-dark);color:var(--tt-white)}
     <div class="couple-cards">
       <div class="couple-card">
         <div class="couple-avatar">
+          {% if !invitation.bride.image_url.is_empty() %}
+          <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride.name }}">
+          {% else %}
           <div class="couple-avatar-placeholder">👰</div>
+          {% endif %}
         </div>
-        <p class="couple-at">#Mempelai WNazma</p>
+        <p class="couple-at">#MempelaiWanita</p>
         <p class="couple-role">The Bride</p>
         <h3 class="couple-name">{{ invitation.bride.full_name }}</h3>
         <p class="couple-parents">Putri dari<br>{{ invitation.bride.father_name }} &amp; {{ invitation.bride.mother_name }}</p>
       </div>
       <div class="couple-card">
         <div class="couple-avatar">
+          {% if !invitation.groom.image_url.is_empty() %}
+          <img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom.name }}">
+          {% else %}
           <div class="couple-avatar-placeholder">🤵</div>
+          {% endif %}
         </div>
-        <p class="couple-at">#Mempelai Pria</p>
+        <p class="couple-at">#MempelaiPria</p>
         <p class="couple-role">The Groom</p>
         <h3 class="couple-name">{{ invitation.groom.full_name }}</h3>
         <p class="couple-parents">Putra dari<br>{{ invitation.groom.father_name }} &amp; {{ invitation.groom.mother_name }}</p>
@@ -685,6 +709,7 @@ select.form-input option{background:var(--tt-dark);color:var(--tt-white)}
       <h2 class="section-heading">Our Journey</h2>
     </div>
     <div class="timeline">
+      {% if invitation.stories.is_empty() %}
       <div class="timeline-item">
         <div class="timeline-dot">01</div>
         <div class="timeline-body">
@@ -712,6 +737,19 @@ select.form-input option{background:var(--tt-dark);color:var(--tt-white)}
           <div class="timeline-desc">Kini, kami memilih untuk melangkah lebih jauh. Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.</div>
         </div>
       </div>
+      {% else %}
+      {% for story in invitation.stories %}
+      <div class="timeline-item">
+        <div class="timeline-dot">{{ loop.index|zero_padded_index }}</div>
+        <div class="timeline-body">
+          <div class="timeline-track">Chapter {{ loop.index|zero_padded_index }}</div>
+          <div class="timeline-month">{{ story.date }}</div>
+          <div class="timeline-title">{{ story.title }}</div>
+          <div class="timeline-desc">{{ story.description }}</div>
+        </div>
+      </div>
+      {% endfor %}
+      {% endif %}
     </div>
   </section>
 
@@ -749,11 +787,16 @@ select.form-input option{background:var(--tt-dark);color:var(--tt-white)}
       <p class="section-text" style="text-align:center;margin:0 auto 8px">Doa restu sudah sangat cukup, namun jika ingin memberi tanda kasih, kami dengan senang hati menerimanya. 🙏</p>
     </div>
     <div class="gift-cards">
-                    {% for account in invitation.gift_accounts %}
-                    <div class="gift-card">
+      {% for account in invitation.gift_accounts %}
+      <div class="gift-card">
         <div class="gift-bank">Bank</div>
-                    {% endfor %}
-                </div>
+        <div class="gift-bank-name">{{ account.bank_name }}</div>
+        <div class="gift-account-name">{{ account.account_holder }}</div>
+        <div class="gift-number">{{ account.account_number }}</div>
+        <button class="copy-btn" onclick="copyText('{{ account.account_number }}', this)">📋 Salin Nomor</button>
+      </div>
+      {% endfor %}
+    </div>
   </section>
 
   <div class="glitch-divider"></div>
@@ -767,15 +810,15 @@ select.form-input option{background:var(--tt-dark);color:var(--tt-white)}
     </div>
     <div class="rsvp-stats">
       <div class="rsvp-stat">
-        <div class="rsvp-stat-num" id="statHadir">0</div>
+        <div class="rsvp-stat-num" id="statHadir">{{ invitation.total_hadir() }}</div>
         <div class="rsvp-stat-label">Hadir</div>
       </div>
       <div class="rsvp-stat">
-        <div class="rsvp-stat-num" id="statTamu">0</div>
+        <div class="rsvp-stat-num" id="statTamu">{{ invitation.total_guest_count() }}</div>
         <div class="rsvp-stat-label">Tamu</div>
       </div>
       <div class="rsvp-stat">
-        <div class="rsvp-stat-num" id="statWish">0</div>
+        <div class="rsvp-stat-num" id="statWish">{{ invitation.total_rsvps() }}</div>
         <div class="rsvp-stat-label">Ucapan</div>
       </div>
     </div>
@@ -818,33 +861,33 @@ select.form-input option{background:var(--tt-dark);color:var(--tt-white)}
       <h2 class="section-heading">Ucapan &amp; Doa</h2>
     </div>
     <div class="wishes-list" id="wishesList">
-                {% if invitation.is_preview %}
-                    <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); opacity: 0.7;">
-                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
-                            <div style="width: 35px; height: 35px; border-radius: 50%; background: #666; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">A</div>
-                            <div>
-                                <div style="font-weight: bold; font-size: 14px;">Ayu Rahmawati (Contoh)</div>
-                                <div style="font-size: 11px; opacity: 0.7;">Hadir · 2 tamu</div>
-                            </div>
-                        </div>
-                        <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"Selamat menempuh hidup baru! Semoga bahagia selalu."</div>
-                    </div>
-                {% else %}
-                {% for rsvp in invitation.rsvps %}
-                <div class="wish-card visible" style="margin-bottom: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 10px;">
-                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(45deg, #E50914, #b00710); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: white; box-shadow: 0 2px 8px rgba(229, 9, 20, 0.4);">{{ rsvp.initial() }}</div>
-                        <div>
-                            <div style="font-weight: bold; font-size: 15px; color: #fff;">{{ rsvp.name }}</div>
-                            <div style="font-size: 12px; color: #00AA13; font-weight: 500;">✓ {{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
-                        </div>
-                    </div>
-                    <div style="font-size: 14px; line-height: 1.6; font-style: italic; color: rgba(255,255,255,0.9); padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">"{{ rsvp.display_message() }}"</div>
-                </div>
-                {% endfor %}
-                {% endif %}
-                </div>
-                </section>
+      {% if invitation.is_preview %}
+      <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); opacity: 0.7;">
+        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
+          <div style="width: 35px; height: 35px; border-radius: 50%; background: #666; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">A</div>
+          <div>
+            <div style="font-weight: bold; font-size: 14px;">Ayu Rahmawati (Contoh)</div>
+            <div style="font-size: 11px; opacity: 0.7;">Hadir · 2 tamu</div>
+          </div>
+        </div>
+        <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"Selamat menempuh hidup baru! Semoga bahagia selalu."</div>
+      </div>
+      {% else %}
+      {% for rsvp in invitation.rsvps %}
+      <div class="wish-card visible" style="margin-bottom: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+        <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 10px;">
+          <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(45deg, #E50914, #b00710); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: white; box-shadow: 0 2px 8px rgba(229, 9, 20, 0.4);">{{ rsvp.initial() }}</div>
+          <div>
+            <div style="font-weight: bold; font-size: 15px; color: #fff;">{{ rsvp.name }}</div>
+            <div style="font-size: 12px; color: #00AA13; font-weight: 500;">✓ {{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+          </div>
+        </div>
+        <div style="font-size: 14px; line-height: 1.6; font-style: italic; color: rgba(255,255,255,0.9); padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">"{{ rsvp.display_message() }}"</div>
+      </div>
+      {% endfor %}
+      {% endif %}
+    </div>
+  </section>
 
   <!-- FOOTER -->
   <footer class="footer-section">
@@ -852,15 +895,19 @@ select.form-input option{background:var(--tt-dark);color:var(--tt-white)}
     <p class="footer-hashtag">#{{ invitation.bride.name }}{{ invitation.groom.name }}Forever</p>
     <div class="footer-social-row">
       <span class="footer-tag">#WeddingDay</span>
-      <span class="footer-tag">#24Mei2026</span>
+      <span class="footer-tag">#{{ invitation.event_date }}</span>
       <span class="footer-tag">#Tangerang</span>
       <span class="footer-tag">#HariBaruHidupBaru</span>
     </div>
     <p class="footer-text">Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan doa restu. Terima kasih. 🙏</p>
-    <p class="footer-brand">Made with ❤️ &amp; <span style="color:var(--tt-red)">TikTok Energy</span></p>
+    <p class="footer-brand">Made with ❤️ &amp; <span style="color:var(--tt-red)">Castellant</span></p>
   </footer>
 
 </div><!-- /main -->
+
+<!-- AUDIO PLAYER -->
+<audio id="bgAudio" preload="none"></audio>
+<button class="music-float-btn" id="musicFloatBtn" onclick="togglePlay()">🎵</button>
 
 <!-- BOTTOM NAV -->
 <nav class="bottom-nav" id="bottomNav">
@@ -896,17 +943,23 @@ const cursorRing = document.getElementById('cursorRing');
 let mouseX=0,mouseY=0,ringX=0,ringY=0;
 document.addEventListener('mousemove',e=>{
   mouseX=e.clientX; mouseY=e.clientY;
-  cursor.style.left=mouseX+'px'; cursor.style.top=mouseY+'px';
+  if(cursor) { cursor.style.left=mouseX+'px'; cursor.style.top=mouseY+'px'; }
 });
 function animateCursor(){
   ringX+=(mouseX-ringX)*.12; ringY+=(mouseY-ringY)*.12;
-  cursorRing.style.left=ringX+'px'; cursorRing.style.top=ringY+'px';
+  if(cursorRing) { cursorRing.style.left=ringX+'px'; cursorRing.style.top=ringY+'px'; }
   requestAnimationFrame(animateCursor);
 }
 animateCursor();
 document.querySelectorAll('a,button,.gallery-item,.copy-btn,.guest-btn').forEach(el=>{
-  el.addEventListener('mouseenter',()=>{cursor.style.width='20px';cursor.style.height='20px';cursorRing.style.transform='translate(-50%,-50%) scale(1.5)'});
-  el.addEventListener('mouseleave',()=>{cursor.style.width='12px';cursor.style.height='12px';cursorRing.style.transform='translate(-50%,-50%) scale(1)'});
+  el.addEventListener('mouseenter',()=>{
+    if(cursor) { cursor.style.width='20px'; cursor.style.height='20px'; }
+    if(cursorRing) { cursorRing.style.transform='translate(-50%,-50%) scale(1.5)'; }
+  });
+  el.addEventListener('mouseleave',()=>{
+    if(cursor) { cursor.style.width='12px'; cursor.style.height='12px'; }
+    if(cursorRing) { cursorRing.style.transform='translate(-50%,-50%) scale(1)'; }
+  });
 });
 
 /* ══════════════════════════════════════
@@ -914,6 +967,7 @@ document.querySelectorAll('a,button,.gallery-item,.copy-btn,.guest-btn').forEach
 ══════════════════════════════════════ */
 (function createParticles(){
   const container=document.getElementById('particles');
+  if(!container) return;
   const colors=['#FE2C55','#25F4EE','#FF6B8A','#00FFD1','#ffffff'];
   for(let i=0;i<30;i++){
     const p=document.createElement('div');
@@ -929,6 +983,97 @@ document.querySelectorAll('a,button,.gallery-item,.copy-btn,.guest-btn').forEach
 })();
 
 /* ══════════════════════════════════════
+   PLAYLIST & AUDIO PLAYER
+══════════════════════════════════════ */
+const PLAYLIST_SONGS = [
+  {% if !invitation.playlist.is_empty() %}
+    {% for song in invitation.playlist %}
+      "{{ song }}",
+    {% endfor %}
+  {% else %}
+    {% if !invitation.song_url.is_empty() %}
+      "{{ invitation.song_url }}",
+    {% endif %}
+    {% if !invitation.custom_song_url.is_empty() %}
+      "{{ invitation.custom_song_url }}",
+    {% endif %}
+  {% endif %}
+].filter(s => s.trim() !== "");
+
+if (PLAYLIST_SONGS.length === 0) {
+  PLAYLIST_SONGS.push("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3");
+}
+
+let currentSongIdx = 0;
+const bgAudio = document.getElementById('bgAudio');
+const musicFloatBtn = document.getElementById('musicFloatBtn');
+const phoneMusicScroll = document.getElementById('phoneMusicScroll');
+const phoneEq = document.getElementById('phoneEq');
+let isPlaying = false;
+
+function initAudioPlayer() {
+  if (!bgAudio) return;
+  bgAudio.src = PLAYLIST_SONGS[currentSongIdx];
+  updateMusicDisplay();
+  bgAudio.addEventListener('ended', () => {
+    nextSong();
+  });
+}
+
+function updateMusicDisplay() {
+  const currentSong = PLAYLIST_SONGS[currentSongIdx];
+  let songName = "Wedding Special Track";
+  try {
+    const urlObj = new URL(currentSong);
+    const pathParts = urlObj.pathname.split('/');
+    const lastPart = pathParts[pathParts.length - 1];
+    if (lastPart && lastPart.includes('.')) {
+      songName = decodeURIComponent(lastPart.split('.')[0]).replace(/[-_]/g, ' ');
+    }
+  } catch (e) {
+    const parts = currentSong.split('/');
+    const last = parts[parts.length - 1];
+    if (last) {
+      songName = last.split('?')[0].split('.')[0].replace(/[-_]/g, ' ');
+    }
+  }
+  songName = songName.split(' ').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+  const displayText = `${songName} · Playing Live · `;
+  if (phoneMusicScroll) {
+    phoneMusicScroll.textContent = displayText.repeat(4);
+  }
+}
+
+function nextSong() {
+  currentSongIdx = (currentSongIdx + 1) % PLAYLIST_SONGS.length;
+  if (bgAudio) {
+    bgAudio.src = PLAYLIST_SONGS[currentSongIdx];
+    updateMusicDisplay();
+    if (isPlaying) {
+      bgAudio.play().catch(e => console.log("Playback failed:", e));
+    }
+  }
+}
+
+function togglePlay() {
+  if (!bgAudio) return;
+  if (isPlaying) {
+    bgAudio.pause();
+    isPlaying = false;
+    if (musicFloatBtn) musicFloatBtn.classList.remove('playing');
+    if (phoneEq) phoneEq.classList.add('paused');
+  } else {
+    bgAudio.play().then(() => {
+      isPlaying = true;
+      if (musicFloatBtn) musicFloatBtn.classList.add('playing');
+      if (phoneEq) phoneEq.classList.remove('paused');
+    }).catch(err => {
+      console.error("Audio playback error:", err);
+    });
+  }
+}
+
+/* ══════════════════════════════════════
    OPENING
 ══════════════════════════════════════ */
 function openInvitation(){
@@ -941,6 +1086,10 @@ function openInvitation(){
   initNavHighlight();
   startGallery();
   updateDaysLeft();
+  
+  // Play music
+  initAudioPlayer();
+  togglePlay();
 }
 
 /* ══════════════════════════════════════
@@ -950,7 +1099,8 @@ function updateDaysLeft(){
   const target=new Date('{{ invitation.event_date_iso }}');
   const diff=target-new Date();
   const days=Math.max(0,Math.floor(diff/86400000));
-  document.getElementById('daysLeft').textContent=days;
+  const el = document.getElementById('daysLeft');
+  if(el) el.textContent=days;
 }
 
 /* ══════════════════════════════════════
@@ -960,11 +1110,22 @@ function startCountdown(){
   const target=new Date('{{ invitation.event_date_iso }}');
   function tick(){
     const diff=target-new Date();
-    if(diff<=0){['cdDays','cdHours','cdMinutes','cdSeconds'].forEach(id=>document.getElementById(id).textContent='00');return;}
-    document.getElementById('cdDays').textContent=String(Math.floor(diff/86400000)).padStart(2,'0');
-    document.getElementById('cdHours').textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
-    document.getElementById('cdMinutes').textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
-    document.getElementById('cdSeconds').textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+    if(isNaN(diff) || diff<=0){
+      ['cdDays','cdHours','cdMinutes','cdSeconds'].forEach(id=>{
+        const el = document.getElementById(id);
+        if(el) el.textContent='00';
+      });
+      return;
+    }
+    const dEl = document.getElementById('cdDays');
+    const hEl = document.getElementById('cdHours');
+    const mEl = document.getElementById('cdMinutes');
+    const sEl = document.getElementById('cdSeconds');
+    
+    if(dEl) dEl.textContent=String(Math.floor(diff/86400000)).padStart(2,'0');
+    if(hEl) hEl.textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
+    if(mEl) mEl.textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+    if(sEl) sEl.textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0');
   }
   tick();setInterval(tick,1000);
 }
@@ -972,24 +1133,44 @@ function startCountdown(){
 /* ══════════════════════════════════════
    GALLERY
 ══════════════════════════════════════ */
-const GALLERY_EMOJIS=['💑','📸','💍','🌸','🎊','💐','🕊️','✨','🥂','💝','🌹','🎶'];
-const GALLERY_TAGS=['#ootd','#couple','#love','#wed','#ring','#party','#moment','#us','#cheers','#heart','#rose','#music'];
-const LIGHTBOX_IMGS=[];
-let galleryPaused=false,galleryOffset=0,galleryAnimFrame,galleryOrigCount=GALLERY_EMOJIS.length;
+const GALLERY_IMAGES = [
+  {% if !invitation.gallery_images.is_empty() %}
+    {% for img in invitation.gallery_images %}
+      "{{ img }}",
+    {% endfor %}
+  {% else %}
+    "https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80",
+    "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&q=80",
+    "https://images.unsplash.com/photo-1465495976277-4387d4b0b4c6?w=600&q=80",
+    "https://images.unsplash.com/photo-1522673607200-164d1b6ce486?w=600&q=80",
+    "https://images.unsplash.com/photo-1507504038482-7621abf8c6b9?w=600&q=80",
+    "https://images.unsplash.com/photo-1519225495810-7517c319b518?w=600&q=80"
+  {% endif %}
+];
+
+const GALLERY_TAGS = ["#ootd","#couple","#love","#wed","#ring","#party","#moment","#us","#cheers","#heart","#rose","#music"];
+let galleryPaused=false,galleryOffset=0,galleryAnimFrame,galleryOrigCount=GALLERY_IMAGES.length;
 const galleryItemW=212; // width+gap
 
 function buildGallery(){
   const track=document.getElementById('galleryTrack');
   const dotsEl=document.getElementById('galleryDots');
-  const items=[...GALLERY_EMOJIS,...GALLERY_EMOJIS,...GALLERY_EMOJIS];
-  items.forEach((emoji,i)=>{
+  if(!track || !dotsEl) return;
+  
+  track.innerHTML = '';
+  dotsEl.innerHTML = '';
+  
+  const items=[...GALLERY_IMAGES,...GALLERY_IMAGES,...GALLERY_IMAGES];
+  items.forEach((src,i)=>{
     const div=document.createElement('div');
     div.className='gallery-item';
     const idx=i%galleryOrigCount;
-    div.innerHTML=`<div class="gallery-placeholder">${emoji}<span>${GALLERY_TAGS[idx]}</span></div><div class="gallery-item-overlay"></div><div class="gallery-item-tag">${GALLERY_TAGS[idx]}</div>`;
-    div.addEventListener('click',()=>openLightboxEmoji(idx));
+    const tag = GALLERY_TAGS[idx % GALLERY_TAGS.length];
+    div.innerHTML=`<img src="${src}" alt="Gallery image ${idx+1}"><div class="gallery-item-overlay"></div><div class="gallery-item-tag">${tag}</div>`;
+    div.addEventListener('click',()=>openLightboxImage(idx));
     track.appendChild(div);
   });
+  
   for(let i=0;i<galleryOrigCount;i++){
     const dot=document.createElement('div');
     dot.className='gallery-dot'+(i===0?' active':'');
@@ -1000,31 +1181,30 @@ function buildGallery(){
   track.style.transform=`translateX(-${galleryOffset}px)`;
 }
 
-function openLightboxEmoji(idx){
+let lightboxIdx=0;
+function openLightboxImage(idx){
   lightboxIdx=idx;
-  updateLightboxEmoji();
-  document.getElementById('lightbox').classList.add('open');
+  updateLightboxImage();
+  const lb = document.getElementById('lightbox');
+  if(lb) lb.classList.add('open');
   document.body.style.overflow='hidden';
   pauseGallery();
 }
-let lightboxIdx=0;
-function updateLightboxEmoji(){
+
+function updateLightboxImage(){
   const img=document.getElementById('lightboxImg');
-  img.style.display='none';
-  const emoji=GALLERY_EMOJIS[lightboxIdx];
-  img.parentElement.querySelector('.lb-placeholder')?.remove();
-  const ph=document.createElement('div');
-  ph.className='lb-placeholder';
-  ph.style.cssText='font-size:120px;text-align:center;padding:40px';
-  ph.textContent=emoji;
-  img.insertAdjacentElement('afterend',ph);
-  document.getElementById('lightboxCounter').textContent=`${lightboxIdx+1} / ${GALLERY_EMOJIS.length}`;
+  if(!img) return;
+  img.style.display='block';
+  img.src=GALLERY_IMAGES[lightboxIdx];
+  const counter = document.getElementById('lightboxCounter');
+  if(counter) counter.textContent=`${lightboxIdx+1} / ${GALLERY_IMAGES.length}`;
 }
 
 let activeDot=0;
 function startGallery(){
   buildGallery();
   const track=document.getElementById('galleryTrack');
+  if(!track) return;
   const totalW=galleryOrigCount*galleryItemW;
   function tick(){
     if(!galleryPaused){
@@ -1048,23 +1228,25 @@ function resumeGallery(){galleryPaused=false}
 function jumpGalleryTo(idx){
   const totalW=galleryOrigCount*galleryItemW;
   galleryOffset=totalW+idx*galleryItemW;
-  document.getElementById('galleryTrack').style.transform=`translateX(-${galleryOffset}px)`;
+  const track = document.getElementById('galleryTrack');
+  if(track) track.style.transform=`translateX(-${galleryOffset}px)`;
 }
 
 /* ══════════════════════════════════════
    LIGHTBOX
 ══════════════════════════════════════ */
 function closeLightbox(){
-  document.getElementById('lightbox').classList.remove('open');
+  const lb = document.getElementById('lightbox');
+  if(lb) lb.classList.remove('open');
   document.body.style.overflow='';
   resumeGallery();
 }
 function closeLightboxOutside(e){if(e.target===document.getElementById('lightbox')) closeLightbox()}
-function lightboxPrev(){lightboxIdx=(lightboxIdx-1+GALLERY_EMOJIS.length)%GALLERY_EMOJIS.length;updateLightboxEmoji()}
-function lightboxNext(){lightboxIdx=(lightboxIdx+1)%GALLERY_EMOJIS.length;updateLightboxEmoji()}
+function lightboxPrev(){lightboxIdx=(lightboxIdx-1+GALLERY_IMAGES.length)%GALLERY_IMAGES.length;updateLightboxImage()}
+function lightboxNext(){lightboxIdx=(lightboxIdx+1)%GALLERY_IMAGES.length;updateLightboxImage()}
 document.addEventListener('keydown',e=>{
   const lb=document.getElementById('lightbox');
-  if(!lb.classList.contains('open')) return;
+  if(!lb || !lb.classList.contains('open')) return;
   if(e.key==='Escape') closeLightbox();
   if(e.key==='ArrowLeft') lightboxPrev();
   if(e.key==='ArrowRight') lightboxNext();
@@ -1100,17 +1282,38 @@ function initNavHighlight(){
    RSVP
 ══════════════════════════════════════ */
 let guestCount=1;
-let totalHadir=0,totalTamu=0,totalWish=2;
+let totalHadir = {{ invitation.total_hadir() }};
+let totalTamu = {{ invitation.total_guest_count() }};
+let totalWish = {{ invitation.total_rsvps() }};
+
 function selectGuests(n,btn){
   guestCount=n;
   document.querySelectorAll('.guest-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 }
+
 function submitRSVP(){
   const name=document.getElementById('rsvpName').value.trim();
   const status=document.getElementById('rsvpStatus').value;
   const msg=document.getElementById('rsvpMsg').value.trim();
   if(!name||!status){showToast('⚠️ Mohon isi nama dan status kehadiran');return}
+  
+  // Submit via API
+  const attVal = status === 'hadir' ? 'Hadir' : 'Tidak Hadir';
+  const body = `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(attVal)}&guests=${guestCount}&message=${encodeURIComponent(msg)}`;
+  
+  fetch('/api/rsvp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: body
+  }).then(response => {
+    if (!response.ok) {
+      console.error('Failed to submit RSVP via API');
+    }
+  }).catch(err => {
+    console.error('RSVP API submission error:', err);
+  });
+
   const initials=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
   const colors=[
     'linear-gradient(135deg,#FE2C55,#FF6B8A)',
@@ -1120,25 +1323,38 @@ function submitRSVP(){
     'linear-gradient(135deg,#00FFD1,#25F4EE)'
   ];
   const color=colors[Math.floor(Math.random()*colors.length)];
-  const statusIcon=status==='hadir'?'✓':'✗';
   const statusText=status==='hadir'?`✓ Hadir · ${guestCount} tamu`:'✗ Tidak Dapat Hadir';
   const timeStr='// baru saja';
   const card=document.createElement('div');
   card.className='wish-card';
   card.innerHTML=`<div class="wish-header"><div class="wish-avatar" style="background:${color}">${initials}</div><div><div class="wish-name">${name}</div><div class="wish-status">${statusText}</div></div></div><div class="wish-text">${msg||'Selamat dan semoga bahagia selalu! 💕'}</div><div class="wish-time">${timeStr}</div>`;
   const list=document.getElementById('wishesList');
-  list.prepend(card);
+  if(list) list.prepend(card);
   setTimeout(()=>card.classList.add('visible'),50);
-  if(status==='hadir'){totalHadir++;totalTamu+=guestCount}
+  
+  if(status==='hadir'){
+    totalHadir++;
+    totalTamu+=guestCount;
+  }
   totalWish++;
-  document.getElementById('statHadir').textContent=totalHadir;
-  document.getElementById('statTamu').textContent=totalTamu;
-  document.getElementById('statWish').textContent=totalWish;
+  
+  const sh = document.getElementById('statHadir');
+  const st = document.getElementById('statTamu');
+  const sw = document.getElementById('statWish');
+  
+  if(sh) sh.textContent=totalHadir;
+  if(st) st.textContent=totalTamu;
+  if(sw) sw.textContent=totalWish;
+  
   document.getElementById('rsvpName').value='';
   document.getElementById('rsvpStatus').value='';
   document.getElementById('rsvpMsg').value='';
   showToast('🎉 Terima kasih! Konfirmasi berhasil dikirim!');
-  setTimeout(()=>window.scrollTo({top:document.querySelector('.wishes-section').offsetTop-80,behavior:'smooth'}),500);
+  
+  const wishesSection = document.querySelector('.wishes-section');
+  if(wishesSection) {
+    setTimeout(()=>window.scrollTo({top:wishesSection.offsetTop-80,behavior:'smooth'}),500);
+  }
 }
 
 /* ══════════════════════════════════════
@@ -1159,6 +1375,7 @@ function copyText(text,btn){
 let toastTimeout;
 function showToast(msg){
   const t=document.getElementById('toast');
+  if(!t) return;
   t.textContent=msg;t.classList.add('show');
   clearTimeout(toastTimeout);
   toastTimeout=setTimeout(()=>t.classList.remove('show'),3000);

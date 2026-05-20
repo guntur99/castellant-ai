@@ -287,7 +287,7 @@ pub async fn templates_list(
     Query(params): Query<HashMap<String, String>>,
     jar: PrivateCookieJar,
 ) -> impl IntoResponse {
-    let templates_data = get_all_templates(&state.db, false).await;
+    let templates_data = get_all_templates(&state.db, true).await;
     let user = match jar.get("user_id") {
         Some(cookie) => {
             let uid = Uuid::parse_str(cookie.value()).ok();
