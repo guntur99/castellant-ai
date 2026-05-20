@@ -2353,6 +2353,7 @@ pub async fn invitation_detail(
                 "wedding-danantara" => HtmlTemplate(WeddingDanantaraTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "wedding-dota2" => HtmlTemplate(WeddingDota2Template { invitation, is_dev: state.is_dev }).into_response(),
                 "wedding-indomie-goreng" => HtmlTemplate(WeddingIndomieGorengTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "trendvibe" => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
             }
         },
@@ -2558,6 +2559,7 @@ pub async fn invitation_detail(
                     "wedding-danantara" => HtmlTemplate(WeddingDanantaraTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     "wedding-dota2" => HtmlTemplate(WeddingDota2Template { invitation, is_dev: state.is_dev }).into_response(),
                     "wedding-indomie-goreng" => HtmlTemplate(WeddingIndomieGorengTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "trendvibe" => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 }
             } else {
@@ -3359,6 +3361,7 @@ pub async fn preview(
         "wedding-danantara" => HtmlTemplate(WeddingDanantaraTemplate { invitation, is_dev: state.is_dev }).into_response(),
         "wedding-dota2" => HtmlTemplate(WeddingDota2Template { invitation, is_dev: state.is_dev }).into_response(),
         "wedding-indomie-goreng" => HtmlTemplate(WeddingIndomieGorengTemplate { invitation, is_dev: state.is_dev }).into_response(),
+        "trendvibe" => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
         _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
     }
 }
