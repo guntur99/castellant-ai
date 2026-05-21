@@ -70,6 +70,7 @@ pub struct Invitation {
     pub ai_language: String,
     pub recipient_name: String,
     pub event_date_iso: String,
+    pub reception_date_iso: String,
     pub rsvps: Vec<Rsvp>,
     pub custom_song_url: String,
     pub background_video_url: String,

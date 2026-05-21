@@ -4,7 +4,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>A Magical Story — Nazma & Gunturr</title>
+    <title>A Magical Story — {{ invitation.bride.name }} & {{ invitation.groom.name }} ✦ Castellant</title>
+    <meta name="description"
+        content="Undangan Pernikahan Eksklusif {{ invitation.bride.full_name }} & {{ invitation.groom.full_name }} - Dibuat dengan penuh cinta lewat Castellant.">
+    <meta property="og:title"
+        content="Undangan Pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }} | Castellant">
+    <meta property="og:description"
+        content="Kamu diundang untuk merayakan kebahagiaan kami! Hadirilah pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }} pada {{ invitation.ceremony.date }}.">
+    {% if !invitation.gallery_images.is_empty() %}
+    <meta property="og:image" content="{{ invitation.gallery_images|first_image }}">
+    {% endif %}
+    <meta name="twitter:title" content="Undangan Pernikahan {{ invitation.bride.name }} & {{ invitation.groom.name }}">
+    <meta name="twitter:description"
+        content="Rayakan momen bahagia bersama {{ invitation.bride.name }} & {{ invitation.groom.name }}. Klik untuk info selengkapnya.">
     <link
         href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Raleway:wght@300;400;500;600&display=swap"
         rel="stylesheet">
@@ -703,24 +715,25 @@
 
         .chapter-thumb {
             width: 100%;
-            aspect-ratio: 2/3;
+            aspect-ratio: 9/16;
             position: relative;
             overflow: hidden;
             background: var(--d-mid);
         }
 
-        .chapter-thumb img {
+        .chapter-thumb video {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: brightness(.75) saturate(.85);
-            transition: filter .4s, transform .5s;
+            display: block;
+            transition: transform .5s;
         }
 
-        .chapter-card:hover .chapter-thumb img {
-            filter: brightness(.95) saturate(1.1);
-            transform: scale(1.06);
+        .chapter-card:hover .chapter-thumb video {
+            transform: scale(1.04);
         }
+
+        /* img replaced by video in chapter-thumb */
 
         .chapter-thumb-glow {
             position: absolute;
@@ -753,38 +766,7 @@
             font-weight: 700;
         }
 
-        .chapter-body {
-            padding: 14px 12px 16px;
-        }
-
-        .chapter-tag {
-            font-family: var(--font-ui);
-            font-size: 9px;
-            letter-spacing: .3em;
-            color: var(--d-gold);
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .chapter-title {
-            font-family: var(--font-body);
-            font-size: 16px;
-            font-weight: 600;
-            line-height: 1.3;
-            margin-bottom: 4px;
-        }
-
-        .chapter-desc {
-            font-family: var(--font-ui);
-            font-size: 11px;
-            color: var(--d-muted);
-            line-height: 1.55;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
+        /* chapter-body, tag, title, desc removed — pure video cards now */
 
         .chapter-magic-play {
             position: absolute;
@@ -858,20 +840,26 @@
         }
 
         .cd-grid {
-            display: flex;
-            justify-content: center;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
             gap: 8px;
-            flex-wrap: wrap;
+            max-width: 440px;
+            margin: 0 auto;
+            width: 100%;
         }
 
         .cd-box {
             background: rgba(255, 255, 255, .04);
             border: 1px solid rgba(245, 200, 66, .2);
             border-radius: 12px;
-            padding: 24px 20px 18px;
-            min-width: 90px;
+            padding: clamp(14px, 3.5vw, 24px) clamp(6px, 1.5vw, 16px) clamp(10px, 2.5vw, 18px);
+            min-width: 0;
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .cd-box::before {
@@ -886,9 +874,9 @@
 
         .cd-num {
             font-family: var(--font-title);
-            font-size: 50px;
+            font-size: clamp(24px, 5.5vw, 46px);
             line-height: 1;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             background: linear-gradient(180deg, var(--d-gold3) 0%, var(--d-gold2) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -897,8 +885,8 @@
 
         .cd-unit {
             font-family: var(--font-ui);
-            font-size: 9px;
-            letter-spacing: .3em;
+            font-size: clamp(8px, 2vw, 10px);
+            letter-spacing: .2em;
             text-transform: uppercase;
             color: var(--d-muted);
         }
@@ -1075,12 +1063,18 @@
         }
 
         .cast-portrait {
-            width: 120px;
-            height: 120px;
+            width: clamp(140px, 16vw, 180px);
+            height: clamp(140px, 16vw, 180px);
             border-radius: 50%;
-            margin: 0 auto 18px;
+            margin: 0 auto 22px;
             position: relative;
-            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(245, 200, 66, 0.12);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.5s ease;
+        }
+
+        .cast-card:hover .cast-portrait {
+            transform: scale(1.06);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5), 0 0 30px rgba(245, 200, 66, 0.25);
         }
 
         .cast-portrait::before {
@@ -1104,18 +1098,23 @@
             height: 100%;
             border-radius: 50%;
             overflow: hidden;
-            border: 3px solid var(--d-navy);
+            border: 4px solid var(--d-navy);
         }
 
         .cast-portrait-inner img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .cast-card:hover .cast-portrait-inner img {
+            transform: scale(1.08);
         }
 
         .cast-crown {
-            font-size: 22px;
-            margin-bottom: 8px;
+            font-size: 24px;
+            margin-bottom: 12px;
             display: block;
             animation: float-crown 3s ease-in-out infinite;
         }
@@ -1128,7 +1127,7 @@
             }
 
             50% {
-                transform: translateY(-5px)
+                transform: translateY(-6px)
             }
         }
 
@@ -1144,9 +1143,9 @@
 
         .cast-name {
             font-family: var(--font-title);
-            font-size: 18px;
+            font-size: clamp(20px, 2.5vw, 26px);
             font-weight: 400;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             background: linear-gradient(135deg, var(--d-white), var(--d-gold3));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -1295,120 +1294,210 @@
             font-style: italic;
         }
 
+        .story-toggle-img-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 14px;
+            background: linear-gradient(135deg, rgba(245, 200, 66, 0.12) 0%, rgba(245, 200, 66, 0.02) 100%);
+            border: 1px solid rgba(245, 200, 66, 0.25);
+            color: var(--d-gold);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-family: var(--font-ui);
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .story-toggle-img-btn:hover {
+            background: linear-gradient(135deg, rgba(245, 200, 66, 0.22) 0%, rgba(245, 200, 66, 0.06) 100%);
+            border-color: var(--d-gold);
+            box-shadow: 0 0 10px rgba(245, 200, 66, 0.20);
+            transform: translateY(-1px);
+        }
+
+        .story-toggle-img-btn:active {
+            transform: translateY(0);
+        }
+
+        .story-img-wrap {
+            display: none;
+            margin-top: 15px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(245, 200, 66, 0.2);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .story-img-wrap img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+            max-height: 280px;
+        }
+
         /* ══════════════════════════════════════
    SCREENING — ENCHANTED THEATRE
 ══════════════════════════════════════ */
         .theatre-section {
-            padding: 60px 52px;
+            padding: 80px 52px;
             text-align: center;
+            background: radial-gradient(circle at center, rgba(10, 25, 60, 0.8) 0%, var(--d-deep) 100%);
+            position: relative;
         }
 
         @media(max-width:640px) {
             .theatre-section {
-                padding: 48px 22px;
+                padding: 60px 22px;
             }
         }
 
         .theatre-cards {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            max-width: 720px;
-            margin: 40px auto 0;
+            gap: 30px;
+            max-width: 840px;
+            margin: 50px auto 0;
         }
 
-        @media(max-width:600px) {
+        @media(max-width:768px) {
             .theatre-cards {
                 grid-template-columns: 1fr;
+                gap: 24px;
             }
         }
 
         .theatre-card {
-            background: linear-gradient(160deg, var(--d-card) 0%, rgba(7, 18, 48, .6) 100%);
-            border: 1px solid rgba(245, 200, 66, .15);
-            border-radius: 16px;
-            padding: 32px 28px;
+            background: linear-gradient(135deg, rgba(13, 27, 61, 0.8) 0%, rgba(7, 18, 48, 0.95) 100%);
+            border: 1px solid rgba(245, 200, 66, 0.25);
+            border-radius: 20px;
+            padding: 40px 32px;
             text-align: left;
             position: relative;
             overflow: hidden;
-            transition: border-color .3s, box-shadow .3s;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(245, 200, 66, 0.05);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Inner dashed border for ticket effect */
+        .theatre-card::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            bottom: 10px;
+            border: 1px dashed rgba(245, 200, 66, 0.12);
+            border-radius: 12px;
+            pointer-events: none;
+            transition: border-color 0.4s;
         }
 
         .theatre-card:hover {
-            border-color: rgba(245, 200, 66, .4);
-            box-shadow: 0 0 40px rgba(245, 200, 66, .1);
+            border-color: var(--d-gold);
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(245, 200, 66, 0.15), inset 0 0 30px rgba(245, 200, 66, 0.1);
         }
 
+        .theatre-card:hover::before {
+            border-color: rgba(245, 200, 66, 0.3);
+        }
+
+        /* Bottom glowing bar */
         .theatre-card::after {
             content: '';
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 2px;
+            height: 3px;
             background: linear-gradient(90deg, transparent, var(--d-gold), transparent);
-            opacity: .5;
+            opacity: 0.7;
+            transition: opacity 0.4s;
+        }
+
+        .theatre-card:hover::after {
+            opacity: 1;
+            background: linear-gradient(90deg, transparent, #ffea85, transparent);
         }
 
         .theatre-icon {
-            width: 48px;
-            height: 48px;
+            width: 56px;
+            height: 56px;
             border-radius: 50%;
-            background: linear-gradient(135deg, rgba(245, 200, 66, .2), rgba(245, 200, 66, .05));
-            border: 1px solid rgba(245, 200, 66, .3);
+            background: linear-gradient(135deg, rgba(245, 200, 66, 0.25), rgba(245, 200, 66, 0.05));
+            border: 1px solid rgba(245, 200, 66, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 22px;
-            margin-bottom: 20px;
+            font-size: 26px;
+            color: var(--d-gold);
+            margin-bottom: 24px;
+            box-shadow: 0 0 15px rgba(245, 200, 66, 0.1);
+            transition: transform 0.4s;
+        }
+
+        .theatre-card:hover .theatre-icon {
+            transform: rotate(15deg) scale(1.1);
+            box-shadow: 0 0 20px rgba(245, 200, 66, 0.3);
         }
 
         .theatre-type {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: linear-gradient(135deg, rgba(245, 200, 66, .15), rgba(245, 200, 66, .05));
-            border: 1px solid rgba(245, 200, 66, .25);
+            background: linear-gradient(135deg, rgba(245, 200, 66, 0.2), rgba(245, 200, 66, 0.05));
+            border: 1px solid rgba(245, 200, 66, 0.3);
             color: var(--d-gold);
             font-family: var(--font-ui);
-            font-size: 9px;
+            font-size: 10px;
             font-weight: 700;
-            letter-spacing: .3em;
+            letter-spacing: .25em;
             text-transform: uppercase;
-            padding: 5px 14px;
+            padding: 6px 16px;
             border-radius: 20px;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
 
         .theatre-date {
             font-family: var(--font-title);
-            font-size: 28px;
+            font-size: 30px;
             font-weight: 400;
-            line-height: 1.15;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, var(--d-white), var(--d-gold3));
+            line-height: 1.2;
+            margin-bottom: 22px;
+            background: linear-gradient(135deg, var(--d-white) 30%, #ffd043 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
 
         .theatre-detail {
             display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
+            gap: 12px;
+            margin-bottom: 14px;
             align-items: flex-start;
         }
 
         .theatre-detail-icon {
             color: var(--d-gold);
             flex-shrink: 0;
-            font-size: 14px;
-            margin-top: 1px;
+            font-size: 15px;
+            margin-top: 2px;
+            filter: drop-shadow(0 0 3px rgba(245, 200, 66, 0.4));
         }
 
         .theatre-detail-text {
             font-family: var(--font-ui);
-            font-size: 12px;
+            font-size: 13px;
             color: var(--d-silver);
             line-height: 1.6;
         }
@@ -1416,24 +1505,34 @@
         .maps-link {
             display: inline-flex;
             align-items: center;
-            gap: 6px;
-            margin-top: 18px;
-            color: var(--d-gold);
-            border: 1px solid rgba(245, 200, 66, .3);
-            padding: 9px 18px;
-            border-radius: 20px;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 24px;
+            color: #071230;
+            background: linear-gradient(135deg, #ffd755 0%, #d4af37 100%);
+            border: none;
+            padding: 10px 22px;
+            border-radius: 24px;
             font-family: var(--font-ui);
             font-size: 11px;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: .08em;
             text-transform: uppercase;
             text-decoration: none;
-            transition: background .2s, border-color .2s;
+            box-shadow: 0 4px 15px rgba(245, 200, 66, 0.25);
+            transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+            z-index: 2;
         }
 
         .maps-link:hover {
-            background: rgba(245, 200, 66, .1);
-            border-color: var(--d-gold);
+            background: linear-gradient(135deg, #fff275 0%, #ffd755 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 200, 66, 0.4);
+        }
+
+        .maps-link:active {
+            transform: translateY(0);
         }
 
         /* ══════════════════════════════════════
@@ -1455,15 +1554,18 @@
 
         .gallery-mosaic {
             display: flex;
-            gap: 6px;
+            gap: 16px;
             overflow-x: auto;
             scrollbar-width: none;
-            padding: 0 52px 8px;
+            padding: 0 52px 12px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
         }
 
         @media(max-width:640px) {
             .gallery-mosaic {
-                padding: 0 14px 6px;
+                padding: 0 20px 10px;
+                gap: 14px;
             }
         }
 
@@ -1473,32 +1575,48 @@
 
         .gallery-frame {
             flex-shrink: 0;
-            border-radius: 10px;
+            border-radius: 16px;
             overflow: hidden;
             position: relative;
             cursor: pointer;
+            width: 320px;
+            aspect-ratio: 4 / 3;
+            border: 1px solid rgba(245, 200, 66, 0.15);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            scroll-snap-align: start;
+        }
+
+        @media(max-width:640px) {
+            .gallery-frame {
+                /* Exactly 1 1/4 (76vw) composition so the next image is partially visible and encourages scrolling */
+                width: 76vw;
+                aspect-ratio: 4 / 3;
+                border-radius: 12px;
+            }
         }
 
         .gallery-frame img {
             display: block;
-            height: 220px;
-            width: auto;
+            width: 100%;
+            height: 100%;
             object-fit: cover;
-            filter: saturate(.6) brightness(.7);
+            filter: saturate(.65) brightness(.75);
             transition: filter .4s, transform .5s;
         }
 
         .gallery-frame:hover img {
-            filter: saturate(1) brightness(.9);
-            transform: scale(1.04);
+            filter: saturate(1.05) brightness(.9);
+            transform: scale(1.06);
         }
 
         .gallery-frame-shimmer {
             position: absolute;
             inset: 0;
-            background: linear-gradient(135deg, transparent 40%, rgba(245, 200, 66, .08) 50%, transparent 60%);
+            background: linear-gradient(135deg, transparent 40%, rgba(245, 200, 66, .15) 50%, transparent 60%);
             opacity: 0;
             transition: opacity .3s;
+            pointer-events: none;
         }
 
         .gallery-frame:hover .gallery-frame-shimmer {
@@ -1508,13 +1626,20 @@
         .gallery-frame-border {
             position: absolute;
             inset: 0;
-            border-radius: 10px;
+            border-radius: 16px;
             border: 1px solid rgba(245, 200, 66, 0);
             transition: border-color .3s;
+            pointer-events: none;
+        }
+
+        @media(max-width:640px) {
+            .gallery-frame-border {
+                border-radius: 12px;
+            }
         }
 
         .gallery-frame:hover .gallery-frame-border {
-            border-color: rgba(245, 200, 66, .4);
+            border-color: rgba(245, 200, 66, .5);
         }
 
         /* ══════════════════════════════════════
@@ -1821,13 +1946,29 @@
         }
 
         .wish-card {
-            background: linear-gradient(160deg, var(--d-card) 0%, rgba(7, 18, 48, .4) 100%);
-            border: 1px solid rgba(245, 200, 66, .1);
-            border-radius: 12px;
-            padding: 20px 22px;
+            background: linear-gradient(135deg, rgba(13, 31, 78, 0.75) 0%, rgba(7, 18, 48, 0.45) 100%);
+            border: 1px solid rgba(245, 200, 66, 0.18);
+            border-radius: 16px;
+            padding: 20px 24px;
             opacity: 0;
             transform: translateY(16px);
-            transition: opacity .6s ease, transform .6s ease;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wish-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle at top right, rgba(245, 200, 66, 0.08), transparent 70%);
+            pointer-events: none;
         }
 
         .wish-card.visible {
@@ -1835,59 +1976,102 @@
             transform: translateY(0);
         }
 
+        .wish-card:hover {
+            border-color: rgba(245, 200, 66, 0.35);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 15px rgba(245, 200, 66, 0.08);
+            transform: translateY(-2px);
+        }
+
         .wish-head {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 10px;
+            gap: 14px;
+            margin-bottom: 14px;
         }
 
         .wish-avatar {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--d-gold2), var(--d-gold));
+            background: linear-gradient(135deg, var(--d-gold), var(--d-gold2));
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: var(--font-title);
-            font-size: 16px;
+            font-size: 15px;
             color: var(--d-navy);
             font-weight: 700;
             flex-shrink: 0;
+            box-shadow: 0 0 12px rgba(245, 200, 66, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            letter-spacing: -0.5px;
         }
 
         .wish-meta {
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
 
         .wish-name {
-            font-family: var(--font-body);
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 1px;
+            font-family: var(--font-ui);
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--d-white);
+            letter-spacing: 0.3px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
-        .wish-stars {
-            color: var(--d-gold);
-            font-size: 11px;
-            letter-spacing: 2px;
-        }
-
-        .wish-status {
+        .wish-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 20px;
             font-family: var(--font-ui);
             font-size: 11px;
-            color: #46d369;
-            font-weight: 600;
-            white-space: nowrap;
+            font-weight: 700;
+            width: fit-content;
+        }
+
+        .wish-badge.hadir {
+            background: rgba(70, 211, 105, 0.12);
+            border: 1px solid rgba(70, 211, 105, 0.3);
+            color: #4cd369;
+            box-shadow: 0 2px 8px rgba(76, 211, 105, 0.1);
+        }
+
+        .wish-badge.tidak-hadir {
+            background: rgba(255, 77, 77, 0.12);
+            border: 1px solid rgba(255, 77, 77, 0.3);
+            color: #ff4d4d;
+            box-shadow: 0 2px 8px rgba(255, 77, 77, 0.1);
         }
 
         .wish-text {
             font-family: var(--font-body);
-            font-size: 15px;
-            font-style: italic;
+            font-size: 16px;
             color: var(--d-silver);
-            line-height: 1.7;
+            line-height: 1.65;
+            padding: 12px 16px 12px 24px;
+            background: rgba(245, 200, 66, 0.03);
+            border-left: 3px solid var(--d-gold);
+            border-radius: 4px 12px 12px 12px;
+            position: relative;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.15);
+            font-style: italic;
+        }
+
+        .wish-text::before {
+            content: '“';
+            position: absolute;
+            left: 8px;
+            top: 4px;
+            font-size: 28px;
+            color: rgba(245, 200, 66, 0.25);
+            font-family: serif;
+            line-height: 1;
         }
 
         /* ══════════════════════════════════════
@@ -2170,6 +2354,60 @@
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
+
+        /* ══════════════════════════════════════
+   FLOATING MUSIC PLAYER (DISNEY THEME)
+══════════════════════════════════════ */
+        .music-float-btn {
+            position: fixed;
+            bottom: 85px;
+            right: 20px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: rgba(4, 13, 33, 0.85);
+            border: 2px solid var(--d-gold);
+            box-shadow: 0 0 15px var(--d-glow), inset 0 0 10px rgba(245, 200, 66, 0.3);
+            color: var(--d-gold);
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 9999;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        .music-float-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 25px var(--d-gold);
+        }
+
+        .music-float-btn.playing {
+            animation: spinVinyl 6s linear infinite;
+        }
+
+        @keyframes spinVinyl {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .music-float-btn::before {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--d-navy);
+            border: 1px solid var(--d-gold);
+        }
     </style>
 </head>
 
@@ -2192,8 +2430,8 @@
         <span class="magic-wand">✨</span>
         <p class="opening-eyebrow">Presenting a once-in-a-lifetime story</p>
         <h1 class="opening-title">A Magical<br>Story</h1>
-        <p class="opening-and">Nazma & Gunturr</p>
-        <p class="opening-sub">A Love That Was Written in the Stars · 2026</p>
+        <p class="opening-and">{{ invitation.bride.name }} & {{ invitation.groom.name }}</p>
+        <p class="opening-sub">A Love That Was Written in the Stars · {{ invitation.event_date }}</p>
 
         <div class="sparkle-divider">
             <span class="sparkle-icon">✦</span>
@@ -2234,9 +2472,9 @@
                     <span class="hero-eyebrow-text">A Magical + Original</span>
                 </div>
                 <h1 class="hero-title">
-                    Nazma
+                    {{ invitation.bride.name }}
                     <span class="amp">&amp;</span>
-                    Guntur
+                    {{ invitation.groom.name }}
                 </h1>
                 <p class="hero-tagline">
                     "A love that was written in the stars,<br>
@@ -2271,7 +2509,7 @@
         <!-- CHAPTERS ROW -->
         <div style="background:var(--d-deep);padding:40px 0 0;border-top:1px solid rgba(245,200,66,.06);">
             <div class="scroll-section">
-                <div class="row-label">Story Chapters</div>
+                <div class="row-label">Video Chapters</div>
                 <div class="cards-row" id="chaptersRow"></div>
             </div>
 
@@ -2311,11 +2549,9 @@
                     <div class="verse-ornament-line"></div>
                 </div>
                 <p class="verse-text">
-                    "Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari
-                    jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan dijadikan-Nya di antaramu
-                    rasa kasih dan sayang."
+                    "{{ invitation.quote.text }}"
                 </p>
-                <p class="verse-ref">— Surah Ar-Rum : 21</p>
+                <p class="verse-ref">— {{ invitation.quote.source }}</p>
             </div>
 
             <!-- CAST -->
@@ -2328,28 +2564,38 @@
                         <span class="cast-crown">👑</span>
                         <div class="cast-portrait">
                             <div class="cast-portrait-inner">
+                                {% if !invitation.bride.image_url.is_empty() %}
+                                <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride.name }}">
+                                {% else %}
                                 <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=300&fit=crop&q=80"
-                                    alt="Nazma">
+                                    alt="{{ invitation.bride.name }}">
+                                {% endif %}
                             </div>
                         </div>
-                        <div class="cast-role">✦ Mempelai WNazma</div>
-                        <div class="cast-name">Nazma Putri</div>
-                        <div class="cast-parents" style="font-family:var(--font-ui);font-size:12px;">S.Kom<br><br>Putri
-                            Pertama dari<br><em>Bpk. Taryono & Ibu Wiwit Jayanti</em></div>
+                        <div class="cast-role">✦ Mempelai Wanita</div>
+                        <div class="cast-name">{{ invitation.bride.full_name }}</div>
+                        <div class="cast-parents" style="font-family:var(--font-ui);font-size:12px;">Putri
+                            dari<br><em>{{ invitation.bride.father_name }} &amp; {{ invitation.bride.mother_name }}</em>
+                        </div>
                     </div>
                     <div class="cast-amp">&amp;</div>
                     <div class="cast-card">
                         <span class="cast-crown">👑</span>
                         <div class="cast-portrait">
                             <div class="cast-portrait-inner">
+                                {% if !invitation.groom.image_url.is_empty() %}
+                                <img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom.name }}">
+                                {% else %}
                                 <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&q=80"
-                                    alt="Guntur">
+                                    alt="{{ invitation.groom.name }}">
+                                {% endif %}
                             </div>
                         </div>
                         <div class="cast-role">✦ Mempelai Pria</div>
-                        <div class="cast-name">Guntur Putra</div>
-                        <div class="cast-parents" style="font-family:var(--font-ui);font-size:12px;">S.Kom<br><br>Putra
-                            Kedua dari<br><em>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari, M.Si</em></div>
+                        <div class="cast-name">{{ invitation.groom.full_name }}</div>
+                        <div class="cast-parents" style="font-family:var(--font-ui);font-size:12px;">Putra
+                            dari<br><em>{{ invitation.groom.father_name }} &amp; {{ invitation.groom.mother_name }}</em>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -2359,6 +2605,7 @@
                 <p class="section-eyebrow">✦ Story Chapters ✦</p>
                 <h2 class="section-title">Our Love Story</h2>
                 <div class="story-list" id="storyList">
+                    {% if invitation.stories.is_empty() %}
                     <div class="story-item">
                         <div class="story-left">
                             <div class="story-dot">I</div>
@@ -2373,6 +2620,18 @@
                             <p class="story-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling,
                                 cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah
                                 kami yang tak terduga — seperti sihir yang datang tanpa diundang.</p>
+                            <button class="story-toggle-img-btn" onclick="toggleStoryImage(this)">
+                                <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" style="width:14px; height:14px; margin-right:4px;">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                <span>Lihat Foto</span>
+                            </button>
+                            <div class="story-img-wrap">
+                                <img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=600&auto=format&fit=crop&q=80"
+                                    alt="Awal Pertemuan">
+                            </div>
                         </div>
                     </div>
                     <div class="story-item">
@@ -2389,6 +2648,18 @@
                             <p class="story-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan yang tak tergoyahkan.
                                 Di hadapan keluarga yang penuh kasih, kami mengikat janji dalam sebuah momen ajaib yang
                                 mengubah dua kisah menjadi satu.</p>
+                            <button class="story-toggle-img-btn" onclick="toggleStoryImage(this)">
+                                <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" style="width:14px; height:14px; margin-right:4px;">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                <span>Lihat Foto</span>
+                            </button>
+                            <div class="story-img-wrap">
+                                <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=600&auto=format&fit=crop&q=80"
+                                    alt="Lamaran">
+                            </div>
                         </div>
                     </div>
                     <div class="story-item">
@@ -2405,8 +2676,51 @@
                             <p class="story-desc">Kini tiba babak paling ajaib. Dalam ikatan suci pernikahan, di bawah
                                 saksian orang-orang terkasih, kami berjanji untuk saling mencintai dan menjaga hingga
                                 akhir cerita — dan melebihi itu semua.</p>
+                            <button class="story-toggle-img-btn" onclick="toggleStoryImage(this)">
+                                <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" style="width:14px; height:14px; margin-right:4px;">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                <span>Lihat Foto</span>
+                            </button>
+                            <div class="story-img-wrap">
+                                <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=600&auto=format&fit=crop&q=80"
+                                    alt="Pernikahan">
+                            </div>
                         </div>
                     </div>
+                    {% else %}
+                    {% for story in invitation.stories %}
+                    <div class="story-item">
+                        <div class="story-left">
+                            <div class="story-dot">{{ loop.index }}</div>
+                            <div class="story-line"></div>
+                        </div>
+                        <div class="story-body">
+                            <div class="story-chapter">Chapter {{ loop.index }}</div>
+                            <div class="story-header">
+                                <span class="story-title">{{ story.title }}</span>
+                                <span class="story-date">{{ story.date }}</span>
+                            </div>
+                            <p class="story-desc">{{ story.description }}</p>
+                            {% if !story.image_url.is_empty() %}
+                            <button class="story-toggle-img-btn" onclick="toggleStoryImage(this)">
+                                <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" style="width:14px; height:14px; margin-right:4px;">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                                <span>Lihat Foto</span>
+                            </button>
+                            <div class="story-img-wrap">
+                                <img src="{{ story.image_url }}" alt="{{ story.title }}">
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
                 </div>
             </section>
 
@@ -2416,38 +2730,95 @@
                 <h2 class="section-title">Waktu & Tempat</h2>
                 <p class="section-sub">Saksikan kisah ajaib ini bersama kami.</p>
                 <div class="theatre-cards">
+                    {% if invitation.ceremony.enabled || (!invitation.ceremony.enabled && !invitation.reception.enabled)
+                    %}
                     <div class="theatre-card">
-                        <div class="theatre-icon">🌙</div>
+                        <div class="theatre-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor" style="width: 28px; height: 28px;">
+                                <path
+                                    d="M12.1 22c-3.1 0-5.9-1.4-7.8-3.8-1.9-2.4-2.6-5.5-1.9-8.5.7-3 2.6-5.6 5.2-7.1.6-.3 1.3-.1 1.6.4.3.5.2 1.2-.3 1.6-2.1 1.3-3.6 3.4-4.1 5.8-.5 2.4.1 4.9 1.6 6.8 1.5 1.9 3.8 3 6.3 3 .8 0 1.6-.1 2.4-.4.6-.2 1.2.1 1.4.7.2.6-.1 1.2-.7 1.4-1.2.4-2.5.6-3.8.6z" />
+                                <path
+                                    d="M20.2 7.8l-1-.3-1 .3c-.3.1-.4.4-.3.7l.3 1-.3 1c-.1.3.1.6.4.7l1-.3 1 .3c.3.1.6-.1.7-.4l.3-1-.3-1c0-.3-.3-.4-.6-.3z" />
+                                <path
+                                    d="M17.2 2.8l-.5-.2-.5.2c-.1.1-.2.2-.2.4v.5c0 .2.1.3.2.4l.5.2.5-.2c.1-.1.2-.2.2-.4v-.5c0-.2-.1-.3-.2-.4z" />
+                            </svg>
+                        </div>
                         <span class="theatre-type">✦ Akad Nikah</span>
-                        <div class="theatre-date">Minggu,<br>{{ invitation.event_date }}</div>
+                        <div class="theatre-date">
+                            {% if !invitation.ceremony.date.is_empty() %}{{ invitation.ceremony.date }}{% else %}Sabtu,
+                            18 Oktober 2026{% endif %}
+                        </div>
                         <div class="theatre-detail">
                             <span class="theatre-detail-icon">✦</span>
-                            <span class="theatre-detail-text">08.00 WIB — The Sacred Hour</span>
+                            <span class="theatre-detail-text">{% if !invitation.ceremony.time.is_empty() %}{{
+                                invitation.ceremony.time }}{% else %}09:00 - 11:00 WIB{% endif %} — The Sacred
+                                Hour</span>
                         </div>
                         <div class="theatre-detail">
                             <span class="theatre-detail-icon">📍</span>
-                            <span class="theatre-detail-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah,
-                                Ciledug, Tangerang</span>
+                            <span class="theatre-detail-text">
+                                {% if !invitation.ceremony.venue.is_empty() %}{{ invitation.ceremony.venue }}{% else
+                                %}Cinderella's Grand Ballroom{% endif %},
+                                {% if !invitation.ceremony.address.is_empty() %}{{ invitation.ceremony.address }}{% else
+                                %}Disneyland Resort, Anaheim, California{% endif %}
+                            </span>
                         </div>
-                        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="maps-link">✦ Petunjuk
-                            Arah</a>
+                        <a href="{% if !invitation.ceremony.maps_url.is_empty() %}{{ invitation.ceremony.maps_url }}{% else %}https://maps.google.com{% endif %}"
+                            target="_blank" class="maps-link">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                                style="margin-right: 4px;">
+                                <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon>
+                                <line x1="9" y1="3" x2="9" y2="18"></line>
+                                <line x1="15" y1="6" x2="15" y2="21"></line>
+                            </svg>
+                            Petunjuk Arah
+                        </a>
                     </div>
+                    {% endif %}
+
+                    {% if invitation.reception.enabled || (!invitation.ceremony.enabled &&
+                    !invitation.reception.enabled) %}
                     <div class="theatre-card">
-                        <div class="theatre-icon">✨</div>
+                        <div class="theatre-icon">
+                            <svg viewBox="0 0 24 24" fill="currentColor" style="width: 28px; height: 28px;">
+                                <path
+                                    d="M2 19h20v2H2v-2zm3-2V8l4 3 3-5 3 5 4-3v9H5zm12-3.5c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5zm-5-3c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5zm-5 3c-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5 1.5.7 1.5 1.5-.7 1.5-1.5 1.5z" />
+                            </svg>
+                        </div>
                         <span class="theatre-type">✦ Resepsi</span>
-                        <div class="theatre-date">Minggu,<br>{{ invitation.event_date }}</div>
+                        <div class="theatre-date">
+                            {% if !invitation.reception.date.is_empty() %}{{ invitation.reception.date }}{% else
+                            %}Sabtu, 18 Oktober 2026{% endif %}
+                        </div>
                         <div class="theatre-detail">
                             <span class="theatre-detail-icon">✦</span>
-                            <span class="theatre-detail-text">11.00 – 13.00 WIB — The Grand Celebration</span>
+                            <span class="theatre-detail-text">{% if !invitation.reception.time.is_empty() %}{{
+                                invitation.reception.time }}{% else %}19:00 WIB - Selesai{% endif %} — The Grand
+                                Celebration</span>
                         </div>
                         <div class="theatre-detail">
                             <span class="theatre-detail-icon">📍</span>
-                            <span class="theatre-detail-text">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah,
-                                Ciledug, Tangerang</span>
+                            <span class="theatre-detail-text">
+                                {% if !invitation.reception.venue.is_empty() %}{{ invitation.reception.venue }}{% else
+                                %}Sleeping Beauty's Castle Garden{% endif %},
+                                {% if !invitation.reception.address.is_empty() %}{{ invitation.reception.address }}{%
+                                else %}Disneyland Resort, Anaheim, California{% endif %}
+                            </span>
                         </div>
-                        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="maps-link">✦ Petunjuk
-                            Arah</a>
+                        <a href="{% if !invitation.reception.maps_url.is_empty() %}{{ invitation.reception.maps_url }}{% else %}https://maps.google.com{% endif %}"
+                            target="_blank" class="maps-link">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3" stroke-linecap="round" stroke-linejoin="round"
+                                style="margin-right: 4px;">
+                                <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon>
+                                <line x1="9" y1="3" x2="9" y2="18"></line>
+                                <line x1="15" y1="6" x2="15" y2="21"></line>
+                            </svg>
+                            Petunjuk Arah
+                        </a>
                     </div>
+                    {% endif %}
                 </div>
             </section>
 
@@ -2470,6 +2841,19 @@
                     {% for account in invitation.gift_accounts %}
                     <div class="gift-card">
                         <div class="gift-card-glow"></div>
+                        <div class="gift-bank-lbl">Bank</div>
+                        <div class="gift-bank">{{ account.bank_name }}</div>
+                        <div class="gift-holder">a.n. {{ account.account_holder }}</div>
+                        <div class="gift-number">{{ account.account_number }}</div>
+                        <button class="copy-btn" onclick="copyText('{{ account.account_number }}', this)">
+                            <svg viewBox="0 0 24 24" fill="currentColor"
+                                style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-right:4px;">
+                                <path
+                                    d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z" />
+                            </svg>
+                            Salin Nomor
+                        </button>
+                    </div>
                     {% endfor %}
                 </div>
             </section>
@@ -2484,15 +2868,15 @@
                 <div class="rsvp-wrap">
                     <div class="rsvp-stats">
                         <div class="rsvp-stat">
-                            <div class="rsvp-num">7</div>
+                            <div class="rsvp-num" id="statWish">{{ invitation.total_rsvps() }}</div>
                             <div class="rsvp-lbl">Respons</div>
                         </div>
                         <div class="rsvp-stat">
-                            <div class="rsvp-num">7</div>
+                            <div class="rsvp-num" id="statHadir">{{ invitation.total_hadir() }}</div>
                             <div class="rsvp-lbl">Hadir</div>
                         </div>
                         <div class="rsvp-stat">
-                            <div class="rsvp-num">13</div>
+                            <div class="rsvp-num" id="statTamu">{{ invitation.total_guest_count() }}</div>
                             <div class="rsvp-lbl">Total Tamu</div>
                         </div>
                     </div>
@@ -2517,7 +2901,8 @@
                     </div>
                     <div class="form-group">
                         <label class="form-label">Ucapan & Doa</label>
-                        <textarea class="form-input" placeholder="Tuliskan ucapan ajaib untuk Nazma & Gunturr..."
+                        <textarea class="form-input"
+                            placeholder="Tuliskan ucapan ajaib untuk {{ invitation.bride.name }} & {{ invitation.groom.name }}..."
                             id="rsvpMsg"></textarea>
                     </div>
                     <button class="rsvp-btn" onclick="submitRSVP()">✦ Konfirmasi Kehadiran ✦</button>
@@ -2529,38 +2914,42 @@
                 <p class="section-eyebrow">✦ Magic Messages ✦</p>
                 <h2 class="section-title">Ucapan & Doa</h2>
                 <div class="reviews-list" id="reviewsList">
-                {% if invitation.is_preview %}
-                    <div class="wish-card visible" style="margin-bottom: 10px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); opacity: 0.7;">
-                        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 8px;">
-                            <div style="width: 35px; height: 35px; border-radius: 50%; background: #666; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 14px;">A</div>
-                            <div>
-                                <div style="font-weight: bold; font-size: 14px;">Ayu Rahmawati (Contoh)</div>
-                                <div style="font-size: 11px; opacity: 0.7;">Hadir · 2 tamu</div>
+                    {% if invitation.is_preview %}
+                    <div class="wish-card visible">
+                        <div class="wish-head">
+                            <div class="wish-avatar">AR</div>
+                            <div class="wish-meta">
+                                <div class="wish-name">Ayu Rahmawati (Contoh)</div>
+                                <span class="wish-badge hadir">✓ Hadir · 2 tamu</span>
                             </div>
                         </div>
-                        <div style="font-size: 13px; line-height: 1.5; font-style: italic;">"Selamat menempuh hidup baru! Semoga bahagia selalu."</div>
+                        <div class="wish-text">Selamat menempuh hidup baru! Semoga bahagia selalu.</div>
                     </div>
-                {% else %}
-                {% for rsvp in invitation.rsvps %}
-                <div class="wish-card visible" style="margin-bottom: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
-                    <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 10px;">
-                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(45deg, #E50914, #b00710); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: white; box-shadow: 0 2px 8px rgba(229, 9, 20, 0.4);">{{ rsvp.initial() }}</div>
-                        <div>
-                            <div style="font-weight: bold; font-size: 15px; color: #fff;">{{ rsvp.name }}</div>
-                            <div style="font-size: 12px; color: #00AA13; font-weight: 500;">✓ {{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>
+                    {% else %}
+                    {% for rsvp in invitation.rsvps %}
+                    <div class="wish-card visible">
+                        <div class="wish-head">
+                            <div class="wish-avatar">{{ rsvp.initial() }}</div>
+                            <div class="wish-meta">
+                                <div class="wish-name">{{ rsvp.name }}</div>
+                                {% if rsvp.attendance.to_lowercase() == "hadir" %}
+                                <span class="wish-badge hadir">✓ Hadir · {{ rsvp.guests }} tamu</span>
+                                {% else %}
+                                <span class="wish-badge tidak-hadir">✗ Tidak Hadir</span>
+                                {% endif %}
+                            </div>
                         </div>
+                        <div class="wish-text">{{ rsvp.display_message() }}</div>
                     </div>
-                    <div style="font-size: 14px; line-height: 1.6; font-style: italic; color: rgba(255,255,255,0.9); padding: 10px; background: rgba(255,255,255,0.03); border-radius: 8px;">"{{ rsvp.display_message() }}"</div>
+                    {% endfor %}
+                    {% endif %}
                 </div>
-                {% endfor %}
-                {% endif %}
-                </div>
-                </section>
+            </section>
 
             <!-- FOOTER -->
             <footer class="footer">
                 <div class="footer-brand">✦ MAGICAL +</div>
-                <h2 class="footer-names">Nazma & Gunturr</h2>
+                <h2 class="footer-names">{{ invitation.bride.name }} & {{ invitation.groom.name }}</h2>
                 <p class="footer-text">Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i
                     berkenan hadir dan memberikan do'a restu dalam hari istimewa kami.</p>
                 <div class="footer-divider">
@@ -2570,7 +2959,7 @@
                 </div>
                 <p class="footer-quote">
                     "Kami yang berbahagia,"
-                    <span>Nazma & Gunturr</span>
+                    <span>{{ invitation.bride.name }} & {{ invitation.groom.name }}</span>
                 </p>
             </footer>
         </div>
@@ -2618,31 +3007,65 @@
         <div class="lb-count" id="lbCount"></div>
     </div>
 
+    <!-- VIDEO LIGHTBOX -->
+    <div class="lightbox" id="videoLightbox">
+        <button class="lb-close" onclick="closeVideoLb()">✕</button>
+        <div class="lb-video-container"
+            style="width: 90vw; max-width: 800px; aspect-ratio: 16/9; display: flex; align-items: center; justify-content: center; background: #000; border-radius: 8px; border: 1px solid var(--d-gold); box-shadow: 0 0 30px var(--d-glow);">
+            <video id="lbVideo" controls
+                style="width: 100%; height: 100%; object-fit: contain; border-radius: 6px;"></video>
+        </div>
+        <div class="lb-count" id="videoLbTitle"
+            style="bottom: 20px; font-family: var(--font-title); font-size: 16px; color: var(--d-gold); letter-spacing: 2px;">
+            ✦ Video Chapter ✦</div>
+    </div>
+
     <!-- TOAST -->
     <div class="toast" id="toast"></div>
+
+    <!-- AUDIO PLAYER -->
+    <audio id="bgAudio" preload="none"></audio>
+    <button class="music-float-btn" id="musicFloatBtn" onclick="togglePlay()">🎵</button>
 
     <script>
         /* ════════════════════════════════════
            DATA
         ════════════════════════════════════ */
         const GALLERY_IMGS = [
-            "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=85",
+            {% if !invitation.gallery_images.is_empty() %}
+        {% for img in invitation.gallery_images %}
+        "{{ img }}",
+            {% endfor %}
+        {% else %}
+        "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=85",
             "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&q=85",
             "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&q=85",
             "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&q=85",
             "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=800&q=85",
             "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=800&q=85",
             "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=800&q=85",
-            "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=85",
+            "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&q=85"
+        {% endif %}
         ];
 
         const CHAPTER_DATA = [
-            { num: "I", tag: "Chapter 1", title: "First Encounter", desc: "Bowling, sushi, dan es krim — awal dari segalanya.", img: GALLERY_IMGS[0], rating: "U/A" },
-            { num: "II", tag: "Chapter 2", title: "Growing Feelings", desc: "Rasa yang tumbuh perlahan seperti bintang yang muncul.", img: GALLERY_IMGS[1], rating: "U/A" },
-            { num: "III", tag: "Chapter 3", title: "The Proposal", desc: "Sebuah pertanyaan yang mengubah dua cerita menjadi satu.", img: GALLERY_IMGS[2], rating: "U/A" },
-            { num: "IV", tag: "Chapter 4", title: "Behind The Magic", desc: "Semua persiapan menuju hari istimewa yang ditunggu.", img: GALLERY_IMGS[3], rating: "G" },
-            { num: "V", tag: "Grand Finale", title: "The Wedding Day", desc: "Episode paling ajaib — hari yang ditulis di bintang.", img: GALLERY_IMGS[4], rating: "ALL" },
-            { num: "VI", tag: "Bonus", title: "Ever After", desc: "Dan mereka pun hidup bahagia selamanya...", img: GALLERY_IMGS[5], rating: "G" },
+            {% if !invitation.gallery_videos.is_empty() %}
+        {% for video in invitation.gallery_videos %}
+        {
+            num: "{{ loop.index }}",
+                tag: "Video {{ loop.index }}",
+                    title: {% if loop.index == 1 %} "Prewedding Trailer"{% else if loop.index == 2 %} "A Magical Journey"{% else if loop.index == 3 %} "True Love's Kiss"{% else %} "Teaser Video {{ loop.index }}"{% endif %},
+            desc: {% if loop.index == 1 %} "Cuplikan eksklusif hari-hari persiapan menuju momen terindah dalam hidup kami."{% else if loop.index == 2 %} "Perjalanan cinta kami dari awal pertemuan hingga ikatan suci pernikahan."{% else if loop.index == 3 %} "Momen magis dan kebahagiaan sejati saat kami dipersatukan dalam janji suci."{% else %} "Momen indah yang tertangkap dalam rekaman video eksklusif."{% endif %},
+            img: GALLERY_IMGS[{{ loop.index0 }} % GALLERY_IMGS.length],
+        videoUrl: "{{ video }}",
+            rating: "U/A"
+              },
+        {% endfor %}
+        {% else %}
+        { num: "I", tag: "Video 1", title: "Prewedding Trailer", desc: "Cuplikan eksklusif hari-hari persiapan menuju momen terindah dalam hidup kami.", img: GALLERY_IMGS[0 % GALLERY_IMGS.length], videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-wedding-couple-walking-in-a-forest-40455-large.mp4", rating: "U/A" },
+        { num: "II", tag: "Video 2", title: "A Magical Journey", desc: "Perjalanan cinta kami dari awal pertemuan hingga ikatan suci pernikahan.", img: GALLERY_IMGS[1 % GALLERY_IMGS.length], videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-bride-and-groom-holding-hands-40456-large.mp4", rating: "U/A" },
+        { num: "III", tag: "Video 3", title: "True Love's Kiss", desc: "Momen magis dan kebahagiaan sejati saat kami dipersatukan dalam janji suci.", img: GALLERY_IMGS[2 % GALLERY_IMGS.length], videoUrl: "https://assets.mixkit.co/videos/preview/mixkit-wedding-couple-walking-in-a-forest-40455-large.mp4", rating: "U/A" }
+        {% endif %}
         ];
 
         let lbIdx = 0;
@@ -2657,6 +3080,9 @@
             setTimeout(() => { document.getElementById('main').classList.add('show'); }, 150);
             document.getElementById('bottomNav').classList.add('show');
             setTimeout(initAll, 500);
+
+            // Play magical theme music automatically
+            togglePlay();
         }
 
         function initAll() {
@@ -2772,19 +3198,24 @@
                 el.className = 'chapter-card';
                 el.innerHTML = `
       <div class="chapter-thumb">
-        <img src="${c.img}" alt="${c.title}" loading="lazy">
+        <video
+          src="${c.videoUrl}"
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          style="width:100%;height:100%;object-fit:cover;display:block;"
+        ></video>
         <div class="chapter-thumb-glow"></div>
         <div class="chapter-num">Ch. ${c.num}</div>
-        <div class="chapter-rating">${c.rating}</div>
       </div>
       <div class="chapter-magic-play"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></div>
-      <div class="chapter-body">
-        <div class="chapter-tag">${c.tag}</div>
-        <div class="chapter-title">${c.title}</div>
-        <div class="chapter-desc">${c.desc}</div>
-      </div>
     `;
-                el.addEventListener('click', () => openLb(i));
+                // Hover: pause/play video
+                const vid = el.querySelector('video');
+                el.addEventListener('mouseenter', () => { if (vid && vid.paused) vid.play().catch(() => { }); });
+                el.addEventListener('click', () => openVideoLb(c.videoUrl, c.title));
                 row.appendChild(el);
             });
         }
@@ -2805,7 +3236,7 @@
         }
 
         /* ════════════════════════════════════
-           LIGHTBOX
+           LIGHTBOX & VIDEO LIGHTBOX
         ════════════════════════════════════ */
         function openLb(i) {
             lbIdx = i % GALLERY_IMGS.length;
@@ -2822,31 +3253,145 @@
             document.getElementById('lbImg').src = GALLERY_IMGS[lbIdx];
             document.getElementById('lbCount').textContent = `✦ ${lbIdx + 1} / ${GALLERY_IMGS.length} ✦`;
         }
+
+        function openVideoLb(url, title) {
+            // Pause background audio dynamically if it's playing
+            const audio = document.getElementById('bgAudio');
+            const btn = document.getElementById('musicFloatBtn');
+            if (audio) {
+                audio.pause();
+            }
+            isAudioPlaying = false;
+            if (btn) {
+                btn.classList.remove('playing');
+                btn.innerHTML = "🎵";
+            }
+
+            // Load and play video
+            const lbVideo = document.getElementById('lbVideo');
+            const videoLbTitle = document.getElementById('videoLbTitle');
+            if (lbVideo) {
+                lbVideo.src = url;
+                lbVideo.load();
+                lbVideo.play().catch(err => console.log("Video autoplay blocked:", err));
+            }
+            if (videoLbTitle) {
+                videoLbTitle.textContent = `✦ ${title} ✦`;
+            }
+
+            document.getElementById('videoLightbox').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeVideoLb() {
+            const lbVideo = document.getElementById('lbVideo');
+            if (lbVideo) {
+                lbVideo.pause();
+                lbVideo.src = ""; // Stop loading the video from the network
+            }
+            document.getElementById('videoLightbox').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
         document.addEventListener('keydown', e => {
-            if (!document.getElementById('lightbox').classList.contains('open')) return;
-            if (e.key === 'Escape') closeLb();
-            if (e.key === 'ArrowLeft') lbNav(-1);
-            if (e.key === 'ArrowRight') lbNav(1);
+            if (document.getElementById('lightbox').classList.contains('open')) {
+                if (e.key === 'Escape') closeLb();
+                if (e.key === 'ArrowLeft') lbNav(-1);
+                if (e.key === 'ArrowRight') lbNav(1);
+            }
+            if (document.getElementById('videoLightbox').classList.contains('open')) {
+                if (e.key === 'Escape') closeVideoLb();
+            }
         });
+
+        /* ════════════════════════════════════
+           STORY IMAGE TOGGLE
+        ════════════════════════════════════ */
+        function toggleStoryImage(btn) {
+            const wrap = btn.nextElementSibling;
+            const span = btn.querySelector('span');
+            const svg = btn.querySelector('svg');
+            if (!wrap || !span) return;
+
+            if (wrap.style.display === 'none' || !wrap.style.display) {
+                wrap.style.display = 'block';
+                // Trigger layout reflow to allow transition to run properly
+                void wrap.offsetWidth;
+                wrap.style.opacity = '1';
+                wrap.style.transform = 'translateY(0)';
+                span.textContent = 'Sembunyikan Foto';
+                if (svg) {
+                    svg.innerHTML = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>`;
+                }
+            } else {
+                wrap.style.opacity = '0';
+                wrap.style.transform = 'translateY(10px)';
+                span.textContent = 'Lihat Foto';
+                if (svg) {
+                    svg.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`;
+                }
+                setTimeout(() => {
+                    if (wrap.style.opacity === '0') {
+                        wrap.style.display = 'none';
+                    }
+                }, 400); // match transition duration of 0.4s
+            }
+        }
 
         /* ════════════════════════════════════
            COUNTDOWN
         ════════════════════════════════════ */
         function startCountdown() {
-            const target = new Date('{{ invitation.event_date_iso }}');
+            let dateStr = '{{ invitation.event_date_iso }}';
+            if (!dateStr || dateStr.trim() === '' || dateStr === '{{ invitation.event_date_iso }}') {
+                dateStr = '2026-12-31T09:00:00';
+            }
+
+            // Safari / iOS fix: replace dashes with slashes and 'T' with space
+            const formattedStr = dateStr.replace(/-/g, '/').replace('T', ' ').replace(/\.\d+$/, '');
+            let target = new Date(formattedStr);
+            if (isNaN(target.getTime())) {
+                target = new Date(dateStr);
+            }
+
+            const cdIds = ['cdDays', 'cdHours', 'cdMinutes', 'cdSeconds'];
+
+            function showCelebration() {
+                // Wedding day has arrived — show a glowing celebration state
+                cdIds.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = '✦';
+                });
+                const heading = document.querySelector('.cd-heading');
+                if (heading) {
+                    heading.textContent = '✦ Hari Bahagia Telah Tiba ✦';
+                }
+            }
+
             function tick() {
-                const diff = target - new Date();
-                if (diff <= 0) { ['cdDays', 'cdHours', 'cdMinutes', 'cdSeconds'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '00'; }); return; }
-                const els = ['cdDays', 'cdHours', 'cdMinutes', 'cdSeconds'];
+                const now = new Date();
+                const diff = target - now;
+
+                if (isNaN(diff) || diff <= 0) {
+                    showCelebration();
+                    return; // stop ticking once we reach the date
+                }
+
                 const vals = [
                     Math.floor(diff / 86400000),
                     Math.floor((diff % 86400000) / 3600000),
                     Math.floor((diff % 3600000) / 60000),
                     Math.floor((diff % 60000) / 1000)
                 ];
-                els.forEach((id, i) => { const el = document.getElementById(id); if (el) el.textContent = String(vals[i]).padStart(2, '0'); });
+                cdIds.forEach((id, i) => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = String(vals[i]).padStart(2, '0');
+                });
+
+                setTimeout(tick, 1000);
             }
-            tick(); setInterval(tick, 1000);
+
+            tick();
         }
 
         /* ════════════════════════════════════
@@ -2882,43 +3427,166 @@
         /* ════════════════════════════════════
            RSVP
         ════════════════════════════════════ */
+        let totalHadir = {{ invitation.total_hadir() }};
+        let totalTamu = {{ invitation.total_guest_count() }};
+        let totalWish = {{ invitation.total_rsvps() }};
+
         function selGuests(n, btn) {
             guestCount = n;
             document.querySelectorAll('.guest-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
         }
+
         function submitRSVP() {
             const name = document.getElementById('rsvpName').value.trim();
             const status = document.getElementById('rsvpStatus').value;
             const msg = document.getElementById('rsvpMsg').value.trim();
+
+            if (!name || !status) {
+                showToast('✦ Mohon isi nama dan status kehadiran ⚠️');
+                return;
+            }
+
+            const attVal = status === 'hadir' ? 'Hadir' : 'Tidak Hadir';
+            const body = `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(attVal)}&guests=${guestCount}&message=${encodeURIComponent(msg)}`;
+
             fetch('/api/rsvp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
+                body: body
+            }).then(response => {
+                if (!response.ok) {
+                    console.error('RSVP API submission error');
+                }
+            }).catch(err => {
+                console.error('RSVP API submission error:', err);
             });
 
-            if (!name || !status) { showToast('✦ Mohon isi nama dan status kehadiran'); return; }
             const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
-            const golds = ['linear-gradient(135deg,#e8a800,#f5c842)', 'linear-gradient(135deg,#185fa5,#4a90d9)', 'linear-gradient(135deg,#3b6d11,#639922)', 'linear-gradient(135deg,#534ab7,#7f77dd)', 'linear-gradient(135deg,#993556,#d4537e)'];
-            const bg = golds[Math.floor(Math.random() * golds.length)];
-            const stText = status === 'hadir' ? `✓ Hadir · ${guestCount} tamu` : '✗ Tidak Hadir';
+            const badgeClass = status === 'hadir' ? 'hadir' : 'tidak-hadir';
+            const badgeText = status === 'hadir' ? `✓ Hadir · ${guestCount} tamu` : '✗ Tidak Hadir';
+
             const card = document.createElement('div');
             card.className = 'wish-card';
             card.innerHTML = `
-    <div class="wish-head">
-      <div class="wish-avatar" style="background:${bg}">${initials}</div>
-      <div class="wish-meta"><div class="wish-name">${name}</div><div class="wish-stars">★★★★★</div></div>
-      <div class="wish-status">${stText}</div>
-    </div>
-    <div class="wish-text">${msg || 'Selamat dan semoga selalu bahagia seperti dongeng yang tak pernah berakhir! ✦'}</div>
-  `;
-            document.getElementById('reviewsList').prepend(card);
+                <div class="wish-head">
+                    <div class="wish-avatar">${initials}</div>
+                    <div class="wish-meta">
+                        <div class="wish-name">${name}</div>
+                        <span class="wish-badge ${badgeClass}">${badgeText}</span>
+                    </div>
+                </div>
+                <div class="wish-text">${msg || 'Selamat dan semoga selalu bahagia! ✦'}</div>
+            `;
+
+            const list = document.getElementById('reviewsList');
+            if (list) {
+                list.prepend(card);
+            }
             setTimeout(() => card.classList.add('visible'), 50);
+
+            if (status === 'hadir') {
+                totalHadir++;
+                totalTamu += guestCount;
+            }
+            totalWish++;
+
+            const sh = document.getElementById('statHadir');
+            const st = document.getElementById('statTamu');
+            const sw = document.getElementById('statWish');
+            if (sh) sh.textContent = totalHadir;
+            if (st) st.textContent = totalTamu;
+            if (sw) sw.textContent = totalWish;
+
             document.getElementById('rsvpName').value = '';
             document.getElementById('rsvpStatus').value = '';
             document.getElementById('rsvpMsg').value = '';
+
             showToast('✦ Terima kasih! Kehadiran Anda dicatat dengan penuh keajaiban 🌟');
-            document.querySelector('.reviews-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            const reviewsSection = document.querySelector('.reviews-section');
+            if (reviewsSection) {
+                reviewsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+
+        /* ════════════════════════════════════
+           MUSIC PLAYER LOGIC
+        ════════════════════════════════════ */
+        const PLAYLIST_SONGS = [
+            {% if !invitation.playlist.is_empty() %}
+        {% for song in invitation.playlist %}
+        "{{ song }}",
+            {% endfor %}
+        {% else %}
+        {% if !invitation.song_url.is_empty() %}
+        "{{ invitation.song_url }}",
+            {% endif %}
+        {% if !invitation.custom_song_url.is_empty() %}
+        "{{ invitation.custom_song_url }}",
+            {% endif %}
+        {% endif %}
+        ].map(s => s.trim()).filter(s => s !== "");
+
+        if (PLAYLIST_SONGS.length === 0) {
+            PLAYLIST_SONGS.push("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3");
+        }
+
+        let currentSongIdx = 0;
+        let isAudioPlaying = false;
+        let audioInitDone = false;
+
+        function initAudioPlayer() {
+            if (audioInitDone) return;
+            const audio = document.getElementById('bgAudio');
+            if (!audio) return;
+
+            audio.src = PLAYLIST_SONGS[currentSongIdx];
+
+            audio.addEventListener('ended', () => {
+                nextSong();
+            });
+
+            audioInitDone = true;
+        }
+
+        function togglePlay() {
+            initAudioPlayer();
+            const audio = document.getElementById('bgAudio');
+            const btn = document.getElementById('musicFloatBtn');
+            if (!audio || !btn) return;
+
+            if (isAudioPlaying) {
+                audio.pause();
+                isAudioPlaying = false;
+                btn.classList.remove('playing');
+                btn.innerHTML = "🎵";
+            } else {
+                audio.play().then(() => {
+                    isAudioPlaying = true;
+                    btn.classList.add('playing');
+                    btn.innerHTML = "📀";
+                }).catch(err => {
+                    console.log("Audio play blocked by browser. User interaction needed.", err);
+                });
+            }
+        }
+
+        function nextSong() {
+            const audio = document.getElementById('bgAudio');
+            const btn = document.getElementById('musicFloatBtn');
+            if (!audio || PLAYLIST_SONGS.length <= 1) {
+                if (audio) {
+                    audio.currentTime = 0;
+                    audio.play().catch(err => console.log(err));
+                }
+                return;
+            }
+            currentSongIdx = (currentSongIdx + 1) % PLAYLIST_SONGS.length;
+            audio.src = PLAYLIST_SONGS[currentSongIdx];
+            if (isAudioPlaying) {
+                audio.play().catch(err => console.log(err));
+            }
         }
 
         /* ════════════════════════════════════
@@ -2946,7 +3614,7 @@
             toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
         }
     </script>
-{% include "invitation/ai_concierge_snippet.html" %}
+    {% include "invitation/ai_concierge_snippet.html" %}
 </body>
 
 </html>

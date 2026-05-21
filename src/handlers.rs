@@ -1955,6 +1955,7 @@ pub async fn dashboard(
                     ai_language: r.ai_language.clone(),
                     recipient_name: "Guest Guest & Partner".to_string(),
                     event_date_iso: "2026-05-24T08:00:00".to_string(),
+                    reception_date_iso: "2026-05-24T08:00:00".to_string(),
                     rsvps: Vec::new(),
                     custom_song_url: r.custom_song_url.unwrap_or_default(),
                     background_video_url: r.background_video_url.unwrap_or_default(),
@@ -2189,6 +2190,7 @@ pub async fn invitation_detail(
 
             let mut ceremony: EventDetails = from_value(row.ceremony_data).unwrap_or_default();
             let mut reception: EventDetails = from_value(row.reception_data).unwrap_or_default();
+            let reception_date_iso = parse_event_date_to_iso(&reception.date);
             
             // Format dates for display
             let event_date = format_date_for_display(&row.event_date);
@@ -2252,6 +2254,7 @@ pub async fn invitation_detail(
                 ai_language: ai_language,
                 recipient_name: recipient_name,
                 event_date_iso: event_date_iso,
+                reception_date_iso: reception_date_iso,
                 rsvps: sqlx::query_as::<_, Rsvp>("SELECT * FROM rsvps WHERE invitation_id = $1 ORDER BY created_at DESC")
                     .bind(row.id)
                     .fetch_all(&state.db)
@@ -2435,6 +2438,7 @@ pub async fn invitation_detail(
                     ai_language: "id".to_string(),
                     recipient_name: "Guest Guest & Partner".to_string(),
                     event_date_iso: "2026-12-12T08:00:00".to_string(),
+                    reception_date_iso: "2026-12-12T08:00:00".to_string(),
                     rsvps: Vec::new(),
                     custom_song_url: String::new(),
                     background_video_url: "https://assets.mixkit.co/videos/preview/mixkit-wedding-couple-walking-in-the-field-1234-large.mp4".to_string(),
@@ -2597,6 +2601,8 @@ pub async fn manage_invitation(
     match row {
         Some(row) => {
             let event_date_iso = parse_event_date_to_iso(&row.event_date);
+            let reception_temp: EventDetails = from_value(row.reception_data.clone()).unwrap_or_default();
+            let reception_date_iso = parse_event_date_to_iso(&reception_temp.date);
             let bride: Person = from_value(row.bride_data).unwrap_or_default();
             let groom: Person = from_value(row.groom_data).unwrap_or_default();
             let bride_name_short = bride.name.clone();
@@ -2642,6 +2648,7 @@ pub async fn manage_invitation(
                 ai_language: row.ai_language.clone(),
                 recipient_name: "Guest Guest & Partner".to_string(),
                 event_date_iso,
+                reception_date_iso,
                 rsvps: sqlx::query_as::<_, Rsvp>("SELECT * FROM rsvps WHERE invitation_id = $1 ORDER BY created_at DESC")
                     .bind(row.id)
                     .fetch_all(&state.db)
@@ -2886,22 +2893,55 @@ pub async fn update_invitation(
 
     let mut reception: EventDetails = from_value(row.reception_data.clone()).unwrap_or_default();
     reception.enabled = fields.get("reception_enabled").map(|v| v == "on").unwrap_or(false);
-    if let Some(val) = fields.get("reception_date") { reception.date = val.clone(); }
+    if let Some(val) = fields.get("reception_date") { reception.date = format_date_for_display(val); }
     if let Some(val) = fields.get("reception_time") { reception.time = val.clone(); }
     if let Some(val) = fields.get("reception_venue") { reception.venue = val.clone(); }
     if let Some(val) = fields.get("reception_address") { reception.address = val.clone(); }
     if let Some(val) = fields.get("reception_maps") { reception.maps_url = val.clone(); }
 
     let mut quote: Quote = from_value(row.quote_data.clone()).unwrap_or_default();
-    if let Some(val) = fields.get("quote_text") { quote.text = val.clone(); }
-    if let Some(val) = fields.get("quote_source") { quote.source = val.clone(); }
+    if let Some(val) = fields.get("quote_text").map(|s| s.trim().to_string()).filter(|s| !s.is_empty()) {
+        quote.text = val;
+    }
+    if let Some(val) = fields.get("quote_source").map(|s| s.trim().to_string()).filter(|s| !s.is_empty()) {
+        quote.source = val;
+    }
 
-    let couple_name_short = fields.get("couple_name_short").cloned().unwrap_or(row.couple_name_short);
-    let event_date = fields.get("event_date").cloned().unwrap_or(row.event_date);
+    let couple_name_short = fields.get("couple_name_short")
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty())
+        .unwrap_or(row.couple_name_short);
+
+    let event_date_raw = fields.get("event_date")
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty())
+        .unwrap_or_else(|| row.event_date.clone());
+
+    tracing::info!("--- UPDATE INVITATION DEBUG ---");
+    tracing::info!("fields keys: {:?}", fields.keys().collect::<Vec<&String>>());
+    tracing::info!("fields event_date: {:?}", fields.get("event_date"));
+    tracing::info!("row.event_date: {:?}", row.event_date);
+    tracing::info!("event_date_raw: {:?}", event_date_raw);
+    
+    // Convert YYYY-MM-DD (from HTML date input) to Indonesian display format "24 Mei 2026"
+    let event_date = format_date_for_display(&event_date_raw);
+    tracing::info!("formatted event_date: {:?}", event_date);
+    
+    // Sync ceremony date with the main event date
+    ceremony.date = event_date.clone();
     let ai_chat_enabled = fields.get("ai_chat_enabled").map(|v| v == "on").unwrap_or(false);
-    let ai_custom_knowledge = fields.get("ai_custom_knowledge").cloned().unwrap_or(row.ai_custom_knowledge.unwrap_or_default());
-    let template_name = fields.get("template_name").cloned().unwrap_or(row.template_name);
-    let final_ai_language = fields.get("ai_language").cloned().unwrap_or(row.ai_language.clone());
+    let ai_custom_knowledge = fields.get("ai_custom_knowledge")
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty())
+        .unwrap_or_else(|| row.ai_custom_knowledge.clone().unwrap_or_default());
+    let template_name = fields.get("template_name")
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty())
+        .unwrap_or(row.template_name);
+    let final_ai_language = fields.get("ai_language")
+        .map(|s| s.trim().to_string())
+        .filter(|s| !s.is_empty())
+        .unwrap_or(row.ai_language.clone());
     let hero_video_position = fields.get("hero_video_position")
         .and_then(|v| v.parse::<i32>().ok())
         .unwrap_or(row.hero_video_position.unwrap_or(50));
@@ -3308,6 +3348,7 @@ pub async fn preview(
         ai_language: "id".to_string(),
         recipient_name: "Guest Guest & Partner".to_string(),
         event_date_iso: "2026-05-24T08:00:00".to_string(),
+        reception_date_iso: "2026-05-24T08:00:00".to_string(),
         rsvps: Vec::new(),
         custom_song_url: String::new(),
         background_video_url: String::new(),
