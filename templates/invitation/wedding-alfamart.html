@@ -2396,17 +2396,18 @@
             btn.classList.add('active');
         }
 
-        function submitRSVP() {
+        async function submitRSVP() {
             const name = document.getElementById('rsvpName').value.trim();
             const status = document.getElementById('rsvpStatus').value;
             const msg = document.getElementById('rsvpMsg').value.trim();
-            fetch('/api/rsvp', {
+            if (!name || !status) { showToast('⚠ Mohon isi nama dan status kehadiran!'); return; }
+            const resp = await fetch('/api/rsvp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
             });
-
-            if (!name || !status) { showToast('⚠ Mohon isi nama dan status kehadiran!'); return; }
+            const data = await resp.json();
+            if (!resp.ok || data.status !== 'ok') { showToast('⚠ Error submitting RSVP. Please try again.'); return; }
             const initials = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             const colors = ['#E8192C', '#003087', '#1a7a2e', '#7a5c1a', '#6b1a7a'];
             const bg = colors[Math.floor(Math.random() * colors.length)];

@@ -3206,14 +3206,14 @@ pub async fn update_theme(
 
 pub async fn rsvp(
     State(state): State<AppState>,
-    Form(payload): Form<RsvpForm>
+    Form(payload): Form<RsvpForm>,
 ) -> impl IntoResponse {
-    println!("RSVP received: {:?}", payload);
-    
-    // Save RSVP to DB if invitation exists
-    let _ = sqlx::query(
-        "INSERT INTO rsvps (invitation_id, name, attendance, guests, message) 
-         SELECT id, $1, $2, $3, $4 FROM invitations WHERE slug = $5"
+    tracing::info!("RSVP received: {:?}", payload);
+
+    // Attempt to insert RSVP into the database
+    let result = sqlx::query(
+        "INSERT INTO rsvps (invitation_id, name, attendance, guests, message) \
+         SELECT id, $1, $2, $3, $4 FROM invitations WHERE slug = $5",
     )
     .bind(&payload.name)
     .bind(&payload.attendance)
@@ -3222,33 +3222,21 @@ pub async fn rsvp(
     .bind(&payload.invitation_slug)
     .execute(&state.db)
     .await;
-    
-    let text_color = if payload.attendance == "Hadir" { "#2e7d32" } else { "#c62828" };
-    let status_msg = if payload.attendance == "Hadir" { 
-        format!("akan hadir dengan {} tamu", payload.guests) 
-    } else { 
-        "tidak dapat hadir".to_string() 
-    };
 
-    Html(format!(
-        r#"<div id="rsvp-response" class="animate__animated animate__fadeIn paper-bg" style="padding: 2rem; border-radius: 20px; color: {}; text-align: center; box-shadow: var(--shadow-medium); border: 2px solid {}; position: relative; overflow: hidden;">
-            <div style="position: absolute; top: -10px; right: -10px; width: 60px; height: 60px; background: var(--img-corner) no-repeat; background-size: contain; opacity: 0.3; transform: rotate(90deg);"></div>
-            <p style="font-size: 1.3rem; margin-bottom: 0.5rem;"><strong>Terima kasih, {}!</strong></p>
-            <p class="serif" style="font-size: 1.1rem;">Konfirmasi Anda (<strong>{}</strong>) telah kami terima.</p>
-            {}
-        </div>"#,
-        text_color,
-        if payload.attendance == "Hadir" { "var(--color-accent-sage)" } else { "var(--color-accent-rose)" },
-        payload.name,
-        status_msg,
-        if !payload.message.is_empty() {
-            format!(r#"<div style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px dashed rgba(0,0,0,0.1); font-style: italic; font-family: var(--font-serif);">"{}"</div>"#, payload.message)
-        } else {
-            "".to_string()
+    match result {
+        Ok(_) => Json(serde_json::json!({"status": "ok"})).into_response(),
+        Err(e) => {
+            tracing::error!("Failed to insert RSVP: {}", e);
+            (
+                StatusCode::INTERNAL_SERVER_ERROR,
+                Json(serde_json::json!({
+                    "status": "error",
+                    "error": e.to_string()
+                }))
+            ).into_response()
         }
-    ))
-}
-pub async fn sitemap(State(state): State<AppState>) -> impl IntoResponse {
+    }
+}pub async fn sitemap(State(state): State<AppState>) -> impl IntoResponse {
     let mut xml = String::from(r#"<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
