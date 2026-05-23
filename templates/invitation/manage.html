@@ -2696,12 +2696,20 @@
                     </div>
 
                     <!-- Pagination Footer -->
-                    <div class="pagination-container">
-                        <div class="pagination-info">
-                            Showing <span id="startRange">0</span> to <span id="endRange">0</span> of <span
-                                id="totalItems">0</span> guests
-                        </div>
-                    </div>
+                     <div class="pagination-container" style="display:flex; align-items:center; justify-content:space-between; margin-top:1rem;">
+                         <div class="pagination-info" style="font-size:0.9rem; color:#6b7280;">
+                             Showing <span id="startRange">{{ start_range }}</span> to <span id="endRange">{{ end_range }}</span> of <span id="totalItems">{{ total_items }}</span> guests
+                         </div>
+                         {% if total_pages > 1 %}
+                         <nav class="pagination-nav" style="display:flex; gap:0.5rem; align-items:center;">
+                             <a href="?page={{ current_page - 1 }}" class="btn" style="background:rgba(255,255,255,0.1); backdrop-filter:blur(10px); padding:0.4rem 0.8rem; border-radius:0.5rem; color:#111;{% if current_page == 1 %} pointer-events:none; opacity:0.5;{% endif %}">Prev</a>
+                             {% for p in 1..=total_pages %}
+                             <a href="?page={{ p }}" class="btn" style="background:{% if p == current_page %}rgba(0,123,255,0.2){% else %}rgba(255,255,255,0.1){% endif %}; backdrop-filter:blur(10px); padding:0.4rem 0.8rem; border-radius:0.5rem; color:#111;{% if p == current_page %} font-weight:700;{% endif %}">{{ p }}</a>
+                             {% endfor %}
+                             <a href="?page={{ current_page + 1 }}" class="btn" style="background:rgba(255,255,255,0.1); backdrop-filter:blur(10px); padding:0.4rem 0.8rem; border-radius:0.5rem; color:#111;{% if current_page == total_pages %} pointer-events:none; opacity:0.5;{% endif %}">Next</a>
+                         </nav>
+                         {% endif %}
+                     </div>
                 </div>
 
                 <!-- RSVP Management -->

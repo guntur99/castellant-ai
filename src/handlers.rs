@@ -1878,6 +1878,12 @@ pub struct ManageInvitationTemplate {
     pub groups: Vec<GuestGroup>,
     pub rsvps: Vec<Rsvp>,
     pub all_songs: Vec<Song>,
+    // Pagination fields
+    pub current_page: i32,
+    pub total_pages: i32,
+    pub total_items: i64,
+    pub start_range: i64,
+    pub end_range: i64,
 }
 
 #[derive(Template)]
@@ -2572,11 +2578,11 @@ pub async fn invitation_detail(
         }
     }
 }
-
 pub async fn manage_invitation(
     Path(slug): Path<String>,
     State(state): State<AppState>,
     jar: PrivateCookieJar,
+    Query(params): Query<HashMap<String, String>>,
 ) -> impl IntoResponse {
     let mut user_id = None;
     if let Some(cookie) = jar.get("user_id") {
@@ -2678,11 +2684,28 @@ pub async fn manage_invitation(
                 .await
                 .unwrap_or_default();
 
-            let guests = sqlx::query_as::<_, Guest>("SELECT id, invitation_id, name, category, template_override, slug, is_sent, COALESCE(ai_language, '') as ai_language, song_id, created_at FROM guests WHERE invitation_id = $1 ORDER BY created_at DESC")
+            // Pagination parameters
+            let page_size: i64 = 10;
+            let current_page: i32 = params.get("page").and_then(|p| p.parse::<i32>().ok()).unwrap_or(1);
+            // Total guest count for pagination metadata
+            let total_items: i64 = sqlx::query_scalar!("SELECT COUNT(*) FROM guests WHERE invitation_id = $1", row.id)
+                .fetch_one(&state.db)
+                .await
+                .unwrap_or(Some(0))
+                .unwrap_or(0);
+            let total_pages: i32 = ((total_items as f64) / (page_size as f64)).ceil() as i32;
+            let offset: i64 = ((current_page - 1) as i64) * page_size;
+            // Fetch guests for the current page
+            let guests = sqlx::query_as::<_, Guest>("SELECT id, invitation_id, name, category, template_override, slug, is_sent, COALESCE(ai_language, '') as ai_language, song_id, created_at FROM guests WHERE invitation_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3")
                 .bind(row.id)
+                .bind(page_size)
+                .bind(offset)
                 .fetch_all(&state.db)
                 .await
                 .unwrap_or_default();
+            // Calculate displayed range
+            let start_range: i64 = if total_items == 0 { 0 } else { offset + 1 };
+            let end_range: i64 = std::cmp::min(offset + page_size, total_items);
             
             let groups = sqlx::query_as::<_, GuestGroup>("SELECT id, invitation_id, name, template_name, COALESCE(ai_language, '') as ai_language, song_id, created_at FROM invitation_groups WHERE invitation_id = $1 ORDER BY name ASC")
                 .bind(row.id)
@@ -2696,15 +2719,20 @@ pub async fn manage_invitation(
                 .await
                 .unwrap_or_default();
 
-            HtmlTemplate(ManageInvitationTemplate { 
-                invitation, 
-                all_templates, 
+            HtmlTemplate(ManageInvitationTemplate {
+                invitation,
+                all_templates,
                 is_dev: state.is_dev,
                 user,
                 guests,
                 groups,
                 rsvps,
                 all_songs,
+                current_page,
+                total_pages,
+                total_items,
+                start_range,
+                end_range,
             }).into_response()
         },
         None => (StatusCode::NOT_FOUND, "Invitation not found or unauthorized").into_response(),
@@ -2885,14 +2913,22 @@ pub async fn update_invitation(
     if let Some(val) = photo_paths.get("groom_photo") { groom.image_url = val.clone(); }
 
     let mut ceremony: EventDetails = from_value(row.ceremony_data.clone()).unwrap_or_default();
-    ceremony.enabled = fields.get("ceremony_enabled").map(|v| v == "on").unwrap_or(false);
+    if fields.contains_key("ceremony_enabled") {
+        ceremony.enabled = fields.get("ceremony_enabled").map(|v| v == "on").unwrap_or(false);
+    } else {
+        ceremony.enabled = !ceremony.venue.is_empty() || !ceremony.address.is_empty() || ceremony.enabled;
+    }
     if let Some(val) = fields.get("ceremony_time") { ceremony.time = val.clone(); }
     if let Some(val) = fields.get("ceremony_venue") { ceremony.venue = val.clone(); }
     if let Some(val) = fields.get("ceremony_address") { ceremony.address = val.clone(); }
     if let Some(val) = fields.get("ceremony_maps") { ceremony.maps_url = val.clone(); }
 
     let mut reception: EventDetails = from_value(row.reception_data.clone()).unwrap_or_default();
-    reception.enabled = fields.get("reception_enabled").map(|v| v == "on").unwrap_or(false);
+    if fields.contains_key("reception_enabled") {
+        reception.enabled = fields.get("reception_enabled").map(|v| v == "on").unwrap_or(false);
+    } else {
+        reception.enabled = !reception.venue.is_empty() || !reception.address.is_empty() || reception.enabled;
+    }
     if let Some(val) = fields.get("reception_date") { reception.date = format_date_for_display(val); }
     if let Some(val) = fields.get("reception_time") { reception.time = val.clone(); }
     if let Some(val) = fields.get("reception_venue") { reception.venue = val.clone(); }
