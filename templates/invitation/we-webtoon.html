@@ -4,7 +4,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Wedding of Nazma & Gunturr — Webtoon</title>
+    <title>Undangan Pernikahan {{ invitation.bride.name }} &amp; {{ invitation.groom.name }} — Webtoon | Castellant
+    </title>
+    <meta name="description"
+        content="Undangan Pernikahan Digital Eksklusif {{ invitation.bride.name }} &amp; {{ invitation.groom.name }} pada {{ invitation.event_date }}. Buka undangan interaktif bergaya Webtoon untuk menyimak kisah cinta kami, rsvp online, detail acara, maps, galeri foto, dan pre-wedding video. Dibuat oleh Castellant.">
+    <meta name="keywords"
+        content="undangan pernikahan digital, {{ invitation.bride.name }}, {{ invitation.groom.name }}, castellant, digital invitation premium, webtoon wedding theme, rsvp online">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://castellant.ai/i/{{ invitation.slug }}">
+    <meta property="og:title"
+        content="Undangan Pernikahan {{ invitation.bride.name }} &amp; {{ invitation.groom.name }} | Castellant">
+    <meta property="og:description"
+        content="Buka undangan digital eksklusif {{ invitation.bride.name }} &amp; {{ invitation.groom.name }} pada {{ invitation.event_date }} di sini. Dibuat dengan cinta lewat Castellant.">
+    <meta property="og:image" content="{{ invitation.gallery_images|first_image }}">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://castellant.ai/i/{{ invitation.slug }}">
+    <meta property="twitter:title" content="Undangan Pernikahan {{ invitation.couple_name_short }} | Castellant">
+    <meta property="twitter:description"
+        content="Buka undangan digital eksklusif {{ invitation.bride.name }} &amp; {{ invitation.groom.name }} pada {{ invitation.event_date }} bergaya Webtoon premium oleh Castellant.">
+    <meta property="twitter:image" content="{{ invitation.gallery_images|first_image }}">
     <link
         href="https://fonts.googleapis.com/css2?family=Bangers&family=Noto+Sans+KR:wght@400;500;700;900&family=Caveat:wght@600;700&display=swap"
         rel="stylesheet">
@@ -657,7 +679,7 @@
             content: '';
             position: absolute;
             inset: 0;
-            background: rgba(255, 218, 0, .35)
+            background: rgba(255, 218, 0, .15)
         }
 
         .hp-bl-label {
@@ -720,6 +742,43 @@
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+
+        .pl-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 0
+        }
+
+        .pl-ctrl-btn {
+            width: 32px;
+            height: 32px;
+            background: var(--yellow);
+            border: var(--line2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 2px 2px 0 var(--ink);
+            flex-shrink: 0;
+            transition: transform .1s, box-shadow .1s
+        }
+
+        .pl-ctrl-btn:hover {
+            transform: translate(-1px, -1px);
+            box-shadow: 3px 3px 0 var(--ink)
+        }
+
+        .pl-ctrl-btn:active {
+            transform: translate(1px, 1px);
+            box-shadow: 1px 1px 0 var(--ink)
+        }
+
+        .pl-ctrl-btn svg {
+            width: 12px;
+            height: 12px;
+            fill: var(--ink)
         }
 
         .pl-btn {
@@ -1780,11 +1839,16 @@
             font-size: 15px;
             font-weight: 900;
             letter-spacing: .1em;
-            margin-bottom: 12px;
-            color: var(--ink)
+            margin-bottom: 0;
+            color: var(--ink);
+            padding-right: 100px;
+            white-space: nowrap;
         }
 
         .copy-btn {
+            position: absolute;
+            right: 18px;
+            bottom: 15px;
             display: inline-flex;
             align-items: center;
             gap: 5px;
@@ -2341,9 +2405,10 @@
             <p class="op-episode">Episode 01 · Wedding Arc</p>
             <p class="op-comic-title">❤ Love Story Webtoon ❤</p>
             <div class="op-names-panel">
-                <h1 class="op-names">Nazma<br>& Guntur</h1>
+                <h1 class="op-names">{{ invitation.bride.name }}<br>&amp; {{ invitation.groom.name }}</h1>
             </div>
-            <p class="op-genre">Romance · Slice of Life · 2026</p>
+            <p class="op-genre">Romance · Slice of Life · {% if !invitation.event_date_iso.is_empty() %}{{
+                invitation.event_date_iso|split_last("-") }}{% else %}2026{% endif %}</p>
             <div class="op-dear-bubble">
                 <p class="op-dear-lbl">Special Delivery To</p>
                 <p class="op-dear-name">{{ invitation.recipient_name }}</p>
@@ -2373,31 +2438,39 @@
             <div class="hero-panels">
                 <!-- Main big panel -->
                 <div class="hp-main">
-                    <img class="hp-main-img"
-                        src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1000&h=600&fit=crop&q=85"
-                        alt="Wedding">
+                    {% if !invitation.background_video_url.is_empty() || (!invitation.gallery_videos.is_empty() &&
+                    !invitation.gallery_videos[0].is_empty()) %}
+                    <video id="heroVideo" class="hp-main-img" autoplay muted playsinline></video>
+                    {% else %}
+                    <img class="hp-main-img" src="{{ invitation.gallery_images|first_image }}" alt="Wedding">
+                    {% endif %}
                     <div class="hp-main-ht"></div>
                     <div class="hp-main-content">
                         <div class="hp-panel-id">PANEL 001</div>
-                        <h1 class="hp-names">Nazma<br>& Guntur</h1>
+                        <h1 class="hp-names">{{ invitation.bride.name }}<br>&amp; {{ invitation.groom.name }}</h1>
                         <p class="hp-sub">~ The Wedding Chapter ~</p>
                     </div>
                     <!-- Action star -->
                     <div class="action-star" style="top:12px;right:14px;width:54px;height:54px;font-size:9px">
                         FINAL<br>EP!</div>
                 </div>
-                <!-- Bottom left -->
                 <div class="hp-bl">
+                    {% if !invitation.gallery_videos.is_empty() && !invitation.gallery_videos[0].is_empty() %}
+                    <video id="bottomLeftVideo" class="hp-bl-img" autoplay muted playsinline
+                        style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0"></video>
+                    {% else %}
                     <img class="hp-bl-img"
-                        src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&h=300&fit=crop&q=80"
+                        src="{% if invitation.gallery_images.len() > 1 %}{{ invitation.gallery_images[1] }}{% else %}{{ invitation.bride.image_url }}{% endif %}"
                         alt="" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0">
-                    <div style="position:absolute;inset:0;background:rgba(255,218,0,.3)"></div>
-                    <div class="hp-bl-label" style="z-index:5">24 MEI 2026 ☆</div>
+                    {% endif %}
+                    <div style="position:absolute;inset:0;background:rgba(255,218,0,.15)"></div>
+                    <div class="hp-bl-label" style="z-index:5">{{ invitation.event_date|upper }} ☆</div>
                 </div>
                 <!-- Bottom right -->
                 <div class="hp-br">
                     <div class="hp-br-date">Minggu<br>{{ invitation.event_date }}</div>
-                    <div class="hp-br-loc">Tangerang, Indonesia</div>
+                    <div class="hp-br-loc">{% if !invitation.ceremony.venue.is_empty() %}{{ invitation.ceremony.venue
+                        }}{% else %}Tangerang, Indonesia{% endif %}</div>
                     <div class="hp-br-badge">SAVE THE DATE</div>
                 </div>
             </div>
@@ -2410,16 +2483,27 @@
                     <div class="t-pill" onclick="sw(2,this)">Track 03</div>
                 </div>
             </div>
-            <!-- Player -->
             <div class="hero-player">
-                <button class="pl-btn" id="playBtn" onclick="togglePlay()">
-                    <svg id="pIco" viewBox="0 0 24 24">
-                        <path d="M8 5v14l11-7z" />
-                    </svg>
-                    <svg id="pauseIco" viewBox="0 0 24 24" style="display:none">
-                        <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-                    </svg>
-                </button>
+                <div class="pl-controls">
+                    <button class="pl-ctrl-btn" onclick="prevTrack()" title="Previous Track">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
+                        </svg>
+                    </button>
+                    <button class="pl-btn" id="playBtn" onclick="togglePlay()" title="Play/Pause">
+                        <svg id="pIco" viewBox="0 0 24 24">
+                            <path d="M8 5v14l11-7z" />
+                        </svg>
+                        <svg id="pauseIco" viewBox="0 0 24 24" style="display:none">
+                            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+                        </svg>
+                    </button>
+                    <button class="pl-ctrl-btn" onclick="nextTrack()" title="Next Track">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M6 18l8.5-6L6 6zm9-12v12h2V6z" />
+                        </svg>
+                    </button>
+                </div>
                 <div class="pl-info">
                     <div class="pl-title" id="pTitle">Wedding Day <span class="eq paused" id="eqB"><span
                                 class="eq-b"></span><span class="eq-b"></span><span class="eq-b"></span></span></div>
@@ -2475,17 +2559,16 @@
 
         <!-- CHAPTER 2: VERSE -->
         <div class="chapter-break"><span class="ch-num">CH.2</span>
-            <div class="ch-line"></div><span class="ch-title">FIRMAN ALLAH SWT</span>
+            <div class="ch-line"></div><span class="ch-title">THE HOLY VERSE</span>
         </div>
         <div class="verse-chapter">
             <div class="halftone"></div>
-            <span class="verse-sfx">JODOH!</span>
+            <span class="verse-sfx">LOVE!</span>
             <div class="verse-bubble">
-                <p class="verse-q">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan
-                    untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya..."</p>
+                <p class="verse-q">"{{ invitation.quote.text }}"</p>
             </div>
             <br>
-            <span class="verse-ref">— Surah Ar-Rum : 21 —</span>
+            <span class="verse-ref">— {{ invitation.quote.source }} —</span>
         </div>
 
         <!-- CHAPTER 3: COUPLE -->
@@ -2503,14 +2586,13 @@
                     <div class="cs-photo">
                         <div class="cs-photo-ratio"></div>
                         <img class="cs-photo-img" style="position:absolute;inset:0"
-                            src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500&h=650&fit=crop&q=80"
-                            alt="Nazma" loading="lazy">
+                            src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride.name }}" loading="lazy">
                         <div class="cs-photo-ht"></div>
                         <span class="cs-tag">HEROINE</span>
                     </div>
                     <div class="cs-info">
-                        <div class="cs-role">Mempelai WNazma ♀</div>
-                        <div class="cs-name">Nazma<br>Putri, S.Kom</div>
+                        <div class="cs-role">Mempelai Wanita ♀</div>
+                        <div class="cs-name">{{ invitation.bride.full_name }}</div>
                         <div class="cs-stat-row">
                             <div class="cs-stat"><span class="cs-stat-label">LOVE</span>
                                 <div class="cs-stat-bar">
@@ -2528,7 +2610,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="cs-parents">Putri Pertama dari<br><strong>Bpk. Taryono & Ibu Wiwit Jayanti</strong>
+                        <div class="cs-parents">Putri dari Bapak/Ibu<br><strong>{{ invitation.bride.father_name }} &amp;
+                                {{ invitation.bride.mother_name }}</strong>
                         </div>
                     </div>
                 </div>
@@ -2537,14 +2620,13 @@
                     <div class="cs-photo">
                         <div class="cs-photo-ratio"></div>
                         <img class="cs-photo-img" style="position:absolute;inset:0"
-                            src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&h=650&fit=crop&q=80"
-                            alt="Guntur" loading="lazy">
+                            src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom.name }}" loading="lazy">
                         <div class="cs-photo-ht"></div>
                         <span class="cs-tag blue">HERO</span>
                     </div>
                     <div class="cs-info">
                         <div class="cs-role blue">Mempelai Pria ♂</div>
-                        <div class="cs-name">Gunturrian<br>Ahadika N, S.Kom</div>
+                        <div class="cs-name">{{ invitation.groom.full_name }}</div>
                         <div class="cs-stat-row">
                             <div class="cs-stat"><span class="cs-stat-label">LOVE</span>
                                 <div class="cs-stat-bar">
@@ -2562,15 +2644,15 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="cs-parents">Putra Kedua dari<br><strong>Bpk. Wan Sabran, M.MAR & Ibu Titik Sundari,
-                                M.Si</strong></div>
+                        <div class="cs-parents">Putra dari Bapak/Ibu<br><strong>{{ invitation.groom.father_name }} &amp;
+                                {{ invitation.groom.mother_name }}</strong></div>
                     </div>
                 </div>
             </div>
             <!-- Love meter -->
             <div class="love-bridge">
-                <span
-                    style="font-family:var(--fB);font-size:10px;letter-spacing:.15em;color:rgba(255,255,255,.5)">Nazma</span>
+                <span style="font-family:var(--fB);font-size:10px;letter-spacing:.15em;color:rgba(255,255,255,.5)">{{
+                    invitation.bride.name }}</span>
                 <div class="love-bar-wrap">
                     <div class="love-bar"></div>
                 </div>
@@ -2578,12 +2660,13 @@
                 <div class="love-bar-wrap" style="transform:scaleX(-1)">
                     <div class="love-bar"></div>
                 </div>
-                <span
-                    style="font-family:var(--fB);font-size:10px;letter-spacing:.15em;color:rgba(255,255,255,.5)">Guntur</span>
+                <span style="font-family:var(--fB);font-size:10px;letter-spacing:.15em;color:rgba(255,255,255,.5)">{{
+                    invitation.groom.name }}</span>
             </div>
         </section>
 
         <!-- CHAPTER 4: EVENT -->
+        {% if invitation.ceremony.enabled || invitation.reception.enabled %}
         <div class="chapter-break"><span class="ch-num">CH.4</span>
             <div class="ch-line"></div><span class="ch-title">SCENE LOCATION</span>
         </div>
@@ -2593,6 +2676,7 @@
                 <h2 class="ch-heading">Waktu & Tempat</h2>
             </div>
             <div class="ev-panels">
+                {% if invitation.ceremony.enabled %}
                 <div class="ev-panel">
                     <img class="ev-panel-photo"
                         src="https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=500&h=140&fit=crop&q=80"
@@ -2600,19 +2684,28 @@
                     <div class="ev-panel-photo-ht"></div>
                     <div class="ev-panel-body">
                         <span class="ev-type-badge akad">★ Akad Nikah</span>
-                        <div class="ev-date">Minggu,<br>{{ invitation.event_date }}</div>
+                        <div class="ev-date">{% if !invitation.ceremony.date.is_empty() %}{{ invitation.ceremony.date
+                            }}{% else %}{{ invitation.event_date }}{% endif %}</div>
                         <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24">
                                 <path
                                     d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
-                            </svg><span class="ev-txt">08.00 WIB</span></div>
+                            </svg><span class="ev-txt">{{ invitation.ceremony.time }}</span></div>
                         <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24">
                                 <path
                                     d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                            </svg><span class="ev-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug,
-                                Tangerang</span></div>
-                        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-maps">📍 Maps</a>
+                            </svg><span class="ev-txt"><strong>{{ invitation.ceremony.venue }}</strong><br>{{
+                                invitation.ceremony.address }}</span></div>
+                        {% if !invitation.ceremony.maps_url.is_empty() %}
+                        <a href="{{ invitation.ceremony.maps_url }}" target="_blank" class="ev-maps">📍 Maps</a>
+                        {% else %}
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ invitation.ceremony.venue }} {{ invitation.ceremony.address }}"
+                            target="_blank" class="ev-maps">📍 Maps</a>
+                        {% endif %}
                     </div>
                 </div>
+                {% endif %}
+
+                {% if invitation.reception.enabled %}
                 <div class="ev-panel">
                     <img class="ev-panel-photo"
                         src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=500&h=140&fit=crop&q=80"
@@ -2620,23 +2713,32 @@
                     <div class="ev-panel-photo-ht"></div>
                     <div class="ev-panel-body">
                         <span class="ev-type-badge resepsi">★ Resepsi</span>
-                        <div class="ev-date">Minggu,<br>{{ invitation.event_date }}</div>
+                        <div class="ev-date">{% if !invitation.reception.date.is_empty() %}{{ invitation.reception.date
+                            }}{% else %}{{ invitation.event_date }}{% endif %}</div>
                         <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24">
                                 <path
                                     d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z" />
-                            </svg><span class="ev-txt">11.00 – 13.00 WIB</span></div>
+                            </svg><span class="ev-txt">{{ invitation.reception.time }}</span></div>
                         <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24">
                                 <path
                                     d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                            </svg><span class="ev-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug,
-                                Tangerang</span></div>
-                        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-maps">📍 Maps</a>
+                            </svg><span class="ev-txt"><strong>{{ invitation.reception.venue }}</strong><br>{{
+                                invitation.reception.address }}</span></div>
+                        {% if !invitation.reception.maps_url.is_empty() %}
+                        <a href="{{ invitation.reception.maps_url }}" target="_blank" class="ev-maps">📍 Maps</a>
+                        {% else %}
+                        <a href="https://www.google.com/maps/search/?api=1&query={{ invitation.reception.venue }} {{ invitation.reception.address }}"
+                            target="_blank" class="ev-maps">📍 Maps</a>
+                        {% endif %}
                     </div>
                 </div>
+                {% endif %}
             </div>
         </section>
+        {% endif %}
 
         <!-- CHAPTER 5: LOVE STORY -->
+        {% if !invitation.stories.is_empty() %}
         <div class="chapter-break"><span class="ch-num">CH.5</span>
             <div class="ch-line"></div><span class="ch-title">OUR LOVE STORY ARC</span>
         </div>
@@ -2646,62 +2748,34 @@
                 <h2 class="ch-heading">Love Story</h2>
             </div>
             <div class="story-strips">
+                {% for story in invitation.stories %}
                 <div class="strip">
-                    <div class="strip-num">01</div>
+                    <div class="strip-num">{{ loop.index|zero_padded_index }}</div>
                     <div class="strip-body">
                         <div class="strip-photo" style="position:relative">
-                            <img src="https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=300&h=260&fit=crop&q=80"
-                                alt="" loading="lazy">
+                            <img src="{{ story.image_url }}" alt="" loading="lazy">
                             <div class="strip-photo-ht"></div>
-                            <div class="strip-bubble">Juni 2025</div>
+                            {% if loop.index % 3 == 1 %}
+                            <div class="strip-bubble">{{ story.date }}</div>
+                            {% else if loop.index % 3 == 2 %}
+                            <div class="strip-bubble" style="background:var(--blue);color:var(--white)">{{ story.date }}
+                            </div>
+                            {% else %}
+                            <div class="strip-bubble" style="background:var(--yellow)">{{ story.date }} ♥</div>
+                            {% endif %}
                         </div>
                         <div class="strip-content">
-                            <div class="strip-clip">CLIP 001</div>
-                            <div class="strip-date">Juni 2025</div>
-                            <div class="strip-title">Awal Pertemuan</div>
-                            <div class="strip-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling,
-                                cerita mengalir di sela santapan sushi.</div>
+                            <div class="strip-clip">CLIP {{ loop.index|zero_padded_index }}</div>
+                            <div class="strip-date">{{ story.date }}</div>
+                            <div class="strip-title">{{ story.title }}</div>
+                            <div class="strip-desc">{{ story.description }}</div>
                         </div>
                     </div>
                 </div>
-                <div class="strip">
-                    <div class="strip-num">02</div>
-                    <div class="strip-body">
-                        <div class="strip-photo" style="position:relative">
-                            <img src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=300&h=260&fit=crop&q=80"
-                                alt="" loading="lazy">
-                            <div class="strip-photo-ht"></div>
-                            <div class="strip-bubble" style="background:var(--blue);color:var(--white)">Nov 2025</div>
-                        </div>
-                        <div class="strip-content">
-                            <div class="strip-clip">CLIP 002</div>
-                            <div class="strip-date">November 2025</div>
-                            <div class="strip-title">Lamaran</div>
-                            <div class="strip-desc">Rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami
-                                mengikat janji menuju masa depan bersama.</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="strip">
-                    <div class="strip-num">03</div>
-                    <div class="strip-body">
-                        <div class="strip-photo" style="position:relative">
-                            <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=300&h=260&fit=crop&q=80"
-                                alt="" loading="lazy">
-                            <div class="strip-photo-ht"></div>
-                            <div class="strip-bubble" style="background:var(--yellow)">Mei 2026 ♥</div>
-                        </div>
-                        <div class="strip-content">
-                            <div class="strip-clip">CLIP 003</div>
-                            <div class="strip-date">Mei 2026</div>
-                            <div class="strip-title">Pernikahan</div>
-                            <div class="strip-desc">Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga,
-                                mencintai, dan tumbuh bersama selamanya.</div>
-                        </div>
-                    </div>
-                </div>
+                {% endfor %}
             </div>
         </section>
+        {% endif %}
 
         <!-- CHAPTER 6: GALLERY -->
         <div class="chapter-break"><span class="ch-num">CH.6</span>
@@ -2721,6 +2795,7 @@
         </section>
 
         <!-- CHAPTER 7: GIFT -->
+        {% if !invitation.gift_accounts.is_empty() %}
         <div class="chapter-break"><span class="ch-num">CH.7</span>
             <div class="ch-line"></div><span class="ch-title">DIGITAL GIFT</span>
         </div>
@@ -2734,13 +2809,18 @@
                     menerimanya.</p>
             </div>
             <div class="gift-grid">
-                    {% for account in invitation.gift_accounts %}
-                    <div class="gift-card">
+                {% for account in invitation.gift_accounts %}
+                <div class="gift-card">
                     <span class="g-chip">Bank · {{ account.bank_name }}</span>
                     <div class="g-bank">{{ account.bank_name }}</div>
-                    {% endfor %}
+                    <div class="g-holder">A/N {{ account.account_holder }}</div>
+                    <div class="g-num">{{ account.account_number }}</div>
+                    <button class="copy-btn" onclick="cp('{{ account.account_number }}', this)">📋 SALIN</button>
                 </div>
+                {% endfor %}
+            </div>
         </section>
+        {% endif %}
 
         <!-- CHAPTER 8: RSVP -->
         <div class="chapter-break"><span class="ch-num">CH.8</span>
@@ -2753,15 +2833,15 @@
             </div>
             <div class="rsvp-stats">
                 <div class="rs-box">
-                    <div class="rs-n">7</div>
+                    <div class="rs-n" id="stResp">{{ invitation.total_rsvps() }}</div>
                     <div class="rs-l">Respons</div>
                 </div>
                 <div class="rs-box">
-                    <div class="rs-n">7</div>
+                    <div class="rs-n" id="stHadir">{{ invitation.total_hadir() }}</div>
                     <div class="rs-l">Hadir</div>
                 </div>
                 <div class="rs-box">
-                    <div class="rs-n">13</div>
+                    <div class="rs-n" id="stGuests">{{ invitation.total_guest_count() }}</div>
                     <div class="rs-l">Total Tamu</div>
                 </div>
             </div>
@@ -2780,7 +2860,8 @@
                             class="gs-btn" onclick="sg(2,this)">2 Orang</button></div>
                 </div>
                 <div class="f-grp"><label class="f-lbl">Ucapan & Pesan</label><textarea class="f-inp"
-                        placeholder="Tuliskan ucapan untuk Nazma & Gunturr..." id="rM"></textarea></div>
+                        placeholder="Tuliskan ucapan untuk {{ invitation.bride.name }} &amp; {{ invitation.groom.name }}..."
+                        id="rM"></textarea></div>
                 <button class="rsvp-btn" onclick="submitR()">★ KONFIRMASI KEHADIRAN ★</button>
             </div>
         </section>
@@ -2795,13 +2876,13 @@
                 <h2 class="ch-heading">Ucapan & Doa</h2>
             </div>
             <div class="wish-list" id="wList">
+                {% if invitation.is_preview %}
+                <!-- Preview Mode: Default Cards -->
                 <div class="w-card visible">
                     <div class="w-hd">
-                        <div class="w-av">A</div>
+                        <div class="w-av" style="background:#ff4d8d">A</div>
                         <div>
-
-                {% if invitation.is_preview %}
-                                            <div class="w-nm">Ayu Rahmawati</div>
+                            <div class="w-nm">Ayu Rahmawati</div>
                             <div class="w-st">✓ HADIR · 2 TAMU</div>
                         </div>
                     </div>
@@ -2810,7 +2891,7 @@
                 </div>
                 <div class="w-card visible">
                     <div class="w-hd">
-                        <div class="w-av" style="background:var(--blue)">R</div>
+                        <div class="w-av" style="background:#3d6fff">R</div>
                         <div>
                             <div class="w-nm">Reza Firmansyah</div>
                             <div class="w-st">✓ HADIR · 1 TAMU</div>
@@ -2821,22 +2902,41 @@
                 </div>
                 <div class="w-card visible">
                     <div class="w-hd">
-                        <div class="w-av" style="background:var(--purple)">S</div>
+                        <div class="w-av" style="background:#9b4dff">S</div>
                         <div>
                             <div class="w-nm">Sinta Dewi</div>
-
-                {% else %}
-                {% for rsvp in invitation.rsvps %}
-                                            <div class="w-nm">{{ rsvp.name }}</div>
-
-                {% endfor %}
-                {% endif %}
-                                            <div class="w-st">✓ HADIR · 2 TAMU</div>
+                            <div class="w-st">✓ HADIR · 2 TAMU</div>
                         </div>
                     </div>
                     <div class="w-bubble">Wishing you both a lifetime of love and laughter. Semoga selalu diberkahi
                         Allah SWT 💚</div>
                 </div>
+                {% else %}
+                <!-- Real Mode: Looping from Database RSVPs -->
+                {% for rsvp in invitation.rsvps %}
+                <div class="w-card visible">
+                    <div class="w-hd">
+                        {% if loop.index % 5 == 1 %}
+                        <div class="w-av" style="background:#ff4d8d">{{ rsvp.initial() }}</div>
+                        {% else if loop.index % 5 == 2 %}
+                        <div class="w-av" style="background:#3d6fff">{{ rsvp.initial() }}</div>
+                        {% else if loop.index % 5 == 3 %}
+                        <div class="w-av" style="background:#9b4dff">{{ rsvp.initial() }}</div>
+                        {% else if loop.index % 5 == 4 %}
+                        <div class="w-av" style="background:#00c875">{{ rsvp.initial() }}</div>
+                        {% else %}
+                        <div class="w-av" style="background:#ffda00; color:#0d0d0d">{{ rsvp.initial() }}</div>
+                        {% endif %}
+                        <div>
+                            <div class="w-nm">{{ rsvp.name }}</div>
+                            <div class="w-st">{% if rsvp.attendance == "hadir" %}✓ HADIR{% else %}✗ TIDAK HADIR{% endif
+                                %}{% if rsvp.attendance == "hadir" %} · {{ rsvp.guests }} TAMU{% endif %}</div>
+                        </div>
+                    </div>
+                    <div class="w-bubble">{{ rsvp.display_message() }}</div>
+                </div>
+                {% endfor %}
+                {% endif %}
             </div>
         </section>
 
@@ -2846,13 +2946,13 @@
             <div class="the-end">— THE END —</div>
             <span class="footer-sfx">LOVE!</span>
             <div class="ft-names-panel">
-                <h2 class="ft-names">Nazma & GunturR</h2>
+                <h2 class="ft-names">{{ invitation.bride.name }} &amp; {{ invitation.groom.name }}</h2>
             </div>
             <p class="ft-msg">Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i berkenan
                 hadir dan memberikan do'a restu kepada kami.</p>
-            <p class="ft-sig">Kami yang berbahagia,<br><strong style="color:white;font-size:20px">Nazma & Gunturr
+            <p class="ft-sig">Kami yang berbahagia,<br><strong style="color:white;font-size:20px">{{
+                    invitation.bride.name }} &amp; {{ invitation.groom.name }}
                     💕</strong></p>
-            <p class="ft-brand">Digital Invitation by <a href="#">BridesSpace</a> · Webtoon Theme</p>
         </footer>
 
     </div><!-- /main -->
@@ -2894,13 +2994,51 @@
 
     <script>
         /* ════ DATA ════ */
+        const PLAYLIST_SONGS = [
+            {% if !invitation.playlist.is_empty() %}
+        {% for song in invitation.playlist %}
+        "{{ song }}",
+            {% endfor %}
+        {% else %}
+        {% if !invitation.song_url.is_empty() %}
+        "{{ invitation.song_url }}",
+            {% endif %}
+        {% if !invitation.custom_song_url.is_empty() %}
+        "{{ invitation.custom_song_url }}",
+            {% endif %}
+        {% endif %}
+        ].filter(s => s.trim() !== "");
+
         const TRACKS = [
-            { title: "Wedding Day", artist: "Nazma & Gunturr · Love Story OST", dur: "3:24", secs: 204 },
-            { title: "First Look", artist: "Nazma & Gunturr · Love Story OST", dur: "2:58", secs: 178 },
-            { title: "Lamaran", artist: "Nazma & Gunturr · Love Story OST", dur: "4:12", secs: 252 },
+            {
+                title: "Wedding Day",
+                artist: "{{ invitation.bride.name }} & {{ invitation.groom.name }} · Love Story OST",
+                dur: "3:30",
+                secs: 210,
+                src: PLAYLIST_SONGS.length > 0 ? PLAYLIST_SONGS[0] : "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+            },
+            {
+                title: "First Look",
+                artist: "{{ invitation.bride.name }} & {{ invitation.groom.name }} · Love Story OST",
+                dur: "2:58",
+                secs: 178,
+                src: PLAYLIST_SONGS.length > 1 ? PLAYLIST_SONGS[1] : "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+            },
+            {
+                title: "Lamaran",
+                artist: "{{ invitation.bride.name }} & {{ invitation.groom.name }} · Love Story OST",
+                dur: "4:12",
+                secs: 252,
+                src: PLAYLIST_SONGS.length > 2 ? PLAYLIST_SONGS[2] : "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+            },
         ];
         const IMGS = [
-            "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=650&fit=crop&q=80",
+            {% if !invitation.gallery_images.is_empty() %}
+        {% for img in invitation.gallery_images %}
+        "{{ img }}",
+            {% endfor %}
+        {% else %}
+        "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=650&fit=crop&q=80",
             "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=650&fit=crop&q=80",
             "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&h=650&fit=crop&q=80",
             "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=500&h=650&fit=crop&q=80",
@@ -2908,9 +3046,37 @@
             "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=500&h=650&fit=crop&q=80",
             "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=500&h=650&fit=crop&q=80",
             "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=650&fit=crop&q=80",
+            {% endif %}
         ];
 
-        let tIdx = 0, isPlaying = false, prog = 0, pTimer = null, lbIdx = 0, gCnt = 1;
+        let tIdx = 0, isPlaying = false, prog = 0, lbIdx = 0, gCnt = 1;
+        let totalW = {{ invitation.total_rsvps() }}, totalH = {{ invitation.total_hadir() }}, totalT = {{ invitation.total_guest_count() }};
+
+        let audio = new Audio();
+        audio.preload = "none";
+
+        audio.addEventListener('loadedmetadata', () => {
+            const track = TRACKS[tIdx];
+            track.secs = Math.round(audio.duration);
+            track.dur = fmt(audio.duration);
+            document.getElementById('totT').textContent = track.dur;
+        });
+
+        audio.addEventListener('timeupdate', () => {
+            if (audio.duration) {
+                prog = (audio.currentTime / audio.duration) * 100;
+                updProg();
+            }
+        });
+
+        audio.addEventListener('ended', () => {
+            nextTrack();
+        });
+
+        function fmt(s) {
+            if (isNaN(s)) return '0:00';
+            return `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+        }
 
         /* ════ OPEN ════ */
         function openInvitation() {
@@ -2918,47 +3084,156 @@
             setTimeout(() => document.getElementById('main').classList.add('show'), 100);
             document.getElementById('bnav').classList.add('show');
             setTimeout(init, 400);
+
+            // Autoplay music upon opening invitation
+            isPlaying = true;
+            setPlay(true);
+            play();
         }
         function init() {
             countdown();
             buildGallery();
             scrollAnims();
             navHL();
+            initHeroVideoRotation();
+            initBottomLeftVideoRotation();
+        }
+
+        function initHeroVideoRotation() {
+            const HERO_VIDEOS = [
+                {% if !invitation.background_video_url.is_empty() %}
+        "{{ invitation.background_video_url }}",
+            {% endif %}
+        {% for vid in invitation.gallery_videos %}
+        {% if !vid.is_empty() %}
+        "{{ vid }}",
+            {% endif %}
+        {% endfor %}
+            ].filter(v => v.trim() !== "");
+
+        let curHeroVidIdx = 0;
+        const heroVidEl = document.getElementById('heroVideo');
+
+        if (heroVidEl && HERO_VIDEOS.length > 0) {
+            heroVidEl.src = HERO_VIDEOS[curHeroVidIdx];
+            heroVidEl.play().catch(err => console.log("Hero video autoplay delayed:", err));
+
+            if (HERO_VIDEOS.length === 1) {
+                heroVidEl.loop = true;
+            } else {
+                heroVidEl.addEventListener('ended', () => {
+                    curHeroVidIdx = (curHeroVidIdx + 1) % HERO_VIDEOS.length;
+                    heroVidEl.src = HERO_VIDEOS[curHeroVidIdx];
+                    heroVidEl.play().catch(err => console.error("Hero video rotation failed:", err));
+                });
+            }
+        }
+        }
+
+        function initBottomLeftVideoRotation() {
+            const BL_VIDEOS = [
+                {% for vid in invitation.gallery_videos %}
+        {% if !vid.is_empty() %}
+        "{{ vid }}",
+            {% endif %}
+        {% endfor %}
+            ].filter(v => v.trim() !== "");
+
+        let curBlVidIdx = 0;
+        const blVidEl = document.getElementById('bottomLeftVideo');
+
+        if (blVidEl && BL_VIDEOS.length > 0) {
+            blVidEl.src = BL_VIDEOS[curBlVidIdx];
+            blVidEl.play().catch(err => console.log("Bottom-left video autoplay delayed:", err));
+
+            if (BL_VIDEOS.length === 1) {
+                blVidEl.loop = true;
+            } else {
+                blVidEl.addEventListener('ended', () => {
+                    curBlVidIdx = (curBlVidIdx + 1) % BL_VIDEOS.length;
+                    blVidEl.src = BL_VIDEOS[curBlVidIdx];
+                    blVidEl.play().catch(err => console.error("Bottom-left video rotation failed:", err));
+                });
+            }
+        }
         }
 
         /* ════ PLAYER ════ */
         function togglePlay() { isPlaying ? pause() : play() }
-        function play() { setPlay(true) }
-        function pause() { clearInterval(pTimer); setPlay(false) }
+        function play() {
+            if (!audio.src) {
+                audio.src = TRACKS[tIdx].src;
+            }
+            audio.play().then(() => {
+                setPlay(true);
+            }).catch(err => {
+                console.error("Audio playback failed:", err);
+            });
+        }
+        function pause() {
+            audio.pause();
+            setPlay(false);
+        }
         function setPlay(p) {
             isPlaying = p;
             document.getElementById('pIco').style.display = p ? 'none' : 'block';
             document.getElementById('pauseIco').style.display = p ? 'block' : 'none';
-            const eq = document.getElementById('eqB'); if (eq) eq.classList.toggle('paused', !p);
-            if (p) {
-                const t = TRACKS[tIdx];
-                pTimer = setInterval(() => { prog = Math.min(prog + (100 / t.secs), 100); updProg(); if (prog >= 100) nextTrack() }, 1000);
-            }
+            const eq = document.getElementById('eqB');
+            if (eq) eq.classList.toggle('paused', !p);
         }
         function updProg() {
             document.getElementById('pFill').style.width = prog + '%';
-            const t = TRACKS[tIdx], e = Math.round((prog / 100) * t.secs);
-            document.getElementById('curT').textContent = Math.floor(e / 60) + ':' + String(e % 60).padStart(2, '0');
+            if (audio.duration) {
+                document.getElementById('curT').textContent = fmt(audio.currentTime);
+            }
         }
         function sw(idx, btn) {
             document.querySelectorAll('.t-pill').forEach(p => p.classList.remove('active'));
-            btn.classList.add('active'); tIdx = idx; clearInterval(pTimer); prog = 0;
+            btn.classList.add('active');
+            tIdx = idx;
+
             const t = TRACKS[idx];
             document.getElementById('pTitle').innerHTML = `${t.title} <span class="eq ${isPlaying ? '' : 'paused'}" id="eqB"><span class="eq-b"></span><span class="eq-b"></span><span class="eq-b"></span></span>`;
             document.getElementById('pArtist').textContent = t.artist;
             document.getElementById('totT').textContent = t.dur;
+
+            audio.src = t.src;
+            audio.load();
+            prog = 0;
             updProg();
-            if (isPlaying) { pTimer = setInterval(() => { prog = Math.min(prog + (100 / t.secs), 100); updProg(); if (prog >= 100) nextTrack() }, 1000) }
+
+            if (isPlaying) {
+                audio.play().catch(err => console.error("Autoplay blocked or failed:", err));
+            }
         }
-        function nextTrack() { const n = (tIdx + 1) % TRACKS.length; const pill = document.querySelectorAll('.t-pill')[n]; if (pill) sw(n, pill) }
+        function prevTrack() {
+            const n = (tIdx - 1 + TRACKS.length) % TRACKS.length;
+            const pill = document.querySelectorAll('.t-pill')[n];
+            if (pill) {
+                isPlaying = true;
+                setPlay(true);
+                sw(n, pill);
+            }
+        }
+        function nextTrack() {
+            const n = (tIdx + 1) % TRACKS.length;
+            const pill = document.querySelectorAll('.t-pill')[n];
+            if (pill) {
+                isPlaying = true;
+                setPlay(true);
+                sw(n, pill);
+            }
+        }
         document.addEventListener('click', e => {
             const tr = document.getElementById('pTrack');
-            if (tr && tr.contains(e.target)) { const r = tr.getBoundingClientRect(); prog = Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100)); updProg() }
+            if (tr && tr.contains(e.target)) {
+                const r = tr.getBoundingClientRect();
+                prog = Math.max(0, Math.min(100, ((e.clientX - r.left) / r.width) * 100));
+                updProg();
+                if (audio.duration) {
+                    audio.currentTime = (prog / 100) * audio.duration;
+                }
+            }
         });
 
         /* ════ COUNTDOWN ════ */
@@ -3039,6 +3314,16 @@
         function submitR() {
             const name = document.getElementById('rN').value.trim(), status = document.getElementById('rS').value, msg = document.getElementById('rM').value.trim();
             if (!name || !status) { showT('Mohon isi nama dan status kehadiran ⚠'); return }
+
+            // Real Database Persistence API call!
+            fetch('/api/rsvp', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${gCnt}&message=${encodeURIComponent(msg)}`
+            }).catch(err => console.error("Failed to submit RSVP to database:", err));
+
             const init = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             const cols = ['#ff4d8d', '#3d6fff', '#9b4dff', '#00c875', '#ff3040'];
             const col = cols[Math.floor(Math.random() * cols.length)];
@@ -3047,6 +3332,14 @@
             card.innerHTML = `<div class="w-hd"><div class="w-av" style="background:${col}">${init}</div><div><div class="w-nm">${name}</div><div class="w-st">${stxt}</div></div></div><div class="w-bubble">${msg || 'Selamat dan semoga bahagia selalu! 🎉'}</div>`;
             document.getElementById('wList').prepend(card);
             setTimeout(() => card.classList.add('visible'), 50);
+
+            // Update stats locally
+            if (status === 'hadir') { totalH++; totalT += gCnt; }
+            totalW++;
+            const stRespEl = document.getElementById('stResp'); if (stRespEl) stRespEl.textContent = totalW;
+            const stHadirEl = document.getElementById('stHadir'); if (stHadirEl) stHadirEl.textContent = totalH;
+            const stGuestsEl = document.getElementById('stGuests'); if (stGuestsEl) stGuestsEl.textContent = totalT;
+
             document.getElementById('rN').value = ''; document.getElementById('rS').value = ''; document.getElementById('rM').value = '';
             showT('Terima kasih! Konfirmasi berhasil ★');
             setTimeout(() => document.querySelector('.wishes-chapter').scrollIntoView({ behavior: 'smooth', block: 'start' }), 300);
@@ -3065,7 +3358,7 @@
         let tT;
         function showT(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(tT); tT = setTimeout(() => t.classList.remove('show'), 2800) }
     </script>
-{% include "invitation/ai_concierge_snippet.html" %}
+    {% include "invitation/ai_concierge_snippet.html" %}
 </body>
 
 </html>

@@ -4680,37 +4680,49 @@ fn parse_event_date_to_iso(date_str: &str) -> String {
 }
 
 fn format_date_for_display(date_str: &str) -> String {
-    // If it's already a nice string, keep it (simple heuristic)
-    if !date_str.contains('-') || date_str.len() != 10 {
-        return date_str.to_string();
-    }
+    // If it contains 'T', extract the date part
+    let clean_date = if date_str.contains('T') {
+        date_str.split('T').next().unwrap_or(date_str)
+    } else {
+        date_str
+    };
 
     // Handle YYYY-MM-DD
-    let parts: Vec<&str> = date_str.split('-').collect();
-    if parts.len() == 3 {
-        let year = parts[0];
-        let month_num = parts[1];
-        let day = parts[2];
-        
-        let month_name = match month_num {
-            "01" => "Januari",
-            "02" => "Februari",
-            "03" => "Maret",
-            "04" => "April",
-            "05" => "Mei",
-            "06" => "Juni",
-            "07" => "Juli",
-            "08" => "Agustus",
-            "09" => "September",
-            "10" => "Oktober",
-            "11" => "November",
-            "12" => "Desember",
-            _ => return date_str.to_string(),
-        };
-        
-        // Remove leading zero from day
-        let day_clean = if day.starts_with('0') { &day[1..] } else { day };
-        return format!("{} {} {}", day_clean, month_name, year);
+    if clean_date.contains('-') && clean_date.len() == 10 {
+        let parts: Vec<&str> = clean_date.split('-').collect();
+        if parts.len() == 3 {
+            let year = parts[0];
+            let month_num = parts[1];
+            let day = parts[2];
+            
+            let month_name = match month_num {
+                "01" => "Januari",
+                "02" => "Februari",
+                "03" => "Maret",
+                "04" => "April",
+                "05" => "Mei",
+                "06" => "Juni",
+                "07" => "Juli",
+                "08" => "Agustus",
+                "09" => "September",
+                "10" => "Oktober",
+                "11" => "November",
+                "12" => "Desember",
+                _ => return date_str.to_string(),
+            };
+            
+            // Remove leading zero from day
+            let day_clean = if day.starts_with('0') { &day[1..] } else { day };
+            return format!("{} {} {}", day_clean, month_name, year);
+        }
+    }
+
+    // If it is just a day number followed by T (e.g. "16T08:00:00")
+    if date_str.contains('T') {
+        let parts: Vec<&str> = date_str.split('T').collect();
+        if !parts[0].is_empty() && parts[0].chars().all(char::is_numeric) {
+            return parts[0].to_string();
+        }
     }
 
     date_str.to_string()
