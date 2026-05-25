@@ -1550,8 +1550,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label>Wedding Date</label>
-                                    <input type="date" name="event_date" value="{{ invitation.event_date_iso[..10] }}"
-                                        required>
+                                    <input type="date" name="event_date" value="{{ invitation.event_date_iso[..10] }}" required>
+                                    <span id="event_date_display_span" style="font-size: 0.85rem; color: #8E6E53; margin-top: 5px; display: block;">Format tampilan: {{ invitation.event_date }}</span>
                                 </div>
                             </div>
 
@@ -3112,6 +3112,90 @@
     }
 
     $(document).ready(function () {
+        $('.manage-form').on('submit', async function (e) {
+            e.preventDefault();
+            
+            if (!validateManageForm()) return;
+
+            // Show a premium loading spinner using Swal
+            Swal.fire({
+                title: 'Menyimpan Perubahan...',
+                html: 'Mohon tunggu sejenak sementara kami mengunggah data Anda.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
+            // 1. Get the active step
+            const activeStep = document.querySelector('.form-step.active');
+            const formData = new FormData();
+
+            // 2. Add all inputs, textareas, and selects inside the active step
+            const inputs = activeStep.querySelectorAll('input, textarea, select');
+            inputs.forEach(el => {
+                if (el.disabled) return;
+                
+                // Handle file input separately
+                if (el.type === 'file') {
+                    if (el.files && el.files.length > 0) {
+                        for (let i = 0; i < el.files.length; i++) {
+                            formData.append(el.name, el.files[i]);
+                        }
+                    }
+                } else if (el.type === 'checkbox' || el.type === 'radio') {
+                    if (el.checked) {
+                        formData.append(el.name, el.value);
+                    }
+                } else {
+                    formData.append(el.name, el.value);
+                }
+            });
+
+            // 3. Add global hidden fields if they exist and are not in the active step
+            const templateNameInput = document.getElementById('template_name_input');
+            if (templateNameInput && !activeStep.contains(templateNameInput)) {
+                formData.append(templateNameInput.name, templateNameInput.value);
+            }
+
+            try {
+                const response = await fetch(this.action, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    const newUrl = response.url;
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Progres Berhasil Disimpan!',
+                        showConfirmButton: false,
+                        timer: 1500
+                    }).then(() => {
+                        // If slug changed, reload to the new manage URL
+                        if (newUrl && newUrl !== window.location.href) {
+                            window.location.href = newUrl;
+                        }
+                    });
+                } else {
+                    const errText = await response.text();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Menyimpan',
+                        text: errText || 'Terjadi kesalahan sistem, silakan coba lagi.'
+                    });
+                }
+            } catch (error) {
+                console.error('Submit error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Koneksi Bermasalah',
+                    text: 'Gagal menghubungi server. Harap periksa koneksi internet Anda.'
+                });
+            }
+        });
+
         $('.select2-enable').select2({ width: '100%' });
 
         // Modal Select2 needs dropdownParent to work inside fixed overlay
@@ -4138,12 +4222,41 @@
     // --- AI Onboarding / Edit Assistant Logic ---
     let currentAiSessionId = localStorage.getItem('ai_session_id');
 
+    // Date formatter utility for real-time Indonesian date preview in span
+    function formatDateToIndonesian(dateStr) {
+        if (!dateStr) return "";
+        const parts = dateStr.split('-');
+        if (parts.length !== 3) return dateStr;
+        const year = parts[0];
+        const monthNum = parts[1];
+        const day = parts[2];
+        
+        const months = {
+            "01": "Januari",
+            "02": "Februari",
+            "03": "Maret",
+            "04": "April",
+            "05": "Mei",
+            "06": "Juni",
+            "07": "Juli",
+            "08": "Agustus",
+            "09": "September",
+            "10": "Oktober",
+            "11": "November",
+            "12": "Desember"
+        };
+        
+        const monthName = months[monthNum] || monthNum;
+        const dayClean = day.startsWith('0') ? day.substring(1) : day;
+        return `${dayClean} ${monthName} ${year}`;
+    }
+
     document.addEventListener('DOMContentLoaded', async () => {
-        // Set wedding date initial from 2024-12-15/empty to one month after today
+        // Set wedding date initial from empty to one month after today
         const eventDateInput = document.querySelector('input[name="event_date"]');
         if (eventDateInput) {
             const val = eventDateInput.value;
-            if (!val || val === '2026-12-15') {
+            if (!val) {
                 const today = new Date();
                 today.setMonth(today.getMonth() + 1);
                 const year = today.getFullYear();
@@ -4151,15 +4264,23 @@
                 const day = String(today.getDate()).padStart(2, '0');
                 eventDateInput.value = `${year}-${month}-${day}`;
 
-                // Sync reception date too if same or empty/2024-12-15
+                // Sync reception date too if same or empty
                 const receptionDateInput = document.querySelector('input[name="reception_date"]');
                 if (receptionDateInput) {
                     const rval = receptionDateInput.value;
-                    if (!rval || rval === '2024-12-15') {
+                    if (!rval) {
                         receptionDateInput.value = eventDateInput.value;
                     }
                 }
             }
+        }
+
+        // Real-time listener to update formatting span below input
+        const eventDateSpan = document.getElementById('event_date_display_span');
+        if (eventDateInput && eventDateSpan) {
+            eventDateInput.addEventListener('input', () => {
+                eventDateSpan.textContent = "Format tampilan: " + formatDateToIndonesian(eventDateInput.value);
+            });
         }
 
         if (currentAiSessionId) {
@@ -4186,10 +4307,13 @@
             });
         }
 
-        // Restore Form State
+        // Note: For existing invitations, we load the actual saved database values as the source of truth,
+        // so we DO NOT automatically overwrite them on page load with draft AI session values.
+        /*
         if (session.form_state) {
             fillFormFromData(session.form_state);
         }
+        */
     }
 
     function appendMessageToChat(role, content) {
@@ -4273,6 +4397,14 @@
                 el.value = value;
                 el.classList.add('highlight-filled');
                 setTimeout(() => el.classList.remove('highlight-filled'), 3000);
+
+                // Dynamically update the Indonesian display span if the AI updates the event date
+                if (name === 'event_date') {
+                    const eventDateSpan = document.getElementById('event_date_display_span');
+                    if (eventDateSpan && typeof formatDateToIndonesian === 'function') {
+                        eventDateSpan.textContent = "Format tampilan: " + formatDateToIndonesian(value);
+                    }
+                }
             }
         }
         if (typeof checkSlugAvailability === 'function') checkSlugAvailability();

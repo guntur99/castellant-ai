@@ -1945,7 +1945,7 @@ pub async fn dashboard(
                     groom_name_short,
                     bride,
                     groom,
-                    event_date: r.event_date,
+                    event_date: format_date_for_display(&r.event_date),
                     ceremony: from_value(r.ceremony_data).unwrap_or_default(),
                     reception: from_value(r.reception_data).unwrap_or_default(),
                     quote: from_value(r.quote_data).unwrap_or_default(),
@@ -2638,7 +2638,7 @@ pub async fn manage_invitation(
                 groom_name_short,
                 bride,
                 groom,
-                event_date: row.event_date,
+                event_date: format_date_for_display(&row.event_date),
                 ceremony: from_value(row.ceremony_data).unwrap_or_default(),
                 reception: from_value(row.reception_data).unwrap_or_default(),
                 quote: from_value(row.quote_data).unwrap_or_default(),
@@ -2929,18 +2929,18 @@ pub async fn update_invitation(
     } else {
         reception.enabled = !reception.venue.is_empty() || !reception.address.is_empty() || reception.enabled;
     }
-    if let Some(val) = fields.get("reception_date") { reception.date = format_date_for_display(val); }
+    if let Some(val) = fields.get("reception_date") { reception.date = val.clone(); }
     if let Some(val) = fields.get("reception_time") { reception.time = val.clone(); }
     if let Some(val) = fields.get("reception_venue") { reception.venue = val.clone(); }
     if let Some(val) = fields.get("reception_address") { reception.address = val.clone(); }
     if let Some(val) = fields.get("reception_maps") { reception.maps_url = val.clone(); }
 
     let mut quote: Quote = from_value(row.quote_data.clone()).unwrap_or_default();
-    if let Some(val) = fields.get("quote_text").map(|s| s.trim().to_string()).filter(|s| !s.is_empty()) {
-        quote.text = val;
+    if let Some(val) = fields.get("quote_text") {
+        quote.text = val.trim().to_string();
     }
-    if let Some(val) = fields.get("quote_source").map(|s| s.trim().to_string()).filter(|s| !s.is_empty()) {
-        quote.source = val;
+    if let Some(val) = fields.get("quote_source") {
+        quote.source = val.trim().to_string();
     }
 
     let couple_name_short = fields.get("couple_name_short")
@@ -2959,9 +2959,9 @@ pub async fn update_invitation(
     tracing::info!("row.event_date: {:?}", row.event_date);
     tracing::info!("event_date_raw: {:?}", event_date_raw);
     
-    // Convert YYYY-MM-DD (from HTML date input) to Indonesian display format "24 Mei 2026"
-    let event_date = format_date_for_display(&event_date_raw);
-    tracing::info!("formatted event_date: {:?}", event_date);
+    // Keep raw date format like YYYY-MM-DD in the database
+    let event_date = event_date_raw;
+    tracing::info!("raw event_date: {:?}", event_date);
     
     // Sync ceremony date with the main event date
     ceremony.date = event_date.clone();
@@ -3328,10 +3328,10 @@ pub async fn preview(
             mother_name: payload.groom_mother,
             image_url: "/static/img/groom.jpg".to_string(),
         },
-        event_date: payload.ceremony_date.clone(),
+        event_date: format_date_for_display(&payload.ceremony_date),
         ceremony: EventDetails {
             enabled: true,
-            date: payload.ceremony_date,
+            date: format_date_for_display(&payload.ceremony_date),
             time: payload.ceremony_time,
             venue: payload.ceremony_venue,
             address: payload.ceremony_address,
@@ -3339,7 +3339,7 @@ pub async fn preview(
         },
         reception: EventDetails {
             enabled: true,
-            date: payload.reception_date,
+            date: format_date_for_display(&payload.reception_date),
             time: payload.reception_time,
             venue: payload.reception_venue,
             address: payload.reception_address,

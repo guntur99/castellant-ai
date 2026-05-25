@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wedding Manga — Anita & Zarda</title>
+<title>Wedding Manga — {{ invitation.couple_name_short }}</title>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;600;700;800&family=Noto+Serif+JP:wght@300;400;600;700&family=Zen+Kurenaido&family=Yuji+Syuku&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -758,7 +758,7 @@ textarea.f-inp{min-height:86px;resize:vertical}
 
     <div class="op-title-plate" style="position:relative">
       <span class="op-title-ja">ウェディング マンガ</span>
-      <span class="op-title-main">Anita<br>& Zarda</span>
+      <span class="op-title-main">{{ invitation.bride_name_short }}<br>&amp; {{ invitation.groom_name_short }}</span>
       <span class="op-title-sub">The Wedding Story</span>
       <div class="op-seal">最終<br>話</div>
     </div>
@@ -809,30 +809,30 @@ textarea.f-inp{min-height:86px;resize:vertical}
     <div class="sp-bg"></div>
     <div class="sp-speed"></div>
     <div class="sp-photo-wrap">
-      <img class="sp-photo" src="https://images.unsplash.com/photo-1519741497674-611481863552?w=1000&h=900&fit=crop&q=85" alt="Wedding">
+      <img class="sp-photo" src="{% if invitation.gallery_images.len() > 0 %}{{ invitation.gallery_images[0] }}{% else %}https://images.unsplash.com/photo-1519741497674-611481863552?w=1000&h=900&fit=crop&q=85{% endif %}" alt="Wedding">
       <div class="sp-tone"></div>
       <div class="sp-vignette"></div>
     </div>
     <div class="sp-fade"></div>
     <div class="sp-overlay">
       <span class="sp-chapter-banner">最終話 · Final Chapter</span>
-      <h1 class="sp-title-en">Anita<br>&amp; Zarda</h1>
-      <p class="sp-subtitle">The Wedding Story · 2026</p>
-      <p class="sp-date">二〇二六年 五月 二十四日</p>
+      <h1 class="sp-title-en">{{ invitation.bride_name_short }}<br>&amp; {{ invitation.groom_name_short }}</h1>
+      <p class="sp-subtitle">The Wedding Story · {{ invitation.event_date }}</p>
+      <p class="sp-date">{{ invitation.event_date }}</p>
     </div>
   </div>
 
   <!-- Sub panels row -->
   <div class="panel-row">
     <div class="pr-left">
-      <img class="pr-photo" src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&h=220&fit=crop&q=80" alt="">
+      <img class="pr-photo" src="{% if invitation.gallery_images.len() > 1 %}{{ invitation.gallery_images[1] }}{% else %}https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&h=220&fit=crop&q=80{% endif %}" alt="">
       <div class="pr-tone" style="position:absolute;inset:0"></div>
       <div class="pr-caption"><span class="pr-cap-text">PANEL 002 · Establishing Shot</span></div>
     </div>
     <div class="pr-right" style="position:relative;overflow:hidden">
       <div class="tone-dots"></div>
-      <div class="pr-right-date">24 Mei<br>2026</div>
-      <div class="pr-right-loc">Tangerang · Indonesia</div>
+      <div class="pr-right-date">{{ invitation.event_date }}</div>
+      <div class="pr-right-loc">{{ invitation.ceremony.venue }}</div>
       <div class="pr-right-seal">婚礼<br>式</div>
     </div>
   </div>
@@ -840,9 +840,15 @@ textarea.f-inp{min-height:86px;resize:vertical}
   <!-- Track pills + Player -->
   <div style="background:var(--white);border-top:2px solid var(--ink);padding:10px 16px 6px">
     <div class="t-pills">
-      <div class="t-pill active" onclick="sw(0,this)">Track 01</div>
-      <div class="t-pill" onclick="sw(1,this)">Track 02</div>
-      <div class="t-pill" onclick="sw(2,this)">Track 03</div>
+      {% if invitation.playlist.len() > 0 %}
+        {% for song in invitation.playlist %}
+          <div class="t-pill{% if loop.first %} active{% endif %}" onclick="sw({{ loop.index0 }},this)">Track 0{{ loop.index }}</div>
+        {% endfor %}
+      {% else %}
+        <div class="t-pill active" onclick="sw(0,this)">Track 01</div>
+        <div class="t-pill" onclick="sw(1,this)">Track 02</div>
+        <div class="t-pill" onclick="sw(2,this)">Track 03</div>
+      {% endif %}
     </div>
   </div>
   <div class="player-wrap">
@@ -853,7 +859,7 @@ textarea.f-inp{min-height:86px;resize:vertical}
       </button>
       <div class="pl-info">
         <div class="pl-title" id="pTitle">Wedding Day <span class="eq paused" id="eqB"><span class="eq-b"></span><span class="eq-b"></span><span class="eq-b"></span></span></div>
-        <div class="pl-artist" id="pArtist">Anita & Zarda · Wedding OST</div>
+        <div class="pl-artist" id="pArtist">{{ invitation.couple_name_short }} · Wedding OST</div>
       </div>
       <div class="pl-prog-wrap">
         <div class="pl-times"><span id="curT">0:00</span><span id="totT">3:24</span></div>
@@ -906,8 +912,8 @@ textarea.f-inp{min-height:86px;resize:vertical}
       <span class="verse-orn-mark">◆</span>
       <div class="verse-orn-line"></div>
     </div>
-    <p class="verse-text">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya..."</p>
-    <span class="verse-ref">— Surah Ar-Rum : 21 —</span>
+    <p class="verse-text">"{{ invitation.quote.text }}"</p>
+    <span class="verse-ref">— {{ invitation.quote.source }} —</span>
   </div>
 </div>
 
@@ -928,39 +934,39 @@ textarea.f-inp{min-height:86px;resize:vertical}
     <div class="char-p">
       <div class="cp-photo">
         <div class="cp-ratio"></div>
-        <img class="cp-img" style="position:absolute;inset:0" src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=500&h=680&fit=crop&q=80" alt="Anita" loading="lazy">
+        <img class="cp-img" style="position:absolute;inset:0" src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride.name }}" loading="lazy">
         <div class="cp-tone"></div>
         <div class="cp-vignette"></div>
         <div class="cp-fade-bottom"></div>
         <div class="cp-name-overlay">
           <div class="cp-tag">Heroine · 主人公</div>
-          <div class="cp-name">Anita</div>
+          <div class="cp-name">{{ invitation.bride.name }}</div>
         </div>
       </div>
       <div class="cp-info">
         <div class="tone-diag"></div>
         <div class="cp-role">Mempelai Wanita</div>
-        <div class="cp-full-name">Anita Pangestuti, S.Kom</div>
-        <div class="cp-parents">Putri Pertama dari<br><strong>Bpk. Taryono &<br>Ibu Wiwit Jayanti</strong></div>
+        <div class="cp-full-name">{{ invitation.bride.full_name }}</div>
+        <div class="cp-parents">Putri dari<br><strong>Bpk. {{ invitation.bride.father_name }} &amp;<br>Ibu {{ invitation.bride.mother_name }}</strong></div>
       </div>
     </div>
     <div class="char-p">
       <div class="cp-photo">
         <div class="cp-ratio"></div>
-        <img class="cp-img" style="position:absolute;inset:0" src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&h=680&fit=crop&q=80" alt="Zarda" loading="lazy">
+        <img class="cp-img" style="position:absolute;inset:0" src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom.name }}" loading="lazy">
         <div class="cp-tone"></div>
         <div class="cp-vignette"></div>
         <div class="cp-fade-bottom"></div>
         <div class="cp-name-overlay">
           <div class="cp-tag">Hero · 主人公</div>
-          <div class="cp-name">Zarda</div>
+          <div class="cp-name">{{ invitation.groom.name }}</div>
         </div>
       </div>
       <div class="cp-info">
         <div class="tone-diag"></div>
         <div class="cp-role">Mempelai Pria</div>
-        <div class="cp-full-name">Zardarian Ahadika N, S.Kom</div>
-        <div class="cp-parents">Putra Kedua dari<br><strong>Bpk. Wan Sabran, M.MAR &<br>Ibu Titik Sundari, M.Si</strong></div>
+        <div class="cp-full-name">{{ invitation.groom.full_name }}</div>
+        <div class="cp-parents">Putra dari<br><strong>Bpk. {{ invitation.groom.father_name }} &amp;<br>Ibu {{ invitation.groom.mother_name }}</strong></div>
       </div>
     </div>
   </div>
@@ -992,10 +998,10 @@ textarea.f-inp{min-height:86px;resize:vertical}
       <div class="ev-body">
         <div class="tone-lines"></div>
         <span class="ev-caption red">Akad Nikah</span>
-        <div class="ev-date">Minggu,<br>{{ invitation.event_date }}</div>
-        <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg><span class="ev-txt">08.00 WIB</span></div>
-        <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span class="ev-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
-        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-maps">地図 · Maps</a>
+        <div class="ev-date">{{ invitation.ceremony.date }}</div>
+        <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg><span class="ev-txt">{{ invitation.ceremony.time }}</span></div>
+        <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span class="ev-txt"><b>{{ invitation.ceremony.venue }}</b><br>{{ invitation.ceremony.address }}</span></div>
+        <a href="{{ invitation.ceremony.maps_url }}" target="_blank" class="ev-maps">地図 · Maps</a>
       </div>
     </div>
     <div class="ev-panel">
@@ -1004,10 +1010,10 @@ textarea.f-inp{min-height:86px;resize:vertical}
       <div class="ev-body">
         <div class="tone-lines"></div>
         <span class="ev-caption red">Resepsi</span>
-        <div class="ev-date">Minggu,<br>{{ invitation.event_date }}</div>
-        <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg><span class="ev-txt">11.00 – 13.00 WIB</span></div>
-        <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span class="ev-txt">Graha Yadika, Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang</span></div>
-        <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="ev-maps">地図 · Maps</a>
+        <div class="ev-date">{{ invitation.reception.date }}</div>
+        <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg><span class="ev-txt">{{ invitation.reception.time }}</span></div>
+        <div class="ev-detail"><svg class="ev-ico" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg><span class="ev-txt"><b>{{ invitation.reception.venue }}</b><br>{{ invitation.reception.address }}</span></div>
+        <a href="{% if invitation.reception.maps_url.is_empty() %}{{ invitation.ceremony.maps_url }}{% else %}{{ invitation.reception.maps_url }}{% endif %}" target="_blank" class="ev-maps">地図 · Maps</a>
       </div>
     </div>
   </div>
@@ -1028,6 +1034,25 @@ textarea.f-inp{min-height:86px;resize:vertical}
     <div class="s-rule"><div class="s-rule-line"></div><div class="s-rule-dot"></div><div class="s-rule-line"></div></div>
   </div>
 
+  {% for story in invitation.stories %}
+  <div class="manga-page">
+    <div class="mp-gutter"><span class="mp-num">{% if loop.index < 10 %}0{% endif %}{{ loop.index }}</span><div class="mp-dot"></div></div>
+    <div class="mp-content">
+      <div class="mp-photo" style="position:relative">
+        <img src="{{ story.image_url }}" alt="" loading="lazy">
+        <div class="mp-photo-tone"></div>
+        <div class="mp-bubble">{{ story.date }}</div>
+      </div>
+      <div class="mp-text">
+        <div class="tone-dots"></div>
+        <div class="mp-clip">Track 00{{ loop.index }}</div>
+        <div class="mp-date">{{ story.date }}</div>
+        <div class="mp-title">{{ story.title }}</div>
+        <div class="mp-desc">{{ story.description }}</div>
+      </div>
+    </div>
+  </div>
+  {% else %}
   <div class="manga-page">
     <div class="mp-gutter"><span class="mp-num">01</span><div class="mp-dot"></div></div>
     <div class="mp-content">
@@ -1045,42 +1070,7 @@ textarea.f-inp{min-height:86px;resize:vertical}
       </div>
     </div>
   </div>
-
-  <div class="manga-page">
-    <div class="mp-gutter"><span class="mp-num">02</span><div class="mp-dot"></div></div>
-    <div class="mp-content">
-      <div class="mp-photo" style="position:relative">
-        <img src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=300&h=220&fit=crop&q=80" alt="" loading="lazy">
-        <div class="mp-photo-tone"></div>
-        <div class="mp-bubble">Nov 2025</div>
-      </div>
-      <div class="mp-text">
-        <div class="tone-dots"></div>
-        <div class="mp-clip">Track 002</div>
-        <div class="mp-date">November 2025</div>
-        <div class="mp-title">Lamaran</div>
-        <div class="mp-desc">Rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</div>
-      </div>
-    </div>
-  </div>
-
-  <div class="manga-page">
-    <div class="mp-gutter"><span class="mp-num">03</span><div class="mp-dot"></div></div>
-    <div class="mp-content">
-      <div class="mp-photo" style="position:relative">
-        <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=300&h=220&fit=crop&q=80" alt="" loading="lazy">
-        <div class="mp-photo-tone"></div>
-        <div class="mp-bubble">Mei 2026</div>
-      </div>
-      <div class="mp-text">
-        <div class="tone-dots"></div>
-        <div class="mp-clip">Track 003</div>
-        <div class="mp-date">Mei 2026</div>
-        <div class="mp-title">Pernikahan</div>
-        <div class="mp-desc">Dalam ikatan suci pernikahan, kami berjanji untuk saling menjaga, mencintai, dan tumbuh bersama selamanya.</div>
-      </div>
-    </div>
-  </div>
+  {% endfor %}
 </section>
 
 <!-- CHAPTER 7: GALLERY -->
@@ -1119,11 +1109,34 @@ textarea.f-inp{min-height:86px;resize:vertical}
     <p style="font-family:var(--fnj);font-size:12px;font-weight:300;color:var(--gray1);line-height:1.9;margin-top:14px">Doa restu sudah sangat cukup, namun jika memberi merupakan tanda kasih, kami dengan senang hati menerimanya.</p>
   </div>
   <div class="gift-grid">
-                    {% for account in invitation.gift_accounts %}
-                    <div class="gift-card">
+    {% for account in invitation.gift_accounts %}
+    <div class="gift-card">
       <div class="tone-dots"></div>
-                    {% endfor %}
-                </div>
+      <span class="g-chip">Digital Envelope</span>
+      <h3 class="g-bank">{{ account.bank_name }}</h3>
+      <p class="g-holder">a.n. {{ account.account_holder }}</p>
+      <p class="g-num">{{ account.account_number }}</p>
+      <button class="copy-btn" onclick="cp('{{ account.account_number }}', this)">Salin</button>
+    </div>
+    {% else %}
+    <div class="gift-card">
+      <div class="tone-dots"></div>
+      <span class="g-chip">Digital Envelope</span>
+      <h3 class="g-bank">BCA</h3>
+      <p class="g-holder">a.n. {{ invitation.bride.name }}</p>
+      <p class="g-num">8210370211</p>
+      <button class="copy-btn" onclick="cp('8210370211', this)">Salin</button>
+    </div>
+    <div class="gift-card">
+      <div class="tone-dots"></div>
+      <span class="g-chip">Digital Envelope</span>
+      <h3 class="g-bank">Mandiri</h3>
+      <p class="g-holder">a.n. {{ invitation.groom.name }}</p>
+      <p class="g-num">157000724890</p>
+      <button class="copy-btn" onclick="cp('157000724890', this)">Salin</button>
+    </div>
+    {% endfor %}
+  </div>
 </section>
 
 <!-- CHAPTER 9: RSVP -->
@@ -1141,9 +1154,9 @@ textarea.f-inp{min-height:86px;resize:vertical}
     <div class="s-rule" style="justify-content:center"><div class="s-rule-line" style="max-width:60px"></div><div class="s-rule-dot"></div><div class="s-rule-line" style="max-width:60px"></div></div>
   </div>
   <div class="rsvp-stats">
-    <div class="rs-box"><div class="rs-n">7</div><div class="rs-l">Respons</div></div>
-    <div class="rs-box"><div class="rs-n">7</div><div class="rs-l">Hadir</div></div>
-    <div class="rs-box"><div class="rs-n">13</div><div class="rs-l">Total Tamu</div></div>
+    <div class="rs-box"><div class="rs-n">{{ invitation.total_rsvps() }}</div><div class="rs-l">Respons</div></div>
+    <div class="rs-box"><div class="rs-n">{{ invitation.total_hadir() }}</div><div class="rs-l">Hadir</div></div>
+    <div class="rs-box"><div class="rs-n">{{ invitation.total_guest_count() }}</div><div class="rs-l">Total Tamu</div></div>
   </div>
   <div class="rsvp-form">
     <div class="f-grp"><label class="f-lbl">名前 · Nama Lengkap</label><input type="text" class="f-inp" placeholder="Masukkan nama Anda" id="rN"></div>
@@ -1153,7 +1166,7 @@ textarea.f-inp{min-height:86px;resize:vertical}
     <div class="f-grp"><label class="f-lbl">人数 · Jumlah Tamu</label>
       <div class="gs-row"><button class="gs-btn active" onclick="sg(1,this)">1 Orang</button><button class="gs-btn" onclick="sg(2,this)">2 Orang</button></div>
     </div>
-    <div class="f-grp"><label class="f-lbl">メッセージ · Ucapan & Pesan</label><textarea class="f-inp" placeholder="Tuliskan ucapan untuk Anita & Zarda..." id="rM"></textarea></div>
+    <div class="f-grp"><label class="f-lbl">メッセージ · Ucapan & Pesan</label><textarea class="f-inp" placeholder="Tuliskan ucapan untuk {{ invitation.couple_name_short }}..." id="rM"></textarea></div>
     <button class="rsvp-btn" onclick="submitR()">送信 · Konfirmasi Kehadiran</button>
   </div>
 </section>
@@ -1173,27 +1186,31 @@ textarea.f-inp{min-height:86px;resize:vertical}
     <div class="s-rule"><div class="s-rule-line"></div><div class="s-rule-dot"></div><div class="s-rule-line"></div></div>
   </div>
   <div class="wish-list" id="wList">
-    <div class="w-card visible">
-
-                {% if invitation.is_preview %}
-                      <div class="w-hd"><div class="w-av">A</div><div><div class="w-nm">Ayu Rahmawati</div><div class="w-st">✓ HADIR · 2 TAMU</div></div></div>
-      <div class="w-msg">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu!</div>
-    </div>
-    <div class="w-card visible">
-      <div class="w-hd"><div class="w-av" style="background:var(--gray1)">R</div><div><div class="w-nm">Reza Firmansyah</div><div class="w-st">✓ HADIR · 1 TAMU</div></div></div>
-      <div class="w-msg">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan kebahagiaan yang tidak pernah habis. Aamiin!</div>
-    </div>
-    <div class="w-card visible">
-      <div class="w-hd"><div class="w-av" style="background:var(--ink2)">S</div><div><div class="w-nm">Sinta Dewi</div><div class="w-st">✓ HADIR · 2 TAMU</div></div></div>
-
-                {% else %}
-                {% for rsvp in invitation.rsvps %}
-                      <div class="w-hd"><div class="w-av">{{ rsvp.initial() }}</div><div><div class="w-nm">{{ rsvp.name }}</div><div class="w-st">✓ HADIR · 2 TAMU</div></div></div>
-
-                {% endfor %}
-                {% endif %}
-                      <div class="w-msg">Wishing you both a lifetime of love and laughter. Semoga selalu diberkahi Allah SWT.</div>
-    </div>
+    {% if invitation.is_preview %}
+      <div class="w-card visible">
+        <div class="w-hd"><div class="w-av">A</div><div><div class="w-nm">Ayu Rahmawati</div><div class="w-st">✓ HADIR · 2 TAMU</div></div></div>
+        <div class="w-msg">Selamat menempuh hidup baru! Semoga menjadi keluarga yang sakinah, mawaddah, wa rahmah. Bahagia selalu!</div>
+      </div>
+      <div class="w-card visible">
+        <div class="w-hd"><div class="w-av" style="background:var(--gray1)">R</div><div><div class="w-nm">Reza Firmansyah</div><div class="w-st">✓ HADIR · 1 TAMU</div></div></div>
+        <div class="w-msg">Alhamdulillah, akhirnya! Semoga pernikahannya membawa keberkahan dan kebahagiaan yang tidak pernah habis. Aamiin!</div>
+      </div>
+    {% else %}
+      {% for rsvp in invitation.rsvps %}
+      <div class="w-card visible">
+        <div class="w-hd">
+          <div class="w-av" style="background: var(--ink);">{{ rsvp.initial() }}</div>
+          <div>
+            <div class="w-nm">{{ rsvp.name }}</div>
+            <div class="w-st">{% if rsvp.attendance == "hadir" %}✓ HADIR{% else %}✗ TIDAK HADIR{% endif %} · {{ rsvp.guests }} TAMU</div>
+          </div>
+        </div>
+        <div class="w-msg">{{ rsvp.display_message() }}</div>
+      </div>
+      {% else %}
+      <p style="text-align: center; color: var(--gray1); font-size: 13px; font-family: var(--fnj);">Belum ada ucapan. Jadilah yang pertama memberikan doa restu! ✨</p>
+      {% endfor %}
+    {% endif %}
   </div>
 </section>
 
@@ -1211,11 +1228,11 @@ textarea.f-inp{min-height:86px;resize:vertical}
     <div class="ft-fin">― 完 ―</div>
     <div class="ft-plate">
       <div class="ft-vol">Vol.01 · Final Chapter</div>
-      <div class="ft-names">Anita<br>&amp; Zarda</div>
-      <div class="ft-sub">The Wedding Story · 2026</div>
+      <div class="ft-names">{{ invitation.bride_name_short }}<br>&amp; {{ invitation.groom_name_short }}</div>
+      <div class="ft-sub">The Wedding Story · {{ invitation.event_date }}</div>
     </div>
     <p class="ft-msg">Merupakan suatu kebahagiaan dan kehormatan bagi kami, apabila Bapak/Ibu/Saudara/i berkenan hadir dan memberikan do'a restu kepada kami.</p>
-    <p class="ft-sig">kami yang berbahagia — Anita &amp; Zarda</p>
+    <p class="ft-sig">kami yang berbahagia — {{ invitation.couple_name_short }}</p>
     <!-- Barcode deco -->
     <div class="ft-barcode" id="ftBarcode"></div>
     <p class="ft-brand">Digital Invitation by <a href="#">BridesSpace</a> · Manga Theme</p>
@@ -1246,20 +1263,33 @@ textarea.f-inp{min-height:86px;resize:vertical}
 <div class="toast" id="toast"></div>
 
 <script>
+let myAudio = null;
 const TRACKS=[
-  {title:"Wedding Day",artist:"Anita & Zarda · Wedding OST",dur:"3:24",secs:204},
-  {title:"First Look",artist:"Anita & Zarda · Wedding OST",dur:"2:58",secs:178},
-  {title:"Lamaran",artist:"Anita & Zarda · Wedding OST",dur:"4:12",secs:252},
+  {% if invitation.playlist.len() > 0 %}
+    {% for song in invitation.playlist %}
+      {title:"Track {{ loop.index }}",artist:"{{ invitation.couple_name_short }} · Wedding OST",dur:"Play",secs:180,url:"{{ song }}"},
+    {% endfor %}
+  {% else %}
+    {title:"Wedding Day",artist:"{{ invitation.couple_name_short }} · Wedding OST",dur:"3:24",secs:204,url:"{% if invitation.song_url.is_empty() %}/static/music/wedding-day.mp3{% else %}{{ invitation.song_url }}{% endif %}"},
+    {title:"First Look",artist:"{{ invitation.couple_name_short }} · Wedding OST",dur:"2:58",secs:178,url:"/static/music/first-look.mp3"},
+    {title:"Lamaran",artist:"{{ invitation.couple_name_short }} · Wedding OST",dur:"4:12",secs:252,url:"/static/music/lamaran.mp3"},
+  {% endif %}
 ];
 const IMGS=[
-  "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=650&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=650&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&h=650&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=500&h=650&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=500&h=650&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=500&h=650&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=500&h=650&fit=crop&q=80",
-  "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=650&fit=crop&q=80",
+  {% if invitation.gallery_images.len() > 0 %}
+    {% for img in invitation.gallery_images %}
+      "{{ img }}",
+    {% endfor %}
+  {% else %}
+    "https://images.unsplash.com/photo-1519741497674-611481863552?w=500&h=650&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=500&h=650&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=500&h=650&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=500&h=650&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=500&h=650&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=500&h=650&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=500&h=650&fit=crop&q=80",
+    "https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=500&h=650&fit=crop&q=80",
+  {% endif %}
 ];
 
 let tIdx=0,isPlaying=false,prog=0,pTimer=null,lbIdx=0,gCnt=1;
@@ -1294,25 +1324,52 @@ function setPlay(p){
   document.getElementById('pIco').style.display=p?'none':'block';
   document.getElementById('pauseIco').style.display=p?'block':'none';
   const eq=document.getElementById('eqB');if(eq)eq.classList.toggle('paused',!p);
-  if(p){const t=TRACKS[tIdx];pTimer=setInterval(()=>{prog=Math.min(prog+(100/t.secs),100);updProg();if(prog>=100)nextTrack()},1000)}
+  
+  if(p){
+    const t=TRACKS[tIdx];
+    if(!myAudio || (myAudio.src !== window.location.origin + t.url && myAudio.src !== t.url)){
+      if(myAudio) myAudio.pause();
+      myAudio = new Audio(t.url);
+      myAudio.loop = true;
+    }
+    myAudio.play().catch(e => console.log("Audio play blocked:", e));
+    
+    pTimer=setInterval(()=>{
+      if(myAudio && myAudio.duration) {
+        prog = (myAudio.currentTime / myAudio.duration) * 100;
+      } else {
+        prog=Math.min(prog+(100/t.secs),100);
+      }
+      updProg();
+      if(prog>=100)nextTrack();
+    },1000);
+  } else {
+    clearInterval(pTimer);
+    if(myAudio) myAudio.pause();
+  }
 }
 function updProg(){
   document.getElementById('pFill').style.width=prog+'%';
-  const t=TRACKS[tIdx],e=Math.round((prog/100)*t.secs);
+  const t=TRACKS[tIdx];
+  const totalSecs = (myAudio && myAudio.duration) ? Math.round(myAudio.duration) : t.secs;
+  const e=Math.round((prog/100)*totalSecs);
   document.getElementById('curT').textContent=Math.floor(e/60)+':'+String(e%60).padStart(2,'0');
 }
 function sw(idx,btn){
   document.querySelectorAll('.t-pill').forEach(p=>p.classList.remove('active'));
-  btn.classList.add('active');tIdx=idx;clearInterval(pTimer);prog=0;
+  btn.classList.add('active');tIdx=idx;
+  const isCurrentlyPlaying = isPlaying;
+  pause();
+  prog=0;
   const t=TRACKS[idx];
-  document.getElementById('pTitle').innerHTML=`${t.title} <span class="eq ${isPlaying?'':'paused'}" id="eqB"><span class="eq-b"></span><span class="eq-b"></span><span class="eq-b"></span></span>`;
+  document.getElementById('pTitle').innerHTML=`${t.title} <span class="eq ${isCurrentlyPlaying?'':'paused'}" id="eqB"><span class="eq-b"></span><span class="eq-b"></span><span class="eq-b"></span></span>`;
   document.getElementById('pArtist').textContent=t.artist;
-  document.getElementById('totT').textContent=t.dur;
+  document.getElementById('totT').textContent=(myAudio && myAudio.duration && myAudio.src === t.url) ? (Math.floor(myAudio.duration/60)+':'+String(Math.round(myAudio.duration)%60).padStart(2,'0')) : t.dur;
   updProg();
-  if(isPlaying){pTimer=setInterval(()=>{prog=Math.min(prog+(100/t.secs),100);updProg();if(prog>=100)nextTrack()},1000)}
+  if(isCurrentlyPlaying){play()}
 }
 function nextTrack(){const n=(tIdx+1)%TRACKS.length;const pill=document.querySelectorAll('.t-pill')[n];if(pill)sw(n,pill)}
-document.addEventListener('click',e=>{const tr=document.getElementById('pTrack');if(tr&&tr.contains(e.target)){const r=tr.getBoundingClientRect();prog=Math.max(0,Math.min(100,((e.clientX-r.left)/r.width)*100));updProg()}});
+document.addEventListener('click',e=>{const tr=document.getElementById('pTrack');if(tr&&tr.contains(e.target)){const r=tr.getBoundingClientRect();prog=Math.max(0,Math.min(100,((e.clientX-r.left)/r.width)*100));if(myAudio && myAudio.duration){myAudio.currentTime = (prog/100)*myAudio.duration}updProg()}});
 
 /* Countdown */
 function countdown(){
@@ -1388,17 +1445,36 @@ function sg(n,btn){gCnt=n;document.querySelectorAll('.gs-btn').forEach(b=>b.clas
 function submitR(){
   const name=document.getElementById('rN').value.trim(),status=document.getElementById('rS').value,msg=document.getElementById('rM').value.trim();
   if(!name||!status){showT('Mohon isi nama dan status kehadiran');return}
-  const init=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
-  const bgs=[getComputedStyle(document.documentElement).getPropertyValue('--ink').trim(),'#555','#333','#777','#222'];
-  const bg=bgs[Math.floor(Math.random()*bgs.length)];
-  const stxt=status==='hadir'?`✓ HADIR · ${gCnt} TAMU`:'✗ TIDAK HADIR';
-  const card=document.createElement('div');card.className='w-card';
-  card.innerHTML=`<div class="w-hd"><div class="w-av" style="background:${bg}">${init}</div><div><div class="w-nm">${name}</div><div class="w-st">${stxt}</div></div></div><div class="w-msg">${msg||'Selamat dan semoga bahagia selalu.'}</div>`;
-  document.getElementById('wList').prepend(card);
-  setTimeout(()=>card.classList.add('visible'),50);
-  document.getElementById('rN').value='';document.getElementById('rS').value='';document.getElementById('rM').value='';
-  showT('Terima kasih · ありがとう');
-  setTimeout(()=>document.querySelector('.wishes-section').scrollIntoView({behavior:'smooth',block:'start'}),300);
+
+  const body = `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${gCnt}&message=${encodeURIComponent(msg)}`;
+
+  fetch('/api/rsvp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: body
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === 'ok') {
+      const init=name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+      const bgs=[getComputedStyle(document.documentElement).getPropertyValue('--ink').trim(),'#555','#333','#777','#222'];
+      const bg=bgs[Math.floor(Math.random()*bgs.length)];
+      const stxt=status==='hadir'?`✓ HADIR · ${gCnt} TAMU`:'✗ TIDAK HADIR';
+      const card=document.createElement('div');card.className='w-card';
+      card.innerHTML=`<div class="w-hd"><div class="w-av" style="background:${bg}">${init}</div><div><div class="w-nm">${name}</div><div class="w-st">${stxt}</div></div></div><div class="w-msg">${msg||'Selamat dan semoga bahagia selalu.'}</div>`;
+      document.getElementById('wList').prepend(card);
+      setTimeout(()=>card.classList.add('visible'),50);
+      document.getElementById('rN').value='';document.getElementById('rS').value='';document.getElementById('rM').value='';
+      showT('Terima kasih · ありがとう');
+      setTimeout(()=>document.querySelector('.wishes-section').scrollIntoView({behavior:'smooth',block:'start'}),300);
+    } else {
+      showT('⚠️ Gagal mengirim konfirmasi');
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    showT('⚠️ Terjadi kesalahan koneksi');
+  });
 }
 
 /* Copy */
