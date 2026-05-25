@@ -2116,71 +2116,75 @@
                                             </div>
                                         </div>
 
-                                        <!-- Video Focal Point Slider -->
-                                        <div class="form-group" style="margin-top: 3.5rem; display: none !important;">
-                                            <div
-                                                style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.2rem;">
-                                                <h4 class="serif" style="color: #4A3728; font-size: 1.3rem; margin: 0;">
-                                                    Video Vertical Focal Point</h4>
-                                                <span id="focal-val"
-                                                    style="font-size: 0.95rem; color: #3b82f6; font-weight: 800; font-family: 'Inter', sans-serif;">{{
-                                                    invitation.hero_video_position }}%</span>
-                                            </div>
-
-                                            <!-- REALTIME PREVIEW BOX -->
-                                            <div class="video-preview-container">
-                                                {% if !invitation.background_video_url.is_empty() %}
-                                                <video id="focal-preview-vid" autoplay muted loop playsinline
-                                                    style="width: 100%; height: 100%; object-fit: cover; object-position: center {{ invitation.hero_video_position }}%;">
-                                                    <source src="{{ invitation.background_video_url }}"
-                                                        type="video/mp4">
-                                                </video>
-                                                {% else %}
-                                                <div
-                                                    style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 0.85rem; text-align: center; padding: 2rem; background: #f1f5f9;">
-                                                    Preview akan muncul setelah Anda mengunggah video.
-                                                </div>
-                                                {% endif %}
-
-                                                <div class="focal-line" id="focal-indicator-line"
-                                                    style="top: {{ invitation.hero_video_position }}%;"></div>
-                                                <div class="preview-badge">Preview</div>
-                                            </div>
-
-                                            <input type="range" name="hero_video_position" min="0" max="100"
-                                                value="{{ invitation.hero_video_position }}" class="blue-slider"
-                                                oninput="updateFocalPreview(this.value)">
-
-                                            <div
-                                                style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.75rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
-                                                <span>Atas (Top)</span>
-                                                <span>Tengah (Center)</span>
-                                                <span>Bawah (Bottom)</span>
-                                            </div>
-
-                                            <script>
-                                                function updateFocalPreview(val) {
-                                                    document.getElementById('focal-val').innerText = val + '%';
-                                                    const vid = document.getElementById('focal-preview-vid');
-                                                    const line = document.getElementById('focal-indicator-line');
-                                                    if (vid) {
-                                                        vid.style.objectPosition = `center ${val}%`;
-                                                    }
-                                                    if (line) {
-                                                        line.style.top = val + '%';
-                                                    }
-                                                }
-
-                                                function updateVideoFileName(input) {
-                                                    if (input.files && input.files[0]) {
-                                                        const pill = document.getElementById('video-file-pill');
-                                                        const nameSpan = document.getElementById('video-filename');
-                                                        nameSpan.innerText = input.files[0].name;
-                                                        pill.style.display = 'inline-flex';
-                                                    }
-                                                }
-                                            </script>
+                                        <!-- Video Preview Button & Collapsible Container -->
+                                        <div style="margin-top: 1rem; display: flex; gap: 10px; align-items: center; justify-content: center;">
+                                            <button type="button" id="btn-toggle-video-preview" class="btn-elegant"
+                                                style="padding: 6px 16px; font-size: 0.8rem; border-radius: 50px; background: white; border: 1.5px solid #D4A373; color: #4A3728; cursor: pointer; display: {% if invitation.background_video_url.is_empty() %}none{% else %}inline-flex{% endif %}; align-items: center; gap: 6px; font-weight: 600;"
+                                                onclick="toggleVideoPreview()">
+                                                <i class="fas fa-play"></i> <span>Lihat Preview</span>
+                                            </button>
                                         </div>
+
+                                        <div id="video-preview-wrapper" style="display: none; margin-top: 1.5rem;">
+                                            <div class="video-preview-container" style="border-radius: 20px; overflow: hidden; position: relative; max-width: 500px; margin: 0 auto;">
+                                                <video id="bg-video-preview-player" controls muted playsinline
+                                                    style="width: 100%; aspect-ratio: 16/9; object-fit: cover;">
+                                                    {% if !invitation.background_video_url.is_empty() %}
+                                                    <source src="{{ invitation.background_video_url }}" type="video/mp4">
+                                                    {% endif %}
+                                                </video>
+                                                <div style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.6); color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 800;">Preview Video Background</div>
+                                            </div>
+                                        </div>
+
+                                        <script>
+                                            function toggleVideoPreview() {
+                                                const wrapper = document.getElementById('video-preview-wrapper');
+                                                const btn = document.getElementById('btn-toggle-video-preview');
+                                                const player = document.getElementById('bg-video-preview-player');
+                                                
+                                                if (wrapper.style.display === 'none') {
+                                                    wrapper.style.display = 'block';
+                                                    btn.innerHTML = '<i class="fas fa-times"></i> <span>Tutup Preview</span>';
+                                                    btn.style.background = '#fef2f2';
+                                                    btn.style.borderColor = '#fca5a5';
+                                                    btn.style.color = '#b91c1c';
+                                                    if (player) {
+                                                        player.play().catch(e => console.log("Auto-play blocked or failed", e));
+                                                    }
+                                                } else {
+                                                    wrapper.style.display = 'none';
+                                                    btn.innerHTML = '<i class="fas fa-play"></i> <span>Lihat Preview</span>';
+                                                    btn.style.background = 'white';
+                                                    btn.style.borderColor = '#D4A373';
+                                                    btn.style.color = '#4A3728';
+                                                    if (player) {
+                                                        player.pause();
+                                                    }
+                                                }
+                                            }
+
+                                            function updateVideoFileName(input) {
+                                                if (input.files && input.files[0]) {
+                                                    const pill = document.getElementById('video-file-pill');
+                                                    const nameSpan = document.getElementById('video-filename');
+                                                    nameSpan.innerText = input.files[0].name;
+                                                    pill.style.display = 'inline-flex';
+                                                    
+                                                    // Show the Show Preview button
+                                                    const btn = document.getElementById('btn-toggle-video-preview');
+                                                    if (btn) btn.style.display = 'inline-flex';
+                                                    
+                                                    // Update Video Player Source
+                                                    const player = document.getElementById('bg-video-preview-player');
+                                                    if (player) {
+                                                        const objectUrl = URL.createObjectURL(input.files[0]);
+                                                        player.src = objectUrl;
+                                                        player.load();
+                                                    }
+                                                }
+                                            }
+                                        </script>
                                     </div>
                                 </div>
                             </div>
