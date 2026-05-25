@@ -991,6 +991,20 @@
         min-width: 0;
     }
 
+    /* Sidebar Toggle Tabs styling */
+    .dashboard-main > div[id] {
+        display: none;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    .dashboard-main > div[id].active-tab {
+        display: block !important;
+        animation: fadeIn 0.4s ease;
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
     @media (max-width: 992px) {
         .dashboard-layout {
             flex-direction: column;
@@ -2369,8 +2383,7 @@
                     <div class="section-header mb-4 d-flex justify-content-between align-items-end">
                         <div>
                             <h3 class="serif">Group Theme Assignment</h3>
-                            <p class="text-muted small">Pair your guest groups with visual themes. Every guest in the
-                                group will inherit this look.</p>
+                            <p class="text-muted small">Pasangkan grup tamu Anda dengan tema visual. Setiap tamu di dalam grup akan menggunakan tampilan ini.</p>
                         </div>
                         <div class="plan-status-badge">
                             <div class="plan-label">{{ invitation.plan_name }} PLAN</div>
@@ -2604,8 +2617,7 @@
                         style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
                         <div style="flex: 1;">
                             <h3 class="serif" style="margin: 0;">Guest Management</h3>
-                            <p class="text-muted small" style="margin: 4px 0 0;">Personalize links and overrides for
-                                each individual guest.</p>
+                            <p class="text-muted small" style="margin: 4px 0 0;">Personalisasikan tautan dan penyesuaian khusus untuk setiap tamu secara individu.</p>
                         </div>
                         <div style="flex-shrink: 0; margin-left: 1.5rem;">
                             <button class="btn btn-primary" onclick="toggleAddGuestModal()"
@@ -2749,8 +2761,7 @@
                         style="display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
                         <div style="flex: 1;">
                             <h3 class="serif" style="margin: 0;">RSVP Responses</h3>
-                            <p class="text-muted small" style="margin: 4px 0 0;">Monitor and manage responses from your
-                                guests in real-time.</p>
+                            <p class="text-muted small" style="margin: 4px 0 0;">Pantau dan kelola tanggapan dari tamu Anda secara real-time.</p>
                         </div>
                     </div>
 
@@ -3206,45 +3217,50 @@
             });
         });
 
-        // Sidebar Smooth Scroll & Active State
+        // Sidebar Toggle Tabs navigation logic
+        function showTab(targetId) {
+            if (!targetId || targetId === '' || targetId === '#') {
+                targetId = '#details';
+            }
+            if (!targetId.startsWith('#')) {
+                targetId = '#' + targetId;
+            }
+
+            const targetSec = $(targetId);
+            if (targetSec.length) {
+                // Hide all sections, remove active-tab class
+                $('.dashboard-main > div[id]').removeClass('active-tab');
+                // Show the active section with active-tab class
+                targetSec.addClass('active-tab');
+
+                // Update sidebar links active class
+                $('.sidebar-link').removeClass('active');
+                $(`.sidebar-link[href="${targetId}"]`).addClass('active');
+
+                // Scroll to top of the dashboard main content smoothly
+                const dashboardOffset = $('.dashboard-layout').offset().top - 80;
+                $('html, body').scrollTop(dashboardOffset);
+            }
+        }
+
+        // Sidebar link click handler
         $('.sidebar-link').on('click', function (e) {
             e.preventDefault();
             const targetId = $(this).attr('href');
-            const targetSection = $(targetId);
-
-            if (targetSection.length) {
-                // Adjust for sticky header if you have one
-                const offset = 80;
-                $('html, body').animate({
-                    scrollTop: targetSection.offset().top - offset
-                }, 500);
+            if (window.location.hash !== targetId) {
+                window.location.hash = targetId;
+            } else {
+                showTab(targetId); // Force tab switch/scroll to top even if clicking same active tab
             }
         });
 
-        // Intersection Observer for highlighting active section
-        const sections = document.querySelectorAll('.dashboard-main > div[id]');
-        const navLinks = document.querySelectorAll('.sidebar-link');
+        // Listen for hashchange events
+        $(window).on('hashchange', function () {
+            showTab(window.location.hash);
+        });
 
-        const observerOptions = {
-            root: null,
-            rootMargin: '-20% 0px -60% 0px', // Adjust to trigger active state nicely
-            threshold: 0
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    navLinks.forEach(link => {
-                        link.classList.remove('active');
-                        if (link.getAttribute('href') === `#${entry.target.id}`) {
-                            link.classList.add('active');
-                        }
-                    });
-                }
-            });
-        }, observerOptions);
-
-        sections.forEach(sec => observer.observe(sec));
+        // Initialize on load
+        showTab(window.location.hash);
 
         // Client-side Table Logic
         const rowsPerPage = 5;
