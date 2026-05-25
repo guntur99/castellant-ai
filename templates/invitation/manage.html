@@ -3154,36 +3154,8 @@
                 }
             });
 
-            // 1. Get the active step
-            const activeStep = document.querySelector('.form-step.active');
-            const formData = new FormData();
-
-            // 2. Add all inputs, textareas, and selects inside the active step
-            const inputs = activeStep.querySelectorAll('input, textarea, select');
-            inputs.forEach(el => {
-                if (el.disabled) return;
-                
-                // Handle file input separately
-                if (el.type === 'file') {
-                    if (el.files && el.files.length > 0) {
-                        for (let i = 0; i < el.files.length; i++) {
-                            formData.append(el.name, el.files[i]);
-                        }
-                    }
-                } else if (el.type === 'checkbox' || el.type === 'radio') {
-                    if (el.checked) {
-                        formData.append(el.name, el.value);
-                    }
-                } else {
-                    formData.append(el.name, el.value);
-                }
-            });
-
-            // 3. Add global hidden fields if they exist and are not in the active step
-            const templateNameInput = document.getElementById('template_name_input');
-            if (templateNameInput && !activeStep.contains(templateNameInput)) {
-                formData.append(templateNameInput.name, templateNameInput.value);
-            }
+            // Build FormData containing all inputs, textareas, selects, and files inside the entire form
+            const formData = new FormData(this);
 
             try {
                 const response = await fetch(this.action, {
