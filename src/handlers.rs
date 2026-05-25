@@ -1959,7 +1959,7 @@ pub async fn dashboard(
                     ai_usage_count: r.ai_usage_count,
                     ai_custom_knowledge: r.ai_custom_knowledge.unwrap_or_default(),
                     ai_language: r.ai_language.clone(),
-                    recipient_name: "Guest Guest & Partner".to_string(),
+                    recipient_name: "Guest & Partner".to_string(),
                     event_date_iso: "2026-05-24T08:00:00".to_string(),
                     reception_date_iso: "2026-05-24T08:00:00".to_string(),
                     rsvps: Vec::new(),
@@ -2130,7 +2130,7 @@ pub async fn invitation_detail(
             let mut ai_language = row.ai_language.clone();
             let mut final_song_id = row.song_id;
             
-            let mut recipient_name = "Guest Guest & Partner".to_string();
+            let mut recipient_name = "Guest & Partner".to_string();
             
             // Override with preview_theme if provided
             if let Some(preview) = params.get("preview_theme") {
@@ -2442,7 +2442,7 @@ pub async fn invitation_detail(
                     ai_usage_count: 0,
                     ai_custom_knowledge: String::new(),
                     ai_language: "id".to_string(),
-                    recipient_name: "Guest Guest & Partner".to_string(),
+                    recipient_name: "Guest & Partner".to_string(),
                     event_date_iso: "2026-12-12T08:00:00".to_string(),
                     reception_date_iso: "2026-12-12T08:00:00".to_string(),
                     rsvps: Vec::new(),
@@ -2582,7 +2582,7 @@ pub async fn manage_invitation(
     Path(slug): Path<String>,
     State(state): State<AppState>,
     jar: PrivateCookieJar,
-    Query(params): Query<HashMap<String, String>>,
+    Query(_params): Query<HashMap<String, String>>,
 ) -> impl IntoResponse {
     let mut user_id = None;
     if let Some(cookie) = jar.get("user_id") {
@@ -2652,7 +2652,7 @@ pub async fn manage_invitation(
                 ai_usage_count: row.ai_usage_count,
                 ai_custom_knowledge: row.ai_custom_knowledge.unwrap_or_default(),
                 ai_language: row.ai_language.clone(),
-                recipient_name: "Guest Guest & Partner".to_string(),
+                recipient_name: "Guest & Partner".to_string(),
                 event_date_iso,
                 reception_date_iso,
                 rsvps: sqlx::query_as::<_, Rsvp>("SELECT * FROM rsvps WHERE invitation_id = $1 ORDER BY created_at DESC")
@@ -2684,28 +2684,17 @@ pub async fn manage_invitation(
                 .await
                 .unwrap_or_default();
 
-            // Pagination parameters
-            let page_size: i64 = 10;
-            let current_page: i32 = params.get("page").and_then(|p| p.parse::<i32>().ok()).unwrap_or(1);
-            // Total guest count for pagination metadata
-            let total_items: i64 = sqlx::query_scalar!("SELECT COUNT(*) FROM guests WHERE invitation_id = $1", row.id)
-                .fetch_one(&state.db)
-                .await
-                .unwrap_or(Some(0))
-                .unwrap_or(0);
-            let total_pages: i32 = ((total_items as f64) / (page_size as f64)).ceil() as i32;
-            let offset: i64 = ((current_page - 1) as i64) * page_size;
-            // Fetch guests for the current page
-            let guests = sqlx::query_as::<_, Guest>("SELECT id, invitation_id, name, category, template_override, slug, is_sent, COALESCE(ai_language, '') as ai_language, song_id, created_at FROM guests WHERE invitation_id = $1 ORDER BY created_at DESC LIMIT $2 OFFSET $3")
+            // Pagination parameters (delegated to client-side datatable, preserved for template compatibility)
+            let current_page: i32 = 1;
+            let guests = sqlx::query_as::<_, Guest>("SELECT id, invitation_id, name, category, template_override, slug, is_sent, COALESCE(ai_language, '') as ai_language, song_id, created_at FROM guests WHERE invitation_id = $1 ORDER BY created_at DESC")
                 .bind(row.id)
-                .bind(page_size)
-                .bind(offset)
                 .fetch_all(&state.db)
                 .await
                 .unwrap_or_default();
-            // Calculate displayed range
-            let start_range: i64 = if total_items == 0 { 0 } else { offset + 1 };
-            let end_range: i64 = std::cmp::min(offset + page_size, total_items);
+            let total_items: i64 = guests.len() as i64;
+            let total_pages: i32 = 1;
+            let start_range: i64 = if total_items == 0 { 0 } else { 1 };
+            let end_range: i64 = total_items;
             
             let groups = sqlx::query_as::<_, GuestGroup>("SELECT id, invitation_id, name, template_name, COALESCE(ai_language, '') as ai_language, song_id, created_at FROM invitation_groups WHERE invitation_id = $1 ORDER BY name ASC")
                 .bind(row.id)
@@ -3370,7 +3359,7 @@ pub async fn preview(
         ai_usage_count: 0,
         ai_custom_knowledge: String::new(),
         ai_language: "id".to_string(),
-        recipient_name: "Guest Guest & Partner".to_string(),
+        recipient_name: "Guest & Partner".to_string(),
         event_date_iso: "2026-05-24T08:00:00".to_string(),
         reception_date_iso: "2026-05-24T08:00:00".to_string(),
         rsvps: Vec::new(),
@@ -3932,6 +3921,95 @@ pub async fn delete_guest(
     State(state): State<AppState>,
 ) -> impl IntoResponse {
     sqlx::query("DELETE FROM guests WHERE id = $1").bind(guest_id).execute(&state.db).await.unwrap();
+    Redirect::to(&format!("/invitation/{}/manage#guests", slug)).into_response()
+}
+
+pub async fn toggle_guest_sent(
+    Path((_slug, guest_id)): Path<(String, Uuid)>,
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user_id = if let Some(cookie) = jar.get("user_id") {
+        Uuid::parse_str(cookie.value()).ok()
+    } else { None };
+
+    if user_id.is_none() {
+        return (StatusCode::UNAUTHORIZED, "Unauthorized").into_response();
+    }
+
+    let row = sqlx::query!("SELECT is_sent FROM guests WHERE id = $1", guest_id)
+        .fetch_one(&state.db)
+        .await;
+    
+    if let Ok(r) = row {
+        let new_val = !r.is_sent.unwrap_or(false);
+        let _ = sqlx::query!("UPDATE guests SET is_sent = $1 WHERE id = $2", new_val, guest_id)
+            .execute(&state.db)
+            .await;
+        axum::Json(serde_json::json!({ "status": "ok", "is_sent": new_val })).into_response()
+    } else {
+        (StatusCode::NOT_FOUND, "Guest not found").into_response()
+    }
+}
+
+#[derive(Deserialize)]
+pub struct BulkAddGuestsRequest {
+    pub names: String,
+    pub category: Option<String>,
+}
+
+pub async fn bulk_add_guests(
+    Path(slug): Path<String>,
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+    Form(payload): Form<BulkAddGuestsRequest>,
+) -> impl IntoResponse {
+    let user_id = if let Some(cookie) = jar.get("user_id") {
+        Uuid::parse_str(cookie.value()).ok()
+    } else { None };
+
+    if user_id.is_none() { return Redirect::to("/").into_response(); }
+
+    let (invitation_id, _plan_name): (Uuid, Option<String>) = sqlx::query_as("SELECT id, plan_name FROM invitations WHERE slug = $1 AND user_id = $2 AND deleted_at IS NULL")
+        .bind(&slug)
+        .bind(user_id.unwrap())
+        .fetch_one(&state.db)
+        .await
+        .unwrap();
+
+    let names_list: Vec<&str> = payload.names
+        .lines()
+        .map(|l| l.trim())
+        .filter(|l| !l.is_empty())
+        .collect();
+
+    let mut tx = state.db.begin().await.unwrap();
+
+    for name in names_list {
+        let guest_slug = name.to_lowercase()
+            .chars()
+            .filter(|c| c.is_alphanumeric() || c.is_whitespace())
+            .collect::<String>()
+            .split_whitespace()
+            .collect::<Vec<&str>>()
+            .join("-");
+        
+        let _ = sqlx::query(
+            "INSERT INTO guests (invitation_id, name, category, slug, template_override, ai_language, song_id) VALUES ($1, $2, $3, $4, $5, $6, $7)"
+        )
+        .bind(invitation_id)
+        .bind(name)
+        .bind(&payload.category)
+        .bind(&guest_slug)
+        .bind(&None::<String>)
+        .bind(&"".to_string())
+        .bind(&None::<Uuid>)
+        .execute(&mut *tx)
+        .await;
+    }
+
+    tx.commit().await.unwrap();
+
     Redirect::to(&format!("/invitation/{}/manage#guests", slug)).into_response()
 }
 

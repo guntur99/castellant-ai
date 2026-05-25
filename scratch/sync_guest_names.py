@@ -5,7 +5,7 @@ dir_path = "/Users/guntur/Dev/rust/castellant/templates/invitation/"
 replacements = {
     r"Ade Guntur Fitridullah & Partner": "{{ invitation.recipient_name }}",
     r"Ade Guntur Fitridullah<br>& Partner": "{{ invitation.recipient_name }}",
-    r"Guest Guest & Partner": "{{ invitation.recipient_name }}",
+    r"Guest & Partner": "{{ invitation.recipient_name }}",
     r"Tamu Undangan": "{{ invitation.recipient_name }}",
 }
 

@@ -809,7 +809,11 @@ textarea.f-inp{min-height:86px;resize:vertical}
     <div class="sp-bg"></div>
     <div class="sp-speed"></div>
     <div class="sp-photo-wrap">
-      <img class="sp-photo" src="{% if invitation.gallery_images.len() > 0 %}{{ invitation.gallery_images[0] }}{% else %}https://images.unsplash.com/photo-1519741497674-611481863552?w=1000&h=900&fit=crop&q=85{% endif %}" alt="Wedding">
+      {% if !invitation.background_video_url.is_empty() || (!invitation.gallery_videos.is_empty() && !invitation.gallery_videos[0].is_empty()) %}
+      <video id="heroVideo" class="sp-photo" autoplay muted playsinline></video>
+      {% else %}
+      <img class="sp-photo" src="{% if !invitation.gallery_images.is_empty() %}{{ invitation.gallery_images[0] }}{% else %}https://images.unsplash.com/photo-1519741497674-611481863552?w=1000&h=900&fit=crop&q=85{% endif %}" alt="Wedding">
+      {% endif %}
       <div class="sp-tone"></div>
       <div class="sp-vignette"></div>
     </div>
@@ -825,7 +829,11 @@ textarea.f-inp{min-height:86px;resize:vertical}
   <!-- Sub panels row -->
   <div class="panel-row">
     <div class="pr-left">
-      <img class="pr-photo" src="{% if invitation.gallery_images.len() > 1 %}{{ invitation.gallery_images[1] }}{% else %}https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&h=220&fit=crop&q=80{% endif %}" alt="">
+      {% if !invitation.gallery_videos.is_empty() && !invitation.gallery_videos[0].is_empty() %}
+      <video id="bottomLeftVideo" class="pr-photo" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0" autoplay muted playsinline></video>
+      {% else %}
+      <img class="pr-photo" src="{% if !invitation.gallery_images.is_empty() && invitation.gallery_images.len() > 1 %}{{ invitation.gallery_images[1] }}{% else %}https://images.unsplash.com/photo-1606800052052-a08af7148866?w=400&h=220&fit=crop&q=80{% endif %}" alt="">
+      {% endif %}
       <div class="pr-tone" style="position:absolute;inset:0"></div>
       <div class="pr-caption"><span class="pr-cap-text">PANEL 002 · Establishing Shot</span></div>
     </div>
@@ -840,7 +848,7 @@ textarea.f-inp{min-height:86px;resize:vertical}
   <!-- Track pills + Player -->
   <div style="background:var(--white);border-top:2px solid var(--ink);padding:10px 16px 6px">
     <div class="t-pills">
-      {% if invitation.playlist.len() > 0 %}
+      {% if !invitation.playlist.is_empty() %}
         {% for song in invitation.playlist %}
           <div class="t-pill{% if loop.first %} active{% endif %}" onclick="sw({{ loop.index0 }},this)">Track 0{{ loop.index }}</div>
         {% endfor %}
@@ -1154,9 +1162,9 @@ textarea.f-inp{min-height:86px;resize:vertical}
     <div class="s-rule" style="justify-content:center"><div class="s-rule-line" style="max-width:60px"></div><div class="s-rule-dot"></div><div class="s-rule-line" style="max-width:60px"></div></div>
   </div>
   <div class="rsvp-stats">
-    <div class="rs-box"><div class="rs-n">{{ invitation.total_rsvps() }}</div><div class="rs-l">Respons</div></div>
-    <div class="rs-box"><div class="rs-n">{{ invitation.total_hadir() }}</div><div class="rs-l">Hadir</div></div>
-    <div class="rs-box"><div class="rs-n">{{ invitation.total_guest_count() }}</div><div class="rs-l">Total Tamu</div></div>
+    <div class="rs-box"><div class="rs-n" id="stResp">{{ invitation.total_rsvps() }}</div><div class="rs-l">Respons</div></div>
+    <div class="rs-box"><div class="rs-n" id="stHadir">{{ invitation.total_hadir() }}</div><div class="rs-l">Hadir</div></div>
+    <div class="rs-box"><div class="rs-n" id="stGuests">{{ invitation.total_guest_count() }}</div><div class="rs-l">Total Tamu</div></div>
   </div>
   <div class="rsvp-form">
     <div class="f-grp"><label class="f-lbl">名前 · Nama Lengkap</label><input type="text" class="f-inp" placeholder="Masukkan nama Anda" id="rN"></div>
@@ -1264,19 +1272,47 @@ textarea.f-inp{min-height:86px;resize:vertical}
 
 <script>
 let myAudio = null;
-const TRACKS=[
-  {% if invitation.playlist.len() > 0 %}
+const PLAYLIST_SONGS = [
+  {% if !invitation.playlist.is_empty() %}
     {% for song in invitation.playlist %}
-      {title:"Track {{ loop.index }}",artist:"{{ invitation.couple_name_short }} · Wedding OST",dur:"Play",secs:180,url:"{{ song }}"},
+      "{{ song }}",
     {% endfor %}
   {% else %}
-    {title:"Wedding Day",artist:"{{ invitation.couple_name_short }} · Wedding OST",dur:"3:24",secs:204,url:"{% if invitation.song_url.is_empty() %}/static/music/wedding-day.mp3{% else %}{{ invitation.song_url }}{% endif %}"},
-    {title:"First Look",artist:"{{ invitation.couple_name_short }} · Wedding OST",dur:"2:58",secs:178,url:"/static/music/first-look.mp3"},
-    {title:"Lamaran",artist:"{{ invitation.couple_name_short }} · Wedding OST",dur:"4:12",secs:252,url:"/static/music/lamaran.mp3"},
+    {% if !invitation.song_url.is_empty() %}
+      "{{ invitation.song_url }}",
+    {% endif %}
+    {% if !invitation.custom_song_url.is_empty() %}
+      "{{ invitation.custom_song_url }}",
+    {% endif %}
   {% endif %}
+].filter(s => s.trim() !== "");
+
+const TRACKS = [
+  {
+    title: "Wedding Day",
+    artist: "{{ invitation.couple_name_short }} · Wedding OST",
+    dur: "3:24",
+    secs: 204,
+    url: PLAYLIST_SONGS.length > 0 ? PLAYLIST_SONGS[0] : "/static/music/wedding-day.mp3"
+  },
+  {
+    title: "First Look",
+    artist: "{{ invitation.couple_name_short }} · Wedding OST",
+    dur: "2:58",
+    secs: 178,
+    url: PLAYLIST_SONGS.length > 1 ? PLAYLIST_SONGS[1] : "/static/music/first-look.mp3"
+  },
+  {
+    title: "Lamaran",
+    artist: "{{ invitation.couple_name_short }} · Wedding OST",
+    dur: "4:12",
+    secs: 252,
+    url: PLAYLIST_SONGS.length > 2 ? PLAYLIST_SONGS[2] : "/static/music/lamaran.mp3"
+  }
 ];
+
 const IMGS=[
-  {% if invitation.gallery_images.len() > 0 %}
+  {% if !invitation.gallery_images.is_empty() %}
     {% for img in invitation.gallery_images %}
       "{{ img }}",
     {% endfor %}
@@ -1293,6 +1329,7 @@ const IMGS=[
 ];
 
 let tIdx=0,isPlaying=false,prog=0,pTimer=null,lbIdx=0,gCnt=1;
+let totalW = {{ invitation.total_rsvps() }}, totalH = {{ invitation.total_hadir() }}, totalT = {{ invitation.total_guest_count() }};
 
 /* Barcode deco */
 (function(){
@@ -1312,8 +1349,76 @@ function openInvitation(){
   setTimeout(()=>document.getElementById('main').classList.add('show'),100);
   document.getElementById('bnav').classList.add('show');
   setTimeout(init,400);
+  play();
 }
-function init(){countdown();buildGallery();scrollAnims();navHL()}
+
+function init(){
+  countdown();
+  buildGallery();
+  scrollAnims();
+  navHL();
+  initHeroVideoRotation();
+  initBottomLeftVideoRotation();
+}
+
+function initHeroVideoRotation() {
+  const HERO_VIDEOS = [
+    {% if !invitation.background_video_url.is_empty() %}
+      "{{ invitation.background_video_url }}",
+    {% endif %}
+    {% for vid in invitation.gallery_videos %}
+      {% if !vid.is_empty() %}
+        "{{ vid }}",
+      {% endif %}
+    {% endfor %}
+  ].filter(v => v.trim() !== "");
+
+  let curHeroVidIdx = 0;
+  const heroVidEl = document.getElementById('heroVideo');
+
+  if (heroVidEl && HERO_VIDEOS.length > 0) {
+    heroVidEl.src = HERO_VIDEOS[curHeroVidIdx];
+    heroVidEl.play().catch(err => console.log("Hero video autoplay delayed:", err));
+
+    if (HERO_VIDEOS.length === 1) {
+      heroVidEl.loop = true;
+    } else {
+      heroVidEl.addEventListener('ended', () => {
+        curHeroVidIdx = (curHeroVidIdx + 1) % HERO_VIDEOS.length;
+        heroVidEl.src = HERO_VIDEOS[curHeroVidIdx];
+        heroVidEl.play().catch(err => console.error("Hero video rotation failed:", err));
+      });
+    }
+  }
+}
+
+function initBottomLeftVideoRotation() {
+  const BL_VIDEOS = [
+    {% for vid in invitation.gallery_videos %}
+      {% if !vid.is_empty() %}
+        "{{ vid }}",
+      {% endif %}
+    {% endfor %}
+  ].filter(v => v.trim() !== "");
+
+  let curBlVidIdx = 0;
+  const blVidEl = document.getElementById('bottomLeftVideo');
+
+  if (blVidEl && BL_VIDEOS.length > 0) {
+    blVidEl.src = BL_VIDEOS[curBlVidIdx];
+    blVidEl.play().catch(err => console.log("Bottom-left video autoplay delayed:", err));
+
+    if (BL_VIDEOS.length === 1) {
+      blVidEl.loop = true;
+    } else {
+      blVidEl.addEventListener('ended', () => {
+        curBlVidIdx = (curBlVidIdx + 1) % BL_VIDEOS.length;
+        blVidEl.src = BL_VIDEOS[curBlVidIdx];
+        blVidEl.play().catch(err => console.error("Bottom-left video rotation failed:", err));
+      });
+    }
+  }
+}
 
 /* Player */
 function togglePlay(){isPlaying?pause():play()}
@@ -1464,6 +1569,14 @@ function submitR(){
       card.innerHTML=`<div class="w-hd"><div class="w-av" style="background:${bg}">${init}</div><div><div class="w-nm">${name}</div><div class="w-st">${stxt}</div></div></div><div class="w-msg">${msg||'Selamat dan semoga bahagia selalu.'}</div>`;
       document.getElementById('wList').prepend(card);
       setTimeout(()=>card.classList.add('visible'),50);
+
+      // Update stats locally
+      if (status === 'hadir') { totalH++; totalT += gCnt; }
+      totalW++;
+      const stRespEl = document.getElementById('stResp'); if (stRespEl) stRespEl.textContent = totalW;
+      const stHadirEl = document.getElementById('stHadir'); if (stHadirEl) stHadirEl.textContent = totalH;
+      const stGuestsEl = document.getElementById('stGuests'); if (stGuestsEl) stGuestsEl.textContent = totalT;
+
       document.getElementById('rN').value='';document.getElementById('rS').value='';document.getElementById('rM').value='';
       showT('Terima kasih · ありがとう');
       setTimeout(()=>document.querySelector('.wishes-section').scrollIntoView({behavior:'smooth',block:'start'}),300);

@@ -2708,15 +2708,15 @@
             </div>
             <div class="stats-row">
                 <div class="stat-card reveal">
-                    <div class="stat-num">7</div>
+                    <div class="stat-num" id="stat-respons">{% if invitation.is_preview %}3{% else %}{{ invitation.total_rsvps() }}{% endif %}</div>
                     <div class="stat-lbl">Respons</div>
                 </div>
                 <div class="stat-card reveal d1">
-                    <div class="stat-num">7</div>
+                    <div class="stat-num" id="stat-hadir">{% if invitation.is_preview %}3{% else %}{{ invitation.total_hadir() }}{% endif %}</div>
                     <div class="stat-lbl">Hadir</div>
                 </div>
                 <div class="stat-card reveal d2">
-                    <div class="stat-num">13</div>
+                    <div class="stat-num" id="stat-tamu">{% if invitation.is_preview %}5{% else %}{{ invitation.total_guest_count() }}{% endif %}</div>
                     <div class="stat-lbl">Tamu</div>
                 </div>
             </div>
@@ -3580,13 +3580,25 @@
             const name = document.getElementById('rsvpName').value.trim();
             const status = document.getElementById('rsvpStatus').value;
             const msg = document.getElementById('rsvpMsg').value.trim();
+
+            if (!name || !status) { toast('Mohon isi nama dan status kehadiran'); return; }
+
             fetch('/api/rsvp', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${typeof guestCount !== 'undefined' ? guestCount : 1}&message=${encodeURIComponent(msg)}`
+                body: `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(status)}&guests=${gCount}&message=${encodeURIComponent(msg)}`
             });
 
-            if (!name || !status) { toast('Mohon isi nama dan status kehadiran'); return; }
+            // Update stats counters in real-time
+            const responsEl = document.getElementById('stat-respons');
+            const hadirEl = document.getElementById('stat-hadir');
+            const tamuEl = document.getElementById('stat-tamu');
+            if (responsEl) responsEl.textContent = parseInt(responsEl.textContent || 0) + 1;
+            if (status === 'hadir') {
+                if (hadirEl) hadirEl.textContent = parseInt(hadirEl.textContent || 0) + 1;
+                if (tamuEl) tamuEl.textContent = parseInt(tamuEl.textContent || 0) + gCount;
+            }
+
             const ini = name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
             const pals = [
                 { bg: 'rgba(10,132,255,.2)', c: 'var(--blue)' },
