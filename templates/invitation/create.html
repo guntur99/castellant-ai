@@ -436,85 +436,101 @@
                             Sesuaikan musik latar belakang dan atmosfer sinematik undangan Anda dengan video cinematic.
                         </p>
 
-                        <div class="glass-container"
-                            style="padding: 2.5rem; border-radius: 35px; background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 20px 40px rgba(74, 55, 40, 0.05);">
-                            
-                            <!-- Playlist & MP3 Upload -->
-                            <div class="form-group" style="margin-bottom: 3rem;">
-                                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.2rem;">
-                                    <h4 class="serif" style="color: #4A3728; font-size: 1.3rem; margin: 0;">Daftar Lagu (Playlist MP3)</h4>
-                                    <span id="playlist-limit-info" style="font-size: 0.8rem; color: #94a3b8; font-weight: 600;">Limit: Sesuai Paket Pilihan</span>
-                                </div>
-
-                                <div id="playlist-list" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.5rem;">
-                                    <!-- List of newly selected playlist songs -->
-                                </div>
-
-                                <!-- Upload New Song Box -->
-                                <div style="position: relative; padding: 2rem; background: #fafafa; border: 2px dashed rgba(212, 163, 115, 0.2); border-radius: 20px; transition: all 0.3s; text-align: center; cursor: pointer;"
-                                    onclick="document.getElementById('playlist-upload').click()">
-                                    <input type="file" id="playlist-upload" name="playlist[]" multiple accept="audio/mpeg" style="display: none;" onchange="handlePlaylistChange(this)">
-                                    <div style="color: #D4A373; margin-bottom: 0.5rem;">
-                                        <i class="fas fa-plus-circle" style="font-size: 2rem;"></i>
-                                    </div>
-                                    <p style="font-size: 0.9rem; color: #4A3728; margin: 0; font-weight: 600;">Tambah lagu latar belakang baru (.mp3)</p>
-                                    <p style="font-size: 0.75rem; color: #8E6E53; margin-top: 4px; opacity: 0.6;">Mendukung multi-upload sekaligus</p>
-                                </div>
-                            </div>
-
-                            <!-- Video Background Upload -->
-                            <div class="form-group" style="margin-top: 2.5rem;">
-                                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1rem;">
-                                    <h4 class="serif" style="color: #4A3728; font-size: 1.3rem; margin: 0;">Video Background (Visual Cover)</h4>
-                                    <span style="font-size: 0.8rem; color: #94a3b8; font-weight: 600;">Format MP4, Max 25MB</span>
-                                </div>
+                        <!-- Hidden Form Container to keep fields in DOM for JS / Submission -->
+                        <div style="display: none;">
+                            <div class="glass-container"
+                                style="padding: 2.5rem; border-radius: 35px; background: rgba(255, 255, 255, 0.7); border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 20px 40px rgba(74, 55, 40, 0.05);">
                                 
-                                <div class="video-upload-box" onclick="document.getElementById('video_upload_input').click()"
-                                    style="border: 2px dashed #cbd5e1; background: white; border-radius: 20px; padding: 2.5rem 2rem; text-align: center; cursor: pointer; transition: all 0.2s;">
-                                    <input type="file" id="video_upload_input" name="background_video" accept="video/mp4" style="display: none;" onchange="updateVideoFileName(this)">
-                                    
-                                    <div style="color: #cbd5e1; margin-bottom: 1rem;">
-                                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #D4A373; opacity: 0.6; margin: 0 auto;">
-                                            <path d="M23 7l-7 5 7 5V7z"></path>
-                                            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
-                                        </svg>
+                                <!-- Playlist & MP3 Upload -->
+                                <div class="form-group" style="margin-bottom: 3rem;">
+                                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.2rem;">
+                                        <h4 class="serif" style="color: #4A3728; font-size: 1.3rem; margin: 0;">Daftar Lagu (Playlist MP3)</h4>
+                                        <span id="playlist-limit-info" style="font-size: 0.8rem; color: #94a3b8; font-weight: 600;">Limit: Sesuai Paket Pilihan</span>
                                     </div>
-                                    
-                                    <p style="font-size: 0.95rem; color: #475569; margin: 0; font-weight: 600;">Klik untuk memilih file video MP4</p>
-                                    
-                                    <div id="video-file-pill" class="video-pill" style="display: none; align-items: center; gap: 8px; background: #e6f4ea; padding: 6px 14px; border-radius: 50px; margin: 15px auto 0; width: fit-content; border: 1px solid #c2e7c9;">
-                                        <div style="width: 8px; height: 8px; background: #10b981; border-radius: 50%;"></div>
-                                        <span id="video-filename" style="font-size: 0.8rem; color: #137333; font-weight: 700; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></span>
+
+                                    <div id="playlist-list" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 1.5rem;">
+                                        <!-- List of newly selected playlist songs -->
+                                    </div>
+
+                                    <!-- Upload New Song Box -->
+                                    <div style="position: relative; padding: 2rem; background: #fafafa; border: 2px dashed rgba(212, 163, 115, 0.2); border-radius: 20px; transition: all 0.3s; text-align: center; cursor: pointer;"
+                                        onclick="document.getElementById('playlist-upload').click()">
+                                        <input type="file" id="playlist-upload" name="playlist[]" multiple accept="audio/mpeg" style="display: none;" onchange="handlePlaylistChange(this)">
+                                        <div style="color: #D4A373; margin-bottom: 0.5rem;">
+                                            <i class="fas fa-plus-circle" style="font-size: 2rem;"></i>
+                                        </div>
+                                        <p style="font-size: 0.9rem; color: #4A3728; margin: 0; font-weight: 600;">Tambah lagu latar belakang baru (.mp3)</p>
+                                        <p style="font-size: 0.75rem; color: #8E6E53; margin-top: 4px; opacity: 0.6;">Mendukung multi-upload sekaligus</p>
                                     </div>
                                 </div>
 
-                                <!-- Video Focal Point Slider -->
-                                <div class="form-group" style="margin-top: 3.5rem; display: none !important;">
-                                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.2rem;">
-                                        <h4 class="serif" style="color: #4A3728; font-size: 1.3rem; margin: 0;">Video Vertical Focal Point</h4>
-                                        <span id="focal-val" style="font-size: 0.95rem; color: #3b82f6; font-weight: 800; font-family: 'Inter', sans-serif;">50%</span>
+                                <!-- Video Background Upload -->
+                                <div class="form-group" style="margin-top: 2.5rem;">
+                                    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1rem;">
+                                        <h4 class="serif" style="color: #4A3728; font-size: 1.3rem; margin: 0;">Video Background (Visual Cover)</h4>
+                                        <span style="font-size: 0.8rem; color: #94a3b8; font-weight: 600;">Format MP4, Max 25MB</span>
                                     </div>
-
-                                    <!-- REALTIME PREVIEW BOX -->
-                                    <div class="video-preview-container" style="position: relative; width: 100%; height: 250px; border-radius: 20px; overflow: hidden; background: #f1f5f9; border: 1px solid #e2e8f0; margin-bottom: 1.5rem;">
-                                        <div id="no-video-preview" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 0.85rem; text-align: center; padding: 2rem;">
-                                            Preview akan muncul setelah Anda mengunggah video MP4 background.
-                                        </div>
-                                        <video id="focal-preview-vid" autoplay muted loop playsinline style="display: none; width: 100%; height: 100%; object-fit: cover; object-position: center 50%;">
-                                        </video>
-                                        <div class="focal-line" id="focal-indicator-line" style="position: absolute; left: 0; right: 0; height: 2px; background: rgba(59, 130, 246, 0.7); box-shadow: 0 0 8px rgba(59, 130, 246, 0.8); top: 50%;"></div>
-                                        <div class="preview-badge" style="position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.5); color: white; padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;">Preview Alignment</div>
-                                    </div>
-
-                                    <input type="range" name="hero_video_position" min="0" max="100" value="50" class="blue-slider" oninput="updateFocalPreview(this.value)" style="width: 100%; accent-color: #3b82f6;">
                                     
-                                    <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.75rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
-                                        <span>Atas (Top)</span>
-                                        <span>Tengah (Center)</span>
-                                        <span>Bawah (Bottom)</span>
+                                    <div class="video-upload-box" onclick="document.getElementById('video_upload_input').click()"
+                                        style="border: 2px dashed #cbd5e1; background: white; border-radius: 20px; padding: 2.5rem 2rem; text-align: center; cursor: pointer; transition: all 0.2s;">
+                                        <input type="file" id="video_upload_input" name="background_video" accept="video/mp4" style="display: none;" onchange="updateVideoFileName(this)">
+                                        
+                                        <div style="color: #cbd5e1; margin-bottom: 1rem;">
+                                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: #D4A373; opacity: 0.6; margin: 0 auto;">
+                                                <path d="M23 7l-7 5 7 5V7z"></path>
+                                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+                                            </svg>
+                                        </div>
+                                        
+                                        <p style="font-size: 0.95rem; color: #475569; margin: 0; font-weight: 600;">Klik untuk memilih file video MP4</p>
+                                        
+                                        <div id="video-file-pill" class="video-pill" style="display: none; align-items: center; gap: 8px; background: #e6f4ea; padding: 6px 14px; border-radius: 50px; margin: 15px auto 0; width: fit-content; border: 1px solid #c2e7c9;">
+                                            <div style="width: 8px; height: 8px; background: #10b981; border-radius: 50%;"></div>
+                                            <span id="video-filename" style="font-size: 0.8rem; color: #137333; font-weight: 700; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Video Focal Point Slider -->
+                                    <div class="form-group" style="margin-top: 3.5rem; display: none !important;">
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.2rem;">
+                                            <h4 class="serif" style="color: #4A3728; font-size: 1.3rem; margin: 0;">Video Vertical Focal Point</h4>
+                                            <span id="focal-val" style="font-size: 0.95rem; color: #3b82f6; font-weight: 800; font-family: 'Inter', sans-serif;">50%</span>
+                                        </div>
+
+                                        <!-- REALTIME PREVIEW BOX -->
+                                        <div class="video-preview-container" style="position: relative; width: 100%; height: 250px; border-radius: 20px; overflow: hidden; background: #f1f5f9; border: 1px solid #e2e8f0; margin-bottom: 1.5rem;">
+                                            <div id="no-video-preview" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 0.85rem; text-align: center; padding: 2rem;">
+                                                Preview akan muncul setelah Anda mengunggah video MP4 background.
+                                            </div>
+                                            <video id="focal-preview-vid" autoplay muted loop playsinline style="display: none; width: 100%; height: 100%; object-fit: cover; object-position: center 50%;">
+                                            </video>
+                                            <div class="focal-line" id="focal-indicator-line" style="position: absolute; left: 0; right: 0; height: 2px; background: rgba(59, 130, 246, 0.7); box-shadow: 0 0 8px rgba(59, 130, 246, 0.8); top: 50%;"></div>
+                                            <div class="preview-badge" style="position: absolute; top: 15px; left: 15px; background: rgba(0,0,0,0.5); color: white; padding: 4px 10px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;">Preview Alignment</div>
+                                        </div>
+
+                                        <input type="range" name="hero_video_position" min="0" max="100" value="50" class="blue-slider" oninput="updateFocalPreview(this.value)" style="width: 100%; accent-color: #3b82f6;">
+                                        
+                                        <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.75rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+                                            <span>Atas (Top)</span>
+                                            <span>Tengah (Center)</span>
+                                            <span>Bawah (Bottom)</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Beautiful Premium Lock Card -->
+                        <div class="premium-lock-card text-center" style="padding: 4rem 2rem; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border-radius: 30px; border: 1px solid rgba(142, 110, 83, 0.15); box-shadow: 0 20px 40px rgba(0,0,0,0.03); text-align: center; margin-top: 1rem;">
+                            <div style="font-size: 3rem; margin-bottom: 1.5rem; filter: drop-shadow(0 10px 15px rgba(142,110,83,0.15));">✨</div>
+                            <h3 class="serif" style="color: #2A1E14; font-size: 1.6rem; margin-bottom: 1rem;">Premium Multimedia Unlocked After Payment</h3>
+                            <p style="color: #666; font-size: 0.9rem; max-width: 480px; margin: 0 auto 2.5rem; line-height: 1.6;">
+                                Tambahkan sentuhan visual dan audio yang memukau! Fitur pengunggahan lagu latar belakang (.mp3) kustom dan video latar belakang sinematik (.mp4) akan terbuka setelah pembayaran selesai dilakukan.
+                            </p>
+                            <button type="button" class="btn-elegant primary" onclick="nextStep(6)" style="margin: 0 auto; background: var(--color-accent-red); color: white; border: none; padding: 1rem 2.5rem; border-radius: 50px; cursor: pointer; font-weight: 700; transition: all 0.3s; display: flex; align-items: center; gap: 8px;">
+                                <span>Lanjutkan ke Galeri</span>
+                                <i class="arrow-icon" style="font-style: normal;">→</i>
+                            </button>
                         </div>
 
                         <div style="margin-top: 4rem; display: flex; justify-content: space-between;">
@@ -535,50 +551,66 @@
                             Unggah koleksi foto terbaik dan video kenangan indah Anda ke galeri utama undangan digital.
                         </p>
 
-                        <!-- Gallery Photos -->
-                        <div class="gallery-photo-box" style="margin-bottom: 3.5rem;">
-                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
-                                <div style="width: 42px; height: 42px; background: #f0f9ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #0ea5e9; font-size: 1.2rem;">🖼️</div>
-                                <h4 class="serif" style="color: #4A3728; font-size: 1.4rem; margin: 0;">Galeri Foto (Photos)</h4>
+                        <!-- Hidden Form Container to keep fields in DOM for JS / Submission -->
+                        <div style="display: none;">
+                            <!-- Gallery Photos -->
+                            <div class="gallery-photo-box" style="margin-bottom: 3.5rem;">
+                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                                    <div style="width: 42px; height: 42px; background: #f0f9ff; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #0ea5e9; font-size: 1.2rem;">🖼️</div>
+                                    <h4 class="serif" style="color: #4A3728; font-size: 1.4rem; margin: 0;">Galeri Foto (Photos)</h4>
+                                </div>
+
+                                <div id="gallery-upload-zone"
+                                    style="border: 2px dashed #cbd5e1; background: white; border-radius: 20px; padding: 3rem 2rem; text-align: center; cursor: pointer; transition: all 0.2s;"
+                                    onclick="document.getElementById('gallery_file_input').click()">
+                                    <div>
+                                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">📸</div>
+                                        <p style="font-size: 1rem; color: #475569; margin: 0; font-weight: 700;">Klik atau seret foto ke sini</p>
+                                        <p style="font-size: 0.85rem; color: #94a3b8; margin: 8px 0 0;">Mendukung JPG, PNG, WebP — Anda bisa pilih banyak sekaligus</p>
+                                    </div>
+                                    <input type="file" id="gallery_file_input" name="gallery[]" accept="image/*" multiple style="display: none;" onchange="handleGalleryUpload(this.files)">
+                                </div>
+                                
+                                <div class="gallery-preview-grid" id="gallery-grid" style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1.5rem; width: 100%;">
+                                    <!-- Gallery images preview will be rendered here -->
+                                </div>
                             </div>
 
-                            <div id="gallery-upload-zone"
-                                style="border: 2px dashed #cbd5e1; background: white; border-radius: 20px; padding: 3rem 2rem; text-align: center; cursor: pointer; transition: all 0.2s;"
-                                onclick="document.getElementById('gallery_file_input').click()">
-                                <div>
-                                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">📸</div>
-                                    <p style="font-size: 1rem; color: #475569; margin: 0; font-weight: 700;">Klik atau seret foto ke sini</p>
-                                    <p style="font-size: 0.85rem; color: #94a3b8; margin: 8px 0 0;">Mendukung JPG, PNG, WebP — Anda bisa pilih banyak sekaligus</p>
+                            <!-- Gallery Videos -->
+                            <div class="gallery-video-box">
+                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
+                                    <div style="width: 42px; height: 42px; background: #fef2f2; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #ef4444; font-size: 1.2rem;">🎥</div>
+                                    <h4 class="serif" style="color: #4A3728; font-size: 1.4rem; margin: 0;">Galeri Video (Videos)</h4>
                                 </div>
-                                <input type="file" id="gallery_file_input" name="gallery[]" accept="image/*" multiple style="display: none;" onchange="handleGalleryUpload(this.files)">
-                            </div>
-                            
-                            <div class="gallery-preview-grid" id="gallery-grid" style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 1.5rem; width: 100%;">
-                                <!-- Gallery images preview will be rendered here -->
+
+                                <div id="video-upload-zone"
+                                    style="border: 2px dashed #cbd5e1; background: white; border-radius: 20px; padding: 3rem 2rem; text-align: center; cursor: pointer; transition: all 0.2s;"
+                                    onclick="document.getElementById('video_file_input').click()">
+                                    <div>
+                                        <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎞️</div>
+                                        <p style="font-size: 1rem; color: #475569; margin: 0; font-weight: 700;">Klik untuk memilih file video</p>
+                                        <p id="gallery-video-limits-info" style="font-size: 0.85rem; color: #94a3b8; margin: 8px 0 0;">Format MP4 (Sisa kapasitas berdasarkan paket Anda)</p>
+                                    </div>
+                                    <input type="file" id="video_file_input" name="gallery_video[]" accept="video/mp4" multiple style="display: none;" onchange="handleVideoGalleryUpload(this.files)">
+                                </div>
+
+                                <div class="gallery-preview-grid" id="video-gallery-grid" style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1.5rem; width: 100%;">
+                                    <!-- Gallery videos preview will be rendered here -->
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Gallery Videos -->
-                        <div class="gallery-video-box">
-                            <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1.5rem;">
-                                <div style="width: 42px; height: 42px; background: #fef2f2; border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #ef4444; font-size: 1.2rem;">🎥</div>
-                                <h4 class="serif" style="color: #4A3728; font-size: 1.4rem; margin: 0;">Galeri Video (Videos)</h4>
-                            </div>
-
-                            <div id="video-upload-zone"
-                                style="border: 2px dashed #cbd5e1; background: white; border-radius: 20px; padding: 3rem 2rem; text-align: center; cursor: pointer; transition: all 0.2s;"
-                                onclick="document.getElementById('video_file_input').click()">
-                                <div>
-                                    <div style="font-size: 2.5rem; margin-bottom: 1rem;">🎞️</div>
-                                    <p style="font-size: 1rem; color: #475569; margin: 0; font-weight: 700;">Klik untuk memilih file video</p>
-                                    <p id="gallery-video-limits-info" style="font-size: 0.85rem; color: #94a3b8; margin: 8px 0 0;">Format MP4 (Sisa kapasitas berdasarkan paket Anda)</p>
-                                </div>
-                                <input type="file" id="video_file_input" name="gallery_video[]" accept="video/mp4" multiple style="display: none;" onchange="handleVideoGalleryUpload(this.files)">
-                            </div>
-
-                            <div class="gallery-preview-grid" id="video-gallery-grid" style="margin-top: 2rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1.5rem; width: 100%;">
-                                <!-- Gallery videos preview will be rendered here -->
-                            </div>
+                        <!-- Beautiful Premium Lock Card -->
+                        <div class="premium-lock-card text-center" style="padding: 4rem 2rem; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border-radius: 30px; border: 1px solid rgba(142, 110, 83, 0.15); box-shadow: 0 20px 40px rgba(0,0,0,0.03); text-align: center; margin-top: 1rem;">
+                            <div style="font-size: 3rem; margin-bottom: 1.5rem; filter: drop-shadow(0 10px 15px rgba(142,110,83,0.15));">📸</div>
+                            <h3 class="serif" style="color: #2A1E14; font-size: 1.6rem; margin-bottom: 1rem;">Premium Gallery Unlocked After Payment</h3>
+                            <p style="color: #666; font-size: 0.9rem; max-width: 480px; margin: 0 auto 2.5rem; line-height: 1.6;">
+                                Bagikan momen terindah Anda! Fitur galeri foto tanpa batas serta unggah kenangan video ke galeri utama undangan digital Anda akan aktif secara instan setelah pembayaran selesai dilakukan.
+                            </p>
+                            <button type="button" class="btn-elegant primary" onclick="nextStep(7)" style="margin: 0 auto; background: var(--color-accent-red); color: white; border: none; padding: 1rem 2.5rem; border-radius: 50px; cursor: pointer; font-weight: 700; transition: all 0.3s; display: flex; align-items: center; gap: 8px;">
+                                <span>Lanjutkan ke Amplop Digital</span>
+                                <i class="arrow-icon" style="font-style: normal;">→</i>
+                            </button>
                         </div>
 
                         <div style="margin-top: 4rem; display: flex; justify-content: space-between;">
@@ -599,63 +631,79 @@
                             Tambahkan kata-kata mutiara / kutipan suci pernikahan Anda serta detail rekening pembayaran digital untuk kado undangan.
                         </p>
 
-                        <!-- Quote Section -->
-                        <div class="quote-section"
-                            style="padding: 4rem; background: #fffbf8; border-radius: 40px; border: 1px solid #fdf0e5; text-align: center; position: relative; margin-bottom: 4rem;">
-                            <button type="button" class="btn-ai-magic" onclick="generateAiQuote()">
-                                <span class="wand-icon">✨</span>
-                                <span>Generate AI Quote</span>
-                            </button>
-                            <label
-                                style="font-family: var(--font-serif); font-style: italic; color: #8E6E53; margin-bottom: 1.5rem; display: block;">"The Sacred Bond"</label>
-                            <textarea name="quote_text" id="in-quote"
-                                style="text-align: center; font-style: italic; background: transparent; border: none; font-size: 1.2rem; color: #4A3728; width: 100%;"
-                                rows="3">Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu isteri-isteri dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya, dan dijadikan-Nya diantaramu rasa kasih dan sayang. Sesungguhnya pada yang demikian itu benar-benar terdapat tanda-tanda bagi kaum yang berfikir.</textarea>
-                            <input type="text" name="quote_source" id="in-quote-source" value="QS. Ar-Rum: 21"
-                                style="text-align: center; border: none; background: transparent; color: #8E6E53; font-weight: 700; width: 100%; margin-top: 1rem;">
-                        </div>
+                        <!-- Hidden Form Container to keep fields in DOM for JS / Submission -->
+                        <div style="display: none;">
+                            <!-- Quote Section -->
+                            <div class="quote-section"
+                                style="padding: 4rem; background: #fffbf8; border-radius: 40px; border: 1px solid #fdf0e5; text-align: center; position: relative; margin-bottom: 4rem;">
+                                <button type="button" class="btn-ai-magic" onclick="generateAiQuote()">
+                                    <span class="wand-icon">✨</span>
+                                    <span>Generate AI Quote</span>
+                                </button>
+                                <label
+                                    style="font-family: var(--font-serif); font-style: italic; color: #8E6E53; margin-bottom: 1.5rem; display: block;">"The Sacred Bond"</label>
+                                <textarea name="quote_text" id="in-quote"
+                                    style="text-align: center; font-style: italic; background: transparent; border: none; font-size: 1.2rem; color: #4A3728; width: 100%;"
+                                    rows="3">Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu isteri-isteri dari jenismu sendiri, supaya kamu cenderung dan merasa tenteram kepadanya, dan dijadikan-Nya diantaramu rasa kasih dan sayang. Sesungguhnya pada yang demikian itu benar-benar terdapat tanda-tanda bagi kaum yang berfikir.</textarea>
+                                <input type="text" name="quote_source" id="in-quote-source" value="QS. Ar-Rum: 21"
+                                    style="text-align: center; border: none; background: transparent; color: #8E6E53; font-weight: 700; width: 100%; margin-top: 1rem;">
+                            </div>
 
-                        <!-- Gift Section -->
-                        <div class="gift-section"
-                            style="padding: 4rem; background: #f8f9ff; border-radius: 40px; border: 1px solid #e5eafb;">
-                            <h3 style="font-family: var(--font-serif); color: #2c3e50; text-align: center; margin-bottom: 2rem;">
-                                <i class="fas fa-wallet" style="margin-right: 0.5rem; color: #4e73df;"></i>
-                                Amplop Digital (Gift)
-                            </h3>
-                            <p style="text-align: center; color: #666; margin-bottom: 2rem; font-size: 0.9rem;">
-                                Berikan kemudahan tamu untuk mengirimkan kado digital. Anda dapat menambahkan detail rekening bank atau e-wallet.
-                            </p>
-                            
-                            <div id="gift-accounts-container">
-                                <div class="gift-account-item" style="display: flex; flex-direction: column; gap: 1.2rem; margin-bottom: 1.5rem; padding: 1.5rem; background: white; border-radius: 20px; border: 1px solid #eef0f7; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
-                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                        <div class="input-group">
-                                            <label style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Bank/E-Wallet</label>
-                                            <input type="text" name="bank_name[]" placeholder="BCA, Mandiri, Dana, dll">
+                            <!-- Gift Section -->
+                            <div class="gift-section"
+                                style="padding: 4rem; background: #f8f9ff; border-radius: 40px; border: 1px solid #e5eafb;">
+                                <h3 style="font-family: var(--font-serif); color: #2c3e50; text-align: center; margin-bottom: 2rem;">
+                                    <i class="fas fa-wallet" style="margin-right: 0.5rem; color: #4e73df;"></i>
+                                    Amplop Digital (Gift)
+                                </h3>
+                                <p style="text-align: center; color: #666; margin-bottom: 2rem; font-size: 0.9rem;">
+                                    Berikan kemudahan tamu untuk mengirimkan kado digital. Anda dapat menambahkan detail rekening bank atau e-wallet.
+                                </p>
+                                
+                                <div id="gift-accounts-container">
+                                    <div class="gift-account-item" style="display: flex; flex-direction: column; gap: 1.2rem; margin-bottom: 1.5rem; padding: 1.5rem; background: white; border-radius: 20px; border: 1px solid #eef0f7; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.03);">
+                                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                            <div class="input-group">
+                                                <label style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Bank/E-Wallet</label>
+                                                <input type="text" name="bank_name[]" placeholder="BCA, Mandiri, Dana, dll">
+                                            </div>
+                                            <div class="input-group">
+                                                <label style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Nomor Rekening</label>
+                                                <input type="text" name="account_number[]" placeholder="8210370xxx">
+                                            </div>
                                         </div>
                                         <div class="input-group">
-                                            <label style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Nomor Rekening</label>
-                                            <input type="text" name="account_number[]" placeholder="8210370xxx">
+                                            <label style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Atas Nama</label>
+                                            <input type="text" name="account_holder[]" placeholder="Nama Lengkap Pemilik">
                                         </div>
-                                    </div>
-                                    <div class="input-group">
-                                        <label style="font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 0.5px;">Atas Nama</label>
-                                        <input type="text" name="account_holder[]" placeholder="Nama Lengkap Pemilik">
                                     </div>
                                 </div>
-                            </div>
 
-                            <div style="text-align: center; margin-top: 1.5rem;">
-                                <button type="button" class="btn-ai-magic" onclick="addGiftAccount()" style="position:static; margin: 0 auto; background: white; color: #4e73df; border: 1px solid #4e73df;">
-                                    <i class="fas fa-plus"></i>
-                                    <span>Tambah Rekening Lain</span>
-                                </button>
+                                <div style="text-align: center; margin-top: 1.5rem;">
+                                    <button type="button" class="btn-elegant primary" onclick="addGiftAccount()" style="position:static; margin: 0 auto; background: white; color: #4e73df; border: 1px solid #4e73df;">
+                                        <i class="fas fa-plus"></i>
+                                        <span>Tambah Rekening Lain</span>
+                                    </button>
+                                </div>
                             </div>
+                        </div>
+
+                        <!-- Beautiful Premium Lock Card -->
+                        <div class="premium-lock-card text-center" style="padding: 4rem 2rem; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border-radius: 30px; border: 1px solid rgba(142, 110, 83, 0.15); box-shadow: 0 20px 40px rgba(0,0,0,0.03); text-align: center; margin-top: 1rem;">
+                            <div style="font-size: 3rem; margin-bottom: 1.5rem; filter: drop-shadow(0 10px 15px rgba(142,110,83,0.15));">🎁</div>
+                            <h3 class="serif" style="color: #2A1E14; font-size: 1.6rem; margin-bottom: 1rem;">Sacred Quotes & Digital Gifts</h3>
+                            <p style="color: #666; font-size: 0.9rem; max-width: 480px; margin: 0 auto 2.5rem; line-height: 1.6;">
+                                Tambahkan kutipan suci pernikahan yang menyentuh hati serta detail rekening/e-wallet untuk amplop digital. Fitur-fitur eksklusif ini akan aktif penuh setelah pembayaran selesai dilakukan.
+                            </p>
+                            <button type="button" class="btn-elegant primary" onclick="nextStep(8)" style="margin: 0 auto; background: var(--color-accent-red); color: white; border: none; padding: 1rem 2.5rem; border-radius: 50px; cursor: pointer; font-weight: 700; transition: all 0.3s; display: flex; align-items: center; gap: 8px;">
+                                <span>Lanjutkan ke Preview Draft</span>
+                                <i class="arrow-icon" style="font-style: normal;">→</i>
+                            </button>
                         </div>
 
                         <div style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: center;">
                             <button type="button" class="btn-back" onclick="prevStep(6)">← Back</button>
-                            <button type="button" class="btn-elegant" onclick="updatePreview(); nextStep(8)">
+                            <button type="button" class="btn-elegant" onclick="nextStep(8)">
                                 <span>Preview Draft</span>
                                 <i class="arrow-icon">→</i>
                             </button>
@@ -668,81 +716,97 @@
                     <div style="padding: 3rem; text-align: center;">
                         <h3 class="serif accent-title">Summary Preview</h3>
 
-                        <div
-                            style="margin: 2rem auto; max-width: 500px; display: flex; flex-direction: column; align-items: center; gap: 2rem;">
-                            
-                            <!-- Template Switcher Tabs -->
-                            <div id="preview-template-tabs" style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; width: 100%; margin-bottom: 0.5rem;">
-                                <!-- Populated by JS -->
-                            </div>
-                            <div class="phone-mockup-container">
-                                <div class="phone-mockup">
-                                    <div class="phone-speaker"></div>
-                                    <div class="phone-screen-wrap">
-                                        <div id="preview-loader" class="preview-loader">
-                                            <div class="spinner"></div>
-                                            <p>Rendering your masterpiece...</p>
-                                        </div>
-                                        <iframe id="live-preview-iframe" src="about:blank" frameborder="0"></iframe>
-                                    </div>
-                                    <div class="phone-button"></div>
-                                </div>
-                            </div>
-
-                            <div style="width: 100%; text-align: left; padding: 2rem; background: #fdf6f0; border-radius: 30px; margin-bottom: 2rem; border: 1px dashed #d4c4b5;">
-                                <h4 class="serif" style="font-size: 1rem; color: #4A3728; margin-bottom: 1rem; display: flex; align-items: center; gap: 10px;">
-                                    <span style="font-size: 1.2rem;">🌍</span>
-                                    <span>AI Auto-Translation</span>
-                                </h4>
-                                <p style="font-size: 0.75rem; color: #888; margin-bottom: 1.5rem;">Translate your invitation content for international guests.</p>
-                                <div style="display: flex; gap: 10px;">
-                                    <select id="ai-target-lang" style="flex:1; padding: 10px; border-radius: 10px; border: 1px solid #ddd; font-size: 0.8rem; background: white;">
-                                        <option value="English">English</option>
-                                        <option value="Japanese">Japanese (日本語)</option>
-                                        <option value="Arabic">Arabic (العربية)</option>
-                                        <option value="French">French</option>
-                                        <option value="Dutch">Dutch</option>
-                                    </select>
-                                    <button type="button" class="btn-ai-magic" onclick="translateWithAi()" style="position:static; padding: 10px 20px; box-shadow: none;">
-                                        <span>Translate</span>
-                                    </button>
-                                </div>
-                            </div>
-
+                        <!-- Hidden Form Container to keep fields/preview in DOM for JS -->
+                        <div style="display: none;">
                             <div
-                                style="width: 100%; text-align: left; padding: 2.5rem; background: #fff; border-radius: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.03); border: 1px solid #f5f5f5;">
-                                <h4 class="serif"
-                                    style="font-size: 1.2rem; color: #2A1E14; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
-                                    <span style="font-size: 1.5rem;">💡</span>
-                                    <span>Pro-Tips for Perfection</span>
-                                </h4>
-                                <ul style="list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem;">
-                                    <li
-                                        style="display: flex; gap: 12px; font-size: 0.85rem; color: #666; line-height: 1.5;">
-                                        <span style="color: var(--color-accent-rose); font-weight: 900;">•</span>
-                                        <span>Periksa kembali penulisan nama gelar dan orang tua agar sesuai dengan
-                                            protokol undangan.</span>
-                                    </li>
-                                    <li
-                                        style="display: flex; gap: 12px; font-size: 0.85rem; color: #666; line-height: 1.5;">
-                                        <span style="color: var(--color-accent-rose); font-weight: 900;">•</span>
-                                        <span>Klik tombol <strong>Get Directions</strong> di preview untuk memastikan
-                                            titik lokasi Google Maps sudah akurat.</span>
-                                    </li>
-                                    <li
-                                        style="display: flex; gap: 12px; font-size: 0.85rem; color: #666; line-height: 1.5;">
-                                        <span style="color: var(--color-accent-rose); font-weight: 900;">•</span>
-                                        <span>Gunakan foto dengan orientasi portrait (tegak) untuk hasil visual terbaik
-                                            di layar ponsel.</span>
-                                    </li>
-                                    <li
-                                        style="display: flex; gap: 12px; font-size: 0.85rem; color: #666; line-height: 1.5;">
-                                        <span style="color: var(--color-accent-rose); font-weight: 900;">•</span>
-                                        <span>Anda masih bisa mengganti tema atau mengedit detail kapan saja sebelum
-                                            melakukan pembayaran akhir.</span>
-                                    </li>
-                                </ul>
+                                style="margin: 2rem auto; max-width: 500px; display: flex; flex-direction: column; align-items: center; gap: 2rem;">
+                                
+                                <!-- Template Switcher Tabs -->
+                                <div id="preview-template-tabs" style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; width: 100%; margin-bottom: 0.5rem;">
+                                    <!-- Populated by JS -->
+                                </div>
+                                <div class="phone-mockup-container">
+                                    <div class="phone-mockup">
+                                        <div class="phone-speaker"></div>
+                                        <div class="phone-screen-wrap">
+                                            <div id="preview-loader" class="preview-loader">
+                                                <div class="spinner"></div>
+                                                <p>Rendering your masterpiece...</p>
+                                            </div>
+                                            <iframe id="live-preview-iframe" src="about:blank" frameborder="0"></iframe>
+                                        </div>
+                                        <div class="phone-button"></div>
+                                    </div>
+                                </div>
+
+                                <div style="width: 100%; text-align: left; padding: 2rem; background: #fdf6f0; border-radius: 30px; margin-bottom: 2rem; border: 1px dashed #d4c4b5;">
+                                    <h4 class="serif" style="font-size: 1rem; color: #4A3728; margin-bottom: 1rem; display: flex; align-items: center; gap: 10px;">
+                                        <span style="font-size: 1.2rem;">🌍</span>
+                                        <span>AI Auto-Translation</span>
+                                    </h4>
+                                    <p style="font-size: 0.75rem; color: #888; margin-bottom: 1.5rem;">Translate your invitation content for international guests.</p>
+                                    <div style="display: flex; gap: 10px;">
+                                        <select id="ai-target-lang" style="flex:1; padding: 10px; border-radius: 10px; border: 1px solid #ddd; font-size: 0.8rem; background: white;">
+                                            <option value="English">English</option>
+                                            <option value="Japanese">Japanese (日本語)</option>
+                                            <option value="Arabic">Arabic (العربية)</option>
+                                            <option value="French">French</option>
+                                            <option value="Dutch">Dutch</option>
+                                        </select>
+                                        <button type="button" class="btn-ai-magic" onclick="translateWithAi()" style="position:static; padding: 10px 20px; box-shadow: none;">
+                                            <span>Translate</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div
+                                    style="width: 100%; text-align: left; padding: 2.5rem; background: #fff; border-radius: 30px; box-shadow: 0 15px 40px rgba(0,0,0,0.03); border: 1px solid #f5f5f5;">
+                                    <h4 class="serif"
+                                        style="font-size: 1.2rem; color: #2A1E14; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;">
+                                        <span style="font-size: 1.5rem;">💡</span>
+                                        <span>Pro-Tips for Perfection</span>
+                                    </h4>
+                                    <ul style="list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem;">
+                                        <li
+                                            style="display: flex; gap: 12px; font-size: 0.85rem; color: #666; line-height: 1.5;">
+                                            <span style="color: var(--color-accent-rose); font-weight: 900;">•</span>
+                                            <span>Periksa kembali penulisan nama gelar dan orang tua agar sesuai dengan
+                                                protokol undangan.</span>
+                                        </li>
+                                        <li
+                                            style="display: flex; gap: 12px; font-size: 0.85rem; color: #666; line-height: 1.5;">
+                                            <span style="color: var(--color-accent-rose); font-weight: 900;">•</span>
+                                            <span>Klik tombol <strong>Get Directions</strong> di preview untuk memastikan
+                                                titik lokasi Google Maps sudah akurat.</span>
+                                        </li>
+                                        <li
+                                            style="display: flex; gap: 12px; font-size: 0.85rem; color: #666; line-height: 1.5;">
+                                            <span style="color: var(--color-accent-rose); font-weight: 900;">•</span>
+                                            <span>Gunakan foto dengan orientasi portrait (tegak) untuk hasil visual terbaik
+                                                di layar ponsel.</span>
+                                        </li>
+                                        <li
+                                            style="display: flex; gap: 12px; font-size: 0.85rem; color: #666; line-height: 1.5;">
+                                            <span style="color: var(--color-accent-rose); font-weight: 900;">•</span>
+                                            <span>Anda masih bisa mengganti tema atau mengedit detail kapan saja sebelum
+                                                melakukan pembayaran akhir.</span>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
+                        </div>
+
+                        <!-- Beautiful Premium Lock Card -->
+                        <div class="premium-lock-card text-center" style="max-width: 800px; margin: 0 auto; padding: 4rem 2rem; background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(10px); border-radius: 30px; border: 1px solid rgba(142, 110, 83, 0.15); box-shadow: 0 20px 40px rgba(0,0,0,0.03); text-align: center; margin-top: 1rem;">
+                            <div style="font-size: 3rem; margin-bottom: 1.5rem; filter: drop-shadow(0 10px 15px rgba(142,110,83,0.15));">📱</div>
+                            <h3 class="serif" style="color: #2A1E14; font-size: 1.6rem; margin-bottom: 1rem;">Live Invitation Preview</h3>
+                            <p style="color: #666; font-size: 0.9rem; max-width: 480px; margin: 0 auto 2.5rem; line-height: 1.6;">
+                                Undangan digital Anda siap dihidupkan! Setelah menyelesaikan pembayaran di langkah berikutnya, Anda dapat langsung melihat live preview interaktif secara real-time dan melakukan kustomisasi penuh.
+                            </p>
+                            <button type="button" class="btn-elegant primary" onclick="nextStep(9)" style="margin: 0 auto; background: var(--color-accent-red); color: white; border: none; padding: 1rem 2.5rem; border-radius: 50px; cursor: pointer; font-weight: 700; transition: all 0.3s; display: flex; align-items: center; gap: 8px;">
+                                <span>Lanjut ke Pembayaran 🏛️</span>
+                                <i class="arrow-icon" style="font-style: normal;">→</i>
+                            </button>
                         </div>
 
                         <div

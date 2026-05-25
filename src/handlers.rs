@@ -995,7 +995,7 @@ pub async fn mock_login(
 }
 
 pub async fn logout(jar: PrivateCookieJar) -> impl IntoResponse {
-    let jar = jar.remove(Cookie::from("user_id"));
+    let jar = jar.remove(Cookie::build(("user_id", "")).path("/").build());
     (jar, Redirect::to("/")).into_response()
 }
 

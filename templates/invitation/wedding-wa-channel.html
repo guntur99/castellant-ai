@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>WhatsApp Channel — Anita & Zarda 💍</title>
+<title>WhatsApp Channel — {{ invitation.couple_name_short }} 💍</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@1,500;1,600&display=swap" rel="stylesheet">
 <style>
 
@@ -713,11 +713,11 @@ textarea.rs-inp{min-height:80px;resize:vertical}
 
   <!-- Featured -->
   <div class="feat-banner" onclick="openChan()">
-    <img class="feat-img" src="https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=300&fit=crop&q=80" alt="">
+    <img class="feat-img" src="{% if !invitation.gallery_images.is_empty() %}{{ invitation.gallery_images[0] }}{% else %}https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=300&fit=crop&q=80{% endif %}" alt="">
     <div class="feat-overlay"></div>
     <div class="feat-body">
       <div class="feat-tag">⭐ Channel Pilihan</div>
-      <div class="feat-name">Anita & Zarda 💍</div>
+      <div class="feat-name">{{ invitation.couple_name_short }} 💍</div>
       <div class="feat-subs">12.4K pengikut · Update pernikahan terbaru</div>
     </div>
   </div>
@@ -727,10 +727,10 @@ textarea.rs-inp{min-height:80px;resize:vertical}
     <div class="chan-section">Channel yang Diikuti</div>
 
     <div class="chan-item" onclick="openChan()">
-      <div class="chan-ava"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=100&h=100&fit=crop&q=80" alt=""></div>
+      <div class="chan-ava"><img src="{% if !invitation.bride.image_url.is_empty() %}{{ invitation.bride.image_url }}{% else %}https://images.unsplash.com/photo-1519741497674-611481863552?w=100&h=100&fit=crop&q=80{% endif %}" alt=""></div>
       <div class="chan-body">
         <div class="chan-name-row">
-          <span class="chan-name">Anita & Zarda 💍</span>
+          <span class="chan-name">{{ invitation.couple_name_short }} 💍</span>
           <span class="chan-verified"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>
         </div>
         <div class="chan-preview">📸 Foto pre-wedding terbaru sudah up!</div>
@@ -810,11 +810,11 @@ textarea.rs-inp{min-height:80px;resize:vertical}
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg>
     </button>
     <div class="cv-ava">
-      <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=80&h=80&fit=crop&q=80" alt="">
+      <img src="{% if !invitation.bride.image_url.is_empty() %}{{ invitation.bride.image_url }}{% else %}https://images.unsplash.com/photo-1519741497674-611481863552?w=80&h=80&fit=crop&q=80{% endif %}" alt="">
     </div>
     <div class="cv-info" onclick="toggleInfo()">
       <div class="cv-name">
-        Anita & Zarda 💍
+        {{ invitation.couple_name_short }} 💍
         <span class="cv-v"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span>
       </div>
       <div class="cv-subs">12.4K pengikut</div>
@@ -834,17 +834,17 @@ textarea.rs-inp{min-height:80px;resize:vertical}
 
   <!-- Channel info card -->
   <div class="chan-info-card" id="chanInfoCard">
-    <img class="cic-cover" src="https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&h=240&fit=crop&q=80" alt="">
+    <img class="cic-cover" src="{% if !invitation.gallery_images.is_empty() %}{{ invitation.gallery_images[0] }}{% else %}https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&h=240&fit=crop&q=80{% endif %}" alt="">
     <div class="cic-body">
       <div class="cic-avatar">
-        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=100&h=100&fit=crop&q=80" alt="">
+        <img src="{% if !invitation.bride.image_url.is_empty() %}{{ invitation.bride.image_url }}{% else %}https://images.unsplash.com/photo-1519741497674-611481863552?w=100&h=100&fit=crop&q=80{% endif %}" alt="">
       </div>
       <div class="cic-text">
         <div class="cic-chan-name">
-          Anita & Zarda 💍
+          {{ invitation.couple_name_short }} 💍
           <svg viewBox="0 0 24 24" fill="currentColor" style="width:15px;height:15px;color:var(--wa-green)"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
         </div>
-        <div class="cic-desc">Channel resmi pernikahan Anita Pangestuti & Zardarian Ahadika N. Update informasi, foto, dan countdown menuju hari bahagia kami 🤍 — {{ invitation.event_date }}</div>
+        <div class="cic-desc">Channel resmi pernikahan {{ invitation.bride.full_name }} & {{ invitation.groom.full_name }}. Update informasi, foto, dan countdown menuju hari bahagia kami 🤍 — {{ invitation.event_date }}</div>
         <div class="cic-stats">
           <div class="cic-stat"><div class="cic-stat-num">12.4K</div><div class="cic-stat-lbl">Pengikut</div></div>
           <div class="cic-stat"><div class="cic-stat-num">24</div><div class="cic-stat-lbl">Postingan</div></div>
@@ -890,7 +890,7 @@ textarea.rs-inp{min-height:80px;resize:vertical}
   <div class="rsvp-sheet">
     <div class="rs-handle"></div>
     <div class="rs-title">💌 Konfirmasi Kehadiran</div>
-    <div class="rs-sub">Anita & Zarda · Minggu, {{ invitation.event_date }} · Graha Yadika</div>
+    <div class="rs-sub">{{ invitation.couple_name_short }} · {{ invitation.event_date }} · {{ invitation.ceremony.venue }}</div>
     <div class="rs-field">
       <div class="rs-label">Nama Lengkap</div>
       <input type="text" class="rs-inp" placeholder="Masukkan nama Anda" id="rsName">
@@ -911,7 +911,7 @@ textarea.rs-inp{min-height:80px;resize:vertical}
     </div>
     <div class="rs-field">
       <div class="rs-label">Ucapan & Doa</div>
-      <textarea class="rs-inp" placeholder="Tulis ucapan untuk Anita & Zarda..." id="rsMsg"></textarea>
+      <textarea class="rs-inp" placeholder="Tulis ucapan untuk {{ invitation.couple_name_short }}..." id="rsMsg"></textarea>
     </div>
     <button class="rs-submit" onclick="submitRSVP()">Kirim Konfirmasi 📨</button>
   </div>
@@ -921,31 +921,19 @@ textarea.rs-inp{min-height:80px;resize:vertical}
 <div class="lb" id="lb">
   <div class="lb-hdr">
     <button class="lb-back" onclick="closeLb()"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/></svg></button>
-    <div class="lb-sender">Anita & Zarda 💍</div>
+    <div class="lb-sender">{{ invitation.couple_name_short }} 💍</div>
     <div class="lb-t" id="lbTime">09:00</div>
   </div>
   <div class="lb-main">
     <img class="lb-img" id="lbImg" src="" alt="">
     <button class="lb-nav prev" onclick="lbPrev()">‹</button>
-    <button class="lb-nav next" onclick="lbNext()">›</button>
-  </div>
-  <div class="lb-ftr">
-    <div class="lb-act" onclick="toast('⬇️ Foto disimpan!')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>Simpan</div>
-    <div class="lb-act" onclick="toast('↗️ Dibagikan!')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/></svg>Bagikan</div>
-    <div class="lb-act" onclick="toast('⭐ Disimpan ke Favorit!')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>Favorit</div>
-    <div class="lb-act" onclick="toast('ℹ️ Informasi foto')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>Info</div>
-  </div>
-</div>
-
-</div><!-- /phone -->
-
-<div id="toast"></div>
-
-<script>
-/* ══════════════════════
+    <button class="lb-nav next" onclick="lbNext()">›</but/* ══════════════════════
    IMAGES DATA
-══════════════════════ */
+   ══════════════════════ */
 const IMGS = [
+  {% for img in invitation.gallery_images %}
+  {src:"{{ img }}", t:"09:{% if loop.index0 < 10 %}0{% endif %}{{ loop.index0 }}"},
+  {% else %}
   {src:"https://images.unsplash.com/photo-1519741497674-611481863552?w=700&h=525&fit=crop&q=85",t:"09:00"},
   {src:"https://images.unsplash.com/photo-1606800052052-a08af7148866?w=700&h=525&fit=crop&q=85",t:"09:15"},
   {src:"https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=700&h=525&fit=crop&q=85",t:"09:30"},
@@ -954,13 +942,19 @@ const IMGS = [
   {src:"https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=700&h=525&fit=crop&q=85",t:"10:15"},
   {src:"https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=700&h=525&fit=crop&q=85",t:"10:30"},
   {src:"https://images.unsplash.com/photo-1550005809-91ad75fb315f?w=700&h=525&fit=crop&q=85",t:"10:45"},
+  {% endfor %}
 ];
 
+/* ══ AUDIO ENGINE ══ */
+let myAudio = null;
+{% if !invitation.song_url.is_empty() %}
+myAudio = new Audio("{{ invitation.song_url }}");
+myAudio.loop = true;
+{% endif %}
+
 /* ══ STATE ══ */
-let rsStatus='hadir', gCount=1;
-let infoExpanded=true;
-let lbIdx=0;
 let audioPlaying=false, audioTimer=null, audioPct=0;
+let infoExpanded=true, lbIdx=0, rsStatus='hadir', gCount=1;
 
 /* ══ SPLASH ══ */
 async function init(){
@@ -1013,14 +1007,14 @@ const POSTS = [
   {
     type:'announcement',
     time:'09:00', views:'12.4K',
-    text:'<b>📢 PENGUMUMAN RESMI</b>\n\nBismillah...\n\nDengan penuh rasa syukur dan kebahagiaan, kami mengumumkan bahwa pernikahan kami akan dilangsungkan pada:\n\n📅 <b>Minggu, {{ invitation.event_date }}</b>\n🕗 Akad Nikah · 08.00 WIB\n🎊 Resepsi · 11.00 – 13.00 WIB\n📍 Graha Yadika, Ciledug, Tangerang\n\nSemoga Allah meridhoi langkah kami 🤍',
+    text:'<b>📢 PENGUMUMAN RESMI</b>\n\nBismillah...\n\nDengan penuh rasa syukur dan kebahagiaan, kami mengumumkan bahwa pernikahan kami akan dilangsungkan pada:\n\n📅 <b>{{ invitation.event_date }}</b>\n🕗 Akad Nikah · {{ invitation.ceremony.time }}\n🎊 Resepsi · {{ invitation.reception.time }}\n📍 {{ invitation.ceremony.venue }}, {{ invitation.ceremony.address }}\n\nSemoga Allah meridhoi langkah kami 🤍',
     reactions:[{e:'❤️',n:842,green:false},{e:'🥹',n:324,green:false},{e:'🎊',n:218,green:false},{e:'🤲',n:156,green:true}],
   },
   {
     type:'photo-single',
     time:'09:15', views:'9.8K',
     img:0,
-    caption:'Save the Date!\n\n<b>Anita & Zarda</b> — {{ invitation.event_date }} 💍\n\nGraha Yadika, Ciledug, Tangerang',
+    caption:'Save the Date!\n\n<b>{{ invitation.couple_name_short }}</b> — {{ invitation.event_date }} 💍\n\n{{ invitation.ceremony.venue }}, {{ invitation.ceremony.address }}',
     reactions:[{e:'❤️',n:712,green:false},{e:'😍',n:289,green:false},{e:'✨',n:134,green:true}],
   },
   {
@@ -1037,19 +1031,19 @@ const POSTS = [
   {
     type:'link',
     time:'10:00', views:'7.3K',
-    caption:'📍 <b>Informasi Venue</b>\n\nAkses lokasi lengkap dan cara menuju Graha Yadika:',
+    caption:'📍 <b>Informasi Venue</b>\n\nAkses lokasi lengkap dan cara menuju {{ invitation.ceremony.venue }}:',
     link:{
       img:'https://images.unsplash.com/photo-1568667256549-094345857637?w=600&h=225&fit=crop&q=80',
       domain:'maps.google.com',
-      title:'Graha Yadika — Jl. Palem Ganda Asri, Ciledug',
-      desc:'Gedung resepsi pernikahan di Ciledug, Tangerang. Kapasitas 500 tamu. Parkir luas tersedia.',
+      title:'{{ invitation.ceremony.venue }} — {{ invitation.ceremony.address }}',
+      desc:'Gedung akad dan resepsi pernikahan {{ invitation.couple_name_short }}. Silakan klik kartu ini untuk petunjuk arah Google Maps.',
     },
     reactions:[{e:'📍',n:334,green:false},{e:'👌',n:178,green:true}],
   },
   {
     type:'audio',
     time:'10:15', views:'8.9K',
-    title:'OST Pernikahan — "Selamanya Bersamamu"',
+    title:'OST Pernikahan — "{{ invitation.couple_name_short }} Wedding Theme"',
     dur:'3:24',
     caption:'🎵 <b>Lagu tema pernikahan kami</b>\n\nIni adalah lagu yang akan menemani momen bersejarah kami. Semoga membawa kebaikan untuk kalian semua 🤍',
     reactions:[{e:'🎵',n:567,green:false},{e:'❤️',n:423,green:false},{e:'😭',n:89,green:true}],
@@ -1059,8 +1053,8 @@ const POSTS = [
     time:'10:30', views:'6.8K',
     q:'Anda berencana hadir di acara mana?',
     opts:[
-      {e:'💍',label:'Akad Nikah (08.00)',pct:38},
-      {e:'🎊',label:'Resepsi (11.00–13.00)',pct:28},
+      {e:'💍',label:'Akad Nikah ({{ invitation.ceremony.time }})',pct:38},
+      {e:'🎊',label:'Resepsi ({{ invitation.reception.time }})',pct:28},
       {e:'🤩',label:'Keduanya!',pct:34},
     ],
     votes:'2.847 suara',
@@ -1069,8 +1063,8 @@ const POSTS = [
   {
     type:'fwd',
     time:'10:45', views:'5.4K',
-    from:'Anita Pangestuti 🌸',
-    text:'_"Terima kasih sudah selalu ada dan mendukung kami. Doa dari kalian adalah kekuatan terbesar kami menuju hari bahagia ini."_\n\n— Anita',
+    from:'{{ invitation.bride.name }} 🌸',
+    text:'_"Terima kasih sudah selalu ada dan mendukung kami. Doa dari kalian adalah kekuatan terbesar kami menuju hari bahagia ini."_\n\n— {{ invitation.bride.name }}',
     reactions:[{e:'🥹',n:789,green:false},{e:'❤️',n:512,green:false}],
   },
   {
@@ -1106,9 +1100,9 @@ function buildPost(p,idx){
 
   const header=`
     <div class="post-header">
-      <div class="post-ava"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=80&h=80&fit=crop&q=80" alt=""></div>
+      <div class="post-ava"><img src="{% if !invitation.bride.image_url.is_empty() %}{{ invitation.bride.image_url }}{% else %}https://images.unsplash.com/photo-1519741497674-611481863552?w=80&h=80&fit=crop&q=80{% endif %}" alt=""></div>
       <div>
-        <div class="post-chan-name">Anita & Zarda 💍 <span class="post-chan-v"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></div>
+        <div class="post-chan-name">{{ invitation.couple_name_short }} 💍 <span class="post-chan-v"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg></span></div>
         <div class="post-time">${p.time}</div>
       </div>
       <button class="post-menu-btn" onclick="toast('⋮ Opsi postingan')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg></button>
@@ -1162,7 +1156,7 @@ function buildPost(p,idx){
     const fmt=p.caption.replace(/\n/g,'<br>').replace(/<b>(.*?)<\/b>/g,'<b>$1</b>');
     card.innerHTML=`${header}
     <div class="post-body"><div class="post-text">${fmt}</div></div>
-    <div class="link-preview" onclick="window.open('https://maps.app.goo.gl/mxac1yXcYLrYQmvA6','_blank')">
+    <div class="link-preview" onclick="window.open('{{ invitation.ceremony.maps_url }}','_blank')">
       <img class="lp-img" src="${p.link.img}" alt="" loading="lazy">
       <div class="lp-body">
         <div class="lp-domain">${p.link.domain}</div>
@@ -1248,15 +1242,19 @@ function playAudio(btn){
   const pi=btn.querySelector('[id^="apPlay"]'),pa=btn.querySelector('[id^="apPause"]');
   if(audioPlaying){
     pi.style.display='none';pa.style.display='block';
+    if (myAudio) myAudio.play().catch(e => console.log("Audio play blocked/failed:", e));
     audioPct=0;
     audioTimer=setInterval(()=>{
       audioPct++;
       const idx=Math.floor((audioPct/100)*bars.length);
       bars.forEach((b,i)=>b.classList.toggle('lit',i<idx));
-      if(audioPct>=100){clearInterval(audioTimer);audioPlaying=false;pi.style.display='block';pa.style.display='none';bars.forEach(b=>b.classList.remove('lit'));}
+      if(audioPct>=100){
+        audioPct=0; // Loop the visual animation
+      }
     },204);
   } else {
     clearInterval(audioTimer);pi.style.display='block';pa.style.display='none';
+    if (myAudio) myAudio.pause();
   }
 }
 
@@ -1285,11 +1283,31 @@ function selStat(v,btn){rsStatus=v;document.querySelectorAll('.rs-sel-btn').forE
 function selGuest(n,btn){gCount=n;document.querySelectorAll('.rs-sel-btn').forEach((b,i)=>{if(i>=2)b.classList.toggle('on',b===btn)})}
 function submitRSVP(){
   const name=document.getElementById('rsName').value.trim();
+  const msg=document.getElementById('rsMsg').value.trim();
   if(!name){toast('Mohon isi nama terlebih dahulu');return}
-  document.getElementById('rsvpOverlay').classList.remove('open');
-  toast('💌 Konfirmasi berhasil dikirim! Terima kasih '+name+' 🎉');
-  document.getElementById('rsName').value='';
-  document.getElementById('rsMsg').value='';
+  
+  const body = `invitation_slug={{ invitation.slug }}&name=${encodeURIComponent(name)}&attendance=${encodeURIComponent(rsStatus)}&guests=${gCount}&message=${encodeURIComponent(msg)}`;
+  
+  fetch('/api/rsvp', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: body
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === 'ok') {
+      document.getElementById('rsvpOverlay').classList.remove('open');
+      toast('💌 Konfirmasi berhasil dikirim! Terima kasih ' + name + ' 🎉');
+      document.getElementById('rsName').value = '';
+      document.getElementById('rsMsg').value = '';
+    } else {
+      toast('⚠️ Gagal mengirim konfirmasi');
+    }
+  })
+  .catch(err => {
+    console.error(err);
+    toast('⚠️ Terjadi kesalahan koneksi');
+  });
 }
 
 /* ══ LIGHTBOX ══ */
