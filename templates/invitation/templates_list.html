@@ -71,7 +71,15 @@
             <div class="template-card-container" data-category="{{ t.category }}">
                 <div class="collection-card">
                     <div class="card-preview">
-                        <img src="{{ t.preview_img }}" alt="{{ t.title }}">
+                        {% if let Some(video_url) = t.preview_video %}
+                            {% if !video_url.is_empty() %}
+                                <video src="{{ video_url }}" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover;"></video>
+                            {% else %}
+                                <img src="{{ t.preview_img }}" alt="{{ t.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                            {% endif %}
+                        {% else %}
+                            <img src="{{ t.preview_img }}" alt="{{ t.title }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        {% endif %}
                         {% if t.is_featured %}
                         <div class="badge-featured">FEATURED</div>
                         {% endif %}

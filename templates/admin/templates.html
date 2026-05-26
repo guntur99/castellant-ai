@@ -471,7 +471,15 @@ function confirmDelete(id) {
                         {{ (current_page - 1) * 10 + loop.index|i32 }}
                     </td>
                     <td style="width: 80px;">
-                        <img src="{{ t.preview_img }}" style="width: 60px; height: 60px; border-radius: 12px; object-fit: cover; border: 1px solid #f0f0f0; background: #fafafa;">
+                        {% if let Some(video_url) = t.preview_video %}
+                            {% if !video_url.is_empty() %}
+                                <video src="{{ video_url }}" autoplay loop muted playsinline style="width: 60px; height: 60px; border-radius: 12px; object-fit: cover; border: 1px solid #f0f0f0; background: #fafafa;"></video>
+                            {% else %}
+                                <img src="{{ t.preview_img }}" style="width: 60px; height: 60px; border-radius: 12px; object-fit: cover; border: 1px solid #f0f0f0; background: #fafafa;">
+                            {% endif %}
+                        {% else %}
+                            <img src="{{ t.preview_img }}" style="width: 60px; height: 60px; border-radius: 12px; object-fit: cover; border: 1px solid #f0f0f0; background: #fafafa;">
+                        {% endif %}
                     </td>
                     <td>
                         <div style="font-family: monospace; font-size: 0.8rem; color: #999;">ID: {{ t.id }}</div>

@@ -210,7 +210,7 @@ async fn main() {
         }))
         .with_state(state)
         .nest_service("/static", ServeDir::new("static"))
-        .layer(DefaultBodyLimit::max(20 * 1024 * 1024)) // 20MB limit for photo uploads
+        .layer(DefaultBodyLimit::max(250 * 1024 * 1024)) // 250MB limit to support video uploads
         .layer(TraceLayer::new_for_http());
 
     // run our app with hyper

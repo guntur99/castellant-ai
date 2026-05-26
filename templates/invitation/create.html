@@ -158,7 +158,16 @@
                                     <input type="checkbox" name="template_name" value="{{ t.id }}" {% if
                                         t.id=="trendvibe" %}checked{% endif %} onchange="validateTemplateSelection()">
                                     <div class="tpl-content">
-                                        <div class="tpl-image" style="background-image: url('{{ t.preview_img }}');">
+                                        <div class="tpl-image" style="position: relative; overflow: hidden; background: #f8f5f5;">
+                                            {% if let Some(video_url) = t.preview_video %}
+                                                {% if !video_url.is_empty() %}
+                                                    <video src="{{ video_url }}" autoplay loop muted playsinline style="width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0;"></video>
+                                                {% else %}
+                                                    <div style="width: 100%; height: 100%; background-image: url('{{ t.preview_img }}'); background-size: cover; background-position: center; position: absolute; inset: 0;"></div>
+                                                {% endif %}
+                                            {% else %}
+                                                <div style="width: 100%; height: 100%; background-image: url('{{ t.preview_img }}'); background-size: cover; background-position: center; position: absolute; inset: 0;"></div>
+                                            {% endif %}
                                         </div>
                                         <div class="tpl-info">
                                             <div class="tpl-indicator"></div>

@@ -281,6 +281,7 @@ pub struct InvitationTemplate {
     pub desc: String,
     pub category: String,
     pub preview_img: String,
+    pub preview_video: Option<String>,
     pub status: String,
     pub is_featured: bool,
     pub created_at: DateTime<Utc>,

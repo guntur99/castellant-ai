@@ -80,6 +80,33 @@
                     </div>
 
                     <div class="input-group">
+                        <label>Preview Video (Optional)</label>
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <div>
+                                <label for="preview_video" style="font-size: 0.6rem; margin-bottom: 4px; opacity: 0.7;">Option 1: CDN / URL Link</label>
+                                <input type="text" id="preview_video" name="preview_video" value="{% if let Some(t) = template %}{% if let Some(v) = t.preview_video %}{{ v }}{% endif %}{% endif %}" placeholder="https://cdn.example.com/video.mp4">
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 15px;">
+                                <div style="flex: 1;">
+                                    <label for="preview_video_file" style="font-size: 0.6rem; margin-bottom: 4px; opacity: 0.7;">Option 2: Upload Local Video File</label>
+                                    <input type="file" id="preview_video_file" name="preview_video_file" accept="video/*" style="padding: 0.8rem 1rem;">
+                                </div>
+                                {% if let Some(t) = template %}
+                                    {% if let Some(v) = t.preview_video %}
+                                        {% if !v.is_empty() %}
+                                        <div style="text-align: center;">
+                                            <video src="{{ v }}" loop muted playsinline style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid #eee;" autoplay></video>
+                                            <div style="font-size: 0.5rem; color: #999; margin-top: 4px;">Current</div>
+                                        </div>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <small style="display: block; margin-top: 8px; color: #999;">If a video file is uploaded, it will take priority over the URL link. Videos will automatically be compressed to high-efficiency silent WebM format.</small>
+                    </div>
+
+                    <div class="input-group">
                         <label for="desc">Description</label>
                         <textarea id="desc" name="desc" rows="4" placeholder="Marketing description for the template gallery..." required>{% if let Some(t) = template %}{{ t.desc }}{% endif %}</textarea>
                     </div>

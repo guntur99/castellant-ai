@@ -79,6 +79,7 @@ async fn process_and_save_image(
             .key(key)
             .body(body)
             .content_type("image/webp")
+            .cache_control("public, max-age=31536000")
             .acl(aws_sdk_s3::types::ObjectCannedAcl::PublicRead)
             .send()
             .await;
@@ -93,6 +94,99 @@ async fn process_and_save_image(
     
     tracing::error!("Image processing failed for path: {}", save_path);
     false
+}
+
+async fn save_raw_file(
+    s3: &aws_sdk_s3::Client,
+    bucket: &str,
+    data: axum::body::Bytes,
+    save_path: String,
+    content_type: &str,
+) -> bool {
+    tracing::info!("Uploading raw file for path: {}", save_path);
+    let body = aws_sdk_s3::primitives::ByteStream::from(data);
+    let key = save_path.trim_start_matches('/');
+    
+    let res = s3
+        .put_object()
+        .bucket(bucket)
+        .key(key)
+        .body(body)
+        .content_type(content_type)
+        .cache_control("public, max-age=31536000")
+        .acl(aws_sdk_s3::types::ObjectCannedAcl::PublicRead)
+        .send()
+        .await;
+        
+    if let Err(e) = &res {
+        tracing::error!("Failed to upload raw file to S3: {}", e);
+    } else {
+        tracing::info!("Successfully uploaded raw file to S3: {}", key);
+    }
+    res.is_ok()
+}
+
+async fn compress_and_save_video(
+    s3: &aws_sdk_s3::Client,
+    bucket: &str,
+    data: axum::body::Bytes,
+    save_path: String,
+) -> bool {
+    let temp_uuid = uuid::Uuid::new_v4().to_string();
+    let temp_dir = std::env::current_dir().unwrap_or_default().join("scratch");
+    let input_path = temp_dir.join(format!("in_{}", temp_uuid));
+    let output_path = temp_dir.join(format!("out_{}.webm", temp_uuid));
+
+    // Fail-safe default: Upload raw original file if FFmpeg fails or is missing
+    let upload_raw = || async {
+        tracing::warn!("FFmpeg not available or failed. Uploading raw video file directly.");
+        save_raw_file(s3, bucket, data.clone(), save_path.clone(), "video/mp4").await
+    };
+
+    if tokio::fs::write(&input_path, &data).await.is_err() {
+        return upload_raw().await;
+    }
+
+    // Run FFmpeg: Convert to WebM, resize width to 640px, strip audio (-an), constant quality CRF 32
+    let ffmpeg_status = tokio::process::Command::new("ffmpeg")
+        .args(&[
+            "-i", input_path.to_str().unwrap_or(""),
+            "-vf", "scale=640:-2",
+            "-c:v", "libvpx-vp9",
+            "-crf", "32",
+            "-b:v", "0",
+            "-an",
+            "-y",
+            output_path.to_str().unwrap_or(""),
+        ])
+        .status()
+        .await;
+
+    let mut success = false;
+    if let Ok(status) = ffmpeg_status {
+        if status.success() {
+            if let Ok(compressed_bytes) = tokio::fs::read(&output_path).await {
+                success = save_raw_file(
+                    s3,
+                    bucket,
+                    axum::body::Bytes::from(compressed_bytes),
+                    save_path.replace(".mp4", ".webm"), // save with .webm extension
+                    "video/webm",
+                ).await;
+            }
+        }
+    }
+
+    if !success {
+        // Fallback to raw upload if FFmpeg failed
+        success = upload_raw().await;
+    }
+
+    // Cleanup temp files
+    let _ = tokio::fs::remove_file(&input_path).await;
+    let _ = tokio::fs::remove_file(&output_path).await;
+
+    success
 }
 
 async fn delete_s3_file(s3: &aws_sdk_s3::Client, bucket: &str, url: &str) {
@@ -134,6 +228,7 @@ pub async fn process_and_save_file(
         .key(key)
         .body(body)
         .content_type(content_type)
+        .cache_control("public, max-age=31536000")
         .acl(aws_sdk_s3::types::ObjectCannedAcl::PublicRead)
         .send()
         .await;
@@ -146,24 +241,74 @@ pub async fn process_and_save_file(
     res.is_ok()
 }
 
+pub fn rewrite_s3_url_to_proxy(url: &str) -> String {
+    if url.starts_with("http://") || url.starts_with("https://") {
+        if url.contains("storageapi.dev") || url.contains("amazonaws.com") || url.contains("supabase.co") {
+            let stripped = if url.starts_with("https://") {
+                &url["https://".len()..]
+            } else {
+                &url["http://".len()..]
+            };
+            if let Some(pos) = stripped.find('/') {
+                let path = &stripped[pos + 1..];
+                if path.starts_with("static/uploads/") {
+                    return format!("/uploads/{}", &path["static/uploads/".len()..]);
+                }
+                return format!("/uploads/{}", path);
+            }
+        }
+    }
+    url.to_string()
+}
+
+pub fn sanitize_template_urls(mut t: InvitationTemplate) -> InvitationTemplate {
+    t.preview_img = rewrite_s3_url_to_proxy(&t.preview_img);
+    if let Some(ref video_url) = t.preview_video {
+        t.preview_video = Some(rewrite_s3_url_to_proxy(video_url));
+    }
+    t
+}
+
 pub async fn serve_upload(
     Path(key): Path<String>,
     State(state): State<AppState>,
 ) -> impl IntoResponse {
-    let s3_key = format!("static/uploads/{}", key);
-    
-    match state.s3_client
-        .get_object()
-        .bucket(&state.s3_bucket)
-        .key(&s3_key)
-        .send()
-        .await
-    {
-        Ok(resp) => {
-            let extension = key.split('.').last().unwrap_or("");
+    let mut candidate_keys = vec![
+        format!("static/uploads/{}", key),
+    ];
+    if key.starts_with("static/") {
+        candidate_keys.push(key.clone());
+    } else {
+        candidate_keys.push(format!("static/{}", key));
+        candidate_keys.push(key.clone());
+    }
+
+    let mut response_data = None;
+    for s3_key in candidate_keys {
+        match state.s3_client
+            .get_object()
+            .bucket(&state.s3_bucket)
+            .key(&s3_key)
+            .send()
+            .await
+        {
+            Ok(resp) => {
+                response_data = Some((s3_key, resp));
+                break;
+            }
+            Err(e) => {
+                tracing::debug!("Failed to find key '{}' in S3: {:?}", s3_key, e);
+            }
+        }
+    }
+
+    match response_data {
+        Some((found_key, resp)) => {
+            let extension = found_key.split('.').last().unwrap_or("");
             let content_type = match extension {
                 "mp3" => "audio/mpeg",
                 "mp4" => "video/mp4",
+                "webm" => "video/webm",
                 "webp" => "image/webp",
                 _ => resp.content_type().unwrap_or("application/octet-stream"),
             }.to_string();
@@ -179,7 +324,7 @@ pub async fn serve_upload(
                 .body(axum::body::Body::from(body_bytes))
                 .unwrap_or_else(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Error").into_response())
         },
-        Err(_) => {
+        None => {
             (StatusCode::NOT_FOUND, "File not found").into_response()
         }
     }
@@ -276,10 +421,12 @@ pub async fn get_all_templates(db: &sqlx::PgPool, only_published: bool) -> Vec<I
     } else {
         "SELECT * FROM templates ORDER BY created_at DESC"
     };
-    sqlx::query_as::<_, InvitationTemplate>(query)
+    let templates = sqlx::query_as::<_, InvitationTemplate>(query)
         .fetch_all(db)
         .await
-        .unwrap_or_default()
+        .unwrap_or_default();
+    
+    templates.into_iter().map(sanitize_template_urls).collect()
 }
 
 pub async fn templates_list(
@@ -2062,12 +2209,15 @@ pub async fn home(
         }
     }
 
-    let templates = sqlx::query_as::<_, InvitationTemplate>(
+    let templates: Vec<InvitationTemplate> = sqlx::query_as::<_, InvitationTemplate>(
         "SELECT * FROM templates WHERE status = 'PUBLISHED' AND is_featured = TRUE ORDER BY id ASC"
     )
     .fetch_all(&state.db)
     .await
-    .unwrap_or_default();
+    .unwrap_or_default()
+    .into_iter()
+    .map(sanitize_template_urls)
+    .collect();
 
     HtmlTemplate(HomeTemplate { user, invitations, templates, is_dev: state.is_dev }).into_response()
 }
@@ -4888,10 +5038,13 @@ pub async fn admin_templates(
     qb.push(" OFFSET ");
     qb.push_bind(offset as i64);
 
-    let templates = qb.build_query_as::<InvitationTemplate>()
+    let templates: Vec<InvitationTemplate> = qb.build_query_as::<InvitationTemplate>()
         .fetch_all(&state.db)
         .await
-        .unwrap_or_default();
+        .unwrap_or_default()
+        .into_iter()
+        .map(sanitize_template_urls)
+        .collect();
 
     // 2. Count filtered results for pagination
     let mut count_qb = sqlx::QueryBuilder::new("SELECT COUNT(*) FROM templates WHERE TRUE");
@@ -5004,6 +5157,7 @@ pub async fn admin_templates_create(
     let mut desc = String::new();
     let mut category = String::new();
     let mut preview_img = String::new();
+    let mut preview_video: Option<String> = None;
     let mut status = String::new();
     let mut is_featured = false;
 
@@ -5019,7 +5173,13 @@ pub async fn admin_templates_create(
             "preview_img" => {
                 let text = field.text().await.unwrap_or_default();
                 if !text.is_empty() {
-                    preview_img = text;
+                    preview_img = rewrite_s3_url_to_proxy(&text);
+                }
+            },
+            "preview_video" => {
+                let text = field.text().await.unwrap_or_default();
+                if !text.is_empty() {
+                    preview_video = Some(rewrite_s3_url_to_proxy(&text));
                 }
             },
             "status" => status = field.text().await.unwrap_or_default(),
@@ -5030,9 +5190,23 @@ pub async fn admin_templates_create(
                         let data = field.bytes().await.unwrap_or_default();
                         if !data.is_empty() {
                             let save_name = if !id.is_empty() { id.clone() } else { Uuid::new_v4().to_string() };
-                            let path = format!("static/img/templates/{}.webp", save_name);
+                            let path = format!("static/uploads/{}.webp", save_name);
                             if process_and_save_image(&state.s3_client, &state.s3_bucket, data, path.clone(), 1200).await {
-                                preview_img = format!("https://{}.t3.storageapi.dev/{}", state.s3_bucket, path);
+                                preview_img = format!("/uploads/{}.webp", save_name);
+                            }
+                        }
+                    }
+                }
+            },
+            "preview_video_file" => {
+                if let Some(file_name) = field.file_name().map(|s| s.to_string()) {
+                    if !file_name.is_empty() {
+                        let data = field.bytes().await.unwrap_or_default();
+                        if !data.is_empty() {
+                            let save_name = if !id.is_empty() { id.clone() } else { Uuid::new_v4().to_string() };
+                            let path = format!("static/uploads/{}_preview.mp4", save_name);
+                            if compress_and_save_video(&state.s3_client, &state.s3_bucket, data, path.clone()).await {
+                                preview_video = Some(format!("/uploads/{}_preview.webm", save_name));
                             }
                         }
                     }
@@ -5043,7 +5217,7 @@ pub async fn admin_templates_create(
     }
 
     let res = sqlx::query(
-        "INSERT INTO templates (id, slug, title, description, category, preview_img, status, is_featured) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)"
+        "INSERT INTO templates (id, slug, title, description, category, preview_img, preview_video, status, is_featured) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)"
     )
     .bind(&id)
     .bind(&slug)
@@ -5051,6 +5225,7 @@ pub async fn admin_templates_create(
     .bind(&desc)
     .bind(&category)
     .bind(&preview_img)
+    .bind(&preview_video)
     .bind(&status)
     .bind(is_featured)
     .execute(&state.db)
@@ -5076,7 +5251,8 @@ pub async fn admin_templates_edit(
         .bind(&id)
         .fetch_optional(&state.db)
         .await
-        .unwrap_or(None);
+        .unwrap_or(None)
+        .map(sanitize_template_urls);
 
     if let Some(t) = template {
         HtmlTemplate(AdminTemplateFormTemplate {
@@ -5105,18 +5281,20 @@ pub async fn admin_templates_update(
     let mut desc = String::new();
     let mut category = String::new();
     let mut preview_img = String::new();
+    let mut preview_video: Option<String> = None;
     let mut status = String::new();
     let mut is_featured = false;
 
-    // First fetch current template to get existing preview_img as fallback
-    let current: Option<String> = sqlx::query_scalar("SELECT preview_img FROM templates WHERE id = $1")
+    // First fetch current template to get existing preview_img and preview_video as fallback
+    let current: Option<(String, Option<String>)> = sqlx::query_as("SELECT preview_img, preview_video FROM templates WHERE id = $1")
         .bind(&id)
         .fetch_optional(&state.db)
         .await
         .unwrap_or(None);
     
-    if let Some(c) = current {
-        preview_img = c;
+    if let Some((c_img, c_vid)) = current {
+        preview_img = c_img;
+        preview_video = c_vid;
     }
 
     while let Some(field) = multipart.next_field().await.unwrap_or(None) {
@@ -5130,7 +5308,15 @@ pub async fn admin_templates_update(
             "preview_img" => {
                 let text = field.text().await.unwrap_or_default();
                 if !text.is_empty() {
-                    preview_img = text;
+                    preview_img = rewrite_s3_url_to_proxy(&text);
+                }
+            },
+            "preview_video" => {
+                let text = field.text().await.unwrap_or_default();
+                if text.is_empty() {
+                    preview_video = None;
+                } else {
+                    preview_video = Some(rewrite_s3_url_to_proxy(&text));
                 }
             },
             "status" => status = field.text().await.unwrap_or_default(),
@@ -5140,9 +5326,22 @@ pub async fn admin_templates_update(
                     if !file_name.is_empty() {
                         let data = field.bytes().await.unwrap_or_default();
                         if !data.is_empty() {
-                            let path = format!("static/img/templates/{}.webp", id);
+                            let path = format!("static/uploads/{}.webp", id);
                             if process_and_save_image(&state.s3_client, &state.s3_bucket, data, path.clone(), 1200).await {
-                                preview_img = format!("https://{}.t3.storageapi.dev/{}", state.s3_bucket, path);
+                                preview_img = format!("/uploads/{}.webp", id);
+                            }
+                        }
+                    }
+                }
+            },
+            "preview_video_file" => {
+                if let Some(file_name) = field.file_name().map(|s| s.to_string()) {
+                    if !file_name.is_empty() {
+                        let data = field.bytes().await.unwrap_or_default();
+                        if !data.is_empty() {
+                            let path = format!("static/uploads/{}_preview.mp4", id);
+                            if compress_and_save_video(&state.s3_client, &state.s3_bucket, data, path.clone()).await {
+                                preview_video = Some(format!("/uploads/{}_preview.webm", id));
                             }
                         }
                     }
@@ -5153,13 +5352,14 @@ pub async fn admin_templates_update(
     }
 
     let res = sqlx::query(
-        "UPDATE templates SET slug = $1, title = $2, description = $3, category = $4, preview_img = $5, status = $6, is_featured = $7, updated_at = NOW() WHERE id = $8"
+        "UPDATE templates SET slug = $1, title = $2, description = $3, category = $4, preview_img = $5, preview_video = $6, status = $7, is_featured = $8, updated_at = NOW() WHERE id = $9"
     )
     .bind(&slug)
     .bind(&title)
     .bind(&desc)
     .bind(&category)
     .bind(&preview_img)
+    .bind(&preview_video)
     .bind(&status)
     .bind(is_featured)
     .bind(&id)
