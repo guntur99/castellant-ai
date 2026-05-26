@@ -131,7 +131,7 @@ async fn compress_and_save_video(
     bucket: &str,
     data: axum::body::Bytes,
     save_path: String,
-) -> bool {
+) -> Option<String> {
     let temp_uuid = uuid::Uuid::new_v4().to_string();
     let temp_dir = std::env::current_dir().unwrap_or_default().join("scratch");
     let input_path = temp_dir.join(format!("in_{}", temp_uuid));
@@ -140,7 +140,13 @@ async fn compress_and_save_video(
     // Fail-safe default: Upload raw original file if FFmpeg fails or is missing
     let upload_raw = || async {
         tracing::warn!("FFmpeg not available or failed. Uploading raw video file directly.");
-        save_raw_file(s3, bucket, data.clone(), save_path.clone(), "video/mp4").await
+        if save_raw_file(s3, bucket, data.clone(), save_path.clone(), "video/mp4").await {
+            if save_path.starts_with("static/uploads/") {
+                return Some(format!("/uploads/{}", &save_path["static/uploads/".len()..]));
+            }
+            return Some(save_path.clone());
+        }
+        None
     };
 
     if tokio::fs::write(&input_path, &data).await.is_err() {
@@ -162,31 +168,38 @@ async fn compress_and_save_video(
         .status()
         .await;
 
-    let mut success = false;
+    let mut final_path = None;
     if let Ok(status) = ffmpeg_status {
         if status.success() {
             if let Ok(compressed_bytes) = tokio::fs::read(&output_path).await {
-                success = save_raw_file(
+                let webm_path = save_path.replace(".mp4", ".webm");
+                if save_raw_file(
                     s3,
                     bucket,
                     axum::body::Bytes::from(compressed_bytes),
-                    save_path.replace(".mp4", ".webm"), // save with .webm extension
+                    webm_path.clone(),
                     "video/webm",
-                ).await;
+                ).await {
+                    if webm_path.starts_with("static/uploads/") {
+                        final_path = Some(format!("/uploads/{}", &webm_path["static/uploads/".len()..]));
+                    } else {
+                        final_path = Some(webm_path);
+                    }
+                }
             }
         }
     }
 
-    if !success {
+    if final_path.is_none() {
         // Fallback to raw upload if FFmpeg failed
-        success = upload_raw().await;
+        final_path = upload_raw().await;
     }
 
     // Cleanup temp files
     let _ = tokio::fs::remove_file(&input_path).await;
     let _ = tokio::fs::remove_file(&output_path).await;
 
-    success
+    final_path
 }
 
 async fn delete_s3_file(s3: &aws_sdk_s3::Client, bucket: &str, url: &str) {
@@ -5205,8 +5218,8 @@ pub async fn admin_templates_create(
                         if !data.is_empty() {
                             let save_name = if !id.is_empty() { id.clone() } else { Uuid::new_v4().to_string() };
                             let path = format!("static/uploads/{}_preview.mp4", save_name);
-                            if compress_and_save_video(&state.s3_client, &state.s3_bucket, data, path.clone()).await {
-                                preview_video = Some(format!("/uploads/{}_preview.webm", save_name));
+                            if let Some(actual_path) = compress_and_save_video(&state.s3_client, &state.s3_bucket, data, path.clone()).await {
+                                preview_video = Some(actual_path);
                             }
                         }
                     }
@@ -5292,9 +5305,11 @@ pub async fn admin_templates_update(
         .await
         .unwrap_or(None);
     
+    let mut old_preview_video = None;
     if let Some((c_img, c_vid)) = current {
         preview_img = c_img;
-        preview_video = c_vid;
+        preview_video = c_vid.clone();
+        old_preview_video = c_vid;
     }
 
     while let Some(field) = multipart.next_field().await.unwrap_or(None) {
@@ -5340,8 +5355,8 @@ pub async fn admin_templates_update(
                         let data = field.bytes().await.unwrap_or_default();
                         if !data.is_empty() {
                             let path = format!("static/uploads/{}_preview.mp4", id);
-                            if compress_and_save_video(&state.s3_client, &state.s3_bucket, data, path.clone()).await {
-                                preview_video = Some(format!("/uploads/{}_preview.webm", id));
+                            if let Some(actual_path) = compress_and_save_video(&state.s3_client, &state.s3_bucket, data, path.clone()).await {
+                                preview_video = Some(actual_path);
                             }
                         }
                     }
@@ -5365,6 +5380,14 @@ pub async fn admin_templates_update(
     .bind(&id)
     .execute(&state.db)
     .await;
+
+    if res.is_ok() {
+        if let Some(ref old_vid) = old_preview_video {
+            if preview_video.as_ref() != Some(old_vid) {
+                delete_s3_file(&state.s3_client, &state.s3_bucket, old_vid).await;
+            }
+        }
+    }
 
     match res {
         Ok(_) => Redirect::to("/admin/templates").into_response(),
