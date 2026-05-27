@@ -2022,19 +2022,22 @@
                 </div>
 
                 <div class="order-names">
-                    Nazma<br><span>&</span> Guntur
+                    {{ invitation.bride.name }}<br><span>&</span> {{ invitation.groom.name }}
                 </div>
                 <p class="order-subtitle">Mempelai kami mengundang kehadiran Anda</p>
 
                 <!-- Bride & Groom drivers -->
                 <div class="order-driver-row">
                     <div class="driver-avatar">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80"
-                            alt="Nazma">
+                        {% if !invitation.bride.image_url.is_empty() %}
+                        <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride.name }}">
+                        {% else %}
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&q=80" alt="{{ invitation.bride.name }}">
+                        {% endif %}
                     </div>
                     <div class="driver-info">
-                        <div class="driver-name">Nazma Putri, S.Kom</div>
-                        <div class="driver-role">Mempelai WNazma</div>
+                        <div class="driver-name">{{ invitation.bride.full_name }}</div>
+                        <div class="driver-role">Mempelai Wanita</div>
                     </div>
                     <div class="driver-rating">
                         <svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:#FFD600">
@@ -2046,11 +2049,14 @@
                 </div>
                 <div class="order-driver-row" style="margin-top:-8px">
                     <div class="driver-avatar">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80"
-                            alt="Guntur">
+                        {% if !invitation.groom.image_url.is_empty() %}
+                        <img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom.name }}">
+                        {% else %}
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&q=80" alt="{{ invitation.groom.name }}">
+                        {% endif %}
                     </div>
                     <div class="driver-info">
-                        <div class="driver-name">Guntur Putra, S.Kom</div>
+                        <div class="driver-name">{{ invitation.groom.full_name }}</div>
                         <div class="driver-role">Mempelai Pria</div>
                     </div>
                     <div class="driver-rating">
@@ -2070,7 +2076,13 @@
                         </div>
                         <div>
                             <div class="route-label">Dari hati</div>
-                            <div class="route-value">Awal Pertemuan · Juni 2025</div>
+                            <div class="route-value">
+                                {% if !invitation.stories.is_empty() %}
+                                {{ invitation.stories[0].title }} · {{ invitation.stories[0].date }}
+                                {% else %}
+                                Awal Pertemuan · Juni 2025
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                     <div style="padding-left:9px">
@@ -2082,7 +2094,16 @@
                         </div>
                         <div>
                             <div class="route-label">Menuju ikatan suci</div>
-                            <div class="route-value">Graha Yadika, Ciledug · {{ invitation.event_date }}</div>
+                            <div class="route-value">
+                                {% if !invitation.ceremony.venue.is_empty() %}
+                                {{ invitation.ceremony.venue }}
+                                {% else if !invitation.reception.venue.is_empty() %}
+                                {{ invitation.reception.venue }}
+                                {% else %}
+                                Tempat Acara
+                                {% endif %}
+                                · {{ invitation.event_date }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -2135,9 +2156,8 @@
                 <div class="verse-icon">✦</div>
                 <div class="verse-deco-line"></div>
             </div>
-            <p class="verse-text">"Dan di antara tanda-tanda kebesaran-Nya ialah Dia menciptakan pasangan-pasangan
-                untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya..."</p>
-            <p class="verse-ref">— Surah Ar-Rum : 21</p>
+            <p class="verse-text">"{{ invitation.quote.text }}"</p>
+            <p class="verse-ref">— {{ invitation.quote.source }}</p>
         </div>
 
         <!-- COUPLE -->
@@ -2159,11 +2179,14 @@
                         </svg>
                     </div>
                     <div class="couple-avatar">
-                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=300&fit=crop&q=80"
-                            alt="Nazma" loading="lazy">
+                        {% if !invitation.bride.image_url.is_empty() %}
+                        <img src="{{ invitation.bride.image_url }}" alt="{{ invitation.bride.name }}" loading="lazy">
+                        {% else %}
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=300&h=300&fit=crop&q=80" alt="{{ invitation.bride.name }}" loading="lazy">
+                        {% endif %}
                     </div>
-                    <div class="couple-tag">Mempelai WNazma</div>
-                    <div class="couple-name">Nazma Putri, S.Kom</div>
+                    <div class="couple-tag">Mempelai Wanita</div>
+                    <div class="couple-name">{{ invitation.bride.full_name }}</div>
                     <div class="couple-stars">
                         <svg viewBox="0 0 24 24">
                             <path
@@ -2187,8 +2210,8 @@
                         </svg>
                     </div>
                     <div class="couple-rating">5.0 (∞ ulasan)</div>
-                    <div class="couple-parents" style="margin-top:10px">Putri Pertama dari<br><strong
-                            style="color:#fff">Bpk. Taryono &<br>Ibu Wiwit Jayanti</strong></div>
+                    <div class="couple-parents" style="margin-top:10px">Putri tercinta dari:<br><strong
+                            style="color:#fff">Bpk. {{ invitation.bride.father_name }} &amp;<br>Ibu {{ invitation.bride.mother_name }}</strong></div>
                 </div>
                 <div class="couple-card reveal" style="transition-delay:.1s">
                     <div class="couple-verified">
@@ -2197,11 +2220,14 @@
                         </svg>
                     </div>
                     <div class="couple-avatar">
-                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&q=80"
-                            alt="Guntur" loading="lazy">
+                        {% if !invitation.groom.image_url.is_empty() %}
+                        <img src="{{ invitation.groom.image_url }}" alt="{{ invitation.groom.name }}" loading="lazy">
+                        {% else %}
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=300&fit=crop&q=80" alt="{{ invitation.groom.name }}" loading="lazy">
+                        {% endif %}
                     </div>
                     <div class="couple-tag">Mempelai Pria</div>
-                    <div class="couple-name">Guntur Putra, S.Kom</div>
+                    <div class="couple-name">{{ invitation.groom.full_name }}</div>
                     <div class="couple-stars">
                         <svg viewBox="0 0 24 24">
                             <path
@@ -2225,8 +2251,8 @@
                         </svg>
                     </div>
                     <div class="couple-rating">5.0 (∞ ulasan)</div>
-                    <div class="couple-parents" style="margin-top:10px">Putra Kedua dari<br><strong
-                            style="color:#fff">Bpk. Wan Sabran, M.MAR &<br>Ibu Titik Sundari, M.Si</strong></div>
+                    <div class="couple-parents" style="margin-top:10px">Putra tercinta dari:<br><strong
+                            style="color:#fff">Bpk. {{ invitation.groom.father_name }} &amp;<br>Ibu {{ invitation.groom.mother_name }}</strong></div>
                 </div>
             </div>
         </section>
@@ -2240,11 +2266,12 @@
                     momen terindah kami.</p>
             </div>
             <div class="event-cards">
+                {% if invitation.ceremony.enabled %}
                 <div class="event-card reveal">
                     <div class="event-badge">
                         <div class="event-badge-dot"></div>Akad Nikah
                     </div>
-                    <div class="event-name">Minggu,<br>{{ invitation.event_date }}</div>
+                    <div class="event-name">{{ invitation.ceremony.date }}</div>
                     <div class="event-info-row">
                         <div class="event-info-icon">
                             <svg viewBox="0 0 24 24">
@@ -2253,7 +2280,7 @@
                             </svg>
                         </div>
                         <div class="event-info-text">
-                            <strong>08.00 WIB</strong>
+                            <strong>{{ invitation.ceremony.time }}</strong>
                             Hingga selesai
                         </div>
                     </div>
@@ -2265,23 +2292,28 @@
                             </svg>
                         </div>
                         <div class="event-info-text">
-                            <strong>Graha Yadika</strong>
-                            Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang
+                            <strong>{{ invitation.ceremony.venue }}</strong>
+                            {{ invitation.ceremony.address }}
                         </div>
                     </div>
-                    <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="event-maps-btn">
+                    {% if !invitation.ceremony.maps_url.is_empty() %}
+                    <a href="{{ invitation.ceremony.maps_url }}" target="_blank" class="event-maps-btn">
                         <svg viewBox="0 0 24 24">
                             <path
                                 d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                         </svg>
                         Buka di Maps
                     </a>
+                    {% endif %}
                 </div>
+                {% endif %}
+
+                {% if invitation.reception.enabled %}
                 <div class="event-card reveal" style="transition-delay:.1s">
                     <div class="event-badge">
                         <div class="event-badge-dot"></div>Resepsi
                     </div>
-                    <div class="event-name">Minggu,<br>{{ invitation.event_date }}</div>
+                    <div class="event-name">{{ invitation.reception.date }}</div>
                     <div class="event-info-row">
                         <div class="event-info-icon">
                             <svg viewBox="0 0 24 24">
@@ -2290,7 +2322,7 @@
                             </svg>
                         </div>
                         <div class="event-info-text">
-                            <strong>11.00 – 13.00 WIB</strong>
+                            <strong>{{ invitation.reception.time }}</strong>
                             Silahkan datang tepat waktu
                         </div>
                     </div>
@@ -2302,18 +2334,21 @@
                             </svg>
                         </div>
                         <div class="event-info-text">
-                            <strong>Graha Yadika</strong>
-                            Jl. Palem Ganda Asri, Karang Tengah, Ciledug, Tangerang
+                            <strong>{{ invitation.reception.venue }}</strong>
+                            {{ invitation.reception.address }}
                         </div>
                     </div>
-                    <a href="https://maps.app.goo.gl/mxac1yXcYLrYQmvA6" target="_blank" class="event-maps-btn">
+                    {% if !invitation.reception.maps_url.is_empty() %}
+                    <a href="{{ invitation.reception.maps_url }}" target="_blank" class="event-maps-btn">
                         <svg viewBox="0 0 24 24">
                             <path
                                 d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                         </svg>
                         Buka di Maps
                     </a>
+                    {% endif %}
                 </div>
+                {% endif %}
             </div>
         </section>
 
@@ -2330,6 +2365,7 @@
                 </div>
             </div>
             <div class="timeline">
+                {% if invitation.stories.is_empty() %}
                 <div class="tl-item">
                     <div class="tl-dot-wrap">
                         <div class="tl-dot">1</div>
@@ -2368,6 +2404,23 @@
                         </div>
                     </div>
                 </div>
+                {% else %}
+                {% for story in invitation.stories %}
+                <div class="tl-item">
+                    <div class="tl-dot-wrap">
+                        <div class="tl-dot">
+                            {% if loop.index == 1 %}1{% else if loop.last %}★{% else %}✓{% endif %}
+                        </div>
+                    </div>
+                    <div class="tl-body">
+                        <div class="tl-tag">Track {% if loop.index < 10 %}0{% endif %}{{ loop.index }}</div>
+                        <div class="tl-date">{{ story.date }}</div>
+                        <div class="tl-title">{{ story.title }}</div>
+                        <div class="tl-desc">{{ story.description }}</div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
             </div>
         </section>
 
@@ -2494,7 +2547,7 @@
                 {% for rsvp in invitation.rsvps %}
                 <div class="wish-card visible" style="margin-bottom: 15px; padding: 15px; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
                     <div style="display: flex; gap: 12px; align-items: center; margin-bottom: 10px;">
-                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(45deg, #E50914, #b00710); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: white; box-shadow: 0 2px 8px rgba(229, 9, 20, 0.4);">{{ rsvp.initial() }}</div>
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--gk-green); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: white; box-shadow: 0 2px 8px rgba(0, 170, 19, 0.4);">{{ rsvp.initial() }}</div>
                         <div>
                             <div style="font-weight: bold; font-size: 15px; color: #fff;">{{ rsvp.name }}</div>
                             <div style="font-size: 12px; color: #00AA13; font-weight: 500;">✓ {{ rsvp.attendance }} · {{ rsvp.guests }} tamu</div>

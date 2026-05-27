@@ -1,0 +1,1430 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{{ invitation.bride.name }} & {{ invitation.groom.name }} — Reel Wedding</title>
+    <!-- Fonts: Cormorant Garamond for display, DM Sans for body -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Dual Palette: Adat & Urban Ready */
+            --bg-color: #0A0A0A;
+            --surface-color: #141414;
+            --accent-color: #C9A96E; /* Champagne Gold */
+            --text-color: #F5F0E8;
+            --muted-color: #6B6B6B;
+            
+            --font-display: 'Cormorant Garamond', serif;
+            --font-body: 'DM Sans', sans-serif;
+            
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html, body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-body);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* Utility */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .text-accent {
+            color: var(--accent-color);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-display);
+            font-weight: 400;
+        }
+
+        .title-display {
+            font-size: clamp(3rem, 10vw, 6rem);
+            line-height: 1.1;
+        }
+
+        .section-padding {
+            padding: 100px 0;
+        }
+
+        /* ── OPENING SCREEN ── */
+        #opening {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-color);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transition: opacity 1s ease, transform 1s ease;
+        }
+
+        #opening.hide {
+            opacity: 0;
+            transform: scale(1.05);
+            pointer-events: none;
+        }
+
+        .opening-video-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.3;
+            z-index: 0;
+        }
+
+        .opening-content {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .opening-dear {
+            margin-top: 40px;
+            font-size: 1rem;
+            color: var(--muted-color);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .opening-recipient {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+
+        .btn-open {
+            background: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 12px 32px;
+            font-family: var(--font-body);
+            font-size: 14px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border-radius: 50px;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .btn-open:hover {
+            background: var(--accent-color);
+            color: var(--bg-color);
+        }
+
+        /* ── ACT 1: VIDEO HERO ── */
+        .act-hero {
+            position: relative;
+            height: 100svh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
+        .hero-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            will-change: transform; /* For parallax */
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, var(--bg-color) 0%, transparent 40%);
+        }
+
+        .hero-content {
+            position: absolute;
+            bottom: 10%;
+            left: 5%;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            color: var(--text-color);
+        }
+
+        .hero-badge .dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(201, 169, 110, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(201, 169, 110, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(201, 169, 110, 0); }
+        }
+
+        .hero-title {
+            font-family: var(--font-display);
+            font-size: clamp(3.5rem, 12vw, 8rem);
+            line-height: 0.9;
+            margin-bottom: 8px;
+            font-style: italic;
+            text-shadow: 2px 4px 10px rgba(0,0,0,0.5);
+        }
+
+        /* ── QUOTE SECTION ── */
+        .act-quote {
+            min-height: 50vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 80px 24px;
+            background: var(--bg-color);
+        }
+
+        .quote-text {
+            font-family: var(--font-display);
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-style: italic;
+            line-height: 1.4;
+            max-width: 800px;
+            margin-bottom: 24px;
+            color: var(--text-color);
+        }
+
+        .quote-source {
+            font-size: 0.9rem;
+            color: var(--accent-color);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* ── ACT 2: FOTO BURST ── */
+        .act-burst {
+            padding: 100px 0;
+            overflow: hidden;
+        }
+
+        .burst-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            padding: 0 24px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .burst-item {
+            position: relative;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            cursor: pointer;
+        }
+        
+        .burst-item:nth-child(even) {
+            margin-top: 40px;
+        }
+
+        .burst-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            aspect-ratio: 3/4;
+            transition: transform 0.5s ease;
+        }
+
+        .burst-item:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Reveal Animations */
+        .reveal {
+            opacity: 0;
+            transition: all 1s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translate(0, 0) scale(1) !important;
+        }
+
+        .reveal-left { transform: translateX(-100px); }
+        .reveal-right { transform: translateX(100px); }
+        .reveal-up { transform: translateY(100px); }
+        .reveal-scale { transform: scale(0.9); }
+
+        /* ── PROFIL PASANGAN ── */
+        .act-profiles {
+            display: grid;
+            grid-template-columns: 1fr;
+            min-height: 100vh;
+        }
+        
+        @media (min-width: 768px) {
+            .act-profiles { grid-template-columns: 1fr 1fr; }
+        }
+
+        .profile-panel {
+            position: relative;
+            min-height: 60vh;
+            overflow: hidden;
+        }
+
+        .profile-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            transition: transform 10s ease;
+        }
+        
+        .profile-panel:hover .profile-bg {
+            transform: scale(1.1);
+        }
+
+        .profile-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(10,10,10,0.9) 0%, transparent 60%);
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 40px 32px;
+        }
+
+        .profile-name {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            margin-bottom: 8px;
+            color: var(--text-color);
+        }
+
+        .profile-parents {
+            font-size: 0.9rem;
+            color: var(--muted-color);
+            line-height: 1.6;
+        }
+
+        /* ── ACT 3: VIDEO 2 + LOKASI ── */
+        .act-location {
+            display: grid;
+            grid-template-columns: 1fr;
+            background: var(--surface-color);
+        }
+
+        @media (min-width: 992px) {
+            .act-location { grid-template-columns: 1fr 1fr; min-height: 100vh; }
+        }
+
+        .loc-video-wrapper {
+            position: relative;
+            height: 50vh;
+            overflow: hidden;
+        }
+
+        @media (min-width: 992px) {
+            .loc-video-wrapper { height: 100%; }
+        }
+
+        .loc-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .loc-content {
+            padding: 60px 32px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .loc-title {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+            color: var(--accent-color);
+        }
+
+        .countdown-wrap {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+
+        .cd-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .cd-num {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            color: var(--text-color);
+            line-height: 1;
+        }
+
+        .cd-label {
+            font-size: 0.75rem;
+            color: var(--muted-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 4px;
+        }
+
+        .event-card {
+            background: var(--bg-color);
+            padding: 24px;
+            border-radius: var(--radius-md);
+            margin-bottom: 24px;
+            border-left: 2px solid var(--accent-color);
+        }
+
+        .event-type {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .event-detail {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 16px;
+            font-size: 0.95rem;
+            color: var(--muted-color);
+        }
+
+        .btn-maps {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--surface-color);
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            transition: background 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .btn-maps:hover {
+            background: var(--accent-color);
+            color: var(--bg-color);
+        }
+
+        /* ── ACT 4: FOTO GRID (Masonry) ── */
+        .act-grid {
+            padding: 100px 24px;
+            background: var(--bg-color);
+        }
+
+        .masonry {
+            column-count: 2;
+            column-gap: 16px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+            .masonry { column-count: 3; column-gap: 24px; }
+        }
+
+        .masonry-item {
+            break-inside: avoid;
+            margin-bottom: 16px;
+            position: relative;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        @media (min-width: 768px) {
+            .masonry-item { margin-bottom: 24px; }
+        }
+
+        .masonry-item img {
+            width: 100%;
+            display: block;
+            border-radius: var(--radius-sm);
+            transition: transform 0.4s ease;
+        }
+
+        .masonry-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .masonry-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .masonry-item:hover .masonry-overlay {
+            opacity: 1;
+        }
+
+        /* ── ACT 5: VIDEO 3 + LOVE STORY ── */
+        .act-story {
+            position: relative;
+            padding: 120px 24px;
+            overflow: hidden;
+        }
+
+        .story-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: 0;
+            filter: brightness(0.4) blur(4px);
+        }
+
+        .story-container {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .story-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .story-card {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            background: rgba(20, 20, 20, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 40px;
+        }
+
+        @media (min-width: 768px) {
+            .story-card {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+
+        .story-img {
+            flex-shrink: 0;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        @media (min-width: 768px) {
+            .story-img { width: 160px; height: 160px; }
+        }
+
+        .story-content {
+            flex: 1;
+        }
+
+        .story-date {
+            font-size: 0.85rem;
+            color: var(--accent-color);
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .story-title {
+            font-family: var(--font-display);
+            font-size: 2rem;
+            margin-bottom: 12px;
+        }
+
+        .story-desc {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* ── RSVP SECTION ── */
+        .act-rsvp {
+            position: relative;
+            padding: 100px 24px;
+            background: var(--bg-color);
+            background-size: cover;
+            background-position: center;
+        }
+
+        .rsvp-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(10, 10, 10, 0.85);
+            backdrop-filter: blur(12px);
+        }
+
+        .rsvp-form-card {
+            position: relative;
+            z-index: 1;
+            background: var(--surface-color);
+            border: 1px solid rgba(255,255,255,0.05);
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 40px 32px;
+            border-radius: var(--radius-lg);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.85rem;
+            color: var(--muted-color);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: var(--text-color);
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            font-family: var(--font-body);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: var(--accent-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 16px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .btn-submit:hover {
+            background: #d6b880;
+        }
+
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        /* ── GIFT SECTION ── */
+        .act-gift {
+            padding: 100px 24px;
+            background: var(--surface-color);
+            text-align: center;
+        }
+
+        .gift-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 24px;
+            max-width: 900px;
+            margin: 40px auto 0;
+        }
+
+        .gift-card {
+            background: var(--bg-color);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 32px 24px;
+            border-radius: var(--radius-lg);
+            flex: 1 1 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bank-name {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        .account-number {
+            font-size: 1.5rem;
+            letter-spacing: 2px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .account-name {
+            color: var(--muted-color);
+            font-size: 0.9rem;
+        }
+
+        .btn-copy {
+            background: transparent;
+            border: 1px solid var(--accent-color);
+            color: var(--accent-color);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: all 0.3s;
+        }
+        
+        .btn-copy:hover {
+            background: var(--accent-color);
+            color: var(--bg-color);
+        }
+
+        /* ── WISHES SECTION ── */
+        .act-wishes {
+            padding: 100px 24px;
+            background: var(--bg-color);
+        }
+
+        .wishes-list {
+            max-width: 600px;
+            margin: 40px auto 0;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .wish-card {
+            background: var(--surface-color);
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            gap: 16px;
+        }
+
+        .wish-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: var(--accent-color);
+            color: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .wish-name {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .wish-status {
+            font-size: 0.75rem;
+            color: var(--accent-color);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .wish-message {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: rgba(255,255,255,0.8);
+        }
+
+        /* ── FOOTER ── */
+        .site-footer {
+            padding: 120px 24px 60px;
+            background: var(--bg-color);
+            text-align: center;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .footer-names {
+            font-family: var(--font-display);
+            font-size: clamp(2rem, 8vw, 4rem);
+            color: var(--accent-color);
+            margin-bottom: 16px;
+        }
+
+        .footer-date {
+            font-size: 1rem;
+            letter-spacing: 4px;
+            color: var(--muted-color);
+            margin-bottom: 60px;
+        }
+        
+        .footer-credit {
+            font-size: 0.8rem;
+            color: #444;
+        }
+        
+        .footer-credit a {
+            color: var(--muted-color);
+            text-decoration: none;
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.95);
+            z-index: 10000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .lightbox.active {
+            display: flex;
+        }
+        .lightbox img {
+            max-width: 90vw;
+            max-height: 90vh;
+            object-fit: contain;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.1);
+            color: white;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+        .lightbox-prev { left: 24px; }
+        .lightbox-next { right: 24px; }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--text-color);
+            color: var(--bg-color);
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 500;
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 10000;
+            pointer-events: none;
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- BGM -->
+    <audio id="bgMusic" loop preload="none">
+        <source src="{{ invitation.song_url }}" type="audio/mpeg">
+    </audio>
+
+    <!-- OPENING -->
+    <div id="opening">
+        <!-- Using first gallery video or background video as opening background -->
+        <video class="opening-video-bg" playsinline muted loop autoplay>
+            {% if !invitation.background_video_url.is_empty() %}
+                <source src="{{ invitation.background_video_url }}" type="video/mp4">
+            {% else if !invitation.gallery_videos.is_empty() %}
+                <source src="{{ invitation.gallery_videos[0] }}" type="video/mp4">
+            {% else %}
+                <source src="https://assets.mixkit.co/videos/preview/mixkit-wedding-couple-walking-in-a-forest-40439-large.mp4" type="video/mp4">
+            {% endif %}
+        </video>
+        
+        <div class="opening-content">
+            <h1 class="title-display text-accent">{{ invitation.bride.name }} & {{ invitation.groom.name }}</h1>
+            
+            <div class="opening-dear">Dear,</div>
+            <div class="opening-recipient">{{ invitation.recipient_name }}</div>
+            
+            <button class="btn-open" onclick="openInvitation()">Buka Undangan</button>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="main" style="display:none; opacity:0; transition: opacity 1s">
+
+        <!-- ACT 1: VIDEO HERO -->
+        <section class="act-hero">
+            <video class="hero-video" id="heroVideo" playsinline muted loop autoplay>
+                {% if !invitation.background_video_url.is_empty() %}
+                    <source src="{{ invitation.background_video_url }}" type="video/mp4">
+                {% else if !invitation.gallery_videos.is_empty() %}
+                    <source src="{{ invitation.gallery_videos[0] }}" type="video/mp4">
+                {% else %}
+                    <source src="https://assets.mixkit.co/videos/preview/mixkit-wedding-couple-walking-in-a-forest-40439-large.mp4" type="video/mp4">
+                {% endif %}
+            </video>
+            <div class="hero-overlay"></div>
+            
+            <div class="hero-content reveal reveal-up">
+                <div class="hero-badge">
+                    <div class="dot"></div> Reel Wedding
+                </div>
+                <h2 class="hero-title">{{ invitation.bride.name }}<br>& {{ invitation.groom.name }}</h2>
+            </div>
+        </section>
+
+        <!-- QUOTE -->
+        <section class="act-quote reveal reveal-up">
+            <div class="quote-text">
+                "{{ invitation.quote.text }}"
+            </div>
+            <div class="quote-source">
+                — {{ invitation.quote.source }}
+            </div>
+        </section>
+
+        <!-- ACT 2: FOTO BURST -->
+        <section class="act-burst">
+            <div class="burst-grid">
+                {% if invitation.gallery_images.is_empty() %}
+                    <div class="burst-item reveal reveal-left" onclick="openLightbox('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80')">
+                        <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&q=80" alt="Placeholder 1" loading="lazy">
+                    </div>
+                    <div class="burst-item reveal reveal-right" onclick="openLightbox('https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&q=80')">
+                        <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&q=80" alt="Placeholder 2" loading="lazy">
+                    </div>
+                    <div class="burst-item reveal reveal-up" onclick="openLightbox('https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80')">
+                        <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=600&q=80" alt="Placeholder 3" loading="lazy">
+                    </div>
+                    <div class="burst-item reveal reveal-scale" onclick="openLightbox('https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&q=80')">
+                        <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&q=80" alt="Placeholder 4" loading="lazy">
+                    </div>
+                {% else %}
+                    {% for img in invitation.gallery_images %}
+                        {% if loop.index0 < 4 %}
+                            {% if loop.index == 1 %}
+                                <div class="burst-item reveal reveal-left" onclick="openLightbox('{{ img }}')">
+                                    <img src="{{ img }}" alt="Gallery Image 1" loading="lazy">
+                                </div>
+                            {% else if loop.index == 2 %}
+                                <div class="burst-item reveal reveal-right" onclick="openLightbox('{{ img }}')">
+                                    <img src="{{ img }}" alt="Gallery Image 2" loading="lazy">
+                                </div>
+                            {% else if loop.index == 3 %}
+                                <div class="burst-item reveal reveal-up" onclick="openLightbox('{{ img }}')">
+                                    <img src="{{ img }}" alt="Gallery Image 3" loading="lazy">
+                                </div>
+                            {% else %}
+                                <div class="burst-item reveal reveal-scale" onclick="openLightbox('{{ img }}')">
+                                    <img src="{{ img }}" alt="Gallery Image 4" loading="lazy">
+                                </div>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- PROFIL PASANGAN -->
+        <section class="act-profiles">
+            <div class="profile-panel reveal reveal-left">
+                <img class="profile-bg" src="{{ invitation.groom.image_url }}" alt="Groom" loading="lazy">
+                <div class="profile-overlay">
+                    <h3 class="profile-name">{{ invitation.groom.full_name }}</h3>
+                    <p class="profile-parents">Putra dari Bpk. {{ invitation.groom.father_name }} & Ibu {{ invitation.groom.mother_name }}</p>
+                </div>
+            </div>
+            <div class="profile-panel reveal reveal-right">
+                <img class="profile-bg" src="{{ invitation.bride.image_url }}" alt="Bride" loading="lazy">
+                <div class="profile-overlay">
+                    <h3 class="profile-name">{{ invitation.bride.full_name }}</h3>
+                    <p class="profile-parents">Putri dari Bpk. {{ invitation.bride.father_name }} & Ibu {{ invitation.bride.mother_name }}</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACT 3: VIDEO 2 + LOKASI -->
+        <section class="act-location">
+            <div class="loc-video-wrapper">
+                {% if invitation.gallery_videos.len() > 1 %}
+                    <video class="loc-video" playsinline muted loop autoplay>
+                        <source src="{{ invitation.gallery_videos[1] }}" type="video/mp4">
+                    </video>
+                {% else %}
+                    <!-- Fallback if no second video -->
+                    <video class="loc-video" playsinline muted loop autoplay>
+                        <source src="https://assets.mixkit.co/videos/preview/mixkit-holding-hands-of-a-couple-40441-large.mp4" type="video/mp4">
+                    </video>
+                {% endif %}
+            </div>
+            <div class="loc-content reveal reveal-up">
+                <h2 class="loc-title">Waktu & Tempat</h2>
+                
+                <div class="countdown-wrap">
+                    <div class="cd-item">
+                        <span class="cd-num" id="cdDays">00</span>
+                        <span class="cd-label">Hari</span>
+                    </div>
+                    <div class="cd-item">
+                        <span class="cd-num" id="cdHours">00</span>
+                        <span class="cd-label">Jam</span>
+                    </div>
+                    <div class="cd-item">
+                        <span class="cd-num" id="cdMins">00</span>
+                        <span class="cd-label">Menit</span>
+                    </div>
+                    <div class="cd-item">
+                        <span class="cd-num" id="cdSecs">00</span>
+                        <span class="cd-label">Detik</span>
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-type">Akad Nikah</div>
+                    <div class="event-detail">
+                        <strong>{{ invitation.ceremony.date }}</strong>
+                        <span>{{ invitation.ceremony.time }}</span>
+                    </div>
+                    <div class="event-detail">
+                        <span>{{ invitation.ceremony.venue }}</span>
+                        <span>{{ invitation.ceremony.address }}</span>
+                    </div>
+                    <a href="{{ invitation.ceremony.maps_url }}" target="_blank" class="btn-maps">
+                        Lihat Lokasi
+                    </a>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-type">Resepsi</div>
+                    <div class="event-detail">
+                        <strong>{{ invitation.reception.date }}</strong>
+                        <span>{{ invitation.reception.time }}</span>
+                    </div>
+                    <div class="event-detail">
+                        <span>{{ invitation.reception.venue }}</span>
+                        <span>{{ invitation.reception.address }}</span>
+                    </div>
+                    <a href="{{ invitation.reception.maps_url }}" target="_blank" class="btn-maps">
+                        Lihat Lokasi
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ACT 4: FOTO GRID (Masonry) -->
+        {% if invitation.gallery_images.is_empty() %}
+        <section class="act-grid">
+            <h2 class="title-display text-accent" style="text-align:center; margin-bottom: 60px;">Moments</h2>
+            <div class="masonry">
+                <div class="masonry-item reveal reveal-up" style="transition-delay: 0ms" onclick="openLightbox('https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&q=80')">
+                    <img src="https://images.unsplash.com/photo-1606800052052-a08af7148866?w=600&q=80" alt="Placeholder Moment 1" loading="lazy">
+                    <div class="masonry-overlay"><span style="color:white; letter-spacing: 2px;">VIEW</span></div>
+                </div>
+                <div class="masonry-item reveal reveal-up" style="transition-delay: 100ms" onclick="openLightbox('https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=800&q=80')">
+                    <img src="https://images.unsplash.com/photo-1519225421980-715cb0215aed?w=600&q=80" alt="Placeholder Moment 2" loading="lazy">
+                    <div class="masonry-overlay"><span style="color:white; letter-spacing: 2px;">VIEW</span></div>
+                </div>
+                <div class="masonry-item reveal reveal-up" style="transition-delay: 200ms" onclick="openLightbox('https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&q=80')">
+                    <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=600&q=80" alt="Placeholder Moment 3" loading="lazy">
+                    <div class="masonry-overlay"><span style="color:white; letter-spacing: 2px;">VIEW</span></div>
+                </div>
+                <div class="masonry-item reveal reveal-up" style="transition-delay: 300ms" onclick="openLightbox('https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=800&q=80')">
+                    <img src="https://images.unsplash.com/photo-1511285560929-80b456fea0bc?w=600&q=80" alt="Placeholder Moment 4" loading="lazy">
+                    <div class="masonry-overlay"><span style="color:white; letter-spacing: 2px;">VIEW</span></div>
+                </div>
+            </div>
+        </section>
+        {% else if invitation.gallery_images.len() > 4 %}
+        <section class="act-grid">
+            <h2 class="title-display text-accent" style="text-align:center; margin-bottom: 60px;">Moments</h2>
+            <div class="masonry">
+                {% for img in invitation.gallery_images %}
+                    {% if loop.index0 >= 4 %}
+                    <div class="masonry-item reveal reveal-up" style="transition-delay: {{ (loop.index0 - 4) * 100 }}ms" onclick="openLightbox('{{ img }}')">
+                        <img src="{{ img }}" alt="Gallery Image {{ loop.index }}" loading="lazy">
+                        <div class="masonry-overlay">
+                            <span style="color:white; letter-spacing: 2px;">VIEW</span>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- ACT 5: VIDEO 3 + LOVE STORY -->
+        <section class="act-story">
+            {% if invitation.gallery_videos.len() > 2 %}
+                <video class="story-bg" playsinline muted loop autoplay>
+                    <source src="{{ invitation.gallery_videos[2] }}" type="video/mp4">
+                </video>
+            {% else %}
+                <video class="story-bg" playsinline muted loop autoplay>
+                    <source src="https://assets.mixkit.co/videos/preview/mixkit-bride-holding-a-bouquet-40442-large.mp4" type="video/mp4">
+                </video>
+            {% endif %}
+            
+            <div class="story-container">
+                <div class="story-header reveal reveal-up">
+                    <h2 class="title-display text-accent">Our Story</h2>
+                </div>
+                
+                {% if invitation.stories.is_empty() %}
+                    <div class="story-card reveal reveal-up">
+                        <img class="story-img" src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&q=80" alt="Story 1">
+                        <div class="story-content">
+                            <div class="story-date">Juni 2025</div>
+                            <h3 class="story-title">Awal Pertemuan</h3>
+                            <p class="story-desc">Di hari pertama bertemu, tawa tercipta di antara lemparan bowling, cerita mengalir di sela santapan sushi, dan manisnya es krim menjadi saksi awal kisah kami.</p>
+                        </div>
+                    </div>
+                    <div class="story-card reveal reveal-up">
+                        <img class="story-img" src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?w=600&q=80" alt="Story 2">
+                        <div class="story-content">
+                            <div class="story-date">November 2025</div>
+                            <h3 class="story-title">Lamaran</h3>
+                            <p class="story-desc">Seiring waktu, rasa itu tumbuh menjadi keyakinan. Di hadapan keluarga, kami mengikat janji dalam sebuah langkah awal menuju masa depan bersama.</p>
+                        </div>
+                    </div>
+                {% else %}
+                    {% for story in invitation.stories %}
+                    <div class="story-card reveal reveal-up">
+                        {% if !story.image_url.is_empty() %}
+                        <img class="story-img" src="{{ story.image_url }}" alt="{{ story.title }}" loading="lazy">
+                        {% endif %}
+                        <div class="story-content">
+                            <div class="story-date">{{ story.date }}</div>
+                            <h3 class="story-title">{{ story.title }}</h3>
+                            <p class="story-desc">{{ story.description }}</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- RSVP -->
+        <section class="act-rsvp" style="{% if !invitation.gallery_images.is_empty() %}background-image: url('{{ invitation.gallery_images[0] }}');{% endif %}">
+            <div class="rsvp-overlay"></div>
+            <div class="rsvp-form-card reveal reveal-up">
+                <h2 class="title-display text-accent" style="text-align:center; font-size: 3rem; margin-bottom: 32px;">RSVP</h2>
+                
+                <form id="rsvpForm" onsubmit="submitRsvp(event)">
+                    <div class="form-group">
+                        <label class="form-label">Nama Anda</label>
+                        <input type="text" id="rsvpName" class="form-input" required placeholder="Masukkan nama">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Kehadiran</label>
+                        <select id="rsvpStatus" class="form-select" required>
+                            <option value="Hadir">Ya, Saya Akan Hadir</option>
+                            <option value="Tidak Hadir">Maaf, Saya Tidak Bisa Hadir</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group" id="guestCountGroup">
+                        <label class="form-label">Jumlah Tamu</label>
+                        <select id="rsvpGuests" class="form-select">
+                            <option value="1">1 Orang</option>
+                            <option value="2">2 Orang</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Pesan & Doa (Opsional)</label>
+                        <textarea id="rsvpMessage" class="form-textarea" rows="4" placeholder="Tulis pesan untuk mempelai..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn-submit" id="btnSubmitRsvp">Kirim RSVP</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- GIFT -->
+        <section class="act-gift">
+            <h2 class="title-display text-accent" style="font-size: 3rem;">Wedding Gift</h2>
+            <p style="color:var(--muted-color); margin-top: 16px;">Doa restu Anda merupakan karunia yang sangat berarti bagi kami. <br>Dan jika memberi adalah ungkapan tanda kasih Anda, Anda dapat memberi kado secara cashless.</p>
+            
+            <div class="gift-container">
+                {% for acc in invitation.gift_accounts %}
+                <div class="gift-card reveal reveal-up">
+                    <div class="bank-name">{{ acc.bank_name }}</div>
+                    <div class="account-number" id="acc-{{ loop.index }}">{{ acc.account_number }}</div>
+                    <div class="account-name">A/N {{ acc.account_holder }}</div>
+                    <button class="btn-copy" onclick="copyToClipboard('{{ acc.account_number }}')">Salin Rekening</button>
+                </div>
+                {% endfor %}
+            </div>
+        </section>
+
+        <!-- WISHES -->
+        <section class="act-wishes">
+            <h2 class="title-display text-accent" style="text-align:center; font-size: 3rem; margin-bottom: 40px;">Wishes</h2>
+            <div class="wishes-list" id="wishesList">
+                {% if invitation.rsvps.is_empty() %}
+                    <p style="text-align:center; color:var(--muted-color);">Belum ada ucapan. Jadilah yang pertama memberikan doa!</p>
+                {% else %}
+                    {% for rsvp in invitation.rsvps %}
+                        {% if !rsvp.message.as_deref().unwrap_or("").is_empty() %}
+                        <div class="wish-card reveal reveal-up">
+                            <div class="wish-avatar">{{ rsvp.name.chars().next().unwrap_or('?') }}</div>
+                            <div class="wish-content">
+                                <div class="wish-name">{{ rsvp.name }}</div>
+                                <div class="wish-status">✓ {{ rsvp.attendance }}</div>
+                                <div class="wish-message">"{{ rsvp.message.as_deref().unwrap_or("") }}"</div>
+                            </div>
+                        </div>
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="site-footer">
+            <h2 class="footer-names">{{ invitation.bride.name }} & {{ invitation.groom.name }}</h2>
+            <div class="footer-date">{{ invitation.event_date }}</div>
+            <div class="footer-credit">Created with <a href="https://castellant.com" target="_blank">Castellant</a></div>
+        </footer>
+
+    </div> <!-- End Main -->
+
+    <!-- LIGHTBOX -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" onclick="closeLightbox()">×</button>
+        <img id="lightboxImg" src="" alt="Zoomed">
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast" id="toast">Berhasil!</div>
+
+    <!-- SCRIPTS -->
+    <script>
+        // Data
+        const eventDateISO = "{{ invitation.event_date_iso }}";
+        const slug = "{{ invitation.slug }}";
+
+        // Opening
+        function openInvitation() {
+            const bgm = document.getElementById('bgMusic');
+            bgm.play().catch(e => console.log("Autoplay prevented:", e));
+            
+            document.getElementById('opening').classList.add('hide');
+            
+            const main = document.getElementById('main');
+            main.style.display = 'block';
+            setTimeout(() => {
+                main.style.opacity = '1';
+                initScrollObserver();
+            }, 50);
+            
+            setTimeout(() => {
+                document.getElementById('opening').style.display = 'none';
+            }, 1000);
+        }
+
+        // Intersection Observer for Reveal Animations
+        function initScrollObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        // Optional: observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: "0px 0px -50px 0px"
+            });
+
+            document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+        }
+
+        // Parallax Video Hero
+        window.addEventListener('scroll', () => {
+            const heroVid = document.getElementById('heroVideo');
+            if (heroVid && window.scrollY < window.innerHeight) {
+                heroVid.style.transform = `translateY(${window.scrollY * 0.4}px)`;
+            }
+        }, { passive: true });
+
+        // Countdown
+        function updateCountdown() {
+            const eventTime = new Date(eventDateISO).getTime();
+            if (isNaN(eventTime)) return;
+            
+            const now = new Date().getTime();
+            const diff = eventTime - now;
+
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+                document.getElementById('cdDays').innerText = days.toString().padStart(2, '0');
+                document.getElementById('cdHours').innerText = hours.toString().padStart(2, '0');
+                document.getElementById('cdMins').innerText = mins.toString().padStart(2, '0');
+                document.getElementById('cdSecs').innerText = secs.toString().padStart(2, '0');
+            }
+        }
+        setInterval(updateCountdown, 1000);
+        updateCountdown();
+
+        // Lightbox
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightboxImg');
+
+        function openLightbox(src) {
+            lightboxImg.src = src;
+            lightbox.classList.add('active');
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+        }
+
+        // Handle Status Change for Guest Count
+        document.getElementById('rsvpStatus')?.addEventListener('change', function(e) {
+            const group = document.getElementById('guestCountGroup');
+            if(e.target.value === 'Hadir') {
+                group.style.display = 'block';
+            } else {
+                group.style.display = 'none';
+            }
+        });
+
+        // RSVP Submit
+        async function submitRsvp(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSubmitRsvp');
+            btn.innerText = 'Mengirim...';
+            btn.disabled = true;
+
+            const name = document.getElementById('rsvpName').value;
+            const status = document.getElementById('rsvpStatus').value;
+            let guests = 0;
+            if(status === 'Hadir') {
+                guests = parseInt(document.getElementById('rsvpGuests').value);
+            }
+            const message = document.getElementById('rsvpMessage').value;
+
+            try {
+                const formData = new URLSearchParams();
+                formData.append('invitation_slug', slug);
+                formData.append('name', name);
+                formData.append('status', status);
+                formData.append('guests', guests);
+                formData.append('message', message);
+
+                const res = await fetch('/api/rsvp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formData
+                });
+
+                if (res.ok) {
+                    showToast('Terima kasih atas konfirmasinya!');
+                    document.getElementById('rsvpForm').reset();
+                    // Optional: append new wish to DOM
+                } else {
+                    showToast('Gagal mengirim RSVP.');
+                }
+            } catch (err) {
+                showToast('Terjadi kesalahan jaringan.');
+            } finally {
+                btn.innerText = 'Kirim RSVP';
+                btn.disabled = false;
+            }
+        }
+
+        // Copy to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Nomor rekening disalin!');
+            });
+        }
+
+        // Toast
+        let toastTimeout;
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.classList.add('show');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                t.classList.remove('show');
+            }, 3000);
+        }
+    </script>
+</body>
+</html>

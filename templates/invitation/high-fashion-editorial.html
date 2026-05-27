@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ invitation.bride.name }} & {{ invitation.groom.name }} — The Wedding Issue</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Montserrat:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ════════════════════════════════════════
+   TOKENS & RESET
+════════════════════════════════════════ */
+:root {
+  --bg-dark: #121212;
+  --bg-light: #D5C2A5; /* Warm studio tan */
+  --text-light: #F5EFEB;
+  --text-dark: #1A1A1A;
+  --accent-red: #8B1E1E; /* Crimson for the umbrella/flowers */
+  --gold: #C5A059;
+  
+  --serif: 'Playfair Display', serif;
+  --sans: 'Montserrat', sans-serif;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; font-size:16px; }
+body {
+  background: var(--bg-dark);
+  color: var(--text-light);
+  font-family: var(--sans);
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* ════════════════════════════════════════
+   MAGAZINE GATE (COVER)
+════════════════════════════════════════ */
+#gate {
+  position: fixed; inset: 0; z-index: 900;
+  background: var(--bg-dark);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  transition: transform 1.2s cubic-bezier(0.8, 0, 0.2, 1), opacity 1.2s;
+}
+#gate.open { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+
+.cover-img-container {
+  position: absolute; inset: 0;
+  display: flex; justify-content: center; align-items: center;
+  overflow: hidden;
+}
+.cover-img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: brightness(0.7) contrast(1.1);
+  transform: scale(1.05);
+  animation: slowZoom 20s infinite alternate linear;
+}
+@keyframes slowZoom { from { transform: scale(1); } to { transform: scale(1.1); } }
+
+/* Magazine Masthead */
+.masthead {
+  position: absolute; top: 8%; left: 0; width: 100%;
+  text-align: center; z-index: 10;
+  pointer-events: none;
+}
+.masthead-title {
+  font-family: var(--serif);
+  font-size: clamp(60px, 15vw, 150px);
+  font-weight: 700; letter-spacing: -0.02em;
+  color: var(--text-light);
+  line-height: 0.8;
+  mix-blend-mode: overlay;
+  opacity: 0.9;
+}
+.masthead-subtitle {
+  font-family: var(--sans);
+  font-size: 10px; font-weight: 500;
+  letter-spacing: 0.4em; text-transform: uppercase;
+  margin-top: 10px; color: var(--gold);
+}
+
+/* Cover Text Elements */
+.cover-issue {
+  position: absolute; top: 30px; left: 30px;
+  font-family: var(--sans); font-size: 9px; font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text-light); z-index: 10;
+  border-bottom: 1px solid var(--accent-red); padding-bottom: 4px;
+}
+.cover-date {
+  position: absolute; top: 30px; right: 30px;
+  font-family: var(--sans); font-size: 9px; font-weight: 500;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text-light); z-index: 10;
+}
+.cover-headlines {
+  position: absolute; bottom: 20%; left: 30px;
+  max-width: 300px; z-index: 10;
+}
+.headline-item {
+  margin-bottom: 15px;
+}
+.headline-title {
+  font-family: var(--serif); font-size: 20px; font-style: italic; color: var(--text-light);
+}
+.headline-desc {
+  font-family: var(--sans); font-size: 10px; color: rgba(245,239,235,0.7);
+  letter-spacing: 0.05em; line-height: 1.4; margin-top: 4px;
+}
+
+/* Open Button & Barcode */
+.cover-bottom {
+  position: absolute; bottom: 30px; left: 30px; right: 30px;
+  display: flex; justify-content: space-between; align-items: flex-end;
+  z-index: 10;
+}
+.barcode {
+  width: 60px; opacity: 0.8;
+  border-left: 2px solid #fff; border-right: 4px solid #fff;
+  height: 30px; background: repeating-linear-gradient(90deg, #fff, #fff 2px, transparent 2px, transparent 4px, #fff 4px, #fff 5px, transparent 5px, transparent 8px);
+}
+.open-btn {
+  background: var(--accent-red); border: none;
+  color: #fff; font-family: var(--sans); font-size: 10px; font-weight: 600;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  padding: 16px 32px; cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+.open-btn:hover { background: #601010; transform: translateY(-2px); }
+
+/* ════════════════════════════════════════
+   MAIN CONTENT
+════════════════════════════════════════ */
+#main { opacity: 0; transition: opacity 1.5s ease 0.5s; background: var(--bg-light); color: var(--text-dark); }
+#main.show { opacity: 1; }
+
+/* Section Defaults */
+.section { padding: 120px 24px; position: relative; }
+.section-dark { background: var(--bg-dark); color: var(--text-light); }
+.inner { max-width: 1000px; margin: 0 auto; position: relative; }
+
+/* Display Typography */
+.ed-eyebrow {
+  font-family: var(--sans); font-size: 10px; font-weight: 600;
+  letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent-red);
+  margin-bottom: 24px; display: flex; align-items: center; gap: 16px;
+}
+.ed-eyebrow::before { content: ''; display: block; width: 40px; height: 1px; background: var(--accent-red); }
+.section-dark .ed-eyebrow { color: var(--gold); }
+.section-dark .ed-eyebrow::before { background: var(--gold); }
+
+.ed-title {
+  font-family: var(--serif); font-size: clamp(40px, 8vw, 80px);
+  line-height: 1; font-weight: 400; margin-bottom: 32px;
+}
+.ed-title i { font-style: italic; color: var(--accent-red); }
+.section-dark .ed-title i { color: var(--gold); }
+
+.ed-text {
+  font-family: var(--sans); font-size: 13px; font-weight: 400;
+  line-height: 1.8; color: rgba(26,26,26,0.7); max-width: 480px;
+}
+.section-dark .ed-text { color: rgba(245,239,235,0.7); }
+
+/* Scroll Reveal */
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity 1s ease, transform 1s ease; }
+.reveal.in { opacity: 1; transform: translateY(0); }
+
+/* ════════════════════════════════════════
+   HERO / INTRO
+════════════════════════════════════════ */
+.hero {
+  min-height: 100vh; display: grid; grid-template-columns: 1.2fr 1fr;
+  background: var(--bg-light); border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+@media(max-width:800px) { .hero { grid-template-columns: 1fr; } }
+
+.hero-text-col {
+  padding: 100px 60px; display: flex; flex-direction: column; justify-content: center;
+}
+.hero-names {
+  font-family: var(--serif); font-size: clamp(50px, 10vw, 100px);
+  line-height: 0.9; margin-bottom: 40px; text-transform: uppercase;
+}
+.hero-names span { display: block; }
+.hero-names i { font-style: italic; font-weight: 300; text-transform: lowercase; font-size: 0.8em; color: var(--accent-red); }
+
+.hero-date {
+  font-family: var(--sans); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  border-top: 1px solid #1a1a1a; border-bottom: 1px solid #1a1a1a;
+  padding: 16px 0; max-width: 300px; margin-bottom: 40px;
+}
+
+.hero-img-col {
+  position: relative; overflow: hidden;
+}
+.hero-img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: sepia(0.2) contrast(1.05);
+}
+
+/* ════════════════════════════════════════
+   COUPLE SPREAD
+════════════════════════════════════════ */
+.couple-spread {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+}
+@media(max-width:800px) { .couple-spread { grid-template-columns: 1fr; gap: 40px; } }
+
+.c-card { position: relative; }
+.c-img-wrap {
+  width: 100%; aspect-ratio: 3/4; overflow: hidden;
+  border-radius: 200px 200px 0 0; /* Arch shape */
+}
+.c-img {
+  width: 100%; height: 100%; object-fit: cover;
+  filter: grayscale(0.3) contrast(1.1); transition: filter 0.5s;
+}
+.c-card:hover .c-img { filter: grayscale(0); }
+.c-info { text-align: center; margin-top: 24px; }
+.c-role {
+  font-family: var(--sans); font-size: 9px; font-weight: 600;
+  letter-spacing: 0.3em; text-transform: uppercase; color: var(--accent-red);
+  margin-bottom: 8px;
+}
+.c-name {
+  font-family: var(--serif); font-size: 32px; font-style: italic; margin-bottom: 8px;
+}
+
+/* ════════════════════════════════════════
+   EVENTS
+════════════════════════════════════════ */
+.events-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2px;
+  background: rgba(245,239,235,0.1); margin-top: 60px;
+}
+@media(max-width:800px) { .events-grid { grid-template-columns: 1fr; } }
+.ev-card {
+  background: var(--bg-dark); padding: 60px 40px;
+  position: relative; overflow: hidden;
+  border-top: 2px solid transparent; transition: border-color 0.4s;
+}
+.ev-card:hover { border-top-color: var(--gold); }
+.ev-type {
+  font-family: var(--sans); font-size: 10px; font-weight: 500;
+  letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold);
+  margin-bottom: 16px;
+}
+.ev-time {
+  font-family: var(--serif); font-size: 36px; line-height: 1.1; margin-bottom: 24px;
+}
+.ev-desc {
+  font-family: var(--sans); font-size: 12px; line-height: 1.6;
+  color: rgba(245,239,235,0.6); margin-bottom: 32px;
+}
+.ev-btn {
+  display: inline-block; text-decoration: none;
+  font-family: var(--sans); font-size: 9px; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-light);
+  border-bottom: 1px solid var(--gold); padding-bottom: 4px;
+  transition: color 0.3s, border-color 0.3s;
+}
+.ev-btn:hover { color: var(--gold); }
+
+/* ════════════════════════════════════════
+   GALLERY (EDITORIAL MOSAIC)
+════════════════════════════════════════ */
+.gal-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: 250px; gap: 16px; margin-top: 40px;
+}
+@media(max-width:800px) { .gal-grid { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 200px; } }
+.gal-item { overflow: hidden; cursor: pointer; position: relative; }
+.gal-item:nth-child(1) { grid-column: span 2; grid-row: span 2; }
+.gal-item:nth-child(4) { grid-column: span 2; }
+.gal-item img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.gal-item:hover img { transform: scale(1.05); }
+
+/* ════════════════════════════════════════
+   GIFT & RSVP
+════════════════════════════════════════ */
+.gift-rsvp-wrapper {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  border-top: 1px solid rgba(0,0,0,0.1);
+}
+@media(max-width:900px) { .gift-rsvp-wrapper { grid-template-columns: 1fr; } }
+.gr-col { padding: 100px 60px; }
+.gr-col:first-child { border-right: 1px solid rgba(0,0,0,0.1); }
+@media(max-width:900px) { .gr-col:first-child { border-right: none; border-bottom: 1px solid rgba(0,0,0,0.1); } }
+
+/* Gift Cards */
+.gift-acc {
+  background: #fff; padding: 32px; border: 1px solid #ddd;
+  margin-bottom: 16px; text-align: center;
+}
+.ga-bank { font-size: 10px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent-red); margin-bottom: 8px; }
+.ga-name { font-family: var(--serif); font-size: 24px; margin-bottom: 4px; }
+.ga-num { font-family: monospace; font-size: 16px; letter-spacing: 0.1em; margin-bottom: 16px; }
+.copy-btn {
+  background: transparent; border: 1px solid #1a1a1a; color: #1a1a1a;
+  font-family: var(--sans); font-size: 9px; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase; padding: 10px 24px; cursor: pointer;
+  transition: all 0.3s;
+}
+.copy-btn:hover { background: #1a1a1a; color: #fff; }
+
+/* RSVP Form */
+.form-group { margin-bottom: 24px; }
+.form-label {
+  display: block; font-family: var(--sans); font-size: 9px; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 8px;
+}
+.form-input {
+  width: 100%; background: transparent; border: none; border-bottom: 1px solid #ccc;
+  padding: 12px 0; font-family: var(--sans); font-size: 14px; color: #1a1a1a;
+  outline: none; transition: border-color 0.3s;
+}
+.form-input:focus { border-bottom-color: var(--accent-red); }
+textarea.form-input { resize: none; min-height: 80px; }
+.guest-row { display: flex; gap: 8px; }
+.gbtn {
+  flex: 1; background: transparent; border: 1px solid #ccc; padding: 12px;
+  font-family: var(--sans); font-size: 11px; cursor: pointer; transition: all 0.3s;
+}
+.gbtn.on { border-color: var(--accent-red); color: var(--accent-red); }
+.submit-btn {
+  width: 100%; background: var(--bg-dark); color: var(--text-light); border: none;
+  font-family: var(--sans); font-size: 10px; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase; padding: 18px; cursor: pointer;
+  margin-top: 16px; transition: background 0.3s;
+}
+.submit-btn:hover { background: var(--accent-red); }
+
+/* ════════════════════════════════════════
+   WISHES
+════════════════════════════════════════ */
+.wishes-feed { margin-top: 48px; border-top: 1px solid rgba(255,255,255,0.1); }
+.wish-item {
+  padding: 32px 0; border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.wish-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px; }
+.wish-name { font-family: var(--serif); font-size: 20px; color: var(--gold); }
+.wish-stat { font-family: var(--sans); font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.4); }
+.wish-msg { font-family: var(--sans); font-size: 13px; line-height: 1.6; color: rgba(255,255,255,0.8); }
+
+/* ════════════════════════════════════════
+   FOOTER
+════════════════════════════════════════ */
+.footer {
+  padding: 80px 24px; text-align: center; background: var(--bg-dark); color: var(--text-light);
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+.f-logo { font-family: var(--serif); font-size: 40px; margin-bottom: 16px; }
+.f-credit { font-family: var(--sans); font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: rgba(255,255,255,0.3); }
+
+/* Nav */
+.nav {
+  position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%);
+  background: #fff; padding: 8px 24px; border-radius: 50px;
+  display: flex; gap: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  z-index: 100; opacity: 0; pointer-events: none; transition: opacity 0.5s;
+}
+.nav.show { opacity: 1; pointer-events: auto; }
+.nav a {
+  color: #1a1a1a; text-decoration: none; font-family: var(--sans);
+  font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  transition: color 0.3s;
+}
+.nav a:hover, .nav a.active { color: var(--accent-red); }
+
+/* Lightbox */
+.lb {
+  position: fixed; inset: 0; background: #111; z-index: 999;
+  display: none; align-items: center; justify-content: center;
+}
+.lb.open { display: flex; }
+.lb img { max-width: 90vw; max-height: 90vh; object-fit: contain; }
+.lb-close, .lb-nav {
+  position: absolute; background: none; border: none; color: #fff;
+  font-size: 30px; cursor: pointer; padding: 20px;
+}
+.lb-close { top: 10px; right: 10px; font-size: 14px; font-family: var(--sans); text-transform: uppercase; letter-spacing: 0.2em; }
+.lb-prev { left: 10px; top: 50%; transform: translateY(-50%); }
+.lb-next { right: 10px; top: 50%; transform: translateY(-50%); }
+
+.toast {
+  position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--bg-dark); color: #fff; padding: 12px 24px; font-size: 11px;
+  letter-spacing: 0.1em; text-transform: uppercase; opacity: 0; transition: all 0.3s;
+  pointer-events: none; z-index: 1000;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<!-- GATE -->
+<div id="gate">
+  <div class="cover-img-container">
+    <img src="https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=1200&q=85" class="cover-img" alt="Cover">
+  </div>
+  <div class="cover-issue">Vol. 1</div>
+  <div class="cover-date">{{ invitation.event_date }}</div>
+  
+  <div class="masthead">
+    <div class="masthead-title">VOWS</div>
+    <div class="masthead-subtitle">The Editorial Wedding Issue</div>
+  </div>
+  
+  <div class="cover-headlines">
+    <div class="headline-item">
+      <div class="headline-title">Anita & Zarda</div>
+      <div class="headline-desc">A celebration of tradition, elegance, and eternal love.</div>
+    </div>
+    <div class="headline-item">
+      <div class="headline-title">Exclusive</div>
+      <div class="headline-desc">Inside their intimate Javanese heritage ceremony.</div>
+    </div>
+  </div>
+  
+  <div class="cover-bottom">
+    <div class="barcode"></div>
+    <button class="open-btn" onclick="openGate()">Read Issue</button>
+  </div>
+</div>
+
+<div id="main">
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-text-col reveal">
+      <div class="ed-eyebrow">The Prologue</div>
+      <h1 class="hero-names">
+        <span>Anita</span>
+        <i>&amp;</i>
+        <span>Zarda</span>
+      </h1>
+      <div class="hero-date">{{ invitation.event_date }} · Tangerang</div>
+      <p class="ed-text">
+        "And among His signs is this, that He created for you mates from among yourselves, that ye may dwell in tranquility with them..."<br><br>— Surah Ar-Rum : 21
+      </p>
+    </div>
+    <div class="hero-img-col">
+      <img src="https://images.unsplash.com/photo-1519741497674-611481863552?w=900&q=85" class="hero-img" alt="Couple">
+    </div>
+  </section>
+
+  <!-- COUPLE -->
+  <section class="section" id="couple">
+    <div class="inner reveal">
+      <div class="ed-eyebrow">The Protagonists</div>
+      <h2 class="ed-title">Two Souls,<br><i>One Destiny</i></h2>
+      
+      <div class="couple-spread">
+        <div class="c-card">
+          <div class="c-img-wrap"><img src="https://images.unsplash.com/photo-1529636444744-adbfc0f0bb09?w=600&q=80" class="c-img" alt="Bride"></div>
+          <div class="c-info">
+            <div class="c-role">The Bride</div>
+            <div class="c-name">{{ invitation.bride.name }}</div>
+            <div class="ed-text" style="margin:0 auto">Daughter of Mr. Taryono & Mrs. Wiwit Jayanti</div>
+          </div>
+        </div>
+        <div class="c-card" style="margin-top: 80px;">
+          <div class="c-img-wrap"><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=600&q=80" class="c-img" alt="Groom"></div>
+          <div class="c-info">
+            <div class="c-role">The Groom</div>
+            <div class="c-name">{{ invitation.groom.name }}</div>
+            <div class="ed-text" style="margin:0 auto">Son of Mr. Wan Sabran & Mrs. Titik Sundari</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVENTS -->
+  <section class="section section-dark" id="event">
+    <div class="inner reveal">
+      <div class="ed-eyebrow">The Itinerary</div>
+      <h2 class="ed-title">Time & <i>Place</i></h2>
+      
+      <div class="events-grid">
+        <div class="ev-card">
+          <div class="ev-type">Holy Matrimony</div>
+          <div class="ev-time">08.00<br><i>WIB</i></div>
+          <div class="ev-desc">
+            <strong>Sunday, {{ invitation.event_date }}</strong><br><br>
+            Graha Yadika, Jl. Palem Ganda Asri,<br>Karang Tengah, Ciledug, Tangerang
+          </div>
+          <a href="#" class="ev-btn">View Map</a>
+        </div>
+        <div class="ev-card">
+          <div class="ev-type">Wedding Reception</div>
+          <div class="ev-time">11.00<br><i>WIB</i></div>
+          <div class="ev-desc">
+            <strong>Sunday, {{ invitation.event_date }}</strong><br><br>
+            Graha Yadika, Jl. Palem Ganda Asri,<br>Karang Tengah, Ciledug, Tangerang
+          </div>
+          <a href="#" class="ev-btn">View Map</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- GALLERY -->
+  <section class="section" id="gallery">
+    <div class="inner reveal">
+      <div class="ed-eyebrow">The Archives</div>
+      <h2 class="ed-title">Visual <i>Diary</i></h2>
+      
+      <div class="gal-grid" id="galGrid"></div>
+    </div>
+  </section>
+
+  <!-- GIFT & RSVP -->
+  <div class="gift-rsvp-wrapper" id="rsvp">
+    <!-- GIFT -->
+    <div class="gr-col">
+      <div class="reveal">
+        <div class="ed-eyebrow">Wedding Gift</div>
+        <h2 class="ed-title">Send <i>Love</i></h2>
+        <p class="ed-text" style="margin-bottom: 40px;">Your blessing is the most meaningful gift. However, if you wish to send a token of love, you may use the details below.</p>
+        
+        {% for account in invitation.gift_accounts %}
+        <div class="gift-acc">
+          <div class="ga-bank">{{ account.bank_name }}</div>
+          <div class="ga-name">{{ account.account_holder }}</div>
+          <div class="ga-num">{{ account.account_number }}</div>
+          <button class="copy-btn" onclick="copyAcc('{{ account.account_number }}', this)">Copy Number</button>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    
+    <!-- RSVP -->
+    <div class="gr-col">
+      <div class="reveal">
+        <div class="ed-eyebrow">Confirmation</div>
+        <h2 class="ed-title"><i>RSVP</i></h2>
+        
+        <form onsubmit="return false">
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-input" id="rName" placeholder="Enter your name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Attendance</label>
+            <select class="form-input" id="rStat">
+              <option value="">Select status</option>
+              <option value="hadir">Joyfully Accept</option>
+              <option value="tidak">Regretfully Decline</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Number of Guests</label>
+            <div class="guest-row">
+              <button type="button" class="gbtn on" onclick="setG(1,this)">1 Guest</button>
+              <button type="button" class="gbtn" onclick="setG(2,this)">2 Guests</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Wishes & Prayers</label>
+            <textarea class="form-input" id="rMsg" placeholder="Leave a message for the couple..."></textarea>
+          </div>
+          <button type="button" class="submit-btn" onclick="doRSVP()">Send Confirmation</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- WISHES -->
+  <section class="section section-dark" id="wishes">
+    <div class="inner reveal">
+      <div class="ed-eyebrow">Guestbook</div>
+      <h2 class="ed-title">Words of <i>Love</i></h2>
+      
+      <div class="wishes-feed" id="wishesFeed">
+        {% if invitation.is_preview %}
+        <div class="wish-item">
+          <div class="wish-head">
+            <div class="wish-name">Ayu Rahmawati</div>
+            <div class="wish-stat">Attending · 2 Guests</div>
+          </div>
+          <div class="wish-msg">Selamat menempuh hidup baru! Semoga menjadi keluarga yang bahagia selalu.</div>
+        </div>
+        <div class="wish-item">
+          <div class="wish-head">
+            <div class="wish-name">Reza Firmansyah</div>
+            <div class="wish-stat">Attending · 1 Guest</div>
+          </div>
+          <div class="wish-msg">Wishing you both a lifetime of love and laughter.</div>
+        </div>
+        {% else %}
+        {% for rsvp in invitation.rsvps %}
+        <div class="wish-item">
+          <div class="wish-head">
+            <div class="wish-name">{{ rsvp.name }}</div>
+            <div class="wish-stat">Attending · {{ rsvp.guests }} Guest(s)</div>
+          </div>
+          <div class="wish-msg">{{ rsvp.message.as_deref().unwrap_or("Best wishes.") }}</div>
+        </div>
+        {% endfor %}
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="f-logo">VOWS</div>
+    <div class="f-credit">Design by BridesSpace · © 2026</div>
+  </footer>
+</div>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <a href="#home" class="active">Intro</a>
+  <a href="#couple">Couple</a>
+  <a href="#event">Details</a>
+  <a href="#gallery">Gallery</a>
+  <a href="#rsvp">RSVP</a>
+</nav>
+
+<!-- LIGHTBOX -->
+<div class="lb" id="lb">
+  <button class="lb-close" onclick="closeLb()">Close</button>
+  <button class="lb-nav lb-prev" onclick="lbGo(-1)">‹</button>
+  <img id="lbImg" src="" alt="">
+  <button class="lb-nav lb-next" onclick="lbGo(1)">›</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function openGate() {
+  document.getElementById('gate').classList.add('open');
+  document.getElementById('main').classList.add('show');
+  setTimeout(() => document.getElementById('nav').classList.add('show'), 1500);
+  init();
+}
+
+const GALLERY = [
+  "https://images.unsplash.com/photo-1606800052052-a08af7148866?w=800&q=85",
+  "https://images.unsplash.com/photo-1583939003579-730e3918a45a?w=800&q=85",
+  "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?w=800&q=85",
+  "https://images.unsplash.com/photo-1518621845897-18fb9b6b7bf1?w=800&q=85",
+  "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=85"
+];
+
+function init() {
+  const g = document.getElementById('galGrid');
+  GALLERY.forEach((src, i) => {
+    const d = document.createElement('div');
+    d.className = 'gal-item';
+    d.innerHTML = `<img src="${src}" loading="lazy">`;
+    d.onclick = () => openLb(i);
+    g.appendChild(d);
+  });
+
+  const obs = new IntersectionObserver(e => {
+    e.forEach(x => { if (x.isIntersecting) x.target.classList.add('in'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  
+  const secs = ['home','couple','event','gallery','rsvp'];
+  const nobs = new IntersectionObserver(e => {
+    e.forEach(x => {
+      if (x.isIntersecting) {
+        document.querySelectorAll('.nav a').forEach(a => a.classList.remove('active'));
+        const a = document.querySelector(`.nav a[href="#${x.target.id}"]`);
+        if (a) a.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-40% 0px -40% 0px' });
+  secs.forEach(id => { const el = document.getElementById(id); if(el) nobs.observe(el); });
+}
+
+let lbIdx = 0, guestN = 1, toastTO = null;
+function openLb(i) { lbIdx=i; updLb(); document.getElementById('lb').classList.add('open'); }
+function closeLb() { document.getElementById('lb').classList.remove('open'); }
+function lbGo(d) { lbIdx=(lbIdx+d+GALLERY.length)%GALLERY.length; updLb(); }
+function updLb() { document.getElementById('lbImg').src=GALLERY[lbIdx]; }
+
+function setG(n, btn) {
+  guestN = n;
+  document.querySelectorAll('.gbtn').forEach(b => b.classList.remove('on'));
+  btn.classList.add('on');
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTO); toastTO = setTimeout(() => t.classList.remove('show'), 3000);
+}
+function copyAcc(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const old = btn.textContent;
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = old, 2000);
+  });
+}
+function doRSVP() {
+  const name = document.getElementById('rName').value.trim();
+  const stat = document.getElementById('rStat').value;
+  const msg  = document.getElementById('rMsg').value.trim();
+  if (!name || !stat) { showToast('Please complete name and attendance'); return; }
+  
+  const item = document.createElement('div');
+  item.className = 'wish-item';
+  item.innerHTML = `
+    <div class="wish-head">
+      <div class="wish-name">${name}</div>
+      <div class="wish-stat">${stat==='hadir'?'Attending':'Not Attending'} · ${guestN} Guest(s)</div>
+    </div>
+    <div class="wish-msg">${msg || 'Best wishes.'}</div>
+  `;
+  const feed = document.getElementById('wishesFeed');
+  if (feed) feed.prepend(item);
+  
+  document.getElementById('rName').value=''; document.getElementById('rStat').value=''; document.getElementById('rMsg').value='';
+  showToast('RSVP submitted successfully');
+}
+</script>
+{% include "invitation/ai_concierge_snippet.html" %}
+</body>
+</html>

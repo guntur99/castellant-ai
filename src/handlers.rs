@@ -1217,6 +1217,33 @@ pub struct CineMarryTemplate {
 }
 
 #[derive(Template)]
+#[template(path = "invitation/royal-heritage.html")]
+pub struct RoyalHeritageTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/high-fashion-editorial.html")]
+pub struct HighFashionEditorialTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "invitation/reel-wedding.html")]
+pub struct ReelWeddingTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
 #[template(path = "invitation/we-gojek.html")]
 pub struct CaiRideTemplate {
     #[allow(dead_code)]
@@ -2435,6 +2462,9 @@ pub async fn invitation_detail(
             match template_name.as_str() {
                 "loveanthem" => HtmlTemplate(LoveAnthemTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "cinemarry" => HtmlTemplate(CineMarryTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "royal-heritage" => HtmlTemplate(RoyalHeritageTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "high-fashion-editorial" => HtmlTemplate(HighFashionEditorialTemplate { invitation: invitation.clone(), is_dev: state.is_dev }).into_response(),
+                "reel-wedding" => HtmlTemplate(ReelWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "cairide" => HtmlTemplate(CaiRideTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "pinterlove" => HtmlTemplate(PinterLoveTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "shopee-live-wedding" => HtmlTemplate(ShopeeLiveWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
@@ -2642,6 +2672,9 @@ pub async fn invitation_detail(
                 match template_name {
                     "loveanthem" => HtmlTemplate(LoveAnthemTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     "cinemarry" => HtmlTemplate(CineMarryTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "royal-heritage" => HtmlTemplate(RoyalHeritageTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "high-fashion-editorial" => HtmlTemplate(HighFashionEditorialTemplate { invitation: invitation.clone(), is_dev: state.is_dev }).into_response(),
+                    "reel-wedding" => HtmlTemplate(ReelWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     "cairide" => HtmlTemplate(CaiRideTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     "pinterlove" => HtmlTemplate(PinterLoveTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     "shopee-live-wedding" => HtmlTemplate(ShopeeLiveWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
@@ -2841,7 +2874,7 @@ pub async fn manage_invitation(
                 } else { None }
             } else { None };
 
-            let all_templates = get_all_templates(&state.db, false).await;
+            let all_templates = get_all_templates(&state.db, true).await;
             let all_songs = sqlx::query_as::<_, Song>("SELECT * FROM songs WHERE is_active = true ORDER BY title ASC")
                 .fetch_all(&state.db)
                 .await
@@ -3536,6 +3569,9 @@ pub async fn preview(
     match payload.template_name.as_str() {
         "loveanthem" => HtmlTemplate(LoveAnthemTemplate { invitation, is_dev: state.is_dev }).into_response(),
         "cinemarry" => HtmlTemplate(CineMarryTemplate { invitation, is_dev: state.is_dev }).into_response(),
+        "royal-heritage" => HtmlTemplate(RoyalHeritageTemplate { invitation, is_dev: state.is_dev }).into_response(),
+        "high-fashion-editorial" => HtmlTemplate(HighFashionEditorialTemplate { invitation: invitation.clone(), is_dev: state.is_dev }).into_response(),
+        "reel-wedding" => HtmlTemplate(ReelWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
         "cairide" => HtmlTemplate(CaiRideTemplate { invitation, is_dev: state.is_dev }).into_response(),
         "pinterlove" => HtmlTemplate(PinterLoveTemplate { invitation, is_dev: state.is_dev }).into_response(),
         "shopee-live-wedding" => HtmlTemplate(ShopeeLiveWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
