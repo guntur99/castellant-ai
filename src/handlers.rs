@@ -1208,6 +1208,15 @@ pub struct SuperWedbrosTemplate {
 }
 
 #[derive(Template)]
+#[template(path = "invitation/keraton-dark-invitation.html")]
+pub struct KeratonDarkInvitationTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
 #[template(path = "invitation/loveanthem.html")]
 pub struct LoveAnthemTemplate {
     #[allow(dead_code)]
@@ -2469,6 +2478,7 @@ pub async fn invitation_detail(
             };
 
             match template_name.as_str() {
+                "keraton-dark-invitation" => HtmlTemplate(KeratonDarkInvitationTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "loveanthem" => HtmlTemplate(LoveAnthemTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "cinemarry" => HtmlTemplate(CineMarryTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "super-wedbros" => HtmlTemplate(SuperWedbrosTemplate { invitation, is_dev: state.is_dev }).into_response(),
@@ -2680,6 +2690,7 @@ pub async fn invitation_detail(
                 };
                 
                 match template_name {
+                    "keraton-dark-invitation" => HtmlTemplate(KeratonDarkInvitationTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     "loveanthem" => HtmlTemplate(LoveAnthemTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     "cinemarry" => HtmlTemplate(CineMarryTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     "super-wedbros" => HtmlTemplate(SuperWedbrosTemplate { invitation, is_dev: state.is_dev }).into_response(),
@@ -3578,6 +3589,7 @@ pub async fn preview(
     };
 
     match payload.template_name.as_str() {
+        "keraton-dark-invitation" => HtmlTemplate(KeratonDarkInvitationTemplate { invitation, is_dev: state.is_dev }).into_response(),
         "loveanthem" => HtmlTemplate(LoveAnthemTemplate { invitation, is_dev: state.is_dev }).into_response(),
         "cinemarry" => HtmlTemplate(CineMarryTemplate { invitation, is_dev: state.is_dev }).into_response(),
         "royal-heritage" => HtmlTemplate(RoyalHeritageTemplate { invitation, is_dev: state.is_dev }).into_response(),
