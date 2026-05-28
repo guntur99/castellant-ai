@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Super WedBros — {{ invitation.bride.name }} & {{ invitation.groom.name }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body, html { margin: 0; padding: 0; overflow: hidden; background: #5c94fc; font-family: 'Courier New', Courier, monospace; touch-action: none; }
+        #game-container { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; }
+        
+        .ui-overlay { position: absolute; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 10; display: flex; flex-direction: column; }
+        .skip-btn { pointer-events: auto; background: rgba(0,0,0,0.5); color: white; padding: 10px 20px; border-radius: 20px; margin: 20px; align-self: flex-end; font-weight: bold; cursor: pointer; border: 2px solid white; z-index: 50; font-family: sans-serif; }
+        .skip-btn:hover { background: rgba(0,0,0,0.8); }
+        
+        /* Modals */
+        .modal { display: none; pointer-events: auto; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; border: 4px solid black; padding: 20px; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; z-index: 100; box-shadow: 10px 10px 0px rgba(0,0,0,0.5); border-radius: 10px; font-family: sans-serif; }
+        .modal.active { display: block; }
+        .modal-header { font-size: 1.5rem; font-weight: bold; border-bottom: 2px solid black; padding-bottom: 10px; margin-bottom: 15px; text-align: center; }
+        .modal-close { background: #ff4757; color: white; border: 2px solid black; padding: 8px 15px; cursor: pointer; display: block; margin: 20px auto 0; font-weight: bold; border-radius: 5px; box-shadow: 3px 3px 0px black; transition: transform 0.1s; }
+        .modal-close:active { transform: translate(3px, 3px); box-shadow: 0px 0px 0px black; }
+        #modal-backdrop { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(0,0,0,0.5); z-index: 90; }
+        #modal-backdrop.active { display: block; }
+        
+        /* Mobile Controls */
+        .mobile-controls { display: none; pointer-events: auto; position: absolute; bottom: 30px; left: 0; width: 100%; justify-content: space-between; padding: 0 30px; box-sizing: border-box; z-index: 20; }
+        .ctrl-btn { background: rgba(255,255,255,0.8); border: 3px solid black; width: 70px; height: 70px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 30px; font-weight: bold; user-select: none; box-shadow: 0 5px 0 black; color: black; }
+        .ctrl-btn:active { transform: translateY(5px); box-shadow: 0 0 0 black; }
+        .ctrl-group { display: flex; gap: 15px; }
+        @media (max-width: 768px) { .mobile-controls { display: flex; } }
+
+        /* Standard view */
+        #standard-view { display: none; background: #fdfbf7; min-height: 100vh; position: absolute; top:0; left:0; width: 100vw; height: 100vh; z-index: 1000; overflow-y: auto; pointer-events: auto; font-family: sans-serif; }
+        .sv-section { padding: 40px 20px; text-align: center; border-bottom: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div id="error-log" style="position:fixed;top:0;left:0;z-index:9999;background:red;color:white;font-size:20px;padding:20px;display:none;"></div>
+    <script>
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
+            document.getElementById('error-log').style.display = 'block';
+            document.getElementById('error-log').innerText += 'Error: ' + msg + '\nLine: ' + lineNo + '\n\n';
+            return false;
+        };
+        window.addEventListener('unhandledrejection', function(event) {
+            document.getElementById('error-log').style.display = 'block';
+            document.getElementById('error-log').innerText += 'Promise Error: ' + event.reason + '\n\n';
+        });
+    </script>
+    
+    <!-- Audio Component -->
+    <audio id="bgMusic" loop preload="auto">
+        <source src="{% if invitation.custom_song_url != "" %}{{ invitation.custom_song_url }}{% else %}{{ invitation.song_url }}{% endif %}" type="audio/mpeg">
+    </audio>
+
+    <div id="game-container"></div>
+
+    <div class="ui-overlay">
+        <button class="skip-btn" onclick="skipGame()">Skip Game ➔</button>
+        <div class="mobile-controls">
+            <div class="ctrl-group">
+                <div class="ctrl-btn" id="btn-left">←</div>
+                <div class="ctrl-btn" id="btn-right">→</div>
+            </div>
+            <div class="ctrl-btn" id="btn-jump">↑</div>
+        </div>
+    </div>
+
+    <div id="modal-backdrop" onclick="closeAllModals()"></div>
+
+    <!-- 1. VIDEO MODAL -->
+    <div id="modal-video" class="modal">
+        <div class="modal-header">🎥 Video Pre-Wedding</div>
+        {% if invitation.background_video_url != "" %}
+            <video class="w-full rounded border-2 border-black" controls>
+                <source src="{{ invitation.background_video_url }}" type="video/mp4">
+            </video>
+        {% else %}
+            <p class="text-center text-gray-500 py-10">Video tidak tersedia</p>
+        {% endif %}
+        <button class="modal-close" onclick="closeModal('modal-video')">Lanjut Main</button>
+    </div>
+
+    <!-- 2. MEMPELAI MODAL -->
+    <div id="modal-profile" class="modal">
+        <div class="modal-header">👫 Mempelai</div>
+        <div class="flex flex-col gap-6 text-center">
+            <div class="bg-blue-50 p-4 rounded border-2 border-black">
+                {% if invitation.groom.image_url != "" %}
+                <img src="{{ invitation.groom.image_url }}" class="w-32 h-32 mx-auto rounded-full object-cover border-4 border-white mb-2">
+                {% endif %}
+                <h3 class="font-bold text-xl">{{ invitation.groom.name }}</h3>
+                <p class="text-sm text-gray-600">Putra dari {{ invitation.groom.father_name }} & {{ invitation.groom.mother_name }}</p>
+            </div>
+            <div class="bg-pink-50 p-4 rounded border-2 border-black">
+                {% if invitation.bride.image_url != "" %}
+                <img src="{{ invitation.bride.image_url }}" class="w-32 h-32 mx-auto rounded-full object-cover border-4 border-white mb-2">
+                {% endif %}
+                <h3 class="font-bold text-xl">{{ invitation.bride.name }}</h3>
+                <p class="text-sm text-gray-600">Putri dari {{ invitation.bride.father_name }} & {{ invitation.bride.mother_name }}</p>
+            </div>
+        </div>
+        <button class="modal-close" onclick="closeModal('modal-profile')">Lanjut Main</button>
+    </div>
+
+    <!-- 3. QUOTE / LOVE STORY MODAL -->
+    <div id="modal-love-story" class="modal">
+        <div class="modal-header">💖 Our Story</div>
+        <div class="text-center italic mb-4 text-gray-700 bg-gray-100 p-4 rounded border-2 border-black">
+            "{{ invitation.quote.text }}" <br>
+            <span class="font-bold">- {{ invitation.quote.source }}</span>
+        </div>
+        {% for story in invitation.stories %}
+        <div class="mb-4 text-left border-b border-gray-200 pb-2">
+            <h4 class="font-bold">{{ story.title }}</h4>
+            <p class="text-xs text-gray-500">{{ story.date }}</p>
+            <p class="text-sm mt-1">{{ story.description }}</p>
+        </div>
+        {% endfor %}
+        <button class="modal-close" onclick="closeModal('modal-love-story')">Lanjut Main</button>
+    </div>
+
+    <!-- 4. GALLERY MODAL -->
+    <div id="modal-gallery" class="modal">
+        <div class="modal-header">📸 Galeri</div>
+        <div class="grid grid-cols-2 gap-2">
+            {% for img in invitation.gallery_images %}
+            <img src="{{ img }}" class="w-full h-32 object-cover rounded border-2 border-black">
+            {% endfor %}
+            {% if invitation.gallery_images.len() == 0 %}
+            <p class="col-span-2 text-center py-5 text-gray-500">Belum ada foto</p>
+            {% endif %}
+        </div>
+        <button class="modal-close" onclick="closeModal('modal-gallery')">Lanjut Main</button>
+    </div>
+
+    <!-- 5 & 6. LOKASI & RSVP MODAL -->
+    <div id="modal-event" class="modal text-center">
+        <div class="modal-header">🎉 Acara & Lokasi</div>
+        
+        <div class="bg-gray-100 p-3 rounded border-2 border-black text-left mb-4">
+            <p class="font-bold border-b-2 border-black pb-1 mb-2">💍 Akad Nikah</p>
+            <p class="text-sm font-bold">{{ invitation.ceremony.date }}</p>
+            <p class="text-sm">{{ invitation.ceremony.time }}</p>
+            <p class="text-sm mt-2 font-semibold">{{ invitation.ceremony.venue }}</p>
+            <p class="text-sm text-gray-600">{{ invitation.ceremony.address }}</p>
+            {% if invitation.ceremony.maps_url != "" %}
+            <a href="{{ invitation.ceremony.maps_url }}" target="_blank" class="block mt-2 text-center bg-blue-500 text-white p-1 rounded text-sm font-bold">Google Maps</a>
+            {% endif %}
+        </div>
+        
+        <div class="bg-gray-100 p-3 rounded border-2 border-black text-left mb-4">
+            <p class="font-bold border-b-2 border-black pb-1 mb-2">🥂 Resepsi</p>
+            <p class="text-sm font-bold">{{ invitation.reception.date }}</p>
+            <p class="text-sm">{{ invitation.reception.time }}</p>
+            <p class="text-sm mt-2 font-semibold">{{ invitation.reception.venue }}</p>
+            <p class="text-sm text-gray-600">{{ invitation.reception.address }}</p>
+            {% if invitation.reception.maps_url != "" %}
+            <a href="{{ invitation.reception.maps_url }}" target="_blank" class="block mt-2 text-center bg-blue-500 text-white p-1 rounded text-sm font-bold">Google Maps</a>
+            {% endif %}
+        </div>
+        
+        <div class="border-t-2 border-black pt-4">
+            <h4 class="font-bold mb-2">Konfirmasi Kehadiran (RSVP)</h4>
+            <form onsubmit="event.preventDefault(); alert('RSVP Berhasil dikirim!');" class="flex flex-col gap-2 text-left">
+                <input type="text" placeholder="Nama Anda" class="p-2 border-2 border-black rounded" required>
+                <select class="p-2 border-2 border-black rounded" required>
+                    <option value="">Apakah Anda hadir?</option>
+                    <option value="Hadir">Ya, saya hadir</option>
+                    <option value="Tidak Hadir">Maaf, tidak bisa hadir</option>
+                </select>
+                <button type="submit" class="bg-green-500 text-white font-bold py-2 rounded border-2 border-black mt-2">Kirim RSVP</button>
+            </form>
+        </div>
+        <button class="modal-close" onclick="closeModal('modal-event')">Tutup</button>
+    </div>
+
+    <!-- 7. DOA & WISHES MODAL -->
+    <div id="modal-wishes" class="modal">
+        <div class="modal-header">💌 Buku Tamu & Doa</div>
+        <div class="mb-4">
+            <form onsubmit="event.preventDefault(); alert('Doa Berhasil dikirim!');" class="flex flex-col gap-2">
+                <input type="text" placeholder="Nama Anda" class="p-2 border-2 border-black rounded text-sm" required>
+                <textarea placeholder="Tulis doa untuk mempelai..." class="p-2 border-2 border-black rounded text-sm h-20" required></textarea>
+                <button type="submit" class="bg-blue-500 text-white font-bold py-2 rounded border-2 border-black">Kirim Doa</button>
+            </form>
+        </div>
+        <div class="h-40 overflow-y-auto border-2 border-black p-2 bg-gray-50 rounded">
+            {% for rsvp in invitation.rsvps %}
+            {% if rsvp.message.is_some() %}
+            <div class="mb-2 p-2 bg-white border border-gray-300 rounded shadow-sm">
+                <p class="font-bold text-sm">{{ rsvp.name }} <span class="text-xs text-gray-400 font-normal ml-1">({{ rsvp.attendance }})</span></p>
+                <p class="text-sm mt-1">{{ rsvp.display_message() }}</p>
+            </div>
+            {% endif %}
+            {% endfor %}
+            {% if invitation.rsvps.len() == 0 %}
+            <p class="text-center text-gray-500 text-sm mt-4">Jadilah yang pertama memberikan doa.</p>
+            {% endif %}
+        </div>
+        <button class="modal-close" onclick="closeModal('modal-wishes')">Lanjut Main</button>
+    </div>
+
+    <!-- Standard View (Fallback) -->
+    <div id="standard-view">
+        <div class="sv-section bg-blue-100 min-h-[50vh] flex flex-col justify-center items-center">
+            <h1 class="text-4xl md:text-6xl font-bold font-serif mb-4">{{ invitation.bride.name }} & {{ invitation.groom.name }}</h1>
+            <p class="mt-2 text-gray-700">Kami mengundang Anda ke pernikahan kami.</p>
+            <button class="mt-8 bg-blue-500 text-white px-8 py-3 rounded-full font-bold shadow-lg border-2 border-black" onclick="location.reload()">🎮 Buka Versi Game</button>
+        </div>
+        <div class="sv-section">
+            <h2 class="text-2xl font-bold font-serif mb-4">Detail Undangan</h2>
+            <p class="text-gray-500">Semua informasi (Galeri, Profil, RSVP) akan ada di sini di versi *fallback* (bisa dikembangkan lebih lanjut nanti).</p>
+        </div>
+    </div>
+
+    <script>
+        window.isModalOpenVar = false;
+        window.enemiesFrozen = false;
+        let musicStarted = false;
+
+        function startMusic() {
+            if(!musicStarted) {
+                const bgm = document.getElementById('bgMusic');
+                if(bgm && bgm.src) {
+                    bgm.play().catch(e => console.log('Audio autoplay prevented'));
+                }
+                musicStarted = true;
+            }
+        }
+
+        // Attempt music on first click anywhere
+        document.body.addEventListener('click', startMusic, {once: true});
+        document.body.addEventListener('touchstart', startMusic, {once: true});
+
+        function openModal(id) {
+            document.getElementById('modal-backdrop').classList.add('active');
+            document.getElementById(id).classList.add('active');
+            window.isModalOpenVar = true; 
+            window.enemiesFrozen = true;
+        }
+
+        function closeModal(id) {
+            document.getElementById('modal-backdrop').classList.remove('active');
+            document.getElementById(id).classList.remove('active');
+            window.isModalOpenVar = false;
+        }
+        
+        function closeAllModals() {
+            document.getElementById('modal-backdrop').classList.remove('active');
+            document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+            window.isModalOpenVar = false;
+        }
+
+        function skipGame() {
+            document.getElementById('game-container').style.display = 'none';
+            document.querySelector('.ui-overlay').style.display = 'none';
+            document.querySelectorAll('.modal').forEach(m => m.classList.remove('active'));
+            document.getElementById('standard-view').style.display = 'block';
+            startMusic();
+        }
+    </script>
+
+    <script type="module">
+        import kaboom from "https://unpkg.com/kaboom@3000.0.1/dist/kaboom.mjs"
+
+        const k = kaboom({
+            root: document.getElementById("game-container"),
+            background: [92, 148, 252], 
+            global: false,
+        })
+
+        const svgBrick = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect width="32" height="32" fill="%23cc4a16"/><path d="M0,16 H32 M16,0 V16 M0,16 V32 M32,16 V32" stroke="%23000000" stroke-width="2"/><path d="M0,0 H32 V2 H0 Z" fill="%23fbb090"/><path d="M0,16 H32 V18 H0 Z" fill="%23fbb090"/></svg>`;
+        const svgBlock = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect width="32" height="32" fill="%23cc4a16" stroke="%23000000" stroke-width="2"/><circle cx="6" cy="6" r="2" fill="%23000"/><circle cx="26" cy="6" r="2" fill="%23000"/><circle cx="6" cy="26" r="2" fill="%23000"/><circle cx="26" cy="26" r="2" fill="%23000"/></svg>`;
+        const svgQuestion = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect width="32" height="32" fill="%23f8b800" stroke="%23000000" stroke-width="4"/><text x="16" y="24" font-family="sans-serif" font-size="22" font-weight="900" text-anchor="middle" fill="%23000000">?</text><circle cx="4" cy="4" r="1.5" fill="%23000"/><circle cx="28" cy="4" r="1.5" fill="%23000"/><circle cx="4" cy="28" r="1.5" fill="%23000"/><circle cx="28" cy="28" r="1.5" fill="%23000"/></svg>`;
+        const svgQuestionV = svgQuestion.replace('?', 'V'); // Video
+        const svgQuestionP = svgQuestion.replace('?', 'P'); // Profil
+        const svgQuestionG = svgQuestion.replace('?', 'G'); // Gallery
+        const svgPipeTop = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="64" height="32"><rect width="64" height="32" fill="%2300a800" stroke="%23000000" stroke-width="4"/><rect x="8" y="0" width="16" height="32" fill="%2388d800"/><rect x="52" y="0" width="4" height="32" fill="%23005800"/></svg>`;
+        const svgPipeBody = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="56" height="32"><rect width="56" height="32" fill="%2300a800" stroke="%23000000" stroke-width="4"/><rect x="6" y="0" width="14" height="32" fill="%2388d800"/><rect x="46" y="0" width="4" height="32" fill="%23005800"/></svg>`;
+        const svgCastle = `data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22128%22%20height%3D%22128%22%20viewBox%3D%220%200%20128%20128%22%3E%0A%20%20%20%20%3C%21--%20Base%20--%3E%0A%20%20%20%20%3Crect%20x%3D%220%22%20y%3D%2264%22%20width%3D%22128%22%20height%3D%2264%22%20fill%3D%22%23C84C0C%22/%3E%0A%20%20%20%20%3C%21--%20Base%20Crenellations%20--%3E%0A%20%20%20%20%3Crect%20x%3D%220%22%20y%3D%2248%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%23C84C0C%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2232%22%20y%3D%2248%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%23C84C0C%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2264%22%20y%3D%2248%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%23C84C0C%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2296%22%20y%3D%2248%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%23C84C0C%22/%3E%0A%20%20%20%20%0A%20%20%20%20%3C%21--%20Top%20Section%20--%3E%0A%20%20%20%20%3Crect%20x%3D%2232%22%20y%3D%2232%22%20width%3D%2264%22%20height%3D%2232%22%20fill%3D%22%23C84C0C%22/%3E%0A%20%20%20%20%3C%21--%20Top%20Crenellations%20--%3E%0A%20%20%20%20%3Crect%20x%3D%2232%22%20y%3D%2216%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%23C84C0C%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2256%22%20y%3D%2216%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%23C84C0C%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2280%22%20y%3D%2216%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%23C84C0C%22/%3E%0A%20%20%20%20%0A%20%20%20%20%3C%21--%20Black%20Door%20--%3E%0A%20%20%20%20%3Cpath%20d%3D%22M%2048%20128%20L%2048%2096%20A%2016%2016%200%200%201%2080%2096%20L%2080%20128%20Z%22%20fill%3D%22%23000000%22/%3E%0A%20%20%20%20%0A%20%20%20%20%3C%21--%20Dark%20Windows%20--%3E%0A%20%20%20%20%3Crect%20x%3D%2240%22%20y%3D%2240%22%20width%3D%228%22%20height%3D%2216%22%20fill%3D%22%23000000%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2280%22%20y%3D%2240%22%20width%3D%228%22%20height%3D%2216%22%20fill%3D%22%23000000%22/%3E%0A%20%20%20%20%0A%20%20%20%20%3C%21--%20Small%20Flag%20on%20Top%20--%3E%0A%20%20%20%20%3Crect%20x%3D%2262%22%20y%3D%224%22%20width%3D%222%22%20height%3D%2212%22%20fill%3D%22%23FCEAC5%22/%3E%0A%20%20%20%20%3Cpolygon%20points%3D%2264%2C4%2074%2C8%2064%2C12%22%20fill%3D%22%23FFFFFF%22/%3E%0A%20%20%20%20%0A%20%20%20%20%3C%21--%20Brick%20Lines%20%28Horizontal%29%20--%3E%0A%20%20%20%20%3Cline%20x1%3D%220%22%20y1%3D%2280%22%20x2%3D%22128%22%20y2%3D%2280%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20opacity%3D%220.3%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%220%22%20y1%3D%2296%22%20x2%3D%2248%22%20y2%3D%2296%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20opacity%3D%220.3%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%2280%22%20y1%3D%2296%22%20x2%3D%22128%22%20y2%3D%2296%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20opacity%3D%220.3%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%220%22%20y1%3D%22112%22%20x2%3D%2248%22%20y2%3D%22112%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20opacity%3D%220.3%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%2280%22%20y1%3D%22112%22%20x2%3D%22128%22%20y2%3D%22112%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20opacity%3D%220.3%22/%3E%0A%20%20%20%20%0A%20%20%20%20%3C%21--%20Top%20Brick%20Lines%20--%3E%0A%20%20%20%20%3Cline%20x1%3D%2232%22%20y1%3D%2248%22%20x2%3D%2296%22%20y2%3D%2248%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20opacity%3D%220.3%22/%3E%0A%20%20%20%20%0A%20%20%20%20%3C%21--%20Brick%20Lines%20%28Vertical%29%20-%20Base%20--%3E%0A%20%20%20%20%3Cline%20x1%3D%2232%22%20y1%3D%2264%22%20x2%3D%2232%22%20y2%3D%2280%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20opacity%3D%220.3%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%2296%22%20y1%3D%2264%22%20x2%3D%2296%22%20y2%3D%2280%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20opacity%3D%220.3%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%2216%22%20y1%3D%2280%22%20x2%3D%2216%22%20y2%3D%2296%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20opacity%3D%220.3%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%22112%22%20y1%3D%2280%22%20x2%3D%22112%22%20y2%3D%2296%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20opacity%3D%220.3%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%2232%22%20y1%3D%2296%22%20x2%3D%2232%22%20y2%3D%22112%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20opacity%3D%220.3%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%2296%22%20y1%3D%2296%22%20x2%3D%2296%22%20y2%3D%22112%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20opacity%3D%220.3%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%2216%22%20y1%3D%22112%22%20x2%3D%2216%22%20y2%3D%22128%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20opacity%3D%220.3%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%22112%22%20y1%3D%22112%22%20x2%3D%22112%22%20y2%3D%22128%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20opacity%3D%220.3%22/%3E%0A%20%20%20%20%0A%20%20%20%20%3C%21--%20Brick%20Lines%20%28Vertical%29%20-%20Top%20--%3E%0A%20%20%20%20%3Cline%20x1%3D%2264%22%20y1%3D%2232%22%20x2%3D%2264%22%20y2%3D%2248%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20opacity%3D%220.3%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%2248%22%20y1%3D%2248%22%20x2%3D%2248%22%20y2%3D%2264%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20opacity%3D%220.3%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%2280%22%20y1%3D%2248%22%20x2%3D%2280%22%20y2%3D%2264%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20opacity%3D%220.3%22/%3E%0A%3C/svg%3E`;
+        const svgMario = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect x="8" y="2" width="16" height="4" fill="%23ff0000"/><rect x="6" y="6" width="22" height="4" fill="%23ff0000"/><rect x="6" y="10" width="18" height="10" fill="%23ffcc99"/><rect x="12" y="12" width="4" height="4" fill="%23000"/><rect x="8" y="20" width="16" height="10" fill="%230000ff"/><rect x="4" y="28" width="6" height="4" fill="%23663300"/><rect x="22" y="28" width="6" height="4" fill="%23663300"/></svg>`;
+        const svgMarioGroom = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect x="8" y="2" width="16" height="4" fill="%23ffffff"/><rect x="6" y="6" width="22" height="4" fill="%23ffffff"/><rect x="6" y="10" width="18" height="10" fill="%23ffcc99"/><rect x="12" y="12" width="4" height="4" fill="%23000"/><rect x="8" y="20" width="16" height="10" fill="%23ffffff"/><rect x="12" y="20" width="8" height="2" fill="%23ff0000"/><rect x="14" y="22" width="4" height="6" fill="%23ff0000"/><rect x="4" y="28" width="6" height="4" fill="%23000000"/><rect x="22" y="28" width="6" height="4" fill="%23000000"/></svg>`;
+        const svgMushroom = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><path d="M4,16 A12,12 0 0,1 28,16 Z" fill="%23ff0000" stroke="%23000" stroke-width="2"/><circle cx="10" cy="10" r="3" fill="%23fff"/><circle cx="22" cy="10" r="3" fill="%23fff"/><circle cx="16" cy="4" r="3" fill="%23fff"/><rect x="10" y="16" width="12" height="12" fill="%23ffcc99" stroke="%23000" stroke-width="2"/></svg>`;
+        const svgMailbox = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><rect x="4" y="4" width="24" height="16" fill="%230000ff" stroke="%23000" stroke-width="2"/><rect x="14" y="20" width="4" height="12" fill="%23888" stroke="%23000" stroke-width="2"/><path d="M16,12 L24,12" stroke="%23fff" stroke-width="2"/></svg>`;
+        const svgGoomba = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><path d="M8,24 L16,8 L24,24 Z" fill="%23cc4a16" stroke="%23000" stroke-width="2"/><rect x="12" y="24" width="8" height="4" fill="%23fbb090"/><circle cx="12" cy="18" r="2" fill="%23000"/><circle cx="20" cy="18" r="2" fill="%23000"/></svg>`;
+        const svgGoombaFlat = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><path d="M4,28 L16,20 L28,28 Z" fill="%23cc4a16" stroke="%23000" stroke-width="2"/><rect x="8" y="28" width="16" height="4" fill="%23fbb090"/></svg>`;
+        const svgTurtle = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="48"><path d="M16,16 A16,16 0 0,1 32,32 L32,36 L16,36 Z" fill="%2300a800" stroke="%23000" stroke-width="2"/><rect x="0" y="8" width="16" height="16" fill="%23ffcc99"/><rect x="8" y="36" width="8" height="12" fill="%23ffcc99"/><rect x="20" y="36" width="8" height="12" fill="%23ffcc99"/><circle cx="4" cy="14" r="2" fill="%23000"/></svg>`;
+        const svgTurtleShell = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><path d="M2,32 A14,14 0 0,1 30,32 Z" fill="%2300a800" stroke="%23000" stroke-width="2"/></svg>`;
+        const svgCloud = `data:image/svg\+xml;utf8,<svg xmlns="http://www\.w3\.org/2000/svg" width="64" height="32"><path d="M12,24 a8,8 0 0,1 0,-12 a12,12 0 0,1 20,-4 a12,12 0 0,1 20,4 a8,8 0 0,1 0,12 z" fill="%23ffffff" opacity="0.9"/></svg>`;
+        const svgCloudBig = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="96" height="48"><path d="M18,36 a12,12 0 0,1 0,-18 a18,18 0 0,1 30,-6 a18,18 0 0,1 30,6 a12,12 0 0,1 0,18 z" fill="%23ffffff" opacity="0.9"/></svg>`;
+        const svgPole = `data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2232%22%20height%3D%22320%22%20viewBox%3D%220%200%2032%20320%22%3E%0A%20%20%20%20%3Crect%20x%3D%220%22%20y%3D%22288%22%20width%3D%2232%22%20height%3D%2232%22%20fill%3D%22%23C84C0C%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22/%3E%0A%20%20%20%20%3Crect%20x%3D%224%22%20y%3D%22292%22%20width%3D%2224%22%20height%3D%2224%22%20fill%3D%22%23E88C5C%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22/%3E%0A%20%20%20%20%3Crect%20x%3D%228%22%20y%3D%22296%22%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%23C84C0C%22/%3E%0A%20%20%20%20%3Crect%20x%3D%2214%22%20y%3D%228%22%20width%3D%224%22%20height%3D%22280%22%20fill%3D%22%2388D800%22%20stroke%3D%22%23000000%22%20stroke-width%3D%221%22/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2216%22%20cy%3D%228%22%20r%3D%226%22%20fill%3D%22%2388D800%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22/%3E%0A%3C/svg%3E`;
+        const svgPennant = `data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2232%22%20height%3D%2232%22%20viewBox%3D%220%200%2032%2032%22%3E%0A%20%20%20%20%3Cpolygon%20points%3D%2228%2C0%2028%2C32%200%2C16%22%20fill%3D%22%23FFFFFF%22%20stroke%3D%22%23000000%22%20stroke-width%3D%222%22%20/%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2210%22%20cy%3D%2216%22%20r%3D%224%22%20fill%3D%22none%22%20stroke%3D%22%2388D800%22%20stroke-width%3D%222%22/%3E%0A%3C/svg%3E`;
+        const svgBride = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="48"><path d="M16,16 L4,48 L28,48 Z" fill="%23ffd700"/><path d="M4,48 A4,4 0 0,1 10,48 A4,4 0 0,1 16,48 A4,4 0 0,1 22,48 A4,4 0 0,1 28,48 Z" fill="%23ffffff" stroke="%23000" stroke-width="0.5"/><circle cx="16" cy="24" r="4" fill="%23ffffff"/><rect x="12" y="10" width="8" height="6" fill="%23ffcc99"/><path d="M6,6 Q16,0 26,6 L28,24 L24,18 L20,24 L16,14 L12,24 L8,18 L4,24 Z" fill="%23ff6600"/><polygon points="12,6 16,2 20,6" fill="%23ff0000"/><circle cx="14" cy="12" r="1" fill="%23000"/><circle cx="18" cy="12" r="1" fill="%23000"/></svg>`;
+        const svgGrass = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><path d="M4,32 L8,16 L12,32 L16,8 L20,32 L24,16 L28,32 Z" fill="%2300a800"/></svg>`;
+
+        k.loadSprite("brick", svgBrick)
+        k.loadSprite("block", svgBlock)
+        k.loadSprite("box-v", svgQuestionV)
+        k.loadSprite("box-p", svgQuestionP)
+        k.loadSprite("box-g", svgQuestionG)
+        k.loadSprite("pipe-top", svgPipeTop)
+        k.loadSprite("pipe-body", svgPipeBody)
+        k.loadSprite("castle", svgCastle)
+        k.loadSprite("mario", svgMario)
+        k.loadSprite("mario-groom", svgMarioGroom)
+        k.loadSprite("mushroom", svgMushroom)
+        k.loadSprite("mailbox", svgMailbox)
+        k.loadSprite("goomba", svgGoomba)
+        k.loadSprite("goomba-flat", svgGoombaFlat)
+        k.loadSprite("turtle", svgTurtle)
+        k.loadSprite("turtle-shell", svgTurtleShell)
+        k.loadSprite("cloud", svgCloud)
+        k.loadSprite("cloud-big", svgCloudBig)
+        k.loadSprite("pole", svgPole)
+        k.loadSprite("pennant", svgPennant)
+        k.loadSprite("bride", svgBride)
+        k.loadSprite("grass", svgGrass)
+
+        k.scene("main", () => {
+            k.setGravity(1800)
+            const TILE = 32
+
+            const level = [
+                "      C                                                                      C                            C                   ",
+                "         O                 C              O             C             O                 C                                     ",
+                "                C                                 C                                                   O             C         ",
+                "                           O                                                     O            C                               ",
+                "                                   C                             C                                                            ",
+                "                   O                                             O                                       C                    ",
+                "             C                                                                         C                                      ",
+                "                                 O                C                                          O                                ",
+                "              V                                         P                                                                     ",
+                "                                                                                                                              ",
+                "                                      ===                                     M             G                                 ",
+                "                                                                                                                              ",
+                "                                  ===         E                           ===                                                 ",
+                "                          [                   =                   [                   =             ==                        ",
+                "                  [       (                  ==           [       (                  ==             ===                       ",
+                "          [       (       (                 ===           (       (                 ===             ====                      ",
+                "  #       (  T    (       (    E           ====   #   #   (    T  (  #   #         ====  # #        =====   #     F c   B  W  ",
+                "==============================================================================================================================",
+                "==============================================================================================================================",
+            ]
+
+            const map = k.addLevel(level, {
+                tileWidth: TILE,
+                tileHeight: TILE,
+                tiles: {
+                    "=": () => [ k.sprite("brick"), k.area(), k.body({ isStatic: true }), "ground" ],
+                    "x": () => [ k.sprite("block"), k.area(), k.body({ isStatic: true }), "solid-block" ],
+                    "V": () => [ k.sprite("box-v"), k.area(), k.body({ isStatic: true }), "box-v" ],
+                    "P": () => [ k.sprite("box-p"), k.area(), k.body({ isStatic: true }), "box-p" ],
+                    "G": () => [ k.sprite("box-g"), k.area(), k.body({ isStatic: true }), "box-g" ],
+                    "[": () => [ k.sprite("pipe-top"), k.area(), k.body({ isStatic: true }), k.anchor("topleft"), "pipe" ],
+                    "(": () => [ k.sprite("pipe-body"), k.area(), k.body({ isStatic: true }), k.anchor("topleft"), k.pos(4, 0), "pipe" ],
+                    "c": () => [ k.sprite("castle"), k.area(), k.anchor("botleft"), k.pos(0, 32), "castle" ],
+                    "M": () => [ k.sprite("mushroom"), k.area(), k.body({ isStatic: true }), "mushroom" ],
+                    "W": () => [ k.sprite("mailbox"), k.area(), k.anchor("botleft"), k.pos(0, 32), "mailbox" ],
+                    "E": () => [ k.sprite("goomba"), k.area(), k.body(), "enemy", "goomba" ],
+                    "T": () => [ k.sprite("turtle"), k.area(), k.body(), "enemy", "turtle" ],
+                    "O": () => [ k.sprite("cloud"), k.z(-1), "cloud" ],
+                    "C": () => [ k.sprite("cloud-big"), k.z(-2), "cloud-big" ],
+                    "F": () => [
+                        k.sprite("pole"),
+                        k.anchor("botleft"),
+                        k.area(),
+                        k.z(-1),
+                        "pole"
+                    ],
+                    "B": () => [ k.sprite("bride"), k.area(), k.body(), k.anchor("botleft"), "bride" ],
+                    "#": () => [ k.sprite("grass"), k.z(-1), "grass" ],
+                }
+            })
+
+            const poles = k.get("pole");
+            if (poles.length > 0) {
+                poles[0].pos.y += 32;
+                k.add([
+                    k.sprite("pennant"),
+                    k.anchor("topright"),
+                    k.pos(poles[0].pos.x + 14, poles[0].pos.y - 300),
+                    k.z(1),
+                    "pennant"
+                ]);
+            }
+
+            k.add([ k.text("Music auto-plays on interaction", { size: 12 }), k.pos(32, 100), k.color(255, 255, 255) ])
+            k.add([ k.text("Block V = Video\nBlock P = Profil", { size: 14 }), k.pos(12*32, 150), k.color(0, 0, 0) ])
+
+            // HUD
+            k.add([ k.text("MARIO\n064550", { size: 24 }), k.pos(32, 24), k.fixed(), k.z(100), k.color(255, 255, 255) ])
+            k.add([ k.text("🪙x47", { size: 24 }), k.pos(240, 48), k.fixed(), k.z(100), k.color(255, 255, 255) ])
+            k.add([ k.text("WORLD\n4-1", { size: 24 }), k.pos(k.width()/2 + 100, 24), k.fixed(), k.z(100), k.color(255, 255, 255) ])
+            k.add([ k.text("TIME\n000", { size: 24 }), k.pos(k.width() - 120, 24), k.fixed(), k.z(100), k.color(255, 255, 255) ])
+
+            const player = k.add([
+                k.sprite("mario"),
+                k.pos(100, 200),
+                k.area(),
+                k.body(),
+                k.scale(1),
+            ])
+
+            player.onUpdate(() => {
+                k.camPos(player.pos.x, k.height() / 2 + 50)
+                if (player.pos.y > k.height()) k.go("main")
+            })
+
+            const SPEED = 300
+            const JUMP_FORCE = 850
+
+            k.onKeyDown("left", () => { 
+                if(!window.isModalOpenVar) {
+                    player.move(-SPEED, 0);
+                    window.enemiesFrozen = false;
+                }
+            })
+            k.onKeyDown("right", () => { 
+                if(!window.isModalOpenVar) {
+                    player.move(SPEED, 0);
+                    window.enemiesFrozen = false;
+                }
+            })
+            
+            function doJump() {
+                startMusic(); // Trigger music on any jump too
+                if(!window.isModalOpenVar && player.isGrounded()) { 
+                    player.jump(JUMP_FORCE);
+                    window.enemiesFrozen = false;
+                }
+            }
+            k.onKeyPress("space", doJump)
+            k.onKeyPress("up", doJump)
+
+            let moveLeft = false; let moveRight = false;
+            k.onUpdate(() => {
+                if(window.isModalOpenVar) return;
+                if (moveLeft) {
+                    player.move(-SPEED, 0);
+                    window.enemiesFrozen = false;
+                }
+                if (moveRight) {
+                    player.move(SPEED, 0);
+                    window.enemiesFrozen = false;
+                }
+            })
+
+            
+            // Fireworks function
+            function createFirework(x, y) {
+                const colors = [k.rgb(255,50,50), k.rgb(50,255,50), k.rgb(50,50,255), k.rgb(255,255,50), k.rgb(255,50,255)];
+                const c = k.choose(colors);
+                for (let i = 0; i < 20; i++) {
+                    const angle = i * 18;
+                    const speed = k.rand(100, 300);
+                    k.add([
+                        k.pos(x, y),
+                        k.rect(6, 6),
+                        k.color(c),
+                        k.move(angle, speed),
+                        k.lifespan(0.8, { fade: 0.4 }),
+                        k.z(200)
+                    ]);
+                }
+            }
+
+            let flagDown = false;
+            window.castleTriggered = false; // Triggered from collision
+            window.animationPlayed = false;
+            k.onUpdate(() => {
+                // If we want the animation to run WHILE the modal is open, we should NOT return here!
+                // We'll just run it globally. The flags and fireworks should animate behind the modal!
+                if (window.castleTriggered && !flagDown) {
+                    const poles = k.get("pole");
+                    const pennants = k.get("pennant");
+                    if (poles.length > 0 && pennants.length > 0) {
+                        flagDown = true;
+                        window.isModalOpenVar = true; // freeze player during cinematic
+                        const pole = poles[0];
+                        const pennant = pennants[0];
+                        // Slide flag down
+                        k.tween(pennant.pos.y, pole.pos.y - 32, 1.5, (val) => {
+                            pennant.pos.y = val;
+                        }, k.easings.linear).onEnd(() => {
+                            // Launch fireworks
+                            for(let i=0; i<8; i++) {
+                                k.wait(i * 0.4, () => {
+                                    createFirework(pole.pos.x + k.rand(-150, 300), pole.pos.y - k.rand(150, 400));
+                                });
+                            }
+                            
+                            // Open modal after fireworks
+                            k.wait(3.5, () => {
+                                window.isModalOpenVar = false;
+                                window.openModal('modal-event');
+                                window.animationPlayed = true;
+                            });
+                        });
+                    }
+                }
+            })
+
+            let brideFollowing = false;
+            k.onUpdate("bride", (b) => {
+                // Remove the modal return so she still runs and jumps when modal opens!
+                if (!brideFollowing && window.castleTriggered) {
+                    b.jump(400); // Little excited jump
+                    brideFollowing = true;
+                }
+
+                if (brideFollowing) {
+                    const dx = player.pos.x - b.pos.x;
+                    const followDist = 48; // keep some distance
+                    if (Math.abs(dx) > followDist) {
+                        const dir = Math.sign(dx);
+                        b.move(dir * SPEED * 0.9, 0); // follow slightly slower than player so she lags a bit behind
+                    }
+                }
+            })
+
+            const ENEMY_SPEED = 30
+            k.onUpdate("enemy", (e) => {
+                if (window.isModalOpenVar || window.enemiesFrozen) return; // Freeze enemies when modal is open or enemies are frozen
+                if (e.isDead) return; // Stop moving if squashed or in shell
+                if (!e.dir) e.dir = -1;
+                e.move(e.dir * ENEMY_SPEED, 0)
+            })
+
+            // Turn goomba around if it hits a pipe
+            k.onCollide("enemy", "pipe", (e, p, col) => { 
+                if (col && (col.isLeft() || col.isRight())) {
+                    e.dir = -e.dir; 
+                } else if (!col) {
+                    e.dir = -e.dir;
+                }
+            })
+
+            window.setMoveLeft = (val) => { moveLeft = val; startMusic(); }
+            window.setMoveRight = (val) => { moveRight = val; startMusic(); }
+            window.triggerJump = doJump;
+
+            // Box Interactions
+            function hitBox(obj, tag, modalId) {
+                if (obj.is(tag)) {
+                    obj.use(k.sprite("block")); obj.unuse(tag);
+                    k.tween(obj.pos.y, obj.pos.y - 10, 0.1, (val) => obj.pos.y = val, k.easings.easeOutQuad)
+                     .then(() => k.tween(obj.pos.y, obj.pos.y + 10, 0.1, (val) => obj.pos.y = val, k.easings.easeInQuad))
+                    setTimeout(() => window.openModal(modalId), 200)
+                }
+            }
+
+            player.onHeadbutt((obj) => {
+                hitBox(obj, "box-v", "modal-video");
+                hitBox(obj, "box-p", "modal-profile");
+                hitBox(obj, "box-g", "modal-gallery");
+            })
+
+            player.onCollide("mushroom", (m) => { 
+                k.destroy(m); 
+                player.scale = k.vec2(1.5, 1.5); // Grow 1.5x larger
+                player.use(k.sprite("mario-groom")); // Change costume
+                window.openModal('modal-love-story'); 
+            })
+            player.onCollide("mailbox", (m) => { 
+                player.pos.x -= 20;
+                window.openModal('modal-wishes'); 
+            })
+            player.onCollide("castle", () => { 
+                player.pos.x -= 20;
+                if (!window.animationPlayed) {
+                    window.castleTriggered = true;
+                } else {
+                    window.openModal('modal-event'); 
+                }
+            })
+            player.onCollide("bride", () => { 
+                player.pos.x -= 20;
+                if (window.animationPlayed) {
+                    window.openModal('modal-event'); 
+                }
+            })
+
+            player.onCollide("enemy", (e, col) => {
+                if (e.isDead || player.isInvincible || window.isModalOpenVar) return;
+
+                // Make sure col is valid, or use position check as fallback
+                const isBottomHit = col ? col.isBottom() : (player.pos.y < e.pos.y - 10);
+                
+                if (isBottomHit) {
+                    player.jump(400); // Bounce off
+                    e.isDead = true;
+                    e.unuse("body"); // Disable physics body immediately
+                    e.unuse("area"); // Disable collisions immediately
+                    
+                    if (e.is("goomba")) {
+                        e.use(k.sprite("goomba-flat"));
+                        setTimeout(() => k.destroy(e), 500); // Disappear after 0.5s
+                    } else if (e.is("turtle")) {
+                        e.use(k.sprite("turtle-shell"));
+                        e.pos.y += 16; // Shell is shorter
+                        setTimeout(() => k.destroy(e), 2000); // Shell disappears after 2s
+                    }
+                } else {
+                    player.isInvincible = true;
+                    
+                    if (player.scale.x > 1) {
+                        player.scale = k.vec2(1,1) // Lose mushroom effect
+                        player.use(k.sprite("mario")) // Reset costume back to regular Mario
+                    } else {
+                        player.pos = k.vec2(100, 200) // Reset position on hit
+                        window.isModalOpenVar = true; // disable movement
+                        
+                        k.add([
+                            k.rect(k.width(), k.height()),
+                            k.pos(0, 0),
+                            k.color(0, 0, 0),
+                            k.opacity(0.7),
+                            k.fixed(),
+                            "deathUI"
+                        ]);
+                        
+                        k.add([
+                            k.text("Oops! Ulangi Lagi!", { size: 28 }),
+                            k.pos(k.width()/2, k.height()/2),
+                            k.anchor("center"),
+                            k.fixed(),
+                            k.color(255, 255, 255),
+                            "deathUI"
+                        ]);
+                    }
+                    
+                    let blinks = 0;
+                    const blinkInt = setInterval(() => {
+                        player.hidden = !player.hidden;
+                        blinks++;
+                        if (blinks >= 6) {
+                            clearInterval(blinkInt);
+                            player.hidden = false;
+                            player.isInvincible = false;
+                            k.destroyAll("deathUI");
+                            window.isModalOpenVar = false;
+                        }
+                    }, 300);
+                }
+            });
+
+            // Mobile buttons
+            ['btn-left', 'btn-right', 'btn-jump'].forEach(id => {
+                const btn = document.getElementById(id);
+                btn.addEventListener('touchstart', (e) => { e.preventDefault(); if(id==='btn-left') window.setMoveLeft(true); else if(id==='btn-right') window.setMoveRight(true); else window.triggerJump(); });
+                btn.addEventListener('touchend', (e) => { e.preventDefault(); if(id==='btn-left') window.setMoveLeft(false); else if(id==='btn-right') window.setMoveRight(false); });
+                btn.addEventListener('mousedown', (e) => { if(id==='btn-left') window.setMoveLeft(true); else if(id==='btn-right') window.setMoveRight(true); else window.triggerJump(); });
+                btn.addEventListener('mouseup', (e) => { if(id==='btn-left') window.setMoveLeft(false); else if(id==='btn-right') window.setMoveRight(false); });
+                btn.addEventListener('mouseleave', (e) => { if(id==='btn-left') window.setMoveLeft(false); else if(id==='btn-right') window.setMoveRight(false); });
+            })
+        })
+
+        k.go("main")
+    </script>
+</body>
+</html>

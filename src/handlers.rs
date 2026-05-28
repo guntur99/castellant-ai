@@ -1199,6 +1199,15 @@ pub struct TrendVibeTemplate {
 }
 
 #[derive(Template)]
+#[template(path = "invitation/super-wedbros.html")]
+pub struct SuperWedbrosTemplate {
+    #[allow(dead_code)]
+    pub invitation: Invitation,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
 #[template(path = "invitation/loveanthem.html")]
 pub struct LoveAnthemTemplate {
     #[allow(dead_code)]
@@ -2462,6 +2471,7 @@ pub async fn invitation_detail(
             match template_name.as_str() {
                 "loveanthem" => HtmlTemplate(LoveAnthemTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "cinemarry" => HtmlTemplate(CineMarryTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                "super-wedbros" => HtmlTemplate(SuperWedbrosTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "royal-heritage" => HtmlTemplate(RoyalHeritageTemplate { invitation, is_dev: state.is_dev }).into_response(),
                 "high-fashion-editorial" => HtmlTemplate(HighFashionEditorialTemplate { invitation: invitation.clone(), is_dev: state.is_dev }).into_response(),
                 "reel-wedding" => HtmlTemplate(ReelWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
@@ -2672,6 +2682,7 @@ pub async fn invitation_detail(
                 match template_name {
                     "loveanthem" => HtmlTemplate(LoveAnthemTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     "cinemarry" => HtmlTemplate(CineMarryTemplate { invitation, is_dev: state.is_dev }).into_response(),
+                    "super-wedbros" => HtmlTemplate(SuperWedbrosTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     "royal-heritage" => HtmlTemplate(RoyalHeritageTemplate { invitation, is_dev: state.is_dev }).into_response(),
                     "high-fashion-editorial" => HtmlTemplate(HighFashionEditorialTemplate { invitation: invitation.clone(), is_dev: state.is_dev }).into_response(),
                     "reel-wedding" => HtmlTemplate(ReelWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
