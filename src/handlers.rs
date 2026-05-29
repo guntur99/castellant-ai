@@ -1194,7 +1194,7 @@ pub async fn mock_login(
          RETURNING *"
     )
     .bind("mock_id_123")
-    .bind("dev@castellant.id")
+    .bind("dev@castellant.com")
     .bind("Architect")
     .bind("https://cdn-icons-png.flaticon.com/512/3135/3135715.png")
     .fetch_one(&state.db)
@@ -3604,13 +3604,13 @@ pub async fn rsvp(
     let mut xml = format!(r#"<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://castellant.id/</loc>
+        <loc>https://castellant.com/</loc>
         <lastmod>{}</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
     </url>
     <url>
-        <loc>https://castellant.id/templates</loc>
+        <loc>https://castellant.com/templates</loc>
         <lastmod>{}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
@@ -3640,7 +3640,7 @@ pub async fn rsvp(
         let lastmod: String = row.try_get("lastmod").unwrap_or_else(|_| today.clone());
         xml.push_str(&format!(r#"
     <url>
-        <loc>https://castellant.id/invitation/{}</loc>
+        <loc>https://castellant.com/invitation/{}</loc>
         <lastmod>{}</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>

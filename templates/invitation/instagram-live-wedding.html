@@ -1970,6 +1970,15 @@
         </button>
     </div>
 
+    <!-- AUDIO -->
+    <audio id="bgMusic" loop preload="auto">
+        {% if !invitation.custom_song_url.is_empty() %}
+        <source src="{{ invitation.custom_song_url }}" type="audio/mpeg">
+        {% else %}
+        <source src="{{ invitation.song_url }}" type="audio/mpeg">
+        {% endif %}
+    </audio>
+
     <!-- ══ MAIN APP ══ -->
     <div id="app">
 
@@ -2578,6 +2587,12 @@
             const app = document.getElementById('app');
             setTimeout(() => app.classList.add('show'), 120);
             setTimeout(init, 500);
+
+            // Play background music on user interaction
+            const bgMusic = document.getElementById('bgMusic');
+            if (bgMusic) {
+                bgMusic.play().catch(e => console.log("Music play blocked:", e));
+            }
         }
 
         function init() {
@@ -2697,13 +2712,26 @@
         }
 
         /* ── CHAT ── */
+        let chatInterval;
         function startChat() {
-            for (let i = 0; i < 5; i++) setTimeout(() => pushMsg(MSGS[chatIdx++ % MSGS.length]), i * 550);
-            setInterval(() => {
+            let initialCount = Math.min(5, MSGS.length);
+            for (let i = 0; i < initialCount; i++) {
+                setTimeout(() => {
+                    if (chatIdx < MSGS.length) pushMsg(MSGS[chatIdx++]);
+                }, i * 550);
+            }
+            chatInterval = setInterval(() => {
                 const r = Math.random();
                 if (r < .12) pushJoin();
                 else if (r < .20) pushGift();
-                else pushMsg(MSGS[chatIdx++ % MSGS.length]);
+                else {
+                    if (chatIdx < MSGS.length) {
+                        pushMsg(MSGS[chatIdx++]);
+                    } else {
+                        // Stop interval once all messages are shown so screen clears up
+                        clearInterval(chatInterval);
+                    }
+                }
             }, 1700 + Math.random() * 1300);
         }
 
@@ -2732,6 +2760,13 @@
     <div class="cm-heart" onclick="spawnHeart()">❤️</div>`;
             feed.appendChild(el);
             trim(feed);
+            
+            // Auto fade out to keep screen clean
+            setTimeout(() => {
+                el.style.transition = 'opacity 1s ease';
+                el.style.opacity = '0';
+                setTimeout(() => el.remove(), 1000);
+            }, 15000);
         }
 
         function pushJoin() {
@@ -2745,6 +2780,13 @@
             el.innerHTML = `<div class="cm-bubble"><div class="cm-text">👋 <strong>@${n}</strong> ${j}</div></div>`;
             feed.appendChild(el);
             trim(feed);
+
+            // Auto fade out
+            setTimeout(() => {
+                el.style.transition = 'opacity 1s ease';
+                el.style.opacity = '0';
+                setTimeout(() => el.remove(), 1000);
+            }, 8000);
         }
 
         function pushGift() {
@@ -2764,6 +2806,13 @@
             trim(feed);
             spawnHeart();
             spawnHeart();
+
+            // Auto fade out
+            setTimeout(() => {
+                el.style.transition = 'opacity 1s ease';
+                el.style.opacity = '0';
+                setTimeout(() => el.remove(), 1000);
+            }, 10000);
         }
 
         function trim(feed) {
