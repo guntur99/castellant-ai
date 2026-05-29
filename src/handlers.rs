@@ -3599,34 +3599,50 @@ pub async fn rsvp(
         }
     }
 }pub async fn sitemap(State(state): State<AppState>) -> impl IntoResponse {
-    let mut xml = String::from(r#"<?xml version="1.0" encoding="UTF-8"?>
+    let today = chrono::Utc::now().format("%Y-%m-%d").to_string();
+
+    let mut xml = format!(r#"<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
         <loc>https://castellant.id/</loc>
+        <lastmod>{}</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
-    </url>"#);
+    </url>
+    <url>
+        <loc>https://castellant.id/templates</loc>
+        <lastmod>{}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>"#, today, today);
 
-    // Dynamic: fetch slugs from DB for the sitemap
-    let slugs = sqlx::query("SELECT slug FROM invitations LIMIT 100")
-        .fetch_all(&state.db)
-        .await
-        .unwrap_or_default();
+    // Dynamic: fetch public invitation slugs with last modified date
+    let rows = sqlx::query(
+        "SELECT slug, COALESCE(TO_CHAR(updated_at AT TIME ZONE 'UTC', 'YYYY-MM-DD'), $1) as lastmod \
+         FROM invitations WHERE deleted_at IS NULL ORDER BY updated_at DESC LIMIT 1000"
+    )
+    .bind(&today)
+    .fetch_all(&state.db)
+    .await
+    .unwrap_or_default();
 
-    for row in slugs {
+    for row in rows {
         let slug: String = row.get("slug");
+        let lastmod: String = row.get("lastmod");
         xml.push_str(&format!(r#"
     <url>
         <loc>https://castellant.id/invitation/{}</loc>
-        <changefreq>weekly</changefreq>
-        <priority>0.8</priority>
-    </url>"#, slug));
+        <lastmod>{}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>"#, slug, lastmod));
     }
 
     xml.push_str("\n</urlset>");
 
     Response::builder()
         .header("Content-Type", "application/xml")
+        .header("Cache-Control", "public, max-age=3600")
         .body(xml)
         .unwrap()
 }
