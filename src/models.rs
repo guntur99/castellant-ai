@@ -287,3 +287,38 @@ pub struct InvitationTemplate {
     pub created_at: DateTime<Utc>,
     pub updated_at: DateTime<Utc>,
 }
+
+#[derive(Debug, Serialize, Deserialize, Clone, FromRow)]
+pub struct Plan {
+    pub id: Uuid,
+    pub code: String,
+    pub name: String,
+    pub price: i32,
+    pub template_limit: i32,
+    pub features: Option<serde_json::Value>,
+    pub is_active: bool,
+    pub created_at: Option<DateTime<Utc>>,
+    pub updated_at: Option<DateTime<Utc>>,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone, FromRow)]
+pub struct Referral {
+    pub id: Uuid,
+    pub user_id: Option<Uuid>,
+    pub code: String,
+    pub referrer_name: String,
+    pub discount_percent: i32,
+    pub commission_percent: i32,
+    pub usage_count: i32,
+    pub is_active: bool,
+    pub created_at: Option<DateTime<Utc>>,
+    pub updated_at: Option<DateTime<Utc>>,
+}
+#[derive(Debug, Serialize, Deserialize, Clone, FromRow)]
+pub struct ReferralHistory {
+    pub user_name: String,
+    pub target_plan: String,
+    pub amount: i32,
+    pub commission_earned: i32,
+    pub created_at: DateTime<Utc>,
+}

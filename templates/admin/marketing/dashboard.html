@@ -1,0 +1,124 @@
+{% extends "../../base.html" %}
+
+{% block content %}
+<div class="dashboard-layout" style="display: flex; min-height: 100vh; background: #f8f9fa;">
+    <!-- Sidebar -->
+    <aside style="width: 280px; background: white; border-right: 1px solid #eef0f7; padding: 2rem;">
+        <h2 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 1.5rem; margin-bottom: 2rem;">Admin Panel</h2>
+        <nav style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <a href="/admin/revenue" style="padding: 1rem; color: #666; text-decoration: none; border-radius: 12px; font-weight: 600;"><i class="fas fa-chart-line" style="margin-right: 10px;"></i> Revenue</a>
+            <a href="/admin/templates" style="padding: 1rem; color: #666; text-decoration: none; border-radius: 12px; font-weight: 600;"><i class="fas fa-layer-group" style="margin-right: 10px;"></i> Templates</a>
+            <a href="/admin/marketing" style="padding: 1rem; color: var(--color-accent); background: #fdf6f0; text-decoration: none; border-radius: 12px; font-weight: 600;"><i class="fas fa-bullhorn" style="margin-right: 10px;"></i> Marketing Setup</a>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main style="flex: 1; padding: 3rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h1 style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 2rem; color: #2A1E14;">Marketing & Pricing Setup</h1>
+        </div>
+
+        <!-- Plans Section -->
+        <section style="background: white; border-radius: 20px; padding: 2rem; border: 1px solid #eef0f7; margin-bottom: 2rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.25rem;">Pricing Plans</h3>
+            </div>
+            
+            <div style="overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid #eef0f7;">
+                            <th style="padding: 1rem; color: #888; font-size: 0.85rem; text-transform: uppercase;">Code</th>
+                            <th style="padding: 1rem; color: #888; font-size: 0.85rem; text-transform: uppercase;">Name</th>
+                            <th style="padding: 1rem; color: #888; font-size: 0.85rem; text-transform: uppercase;">Price (Rp)</th>
+                            <th style="padding: 1rem; color: #888; font-size: 0.85rem; text-transform: uppercase;">Max Templates</th>
+                            <th style="padding: 1rem; color: #888; font-size: 0.85rem; text-transform: uppercase;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for plan in plans %}
+                        <tr style="border-bottom: 1px solid #eef0f7;">
+                            <td style="padding: 1rem; font-weight: 700;">{{ plan.code }}</td>
+                            <td style="padding: 1rem;">{{ plan.name }}</td>
+                            <td style="padding: 1rem; font-family: monospace;">{{ plan.price }}</td>
+                            <td style="padding: 1rem;">{{ plan.template_limit }}</td>
+                            <td style="padding: 1rem;">
+                                {% if plan.is_active %}
+                                <span style="background: #10b98120; color: #10b981; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">Active</span>
+                                {% else %}
+                                <span style="background: #ef444420; color: #ef4444; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700;">Inactive</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <!-- Vouchers Section -->
+            <section style="background: white; border-radius: 20px; padding: 2rem; border: 1px solid #eef0f7;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.25rem;">Discount Vouchers</h3>
+                </div>
+                
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid #eef0f7;">
+                                <th style="padding: 1rem; color: #888; font-size: 0.85rem; text-transform: uppercase;">Code</th>
+                                <th style="padding: 1rem; color: #888; font-size: 0.85rem; text-transform: uppercase;">Discount</th>
+                                <th style="padding: 1rem; color: #888; font-size: 0.85rem; text-transform: uppercase;">Usage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for v in vouchers %}
+                            <tr style="border-bottom: 1px solid #eef0f7;">
+                                <td style="padding: 1rem; font-weight: 700; text-transform: uppercase;">{{ v.code }}</td>
+                                <td style="padding: 1rem;">{{ v.discount_percent }}%</td>
+                                <td style="padding: 1rem;">{{ v.usage_count }} / {% if v.usage_limit.is_some() %}{{ v.usage_limit.unwrap() }}{% else %}∞{% endif %}</td>
+                            </tr>
+                            {% endfor %}
+                            {% if vouchers.len() == 0 %}
+                            <tr><td colspan="3" style="padding: 1rem; text-align: center; color: #999;">No vouchers found</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Referrals Section -->
+            <section style="background: white; border-radius: 20px; padding: 2rem; border: 1px solid #eef0f7;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3 style="font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1.25rem;">Referral Codes</h3>
+                </div>
+                
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;">
+                        <thead>
+                            <tr style="border-bottom: 2px solid #eef0f7;">
+                                <th style="padding: 1rem; color: #888; font-size: 0.85rem; text-transform: uppercase;">Code</th>
+                                <th style="padding: 1rem; color: #888; font-size: 0.85rem; text-transform: uppercase;">Referrer</th>
+                                <th style="padding: 1rem; color: #888; font-size: 0.85rem; text-transform: uppercase;">Comm/Disc</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for r in referrals %}
+                            <tr style="border-bottom: 1px solid #eef0f7;">
+                                <td style="padding: 1rem; font-weight: 700; text-transform: uppercase;">{{ r.code }}</td>
+                                <td style="padding: 1rem;">{{ r.referrer_name }}</td>
+                                <td style="padding: 1rem;">{{ r.commission_percent }}% / {{ r.discount_percent }}%</td>
+                            </tr>
+                            {% endfor %}
+                            {% if referrals.len() == 0 %}
+                            <tr><td colspan="3" style="padding: 1rem; text-align: center; color: #999;">No referrals found</td></tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+{% endblock %}

@@ -17,6 +17,52 @@
             </div>
         </header>
 
+        {% if let Some(ref_data) = referral %}
+        <div class="referral-banner referral-banner-custom glass">
+            <div class="referral-grid">
+                <div class="referral-info">
+                    <h3 style="margin-bottom: 0.5rem; font-family: 'Outfit', sans-serif; font-size: 1.8rem; color: #2A1E14;">
+                        Program Afiliasi
+                    </h3>
+                    <p style="color: #666; font-size: 1rem; margin-bottom: 1.5rem; max-width: 600px; line-height: 1.6;">
+                        Bagikan kode referral Anda dan dapatkan komisi sebesar <strong>{{ ref_data.commission_percent }}%</strong> setiap kali ada yang mendaftar paket premium. Teman Anda juga akan mendapatkan diskon <strong>{{ ref_data.discount_percent }}%</strong>.
+                    </p>
+                    <div style="display: flex; gap: 2.5rem; align-items: flex-start; flex-wrap: wrap;">
+                        <div>
+                            <span style="display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 4px;">Total Penggunaan</span>
+                            <strong style="font-size: 1.5rem; color: #2A1E14;">{{ ref_data.usage_count }} <span style="font-size: 1rem; font-weight: normal; color: #666;">kali</span></strong>
+                        </div>
+                        <div>
+                            <span style="display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 4px;">Estimasi Komisi</span>
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <strong style="font-size: 1.5rem; color: #10b981;">Rp {{ total_commission }}</strong>
+                                <button onclick="document.getElementById('referral-history-modal').style.display='flex'" class="btn-action" style="padding: 6px 12px; font-size: 0.8rem; border-radius: 8px; margin: 0; flex: none;">
+                                    Lihat Riwayat
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="referral-card">
+                    <span style="display: block; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: #888; margin-bottom: 15px;">Kode Referral Anda</span>
+                    <div class="referral-code-display" style="margin-bottom: 20px;">
+                        {{ ref_data.code }}
+                    </div>
+                    
+                    <div style="background: #f8f9fa; border: 1px solid #eee; border-radius: 12px; padding: 12px 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+                        <span style="color: #666; font-size: 0.85rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-family: monospace; text-align: left; flex: 1;" id="ref-link-display">castellant.ai/create?ref={{ ref_data.code }}</span>
+                        <button onclick="copyReferralLink('{{ ref_data.code }}')" style="background: rgba(142, 110, 83, 0.1); border: none; color: var(--color-accent); cursor: pointer; padding: 8px 12px; border-radius: 8px; transition: all 0.2s; flex: none;" title="Salin Link">
+                            <i class="fas fa-link"></i>
+                        </button>
+                    </div>
+                    <button onclick="copyReferralCode('{{ ref_data.code }}')" class="btn-action primary" style="width: 100%; justify-content: center; padding: 12px;">
+                        <i class="fas fa-copy"></i> Salin Kode
+                    </button>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
         {% if invitations.is_empty() %}
         <div class="empty-state glass">
             <div class="empty-icon">✨</div>
@@ -53,213 +99,374 @@
 </div>
 
 <style>
-.dashboard-page {
-    padding: 120px 0 80px;
-    min-height: 80vh;
-}
+    .referral-grid {
+        display: grid;
+        grid-template-columns: 1fr 380px;
+        gap: 3rem;
+        align-items: center;
+    }
+    .referral-banner-custom {
+        margin-bottom: 3rem;
+        background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,245,235,0.9));
+        border-left: 6px solid var(--color-accent);
+    }
+    .referral-card {
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        min-width: 0;
+    }
+    
+    @media (max-width: 992px) {
+        .referral-grid {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .referral-banner-custom.glass {
+            padding: 1.5rem 1rem;
+        }
+        .referral-card {
+            padding: 1.5rem 1rem;
+        }
+        .referral-grid {
+            gap: 1.5rem;
+        }
+    }
 
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 4rem;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-}
+    .dashboard-page {
+        padding: 120px 0 80px;
+        min-height: 80vh;
+    }
 
-.invitations-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2.5rem;
-}
-
-.invitation-card {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    border: 1px solid rgba(142, 110, 83, 0.1);
-}
-
-.invitation-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 30px 60px rgba(142, 110, 83, 0.08);
-    border-color: rgba(142, 110, 83, 0.25);
-}
-
-.card-body {
-    flex-grow: 1;
-    padding-top: 10px;
-}
-
-.card-body h3 {
-    font-size: 1.8rem;
-    color: #1a1a1a;
-    margin-bottom: 15px;
-    letter-spacing: -0.5px;
-}
-
-.event-date {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.8rem;
-    color: #555;
-    font-weight: 700;
-    padding: 8px 16px;
-    background: rgba(0,0,0,0.02);
-    border-radius: 50px;
-    border: 1px solid rgba(0,0,0,0.04);
-    letter-spacing: 0.5px;
-}
-
-.card-footer {
-    display: flex;
-    gap: 12px;
-    margin-top: 2.5rem;
-    padding-top: 0;
-}
-
-.btn-action {
-    flex: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 12px;
-    border-radius: 50px;
-    font-size: 0.85rem;
-    font-weight: 700;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    background: #ffffff;
-    color: #1a1a1a;
-    border: 1px solid #e0e0e0;
-}
-
-.btn-action:hover {
-    background: #f8f8f8;
-    border-color: #cccccc;
-}
-
-.btn-action.primary {
-    background: #2A1E14;
-    color: white;
-    border: none;
-    box-shadow: 0 10px 20px rgba(42, 30, 20, 0.15);
-}
-
-.btn-action.primary:hover {
-    background: #1a120c;
-    transform: translateY(-2px);
-    box-shadow: 0 15px 25px rgba(42, 30, 20, 0.25);
-}
-
-.empty-state {
-    text-align: center;
-    padding: 100px 40px;
-    border-radius: 40px;
-}
-
-.empty-icon {
-    font-size: 4rem;
-    margin-bottom: 2rem;
-}
-
-.glass {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 20px 50px rgba(0,0,0,0.05);
-    border-radius: 30px;
-    padding: 2rem;
-}
-
-.btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 30px;
-    border-radius: 50px;
-    font-weight: 700;
-    text-decoration: none;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.btn-primary {
-    background: var(--color-accent-red);
-    color: white;
-    border: none;
-}
-
-.btn-primary:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(212, 48, 48, 0.25);
-}
-
-.btn-outline {
-    border: 1px solid rgba(0,0,0,0.1);
-    color: var(--color-text-primary);
-    background: transparent;
-}
-
-.btn-outline:hover {
-    background: rgba(0,0,0,0.03);
-}
-
-.btn-action.danger {
-    flex: 0 0 50px;
-    color: #ef4444;
-    border-color: #fecdd3;
-    background: #fff1f2;
-}
-
-.btn-action.danger:hover {
-    background: #fee2e2;
-    border-color: #fca5a5;
-    color: #dc2626;
-}
-
-@media (max-width: 768px) {
     .page-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 4rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .invitations-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2.5rem;
+    }
+
+    .invitation-card {
+        display: flex;
         flex-direction: column;
-        align-items: flex-start;
-        gap: 1.5rem;
+        height: 100%;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid rgba(142, 110, 83, 0.1);
     }
-    .header-actions {
-        width: 100%;
+
+    .invitation-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 30px 60px rgba(142, 110, 83, 0.08);
+        border-color: rgba(142, 110, 83, 0.25);
     }
-    .btn-primary {
-        width: 100%;
+
+    .card-body {
+        flex-grow: 1;
+        padding-top: 10px;
+    }
+
+    .card-body h3 {
+        font-size: 1.8rem;
+        color: #1a1a1a;
+        margin-bottom: 15px;
+        letter-spacing: -0.5px;
+    }
+
+    .event-date {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.8rem;
+        color: #555;
+        font-weight: 700;
+        padding: 8px 16px;
+        background: rgba(0, 0, 0, 0.02);
+        border-radius: 50px;
+        border: 1px solid rgba(0, 0, 0, 0.04);
+        letter-spacing: 0.5px;
+    }
+
+    .card-footer {
+        display: flex;
+        gap: 12px;
+        margin-top: 2.5rem;
+        padding-top: 0;
+    }
+
+    .btn-action {
+        flex: 1;
+        display: flex;
+        align-items: center;
         justify-content: center;
+        gap: 8px;
+        padding: 12px;
+        border-radius: 50px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        background: #ffffff;
+        color: #1a1a1a;
+        border: 1px solid #e0e0e0;
     }
-}
+
+    .btn-action:hover {
+        background: #f8f8f8;
+        border-color: #cccccc;
+    }
+
+    .btn-action.primary {
+        background: #2A1E14;
+        color: white;
+        border: none;
+        box-shadow: 0 10px 20px rgba(42, 30, 20, 0.15);
+    }
+
+    .btn-action.primary:hover {
+        background: #1a120c;
+        transform: translateY(-2px);
+        box-shadow: 0 15px 25px rgba(42, 30, 20, 0.25);
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 100px 40px;
+        border-radius: 40px;
+    }
+
+    .empty-icon {
+        font-size: 4rem;
+        margin-bottom: 2rem;
+    }
+
+    .glass {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
+        border-radius: 30px;
+        padding: 2rem;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background: var(--color-accent-red);
+        color: white;
+        border: none;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 20px rgba(212, 48, 48, 0.25);
+    }
+
+    .btn-outline {
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        color: var(--color-text-primary);
+        background: transparent;
+    }
+
+    .btn-outline:hover {
+        background: rgba(0, 0, 0, 0.03);
+    }
+
+    .btn-action.danger {
+        flex: 0 0 50px;
+        color: #ef4444;
+        border-color: #fecdd3;
+        background: #fff1f2;
+    }
+
+    .btn-action.danger:hover {
+        background: #fee2e2;
+        border-color: #fca5a5;
+        color: #dc2626;
+    }
+
+    @media (max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1.5rem;
+        }
+
+        .header-actions {
+            width: 100%;
+        }
+
+        .btn-primary {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+
+    .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(5px);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+    }
+
+    .modal-content {
+        background: white;
+        border-radius: 20px;
+        padding: 2rem;
+        width: 90%;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
+    }
+
+    .referral-code-display {
+        font-size: 1.6rem;
+        font-family: monospace;
+        font-weight: 800;
+        color: var(--color-accent);
+        letter-spacing: 1px;
+        margin-bottom: 15px;
+        word-break: break-word;
+    }
+
+    @media (max-width: 768px) {
+        .referral-code-display {
+            font-size: 1.25rem;
+            letter-spacing: 0px;
+        }
+    }
 </style>
+
+<!-- Referral History Modal -->
+<div id="referral-history-modal" class="modal-overlay" onclick="if(event.target === this) this.style.display='none'">
+    <div class="modal-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.5rem; color: #2A1E14;">Riwayat Penggunaan
+                Referral</h3>
+            <button onclick="document.getElementById('referral-history-modal').style.display='none'"
+                style="background:none; border:none; font-size: 1.5rem; cursor:pointer;">&times;</button>
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="border-bottom: 2px solid #eef0f7;">
+                    <th style="padding: 1rem; color: #888; font-size: 0.85rem; text-transform: uppercase;">Nama Guest
+                    </th>
+                    <th style="padding: 1rem; color: #888; font-size: 0.85rem; text-transform: uppercase;">Paket</th>
+                    <th style="padding: 1rem; color: #888; font-size: 0.85rem; text-transform: uppercase;">Komisi
+                        Didapat</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for h in referral_history %}
+                <tr style="border-bottom: 1px solid #eef0f7;">
+                    <td style="padding: 1rem; font-weight: 600;">
+                        {{ h.user_name }}<br>
+                        <span style="font-size: 0.75rem; color: #999; font-weight: normal;">{{ h.created_at.format("%d
+                            %b %Y").to_string() }}</span>
+                    </td>
+                    <td style="padding: 1rem;">{{ h.target_plan }}</td>
+                    <td style="padding: 1rem; color: #10b981; font-weight: 700;">Rp {{ h.commission_earned }}</td>
+                </tr>
+                {% endfor %}
+                {% if referral_history.len() == 0 %}
+                <tr>
+                    <td colspan="3" style="padding: 2rem; text-align: center; color: #999;">Belum ada riwayat
+                        penggunaan.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-function confirmDelete(slug) {
-    Swal.fire({
-        title: 'Hapus Undangan?',
-        text: "Undangan yang dihapus tidak dapat diakses lagi oleh tamu.",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Ya, Hapus!',
-        cancelButtonText: 'Batal',
-        background: 'rgba(255, 255, 255, 0.9)',
-        backdrop: `rgba(0,0,0,0.4) blur(4px)`
-    }).then((result) => {
-        if (result.isConfirmed) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = `/invitation/${slug}/delete`;
-            document.body.appendChild(form);
-            form.submit();
+    function confirmDelete(slug) {
+        Swal.fire({
+            title: 'Hapus Undangan?',
+            text: "Undangan yang dihapus tidak dapat diakses lagi oleh tamu.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Ya, Hapus!',
+            cancelButtonText: 'Batal',
+            background: 'rgba(255, 255, 255, 0.9)',
+            backdrop: `rgba(0,0,0,0.4) blur(4px)`
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/invitation/${slug}/delete`;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        })
+    }
+
+    function copyReferralCode(code) {
+        navigator.clipboard.writeText(code).then(() => {
+            Swal.fire({
+                title: 'Berhasil Disalin!',
+                text: 'Kode referral Anda siap dibagikan.',
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        });
+    }
+
+    function copyReferralLink(code) {
+        const fullLink = window.location.origin + '/create?ref=' + code;
+        navigator.clipboard.writeText(fullLink).then(() => {
+            Swal.fire({
+                title: 'Link Disalin!',
+                text: 'Link referral siap disebarkan.',
+                icon: 'success',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        });
+    }
+
+    // Initialize display link on load
+    document.addEventListener("DOMContentLoaded", function() {
+        const displayEl = document.getElementById('ref-link-display');
+        if (displayEl) {
+            // Just show the domain part for cleanliness
+            const cleanUrl = window.location.host + '/create?ref=' + displayEl.innerText.split('=').pop();
+            displayEl.innerText = cleanUrl;
         }
-    })
-}
+    });
 </script>
 {% endblock %}

@@ -330,6 +330,60 @@
     @keyframes spin {
         to { transform: rotate(360deg); }
     }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+        .header-content {
+            flex-direction: column !important;
+            align-items: flex-start !important;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem !important;
+        }
+        .header-content h1 {
+            font-size: 2rem !important;
+        }
+        .stats-container {
+            flex-wrap: wrap;
+            width: 100%;
+            gap: 1rem !important;
+        }
+        .stat-card {
+            flex: 1 1 calc(33.333% - 1rem);
+            min-width: unset;
+        }
+        .btn-luxury {
+            width: 100%;
+            text-align: center;
+            display: block;
+            box-sizing: border-box;
+        }
+        .search-group, .select-group {
+            width: 100%;
+            flex: none;
+        }
+        .select-group select {
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .table-responsive-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+        .table-container {
+            padding: 1.2rem 1rem;
+            border-radius: 20px;
+        }
+        .luxe-table {
+            min-width: 800px;
+        }
+        .filter-bar {
+            padding: 1rem;
+        }
+        .pagination {
+            flex-wrap: wrap;
+        }
+    }
 </style>
 
 <script>
@@ -387,7 +441,7 @@ function confirmDelete(id) {
                 <h1 style="font-family: var(--font-serif); font-size: 2.8rem; margin-bottom: 0.5rem;">All Templates</h1>
                 <p style="color: #888; font-size: 0.9rem;">Manage your architectural legacy and design curation.</p>
             </div>
-        <div style="display: flex; gap: 1.5rem; align-items: center;">
+        <div class="stats-container" style="display: flex; gap: 1.5rem; align-items: center;">
             <div class="stat-card {% if status_filter == "All" || status_filter == "" %}active{% endif %}" 
                  hx-get="/admin/templates?status=All" hx-target="#templates-display-area" hx-select="#templates-display-area" hx-push-url="true" hx-include=".filter-form" hx-indicator=".htmx-indicator">
                 <div class="stat-value">{{ total_count }}</div>
@@ -452,6 +506,7 @@ function confirmDelete(id) {
 
     <!-- Templates Table -->
     <div class="table-container animate__animated animate__fadeInUp">
+        <div class="table-responsive-wrapper">
         <table class="luxe-table">
             <thead>
                 <tr>
@@ -535,6 +590,7 @@ function confirmDelete(id) {
                 {% endfor %}
             </tbody>
         </table>
+        </div>
 
         <!-- Pagination -->
         {% if total_pages > 1 %}

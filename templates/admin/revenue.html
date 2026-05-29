@@ -1,14 +1,14 @@
 {% extends "site_base.html" %}
 
 {% block site_content %}
-<section class="container" style="padding: 100px 0;">
+<section class="revenue-container container">
     <div style="margin-bottom: 4rem;" class="animate__animated animate__fadeIn">
         <h1 class="serif" style="font-size: 3rem; margin-bottom: 1rem;">Revenue <em>Analytics</em></h1>
         <p style="color: var(--color-text-muted);">Monitor your business growth and transaction health.</p>
     </div>
 
     <!-- Stats Grid -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 4rem;">
+    <div class="stats-grid">
         <div class="stat-card animate__animated animate__fadeInUp" style="animation-delay: 0.1s;">
             <div class="stat-label">Total Revenue</div>
             <div class="stat-value">Rp {{ total_revenue }}</div>
@@ -27,21 +27,21 @@
     </div>
 
     <!-- Leaderboard & Stats -->
-    <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; margin-bottom: 4rem;">
+    <div class="dashboard-grid">
         <!-- Leaderboard -->
-        <div class="table-container animate__animated animate__fadeInLeft" style="padding: 2rem;">
+        <div class="table-container animate__animated animate__fadeInLeft">
             <h3 class="serif" style="font-size: 1.3rem; margin-bottom: 1.5rem;">Leaderboard 🏆</h3>
             <div style="display: flex; flex-direction: column; gap: 1rem;">
                 {% for entry in leaderboard %}
-                <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #fafafa; border-radius: 15px; border: 1px solid #f0f0f0;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
+                <div class="leaderboard-item">
+                    <div class="leaderboard-info">
                         <img src="{{ entry.preview_url }}" style="width: 40px; height: 40px; border-radius: 8px; object-fit: cover; border: 1px solid #ddd;">
                         <div>
                             <div style="font-weight: 700; color: #4A3728;">{{ entry.friendly_title }}</div>
                             <a href="/invitation/{{ entry.template_name }}-sample" target="_blank" style="font-size: 0.7rem; color: var(--color-accent-rose); text-decoration: none;">View Template →</a>
                         </div>
                     </div>
-                    <div style="background: var(--color-accent-red); color: white; padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 800;">
+                    <div class="leaderboard-badge">
                         {{ entry.count }} Uses
                     </div>
                 </div>
@@ -52,7 +52,8 @@
         <!-- Transactions Table -->
         <div class="table-container animate__animated animate__fadeInRight">
             <h3 class="serif" style="font-size: 1.3rem; margin-bottom: 2rem; padding: 0 1rem;">Recent Transactions</h3>
-            <table class="luxe-table">
+            <div class="table-responsive">
+            <table id="transactionsTable" class="luxe-table">
             <thead>
                 <tr>
                     <th>Date</th>
@@ -86,6 +87,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        </div>
     </div>
 </section>
 
@@ -185,5 +187,236 @@
     .status-success { background: #e6fffa; color: #2c7a7b; }
     .status-pending { background: #fffaf0; color: #b7791f; }
     .status-failed { background: #fff5f5; color: #c53030; }
+
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 2rem;
+        margin-bottom: 4rem;
+    }
+    .dashboard-grid > * {
+        min-width: 0;
+    }
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+        margin-bottom: 4rem;
+    }
+    .revenue-container {
+        padding: 100px 0;
+    }
+    .table-responsive {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    .leaderboard-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: #fafafa;
+        border-radius: 15px;
+        border: 1px solid #f0f0f0;
+        gap: 1rem;
+    }
+    .leaderboard-info {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 0; /* allows text truncation if needed */
+    }
+    .leaderboard-badge {
+        background: var(--color-accent-red);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 800;
+        white-space: nowrap;
+    }
+
+    @media (max-width: 992px) {
+        .dashboard-grid {
+            grid-template-columns: 1fr;
+        }
+        .stat-card {
+            padding: 1.5rem;
+        }
+        .stat-value {
+            font-size: 1.8rem;
+        }
+        .table-container {
+            padding: 1.5rem 0.5rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .revenue-container {
+            padding: 100px 20px 40px 20px;
+        }
+        .stats-grid {
+            display: flex;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x mandatory;
+            /* Allow cards to bleed to screen edge */
+            margin-left: -20px;
+            margin-right: -20px;
+            padding-left: 20px;
+            padding-right: 20px;
+            scrollbar-width: none; /* Firefox */
+        }
+        .stats-grid::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+        .stat-card {
+            flex: 0 0 85%;
+            scroll-snap-align: center;
+            padding: 1.5rem;
+        }
+        .dashboard-grid {
+            gap: 1.5rem;
+        }
+        .table-container {
+            padding: 1.25rem 0.5rem;
+            border-radius: 20px;
+        }
+        h1.serif {
+            font-size: 2.2rem !important;
+        }
+    }
+</style>
+
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (document.getElementById("transactionsTable")) {
+            const dataTable = new simpleDatatables.DataTable("#transactionsTable", {
+                searchable: true,
+                fixedHeight: true,
+                perPage: 10,
+                labels: {
+                    placeholder: "Cari transaksi...",
+                    perPage: "{select} entri per halaman",
+                    noRows: "Tidak ada transaksi",
+                    info: "Menampilkan {start} sampai {end} dari {rows} transaksi",
+                }
+            });
+
+            // Tambahkan Filter Status
+            const searchContainer = document.querySelector(".dataTable-search");
+            if (searchContainer) {
+                const filterSelect = document.createElement("select");
+                filterSelect.className = "dataTable-selector status-filter";
+                filterSelect.innerHTML = `
+                    <option value="">Semua Status</option>
+                    <option value="SUCCESS">Success</option>
+                    <option value="PENDING">Pending</option>
+                    <option value="FAILED">Failed</option>
+                `;
+                
+                filterSelect.addEventListener("change", function(e) {
+                    dataTable.search(e.target.value);
+                });
+                
+                searchContainer.appendChild(filterSelect);
+            }
+        }
+    });
+</script>
+<style>
+    /* Override simple-datatables styles to match luxe theme */
+    .dataTable-wrapper {
+        font-family: inherit;
+    }
+    .dataTable-top {
+        padding: 0 0 1.5rem 0;
+    }
+    .dataTable-input {
+        padding: 0.6rem 1.2rem;
+        border-radius: 50px;
+        border: 1px solid #e0e0e0;
+        outline: none;
+        transition: border-color 0.3s;
+    }
+    .dataTable-input:focus {
+        border-color: var(--color-gold);
+        box-shadow: 0 0 0 3px rgba(212, 163, 115, 0.1);
+    }
+    .dataTable-selector {
+        padding: 0.5rem;
+        border-radius: 10px;
+        border: 1px solid #e0e0e0;
+        outline: none;
+    }
+    .dataTable-pagination a {
+        border-radius: 50px;
+        color: var(--color-estate-dark);
+        transition: all 0.2s;
+    }
+    .dataTable-pagination a:hover {
+        background-color: rgba(212, 163, 115, 0.1);
+    }
+    .dataTable-pagination .active a, 
+    .dataTable-pagination .active a:focus, 
+    .dataTable-pagination .active a:hover {
+        background-color: var(--color-gold);
+        color: white;
+    }
+    .dataTable-table > thead > tr > th {
+        border-bottom: 1px solid #f5f5f5 !important;
+    }
+    .dataTable-table > tbody > tr > td {
+        border-bottom: 1px solid #fafafa !important;
+    }
+    .dataTable-bottom {
+        padding-top: 1.5rem;
+        align-items: center;
+    }
+    .dataTable-info {
+        color: #888;
+        font-size: 0.85rem;
+    }
+    .dataTable-search {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+    
+    @media (max-width: 768px) {
+        .dataTable-top {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: flex-start;
+        }
+        .dataTable-search {
+            width: 100%;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+        .dataTable-input {
+            flex: 1;
+            min-width: 150px;
+        }
+        .status-filter {
+            flex: 1;
+            min-width: 120px;
+        }
+        .dataTable-bottom {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            align-items: center;
+            text-align: center;
+        }
+    }
 </style>
 {% endblock %}

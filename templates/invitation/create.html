@@ -163,7 +163,8 @@
                                             style="position: relative; overflow: hidden; background: #f8f5f5;">
                                             {% if let Some(video_url) = t.preview_video %}
                                             {% if !video_url.is_empty() %}
-                                            <video src="{{ video_url }}" loop muted playsinline preload="none" class="lazy-video"
+                                            <video src="{{ video_url }}" loop muted playsinline preload="none"
+                                                class="lazy-video"
                                                 style="width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0;"></video>
                                             {% else %}
                                             <div
@@ -221,47 +222,27 @@
                             </label>
 
                             <div class="plan-selector-grid">
+                                {% for plan in plans %}
                                 <label class="plan-card">
-                                    <input type="radio" name="plan_name" value="NOBLE" checked
-                                        onchange="updateSelectedPlan('NOBLE', 50000)">
+                                    <input type="radio" name="plan_name" value="{{ plan.code }}" {% if loop.first
+                                        %}checked{% endif %}
+                                        onchange="updateSelectedPlan('{{ plan.code }}', {{ plan.price }}, {{ plan.template_limit }})">
                                     <div class="plan-card-content">
-                                        <h4 class="serif">NOBLE</h4>
-                                        <div class="plan-price">Rp 50k</div>
+                                        <h4 class="serif">{{ plan.code }}</h4>
+                                        <div class="plan-price">Rp {{ plan.price / 1000 }}k</div>
                                         <ul class="plan-features">
-                                            <li><i class="fas fa-check"></i> Max 3 Guest Groups</li>
-                                            <li><i class="fas fa-check"></i> 3 Template Pairings</li>
-                                            <li><i class="fas fa-check"></i> Lifetime Archival</li>
+                                            {% if plan.features.is_some() %}
+                                            {% let features_json = plan.features.clone().unwrap() %}
+                                            {% if features_json.is_array() %}
+                                            {% for feature in features_json.as_array().unwrap() %}
+                                            <li><i class="fas fa-check"></i> {{ feature.as_str().unwrap_or("") }}</li>
+                                            {% endfor %}
+                                            {% endif %}
+                                            {% endif %}
                                         </ul>
                                     </div>
                                 </label>
-
-                                <label class="plan-card">
-                                    <input type="radio" name="plan_name" value="ROYAL"
-                                        onchange="updateSelectedPlan('ROYAL', 100000)">
-                                    <div class="plan-card-content">
-                                        <h4 class="serif">ROYAL</h4>
-                                        <div class="plan-price">Rp 100k</div>
-                                        <ul class="plan-features">
-                                            <li><i class="fas fa-check"></i> Max 7 Guest Groups</li>
-                                            <li><i class="fas fa-check"></i> 7 Template Pairings</li>
-                                            <li><i class="fas fa-check"></i> Priority AI Assistant</li>
-                                        </ul>
-                                    </div>
-                                </label>
-
-                                <label class="plan-card">
-                                    <input type="radio" name="plan_name" value="DYNASTY"
-                                        onchange="updateSelectedPlan('DYNASTY', 300000)">
-                                    <div class="plan-card-content">
-                                        <h4 class="serif">DYNASTY</h4>
-                                        <div class="plan-price">Rp 300k</div>
-                                        <ul class="plan-features">
-                                            <li><i class="fas fa-check"></i> Unlimited Groups</li>
-                                            <li><i class="fas fa-check"></i> Unlimited Pairings</li>
-                                            <li><i class="fas fa-check"></i> Concierge Support</li>
-                                        </ul>
-                                    </div>
-                                </label>
+                                {% endfor %}
                             </div>
                         </div>
 
@@ -445,9 +426,10 @@
                 <!-- Step 4: Love Story -->
                 <div class="form-step" id="step-4" style="display: none;">
                     <div class="step-content" style="max-width: 800px; margin: 0 auto; padding: 3rem;">
-                        <h3 class="serif accent-title" style="margin-bottom: 2rem;">Love Story / Episodes</h3>
-                        
-                        <div style="margin-bottom: 2.5rem; display: flex; flex-direction: column; align-items: center; gap: 1.2rem;">
+                        <h3 class="serif accent-title" style="margin-bottom: 2rem;">Love Story</h3>
+
+                        <div
+                            style="margin-bottom: 2.5rem; display: flex; flex-direction: column; align-items: center; gap: 1.2rem;">
                             <button type="button" onclick="addStory()"
                                 style="background: #ef4444; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 12px; font-size: 0.85rem; cursor: pointer; font-weight: 700; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2); transition: all 0.3s;"
                                 onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(239, 68, 68, 0.3)'"
@@ -456,7 +438,8 @@
                             </button>
 
                             <p style="color: #666; font-size: 0.9rem; margin: 0; text-align: center;">
-                                Ceritakan kisah perjalanan cinta Anda mulai dari awal pertemuan hingga keputusan suci untuk menikah.
+                                Ceritakan kisah perjalanan cinta Anda mulai dari awal pertemuan hingga keputusan suci
+                                untuk menikah.
                             </p>
                         </div>
 
@@ -946,50 +929,80 @@
                 <div class="form-step" id="step-9" style="display: none;">
                     <div class="step-content" style="max-width: 800px; margin: 0 auto; padding: 3rem;">
                         <h3 class="serif accent-title" style="margin-bottom: 2rem;">Investment Completion</h3>
-                        
+
                         <p style="color: #666; font-size: 0.9rem; margin-bottom: 2.5rem;">
                             A Legacy in the Making &mdash; Castellant Secure Selection.
                         </p>
 
-                        <div style="display: flex; flex-direction: column; gap: 2rem; text-align: center; margin-bottom: 3rem; background: #fdfdfd; padding: 4rem 2rem; border-radius: 20px; border: 1px solid #f0f0f0;">
-                            
+                        <div
+                            style="display: flex; flex-direction: column; gap: 2rem; text-align: center; margin-bottom: 3rem; background: #fdfdfd; padding: 4rem 2rem; border-radius: 20px; border: 1px solid #f0f0f0;">
+
                             <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center;">
-                                <div class="plan-selection-name" style="font-weight: 800; color: #2A1E14; font-size: 1.1rem;">Basic Collection</div>
+                                <div class="plan-selection-name"
+                                    style="font-weight: 800; color: #2A1E14; font-size: 1.1rem;">Basic Collection</div>
                                 <div style="color: #666; font-size: 0.95rem;">Selected Collection</div>
                             </div>
-                            
+
                             <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center;">
-                                <div class="selected-templates-list" style="font-weight: 800; color: #2A1E14; font-size: 1.1rem; line-height: 1.5; text-align: center;">
+                                <div class="selected-templates-list"
+                                    style="font-weight: 800; color: #2A1E14; font-size: 1.1rem; line-height: 1.5; text-align: center;">
                                     <!-- Populated by JS -->
                                 </div>
                                 <div style="color: #666; font-size: 0.95rem;">Selected Templates</div>
                             </div>
-                            
+
                             <div style="display: flex; flex-direction: column; gap: 1rem; align-items: center;">
-                                <div style="font-weight: 800; color: #2A1E14; font-size: 1.1rem;">Lifetime Digital Legacy</div>
+                                <div style="font-weight: 800; color: #2A1E14; font-size: 1.1rem;">Lifetime Digital
+                                    Legacy</div>
                                 <div style="color: #666; font-size: 0.95rem;">Archival Duration</div>
                             </div>
-                            
-                            <div style="height: 1px; background: #eee; position: relative; margin: 1.5rem 3rem;">
-                                <span style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%); background: #fdfdfd; padding: 0 10px; font-size: 0.65rem; color: #ccc; text-transform: uppercase; letter-spacing: 1px;">VALUATION</span>
+
+                            <div
+                                style="width: 100%; max-width: 350px; height: 1px; background: #eee; position: relative; margin: 2rem auto;">
+                                <span
+                                    style="position: absolute; top: -9px; left: 50%; transform: translateX(-50%); background: #fdfdfd; padding: 0 10px; font-size: 0.65rem; color: #ccc; text-transform: uppercase; letter-spacing: 1px;">VALUATION</span>
                             </div>
-                            
-                            <div style="display: flex; flex-direction: column; gap: 1.5rem; align-items: center; margin-top: 1rem;">
-                                <div class="serif" id="pv-total-final" data-base-price="50000" style="font-size: 3rem; color: var(--color-accent-red); font-weight: 800; line-height: 1;">Rp 50.000</div>
-                                <div style="font-weight: 800; color: #2A1E14; font-size: 1.25rem;">Total Investment</div>
+
+                            <div
+                                style="display: flex; flex-direction: column; gap: 1.5rem; align-items: center; margin-top: 1rem; width: 100%;">
+                                <div style="position: relative; width: 100%; max-width: 350px;">
+                                    <input type="text" id="in-promo-code" name="promo_code"
+                                        placeholder="Kode Promo / Referral"
+                                        style="width: 100%; padding: 1.2rem 1.5rem; border-radius: 50px; border: 1px solid rgba(0,0,0,0.1); background: #ffffff; font-size: 0.85rem; font-family: var(--font-sans); font-weight: 600; letter-spacing: 1px; outline: none; text-transform: uppercase; text-align: center; transition: all 0.3s ease; box-shadow: 0 5px 15px rgba(0,0,0,0.02); box-sizing: border-box;">
+                                    <i class="fas fa-spinner fa-spin" id="promo-loading"
+                                        style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); display: none; color: #8E6E53;"></i>
+                                </div>
+                                <style>
+                                    #in-promo-code:focus {
+                                        border-color: #8E6E53 !important;
+                                        box-shadow: 0 5px 20px rgba(142, 110, 83, 0.1) !important;
+                                    }
+                                </style>
+                                <div id="promo-message"
+                                    style="font-size: 0.8rem; font-weight: 700; width: 100%; text-align: center;"></div>
+
+                                <div class="serif" id="pv-total-final" data-base-price="50000"
+                                    style="font-size: clamp(2rem, 8vw, 3rem); color: var(--color-accent-red); font-weight: 800; line-height: 1; margin-top: 1rem;">
+                                    Rp 50.000</div>
+                                <div style="font-weight: 800; color: #2A1E14; font-size: 1.25rem;">Total Investment
+                                </div>
                             </div>
                         </div>
 
                         <div style="margin-bottom: 4rem;">
-                            <p style="color: #666; font-size: 0.9rem; line-height: 1.8; font-style: italic; margin-bottom: 2rem;">
-                                "Warisan digital Anda akan segera dipublikasikan. Kami memastikan setiap detail dilestarikan dengan presisi arsitektural dan keanggunan abadi."
+                            <p
+                                style="color: #666; font-size: 0.9rem; line-height: 1.8; font-style: italic; margin-bottom: 2rem;">
+                                "Warisan digital Anda akan segera dipublikasikan. Kami memastikan setiap detail
+                                dilestarikan dengan presisi arsitektural dan keanggunan abadi."
                             </p>
-                            
+
                             <div style="display: flex; align-items: center; gap: 20px;">
-                                <div style="display: flex; align-items: center; gap: 6px; color: #8E6E53; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">
+                                <div
+                                    style="display: flex; align-items: center; gap: 6px; color: #8E6E53; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">
                                     <span>🛡️</span> Encrypted
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 6px; color: #8E6E53; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">
+                                <div
+                                    style="display: flex; align-items: center; gap: 6px; color: #8E6E53; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;">
                                     <span>💎</span> Genuine Quality
                                 </div>
                             </div>
@@ -2024,26 +2037,30 @@
     .preview-link:hover {
         background: var(--color-accent-red);
         color: white;
-    /* Form Validation Styles */
-    .input-group input:user-valid, .input-group textarea:user-valid {
-        border-color: #10b981;
-        background-color: #f0fdf4;
-    }
-    .input-group input:user-invalid, .input-group textarea:user-invalid {
-        border-color: #ef4444;
-        background-color: #fef2f2;
-    }
-    
-    /* View Transitions */
-    ::view-transition-old(root),
-    ::view-transition-new(root) {
-        animation-duration: 0.4s;
-    }
-    
-    /* Hidden Form Steps Enhancement */
-    .form-step {
-        content-visibility: auto;
-    }
+
+        /* Form Validation Styles */
+        .input-group input:user-valid,
+        .input-group textarea:user-valid {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+        }
+
+        .input-group input:user-invalid,
+        .input-group textarea:user-invalid {
+            border-color: #ef4444;
+            background-color: #fef2f2;
+        }
+
+        /* View Transitions */
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+            animation-duration: 0.4s;
+        }
+
+        /* Hidden Form Steps Enhancement */
+        .form-step {
+            content-visibility: auto;
+        }
 </style>
 
 <script>

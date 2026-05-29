@@ -6,7 +6,7 @@ use axum::{
     Json,
 };
 use askama::Template;
-use crate::models::{Invitation, Person, EventDetails, Quote, GiftAccount, RsvpForm, Rsvp, Story, InvitationRow, Song, User, AiSession, Guest, GuestGroup, Booking, Voucher, InvitationTemplate};
+use crate::models::{Invitation, Person, EventDetails, Quote, GiftAccount, RsvpForm, Rsvp, Story, InvitationRow, Song, User, AiSession, Guest, GuestGroup, Booking, Voucher, InvitationTemplate, Plan, Referral, ReferralHistory};
 use crate::AppState;
 mod filters {
     pub use crate::filters::*;
@@ -369,6 +369,7 @@ struct MayarInvoiceResponse {
 pub struct CreateInvitationTemplate {
     pub user: Option<User>,
     pub all_templates: Vec<InvitationTemplate>,
+    pub plans: Vec<Plan>,
     pub is_dev: bool,
 }
 
@@ -545,10 +546,16 @@ pub async fn create_invitation_page(
     }
 
     let all_templates = get_all_templates(&state.db, true).await;
+    
+    let plans = sqlx::query_as::<_, Plan>("SELECT * FROM plans WHERE is_active = true ORDER BY price ASC")
+        .fetch_all(&state.db)
+        .await
+        .unwrap_or_default();
 
     HtmlTemplate(CreateInvitationTemplate { 
         user, 
         all_templates,
+        plans,
         is_dev: state.is_dev 
     }).into_response()
 }
@@ -761,15 +768,55 @@ pub async fn create_invitation(
         plan_name = "ROYAL".to_string();
     }
 
-    let amount = match plan_name.as_str() {
-        "ROYAL" => 100000,
-        "DYNASTY" => 300000,
-        _ => 50000,
+    let db_plan = sqlx::query_as::<_, Plan>("SELECT * FROM plans WHERE code = $1")
+        .bind(&plan_name)
+        .fetch_optional(&state.db)
+        .await
+        .unwrap_or(None);
+
+    let amount = match db_plan {
+        Some(p) => p.price,
+        None => 50000, // Fallback
     };
+
+    let mut discount_amount = 0;
+    let mut applied_voucher = None;
+    let promo_code = fields.get("promo_code").cloned().unwrap_or_default();
+
+    if !promo_code.is_empty() {
+        // Check referrals first
+        let referral = sqlx::query_as::<_, Referral>("SELECT * FROM referrals WHERE code = $1 AND is_active = true")
+            .bind(&promo_code)
+            .fetch_optional(&state.db)
+            .await
+            .unwrap_or(None);
+            
+        if let Some(r) = referral {
+            discount_amount = (amount * r.discount_percent) / 100;
+            applied_voucher = Some(r.code);
+        } else {
+            // Check vouchers
+            let voucher = sqlx::query_as::<_, Voucher>("SELECT * FROM vouchers WHERE code = $1 AND is_active = true AND (usage_limit IS NULL OR usage_count < usage_limit) AND (valid_until IS NULL OR valid_until > NOW())")
+                .bind(&promo_code)
+                .fetch_optional(&state.db)
+                .await
+                .unwrap_or(None);
+                
+            if let Some(v) = voucher {
+                discount_amount = (amount * v.discount_percent) / 100;
+                applied_voucher = Some(v.code);
+            }
+        }
+    }
+
+    let final_amount = amount - discount_amount;
 
     let mut extra_data = HashMap::new();
     extra_data.insert("invitation_slug".to_string(), slug.clone());
     extra_data.insert("target_plan".to_string(), plan_name.clone());
+    if let Some(code) = &applied_voucher {
+        extra_data.insert("voucher_code".to_string(), code.clone());
+    }
 
     let (payment_link, invoice_id) = if user_row.role == "SUPERADMIN" {
         // Skip Mayar for Superadmin
@@ -777,7 +824,7 @@ pub async fn create_invitation(
     } else {
         let items = vec![MayarItem {
             quantity: 1,
-            rate: amount,
+            rate: final_amount,
             description: format!("Digital Invitation - {} Plan", plan_name.to_uppercase()),
         }];
 
@@ -785,7 +832,7 @@ pub async fn create_invitation(
         let mayar_req = MayarInvoiceRequest {
             name: user_row.name.clone().unwrap_or_else(|| "Customer".to_string()),
             email: user_row.email.clone(),
-            amount,
+            amount: final_amount,
             description: format!("Digital Invitation - {} Plan ({})", plan_name.to_uppercase(), fields.get("couple_name_short").unwrap()),
             mobile: "08123456789".to_string(), // Fallback mobile
             redirect_url: format!("{}/invitation/{}/manage", std::env::var("REDIRECT_APP_BASE_URL").unwrap_or_else(|_| "http://localhost:3000".to_string()), slug),
@@ -827,6 +874,12 @@ pub async fn create_invitation(
                 return (StatusCode::INTERNAL_SERVER_ERROR, "Failed to process payment response").into_response();
             }
         };
+
+        if !mayar_res.status || mayar_res.status_code >= 400 {
+            let error_msg = mayar_res.messages.clone().unwrap_or_else(|| "Unknown payment gateway error".to_string());
+            eprintln!("Mayar API Error: {}", error_msg);
+            return (StatusCode::INTERNAL_SERVER_ERROR, format!("Payment Gateway Error: {}", error_msg)).into_response();
+        }
 
         let (link, id) = if let Some(data) = mayar_res.data {
             let l = data.get("link").and_then(|l| l.as_str().map(|s| s.to_string()));
@@ -985,15 +1038,17 @@ pub async fn create_invitation(
     // Insert Booking record
     if let Some(inv_id) = invoice_id {
         if let Err(e) = sqlx::query(
-            "INSERT INTO bookings (user_id, invitation_id, target_plan, amount, invoice_id, payment_link, status) 
-             VALUES ($1, $2, $3, $4, $5, $6, 'PENDING')"
+            "INSERT INTO bookings (user_id, invitation_id, target_plan, amount, invoice_id, payment_link, status, voucher_code, discount_amount) 
+             VALUES ($1, $2, $3, $4, $5, $6, 'PENDING', $7, $8)"
         )
         .bind(user_id)
         .bind(invitation_id)
         .bind(&plan_name)
-        .bind(amount)
+        .bind(final_amount)
         .bind(inv_id)
         .bind(payment_link.clone())
+        .bind(&applied_voucher)
+        .bind(discount_amount)
         .execute(&mut *tx)
         .await {
             let _ = tx.rollback().await;
@@ -2097,6 +2152,9 @@ pub struct DashboardTemplate {
     pub invitations: Vec<Invitation>,
     pub user: Option<User>,
     pub is_dev: bool,
+    pub referral: Option<Referral>,
+    pub total_commission: i32,
+    pub referral_history: Vec<ReferralHistory>,
 }
 
 #[derive(Template)]
@@ -2178,10 +2236,71 @@ pub async fn dashboard(
             })
             .collect();
 
+        // Auto-generate referral if not exists
+        let mut referral = sqlx::query_as::<_, Referral>("SELECT * FROM referrals WHERE user_id = $1")
+            .bind(uid)
+            .fetch_optional(&state.db)
+            .await
+            .unwrap_or(None);
+
+        if referral.is_none() {
+            let code = format!("CSTL-{}-{}", 
+                user.as_ref().and_then(|u| u.name.clone()).unwrap_or_else(|| "MEMBER".to_string()).split_whitespace().next().unwrap_or("MEMBER").to_uppercase(),
+                Uuid::new_v4().to_string().chars().take(4).collect::<String>().to_uppercase()
+            );
+            
+            let inserted = sqlx::query_as::<_, Referral>(
+                "INSERT INTO referrals (user_id, code, referrer_name, discount_percent, commission_percent)
+                 VALUES ($1, $2, $3, $4, $5) RETURNING *"
+            )
+            .bind(uid)
+            .bind(&code)
+            .bind(user.as_ref().and_then(|u| u.name.clone()).unwrap_or_else(|| "Member".to_string()))
+            .bind(10) // 10% discount default
+            .bind(10) // 10% commission default
+            .fetch_optional(&state.db)
+            .await
+            .unwrap_or(None);
+            
+            referral = inserted;
+        }
+
+        let mut total_commission = 0;
+        let mut referral_history = Vec::new();
+
+        if let Some(ref ref_data) = referral {
+            let code = &ref_data.code;
+            
+            // Query for history using JOIN on bookings and users
+            referral_history = sqlx::query_as::<_, ReferralHistory>(
+                "SELECT 
+                    COALESCE(u.name, 'Guest') as user_name, 
+                    b.target_plan, 
+                    b.amount, 
+                    (b.amount * r.commission_percent / 100) as commission_earned, 
+                    b.created_at
+                 FROM bookings b
+                 JOIN referrals r ON b.voucher_code = r.code
+                 LEFT JOIN users u ON b.user_id = u.id
+                 WHERE b.voucher_code = $1 AND b.status = 'SUCCESS'
+                 ORDER BY b.created_at DESC"
+            )
+            .bind(code)
+            .fetch_all(&state.db)
+            .await
+            .unwrap_or_default();
+
+            // Calculate total commission
+            total_commission = referral_history.iter().map(|h| h.commission_earned).sum();
+        }
+
         HtmlTemplate(DashboardTemplate {
             invitations,
             user,
             is_dev: state.is_dev,
+            referral,
+            total_commission,
+            referral_history,
         }).into_response()
     } else {
         Redirect::to("/auth/google").into_response()
@@ -4412,7 +4531,7 @@ pub struct AdminRevenueTemplate {
     pub user: Option<User>,
     pub total_revenue: i64,
     pub successful_bookings: i64,
-    pub average_order_value: f64,
+    pub average_order_value: i64,
     pub bookings: Vec<Booking>,
     pub leaderboard: Vec<TemplateLeaderboardEntry>,
     pub is_dev: bool,
@@ -4456,7 +4575,7 @@ pub async fn admin_revenue(
         .sum();
 
     let successful_count = bookings.iter().filter(|b| b.status == "SUCCESS").count() as i64;
-    let avg_order = if successful_count > 0 { total_revenue as f64 / successful_count as f64 } else { 0.0 };
+    let avg_order = if successful_count > 0 { (total_revenue as f64 / successful_count as f64).round() as i64 } else { 0 };
 
     let mut leaderboard = sqlx::query_as::<_, TemplateLeaderboardEntry>("SELECT template_name, COALESCE(COUNT(*), 0) as count FROM invitations GROUP BY template_name ORDER BY count DESC LIMIT 5")
         .fetch_all(&state.db)
@@ -4540,16 +4659,33 @@ pub async fn create_upgrade_payment(
         .await
         .unwrap();
 
-    let current_plan_price = match invitation.plan_name.as_deref().unwrap_or("NOBLE") {
-        "ROYAL" => 100000,
-        "DYNASTY" => 300000,
-        _ => 50000,
+    let current_plan_name = invitation.plan_name.as_deref().unwrap_or("NOBLE");
+    let target_plan_name = payload.target_plan.as_str();
+    
+    let current_plan = sqlx::query_as::<_, Plan>("SELECT * FROM plans WHERE code = $1")
+        .bind(current_plan_name)
+        .fetch_optional(&state.db)
+        .await
+        .unwrap_or(None);
+        
+    let target_plan = sqlx::query_as::<_, Plan>("SELECT * FROM plans WHERE code = $1")
+        .bind(target_plan_name)
+        .fetch_optional(&state.db)
+        .await
+        .unwrap_or(None);
+
+    let current_plan_price = match current_plan {
+        Some(p) => p.price,
+        None => 50000,
     };
 
-    let target_plan_price = match payload.target_plan.as_str() {
-        "ROYAL" => 100000,
-        "DYNASTY" => 300000,
-        _ => 50000,
+    let target_plan_price = match target_plan {
+        Some(p) => p.price,
+        None => match target_plan_name {
+            "ROYAL" => 100000,
+            "DYNASTY" => 300000,
+            _ => 50000,
+        },
     };
 
     let amount = if target_plan_price > current_plan_price {
@@ -4771,11 +4907,37 @@ pub async fn mayar_webhook(
                     
                     tracing::info!("Payment success for {}: Plan upgraded to {}", slug, plan);
 
+                    // First get the pending booking to see if it has a voucher_code
+                    let booking = sqlx::query_as::<_, Booking>(
+                        "SELECT * FROM bookings WHERE invitation_id = (SELECT id FROM invitations WHERE slug = $1) AND status = 'PENDING' LIMIT 1"
+                    )
+                    .bind(&slug)
+                    .fetch_optional(&state.db)
+                    .await
+                    .unwrap_or(None);
+
                     // Also try to update booking status using slug as fallback if ID fails later
                     let _ = sqlx::query("UPDATE bookings SET status = 'SUCCESS', updated_at = NOW() WHERE invitation_id = (SELECT id FROM invitations WHERE slug = $1)")
                         .bind(&slug)
                         .execute(&state.db)
                         .await;
+
+                    // If we had a pending booking that just got successful, and it had a voucher code, increment usage count
+                    if let Some(b) = booking {
+                        if let Some(code) = b.voucher_code {
+                            // Try incrementing referral usage
+                            let _ = sqlx::query("UPDATE referrals SET usage_count = usage_count + 1 WHERE code = $1")
+                                .bind(&code)
+                                .execute(&state.db)
+                                .await;
+                                
+                            // Try incrementing voucher usage
+                            let _ = sqlx::query("UPDATE vouchers SET usage_count = usage_count + 1 WHERE code = $1")
+                                .bind(&code)
+                                .execute(&state.db)
+                                .await;
+                        }
+                    }
 
                     // Send Email Notification
                     #[derive(sqlx::FromRow)]
@@ -4856,6 +5018,17 @@ pub async fn mayar_webhook(
         if status != "PENDING" {
             let id_from_link = data.and_then(|d| d.get("link").and_then(|l| l.as_str()).and_then(|s| s.split('/').last()));
 
+            // First get the pending booking to check for voucher_code
+            let booking = sqlx::query_as::<_, Booking>(
+                "SELECT * FROM bookings WHERE (invoice_id = $1 OR invoice_id = $2 OR payment_link LIKE $3) AND status = 'PENDING' LIMIT 1"
+            )
+            .bind(id)
+            .bind(id_from_link.unwrap_or(""))
+            .bind(format!("%{}%", id))
+            .fetch_optional(&state.db)
+            .await
+            .unwrap_or(None);
+
             // Match by invoice_id OR try to find by payment_link if it contains the ID
             let result = sqlx::query("UPDATE bookings SET status = $1, updated_at = NOW() WHERE invoice_id = $2 OR invoice_id = $3 OR payment_link LIKE $4")
                 .bind(status)
@@ -4864,6 +5037,24 @@ pub async fn mayar_webhook(
                 .bind(format!("%{}%", id))
                 .execute(&state.db)
                 .await;
+                
+            if status == "SUCCESS" {
+                if let Some(b) = booking {
+                    if let Some(code) = b.voucher_code {
+                        // Try incrementing referral usage
+                        let _ = sqlx::query("UPDATE referrals SET usage_count = usage_count + 1 WHERE code = $1")
+                            .bind(&code)
+                            .execute(&state.db)
+                            .await;
+                            
+                        // Try incrementing voucher usage
+                        let _ = sqlx::query("UPDATE vouchers SET usage_count = usage_count + 1 WHERE code = $1")
+                            .bind(&code)
+                            .execute(&state.db)
+                            .await;
+                    }
+                }
+            }
             
             match result {
                 Ok(res) => {
@@ -5539,6 +5730,94 @@ pub async fn admin_templates_delete(
         Ok(_) => Redirect::to("/admin/templates").into_response(),
         Err(e) => (StatusCode::INTERNAL_SERVER_ERROR, format!("Failed to delete template: {}", e)).into_response(),
     }
+}
+
+#[derive(Deserialize)]
+pub struct ValidatePromoQuery {
+    pub code: String,
+}
+
+pub async fn validate_promo(
+    State(state): State<AppState>,
+    Query(query): Query<ValidatePromoQuery>,
+) -> impl IntoResponse {
+    let code = query.code.trim().to_string();
+    
+    // Check referrals first
+    let referral = sqlx::query_as::<_, Referral>("SELECT * FROM referrals WHERE code = $1 AND is_active = true")
+        .bind(&code)
+        .fetch_optional(&state.db)
+        .await
+        .unwrap_or(None);
+        
+    if let Some(r) = referral {
+        return Json(json!({
+            "valid": true,
+            "type": "referral",
+            "discount_percent": r.discount_percent
+        })).into_response();
+    }
+    
+    // Check vouchers
+    let voucher = sqlx::query_as::<_, Voucher>("SELECT * FROM vouchers WHERE code = $1 AND is_active = true AND (usage_limit IS NULL OR usage_count < usage_limit) AND (valid_until IS NULL OR valid_until > NOW())")
+        .bind(&code)
+        .fetch_optional(&state.db)
+        .await
+        .unwrap_or(None);
+        
+    if let Some(v) = voucher {
+        return Json(json!({
+            "valid": true,
+            "type": "voucher",
+            "discount_percent": v.discount_percent
+        })).into_response();
+    }
+    
+    (StatusCode::BAD_REQUEST, Json(json!({
+        "valid": false,
+        "error": "Kode promo tidak valid atau sudah kadaluarsa"
+    }))).into_response()
+}
+
+#[derive(Template)]
+#[template(path = "admin/marketing/dashboard.html")]
+pub struct AdminMarketingTemplate {
+    pub user: Option<User>,
+    pub plans: Vec<Plan>,
+    pub vouchers: Vec<Voucher>,
+    pub referrals: Vec<Referral>,
+}
+
+pub async fn admin_marketing(
+    State(state): State<AppState>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user = get_user_from_jar(&state.db, &jar).await;
+    if !is_superadmin(&user) {
+        return Redirect::to("/").into_response();
+    }
+    
+    let plans = sqlx::query_as::<_, Plan>("SELECT * FROM plans ORDER BY price ASC")
+        .fetch_all(&state.db)
+        .await
+        .unwrap_or_default();
+        
+    let vouchers = sqlx::query_as::<_, Voucher>("SELECT * FROM vouchers ORDER BY created_at DESC")
+        .fetch_all(&state.db)
+        .await
+        .unwrap_or_default();
+        
+    let referrals = sqlx::query_as::<_, Referral>("SELECT * FROM referrals ORDER BY created_at DESC")
+        .fetch_all(&state.db)
+        .await
+        .unwrap_or_default();
+
+    HtmlTemplate(AdminMarketingTemplate {
+        user,
+        plans,
+        vouchers,
+        referrals,
+    }).into_response()
 }
 
 // --- Helpers ---

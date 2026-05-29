@@ -365,29 +365,28 @@
         loadLivePreview(val);
     }
 
-    function updateSelectedPlan(name, price) {
+    function updateSelectedPlan(name, price, limit) {
         // Update price display in Step 5
         const priceDisplay = document.getElementById('pv-total-final');
         if (priceDisplay) {
             priceDisplay.textContent = `Rp ${price.toLocaleString('id-ID')}`;
             priceDisplay.dataset.basePrice = price;
+            
+            // Reapply promo code if exists
+            const promoInput = document.getElementById('in-promo-code');
+            if (promoInput && promoInput.value) {
+                promoInput.dispatchEvent(new Event('input', { bubbles: true }));
+            }
         }
 
         // Update Plan Name in Review (Step 5)
         const planDisplay = document.querySelector('.plan-selection-name');
         if (planDisplay) {
-            const planNames = {
-                'NOBLE': 'Noble',
-                'ROYAL': 'Royal',
-                'DYNASTY': 'Dynasty'
-            };
-            planDisplay.textContent = (planNames[name] || name) + " Collection";
+            planDisplay.textContent = name + " Collection";
         }
 
         // Update template limit
-        if (name === 'NOBLE') templateLimit = 3;
-        else if (name === 'ROYAL') templateLimit = 7;
-        else if (name === 'DYNASTY') templateLimit = 999;
+        templateLimit = limit || 3;
 
         validateTemplateSelection(); // Re-validate with new limit
     }
@@ -433,9 +432,7 @@
         }
 
         if (selected.length > templateLimit) {
-            let msg = `Limit tercapai.`;
-            if (templateLimit === 3) msg = `Paket NOBLE maksimal 3 template.`;
-            if (templateLimit === 7) msg = `Paket ROYAL maksimal 7 template.`;
+            let msg = `Paket ini maksimal ${templateLimit} template.`;
 
             Swal.fire({
                 icon: 'warning',
@@ -1091,6 +1088,64 @@
             }
         }
     });
+
+    // --- PROMO CODE AUTO-VALIDATION ---
+    const inPromoCode = document.getElementById('in-promo-code');
+    const promoLoading = document.getElementById('promo-loading');
+    if (inPromoCode) {
+        let promoTimeout = null;
+        inPromoCode.addEventListener('input', function() {
+            clearTimeout(promoTimeout);
+            const promoCode = this.value.trim();
+            const priceDisplay = document.getElementById('pv-total-final');
+            const basePrice = parseInt(priceDisplay.dataset.basePrice);
+            
+            if (!promoCode) {
+                resetPromoCode(basePrice);
+                if (promoLoading) promoLoading.style.display = 'none';
+                return;
+            }
+            
+            if (promoLoading) promoLoading.style.display = 'block';
+            document.getElementById('promo-message').innerHTML = '';
+            
+            promoTimeout = setTimeout(async function() {
+                try {
+                    const response = await fetch(`/api/validate-promo?code=${encodeURIComponent(promoCode)}`);
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        document.getElementById('promo-message').innerHTML = `<span style="color: #10b981;">Promo applied: ${data.discount_percent}% off!</span>`;
+                        const discountAmount = (basePrice * data.discount_percent) / 100;
+                        const finalAmount = basePrice - discountAmount;
+                        priceDisplay.innerHTML = `<span style="text-decoration: line-through; color: #999; font-size: 0.6em; margin-right: 10px; font-weight: normal;">Rp ${basePrice.toLocaleString('id-ID')}</span>Rp ${finalAmount.toLocaleString('id-ID')}`;
+                    } else {
+                        document.getElementById('promo-message').innerHTML = `<span style="color: #ef4444;">${data.error || 'Invalid promo code'}</span>`;
+                        resetPromoCode(basePrice);
+                    }
+                } catch (err) {
+                    document.getElementById('promo-message').innerHTML = `<span style="color: #ef4444;">Connection error</span>`;
+                    resetPromoCode(basePrice);
+                } finally {
+                    if (promoLoading) promoLoading.style.display = 'none';
+                }
+            }, 800);
+        });
+
+        // Check URL parameters for auto-apply
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref') || urlParams.get('promo') || urlParams.get('referral');
+        if (refCode) {
+            inPromoCode.value = refCode.toUpperCase();
+            inPromoCode.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+    }
+
+    function resetPromoCode(basePrice) {
+        document.getElementById('promo-message').innerHTML = '';
+        const priceDisplay = document.getElementById('pv-total-final');
+        if (priceDisplay) priceDisplay.textContent = `Rp ${basePrice.toLocaleString('id-ID')}`;
+    }
 
     // Lazy load videos Intersection Observer
     document.addEventListener("DOMContentLoaded", function() {
