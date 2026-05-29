@@ -3616,19 +3616,19 @@ pub async fn rsvp(
         <priority>0.9</priority>
     </url>"#, today, today);
 
-    // Dynamic: fetch public invitation slugs with last modified date
+    // Dynamic: fetch public invitation slugs with created_at as lastmod
+    // (invitations table uses created_at, not updated_at)
     let rows = sqlx::query(
-        "SELECT slug, COALESCE(TO_CHAR(updated_at AT TIME ZONE 'UTC', 'YYYY-MM-DD'), $1) as lastmod \
-         FROM invitations WHERE deleted_at IS NULL ORDER BY updated_at DESC LIMIT 1000"
+        "SELECT slug, TO_CHAR(created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD') as lastmod \
+         FROM invitations WHERE deleted_at IS NULL ORDER BY created_at DESC LIMIT 1000"
     )
-    .bind(&today)
     .fetch_all(&state.db)
     .await
     .unwrap_or_default();
 
     for row in rows {
         let slug: String = row.get("slug");
-        let lastmod: String = row.get("lastmod");
+        let lastmod: String = row.try_get("lastmod").unwrap_or_else(|_| today.clone());
         xml.push_str(&format!(r#"
     <url>
         <loc>https://castellant.id/invitation/{}</loc>
