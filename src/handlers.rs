@@ -3617,10 +3617,16 @@ pub async fn rsvp(
     </url>"#, today, today);
 
     // Dynamic: fetch public invitation slugs with created_at as lastmod
-    // (invitations table uses created_at, not updated_at)
+    // Only include: not deleted, has a valid slug, and has paid plan (plan_name IS NOT NULL)
     let rows = sqlx::query(
         "SELECT slug, TO_CHAR(created_at AT TIME ZONE 'UTC', 'YYYY-MM-DD') as lastmod \
-         FROM invitations WHERE deleted_at IS NULL ORDER BY created_at DESC LIMIT 1000"
+         FROM invitations \
+         WHERE deleted_at IS NULL \
+           AND slug != '' \
+           AND slug NOT LIKE 'deleted-%' \
+           AND plan_name IS NOT NULL \
+         ORDER BY created_at DESC \
+         LIMIT 500"
     )
     .fetch_all(&state.db)
     .await
@@ -3628,6 +3634,9 @@ pub async fn rsvp(
 
     for row in rows {
         let slug: String = row.get("slug");
+        if slug.is_empty() || slug.starts_with("deleted-") {
+            continue;
+        }
         let lastmod: String = row.try_get("lastmod").unwrap_or_else(|_| today.clone());
         xml.push_str(&format!(r#"
     <url>
