@@ -11,6 +11,12 @@ use axum::{
 use axum::extract::DefaultBodyLimit;
 use std::net::SocketAddr;
 use tower_http::{services::ServeDir, trace::TraceLayer};
+
+use tower_http::compression::CompressionLayer;
+use tower_http::set_header::SetResponseHeaderLayer;
+use http::header::{CACHE_CONTROL, HeaderValue};
+use tower::ServiceBuilder;
+
 use sqlx::postgres::PgPoolOptions;
 use dotenvy::dotenv;
 use std::env;
@@ -211,9 +217,20 @@ async fn main() {
             tokio::fs::read_to_string("static/robots.txt").await.unwrap_or_else(|_| "".to_string()) 
         }))
         .with_state(state)
-        .nest_service("/static", ServeDir::new("static"))
+        
+        .nest_service(
+            "/static",
+            ServiceBuilder::new()
+                .layer(SetResponseHeaderLayer::overriding(
+                    CACHE_CONTROL,
+                    HeaderValue::from_static("public, max-age=31536000, immutable"),
+                ))
+                .service(ServeDir::new("static"))
+        )
+
         .layer(DefaultBodyLimit::max(250 * 1024 * 1024)) // 250MB limit to support video uploads
-        .layer(TraceLayer::new_for_http());
+        .layer(TraceLayer::new_for_http())
+        .layer(CompressionLayer::new());
 
     // run our app with hyper
     let port = env::var("PORT")
