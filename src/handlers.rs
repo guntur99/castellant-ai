@@ -2404,6 +2404,21 @@ pub async fn invitation_detail(
     Query(params): Query<HashMap<String, String>>,
     State(state): State<AppState>,
 ) -> impl IntoResponse {
+    let param_to = params.get("to").cloned().unwrap_or_else(|| "none".to_string());
+    let param_preview = params.get("preview_theme").cloned().unwrap_or_else(|| "none".to_string());
+    let cache_field = format!("{}_{}", param_to, param_preview);
+    
+    // Check Redis Cache
+    if let Ok(mut conn) = state.redis.get().await {
+        let cache_key = format!("invitation_cache:{}", slug);
+        if let Ok(cached) = redis::cmd("HGET").arg(&cache_key).arg(&cache_field).query_async::<String>(&mut conn).await {
+            if let Ok(invitation) = serde_json::from_str::<Invitation>(&cached) {
+                let template_name = invitation.template_name.clone();
+                return render_invitation_template(&template_name, invitation, state.is_dev).into_response();
+            }
+        }
+    }
+
     // 1. Fetch active song from DB (global fallback)
     let active_song = sqlx::query_as::<_, Song>(
         "SELECT * FROM songs WHERE is_active = true LIMIT 1"
@@ -2596,107 +2611,15 @@ pub async fn invitation_detail(
                 is_preview: params.contains_key("preview_theme"),
             };
 
-            match template_name.as_str() {
-                "keraton-dark-invitation" => HtmlTemplate(KeratonDarkInvitationTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "loveanthem" => HtmlTemplate(LoveAnthemTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "cinemarry" => HtmlTemplate(CineMarryTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "super-wedbros" => HtmlTemplate(SuperWedbrosTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "royal-heritage" => HtmlTemplate(RoyalHeritageTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "high-fashion-editorial" => HtmlTemplate(HighFashionEditorialTemplate { invitation: invitation.clone(), is_dev: state.is_dev }).into_response(),
-                "reel-wedding" => HtmlTemplate(ReelWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "cairide" => HtmlTemplate(CaiRideTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "pinterlove" => HtmlTemplate(PinterLoveTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "shopee-live-wedding" => HtmlTemplate(ShopeeLiveWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "tiktok-live-wedding" => HtmlTemplate(TiktokLiveWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-uber" => HtmlTemplate(WeUberTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-disney" => HtmlTemplate(WeddingDisneyTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-facebook" => HtmlTemplate(WeddingFacebookTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-iphone-theme" => HtmlTemplate(WeddingIphoneThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-netflix-v2" => HtmlTemplate(WeddingNetflixV2Template { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-prime" => HtmlTemplate(WeddingPrimeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-wrath-v2" => HtmlTemplate(WeddingWrathV2Template { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-applemusic" => HtmlTemplate(AppleMusicTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-capcut" => HtmlTemplate(WeCapCutTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "bereal-wedding" => HtmlTemplate(BeRealWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "instagram-live-wedding" => HtmlTemplate(InstagramLiveWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-discord" => HtmlTemplate(WeDiscordTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-webtoon" => HtmlTemplate(WeWebtoonTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-mixue" => HtmlTemplate(WeMixueTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-playstation" => HtmlTemplate(WePlayStationTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-threads-app" => HtmlTemplate(WeThreadsAppTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-alfamart" => HtmlTemplate(WeddingAlfamartTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-kai" => HtmlTemplate(WeddingKaiTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-medium" => HtmlTemplate(WeddingMediumTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-transjakarta" => HtmlTemplate(WeddingTransJakartaTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "qris-wedding" => HtmlTemplate(QrisWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-grab" => HtmlTemplate(WeddingGrabTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "figma-wedding" => HtmlTemplate(FigmaWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-whatsapp-theme" => HtmlTemplate(WeddingWhatsappThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-manga" => HtmlTemplate(WeMangaTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-nintendo-switch" => HtmlTemplate(WeNintendoSwitchTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-kai-v2" => HtmlTemplate(WeddingKaiV2Template { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-minecraft" => HtmlTemplate(WeddingMinecraftTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-zoom-v2" => HtmlTemplate(WeddingZoomV2Template { invitation, is_dev: state.is_dev }).into_response(),
-                "we-vscode" => HtmlTemplate(WeVSCodeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "gmail-wedding" => HtmlTemplate(GmailWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-behance" => HtmlTemplate(WeBehanceTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-chatime" => HtmlTemplate(WeChatimeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-dribbble" => HtmlTemplate(WeDribbbleTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-hm" => HtmlTemplate(WeHMTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-janjijiwa" => HtmlTemplate(WeJanjiJiwaTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-kopikenangan" => HtmlTemplate(WeKopiKenanganTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-powerpoint" => HtmlTemplate(WePowerPointTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-talenta" => HtmlTemplate(WeTalentaTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-animal-crossing" => HtmlTemplate(WeddingAnimalCrossingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-claude" => HtmlTemplate(WeddingClaudeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-cod" => HtmlTemplate(WeddingCodTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-danamon" => HtmlTemplate(WeddingDanamonTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-excel-theme" => HtmlTemplate(WeddingExcelThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-freefire" => HtmlTemplate(WeddingFreeFireTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-github" => HtmlTemplate(WeddingGithubTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-jenius-v2" => HtmlTemplate(WeddingJeniusV2Template { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-linux" => HtmlTemplate(WeddingLinuxTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-word-theme" => HtmlTemplate(WeddingWordThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "canva-elegant-wedding" => HtmlTemplate(CanvaElegantWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "elegant-wedding" => HtmlTemplate(ElegantWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "mrt-wedding" => HtmlTemplate(MrtWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-brimo" => HtmlTemplate(WeBrimoTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-duolingo" => HtmlTemplate(WeDuolingoTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-google-calendar" => HtmlTemplate(WeGoogleCalendarTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-livin" => HtmlTemplate(WeLivinTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-manhua" => HtmlTemplate(WeManhuaTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-manhwa" => HtmlTemplate(WeManhwaTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-momoyo" => HtmlTemplate(WeMomoyoTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-steam-store" => HtmlTemplate(WeSteamStoreTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-uniqlo" => HtmlTemplate(WeUniqloTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-zara" => HtmlTemplate(WeZaraTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-bpjs" => HtmlTemplate(WeddingBpjsTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-chatgpt" => HtmlTemplate(WeddingChatGptTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-familymart" => HtmlTemplate(WeddingFamilyMartTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-gemini" => HtmlTemplate(WeddingGeminiTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-genshin-theme" => HtmlTemplate(WeddingGenshinThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-indomaret" => HtmlTemplate(WeddingIndomaretTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-jago" => HtmlTemplate(WeddingJagoTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-macintosh" => HtmlTemplate(WeddingMacintoshTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-mlbb" => HtmlTemplate(WeddingMlbbTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-ps5" => HtmlTemplate(WeddingPs5Template { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-pubg" => HtmlTemplate(WeddingPubgTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-telegram-theme" => HtmlTemplate(WeddingTelegramThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-wa-channel" => HtmlTemplate(WeddingWaChannelTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-windows95" => HtmlTemplate(WeddingWindows95Template { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-windowsxp" => HtmlTemplate(WeddingWindowsXpTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "whoosh-wedding" => HtmlTemplate(WhooshWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "absensi-wedding" => HtmlTemplate(AbsensiWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-asana" => HtmlTemplate(WeAsanaTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-kopijago" => HtmlTemplate(WeKopiJagoTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-linktree" => HtmlTemplate(WeLinktreeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "we-upwork" => HtmlTemplate(WeUpworkTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-danantara" => HtmlTemplate(WeddingDanantaraTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-dota2" => HtmlTemplate(WeddingDota2Template { invitation, is_dev: state.is_dev }).into_response(),
-                "wedding-indomie-goreng" => HtmlTemplate(WeddingIndomieGorengTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                "trendvibe" => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
+            // Set to Redis Cache
+            if let Ok(mut conn) = state.redis.get().await {
+                let cache_key = format!("invitation_cache:{}", slug);
+                let json_data = invitation.to_json_context();
+                let _ = redis::cmd("HSET").arg(&cache_key).arg(&cache_field).arg(&json_data).query_async::<()>(&mut conn).await;
+                let _ = redis::cmd("EXPIRE").arg(&cache_key).arg(3600).query_async::<()>(&mut conn).await; // 1 hour TTL
             }
+
+            render_invitation_template(template_name.as_str(), invitation, state.is_dev)
         },
         _ => {
             // Fallback for samples
@@ -2808,107 +2731,7 @@ pub async fn invitation_detail(
                     is_preview: true,
                 };
                 
-                match template_name {
-                    "keraton-dark-invitation" => HtmlTemplate(KeratonDarkInvitationTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "loveanthem" => HtmlTemplate(LoveAnthemTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "cinemarry" => HtmlTemplate(CineMarryTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "super-wedbros" => HtmlTemplate(SuperWedbrosTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "royal-heritage" => HtmlTemplate(RoyalHeritageTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "high-fashion-editorial" => HtmlTemplate(HighFashionEditorialTemplate { invitation: invitation.clone(), is_dev: state.is_dev }).into_response(),
-                    "reel-wedding" => HtmlTemplate(ReelWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "cairide" => HtmlTemplate(CaiRideTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "pinterlove" => HtmlTemplate(PinterLoveTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "shopee-live-wedding" => HtmlTemplate(ShopeeLiveWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "tiktok-live-wedding" => HtmlTemplate(TiktokLiveWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-uber" => HtmlTemplate(WeUberTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-disney" => HtmlTemplate(WeddingDisneyTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-facebook" => HtmlTemplate(WeddingFacebookTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-iphone-theme" => HtmlTemplate(WeddingIphoneThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-netflix-v2" => HtmlTemplate(WeddingNetflixV2Template { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-prime" => HtmlTemplate(WeddingPrimeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-wrath-v2" => HtmlTemplate(WeddingWrathV2Template { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-applemusic" => HtmlTemplate(AppleMusicTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-capcut" => HtmlTemplate(WeCapCutTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "bereal-wedding" => HtmlTemplate(BeRealWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "instagram-live-wedding" => HtmlTemplate(InstagramLiveWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "qris-wedding" => HtmlTemplate(QrisWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-grab" => HtmlTemplate(WeddingGrabTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "figma-wedding" => HtmlTemplate(FigmaWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-discord" => HtmlTemplate(WeDiscordTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-webtoon" => HtmlTemplate(WeWebtoonTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-mixue" => HtmlTemplate(WeMixueTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-playstation" => HtmlTemplate(WePlayStationTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-threads-app" => HtmlTemplate(WeThreadsAppTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-alfamart" => HtmlTemplate(WeddingAlfamartTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-kai" => HtmlTemplate(WeddingKaiTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-medium" => HtmlTemplate(WeddingMediumTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-transjakarta" => HtmlTemplate(WeddingTransJakartaTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-whatsapp-theme" => HtmlTemplate(WeddingWhatsappThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-manga" => HtmlTemplate(WeMangaTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-nintendo-switch" => HtmlTemplate(WeNintendoSwitchTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-kai-v2" => HtmlTemplate(WeddingKaiV2Template { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-minecraft" => HtmlTemplate(WeddingMinecraftTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-zoom-v2" => HtmlTemplate(WeddingZoomV2Template { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-vscode" => HtmlTemplate(WeVSCodeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "gmail-wedding" => HtmlTemplate(GmailWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-behance" => HtmlTemplate(WeBehanceTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-chatime" => HtmlTemplate(WeChatimeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-dribbble" => HtmlTemplate(WeDribbbleTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-hm" => HtmlTemplate(WeHMTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-janjijiwa" => HtmlTemplate(WeJanjiJiwaTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-kopikenangan" => HtmlTemplate(WeKopiKenanganTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-powerpoint" => HtmlTemplate(WePowerPointTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-talenta" => HtmlTemplate(WeTalentaTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-animal-crossing" => HtmlTemplate(WeddingAnimalCrossingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-claude" => HtmlTemplate(WeddingClaudeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-cod" => HtmlTemplate(WeddingCodTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-danamon" => HtmlTemplate(WeddingDanamonTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-excel-theme" => HtmlTemplate(WeddingExcelThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-freefire" => HtmlTemplate(WeddingFreeFireTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-github" => HtmlTemplate(WeddingGithubTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-jenius-v2" => HtmlTemplate(WeddingJeniusV2Template { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-linux" => HtmlTemplate(WeddingLinuxTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-word-theme" => HtmlTemplate(WeddingWordThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "canva-elegant-wedding" => HtmlTemplate(CanvaElegantWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "elegant-wedding" => HtmlTemplate(ElegantWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "mrt-wedding" => HtmlTemplate(MrtWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-brimo" => HtmlTemplate(WeBrimoTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-duolingo" => HtmlTemplate(WeDuolingoTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-google-calendar" => HtmlTemplate(WeGoogleCalendarTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-livin" => HtmlTemplate(WeLivinTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-manhua" => HtmlTemplate(WeManhuaTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-manhwa" => HtmlTemplate(WeManhwaTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-momoyo" => HtmlTemplate(WeMomoyoTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-steam-store" => HtmlTemplate(WeSteamStoreTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-uniqlo" => HtmlTemplate(WeUniqloTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-zara" => HtmlTemplate(WeZaraTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-bpjs" => HtmlTemplate(WeddingBpjsTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-chatgpt" => HtmlTemplate(WeddingChatGptTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-familymart" => HtmlTemplate(WeddingFamilyMartTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-gemini" => HtmlTemplate(WeddingGeminiTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-genshin-theme" => HtmlTemplate(WeddingGenshinThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-indomaret" => HtmlTemplate(WeddingIndomaretTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-jago" => HtmlTemplate(WeddingJagoTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-macintosh" => HtmlTemplate(WeddingMacintoshTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-mlbb" => HtmlTemplate(WeddingMlbbTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-ps5" => HtmlTemplate(WeddingPs5Template { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-pubg" => HtmlTemplate(WeddingPubgTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-telegram-theme" => HtmlTemplate(WeddingTelegramThemeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-wa-channel" => HtmlTemplate(WeddingWaChannelTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-windows95" => HtmlTemplate(WeddingWindows95Template { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-windowsxp" => HtmlTemplate(WeddingWindowsXpTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "whoosh-wedding" => HtmlTemplate(WhooshWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "absensi-wedding" => HtmlTemplate(AbsensiWeddingTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-asana" => HtmlTemplate(WeAsanaTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-kopijago" => HtmlTemplate(WeKopiJagoTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-linktree" => HtmlTemplate(WeLinktreeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "we-upwork" => HtmlTemplate(WeUpworkTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-danantara" => HtmlTemplate(WeddingDanantaraTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-dota2" => HtmlTemplate(WeddingDota2Template { invitation, is_dev: state.is_dev }).into_response(),
-                    "wedding-indomie-goreng" => HtmlTemplate(WeddingIndomieGorengTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    "trendvibe" => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                    _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: state.is_dev }).into_response(),
-                }
+                render_invitation_template(template_name, invitation, state.is_dev)
             } else {
                 (StatusCode::NOT_FOUND, "Invitation not found").into_response()
             }
@@ -3586,7 +3409,10 @@ pub async fn rsvp(
     .await;
 
     match result {
-        Ok(_) => Json(serde_json::json!({"status": "ok"})).into_response(),
+        Ok(_) => {
+            invalidate_invitation_cache(&state, &payload.invitation_slug).await;
+            Json(serde_json::json!({"status": "ok"})).into_response()
+        },
         Err(e) => {
             tracing::error!("Failed to insert RSVP: {}", e);
             (
@@ -4214,6 +4040,7 @@ pub async fn add_guest(
     .await
     .unwrap();
 
+    invalidate_invitation_cache(&state, &slug).await;
     Redirect::to(&format!("/invitation/{}/manage#guests", slug)).into_response()
 }
 
@@ -4256,6 +4083,7 @@ pub async fn update_guest(
     .await
     .unwrap();
 
+    invalidate_invitation_cache(&state, &slug).await;
     Redirect::to(&format!("/invitation/{}/manage#guests", slug)).into_response()
 }
 
@@ -4279,6 +4107,7 @@ pub async fn update_guest_template(
     .await
     .unwrap();
 
+    invalidate_invitation_cache(&state, &slug).await;
     Redirect::to(&format!("/invitation/{}/manage#guests", slug)).into_response()
 }
 
@@ -4287,6 +4116,7 @@ pub async fn delete_guest(
     State(state): State<AppState>,
 ) -> impl IntoResponse {
     sqlx::query("DELETE FROM guests WHERE id = $1").bind(guest_id).execute(&state.db).await.unwrap();
+    invalidate_invitation_cache(&state, &slug).await;
     Redirect::to(&format!("/invitation/{}/manage#guests", slug)).into_response()
 }
 
@@ -4376,6 +4206,7 @@ pub async fn bulk_add_guests(
 
     tx.commit().await.unwrap();
 
+    invalidate_invitation_cache(&state, &slug).await;
     Redirect::to(&format!("/invitation/{}/manage#guests", slug)).into_response()
 }
 
@@ -4398,6 +4229,7 @@ pub async fn delete_rsvp(
         .await
         .unwrap();
 
+    invalidate_invitation_cache(&state, &slug).await;
     Redirect::to(&format!("/invitation/{}/manage#rsvps", slug)).into_response()
 }
 
@@ -4480,6 +4312,7 @@ pub async fn add_group(
     .await
     .unwrap();
 
+    invalidate_invitation_cache(&state, &slug).await;
     Redirect::to(&format!("/invitation/{}/manage#groups", slug)).into_response()
 }
 
@@ -4519,6 +4352,7 @@ pub async fn update_group(
     .await
     .unwrap();
 
+    invalidate_invitation_cache(&state, &slug).await;
     Redirect::to(&format!("/invitation/{}/manage#groups", slug)).into_response()
 }
 
@@ -4529,6 +4363,7 @@ pub async fn delete_group(
     State(state): State<AppState>,
 ) -> impl IntoResponse {
     sqlx::query("DELETE FROM invitation_groups WHERE id = $1").bind(group_id).execute(&state.db).await.unwrap();
+    invalidate_invitation_cache(&state, &slug).await;
     Redirect::to(&format!("/invitation/{}/manage#groups", slug)).into_response()
 }
 
@@ -5865,5 +5700,117 @@ fn is_superadmin(user: &Option<User>) -> bool {
         u.role == "SUPERADMIN"
     } else {
         false
+    }
+}
+
+
+pub fn render_invitation_template(template_name: &str, invitation: Invitation, is_dev: bool) -> axum::response::Response {
+    match template_name {
+                "keraton-dark-invitation" => HtmlTemplate(KeratonDarkInvitationTemplate { invitation, is_dev: is_dev }).into_response(),
+                "loveanthem" => HtmlTemplate(LoveAnthemTemplate { invitation, is_dev: is_dev }).into_response(),
+                "cinemarry" => HtmlTemplate(CineMarryTemplate { invitation, is_dev: is_dev }).into_response(),
+                "super-wedbros" => HtmlTemplate(SuperWedbrosTemplate { invitation, is_dev: is_dev }).into_response(),
+                "royal-heritage" => HtmlTemplate(RoyalHeritageTemplate { invitation, is_dev: is_dev }).into_response(),
+                "high-fashion-editorial" => HtmlTemplate(HighFashionEditorialTemplate { invitation: invitation.clone(), is_dev: is_dev }).into_response(),
+                "reel-wedding" => HtmlTemplate(ReelWeddingTemplate { invitation, is_dev: is_dev }).into_response(),
+                "cairide" => HtmlTemplate(CaiRideTemplate { invitation, is_dev: is_dev }).into_response(),
+                "pinterlove" => HtmlTemplate(PinterLoveTemplate { invitation, is_dev: is_dev }).into_response(),
+                "shopee-live-wedding" => HtmlTemplate(ShopeeLiveWeddingTemplate { invitation, is_dev: is_dev }).into_response(),
+                "tiktok-live-wedding" => HtmlTemplate(TiktokLiveWeddingTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-uber" => HtmlTemplate(WeUberTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-disney" => HtmlTemplate(WeddingDisneyTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-facebook" => HtmlTemplate(WeddingFacebookTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-iphone-theme" => HtmlTemplate(WeddingIphoneThemeTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-netflix-v2" => HtmlTemplate(WeddingNetflixV2Template { invitation, is_dev: is_dev }).into_response(),
+                "wedding-prime" => HtmlTemplate(WeddingPrimeTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-wrath-v2" => HtmlTemplate(WeddingWrathV2Template { invitation, is_dev: is_dev }).into_response(),
+                "wedding-applemusic" => HtmlTemplate(AppleMusicTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-capcut" => HtmlTemplate(WeCapCutTemplate { invitation, is_dev: is_dev }).into_response(),
+                "bereal-wedding" => HtmlTemplate(BeRealWeddingTemplate { invitation, is_dev: is_dev }).into_response(),
+                "instagram-live-wedding" => HtmlTemplate(InstagramLiveWeddingTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-discord" => HtmlTemplate(WeDiscordTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-webtoon" => HtmlTemplate(WeWebtoonTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-mixue" => HtmlTemplate(WeMixueTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-playstation" => HtmlTemplate(WePlayStationTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-threads-app" => HtmlTemplate(WeThreadsAppTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-alfamart" => HtmlTemplate(WeddingAlfamartTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-kai" => HtmlTemplate(WeddingKaiTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-medium" => HtmlTemplate(WeddingMediumTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-transjakarta" => HtmlTemplate(WeddingTransJakartaTemplate { invitation, is_dev: is_dev }).into_response(),
+                "qris-wedding" => HtmlTemplate(QrisWeddingTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-grab" => HtmlTemplate(WeddingGrabTemplate { invitation, is_dev: is_dev }).into_response(),
+                "figma-wedding" => HtmlTemplate(FigmaWeddingTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-whatsapp-theme" => HtmlTemplate(WeddingWhatsappThemeTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-manga" => HtmlTemplate(WeMangaTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-nintendo-switch" => HtmlTemplate(WeNintendoSwitchTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-kai-v2" => HtmlTemplate(WeddingKaiV2Template { invitation, is_dev: is_dev }).into_response(),
+                "wedding-minecraft" => HtmlTemplate(WeddingMinecraftTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-zoom-v2" => HtmlTemplate(WeddingZoomV2Template { invitation, is_dev: is_dev }).into_response(),
+                "we-vscode" => HtmlTemplate(WeVSCodeTemplate { invitation, is_dev: is_dev }).into_response(),
+                "gmail-wedding" => HtmlTemplate(GmailWeddingTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-behance" => HtmlTemplate(WeBehanceTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-chatime" => HtmlTemplate(WeChatimeTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-dribbble" => HtmlTemplate(WeDribbbleTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-hm" => HtmlTemplate(WeHMTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-janjijiwa" => HtmlTemplate(WeJanjiJiwaTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-kopikenangan" => HtmlTemplate(WeKopiKenanganTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-powerpoint" => HtmlTemplate(WePowerPointTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-talenta" => HtmlTemplate(WeTalentaTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-animal-crossing" => HtmlTemplate(WeddingAnimalCrossingTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-claude" => HtmlTemplate(WeddingClaudeTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-cod" => HtmlTemplate(WeddingCodTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-danamon" => HtmlTemplate(WeddingDanamonTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-excel-theme" => HtmlTemplate(WeddingExcelThemeTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-freefire" => HtmlTemplate(WeddingFreeFireTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-github" => HtmlTemplate(WeddingGithubTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-jenius-v2" => HtmlTemplate(WeddingJeniusV2Template { invitation, is_dev: is_dev }).into_response(),
+                "wedding-linux" => HtmlTemplate(WeddingLinuxTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-word-theme" => HtmlTemplate(WeddingWordThemeTemplate { invitation, is_dev: is_dev }).into_response(),
+                "canva-elegant-wedding" => HtmlTemplate(CanvaElegantWeddingTemplate { invitation, is_dev: is_dev }).into_response(),
+                "elegant-wedding" => HtmlTemplate(ElegantWeddingTemplate { invitation, is_dev: is_dev }).into_response(),
+                "mrt-wedding" => HtmlTemplate(MrtWeddingTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-brimo" => HtmlTemplate(WeBrimoTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-duolingo" => HtmlTemplate(WeDuolingoTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-google-calendar" => HtmlTemplate(WeGoogleCalendarTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-livin" => HtmlTemplate(WeLivinTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-manhua" => HtmlTemplate(WeManhuaTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-manhwa" => HtmlTemplate(WeManhwaTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-momoyo" => HtmlTemplate(WeMomoyoTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-steam-store" => HtmlTemplate(WeSteamStoreTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-uniqlo" => HtmlTemplate(WeUniqloTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-zara" => HtmlTemplate(WeZaraTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-bpjs" => HtmlTemplate(WeddingBpjsTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-chatgpt" => HtmlTemplate(WeddingChatGptTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-familymart" => HtmlTemplate(WeddingFamilyMartTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-gemini" => HtmlTemplate(WeddingGeminiTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-genshin-theme" => HtmlTemplate(WeddingGenshinThemeTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-indomaret" => HtmlTemplate(WeddingIndomaretTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-jago" => HtmlTemplate(WeddingJagoTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-macintosh" => HtmlTemplate(WeddingMacintoshTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-mlbb" => HtmlTemplate(WeddingMlbbTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-ps5" => HtmlTemplate(WeddingPs5Template { invitation, is_dev: is_dev }).into_response(),
+                "wedding-pubg" => HtmlTemplate(WeddingPubgTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-telegram-theme" => HtmlTemplate(WeddingTelegramThemeTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-wa-channel" => HtmlTemplate(WeddingWaChannelTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-windows95" => HtmlTemplate(WeddingWindows95Template { invitation, is_dev: is_dev }).into_response(),
+                "wedding-windowsxp" => HtmlTemplate(WeddingWindowsXpTemplate { invitation, is_dev: is_dev }).into_response(),
+                "whoosh-wedding" => HtmlTemplate(WhooshWeddingTemplate { invitation, is_dev: is_dev }).into_response(),
+                "absensi-wedding" => HtmlTemplate(AbsensiWeddingTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-asana" => HtmlTemplate(WeAsanaTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-kopijago" => HtmlTemplate(WeKopiJagoTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-linktree" => HtmlTemplate(WeLinktreeTemplate { invitation, is_dev: is_dev }).into_response(),
+                "we-upwork" => HtmlTemplate(WeUpworkTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-danantara" => HtmlTemplate(WeddingDanantaraTemplate { invitation, is_dev: is_dev }).into_response(),
+                "wedding-dota2" => HtmlTemplate(WeddingDota2Template { invitation, is_dev: is_dev }).into_response(),
+                "wedding-indomie-goreng" => HtmlTemplate(WeddingIndomieGorengTemplate { invitation, is_dev: is_dev }).into_response(),
+                "trendvibe" => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: is_dev }).into_response(),
+                _ => HtmlTemplate(TrendVibeTemplate { invitation, is_dev: is_dev }).into_response(),
+            }
+}
+
+
+pub async fn invalidate_invitation_cache(state: &AppState, slug: &str) {
+    if let Ok(mut conn) = state.redis.get().await {
+        let _ = redis::cmd("DEL").arg(format!("invitation_cache:{}", slug)).query_async::<()>(&mut conn).await;
     }
 }
