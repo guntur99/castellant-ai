@@ -5,7 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Instagram Live · {{ invitation.couple_name_short }} 💍</title>
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💍</text></svg>">
+    <link rel="icon" type="image/png" href="/static/img/favicon.png">
+    <link rel="apple-touch-icon" href="/static/img/favicon.png">
     <link
         href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Cormorant+Garamond:ital,wght@0,500;1,400;1,600;1,700&display=swap"
         rel="stylesheet">
@@ -128,25 +129,53 @@
             width: 96px;
             height: 96px;
             border-radius: 50%;
-            background: var(--ig-grad);
             display: flex;
             align-items: center;
             justify-content: center;
             margin: 0 auto 24px;
             position: relative;
             z-index: 2;
-            box-shadow: 0 0 20px rgba(225, 48, 108, 0.3);
-            animation: ring-pulse 3s infinite alternate;
+        }
+
+        .op-logo-ring::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: var(--ig-grad);
+            z-index: -1;
+            animation: ring-spin 3s linear infinite;
+            -webkit-mask: radial-gradient(circle at center, transparent 43px, black 44px);
+            mask: radial-gradient(circle at center, transparent 43px, black 44px);
+        }
+
+        .op-logo-ring::after {
+            content: '';
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: var(--ig-grad);
+            z-index: -2;
+            filter: blur(4px);
+            opacity: 0.7;
+            animation: ring-spin 3s linear infinite reverse;
+            -webkit-mask: radial-gradient(circle at center, transparent 45px, black 46px);
+            mask: radial-gradient(circle at center, transparent 45px, black 46px);
+        }
+
+        @keyframes ring-spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         @keyframes ring-pulse {
             0% {
                 transform: scale(1);
-                box-shadow: 0 0 20px rgba(225, 48, 108, 0.3);
+                opacity: 0.6;
             }
             100% {
-                transform: scale(1.05);
-                box-shadow: 0 0 35px rgba(225, 48, 108, 0.5), 0 0 15px rgba(240, 148, 51, 0.3);
+                transform: scale(1.15);
+                opacity: 0.9;
             }
         }
 
@@ -154,15 +183,23 @@
             width: 88px;
             height: 88px;
             border-radius: 50%;
-            background: #000;
+            background: transparent;
             display: flex;
             align-items: center;
             justify-content: center;
+            position: relative;
+            z-index: 1;
         }
 
         .op-logo-inner svg {
             width: 44px;
             height: 44px;
+            animation: icon-bounce 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes icon-bounce {
+            0% { transform: translateY(0) scale(1); }
+            100% { transform: translateY(-3px) scale(1.05); }
         }
 
         .op-live-tag {
@@ -199,13 +236,13 @@
         .op-title {
             font-family: var(--serif);
             font-size: clamp(34px, 8vw, 56px);
-            font-weight: 600;
+            font-weight: 700;
             color: #fff;
             line-height: 1.2;
             margin-bottom: 8px;
             z-index: 2;
             position: relative;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            text-shadow: 0 4px 15px rgba(0,0,0,0.6);
         }
 
         .op-title span {
@@ -213,17 +250,20 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            filter: drop-shadow(0px 2px 8px rgba(0,0,0,0.7));
+            font-weight: 700;
         }
 
         .op-sub {
-            font-size: 12px;
-            color: rgba(255, 255, 255, .5);
-            letter-spacing: .22em;
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.95);
+            letter-spacing: .2em;
             text-transform: uppercase;
             margin-bottom: 36px;
             z-index: 2;
             position: relative;
-            text-shadow: 0 1px 5px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
         }
 
         .op-dear {
@@ -1971,13 +2011,7 @@
     </div>
 
     <!-- AUDIO -->
-    <audio id="bgMusic" loop preload="auto">
-        {% if !invitation.custom_song_url.is_empty() %}
-        <source src="{{ invitation.custom_song_url }}" type="audio/mpeg">
-        {% else %}
-        <source src="{{ invitation.song_url }}" type="audio/mpeg">
-        {% endif %}
-    </audio>
+    <audio id="bgMusic" preload="auto"></audio>
 
     <!-- ══ MAIN APP ══ -->
     <div id="app">
@@ -1987,8 +2021,7 @@
             <div class="tb-av-wrap">
                 <div class="tb-av-ring">
                     <div class="tb-av-inner">
-                        <img loading="lazy" src="{{ invitation.bride.image_url }}"
-                            alt="">
+                        <img loading="lazy" src="{% if !invitation.bride.image_url.is_empty() %}{{ invitation.bride.image_url }}{% else %}{{ invitation.gallery_images|first_image }}{% endif %}" alt="Avatar">
                     </div>
                 </div>
                 <div class="live-sticker">LIVE</div>
@@ -2184,7 +2217,7 @@
                 <div class="couple-wrap">
                     <div class="c-card">
                         <div class="c-av-ring">
-                            <div class="c-av-inner"><img loading="lazy" src="{{ invitation.bride.image_url }}"
+                            <div class="c-av-inner"><img loading="lazy" src="{% if !invitation.bride.image_url.is_empty() %}{{ invitation.bride.image_url }}{% else %}{{ invitation.gallery_images|first_image }}{% endif %}"
                                     alt="{{ invitation.bride.name }}"></div>
                         </div>
                         <div class="c-role">🌸 Mempelai Wanita</div>
@@ -2194,7 +2227,7 @@
                     <div class="c-amp">&</div>
                     <div class="c-card">
                         <div class="c-av-ring">
-                            <div class="c-av-inner"><img loading="lazy" src="{{ invitation.groom.image_url }}"
+                            <div class="c-av-inner"><img loading="lazy" src="{% if !invitation.groom.image_url.is_empty() %}{{ invitation.groom.image_url }}{% else %}{{ invitation.gallery_images|first_image }}{% endif %}"
                                     alt="{{ invitation.groom.name }}"></div>
                         </div>
                         <div class="c-role">🤵 Mempelai Pria</div>
@@ -2579,6 +2612,19 @@
         let loveCnt = 9400, bgIdx = 0, chatIdx = 0, loved = false;
         const emojiCounts = [2100, 843, 1200, 654, 488, 376];
 
+        /* ── PLAYLIST ── */
+        const PLAYLIST = [];
+        {% if !invitation.playlist.is_empty() %}
+            {% for song in invitation.playlist %}
+            PLAYLIST.push("{{ song }}");
+            {% endfor %}
+        {% else if !invitation.custom_song_url.is_empty() %}
+            PLAYLIST.push("{{ invitation.custom_song_url }}");
+        {% else if !invitation.song_url.is_empty() %}
+            PLAYLIST.push("{{ invitation.song_url }}");
+        {% endif %}
+        let currentSongIdx = 0;
+
         /* ── OPEN ── */
         function goLive() {
             document.getElementById('opening').classList.add('hide');
@@ -2588,7 +2634,17 @@
 
             // Play background music on user interaction
             const bgMusic = document.getElementById('bgMusic');
-            if (bgMusic) {
+            if (bgMusic && PLAYLIST.length > 0) {
+                bgMusic.src = PLAYLIST[0];
+                if (PLAYLIST.length === 1) {
+                    bgMusic.loop = true;
+                } else {
+                    bgMusic.onended = function() {
+                        currentSongIdx = (currentSongIdx + 1) % PLAYLIST.length;
+                        bgMusic.src = PLAYLIST[currentSongIdx];
+                        bgMusic.play().catch(e => console.log(e));
+                    };
+                }
                 bgMusic.play().catch(e => console.log("Music play blocked:", e));
             }
         }
@@ -2959,9 +3015,42 @@
             document.getElementById('sheet').classList.remove('open');
         }
         function sw(p) {
-            document.querySelectorAll('.tab').forEach(b => b.classList.toggle('on', b.dataset.p === p));
+            document.querySelectorAll('.tab').forEach(b => {
+                const isOn = b.dataset.p === p;
+                b.classList.toggle('on', isOn);
+                if (isOn) {
+                    b.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                }
+            });
             document.querySelectorAll('.panel').forEach(el => el.classList.toggle('on', el.id === 'p-' + p));
         }
+
+        /* ── SWIPE GESTURE FOR TABS ── */
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function initSwipe() {
+            const sheetBody = document.querySelector('.sheet-body');
+            if (!sheetBody) return;
+            sheetBody.addEventListener('touchstart', e => {
+                touchStartX = e.changedTouches[0].screenX;
+            }, {passive: true});
+            
+            sheetBody.addEventListener('touchend', e => {
+                touchEndX = e.changedTouches[0].screenX;
+                const swipeDistance = touchEndX - touchStartX;
+                if (Math.abs(swipeDistance) > 50) {
+                    const tabs = Array.from(document.querySelectorAll('.tab'));
+                    const currentIdx = tabs.findIndex(t => t.classList.contains('on'));
+                    if (swipeDistance < 0 && currentIdx < tabs.length - 1) {
+                        sw(tabs[currentIdx + 1].dataset.p);
+                    } else if (swipeDistance > 0 && currentIdx > 0) {
+                        sw(tabs[currentIdx - 1].dataset.p);
+                    }
+                }
+            }, {passive: true});
+        }
+        document.addEventListener('DOMContentLoaded', initSwipe);
 
         /* ── RSVP ── */
         function setG(n, btn) {
