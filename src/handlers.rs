@@ -5988,7 +5988,7 @@ pub async fn seo_undangan_banyak_template(
 pub async fn blog_index(State(state): State<AppState>, jar: PrivateCookieJar) -> impl IntoResponse {
     let user = get_user_from_jar(&state.db, &jar).await;
     let posts = sqlx::query_as::<_, BlogPost>(
-        "SELECT * FROM blog_posts WHERE status = 'published' ORDER BY published_at DESC"
+        "SELECT * FROM blog_posts WHERE is_published = true ORDER BY published_at DESC"
     )
     .fetch_all(&state.db)
     .await
@@ -6004,7 +6004,7 @@ pub async fn blog_detail(
 ) -> impl IntoResponse {
     let user = get_user_from_jar(&state.db, &jar).await;
     let post = sqlx::query_as::<_, BlogPost>(
-        "SELECT * FROM blog_posts WHERE slug = $1 AND status = 'published'"
+        "SELECT * FROM blog_posts WHERE slug = $1 AND is_published = true"
     )
     .bind(slug)
     .fetch_optional(&state.db)

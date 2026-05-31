@@ -9,45 +9,56 @@
 {% block canonical %}https://castellant.com/blog/{{ post.slug }}{% endblock %}
 
 {% block site_content %}
-<div class="container pb-5" style="padding-top: 120px;">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <nav aria-label="breadcrumb" class="mb-4">
-              <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/blog" class="text-danger text-decoration-none">Blog</a></li>
-                <li class="breadcrumb-item active" aria-current="page">{{ post.title }}</li>
-              </ol>
-            </nav>
-            
-            <h1 class="fw-bold mb-4">{{ post.title }}</h1>
-            
-            <div class="d-flex align-items-center mb-4 text-muted small">
-                <span>Castellant Editorial</span>
-                <span class="mx-2">•</span>
-                <span>
-                    {% if let Some(pub_date) = post.published_at %}
-                        {{ pub_date }}
-                    {% else %}
-                        Baru
-                    {% endif %}
-                </span>
-            </div>
-            
-            {% if let Some(url) = post.image_url %}
-            <img src="{{ url }}" alt="{{ post.title }}" class="img-fluid rounded-4 shadow-sm mb-5 w-100" style="max-height: 400px; object-fit: cover;">
+<div style="max-width: 800px; margin: 0 auto; padding: 120px 20px 60px;">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" style="margin-bottom: 2rem; font-size: 0.9rem;">
+        <ol style="list-style: none; padding: 0; margin: 0; display: flex; gap: 0.5rem; align-items: center;">
+            <li><a href="/blog" style="color: #D43030; text-decoration: none; font-weight: 600;">Blog</a></li>
+            <li style="color: #999;">/</li>
+            <li style="color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 300px;">{{ post.title }}</li>
+        </ol>
+    </nav>
+    
+    <!-- Title -->
+    <h1 class="serif" style="font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 700; color: #2A1E14; margin-bottom: 1.5rem; line-height: 1.2;">
+        {{ post.title }}
+    </h1>
+    
+    <!-- Meta Data -->
+    <div style="display: flex; align-items: center; gap: 1rem; color: #888; font-size: 0.95rem; margin-bottom: 2.5rem;">
+        <span style="font-weight: 600; color: #555;">Castellant Editorial</span>
+        <span>•</span>
+        <span>
+            {% if let Some(pub_date) = post.published_at %}
+                {{ pub_date.format("%d %B %Y").to_string() }}
+            {% else %}
+                Baru
             {% endif %}
-            
-            <div class="blog-content" style="line-height: 1.8; font-size: 1.1rem; color: #333;">
-                {{ post.content_html|safe }}
-            </div>
-            
-            <hr class="my-5">
-            <div class="text-center p-4 bg-light rounded-4">
-                <h4 class="fw-bold mb-3">Siap Membuat Undangan Digital Anda?</h4>
-                <p class="text-muted mb-4">Wujudkan undangan pernikahan impian Anda dengan platform pembuat undangan paling eksklusif di Indonesia.</p>
-                <a href="/templates" class="btn-luxury">Pilih Desain Sekarang</a>
-            </div>
+        </span>
+    </div>
+    
+    <!-- Image -->
+    <div style="position: relative; width: 100%; height: auto; padding-bottom: 56.25%; border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.06); margin-bottom: 3.5rem; background: #f0f0f0; overflow: hidden;">
+        <!-- Fallback Dummy -->
+        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: #b0b0b0; font-weight: 700; font-size: 2.5rem; letter-spacing: 3px;" class="serif">
+            CASTELLANT
         </div>
+        <!-- Actual Image -->
+        {% if let Some(url) = post.image_url %}
+        <img src="{{ url }}" alt="{{ post.title }}" onerror="this.style.display='none';" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;">
+        {% endif %}
+    </div>
+    
+    <!-- Content -->
+    <div class="blog-content" style="line-height: 1.9; font-size: 1.15rem; color: #333; letter-spacing: 0.2px;">
+        {{ post.content_html|safe }}
+    </div>
+    
+    <!-- Call to Action -->
+    <div style="background: linear-gradient(135deg, #fdfbf9, #f5f0ea); padding: 3.5rem 2rem; border-radius: 24px; text-align: center; border: 1px solid rgba(0,0,0,0.04); margin-top: 5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.02);">
+        <h4 class="serif" style="font-size: 1.8rem; font-weight: 700; color: #2A1E14; margin-bottom: 1rem;">Siap Membuat Undangan Digital Anda?</h4>
+        <p style="color: #666; font-size: 1.1rem; margin-bottom: 2.5rem; max-width: 500px; margin-left: auto; margin-right: auto;">Wujudkan undangan pernikahan impian Anda dengan platform pembuat undangan paling eksklusif di Indonesia.</p>
+        <a href="/templates" class="btn-global" style="display: inline-flex; background: #D43030; color: #fff; padding: 0.8rem 2rem; border-radius: 50px; font-size: 1rem; font-weight: 600; text-decoration: none; border: none; box-shadow: 0 4px 15px rgba(212, 48, 48, 0.3);">Pilih Desain Sekarang</a>
     </div>
 </div>
 {% endblock %}
