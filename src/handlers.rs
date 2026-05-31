@@ -5867,6 +5867,37 @@ pub async fn invalidate_invitation_cache(state: &AppState, slug: &str) {
     }
 }
 
+// Privacy & Terms
+#[derive(Template)]
+#[template(path = "landing/privacy.html")]
+pub struct PrivacyTemplate {
+    pub user: Option<User>,
+    pub is_dev: bool,
+}
+
+pub async fn privacy_page(
+    State(state): State<AppState>,
+    jar: axum_extra::extract::PrivateCookieJar,
+) -> impl IntoResponse {
+    let user = get_user_from_jar(&state.db, &jar).await;
+    HtmlTemplate(PrivacyTemplate { user, is_dev: state.is_dev })
+}
+
+#[derive(Template)]
+#[template(path = "landing/terms.html")]
+pub struct TermsTemplate {
+    pub user: Option<User>,
+    pub is_dev: bool,
+}
+
+pub async fn terms_page(
+    State(state): State<AppState>,
+    jar: axum_extra::extract::PrivateCookieJar,
+) -> impl IntoResponse {
+    let user = get_user_from_jar(&state.db, &jar).await;
+    HtmlTemplate(TermsTemplate { user, is_dev: state.is_dev })
+}
+
 // SEO Landing Page Templates
 #[derive(Template)]
 #[template(path = "landing/undangan_digital.html")]

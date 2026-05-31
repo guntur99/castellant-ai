@@ -169,6 +169,8 @@ async fn main() {
         .route("/undangan-pernikahan", get(handlers::seo_undangan_pernikahan))
         .route("/undangan-pernikahan-ai", get(handlers::seo_undangan_digital_ai))
         .route("/undangan-pernikahan-banyak-template-satu-undangan", get(handlers::seo_undangan_banyak_template))
+        .route("/privacy", get(handlers::privacy_page))
+        .route("/terms", get(handlers::terms_page))
         .route("/blog", get(handlers::blog_index))
         .route("/blog/{slug}", get(handlers::blog_detail))
         .route("/dashboard", get(handlers::dashboard))
