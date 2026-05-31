@@ -165,6 +165,12 @@ async fn main() {
     // build our application with a route
     let app = Router::new()
         .route("/", get(handlers::home))
+        .route("/undangan-digital", get(handlers::seo_undangan_digital))
+        .route("/undangan-pernikahan", get(handlers::seo_undangan_pernikahan))
+        .route("/undangan-pernikahan-ai", get(handlers::seo_undangan_digital_ai))
+        .route("/undangan-pernikahan-banyak-template-satu-undangan", get(handlers::seo_undangan_banyak_template))
+        .route("/blog", get(handlers::blog_index))
+        .route("/blog/{slug}", get(handlers::blog_detail))
         .route("/dashboard", get(handlers::dashboard))
         .route("/profile", get(handlers::profile))
         .route("/settings", get(handlers::settings))

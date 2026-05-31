@@ -1,0 +1,53 @@
+{% extends "site_base.html" %}
+
+{% block title %}{{ post.title }} | Castellant Journal{% endblock %}
+
+{% block meta_description %}{% if let Some(desc) = post.meta_description %}{{ desc }}{% else %}{{ post.title }} - Baca artikel selengkapnya di Castellant Journal.{% endif %}{% endblock %}
+
+{% block meta_keywords %}{% if let Some(kw) = post.meta_keywords %}{{ kw }}{% endif %}{% endblock %}
+
+{% block canonical %}https://castellant.com/blog/{{ post.slug }}{% endblock %}
+
+{% block site_content %}
+<div class="container pb-5" style="padding-top: 120px;">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <nav aria-label="breadcrumb" class="mb-4">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/blog" class="text-danger text-decoration-none">Blog</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ post.title }}</li>
+              </ol>
+            </nav>
+            
+            <h1 class="fw-bold mb-4">{{ post.title }}</h1>
+            
+            <div class="d-flex align-items-center mb-4 text-muted small">
+                <span>Castellant Editorial</span>
+                <span class="mx-2">•</span>
+                <span>
+                    {% if let Some(pub_date) = post.published_at %}
+                        {{ pub_date }}
+                    {% else %}
+                        Baru
+                    {% endif %}
+                </span>
+            </div>
+            
+            {% if let Some(url) = post.image_url %}
+            <img src="{{ url }}" alt="{{ post.title }}" class="img-fluid rounded-4 shadow-sm mb-5 w-100" style="max-height: 400px; object-fit: cover;">
+            {% endif %}
+            
+            <div class="blog-content" style="line-height: 1.8; font-size: 1.1rem; color: #333;">
+                {{ post.content_html|safe }}
+            </div>
+            
+            <hr class="my-5">
+            <div class="text-center p-4 bg-light rounded-4">
+                <h4 class="fw-bold mb-3">Siap Membuat Undangan Digital Anda?</h4>
+                <p class="text-muted mb-4">Wujudkan undangan pernikahan impian Anda dengan platform pembuat undangan paling eksklusif di Indonesia.</p>
+                <a href="/templates" class="btn-luxury">Pilih Desain Sekarang</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

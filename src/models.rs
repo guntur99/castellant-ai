@@ -322,3 +322,19 @@ pub struct ReferralHistory {
     pub commission_earned: i32,
     pub created_at: DateTime<Utc>,
 }
+
+#[derive(Debug, Serialize, Deserialize, Clone, FromRow)]
+pub struct BlogPost {
+    pub id: Uuid,
+    pub slug: String,
+    pub title: String,
+    pub content_html: String,
+    pub meta_description: Option<String>,
+    pub meta_keywords: Option<String>,
+    pub image_url: Option<String>,
+    pub is_published: Option<bool>,
+    pub published_at: Option<DateTime<Utc>>,
+    pub created_at: DateTime<Utc>,
+    pub updated_at: DateTime<Utc>,
+}
+

@@ -6,7 +6,7 @@ use axum::{
     Json,
 };
 use askama::Template;
-use crate::models::{Invitation, Person, EventDetails, Quote, GiftAccount, RsvpForm, Rsvp, Story, InvitationRow, Song, User, AiSession, Guest, GuestGroup, Booking, Voucher, InvitationTemplate, Plan, Referral, ReferralHistory};
+use crate::models::{Invitation, Person, EventDetails, Quote, GiftAccount, RsvpForm, Rsvp, Story, InvitationRow, Song, User, AiSession, Guest, GuestGroup, Booking, Voucher, InvitationTemplate, Plan, Referral, ReferralHistory, BlogPost};
 use crate::AppState;
 mod filters {
     pub use crate::filters::*;
@@ -443,28 +443,11 @@ pub async fn get_all_templates(db: &sqlx::PgPool, only_published: bool) -> Vec<I
     templates.into_iter().map(sanitize_template_urls).collect()
 }
 
-pub async fn templates_list(
-    State(state): State<AppState>,
-    Query(params): Query<HashMap<String, String>>,
-    jar: PrivateCookieJar,
-) -> impl IntoResponse {
-    let templates_data = get_all_templates(&state.db, true).await;
-    let user = match jar.get("user_id") {
-        Some(cookie) => {
-            let uid = Uuid::parse_str(cookie.value()).ok();
-            if let Some(id) = uid {
-                sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
-                    .bind(id)
-                    .fetch_optional(&state.db)
-                    .await
-                    .unwrap_or(None)
-            } else {
-                None
-            }
-        }
-        None => None,
-    };
-
+pub async fn get_paginated_templates(
+    db: &sqlx::PgPool,
+    params: &HashMap<String, String>,
+) -> (String, Vec<InvitationTemplate>, i32, i32, String, String) {
+    let templates_data = get_all_templates(db, true).await;
     let category = params.get("category").cloned().unwrap_or_else(|| "all".to_string());
     let search = params.get("search").cloned().unwrap_or_default().to_lowercase();
     let sort = params.get("sort").cloned().unwrap_or_else(|| "featured".to_string());
@@ -497,6 +480,32 @@ pub async fn templates_list(
         .skip(start_idx)
         .take(per_page as usize)
         .collect();
+
+    (category, paginated, page, total_pages, search, sort)
+}
+
+pub async fn templates_list(
+    State(state): State<AppState>,
+    Query(params): Query<HashMap<String, String>>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user = match jar.get("user_id") {
+        Some(cookie) => {
+            let uid = Uuid::parse_str(cookie.value()).ok();
+            if let Some(id) = uid {
+                sqlx::query_as::<_, User>("SELECT * FROM users WHERE id = $1")
+                    .bind(id)
+                    .fetch_optional(&state.db)
+                    .await
+                    .unwrap_or(None)
+            } else {
+                None
+            }
+        }
+        None => None,
+    };
+
+    let (category, paginated, page, total_pages, search, sort) = get_paginated_templates(&state.db, &params).await;
 
     HtmlTemplate(TemplatesListTemplate { 
         user, 
@@ -3473,6 +3482,48 @@ pub async fn rsvp(
     </url>"#, slug, lastmod));
     }
 
+    // Add SEO Landing Pages
+    let seo_pages = [
+        "/undangan-digital",
+        "/undangan-pernikahan",
+        "/undangan-pernikahan-ai",
+        "/undangan-pernikahan-banyak-template-satu-undangan",
+        "/blog"
+    ];
+    for page in seo_pages.iter() {
+        xml.push_str(&format!(r#"
+    <url>
+        <loc>https://castellant.com{}</loc>
+        <lastmod>{}</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.9</priority>
+    </url>"#, page, today));
+    }
+
+    // Dynamic: fetch blog posts
+    let blog_rows = sqlx::query(
+        "SELECT slug, TO_CHAR(updated_at AT TIME ZONE 'UTC', 'YYYY-MM-DD') as lastmod \
+         FROM blog_posts \
+         WHERE is_published = true \
+         ORDER BY published_at DESC \
+         LIMIT 100"
+    )
+    .fetch_all(&state.db)
+    .await
+    .unwrap_or_default();
+
+    for row in blog_rows {
+        let slug: String = row.get("slug");
+        let lastmod: String = row.try_get("lastmod").unwrap_or_else(|_| today.clone());
+        xml.push_str(&format!(r#"
+    <url>
+        <loc>https://castellant.com/blog/{}</loc>
+        <lastmod>{}</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>"#, slug, lastmod));
+    }
+
     xml.push_str("\n</urlset>");
 
     Response::builder()
@@ -5642,6 +5693,7 @@ pub async fn validate_promo(
 #[derive(Template)]
 #[template(path = "admin/marketing/dashboard.html")]
 pub struct AdminMarketingTemplate {
+    #[allow(dead_code)]
     pub user: Option<User>,
     pub plans: Vec<Plan>,
     pub vouchers: Vec<Voucher>,
@@ -5812,5 +5864,155 @@ pub fn render_invitation_template(template_name: &str, invitation: Invitation, i
 pub async fn invalidate_invitation_cache(state: &AppState, slug: &str) {
     if let Ok(mut conn) = state.redis.get().await {
         let _ = redis::cmd("DEL").arg(format!("invitation_cache:{}", slug)).query_async::<()>(&mut conn).await;
+    }
+}
+
+// SEO Landing Page Templates
+#[derive(Template)]
+#[template(path = "landing/undangan_digital.html")]
+pub struct SeoUndanganDigitalTemplate {
+    pub user: Option<User>,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+    pub active_category: String,
+    pub templates: Vec<InvitationTemplate>,
+    pub current_page: i32,
+    pub total_pages: i32,
+    pub search_query: String,
+    pub sort: String,
+}
+
+#[derive(Template)]
+#[template(path = "landing/undangan_pernikahan.html")]
+pub struct SeoUndanganPernikahanTemplate {
+    pub user: Option<User>,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+    pub active_category: String,
+    pub templates: Vec<InvitationTemplate>,
+    pub current_page: i32,
+    pub total_pages: i32,
+    pub search_query: String,
+    pub sort: String,
+}
+
+#[derive(Template)]
+#[template(path = "landing/undangan_digital_ai.html")]
+pub struct SeoUndanganDigitalAiTemplate {
+    pub user: Option<User>,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+    pub active_category: String,
+    pub templates: Vec<InvitationTemplate>,
+    pub current_page: i32,
+    pub total_pages: i32,
+    pub search_query: String,
+    pub sort: String,
+}
+
+#[derive(Template)]
+#[template(path = "landing/undangan_banyak_template_dalam_satu_undangan.html")]
+pub struct SeoUndanganBanyakTemplate {
+    pub user: Option<User>,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+    pub active_category: String,
+    pub templates: Vec<InvitationTemplate>,
+    pub current_page: i32,
+    pub total_pages: i32,
+    pub search_query: String,
+    pub sort: String,
+}
+
+// Blog Templates
+#[derive(Template)]
+#[template(path = "blog/index.html")]
+pub struct BlogIndexTemplate {
+    pub user: Option<User>,
+    pub posts: Vec<BlogPost>,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+#[derive(Template)]
+#[template(path = "blog/detail.html")]
+pub struct BlogDetailTemplate {
+    pub user: Option<User>,
+    pub post: BlogPost,
+    #[allow(dead_code)]
+    pub is_dev: bool,
+}
+
+// SEO Handlers
+pub async fn seo_undangan_digital(
+    State(state): State<AppState>,
+    Query(params): Query<HashMap<String, String>>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user = get_user_from_jar(&state.db, &jar).await;
+    let (active_category, templates, current_page, total_pages, search_query, sort) = get_paginated_templates(&state.db, &params).await;
+    HtmlTemplate(SeoUndanganDigitalTemplate { user, is_dev: state.is_dev, active_category, templates, current_page, total_pages, search_query, sort })
+}
+
+pub async fn seo_undangan_pernikahan(
+    State(state): State<AppState>,
+    Query(params): Query<HashMap<String, String>>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user = get_user_from_jar(&state.db, &jar).await;
+    let (active_category, templates, current_page, total_pages, search_query, sort) = get_paginated_templates(&state.db, &params).await;
+    HtmlTemplate(SeoUndanganPernikahanTemplate { user, is_dev: state.is_dev, active_category, templates, current_page, total_pages, search_query, sort })
+}
+
+pub async fn seo_undangan_digital_ai(
+    State(state): State<AppState>,
+    Query(params): Query<HashMap<String, String>>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user = get_user_from_jar(&state.db, &jar).await;
+    let (active_category, templates, current_page, total_pages, search_query, sort) = get_paginated_templates(&state.db, &params).await;
+    HtmlTemplate(SeoUndanganDigitalAiTemplate { user, is_dev: state.is_dev, active_category, templates, current_page, total_pages, search_query, sort })
+}
+
+pub async fn seo_undangan_banyak_template(
+    State(state): State<AppState>,
+    Query(params): Query<HashMap<String, String>>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user = get_user_from_jar(&state.db, &jar).await;
+    let (active_category, templates, current_page, total_pages, search_query, sort) = get_paginated_templates(&state.db, &params).await;
+    HtmlTemplate(SeoUndanganBanyakTemplate { user, is_dev: state.is_dev, active_category, templates, current_page, total_pages, search_query, sort })
+}
+
+// Blog Handlers
+pub async fn blog_index(State(state): State<AppState>, jar: PrivateCookieJar) -> impl IntoResponse {
+    let user = get_user_from_jar(&state.db, &jar).await;
+    let posts = sqlx::query_as::<_, BlogPost>(
+        "SELECT * FROM blog_posts WHERE status = 'published' ORDER BY published_at DESC"
+    )
+    .fetch_all(&state.db)
+    .await
+    .unwrap_or_default();
+
+    HtmlTemplate(BlogIndexTemplate { user, posts, is_dev: state.is_dev })
+}
+
+pub async fn blog_detail(
+    State(state): State<AppState>,
+    Path(slug): Path<String>,
+    jar: PrivateCookieJar,
+) -> impl IntoResponse {
+    let user = get_user_from_jar(&state.db, &jar).await;
+    let post = sqlx::query_as::<_, BlogPost>(
+        "SELECT * FROM blog_posts WHERE slug = $1 AND status = 'published'"
+    )
+    .bind(slug)
+    .fetch_optional(&state.db)
+    .await
+    .unwrap_or_default();
+
+    match post {
+        Some(p) => HtmlTemplate(BlogDetailTemplate { user, post: p, is_dev: state.is_dev }).into_response(),
+        None => (axum::http::StatusCode::NOT_FOUND, "Blog post not found").into_response(),
     }
 }
